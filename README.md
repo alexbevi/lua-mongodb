@@ -56,6 +56,16 @@ make check
 
 Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration tests begin with the command executor slice rather than being counted as passing coverage before then.
 
+The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
+
+```sh
+python3 spec/unified/run.py
+python3 spec/unified/run.py --include 'run-command/**' --report report.json
+python3 spec/unified/update_capabilities.py --check
+```
+
+The checked-in manifest currently classifies all 483 discovered fixtures with owning roadmap activities and concrete reasons. A missing fixture, stale entry, unknown status, empty deferral reason, or runnable fixture without an executor fails the command.
+
 ## Scope
 
 The `production-core-v1` milestone covers standalone and replica-set CRUD, TLS and SCRAM, SDAM and CMAP, monitoring, sessions, retries, transactions, and client-side operation timeout. Advanced features such as change streams, GridFS, SRV, compression, sharded and load-balanced deployments, extra authentication mechanisms, and client bulk write remain post-v1. Client-side field-level/queryable encryption and GSSAPI require separate designs.

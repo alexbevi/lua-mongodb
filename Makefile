@@ -60,6 +60,9 @@ test-unified: check-busted check-python
 		echo "test-unified: unified runner explicitly deferred until UTF-004"; \
 	fi
 	@"$(PYTHON)" spec/unified/run_schema_meta.py --lua "$(LUA)"
+	@"$(PYTHON)" -m unittest spec.unified.test_cli -v
+	@"$(PYTHON)" spec/unified/update_capabilities.py --check
+	@"$(PYTHON)" spec/unified/run.py
 
 lint: check-luacheck
 	@"$(LUACHECK)" src spec

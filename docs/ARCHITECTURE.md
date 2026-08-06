@@ -67,6 +67,10 @@ The schema gate loads only fixture envelopes in Python and performs parsing and 
 
 Run-on requirements compare numeric version components and environment topology, authentication, serverless, server-parameter, and encryption facts. Matching implements strict nested documents, root subset matching, flexible BSON numbers, exact arrays, and the unified `$$exists`, `$$type`, `$$matchesEntity`, `$$matchesHexBytes`, `$$unsetOrMatches`, `$$lte`, `$$matchAsDocument`, and `$$matchAsRoot` operators. Thread entities schedule work through the injected runtime task interface, and bounded loops record iteration and success counters as BSON entities. Unit tests use the deterministic fake runtime and fake entity/operation handlers; no runner-core test opens a network connection.
 
+The filesystem-facing unified CLI is a Python envelope around the Lua schema/runner layers, like the BSON corpus loader. It discovers every pinned path matching `*/tests/unified/*.json`, validates exact coverage against `spec/unified/capabilities.json`, applies repeatable glob include filters, and emits a versioned JSON report. The manifest records the pinned specifications commit and assigns each fixture either `runnable` or `deferred` with an owning activity and concrete reason. Missing or stale entries, unknown statuses, empty deferral reasons, empty discovery, and runnable fixtures without an executor are hard failures.
+
+At the foundation boundary all 483 discovered integration fixtures are deferred to the driver slice that can first execute them; client-side encryption is explicitly outside the roadmap pending a separate design. Later activities change only their newly supported manifest entries to `runnable` in the same commit as the implementation and tests. The generator's `--check` mode prevents hand-edited or stale classification drift, while normal reports retain a row for every selected fixture so exclusions cannot disappear into aggregate counts.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

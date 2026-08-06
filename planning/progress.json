@@ -261,6 +261,28 @@
       "notes": [],
       "started_at": "2026-08-06T16:35:24+00:00",
       "completed_at": "2026-08-06T16:41:43+00:00"
+    },
+    "UTF-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli -v",
+          "exit_code": 1,
+          "summary": "CLI contract fails because spec.unified.run does not exist.",
+          "recorded_at": "2026-08-06T16:42:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "58 Lua unit tests and all BSON/Extended JSON corpora passed; 320 schema meta-fixtures and 3 CLI tests passed; all 483 integration fixtures were explicitly deferred with reasons; lint reported zero warnings.",
+          "recorded_at": "2026-08-06T16:45:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T16:42:34+00:00",
+      "completed_at": "2026-08-06T16:45:41+00:00"
     }
   },
   "verified_references": {
