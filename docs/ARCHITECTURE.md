@@ -57,6 +57,12 @@ All lengths and element payloads are checked against their containing frame befo
 
 Extended JSON conversion recognizes canonical, relaxed, and permitted degenerate representations for every BSON wire value. Known wrapper keys require their exact fields and types; unknown dollar-prefixed documents remain ordinary documents. Generation supports canonical and relaxed modes, preserves field order, uses canonical Base64/subtype encoding, and emits ISO-8601 UTC datetimes only where relaxed Extended JSON permits them.
 
+### Unified schema validation
+
+`mongodb.unified.schema` compiles an ordered JSON Schema document into an immutable validator. The implemented draft 2019-09 subset covers the constructs exercised by unified schema 1.28: local references, object properties and required fields, additional and pattern properties, array/property bounds, primitive types, enums, constants, the version and KMS-provider patterns, and `allOf`, `oneOf`, and `not`. Schema violations return structured `configuration` errors with both a JSONPath-like document path and a JSON Pointer schema path.
+
+The schema gate loads only fixture envelopes in Python and performs parsing and validation in Lua. Both `valid-pass` and `valid-fail` are schema-valid—the latter are reserved for later runner failures—while every file in `invalid` must be rejected. The gate currently covers all 320 distinct JSON meta-fixtures pinned with the specification checkout; equivalent YAML copies are not counted twice.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.
@@ -75,7 +81,7 @@ A public operation validates options, creates an operation context and deadline,
 
 ## Test architecture
 
-Each activity starts with a focused red test. Unit tests use fake clocks, sockets, and topology inputs. The BSON unit gate uses Python only to load the pinned corpus envelope; all 728 canonical BSON cases, 4 degenerate BSON forms, 75 decode errors, 1,080 Extended JSON representations, 180 parse errors, and canonical/relaxed generation execute against the Lua codecs. Integration tests exercise supported MongoDB 7.0–8.2 deployments. The unified runner consumes the pinned specification repository and reports every fixture as passed, failed, or explicitly deferred with a reason; unknown operations are failures. Release gates include packaging smoke tests, linting, the supported Lua/runtime matrix, and strict roadmap validation.
+Each activity starts with a focused red test. Unit tests use fake clocks, sockets, and topology inputs. The BSON unit gate uses Python only to load the pinned corpus envelope; all 728 canonical BSON cases, 4 degenerate BSON forms, 75 decode errors, 1,080 Extended JSON representations, 180 parse errors, and canonical/relaxed generation execute against the Lua codecs. The unified gate first validates all 320 pinned JSON schema meta-fixtures through schema 1.28. Integration tests exercise supported MongoDB 7.0–8.2 deployments. The unified runner consumes the pinned specification repository and reports every fixture as passed, failed, or explicitly deferred with a reason; unknown operations are failures. Release gates include packaging smoke tests, linting, the supported Lua/runtime matrix, and strict roadmap validation.
 
 ## Intentional exclusions
 

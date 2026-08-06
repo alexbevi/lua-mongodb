@@ -53,12 +53,13 @@ test-integration: check-busted
 		echo "test-integration: no integration slices yet (first added by CMD-001)"; \
 	fi
 
-test-unified: check-busted
+test-unified: check-busted check-python
 	@if test -n "$$(find spec/unified -type f -name '*_spec.lua' -print -quit 2>/dev/null)"; then \
 		"$(BUSTED)" $(BUSTED_PATHS) spec/unified; \
 	else \
 		echo "test-unified: unified runner explicitly deferred until UTF-004"; \
 	fi
+	@"$(PYTHON)" spec/unified/run_schema_meta.py --lua "$(LUA)"
 
 lint: check-luacheck
 	@"$(LUACHECK)" src spec

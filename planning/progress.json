@@ -217,6 +217,28 @@
       "notes": [],
       "started_at": "2026-08-06T16:16:27+00:00",
       "completed_at": "2026-08-06T16:27:13+00:00"
+    },
+    "UTF-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unified",
+          "exit_code": 2,
+          "summary": "Schema contract spec fails because mongodb.unified.schema does not exist.",
+          "recorded_at": "2026-08-06T16:29:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified",
+          "exit_code": 0,
+          "summary": "53 Lua unit tests and all BSON/Extended JSON corpora passed; 1 focused unified schema test and all 320 schema 1.28 JSON meta-fixtures passed.",
+          "recorded_at": "2026-08-06T16:33:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T16:29:10+00:00",
+      "completed_at": "2026-08-06T16:34:21+00:00"
     }
   },
   "verified_references": {

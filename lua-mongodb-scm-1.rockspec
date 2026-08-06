@@ -44,5 +44,6 @@ build = {
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
+    ["mongodb.unified.schema"] = "src/mongodb/unified/schema.lua",
   },
 }
