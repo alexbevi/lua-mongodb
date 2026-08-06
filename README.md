@@ -28,7 +28,9 @@ The initial compatibility target is Lua 5.4 with 64-bit `lua_Integer`, Copas 4.1
 
 The implemented `mongodb.bson` foundation provides explicit ordered documents and arrays; immutable values for every BSON wire type; exact Decimal128 and numeric wrappers; strict UTF-8 validation; configurable size/depth bounds; and ordered canonical/relaxed Extended JSON. ObjectId generation takes a runtime so time and entropy stay portable. Explicit containers prevent Lua table iteration order from changing command bytes, while exact wrappers preserve numeric wire types and bit patterns.
 
-`mongodb.config.uri.parse` implements the non-SRV connection-string syntax boundary. It parses ordered seed lists, bracketed IPv6 literals, encoded Unix socket paths, credentials, authentication databases, and ordered query pairs without rendering credentials in structured errors. Option values remain raw strings at this layer; shared option typing and semantic validation are added by the next configuration slice.
+`mongodb.config.uri.parse` implements the non-SRV connection-string syntax boundary. It parses ordered seed lists, bracketed IPv6 literals, encoded Unix socket paths, credentials, authentication databases, and ordered query pairs without rendering credentials in structured errors. `mongodb.config.options.normalize` applies the same type, range, and combination rules to those URI pairs and to idiomatic Lua option tables, with programmatic values taking precedence. The resulting immutable configuration includes pool and timeout settings, TLS policy, retry flags, read/write concerns, read preference, and Stable API version 1 fields.
+
+Unsupported or invalid URI options are ignored with returned warnings as required by the connection-string specification; unsupported programmatic keys and invalid programmatic values return structured configuration errors. Advanced post-v1 settings such as compression, SRV, proxy, and load-balanced options are intentionally not accepted by the v1 programmatic configuration boundary.
 
 ## Bootstrap
 
@@ -56,7 +58,7 @@ make lint
 make check
 ```
 
-Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures at the syntax layer, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration tests begin with the command executor slice rather than being counted as passing coverage before then.
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration tests begin with the command executor slice rather than being counted as passing coverage before then.
 
 The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
 

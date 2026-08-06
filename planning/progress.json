@@ -305,6 +305,28 @@
       "notes": [],
       "started_at": "2026-08-06T16:46:20+00:00",
       "completed_at": "2026-08-06T17:20:51+00:00"
+    },
+    "CFG-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/config_options_spec.lua",
+          "exit_code": 1,
+          "summary": "Option normalization contract fails because mongodb.config.options does not exist.",
+          "recorded_at": "2026-08-06T17:23:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8 toolchain and normalized URI/programmatic option coverage",
+          "exit_code": 0,
+          "summary": "66 Lua tests passed with shared option validation, precedence, immutable concerns/preferences/Stable API, seven URI warning cases, TLS conflicts, full corpora, unified classification, lint, rockspec, and planning checks green",
+          "recorded_at": "2026-08-06T17:29:33+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T17:21:38+00:00",
+      "completed_at": "2026-08-06T17:29:35+00:00"
     }
   },
   "verified_references": {

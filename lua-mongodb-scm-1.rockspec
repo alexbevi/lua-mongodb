@@ -38,6 +38,7 @@ build = {
     ["mongodb.bson.json"] = "src/mongodb/bson/json.lua",
     ["mongodb.bson.tagged"] = "src/mongodb/bson/tagged.lua",
     ["mongodb.bson.value"] = "src/mongodb/bson/value.lua",
+    ["mongodb.config.options"] = "src/mongodb/config/options.lua",
     ["mongodb.config.uri"] = "src/mongodb/config/uri.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
