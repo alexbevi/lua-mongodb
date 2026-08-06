@@ -34,6 +34,7 @@ jobs:
 
       - name: Install development dependencies
         run: |
+          luarocks install --only-deps lua-mongodb-scm-1.rockspec
           luarocks install busted 2.3.0-1
           luarocks install luacheck 1.2.0-1
 
@@ -42,4 +43,3 @@ jobs:
 
       - name: Verify executable roadmap and commit evidence
         run: python3 planning/update_plan.py check --strict
-

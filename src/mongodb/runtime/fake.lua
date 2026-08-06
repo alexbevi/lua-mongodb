@@ -1,4 +1,5 @@
 local errors = require("mongodb.error")
+local cancellation_factory = require("mongodb.runtime.cancellation")
 local runtime_contract = require("mongodb.runtime")
 
 local M = {}
@@ -23,57 +24,6 @@ local function shallow_copy(values)
   end
 
   return result
-end
-
-local CANCELLATION_METHODS = {}
-local CANCELLATION_METATABLE = { __index = CANCELLATION_METHODS }
-
-function CANCELLATION_METHODS:is_cancelled()
-  return self._cancelled
-end
-
-function CANCELLATION_METHODS:reason()
-  return self._reason
-end
-
-function CANCELLATION_METHODS:cancel(reason)
-  if self._cancelled then
-    return false
-  end
-
-  if reason ~= nil and (type(reason) ~= "string" or reason == "") then
-    error("cancellation reason must be a non-empty string", 2)
-  end
-
-  self._cancelled = true
-  self._reason = reason or "operation cancelled"
-
-  for _, listener in ipairs(self._listeners) do
-    if listener.active then
-      listener.callback(self._reason)
-    end
-  end
-
-  return true
-end
-
-function CANCELLATION_METHODS:on_cancel(callback)
-  if type(callback) ~= "function" then
-    error("cancellation callback must be a function", 2)
-  end
-
-  if self._cancelled then
-    callback(self._reason)
-    return function() end
-  end
-
-  local listener = { active = true, callback = callback }
-
-  self._listeners[#self._listeners + 1] = listener
-
-  return function()
-    listener.active = false
-  end
 end
 
 local TASK_METHODS = {}
@@ -213,14 +163,6 @@ end
 
 local FAKE_METHODS = {}
 local FAKE_METATABLE = { __index = FAKE_METHODS }
-
-local function new_cancellation()
-  return setmetatable({
-    _cancelled = false,
-    _listeners = {},
-    _reason = nil,
-  }, CANCELLATION_METATABLE)
-end
 
 function FAKE_METHODS:advance(duration)
   require_nonnegative_number("duration", duration, 2)
@@ -602,7 +544,7 @@ function M.new(options)
   end
 
   fake.clock = new_clock(fake)
-  fake.cancellation = { new = new_cancellation }
+  fake.cancellation = { new = cancellation_factory.new }
   fake.task = new_task_capability(fake)
   fake.lock = new_lock_capability(fake)
   fake.socket = new_socket_capability(fake)

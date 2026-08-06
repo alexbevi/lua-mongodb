@@ -41,7 +41,7 @@ Architecture decisions are maintained in [`docs/ARCHITECTURE.md`](docs/ARCHITECT
 
 ## Development
 
-The project requires Lua 5.4 with 64-bit `lua_Integer`, LuaRocks, Busted 2.3, and Luacheck 1.2. Install the rockspec's development dependencies, then run:
+The project requires Lua 5.4 with 64-bit `lua_Integer`, LuaRocks, Copas 4.11, Busted 2.3, and Luacheck 1.2. Install the rockspec's runtime and development dependencies, then run:
 
 ```sh
 make test-unit

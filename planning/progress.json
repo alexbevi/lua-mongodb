@@ -85,6 +85,28 @@
       "notes": [],
       "started_at": "2026-08-06T15:27:48+00:00",
       "completed_at": "2026-08-06T15:33:56+00:00"
+    },
+    "RUN-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with Copas 4.11.0 in the isolated Lua 5.4.8 toolchain",
+          "exit_code": 2,
+          "summary": "Copas adapter suite cannot load missing mongodb.runtime.copas module; existing 21 tests pass",
+          "recorded_at": "2026-08-06T15:38:31+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with Copas 4.11.0 plus fresh-tree rock install/load, planning tests, and CI YAML validation",
+          "exit_code": 0,
+          "summary": "30 Lua tests, real Copas task/lock/cancellation checks, zero lint findings, dependency install, package smoke, and 9 planning tests passed",
+          "recorded_at": "2026-08-06T15:41:50+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T15:38:28+00:00",
+      "completed_at": "2026-08-06T15:41:51+00:00"
     }
   },
   "verified_references": {

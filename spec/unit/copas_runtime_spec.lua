@@ -1,0 +1,194 @@
+local copas = require("copas")
+local errors = require("mongodb.error")
+local runtime = require("mongodb.runtime")
+local copas_runtime = require("mongodb.runtime.copas")
+
+local function run_copas(callback)
+  local outcome
+
+  copas.loop(function()
+    outcome = table.pack(pcall(callback))
+  end)
+
+  assert.is_table(outcome)
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  return table.unpack(outcome, 2, outcome.n)
+end
+
+describe("Copas runtime adapter", function()
+  it("builds the validated public runtime", function()
+    local adapter = runtime.copas()
+
+    assert.are.equal(adapter, runtime.validate(adapter))
+
+    local value, err = adapter.socket:connect()
+
+    assert.is_nil(value)
+    assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
+    assert.matches("socket capability is not configured", err.message)
+  end)
+
+  it("rejects unsupported Copas versions", function()
+    assert.has_error(function()
+      copas_runtime.new({
+        copas = { _VERSION = "Copas 4.10.0" },
+      })
+    end, "lua-mongodb requires Copas 4.11.x")
+  end)
+
+  it("clamps the exposed clock when its source moves backward", function()
+    local values = { 10, 9, 11 }
+    local index = 0
+    local adapter = copas_runtime.new({
+      gettime = function()
+        index = index + 1
+        return values[index]
+      end,
+    })
+
+    assert.are.equal(10, adapter.clock:now())
+    assert.are.equal(10, adapter.clock:now())
+    assert.are.equal(11, adapter.clock:now())
+  end)
+
+  it("spawns and awaits tasks with multiple results", function()
+    local adapter = runtime.copas()
+
+    run_copas(function()
+      local task = adapter.task:spawn(function()
+        assert.is_true(adapter.clock:sleep(0.001))
+        return 7, "seven"
+      end)
+
+      assert.are.equal("pending", task:status())
+
+      local number, word = adapter.task:await(task)
+
+      assert.are.equal(7, number)
+      assert.are.equal("seven", word)
+      assert.are.equal("completed", task:status())
+    end)
+  end)
+
+  it("cancels pending tasks as structured operational failures", function()
+    local adapter = runtime.copas()
+
+    run_copas(function()
+      local task = adapter.task:spawn(function()
+        error("cancelled task must not run")
+      end)
+
+      assert.is_true(adapter.task:cancel(task, "client shutdown"))
+
+      local value, err = adapter.task:await(task)
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.CANCELLED))
+      assert.are.equal("client shutdown", err.message)
+      assert.are.equal("cancelled", task:status())
+    end)
+  end)
+
+  it("wakes sleeping tasks when their token is cancelled", function()
+    local adapter = runtime.copas()
+
+    run_copas(function()
+      local token = adapter.cancellation:new()
+      local sleeper = adapter.task:spawn(function()
+        return adapter.clock:sleep(1, token)
+      end)
+
+      adapter.task:spawn(function()
+        adapter.clock:sleep(0.001)
+        token:cancel("stop sleeping")
+      end)
+
+      local value, err = adapter.task:await(sleeper)
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.CANCELLED))
+      assert.are.equal("stop sleeping", err.message)
+    end)
+  end)
+
+  it("serializes lock ownership between Copas tasks", function()
+    local adapter = runtime.copas()
+
+    run_copas(function()
+      local lock = adapter.lock:new()
+      local order = {}
+      local first = adapter.task:spawn(function()
+        assert.is_true(lock:acquire())
+        order[#order + 1] = "first acquired"
+        adapter.clock:sleep(0.002)
+        order[#order + 1] = "first released"
+        assert.is_true(lock:release())
+      end)
+      local second = adapter.task:spawn(function()
+        assert.is_true(lock:acquire())
+        order[#order + 1] = "second acquired"
+        assert.is_true(lock:release())
+      end)
+
+      adapter.task:await(first)
+      adapter.task:await(second)
+
+      assert.are.same({
+        "first acquired",
+        "first released",
+        "second acquired",
+      }, order)
+      assert.is_false(lock:is_locked())
+    end)
+  end)
+
+  it("applies absolute deadlines while waiting for locks", function()
+    local adapter = runtime.copas({ lock_poll_interval = 0.001 })
+
+    run_copas(function()
+      local lock = adapter.lock:new()
+
+      assert.is_true(lock:acquire())
+
+      local waiter = adapter.task:spawn(function()
+        return lock:acquire(runtime.deadline_after(adapter, 0.003))
+      end)
+      local value, err = adapter.task:await(waiter)
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+      assert.is_true(lock:release())
+    end)
+  end)
+
+  it("applies cancellation while waiting for locks", function()
+    local adapter = runtime.copas({ lock_poll_interval = 0.001 })
+
+    run_copas(function()
+      local lock = adapter.lock:new()
+      local token = adapter.cancellation:new()
+
+      assert.is_true(lock:acquire())
+
+      local waiter = adapter.task:spawn(function()
+        return lock:acquire(nil, token)
+      end)
+
+      adapter.task:spawn(function()
+        adapter.clock:sleep(0.002)
+        token:cancel("stop waiting")
+      end)
+
+      local value, err = adapter.task:await(waiter)
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.CANCELLED))
+      assert.are.equal("stop waiting", err.message)
+      assert.is_true(lock:release())
+    end)
+  end)
+end)

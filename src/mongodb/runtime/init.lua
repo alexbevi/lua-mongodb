@@ -55,6 +55,10 @@ function M.validate(runtime)
   return runtime
 end
 
+function M.copas(options)
+  return require("mongodb.runtime.copas").new(options)
+end
+
 function M.required_capabilities()
   local result = {}
 

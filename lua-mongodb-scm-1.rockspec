@@ -19,6 +19,7 @@ description = {
 
 dependencies = {
   "lua >= 5.4, < 5.5",
+  "copas >= 4.11, < 4.12",
 }
 
 test_dependencies = {
@@ -31,6 +32,8 @@ build = {
   modules = {
     mongodb = "src/mongodb/init.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
+    ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
+    ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
