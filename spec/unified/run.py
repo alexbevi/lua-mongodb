@@ -14,6 +14,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SOURCE = ROOT / "planning" / "specifications" / "source"
 DEFAULT_MANIFEST = ROOT / "spec" / "unified" / "capabilities.json"
+DEFAULT_PLAN = ROOT / "planning" / "plan.json"
 VALID_STATUSES = {"deferred", "runnable"}
 
 
@@ -61,9 +62,32 @@ def load_manifest(path: Path) -> dict[str, Any]:
   return manifest
 
 
+def load_activity_ids(path: Path) -> set[str]:
+  try:
+    plan = json.loads(path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as exc:
+    raise CapabilityError(f"could not load roadmap {path}: {exc}") from exc
+
+  activities = plan.get("activities")
+
+  if not isinstance(activities, list):
+    raise CapabilityError("roadmap activities must be an array")
+
+  result = {
+    value.get("id") for value in activities
+    if isinstance(value, dict) and isinstance(value.get("id"), str)
+  }
+
+  if len(result) != len(activities):
+    raise CapabilityError("every roadmap activity must have a unique string id")
+
+  return result
+
+
 def classify_fixtures(
   discovered: list[str],
   classifications: dict[str, Any],
+  activity_ids: set[str] | None = None,
 ) -> list[dict[str, str]]:
   """Validate complete coverage and return normalized classifications."""
   discovered_set = set(discovered)
@@ -100,6 +124,11 @@ def classify_fixtures(
 
     if not isinstance(activity, str) or not activity:
       raise CapabilityError(f"classification for {path} must name an activity")
+
+    if activity_ids is not None and activity not in activity_ids:
+      raise CapabilityError(
+        f"classification for {path} has unknown activity owner: {activity}"
+      )
 
     row = {"activity": activity, "path": path, "status": status}
 
@@ -158,6 +187,7 @@ def main(argv: list[str] | None = None) -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
   parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+  parser.add_argument("--plan", type=Path, default=DEFAULT_PLAN)
   parser.add_argument("--include", action="append")
   parser.add_argument("--report", metavar="PATH")
   arguments = parser.parse_args(argv)
@@ -169,7 +199,8 @@ def main(argv: list[str] | None = None) -> int:
       raise CapabilityError("unified fixture discovery found no files")
 
     manifest = load_manifest(arguments.manifest)
-    classified = classify_fixtures(discovered, manifest["fixtures"])
+    activity_ids = load_activity_ids(arguments.plan)
+    classified = classify_fixtures(discovered, manifest["fixtures"], activity_ids)
     selected = select_classifications(classified, arguments.include)
     report = build_report(selected)
     write_report(report, arguments.report)

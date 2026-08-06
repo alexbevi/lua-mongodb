@@ -27,7 +27,7 @@ CLASSIFICATIONS = {
     "change streams are a post-v1 capability",
   ),
   "client-side-encryption": (
-    "POST-V1-DESIGN",
+    "ADV-010",
     "client-side field-level and queryable encryption require a separate design",
   ),
   "crud": (
@@ -41,11 +41,11 @@ CLASSIFICATIONS = {
     "pooled client, handshake event bridge, and multi-connection execution owned by SDAM-002",
   ),
   "retryable-reads": (
-    "RET-001",
+    "RETRY-001",
     "retryable reads are not implemented",
   ),
   "retryable-writes": (
-    "RET-002",
+    "RETRY-002",
     "retryable writes are not implemented",
   ),
   "server-discovery-and-monitoring": (
@@ -55,11 +55,11 @@ CLASSIFICATIONS = {
     "execution are owned by SDAM-002",
   ),
   "transactions": (
-    "TXN-002",
+    "TXN-001",
     "transaction execution is not implemented",
   ),
   "transactions-convenient-api": (
-    "TXN-003",
+    "TXN-002",
     "the convenient transaction API is not implemented",
   ),
 }
@@ -80,7 +80,7 @@ PATH_CLASSIFICATIONS = {
     "the fixture includes post-v1 client bulkWrite in addition to implemented collection writes",
   ),
   "run-command/tests/unified/runCommand.json": (
-    "TXN-002",
+    "TXN-001",
     "the public command API, sessions, and transaction execution are not implemented",
   ),
   "run-command/tests/unified/runCursorCommand.json": (

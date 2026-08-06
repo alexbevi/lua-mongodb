@@ -51,627 +51,627 @@
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-cleanupStructuredEncryptionData.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-compactStructuredEncryptionData.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-prefix.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-prefixPreview.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-substring.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-substringPreview.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-suffix.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/QE-Text-suffixPreview.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/accessToken-azure.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/accessToken-gcp.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/addKeyAltName.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/awsTemporary.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/azureKMS.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/badQueries.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/badSchema.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/basic.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/bulk.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/bypassAutoEncryption.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/bypassedCommand.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/client-bulkWrite-qe.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/count.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/countDocuments.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/create-and-createIndexes.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/createDataKey-kms_providers-invalid.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/createDataKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/deleteKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/distinct.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/explain.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/find.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/findOneAndDelete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/findOneAndReplace.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/findOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-BypassQueryAnalysis.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Compact.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-CreateCollection-OldServer.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-CreateCollection.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-DecryptExistingData.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-EncryptedFields-vs-EncryptedFieldsMap.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-EncryptedFields-vs-jsonSchema.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-EncryptedFieldsMap-defaults.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-InsertFind-Indexed.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-InsertFind-Unindexed.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-InsertFind-keyAltName.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-MissingKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-NoEncryption.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Compact.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Date-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Date-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Date-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Date-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Date-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Date-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Decimal-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Decimal-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Decimal-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Decimal-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Decimal-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Decimal-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DecimalPrecision-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DecimalPrecision-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DecimalPrecision-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DecimalPrecision-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DecimalPrecision-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DecimalPrecision-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Defaults.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Double-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Double-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Double-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Double-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Double-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Double-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DoublePrecision-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DoublePrecision-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DoublePrecision-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DoublePrecision-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DoublePrecision-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-DoublePrecision-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Int-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Int-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Int-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Int-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Int-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Int-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Long-Aggregate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Long-Correctness.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Long-Delete.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Long-FindOneAndUpdate.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Long-InsertFind.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-Long-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Rangev2-WrongType.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-Update.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/fle2v2-validatorAndPartialFieldExpression.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/gcpKMS.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/getKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/getKeyByAltName.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/getKeys.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/getMore.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/insert.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/keyAltName.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/keyCache.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/kmipKMS.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/localKMS.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/localSchema.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/malformedCiphertext.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/missingKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/namedKMS-createDataKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/namedKMS-explicit.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/namedKMS-rewrapManyDataKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/namedKMS.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/noSchema.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/removeKeyAltName.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/replaceOne.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/rewrapManyDataKey-decrypt_failure.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/rewrapManyDataKey-encrypt_failure.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/rewrapManyDataKey.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/timeoutMS.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/types.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/unsupportedCommand.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/updateMany.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/updateOne.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
     "client-side-encryption/tests/unified/validatorAndPartialFieldExpression.json": {
-      "activity": "POST-V1-DESIGN",
+      "activity": "ADV-010",
       "reason": "client-side field-level and queryable encryption require a separate design",
       "status": "deferred"
     },
@@ -1556,407 +1556,407 @@
       "status": "deferred"
     },
     "retryable-reads/tests/unified/aggregate-merge.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/aggregate.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/count-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/count.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/countDocuments.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/distinct.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/exceededTimeLimit.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/find-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/find.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/findOne.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/gridfs-download.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/handshakeError.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listCollectionNames.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listCollectionObjects.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listCollections.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listDatabaseNames.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listDatabaseObjects.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listDatabases.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listIndexNames.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/listIndexes.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/mapReduce.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/readConcernMajorityNotAvailableYet.json": {
-      "activity": "RET-001",
+      "activity": "RETRY-001",
       "reason": "retryable reads are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/aggregate-out-merge.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/bulkWrite-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/bulkWrite-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/bulkWrite.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/client-bulkWrite-clientErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/deleteMany.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/deleteOne-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/deleteOne-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/deleteOne.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndDelete-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndDelete-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndDelete.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndReplace-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndReplace-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndReplace.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndUpdate-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndUpdate-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/findOneAndUpdate.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/handshakeError.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertMany-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertMany-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertMany.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertOne-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertOne-noWritesPerformedError.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertOne-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/insertOne.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/replaceOne-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/replaceOne-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/replaceOne.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/unacknowledged-write-concern.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/updateMany.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/updateOne-errorLabels.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/updateOne-serverErrors.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "retryable-writes/tests/unified/updateOne.json": {
-      "activity": "RET-002",
+      "activity": "RETRY-002",
       "reason": "retryable writes are not implemented",
       "status": "deferred"
     },
     "run-command/tests/unified/runCommand.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "the public command API, sessions, and transaction execution are not implemented",
       "status": "deferred"
     },
@@ -2146,272 +2146,272 @@
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/callback-commits.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/callback-retry.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/commit-retry-errorLabels.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/commit-retry.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror-4.2.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/commit-writeconcernerror.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/commit.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json": {
-      "activity": "TXN-003",
+      "activity": "TXN-002",
       "reason": "the convenient transaction API is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/abort.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/backpressure-retryable-abort.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/backpressure-retryable-commit.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/backpressure-retryable-reads.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/bulk.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/causal-consistency.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/client-bulkWrite.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/commit.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/count.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/create-collection.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/create-index.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/delete.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/do-not-retry-read-in-transaction.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/error-labels-blockConnection.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/error-labels-errorLabels.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/error-labels.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/errors-client.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/errors.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/findOneAndDelete.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/findOneAndReplace.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/findOneAndUpdate.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/insert.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/isolation.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/mongos-pin-auto.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/mongos-recovery-token-errorLabels.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/mongos-recovery-token.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/mongos-unpin.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/pin-mongos.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/read-concern.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/read-pref.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/reads.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-abort-errorLabels.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-abort-handshake.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-abort.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-commit-errorLabels.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-commit-handshake.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-commit.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/retryable-writes.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/run-command.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/transaction-options-repl.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/transaction-options.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/update.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     },
     "transactions/tests/unified/write-concern.json": {
-      "activity": "TXN-002",
+      "activity": "TXN-001",
       "reason": "transaction execution is not implemented",
       "status": "deferred"
     }

@@ -42,6 +42,20 @@ class UnifiedCliTests(unittest.TestCase):
         },
       })
 
+  def test_classification_rejects_unknown_activity_owners(self) -> None:
+    with self.assertRaisesRegex(run.CapabilityError, "unknown activity owner"):
+      run.classify_fixtures(
+        ["a/tests/unified/test.json"],
+        {
+          "a/tests/unified/test.json": {
+            "activity": "MISSING-001",
+            "reason": "not implemented",
+            "status": "deferred",
+          },
+        },
+        {"REAL-001"},
+      )
+
   def test_report_is_machine_readable_and_filters_classifications(self) -> None:
     classified = [
       {
