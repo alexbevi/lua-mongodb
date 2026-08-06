@@ -30,7 +30,7 @@ build = {
   type = "builtin",
   modules = {
     mongodb = "src/mongodb/init.lua",
+    ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
   },
 }
-
