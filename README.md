@@ -1,6 +1,6 @@
 # Lua MongoDB Driver
 
-This repository is the planning and implementation workspace for a pure-Lua MongoDB driver. It is pre-alpha: the driver API shown below is a target, not yet an implemented package.
+This repository is the planning and implementation workspace for a pure-Lua MongoDB driver. It is pre-alpha: the client API shown below remains a target while foundation modules are implemented incrementally.
 
 The driver will implement BSON, the MongoDB wire protocol, topology and connection management, authentication, sessions, retry behavior, and a unified specification-test runner in Lua. It will not wrap `libmongoc`. Native Lua modules may be used only behind runtime adapters for TCP, TLS, and cryptography.
 
@@ -24,6 +24,8 @@ local document, find_err = client:database("app")
 ```
 
 The initial compatibility target is Lua 5.4 with 64-bit `lua_Integer`, Copas 4.11, LuaSocket, LuaSec, and MongoDB server 7.0 through 8.2. Operational failures return `nil, structured_error`; programmer misuse may raise a Lua error.
+
+The implemented `mongodb.bson` foundation provides explicit ordered documents, arrays, null and binary values, plus bounded primitive BSON encoding and decoding. Explicit containers prevent Lua table iteration order from changing command bytes.
 
 ## Bootstrap
 

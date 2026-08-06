@@ -107,6 +107,28 @@
       "notes": [],
       "started_at": "2026-08-06T15:38:28+00:00",
       "completed_at": "2026-08-06T15:41:51+00:00"
+    },
+    "BSON-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with isolated Lua 5.4.8 and Busted 2.3.0",
+          "exit_code": 2,
+          "summary": "BSON primitive codec suite cannot load missing mongodb.bson module; existing 30 tests pass",
+          "recorded_at": "2026-08-06T15:44:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8 plus pinned PyMongo byte fixture, fresh-tree rock install/load, planning tests, and CI YAML validation",
+          "exit_code": 0,
+          "summary": "35 Lua tests passed; primitive bytes match pinned PyMongo; malformed bounds return structured errors; zero lint findings; package smoke and 9 planning tests passed",
+          "recorded_at": "2026-08-06T15:50:48+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T15:43:46+00:00",
+      "completed_at": "2026-08-06T15:50:50+00:00"
     }
   },
   "verified_references": {

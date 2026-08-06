@@ -1,6 +1,6 @@
 # Architecture
 
-Status: foundation scaffold implemented; driver behavior remains planned. This document must be updated in the same activity that changes an architectural contract.
+Status: foundation implementation in progress. This document must be updated in the same activity that changes an architectural contract.
 
 ## Design constraints
 
@@ -37,9 +37,17 @@ Deadlines are absolute values from the runtime's monotonic clock. Shared helpers
 
 `mongodb.runtime.copas` implements the scheduling half of the boundary with Copas 4.11 futures, pauses, and non-reentrant locks. It clamps Copas time so the driver never observes backward movement, wakes sleeping tasks on cancellation, polls contended locks so cancellation remains bounded, and translates deadline/cancellation outcomes into structured errors. Socket, TLS, entropy, and crypto providers remain explicit unavailable capabilities until their roadmap slices; callers may inject conforming providers without changing core code.
 
+### BSON values and primitive codec
+
+`mongodb.bson` represents documents and arrays with explicit immutable containers. Documents retain insertion order and duplicate keys; indexed access returns the last matching key while `keys`, `entries`, and `iter` preserve every wire entry. Arrays are distinct from documents, and `bson.null` is distinct from absent Lua values. Constructors copy their input so later mutation cannot change an in-flight command.
+
+The primitive codec accepts only an ordered document at its root and encodes Lua strings as BSON strings, integral numbers as the smallest signed BSON integer, non-integral numbers as doubles, and explicit wrappers for arrays, binary data, and null. Decoding produces the same unambiguous value model. Arbitrary Lua tables are rejected because neither their intended BSON type nor their iteration order is defined.
+
+All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, array-index, boolean, terminator, trailing-byte, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. UTF-8 policy, configurable depth/size limits, exact numeric tags, and the remaining BSON types are added by the subsequent BSON slices.
+
 ## Planned layers
 
-1. **Values:** ordered documents, tagged BSON values, exact numeric handling, codec limits, and Extended JSON.
+1. **Values:** ordered primitive BSON values are implemented; tagged values, exact numeric handling, configurable codec limits, and Extended JSON build on that boundary.
 2. **Runtime:** coroutine scheduling, monotonic time, cancellation/deadlines, locks, exact socket I/O, TLS, and crypto capabilities.
 3. **Protocol:** message framing, OP_MSG, command encoding, authentication conversations, and reply/error conversion.
 4. **Topology:** immutable server/topology descriptions, SDAM transitions, monitoring, selection, connection pools, and wait queues.
