@@ -642,6 +642,28 @@
       "notes": [],
       "started_at": "2026-08-06T20:59:21+00:00",
       "completed_at": "2026-08-06T21:08:31+00:00"
+    },
+    "SEL-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/selection_spec.lua",
+          "exit_code": 1,
+          "summary": "Single-topology selection cannot run because mongodb.selection does not exist",
+          "recorded_at": "2026-08-06T21:11:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "All 88 pinned server-selection filters, 32 max-staleness cases, 7 RTT vectors, and 8 operation-count distributions pass within 123 unit tests; 15 integration tests, unified/schema classification, lint, rockspec, packaging smoke, and planning gates pass",
+          "recorded_at": "2026-08-06T21:22:07+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T21:11:26+00:00",
+      "completed_at": "2026-08-06T21:22:18+00:00"
     }
   },
   "verified_references": {

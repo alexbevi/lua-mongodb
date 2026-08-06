@@ -14,6 +14,7 @@ local M = {
   error = require("mongodb.error"),
   runtime = require("mongodb.runtime"),
   sdam = require("mongodb.sdam"),
+  selection = require("mongodb.selection"),
 }
 
 M.index_model = require("mongodb.admin").index_model

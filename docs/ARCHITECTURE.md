@@ -183,6 +183,14 @@ The transition table covers Single, Unknown, Sharded, ReplicaSetNoPrimary, and R
 
 This module performs no I/O and imports no runtime provider. SDAM-002 will own monitor scheduling, live replica-set discovery, heartbeat/event publication, and connection-error feedback; server selection and connection pools remain in their subsequent slices. Unified SDAM fixtures that require those live behaviors stay explicitly deferred to SDAM-002.
 
+### Server selection
+
+`mongodb.selection` composes immutable read preferences with an immutable SDAM topology snapshot. It applies topology and operation rules first, retries without address deprioritization when the preferred set is empty, then filters replica-set reads by max staleness and the first matching tag set. An optional application selector runs before the final `localThresholdMS` latency window. Selection from that window uses the power-of-two choice rule against caller-supplied operation counts; CMAP-001 will own those mutable counters.
+
+Max staleness is validated against both the 90-second minimum and `heartbeatFrequencyMS + 10 seconds`. Estimates use the normative with-primary and no-primary formulas over hello `lastWriteDate` and local `lastUpdateTime` values. RTT samples use the specified 0.2/0.8 exponentially weighted moving average. Invalid preferences and unavailable RTT data return structured configuration errors, while an exhausted selection returns a structured timeout whose message and `topology` field describe the final immutable snapshot.
+
+The layer is pure and never sleeps or performs I/O. It evaluates the snapshot supplied by its caller; SDAM-002 will own monitor wakeups, topology-change waits, and passing the final snapshot into the timeout path. The unit gate runs all 88 pinned JSON server-selection filtering fixtures, 32 max-staleness fixtures, 7 RTT vectors, and 8 operation-count choice distributions. Their YAML files duplicate the same cases. The five structured server-selection logging fixtures are explicitly deferred to post-v1 `ADV-009`, which owns logging and telemetry.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.
