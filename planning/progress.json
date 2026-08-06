@@ -598,6 +598,28 @@
       "notes": [],
       "started_at": "2026-08-06T19:19:53+00:00",
       "completed_at": "2026-08-06T20:31:43+00:00"
+    },
+    "DDL-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/admin_spec.lua",
+          "exit_code": 1,
+          "summary": "Public database handle has no create_collection method",
+          "recorded_at": "2026-08-06T20:34:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && python3 planning/update_plan.py check --strict && packaged-module smoke && supplemental MongoDB 8.0.16 administration round-trip",
+          "exit_code": 0,
+          "summary": "112 unit tests plus upstream BSON and Extended JSON corpora, 15 integrations, 320 unified schema meta-fixtures, all 483 unified fixtures explicitly classified, lint, rockspec, planning, strict validation, packaged administration module load, and supplemental MongoDB 8.0.16 administration round-trip passed",
+          "recorded_at": "2026-08-06T20:55:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T20:33:49+00:00",
+      "completed_at": "2026-08-06T20:55:48+00:00"
     }
   },
   "verified_references": {

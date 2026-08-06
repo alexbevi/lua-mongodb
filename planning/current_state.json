@@ -17,18 +17,17 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 27,
+    "completed": 28,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 21
+    "pending": 20
   },
   "active": [],
   "ready": [
-    "DDL-001",
     "SDAM-001"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "DDL-001"
+  "next_ready": "SDAM-001"
 }

@@ -34,6 +34,7 @@ build = {
   type = "builtin",
   modules = {
     mongodb = "src/mongodb/init.lua",
+    ["mongodb.admin"] = "src/mongodb/admin.lua",
     ["mongodb.api"] = "src/mongodb/api.lua",
     ["mongodb.bulk"] = "src/mongodb/bulk.lua",
     ["mongodb.bson.codec"] = "src/mongodb/bson/codec.lua",

@@ -15,4 +15,6 @@ local M = {
   runtime = require("mongodb.runtime"),
 }
 
+M.index_model = require("mongodb.admin").index_model
+
 return M

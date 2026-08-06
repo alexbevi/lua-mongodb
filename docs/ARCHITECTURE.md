@@ -167,6 +167,14 @@ Batch construction observes `maxWriteBatchSize`, then uses the command executor'
 
 Acknowledged responses merge counts, upsert identifiers, write errors, write-concern errors, labels, and raw response documents into immutable results or structured partial-result errors. Unacknowledged requests use `moreToCome`; ordered multi-batch requests acknowledge intermediate batches so the driver can preserve stop-on-error semantics before sending the final unacknowledged batch.
 
+### Database, collection, and index administration
+
+`mongodb.admin` builds list, create, and drop commands for databases, collections, and indexes without importing any runtime provider. The public client, database, and collection handles supply their inherited concerns, negotiated wire version, executor, and shared cursor registry. Write commands apply inherited write concern and retain write-concern response details; collection and index drops treat namespace-not-found as an idempotent success.
+
+Database enumeration wraps the command's returned array in an exhausted local command cursor. Collection and index enumeration use the server cursor namespace to construct getMore and killCursors commands, then share the existing cursor lifecycle and client-close cleanup. A listCollections comment is not repeated because the server inherits it, while listIndexes explicitly carries its comment onto getMore as required by the index-management specification.
+
+Immutable index models retain ordered key documents, validate supported directions and option types locally, and generate deterministic key-direction names. `create_index` delegates to the same createIndexes path as multi-index creation. The boundary rejects `commit_quorum` before MongoDB 4.4 and gates internal raw-data fields on the MongoDB 8.2 wire version; all network behavior remains behind the command executor and runtime adapters.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

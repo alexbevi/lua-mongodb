@@ -1,3 +1,4 @@
+local admin = require("mongodb.admin")
 local bson = require("mongodb.bson")
 local bulk = require("mongodb.bulk")
 local errors = require("mongodb.error")
@@ -173,7 +174,11 @@ local function new_database(client, name, options)
 
   DATABASE_STATES[value] = {
     client = client,
+    client_state = client_state,
+    executor = client_state.executor,
+    max_wire_version = client_state.max_wire_version,
     name = name,
+    on_cursor_close = client_state.on_cursor_close,
     read_concern = concerns.read_concern,
     read_preference = concerns.read_preference,
     write_concern = concerns.write_concern,
@@ -215,6 +220,61 @@ function CLIENT_METHODS:is_closed()
   return CLIENT_STATES[self].closed
 end
 
+local function register_client_cursor(client, cursor)
+  if not cursor:is_closed() then
+    CLIENT_STATES[client].cursors[cursor] = true
+  end
+
+  return cursor
+end
+
+function CLIENT_METHODS:list_databases(options)
+  local state = CLIENT_STATES[self]
+  local open, err = ensure_open(state)
+
+  if not open then
+    return nil, err
+  end
+
+  local cursor
+  cursor, err = admin.list_databases(state, options)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(self, cursor)
+end
+
+function CLIENT_METHODS:list_database_names(options)
+  local state = CLIENT_STATES[self]
+  local open, err = ensure_open(state)
+
+  if not open then
+    return nil, err
+  end
+
+  return admin.list_database_names(state, options)
+end
+
+function CLIENT_METHODS:drop_database(name_or_database, options)
+  local name = name_or_database
+
+  if DATABASE_STATES[name_or_database] then
+    name = DATABASE_STATES[name_or_database].name
+  end
+
+  validate_database_name(name)
+  local state = CLIENT_STATES[self]
+  local open, err = ensure_open(state)
+
+  if not open then
+    return nil, err
+  end
+
+  return admin.drop_database(state, name, options)
+end
+
 function DATABASE_METHODS:collection(name, options)
   validate_collection_name(name)
   local state = DATABASE_STATES[self]
@@ -247,6 +307,81 @@ function DATABASE_METHODS:collection(name, options)
     write_concern = concerns.write_concern,
   }
   return setmetatable(value, COLLECTION_METATABLE)
+end
+
+function DATABASE_METHODS:create_collection(name, options)
+  local collection = self:collection(name)
+  local state = DATABASE_STATES[self]
+  local client_state = CLIENT_STATES[state.client]
+  local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  local response
+  response, err = admin.create_collection(state, name, options)
+
+  if not response then
+    return nil, err
+  end
+
+  return collection
+end
+
+function DATABASE_METHODS:drop_collection(name_or_collection, options)
+  local name = name_or_collection
+
+  if COLLECTION_STATES[name_or_collection] then
+    local collection_state = COLLECTION_STATES[name_or_collection]
+
+    if collection_state.database ~= self then
+      error("collection belongs to a different database", 2)
+    end
+
+    name = collection_state.name
+  else
+    self:collection(name)
+  end
+
+  local state = DATABASE_STATES[self]
+  local open, err = ensure_open(CLIENT_STATES[state.client])
+
+  if not open then
+    return nil, err
+  end
+
+  return admin.drop_collection(state, name, options)
+end
+
+function DATABASE_METHODS:list_collections(options)
+  local state = DATABASE_STATES[self]
+  local client_state = CLIENT_STATES[state.client]
+  local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  local cursor
+  cursor, err = admin.list_collections(state, options)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(state.client, cursor)
+end
+
+function DATABASE_METHODS:list_collection_names(options)
+  local state = DATABASE_STATES[self]
+  local open, err = ensure_open(CLIENT_STATES[state.client])
+
+  if not open then
+    return nil, err
+  end
+
+  return admin.list_collection_names(state, options)
 end
 
 function DATABASE_METHODS:run_command(command, options)
@@ -293,6 +428,44 @@ end
 
 function COLLECTION_METHODS:bulk_write(models, options)
   return collection_operation(self, bulk.execute, models, options)
+end
+
+function COLLECTION_METHODS:create_index(keys, options)
+  return collection_operation(self, admin.create_index, keys, options)
+end
+
+function COLLECTION_METHODS:create_indexes(models, options)
+  return collection_operation(self, admin.create_indexes, models, options)
+end
+
+function COLLECTION_METHODS:drop(options)
+  local state = COLLECTION_STATES[self]
+  local client_state = CLIENT_STATES[state.client]
+  local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  return admin.drop_collection(DATABASE_STATES[state.database], state.name, options)
+end
+
+function COLLECTION_METHODS:drop_index(name, options)
+  return collection_operation(self, admin.drop_index, name, options)
+end
+
+function COLLECTION_METHODS:drop_indexes(options)
+  return collection_operation(self, admin.drop_indexes, options)
+end
+
+function COLLECTION_METHODS:list_indexes(options)
+  local cursor, err = collection_operation(self, admin.list_indexes, options)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(COLLECTION_STATES[self].client, cursor)
 end
 
 function COLLECTION_METHODS:find_one(filter, options)
@@ -397,7 +570,7 @@ function M.new_client(executor, options, default_database_name, warnings, object
   local value = {}
   local capabilities = type(executor.capabilities) == "function" and executor:capabilities()
 
-  CLIENT_STATES[value] = {
+  local state = {
     closed = false,
     cursors = setmetatable({}, { __mode = "k" }),
     default_database_name = default_database_name,
@@ -413,6 +586,11 @@ function M.new_client(executor, options, default_database_name, warnings, object
     warnings = readonly_warnings(warnings or {}),
     write_concern = options.write_concern,
   }
+  CLIENT_STATES[value] = state
+  state.client_state = state
+  state.on_cursor_close = function(cursor)
+    state.cursors[cursor] = nil
+  end
   return setmetatable(value, CLIENT_METATABLE)
 end
 
