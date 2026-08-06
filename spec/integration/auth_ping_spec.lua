@@ -1,11 +1,8 @@
 local bson = require("mongodb.bson")
-local command_executor = require("mongodb.command.executor")
 local copas = require("copas")
+local mongodb = require("mongodb")
 local op_msg = require("mongodb.wire.op_msg")
-local runtime = require("mongodb.runtime")
-local scram = require("mongodb.auth.scram")
 local socket = require("socket")
-local transport = require("mongodb.network.transport")
 
 local ENTROPY = string.pack(
   ">I4I4I4I4I4I4I4I4",
@@ -48,11 +45,13 @@ describe("authenticated standalone command execution", function()
       client = copas.wrap(client)
       local handshake = receive_frame(client)
 
+      assert.are.equal("admin.user", handshake.body:get("saslSupportedMechs"))
       send_response(client, handshake, bson.document({
         { "ok", 1 },
         { "helloOk", true },
         { "isWritablePrimary", true },
         { "maxWireVersion", 25 },
+        { "saslSupportedMechs", bson.array({ "SCRAM-SHA-256", "SCRAM-SHA-1" }) },
       }))
 
       local start = receive_frame(client)
@@ -94,7 +93,7 @@ describe("authenticated standalone command execution", function()
 
     copas.loop(function()
       outcome = table.pack(pcall(function()
-        local adapter = runtime.copas({
+        local adapter = mongodb.runtime.copas({
           entropy = {
             bytes = function(_, count)
               assert.are.equal(32, count)
@@ -102,25 +101,13 @@ describe("authenticated standalone command execution", function()
             end,
           },
         })
-        local deadline = runtime.deadline_after(adapter, 2)
-        local connection = assert(transport.connect(adapter, "127.0.0.1", port, {
-          deadline = deadline,
-        }))
-        local commands = command_executor.new(connection, {
-          server = "127.0.0.1:" .. port,
-        })
+        local client = assert(mongodb.client(
+          "mongodb://user:pencil@127.0.0.1:" .. port .. "/admin",
+          { runtime = adapter }
+        ))
 
-        assert(commands:hello({ deadline = deadline }))
-        assert(scram.authenticate(commands, adapter, {
-          mechanism = "SCRAM-SHA-256",
-          password = "pencil",
-          source = "admin",
-          username = "user",
-        }, { deadline = deadline }))
-        assert(commands:command("admin", bson.document({ { "ping", 1 } }), {
-          deadline = deadline,
-        }))
-        assert.is_true(commands:close())
+        assert(client:database():run_command("ping"))
+        assert.is_true(client:close())
       end))
       copas.removeserver(server)
     end)

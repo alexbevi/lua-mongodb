@@ -125,6 +125,14 @@ Listeners are copied at monitor construction and invoked in registration order. 
 
 Authentication commands (`authenticate`, SASL commands, nonce/user/copydb commands) and hello commands containing `speculativeAuthenticate` publish empty command and reply documents. Sensitive server failures retain only `code`, `codeName`, and `errorLabels`; network and other client-side failures remain inspectable because they do not contain server authentication payloads. Redaction occurs before listener dispatch, so no listener can opt into credential-bearing values.
 
+### Core API and standalone lifecycle
+
+`mongodb.client` is the public constructor boundary. It separates runtime and command-listener capabilities from programmatic driver options, parses the non-SRV URI, normalizes the combined configuration, and opens exactly one TCP seed through `mongodb.network.transport`. The resulting connection is upgraded with normalized TLS policy when requested, handshaken by `mongodb.command.executor`, and authenticated before the client is returned. A credentialed hello requests `saslSupportedMechs`; the lifecycle selects SCRAM-SHA-256 when advertised and otherwise uses the required SCRAM-SHA-1 fallback. This slice rejects multiple seeds, Unix sockets, and non-standalone hello shapes explicitly instead of silently applying incomplete topology behavior. SDAM and CMAP replace that restriction in their owning activities.
+
+`mongodb.api` owns immutable client, database, and collection handles whose state is kept outside the visible tables. Database names reject the server-prohibited characters except for the authentication namespace `$external`; collection names reject empty components, null bytes, invalid dots, and unsupported dollar forms. Database and collection handles inherit normalized read concern, read preference, and write concern, with validated per-handle overrides. A database runs a command through the shared executor without changing the caller's ordered BSON document. Client close is idempotent and closes the executor once; all derived database handles observe the same closed state and return a structured `client` error before I/O.
+
+The initial public lifecycle deliberately owns one authenticated connection and performs no selection, pooling, sessions, retries, CRUD, or cursor management. Those layers extend this stable handle boundary in later activities. API objects depend only on configuration, runtime, transport, command, authentication, and monitoring interfaces; runtime-specific networking, TLS, and cryptography remain behind adapters.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

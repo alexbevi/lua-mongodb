@@ -350,6 +350,19 @@ function EXECUTOR_METHODS:hello(options)
 
   options = options or {}
 
+  if options.sasl_supported_mechs ~= nil then
+    if type(options.sasl_supported_mechs) ~= "string"
+        or options.sasl_supported_mechs == ""
+    then
+      error("sasl_supported_mechs must be a non-empty string", 2)
+    end
+
+    entries[#entries + 1] = {
+      "saslSupportedMechs",
+      options.sasl_supported_mechs,
+    }
+  end
+
   local response, err = execute(state, "admin", bson.document(entries), {
     cancellation = options.cancellation,
     deadline = options.deadline,
