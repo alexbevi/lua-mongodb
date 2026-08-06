@@ -466,6 +466,21 @@ def command_start(arguments: argparse.Namespace) -> int:
   return 0
 
 
+def command_requeue(arguments: argparse.Namespace) -> int:
+  plan, progress = load_documents()
+  assert_valid_core(plan, progress)
+  require_activity(plan, arguments.activity_id)
+  record = ensure_record(progress, arguments.activity_id)
+  if record["status"] != "in_progress":
+    raise PlanError(f"cannot requeue {arguments.activity_id} from {record['status']}")
+  record["status"] = "pending"
+  record.pop("started_at", None)
+  record.setdefault("notes", []).append(f"Requeued: {arguments.reason}")
+  save_progress_and_state(plan, progress)
+  print(f"requeued {arguments.activity_id}")
+  return 0
+
+
 def command_record_test(arguments: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
@@ -582,6 +597,13 @@ def build_parser() -> argparse.ArgumentParser:
   start = subparsers.add_parser("start", help="start a ready activity")
   start.add_argument("activity_id")
   start.set_defaults(function=command_start)
+
+  requeue = subparsers.add_parser(
+    "requeue", help="return an in-progress activity to pending",
+  )
+  requeue.add_argument("activity_id")
+  requeue.add_argument("--reason", required=True)
+  requeue.set_defaults(function=command_requeue)
 
   record = subparsers.add_parser("record-test", help="record red or green test evidence")
   record.add_argument("activity_id")

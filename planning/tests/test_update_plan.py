@@ -154,6 +154,33 @@ class EvidenceTests(unittest.TestCase):
       with self.assertRaisesRegex(update_plan.PlanError, "already in_progress"):
         update_plan.command_start(argparse.Namespace(activity_id="TST-002"))
 
+  def test_requeue_returns_only_an_active_activity_to_pending(self) -> None:
+    plan = minimal_plan()
+    progress = progress_for(plan, {"TST-001": "in_progress"})
+    progress["activities"]["TST-001"]["started_at"] = "2026-01-01T00:00:00+00:00"
+
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)), \
+        mock.patch.object(update_plan, "save_progress_and_state") as save:
+      result = update_plan.command_requeue(argparse.Namespace(
+        activity_id="TST-001",
+        reason="roadmap dependencies changed",
+      ))
+
+    self.assertEqual(0, result)
+    record = progress["activities"]["TST-001"]
+    self.assertEqual("pending", record["status"])
+    self.assertNotIn("started_at", record)
+    self.assertEqual(["Requeued: roadmap dependencies changed"], record["notes"])
+    save.assert_called_once_with(plan, progress)
+
+    pending = progress_for(plan, {"TST-001": "pending"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, pending)):
+      with self.assertRaisesRegex(update_plan.PlanError, "cannot requeue"):
+        update_plan.command_requeue(argparse.Namespace(
+          activity_id="TST-001",
+          reason="not active",
+        ))
+
 
 class ReferenceTests(unittest.TestCase):
   def make_reference(self, root: Path) -> tuple[dict, str, str]:

@@ -13,6 +13,7 @@ The reference checkouts are pinned in `plan.json` and registered as Git submodul
 python3 planning/update_plan.py check [--strict]
 python3 planning/update_plan.py next [--json]
 python3 planning/update_plan.py start ID
+python3 planning/update_plan.py requeue ID --reason "..."
 python3 planning/update_plan.py record-test ID --phase red --command "..." --exit-code 1 --summary "..."
 python3 planning/update_plan.py record-test ID --phase green --command "..." --exit-code 0 --summary "..."
 python3 planning/update_plan.py block ID --reason "..."
@@ -26,5 +27,6 @@ python3 planning/update_plan.py reference-report
 
 Activity implementation follows red-green vertical slices. A `red_green` activity cannot complete without a recorded nonzero red command and successful green command. A `validation` activity requires successful green evidence. Only one activity may be `in_progress`.
 
-Use [`prompt_goal.md`](prompt_goal.md) to launch the incremental production-core implementation.
+Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
 
+Use [`prompt_goal.md`](prompt_goal.md) to launch the incremental production-core implementation.
