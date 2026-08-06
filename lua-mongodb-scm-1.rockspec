@@ -21,6 +21,7 @@ dependencies = {
   "lua >= 5.4, < 5.5",
   "copas >= 4.11, < 4.12",
   "luasocket >= 3.1, < 4",
+  "luasec >= 1.3, < 1.4",
   "luaossl >= 20220711",
 }
 
@@ -53,6 +54,7 @@ build = {
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
     ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",
     ["mongodb.runtime.copas_socket"] = "src/mongodb/runtime/copas_socket.lua",
+    ["mongodb.runtime.luasec"] = "src/mongodb/runtime/luasec.lua",
     ["mongodb.runtime.openssl"] = "src/mongodb/runtime/openssl.lua",
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",

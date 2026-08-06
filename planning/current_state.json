@@ -17,18 +17,18 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 20,
+    "completed": 21,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 28
+    "pending": 27
   },
   "active": [],
   "ready": [
-    "TLS-001",
+    "API-001",
     "SDAM-001"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "TLS-001"
+  "next_ready": "API-001"
 }

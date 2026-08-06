@@ -119,25 +119,6 @@ local function validate_options(options)
   end
 end
 
-local function unavailable_error(name)
-  return errors.new({
-    category = errors.CATEGORY.CONFIGURATION,
-    message = name .. " capability is not configured for this runtime",
-  })
-end
-
-local function unavailable_provider(name, operations)
-  local provider = {}
-
-  for _, operation in ipairs(operations) do
-    provider[operation] = function()
-      return nil, unavailable_error(name)
-    end
-  end
-
-  return provider
-end
-
 local function new_clock(adapter, copas, raw_gettime, raw_wall_time)
   local last_now
   local clock = {}
@@ -323,7 +304,7 @@ function M.new(options)
     copas = copas,
     poll_interval = poll_interval,
   })
-  adapter.tls = options.tls or unavailable_provider("TLS", { "wrap" })
+  adapter.tls = options.tls or require("mongodb.runtime.luasec").new(adapter)
   adapter.entropy = options.entropy or openssl.entropy
   adapter.crypto = options.crypto or openssl.crypto
 

@@ -36,6 +36,8 @@ The internal `mongodb.command.executor` performs the mandatory OP_MSG connection
 
 `mongodb.auth.scram` authenticates a handshaken command executor with SCRAM-SHA-256 or SCRAM-SHA-1, including secure nonces, the minimum iteration check, server nonce/signature verification, derived-key caching, and the optional third empty exchange. SCRAM-SHA-256 passwords pass through a pure-Lua Unicode 3.2 SASLprep implementation. The default Copas runtime obtains entropy and MD5/SHA/HMAC/PBKDF2 operations through its luaossl adapter; secrets are excluded from authentication errors and monitoring events. The public client/database API, connection pooling, automatic mechanism negotiation, and sessions remain owned by later roadmap slices.
 
+The default `mongodb.runtime.copas` runtime wraps established sockets with LuaSec when TLS is requested. It verifies the certificate chain and server name by default, sends SNI for DNS names, supports custom CA bundles and encrypted combined client certificate/key files, and applies the connection's absolute deadline and cancellation token throughout the handshake. `tlsInsecure` disables both chain and hostname verification; the two granular allow-invalid settings disable only their documented checks. LuaSec does not provide OCSP endpoint or CRL revocation checking, so the corresponding disable options do not change adapter behavior.
+
 ## Bootstrap
 
 After cloning this repository, initialize the pinned references:
@@ -62,7 +64,7 @@ make lint
 make check
 ```
 
-Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport plus OP_MSG handshake, SCRAM-SHA-256 authentication, and authenticated ping execution without requiring an external server process.
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport, verified and insecure LuaSec handshakes, OP_MSG handshake, SCRAM-SHA-256 authentication, and authenticated ping execution without requiring an external server process.
 
 The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
 

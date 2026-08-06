@@ -437,6 +437,28 @@
       "notes": [],
       "started_at": "2026-08-06T18:01:39+00:00",
       "completed_at": "2026-08-06T18:18:22+00:00"
+    },
+    "TLS-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/luasec_runtime_spec.lua",
+          "exit_code": 1,
+          "summary": "Verified LuaSec client context test fails because mongodb.runtime.luasec does not exist",
+          "recorded_at": "2026-08-06T18:21:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "89 unit tests, eight integrations including verified mTLS, hostname/CA rejection, insecure policy, and handshake deadline/cancellation, 320 unified schema cases, 483 explicit fixture classifications, lint, rockspec, and planning gates passed",
+          "recorded_at": "2026-08-06T18:31:52+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T18:19:02+00:00",
+      "completed_at": "2026-08-06T18:32:05+00:00"
     }
   },
   "verified_references": {
