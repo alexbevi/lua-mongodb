@@ -43,13 +43,17 @@ Deadlines are absolute values from the runtime's monotonic clock. Unix wall time
 
 The codec accepts only an ordered document at its root and encodes Lua strings as BSON strings, integral numbers as the smallest signed BSON integer, non-integral numbers as doubles, and explicit wrappers for arrays, binary data, and null. Immutable tagged values represent ObjectId, signed-millisecond UTC datetime, regular expression, timestamp, JavaScript code with optional ordered scope, MinKey, and MaxKey. Binary values retain every subtype and apply the legacy subtype-2 nested length rule. Decoding produces the same unambiguous value model. Arbitrary Lua tables are rejected because neither their intended BSON type nor their iteration order is defined.
 
+Decoded int32, int64, and double values use explicit immutable wrappers carrying both the Lua value and original little-endian bytes. Their constructors also let callers force a numeric wire type; unwrapped Lua integers still select the smallest signed representation. This preserves small int64 values, double negative zero, and NaN payload bits across a decode/encode cycle without overloading arithmetic operators.
+
+Decimal128 is stored as its exact 16-byte Binary Integer Decimal representation. String conversion uses decimal-digit and byte-array arithmetic in Lua, applies the 34-digit half-even context's exactness, exponent, and clamping rules, and never passes through a binary float. NaN variants and non-canonical encodings retain their input BID even when their required diagnostic string is lossy. The pinned official Decimal128 corpus is the conformance source.
+
 ObjectId generators are stateful values constructed from an injected runtime. They obtain a five-byte generator identifier and three-byte initial counter from `runtime.entropy`, read seconds from `runtime.clock.wall_time`, and increment the 24-bit counter without importing platform time or randomness into BSON code. ObjectId, datetime, timestamp, regex, and binary values implement equality or ordering where their BSON semantics define it.
 
 All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, code-scope, array-index, boolean, terminator, trailing-byte, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. UTF-8 policy, configurable depth/size limits, exact numeric tags, and the remaining BSON types are added by the subsequent BSON slices.
 
 ## Planned layers
 
-1. **Values:** ordered primitive BSON values are implemented; tagged values, exact numeric handling, configurable codec limits, and Extended JSON build on that boundary.
+1. **Values:** ordered containers, tagged values, and exact numeric handling are implemented; configurable codec limits and Extended JSON build on that boundary.
 2. **Runtime:** coroutine scheduling, monotonic time, cancellation/deadlines, locks, exact socket I/O, TLS, and crypto capabilities.
 3. **Protocol:** message framing, OP_MSG, command encoding, authentication conversations, and reply/error conversion.
 4. **Topology:** immutable server/topology descriptions, SDAM transitions, monitoring, selection, connection pools, and wait queues.

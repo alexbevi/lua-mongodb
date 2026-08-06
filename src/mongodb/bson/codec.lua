@@ -1,4 +1,5 @@
 local errors = require("mongodb.error")
+local exact = require("mongodb.bson.exact")
 local tagged = require("mongodb.bson.tagged")
 local value = require("mongodb.bson.value")
 
@@ -19,6 +20,7 @@ local TYPE_CODE_SCOPE = 0x0f
 local TYPE_INT32 = 0x10
 local TYPE_TIMESTAMP = 0x11
 local TYPE_INT64 = 0x12
+local TYPE_DECIMAL128 = 0x13
 local TYPE_MAX_KEY = 0x7f
 local TYPE_MIN_KEY = 0xff
 
@@ -89,6 +91,7 @@ function M._encode_element(key, item)
   local element_type
   local payload
   local item_type = type(item)
+  local exact_kind = exact.kind(item)
   local tagged_kind = tagged.kind(item)
 
   if value.is_null(item) then
@@ -176,6 +179,18 @@ function M._encode_element(key, item)
   elseif tagged_kind == "max_key" then
     element_type = TYPE_MAX_KEY
     payload = ""
+  elseif exact_kind == "int32" then
+    element_type = TYPE_INT32
+    payload = item.bytes
+  elseif exact_kind == "int64" then
+    element_type = TYPE_INT64
+    payload = item.bytes
+  elseif exact_kind == "double" then
+    element_type = TYPE_DOUBLE
+    payload = item.bytes
+  elseif exact_kind == "decimal128" then
+    element_type = TYPE_DECIMAL128
+    payload = item.bid
   elseif item_type == "boolean" then
     element_type = TYPE_BOOLEAN
     payload = item and "\1" or "\0"
@@ -351,7 +366,20 @@ function M._decode_value(data, position, limit, element_type)
 
   if element_type == TYPE_INT32 or element_type == TYPE_INT64 then
     local size = element_type == TYPE_INT32 and 4 or 8
-    return read_integer(data, position, size, limit, "BSON integer")
+    local number, next_position, err = read_integer(
+      data,
+      position,
+      size,
+      limit,
+      "BSON integer"
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    local wrapped = element_type == TYPE_INT32 and exact.int32(number) or exact.int64(number)
+    return wrapped, next_position
   end
 
   if element_type == TYPE_DOUBLE then
@@ -361,8 +389,8 @@ function M._decode_value(data, position, limit, element_type)
       return nil, nil, err
     end
 
-    local number, next_position = string.unpack("<d", data, position)
-    return number, next_position
+    local next_position = position + 8
+    return exact.double_from_bytes(data:sub(position, next_position - 1)), next_position
   end
 
   if element_type == TYPE_OBJECT_ID then
@@ -591,6 +619,17 @@ function M._decode_value(data, position, limit, element_type)
 
     local increment, time, next_position = string.unpack("<I4I4", data, position)
     return tagged.timestamp(time, increment), next_position
+  end
+
+  if element_type == TYPE_DECIMAL128 then
+    local ok, err = require_bytes(position, 16, limit, "BSON Decimal128")
+
+    if not ok then
+      return nil, nil, err
+    end
+
+    local next_position = position + 16
+    return exact.decimal128_from_bid(data:sub(position, next_position - 1)), next_position
   end
 
   if element_type == TYPE_MIN_KEY then

@@ -26,7 +26,7 @@ local document, find_err = client:database("app")
 
 The initial compatibility target is Lua 5.4 with 64-bit `lua_Integer`, Copas 4.11, LuaSocket, LuaSec, and MongoDB server 7.0 through 8.2. Operational failures return `nil, structured_error`; programmer misuse may raise a Lua error.
 
-The implemented `mongodb.bson` foundation provides explicit ordered documents and arrays; immutable ObjectId, datetime, regex, timestamp, code, binary, MinKey, MaxKey, and null values; and bounded BSON encoding and decoding. ObjectId generation takes a runtime so time and entropy stay portable. Explicit containers prevent Lua table iteration order from changing command bytes.
+The implemented `mongodb.bson` foundation provides explicit ordered documents and arrays; immutable ObjectId, datetime, regex, timestamp, code, binary, Decimal128, exact numeric, MinKey, MaxKey, and null values; and bounded BSON encoding and decoding. ObjectId generation takes a runtime so time and entropy stay portable. Explicit containers prevent Lua table iteration order from changing command bytes, while exact wrappers preserve numeric wire types and bit patterns.
 
 ## Bootstrap
 

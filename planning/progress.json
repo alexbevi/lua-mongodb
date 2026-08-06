@@ -151,6 +151,28 @@
       "notes": [],
       "started_at": "2026-08-06T15:52:14+00:00",
       "completed_at": "2026-08-06T15:58:03+00:00"
+    },
+    "BSON-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with isolated Lua 5.4.8 and Busted 2.3.0",
+          "exit_code": 2,
+          "summary": "Exact numeric contract fails because mongodb.bson.decimal128 is missing; existing 40 tests pass",
+          "recorded_at": "2026-08-06T16:00:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8; full pinned Decimal128 corpus sweep; fresh-tree rock install/load; planning tests and CI YAML validation",
+          "exit_code": 0,
+          "summary": "45 Lua tests plus 605 valid and 131 parse-error Decimal128 vectors passed; exact numeric bits round trip; zero lint findings and package smoke passed",
+          "recorded_at": "2026-08-06T16:06:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T15:59:52+00:00",
+      "completed_at": "2026-08-06T16:06:35+00:00"
     }
   },
   "verified_references": {
