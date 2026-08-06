@@ -68,11 +68,23 @@ local function values_equal(left, right)
       return false
     end
 
-    for index = 1, #left do
-      local left_key, left_value = left:get_at(index)
-      local right_key, right_value = right:get_at(index)
+    local right_entries = right:entries()
+    local matched = {}
 
-      if left_key ~= right_key or not values_equal(left_value, right_value) then
+    for left_key, left_value in left:iter() do
+      local found = false
+
+      for index, entry in ipairs(right_entries) do
+        if not matched[index]
+          and left_key == entry[1]
+          and values_equal(left_value, entry[2]) then
+          matched[index] = true
+          found = true
+          break
+        end
+      end
+
+      if not found then
         return false
       end
     end
@@ -92,6 +104,13 @@ local function values_equal(left, right)
     end
 
     return true
+  end
+
+  if bson.is_tagged(left, "code") or bson.is_tagged(right, "code") then
+    return bson.is_tagged(left, "code")
+      and bson.is_tagged(right, "code")
+      and left.source == right.source
+      and values_equal(left.scope, right.scope)
   end
 
   return left == right
@@ -226,7 +245,7 @@ end
 
 local function value_matches_alias(value, alias)
   if alias == "number" then
-    return as_number(value) ~= nil
+    return as_number(value) ~= nil or bson.is_exact(value, "decimal128")
   elseif alias == "int" then
     return bson.is_exact(value, "int32")
   elseif alias == "long" then
@@ -298,7 +317,40 @@ local function from_hex(value)
   end))
 end
 
-local function match_operator(runner, operator, operand, actual, path)
+local function session_lsid(runner, name, path)
+  local session, err = runner:get_entity(name, "session", path)
+
+  if session == nil then
+    return nil, err
+  end
+
+  local state = RUNNER_STATES[runner]
+  local lsid
+
+  if state.session_lsid then
+    lsid = state.session_lsid(session)
+  elseif bson.is_document(session) then
+    lsid = session:get("lsid") or session:get("session_id")
+  elseif type(session) == "table" then
+    if type(session.get_lsid) == "function" then
+      lsid = session:get_lsid()
+    else
+      lsid = session.lsid or session.session_id
+    end
+  end
+
+  if not bson.is_document(lsid) then
+    return nil, configuration_error(
+      "session entity does not expose a logical session id",
+      path,
+      { entity = name }
+    )
+  end
+
+  return lsid
+end
+
+local function match_operator(runner, operator, operand, actual, path, root)
   if operator == "$$exists" then
     return require_match(
       operand == true,
@@ -331,18 +383,13 @@ local function match_operator(runner, operator, operand, actual, path)
 
     return require_match(matched, "value has the wrong BSON type", path, operator)
   elseif operator == "$$matchesEntity" then
-    local expected, err = runner:get_entity(operand)
+    local expected, err = runner:get_entity(operand, "bson", path)
 
     if expected == nil then
       return nil, err
     end
 
-    return require_match(
-      values_equal(expected, actual),
-      "value does not match the referenced entity",
-      path,
-      operator
-    )
+    return match_value(runner, expected, actual, path, root)
   elseif operator == "$$matchesHexBytes" then
     local expected = from_hex(operand)
 
@@ -351,13 +398,30 @@ local function match_operator(runner, operator, operand, actual, path)
     end
 
     return require_match(
-      bson.is_binary(actual) and actual.data == expected,
-      "binary value does not match the expected bytes",
+      type(actual) == "string" and actual == expected,
+      "string value does not match the expected bytes",
       path,
       operator
     )
   elseif operator == "$$unsetOrMatches" then
-    return match_value(runner, operand, actual, path, false)
+    if actual == nil then
+      return true
+    end
+
+    return match_value(runner, operand, actual, path, root)
+  elseif operator == "$$sessionLsid" then
+    local expected, err = session_lsid(runner, operand, path)
+
+    if expected == nil then
+      return nil, err
+    end
+
+    return require_match(
+      values_equal(expected, actual),
+      "value does not match the session logical id",
+      path,
+      operator
+    )
   elseif operator == "$$lte" then
     local expected_number = as_number(operand)
     local actual_number = as_number(actual)
@@ -452,7 +516,7 @@ match_value = function(runner, expected, actual, path, root)
   local operator, operand = special_operator(expected)
 
   if operator then
-    return match_operator(runner, operator, operand, actual, path)
+    return match_operator(runner, operator, operand, actual, path, root)
   end
 
   if bson.is_document(expected) then
@@ -465,12 +529,13 @@ match_value = function(runner, expected, actual, path, root)
     end
 
     for index, expected_value in expected:iter() do
+      local item_root = root and bson.is_document(expected_value)
       local ok, err = match_value(
         runner,
         expected_value,
         actual:get(index),
         path .. "[" .. index .. "]",
-        false
+        item_root
       )
 
       if not ok then
@@ -861,7 +926,13 @@ function RUNNER_METHODS:verify_outcomes(outcomes, path)
     end
 
     local expected = specification:get("documents")
-    local ok, match_err = self:match(expected, actual, path .. "[" .. index .. "].documents")
+    local ok, match_err = match_value(
+      self,
+      expected,
+      actual,
+      path .. "[" .. index .. "].documents",
+      false
+    )
 
     if not ok then
       return nil, match_err
@@ -896,6 +967,10 @@ function M.new(options)
     error("unified runner options must be a table", 2)
   end
 
+  if options.session_lsid ~= nil and type(options.session_lsid) ~= "function" then
+    error("unified runner session_lsid must be a function", 2)
+  end
+
   local runtime = runtime_contract.validate(options.runtime)
   local runner = {}
   local environment = options.environment or {}
@@ -916,6 +991,7 @@ function M.new(options)
     operations = copy_handlers(options.operations),
     outcome_reader = options.outcome_reader,
     runtime = runtime,
+    session_lsid = options.session_lsid,
     test_operations = options.test_operations or {},
   }
 

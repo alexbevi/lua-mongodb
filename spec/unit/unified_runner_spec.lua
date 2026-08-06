@@ -108,7 +108,7 @@ describe("unified runner core", function()
     local actual = document({
       { "count", bson.int64(4) },
       { "optional", "present" },
-      { "payload", bson.binary("AB") },
+      { "payload", "AB" },
       { "nested", document({ { "value", bson.int32(3) } }) },
     })
     local expected = document({

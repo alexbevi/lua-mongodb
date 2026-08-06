@@ -723,6 +723,28 @@
       "notes": [],
       "started_at": "2026-08-06T22:41:55+00:00",
       "completed_at": "2026-08-06T22:48:30+00:00"
+    },
+    "UTF-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unified/matcher_spec.lua",
+          "exit_code": 1,
+          "summary": "Pinned GridFS matcher meta-fixture fails because 26424matchesHexBytes incorrectly requires BSON binary instead of the specified string result",
+          "recorded_at": "2026-08-06T22:51:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "All 19 dedicated upstream matcher pass/fail cases and pinned GridFS/session expectations pass within 5 matcher meta-tests; 127 unit and 16 integration tests, 320 schema meta-fixtures, 483-file/1,900-test validation and inventory, execution classification, lint, rockspec, and planning gates pass",
+          "recorded_at": "2026-08-06T22:58:56+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T22:50:54+00:00",
+      "completed_at": "2026-08-06T22:58:57+00:00"
     }
   },
   "verified_references": {
