@@ -93,6 +93,14 @@ Normalized defaults follow the specifications: 100-entry maximum and zero-entry 
 
 The codec rejects checksum-bearing messages because CRC-32C support is intentionally absent, rejects unknown required flag bits and response-only misuse, and ignores unknown optional high bits as the specification requires. Declared frame/section/BSON lengths are checked before slicing or decoding, and negotiated `maxMessageSizeBytes` and `maxBsonObjectSize` limits are enforced on both paths. The size-accounting API uses the same encoding preparation as the wire writer, so later bulk batching can make decisions without maintaining a second overhead formula.
 
+### Hello and single-connection commands
+
+`mongodb.command.executor` owns the protocol lifecycle on one exact-I/O transport connection. Its first handshake uses OP_MSG legacy `ismaster` with `helloOk: true`, unless Stable API requires modern `hello`; every hello carries the string-valued backpressure version, while only the initial hello carries client metadata. A successful legacy negotiation permanently switches later hello requests to the modern command. The executor records the reply's BSON/message/batch limits and uses the negotiated per-connection values for later encoding and framed reads.
+
+Commands are copied from the caller's ordered BSON document, preserving the command name as the first field. Stable API fields and the `$db` global argument are appended to the copy, so caller state is never mutated. Request IDs are correlated before a reply is exposed; I/O failures, malformed frames, invalid `ok` fields, and unexpected streaming replies close the connection. An `ok: 0` reply remains a server operation failure without closing the connection and retains its numeric code, code name, labels, timeout/retryability classification, server address, and immutable BSON response details.
+
+`mongodb.command.hello` is the immutable per-connection capability model. It validates and supplies defaults for negotiated wire, BSON, message, batch, and logical-session fields and exposes the server's basic readability/writability shape for later SDAM work. It does not select servers, pool connections, authenticate, or import runtime-specific networking; those responsibilities remain in their dedicated layers.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

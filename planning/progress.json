@@ -371,6 +371,28 @@
       "notes": [],
       "started_at": "2026-08-06T17:36:11+00:00",
       "completed_at": "2026-08-06T17:41:42+00:00"
+    },
+    "CMD-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/command_executor_spec.lua",
+          "exit_code": 1,
+          "summary": "Single-connection hello and command contract fails because mongodb.command.executor does not exist.",
+          "recorded_at": "2026-08-06T17:46:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check plus MongoDB 8.0.16 live hello and ping compatibility",
+          "exit_code": 0,
+          "summary": "76 unit tests, two Copas/LuaSocket integrations, live MongoDB 8.0 hello/ping, 320 unified schema cases, 483 explicit fixture classifications, lint, rockspec, and planning gates passed.",
+          "recorded_at": "2026-08-06T17:53:49+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T17:43:00+00:00",
+      "completed_at": "2026-08-06T17:53:50+00:00"
     }
   },
   "verified_references": {

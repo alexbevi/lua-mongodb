@@ -11,6 +11,18 @@ local function readonly_copy(value, seen)
     return value
   end
 
+  local protected_type = getmetatable(value)
+
+  if protected_type == "mongodb.bson.document"
+    or protected_type == "mongodb.bson.array"
+    or protected_type == "mongodb.bson.binary"
+    or protected_type == "mongodb.bson.int32"
+    or protected_type == "mongodb.bson.int64"
+    or protected_type == "mongodb.bson.double"
+  then
+    return value
+  end
+
   seen = seen or {}
 
   if seen[value] then

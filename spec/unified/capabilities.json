@@ -1551,8 +1551,8 @@
       "status": "deferred"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json": {
-      "activity": "NET-002",
-      "reason": "handshake metadata execution is not implemented",
+      "activity": "CMAP-001",
+      "reason": "metadata append propagation requires public clients, CMAP, and event execution",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/aggregate-merge.json": {
@@ -1956,13 +1956,13 @@
       "status": "deferred"
     },
     "run-command/tests/unified/runCommand.json": {
-      "activity": "CMD-001",
-      "reason": "command execution is not implemented",
+      "activity": "TXN-002",
+      "reason": "the public command API, sessions, monitoring, and transaction execution are not implemented",
       "status": "deferred"
     },
     "run-command/tests/unified/runCursorCommand.json": {
-      "activity": "CMD-001",
-      "reason": "command execution is not implemented",
+      "activity": "SES-001",
+      "reason": "public cursor commands, pooling events, and session execution are not implemented",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/auth-error.json": {

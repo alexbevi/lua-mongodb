@@ -32,6 +32,8 @@ The implemented `mongodb.bson` foundation provides explicit ordered documents an
 
 Unsupported or invalid URI options are ignored with returned warnings as required by the connection-string specification; unsupported programmatic keys and invalid programmatic values return structured configuration errors. Advanced post-v1 settings such as compression, SRV, proxy, and load-balanced options are intentionally not accepted by the v1 programmatic configuration boundary.
 
+The internal `mongodb.command.executor` now performs the mandatory OP_MSG connection handshake and exact command exchange on one transport connection. It sends bounded client metadata, negotiates legacy `ismaster` to modern `hello`, carries Stable API settings and `$db` without mutating the caller's ordered command, validates correlated replies, and returns server codes, code names, labels, and response documents through structured errors. The public client/database `run_command` API, connection pooling, authentication, sessions, and monitoring remain owned by their later roadmap slices.
+
 ## Bootstrap
 
 After cloning this repository, initialize the pinned references:
@@ -58,7 +60,7 @@ make lint
 make check
 ```
 
-Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration tests begin with the command executor slice rather than being counted as passing coverage before then.
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport plus OP_MSG handshake and ping execution without requiring an external server process.
 
 The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
 

@@ -35,8 +35,8 @@ CLASSIFICATIONS = {
     "CRUD command and public API slices are not implemented",
   ),
   "mongodb-handshake": (
-    "NET-002",
-    "handshake metadata execution is not implemented",
+    "CMAP-001",
+    "metadata append propagation requires public clients, CMAP, and event execution",
   ),
   "retryable-reads": (
     "RET-001",
@@ -45,10 +45,6 @@ CLASSIFICATIONS = {
   "retryable-writes": (
     "RET-002",
     "retryable writes are not implemented",
-  ),
-  "run-command": (
-    "CMD-001",
-    "command execution is not implemented",
   ),
   "server-discovery-and-monitoring": (
     "SDAM-001",
@@ -64,6 +60,17 @@ CLASSIFICATIONS = {
   ),
 }
 
+PATH_CLASSIFICATIONS = {
+  "run-command/tests/unified/runCommand.json": (
+    "TXN-002",
+    "the public command API, sessions, monitoring, and transaction execution are not implemented",
+  ),
+  "run-command/tests/unified/runCursorCommand.json": (
+    "SES-001",
+    "public cursor commands, pooling events, and session execution are not implemented",
+  ),
+}
+
 
 def generate() -> dict[str, object]:
   plan = json.loads(PLAN.read_text(encoding="utf-8"))
@@ -73,10 +80,13 @@ def generate() -> dict[str, object]:
   for path in run.discover_fixtures(run.DEFAULT_SOURCE):
     specification = path.split("/", 1)[0]
 
-    if specification not in CLASSIFICATIONS:
+    if path in PATH_CLASSIFICATIONS:
+      activity, reason = PATH_CLASSIFICATIONS[path]
+    elif specification in CLASSIFICATIONS:
+      activity, reason = CLASSIFICATIONS[specification]
+    else:
       raise run.CapabilityError(f"no classification rule for specification: {specification}")
 
-    activity, reason = CLASSIFICATIONS[specification]
     fixtures[path] = {
       "activity": activity,
       "reason": reason,
