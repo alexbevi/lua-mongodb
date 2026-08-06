@@ -5,6 +5,7 @@ local M = {}
 local REQUIRED_CAPABILITIES = {
   "clock.now",
   "clock.sleep",
+  "clock.wall_time",
   "cancellation.new",
   "task.spawn",
   "task.await",

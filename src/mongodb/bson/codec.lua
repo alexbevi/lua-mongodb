@@ -1,4 +1,5 @@
 local errors = require("mongodb.error")
+local tagged = require("mongodb.bson.tagged")
 local value = require("mongodb.bson.value")
 
 local M = {}
@@ -8,10 +9,18 @@ local TYPE_STRING = 0x02
 local TYPE_DOCUMENT = 0x03
 local TYPE_ARRAY = 0x04
 local TYPE_BINARY = 0x05
+local TYPE_OBJECT_ID = 0x07
 local TYPE_BOOLEAN = 0x08
+local TYPE_DATETIME = 0x09
 local TYPE_NULL = 0x0a
+local TYPE_REGEX = 0x0b
+local TYPE_CODE = 0x0d
+local TYPE_CODE_SCOPE = 0x0f
 local TYPE_INT32 = 0x10
+local TYPE_TIMESTAMP = 0x11
 local TYPE_INT64 = 0x12
+local TYPE_MAX_KEY = 0x7f
+local TYPE_MIN_KEY = 0xff
 
 local INT32_MIN = -0x80000000
 local INT32_MAX = 0x7fffffff
@@ -34,6 +43,10 @@ local function encode_error(message, details)
     message = message,
     details = details,
   })
+end
+
+local function encode_string_payload(string_value)
+  return string.pack("<i4", #string_value + 1) .. string_value .. "\0"
 end
 
 local function encode_container(container, array)
@@ -76,6 +89,7 @@ function M._encode_element(key, item)
   local element_type
   local payload
   local item_type = type(item)
+  local tagged_kind = tagged.kind(item)
 
   if value.is_null(item) then
     element_type = TYPE_NULL
@@ -97,7 +111,9 @@ function M._encode_element(key, item)
       return nil, err
     end
   elseif value.is_binary(item) then
-    if #item.data > MAX_BSON_SIZE then
+    local length_overhead = item.subtype == 2 and 4 or 0
+
+    if #item.data > MAX_BSON_SIZE - length_overhead then
       return encode_error("BSON binary value exceeds the signed 32-bit length limit", {
         key = key,
         length = #item.data,
@@ -105,7 +121,61 @@ function M._encode_element(key, item)
     end
 
     element_type = TYPE_BINARY
-    payload = string.pack("<i4B", #item.data, item.subtype) .. item.data
+
+    if item.subtype == 2 then
+      payload = string.pack("<i4Bi4", #item.data + 4, item.subtype, #item.data) .. item.data
+    else
+      payload = string.pack("<i4B", #item.data, item.subtype) .. item.data
+    end
+  elseif tagged_kind == "object_id" then
+    element_type = TYPE_OBJECT_ID
+    payload = item.binary
+  elseif tagged_kind == "datetime" then
+    element_type = TYPE_DATETIME
+    payload = string.pack("<i8", item.milliseconds)
+  elseif tagged_kind == "regex" then
+    element_type = TYPE_REGEX
+    payload = item.pattern .. "\0" .. item.options .. "\0"
+  elseif tagged_kind == "timestamp" then
+    element_type = TYPE_TIMESTAMP
+    payload = string.pack("<I4I4", item.increment, item.time)
+  elseif tagged_kind == "code" then
+    if #item.source >= MAX_BSON_SIZE then
+      return encode_error("BSON code exceeds the signed 32-bit length limit", {
+        key = key,
+        length = #item.source,
+      })
+    end
+
+    if item.scope == nil then
+      element_type = TYPE_CODE
+      payload = encode_string_payload(item.source)
+    else
+      local scope, err = encode_container(item.scope, false)
+
+      if not scope then
+        return nil, err
+      end
+
+      local source = encode_string_payload(item.source)
+      local total_length = 4 + #source + #scope
+
+      if total_length > MAX_BSON_SIZE then
+        return encode_error("BSON code-with-scope exceeds the signed 32-bit length limit", {
+          key = key,
+          length = total_length,
+        })
+      end
+
+      element_type = TYPE_CODE_SCOPE
+      payload = string.pack("<i4", total_length) .. source .. scope
+    end
+  elseif tagged_kind == "min_key" then
+    element_type = TYPE_MIN_KEY
+    payload = ""
+  elseif tagged_kind == "max_key" then
+    element_type = TYPE_MAX_KEY
+    payload = ""
   elseif item_type == "boolean" then
     element_type = TYPE_BOOLEAN
     payload = item and "\1" or "\0"
@@ -118,7 +188,7 @@ function M._encode_element(key, item)
     end
 
     element_type = TYPE_STRING
-    payload = string.pack("<i4", #item + 1) .. item .. "\0"
+    payload = encode_string_payload(item)
   elseif item_type == "number" and math.type(item) == "integer" then
     if item >= INT32_MIN and item <= INT32_MAX then
       element_type = TYPE_INT32
@@ -165,6 +235,16 @@ local function read_integer(data, position, size, limit, description)
   local format = size == 4 and "<i4" or "<i8"
   local number, next_position = string.unpack(format, data, position)
   return number, next_position
+end
+
+local function read_cstring(data, position, limit, description)
+  local string_end = data:find("\0", position, true)
+
+  if not string_end or string_end > limit then
+    return nil, nil, bson_error(description .. " is not NUL-terminated", position)
+  end
+
+  return data:sub(position, string_end - 1), string_end + 1
 end
 
 local function decode_container(data, position, limit, array)
@@ -285,6 +365,32 @@ function M._decode_value(data, position, limit, element_type)
     return number, next_position
   end
 
+  if element_type == TYPE_OBJECT_ID then
+    local ok, err = require_bytes(position, 12, limit, "BSON ObjectId")
+
+    if not ok then
+      return nil, nil, err
+    end
+
+    return tagged.object_id(data:sub(position, position + 11)), position + 12
+  end
+
+  if element_type == TYPE_DATETIME then
+    local milliseconds, next_position, err = read_integer(
+      data,
+      position,
+      8,
+      limit,
+      "BSON datetime"
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    return tagged.datetime(milliseconds), next_position
+  end
+
   if element_type == TYPE_STRING then
     local length, string_position, err = read_integer(
       data,
@@ -350,13 +456,149 @@ function M._decode_value(data, position, limit, element_type)
     local data_position = binary_position + 1
     local next_position = data_position + length
 
-    if subtype ~= 0 then
-      return nil, nil, bson_error("unsupported BSON binary subtype", binary_position, {
-        subtype = subtype,
-      })
+    if subtype == 2 then
+      if length < 4 then
+        return nil, nil, bson_error("old BSON binary subtype length is too small", position, {
+          length = length,
+        })
+      end
+
+      local inner_length = string.unpack("<i4", data, data_position)
+
+      if inner_length < 0 or inner_length ~= length - 4 then
+        return nil, nil, bson_error("old BSON binary subtype length mismatch", data_position, {
+          inner_length = inner_length,
+          outer_length = length,
+        })
+      end
+
+      data_position = data_position + 4
     end
 
     return value.binary(data:sub(data_position, next_position - 1), subtype), next_position
+  end
+
+  if element_type == TYPE_REGEX then
+    local pattern, options_position, err = read_cstring(
+      data,
+      position,
+      limit,
+      "BSON regex pattern"
+    )
+
+    if not pattern then
+      return nil, nil, err
+    end
+
+    local options, next_position
+    options, next_position, err = read_cstring(
+      data,
+      options_position,
+      limit,
+      "BSON regex options"
+    )
+
+    if not options then
+      return nil, nil, err
+    end
+
+    local ok, regex = pcall(tagged.regex, pattern, options)
+
+    if not ok then
+      return nil, nil, bson_error("invalid BSON regex options", options_position, {
+        reason = regex,
+      })
+    end
+
+    return regex, next_position
+  end
+
+  if element_type == TYPE_CODE then
+    local source, next_position, err = M._decode_value(
+      data,
+      position,
+      limit,
+      TYPE_STRING
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    return tagged.code(source), next_position
+  end
+
+  if element_type == TYPE_CODE_SCOPE then
+    local total_length, source_position, err = read_integer(
+      data,
+      position,
+      4,
+      limit,
+      "BSON code-with-scope length"
+    )
+
+    if not total_length then
+      return nil, nil, err
+    end
+
+    if total_length < 14 then
+      return nil, nil, bson_error("BSON code-with-scope length must be at least 14", position, {
+        length = total_length,
+      })
+    end
+
+    local code_end = position + total_length
+
+    if code_end - 1 > limit then
+      return nil, nil, bson_error("BSON code-with-scope exceeds available bytes", position, {
+        length = total_length,
+        available = limit - position + 1,
+      })
+    end
+
+    local source, scope_position
+    source, scope_position, err = M._decode_value(
+      data,
+      source_position,
+      code_end - 1,
+      TYPE_STRING
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    local scope, next_position
+    scope, next_position, err = decode_container(data, scope_position, code_end - 1, false)
+
+    if err then
+      return nil, nil, err
+    end
+
+    if next_position ~= code_end then
+      return nil, nil, bson_error("BSON code scope does not fill its declared frame", next_position)
+    end
+
+    return tagged.code(source, scope), next_position
+  end
+
+  if element_type == TYPE_TIMESTAMP then
+    local ok, err = require_bytes(position, 8, limit, "BSON timestamp")
+
+    if not ok then
+      return nil, nil, err
+    end
+
+    local increment, time, next_position = string.unpack("<I4I4", data, position)
+    return tagged.timestamp(time, increment), next_position
+  end
+
+  if element_type == TYPE_MIN_KEY then
+    return tagged.min_key, position
+  end
+
+  if element_type == TYPE_MAX_KEY then
+    return tagged.max_key, position
   end
 
   if element_type == TYPE_DOCUMENT or element_type == TYPE_ARRAY then

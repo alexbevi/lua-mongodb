@@ -13,13 +13,14 @@ describe("runtime interface", function()
   end)
 
   it("uses absolute monotonic deadlines", function()
-    local fake = fake_runtime.new({ now = 10 })
+    local fake = fake_runtime.new({ now = 10, wall_time = 1000 })
     local deadline = runtime.deadline_after(fake, 5)
 
     assert.are.equal(15, deadline)
     assert.are.equal(5, runtime.remaining(fake, deadline))
     assert.is_true(fake.clock:sleep(2))
     assert.are.equal(12, fake.clock:now())
+    assert.are.equal(1002, fake.clock:wall_time())
     assert.are.equal(3, runtime.remaining(fake, deadline))
 
     fake:advance(3)

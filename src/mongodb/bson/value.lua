@@ -1,5 +1,19 @@
 local M = {}
 
+local BINARY_SUBTYPE_VALUES = {
+  COLUMN = 7,
+  ENCRYPTED = 6,
+  FUNCTION = 1,
+  GENERIC = 0,
+  MD5 = 5,
+  OLD_BINARY = 2,
+  OLD_UUID = 3,
+  SENSITIVE = 8,
+  USER_DEFINED = 128,
+  UUID = 4,
+  VECTOR = 9,
+}
+
 local ARRAY_STATES = setmetatable({}, { __mode = "k" })
 local BINARY_STATES = setmetatable({}, { __mode = "k" })
 local DOCUMENT_STATES = setmetatable({}, { __mode = "k" })
@@ -72,6 +86,14 @@ local BINARY_METATABLE = {
   __metatable = "mongodb.bson.binary",
   __newindex = immutable_value,
 }
+
+BINARY_METATABLE.__eq = function(left, right)
+  local left_state = BINARY_STATES[left]
+  local right_state = BINARY_STATES[right]
+  return left_state ~= nil and right_state ~= nil
+    and left_state.data == right_state.data
+    and left_state.subtype == right_state.subtype
+end
 
 BINARY_METATABLE.__index = function(value, key)
   if BINARY_METHODS[key] then
@@ -162,6 +184,14 @@ local NULL = setmetatable({}, {
   end,
 })
 
+M.BINARY_SUBTYPE = setmetatable({}, {
+  __index = BINARY_SUBTYPE_VALUES,
+  __metatable = "mongodb.bson.binary_subtypes",
+  __newindex = immutable_value,
+  __pairs = function()
+    return next, BINARY_SUBTYPE_VALUES, nil
+  end,
+})
 M.null = NULL
 
 function M.array(values)
@@ -190,8 +220,8 @@ function M.binary(data, subtype)
     subtype = 0
   end
 
-  if math.type(subtype) ~= "integer" or subtype ~= 0 then
-    error("only BSON binary subtype 0 is available in the primitive codec", 2)
+  if math.type(subtype) ~= "integer" or subtype < 0 or subtype > 255 then
+    error("binary subtype must be an integer from 0 through 255", 2)
   end
 
   local value = {}

@@ -12,6 +12,7 @@ local ALLOWED_OPTIONS = {
   lock_poll_interval = true,
   socket = true,
   tls = true,
+  wall_time = true,
 }
 
 local TASK_METHODS = {}
@@ -137,7 +138,7 @@ local function unavailable_provider(name, operations)
   return provider
 end
 
-local function new_clock(adapter, copas, raw_gettime)
+local function new_clock(adapter, copas, raw_gettime, raw_wall_time)
   local last_now
   local clock = {}
 
@@ -151,6 +152,13 @@ local function new_clock(adapter, copas, raw_gettime)
     end
 
     last_now = now
+    return now
+  end
+
+  function clock.wall_time()
+    local now = raw_wall_time()
+
+    require_nonnegative_number("wall clock value", now, 2)
     return now
   end
 
@@ -285,9 +293,15 @@ function M.new(options)
   end
 
   local raw_gettime = options.gettime or copas.gettime
+  local raw_wall_time = options.wall_time or os.time
 
   if type(raw_gettime) ~= "function" then
     error("Copas gettime capability must be a function", 2)
+  end
+
+
+  if type(raw_wall_time) ~= "function" then
+    error("wall_time capability must be a function", 2)
   end
 
   local poll_interval = options.lock_poll_interval or 0.05
@@ -296,7 +310,7 @@ function M.new(options)
 
   local adapter = {}
 
-  adapter.clock = new_clock(adapter, copas, raw_gettime)
+  adapter.clock = new_clock(adapter, copas, raw_gettime, raw_wall_time)
   adapter.cancellation = { new = cancellation.new }
   adapter.task = new_task_capability(copas.future)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)

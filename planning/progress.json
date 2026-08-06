@@ -129,6 +129,28 @@
       "notes": [],
       "started_at": "2026-08-06T15:43:46+00:00",
       "completed_at": "2026-08-06T15:50:50+00:00"
+    },
+    "BSON-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with isolated Lua 5.4.8 and Busted 2.3.0",
+          "exit_code": 2,
+          "summary": "ObjectId generation contract fails because mongodb.bson.object_id_generator is missing; existing 35 tests pass",
+          "recorded_at": "2026-08-06T15:52:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8 plus pinned PyMongo tagged byte fixture, fresh-tree rock install/load, planning tests, and CI YAML validation",
+          "exit_code": 0,
+          "summary": "40 Lua tests passed; tagged bytes match pinned PyMongo; ObjectId runtime generation and malformed subtype checks pass; zero lint findings and package smoke passed",
+          "recorded_at": "2026-08-06T15:58:01+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T15:52:14+00:00",
+      "completed_at": "2026-08-06T15:58:03+00:00"
     }
   },
   "verified_references": {

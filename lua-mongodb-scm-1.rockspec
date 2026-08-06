@@ -33,6 +33,7 @@ build = {
     mongodb = "src/mongodb/init.lua",
     ["mongodb.bson.codec"] = "src/mongodb/bson/codec.lua",
     ["mongodb.bson"] = "src/mongodb/bson/init.lua",
+    ["mongodb.bson.tagged"] = "src/mongodb/bson/tagged.lua",
     ["mongodb.bson.value"] = "src/mongodb/bson/value.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",

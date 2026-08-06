@@ -22,7 +22,7 @@ Core modules receive one validated runtime value and never import a scheduler, s
 
 | Capability | Required operations |
 | --- | --- |
-| Clock | monotonic `now` and coroutine-aware `sleep` |
+| Clock | monotonic `now`, Unix `wall_time`, and coroutine-aware `sleep` |
 | Cancellation | create tokens with idempotent cancellation and ordered listeners |
 | Tasks | spawn, await, and cancel coroutine work |
 | Locks | create locks with explicit acquire/release transitions |
@@ -31,7 +31,7 @@ Core modules receive one validated runtime value and never import a scheduler, s
 | Entropy | return an exact number of random bytes |
 | Crypto | SHA-1/SHA-256, corresponding HMAC, and PBKDF2 variants |
 
-Deadlines are absolute values from the runtime's monotonic clock. Shared helpers derive deadlines, clamp remaining time to zero, and classify cancellation before expiration as structured operational errors. Adapter validation treats a missing function as programmer misconfiguration.
+Deadlines are absolute values from the runtime's monotonic clock. Unix wall time is a separate capability for BSON ObjectId generation and other protocol timestamps; it is never used for elapsed-time decisions. Shared helpers derive deadlines, clamp remaining time to zero, and classify cancellation before expiration as structured operational errors. Adapter validation treats a missing function as programmer misconfiguration.
 
 `mongodb.runtime.fake` implements the entire boundary without external dependencies. Its clock advances only under test control, tasks execute in queue order, socket reads and partial writes consume scripts, cancellation is synchronous, and TLS/entropy/crypto calls are recorded or scripted. Missing fake scripts raise because they indicate a malformed test, while scripted operational failures return `nil, err`.
 
@@ -41,9 +41,11 @@ Deadlines are absolute values from the runtime's monotonic clock. Shared helpers
 
 `mongodb.bson` represents documents and arrays with explicit immutable containers. Documents retain insertion order and duplicate keys; indexed access returns the last matching key while `keys`, `entries`, and `iter` preserve every wire entry. Arrays are distinct from documents, and `bson.null` is distinct from absent Lua values. Constructors copy their input so later mutation cannot change an in-flight command.
 
-The primitive codec accepts only an ordered document at its root and encodes Lua strings as BSON strings, integral numbers as the smallest signed BSON integer, non-integral numbers as doubles, and explicit wrappers for arrays, binary data, and null. Decoding produces the same unambiguous value model. Arbitrary Lua tables are rejected because neither their intended BSON type nor their iteration order is defined.
+The codec accepts only an ordered document at its root and encodes Lua strings as BSON strings, integral numbers as the smallest signed BSON integer, non-integral numbers as doubles, and explicit wrappers for arrays, binary data, and null. Immutable tagged values represent ObjectId, signed-millisecond UTC datetime, regular expression, timestamp, JavaScript code with optional ordered scope, MinKey, and MaxKey. Binary values retain every subtype and apply the legacy subtype-2 nested length rule. Decoding produces the same unambiguous value model. Arbitrary Lua tables are rejected because neither their intended BSON type nor their iteration order is defined.
 
-All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, array-index, boolean, terminator, trailing-byte, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. UTF-8 policy, configurable depth/size limits, exact numeric tags, and the remaining BSON types are added by the subsequent BSON slices.
+ObjectId generators are stateful values constructed from an injected runtime. They obtain a five-byte generator identifier and three-byte initial counter from `runtime.entropy`, read seconds from `runtime.clock.wall_time`, and increment the 24-bit counter without importing platform time or randomness into BSON code. ObjectId, datetime, timestamp, regex, and binary values implement equality or ordering where their BSON semantics define it.
+
+All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, code-scope, array-index, boolean, terminator, trailing-byte, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. UTF-8 policy, configurable depth/size limits, exact numeric tags, and the remaining BSON types are added by the subsequent BSON slices.
 
 ## Planned layers
 

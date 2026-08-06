@@ -167,6 +167,7 @@ local FAKE_METATABLE = { __index = FAKE_METHODS }
 function FAKE_METHODS:advance(duration)
   require_nonnegative_number("duration", duration, 2)
   self._now = self._now + duration
+  self._wall_time = self._wall_time + duration
   return self._now
 end
 
@@ -255,6 +256,9 @@ local function new_clock(owner)
   return {
     now = function()
       return owner._now
+    end,
+    wall_time = function()
+      return owner._wall_time
     end,
     sleep = function(_, duration, cancellation)
       require_nonnegative_number("duration", duration, 3)
@@ -517,6 +521,7 @@ function M.new(options)
   end
 
   require_nonnegative_number("now", options.now or 0, 2)
+  require_nonnegative_number("wall_time", options.wall_time or 0, 2)
 
   if options.entropy ~= nil and type(options.entropy) ~= "string" then
     error("entropy must be a string", 2)
@@ -528,6 +533,7 @@ function M.new(options)
     _crypto_queue = {},
     _entropy = options.entropy or "",
     _now = options.now or 0,
+    _wall_time = options.wall_time or 0,
     _task_head = 1,
     _task_queue = {},
     _tls_head = 1,

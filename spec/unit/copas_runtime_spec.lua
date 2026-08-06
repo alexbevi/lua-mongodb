@@ -55,6 +55,16 @@ describe("Copas runtime adapter", function()
     assert.are.equal(11, adapter.clock:now())
   end)
 
+  it("exposes an injected Unix wall clock separately", function()
+    local adapter = copas_runtime.new({
+      wall_time = function()
+        return 1234567890
+      end,
+    })
+
+    assert.are.equal(1234567890, adapter.clock:wall_time())
+  end)
+
   it("spawns and awaits tasks with multiple results", function()
     local adapter = runtime.copas()
 
