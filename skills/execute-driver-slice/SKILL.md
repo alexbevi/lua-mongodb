@@ -10,10 +10,10 @@ description: Execute one test-first vertical slice from the Lua MongoDB driver r
 3. Start only that activity with `start ID`. Do not edit submodules, reference pins, or unrelated files.
 4. Write the smallest test that specifies the activity's vertical behavior. Run it and record the failing result with `record-test ID --phase red`.
 5. Implement the Lua behavior behind the documented architecture and runtime boundaries. Follow `AGENTS.md` style and error rules.
-6. Iterate on targeted tests, then run all verification commands listed by the activity. Record a passing result with `record-test ID --phase green`.
-7. Update architecture, README, compatibility, and unified-fixture classifications required by the activity.
-8. Run `complete ID`, `refresh`, and `check`. Inspect the diff for one coherent unit.
-9. Commit using the activity's exact Conventional Commit subject and add `Plan-Activity: ID` as a trailer. Run `check --strict` after committing.
+6. Inspect the pinned specification suites for cases made applicable by the behavior. Enable and run every newly applicable case in the same activity; classify remaining cases at test-case granularity with a concrete reason and a real pending roadmap owner.
+7. Iterate on targeted tests, then run all verification commands listed by the activity. A schema, inventory, or all-deferred report is not evidence of unified execution. Record a passing result with `record-test ID --phase green` that states executed, passed, environment-skipped, deferred, and failed counts where applicable.
+8. Update architecture, README, compatibility, the conformance ledger, and unified capability records required by the activity. Unknown capabilities, missing owners, deferrals owned by completed activities, and reductions in the runnable or passing baseline are failures.
+9. Run `complete ID`, `refresh`, and `check`. Inspect the diff for one coherent unit.
+10. Commit using the activity's exact Conventional Commit subject and add `Plan-Activity: ID` as a trailer. Run `check --strict` after committing.
 
 Never commit failing tests. Treat unknown unified operations as failures, and record a reason for every deferred upstream fixture. Stop at a genuine blocker instead of broadening scope.
-
