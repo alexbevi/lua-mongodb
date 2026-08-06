@@ -31,6 +31,8 @@ build = {
   modules = {
     mongodb = "src/mongodb/init.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
+    ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
+    ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
   },
 }

@@ -16,6 +16,25 @@ The public entry point is `require("mongodb")`. Modules and functions use `snake
 
 Category, label, timeout, and retryability predicates let execution layers classify failures without parsing messages. Adding or removing a label creates a new value and preserves the original causal value. Invalid constructor fields, unknown categories/options, and attempts to mutate public values are programmer errors and raise immediately. Network, protocol, server, selection, authentication, pool, BSON, and other operational failures must construct one of these values and return it as `nil, err`.
 
+### Runtime interface
+
+Core modules receive one validated runtime value and never import a scheduler, socket, TLS, entropy, or crypto library directly. The interface groups capabilities by responsibility:
+
+| Capability | Required operations |
+| --- | --- |
+| Clock | monotonic `now` and coroutine-aware `sleep` |
+| Cancellation | create tokens with idempotent cancellation and ordered listeners |
+| Tasks | spawn, await, and cancel coroutine work |
+| Locks | create locks with explicit acquire/release transitions |
+| Sockets | connect and return sockets supporting partial read/write and idempotent close |
+| TLS | wrap an established socket without leaking adapter details upward |
+| Entropy | return an exact number of random bytes |
+| Crypto | SHA-1/SHA-256, corresponding HMAC, and PBKDF2 variants |
+
+Deadlines are absolute values from the runtime's monotonic clock. Shared helpers derive deadlines, clamp remaining time to zero, and classify cancellation before expiration as structured operational errors. Adapter validation treats a missing function as programmer misconfiguration.
+
+`mongodb.runtime.fake` implements the entire boundary without external dependencies. Its clock advances only under test control, tasks execute in queue order, socket reads and partial writes consume scripts, cancellation is synchronous, and TLS/entropy/crypto calls are recorded or scripted. Missing fake scripts raise because they indicate a malformed test, while scripted operational failures return `nil, err`. This same boundary is implemented for Copas in the next slice.
+
 ## Planned layers
 
 1. **Values:** ordered documents, tagged BSON values, exact numeric handling, codec limits, and Extended JSON.

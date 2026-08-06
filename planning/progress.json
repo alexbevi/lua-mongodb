@@ -63,6 +63,28 @@
       "notes": [],
       "started_at": "2026-08-06T15:07:03+00:00",
       "completed_at": "2026-08-06T15:10:48+00:00"
+    },
+    "RUN-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with isolated Lua 5.4.8 and Busted 2.3.0",
+          "exit_code": 2,
+          "summary": "Runtime suite cannot load missing mongodb.runtime module; existing 12 tests pass",
+          "recorded_at": "2026-08-06T15:30:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8 toolchain plus packaged runtime smoke and planning tests",
+          "exit_code": 0,
+          "summary": "21 Lua tests, zero lint findings, rockspec install/load, strict-capable planning validation, and 9 planning tests passed",
+          "recorded_at": "2026-08-06T15:33:53+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T15:27:48+00:00",
+      "completed_at": "2026-08-06T15:33:56+00:00"
     }
   },
   "verified_references": {

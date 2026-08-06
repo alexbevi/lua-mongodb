@@ -9,6 +9,7 @@ end
 local M = {
   _VERSION = "0.1.0-dev",
   error = require("mongodb.error"),
+  runtime = require("mongodb.runtime"),
 }
 
 return M
