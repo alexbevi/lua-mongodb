@@ -21,15 +21,18 @@ local M = {
   is_null = value.is_null,
   is_tagged = tagged.is,
   code = tagged.code,
+  db_pointer = tagged.db_pointer,
   max_key = tagged.max_key,
   min_key = tagged.min_key,
   null = value.null,
   object_id = tagged.object_id,
   object_id_generator = tagged.object_id_generator,
   regex = tagged.regex,
+  symbol = tagged.symbol,
   int32 = exact.int32,
   int64 = exact.int64,
   timestamp = tagged.timestamp,
+  undefined = tagged.undefined,
 }
 
 return M

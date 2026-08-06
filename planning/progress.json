@@ -173,6 +173,28 @@
       "notes": [],
       "started_at": "2026-08-06T15:59:52+00:00",
       "completed_at": "2026-08-06T16:06:35+00:00"
+    },
+    "BSON-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with isolated Lua 5.4.8 and Busted 2.3.0",
+          "exit_code": 2,
+          "summary": "Hardened BSON contract fails because mongodb.bson.symbol is missing; existing 45 tests pass",
+          "recorded_at": "2026-08-06T16:07:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with complete applicable pinned BSON corpus, isolated Lua 5.4.8, fresh-tree rock install/load, planning tests, and CI YAML validation",
+          "exit_code": 0,
+          "summary": "49 Lua tests; 728 canonical, 4 degenerate, 75 decode-error, and 131 Decimal128 parse vectors passed; Extended JSON cases classified for UTF-001; lint and package smoke passed",
+          "recorded_at": "2026-08-06T16:15:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T16:07:26+00:00",
+      "completed_at": "2026-08-06T16:15:56+00:00"
     }
   },
   "verified_references": {

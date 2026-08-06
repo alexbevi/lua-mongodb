@@ -37,11 +37,11 @@ Deadlines are absolute values from the runtime's monotonic clock. Unix wall time
 
 `mongodb.runtime.copas` implements the scheduling half of the boundary with Copas 4.11 futures, pauses, and non-reentrant locks. It clamps Copas time so the driver never observes backward movement, wakes sleeping tasks on cancellation, polls contended locks so cancellation remains bounded, and translates deadline/cancellation outcomes into structured errors. Socket, TLS, entropy, and crypto providers remain explicit unavailable capabilities until their roadmap slices; callers may inject conforming providers without changing core code.
 
-### BSON values and primitive codec
+### BSON values and codec
 
 `mongodb.bson` represents documents and arrays with explicit immutable containers. Documents retain insertion order and duplicate keys; indexed access returns the last matching key while `keys`, `entries`, and `iter` preserve every wire entry. Arrays are distinct from documents, and `bson.null` is distinct from absent Lua values. Constructors copy their input so later mutation cannot change an in-flight command.
 
-The codec accepts only an ordered document at its root and encodes Lua strings as BSON strings, integral numbers as the smallest signed BSON integer, non-integral numbers as doubles, and explicit wrappers for arrays, binary data, and null. Immutable tagged values represent ObjectId, signed-millisecond UTC datetime, regular expression, timestamp, JavaScript code with optional ordered scope, MinKey, and MaxKey. Binary values retain every subtype and apply the legacy subtype-2 nested length rule. Decoding produces the same unambiguous value model. Arbitrary Lua tables are rejected because neither their intended BSON type nor their iteration order is defined.
+The codec accepts only an ordered document at its root and encodes Lua strings as BSON strings, integral numbers as the smallest signed BSON integer, non-integral numbers as doubles, and explicit wrappers for arrays, binary data, and null. Immutable tagged values represent ObjectId, signed-millisecond UTC datetime, regular expression, timestamp, JavaScript code with optional ordered scope, Symbol, DBPointer, Undefined, MinKey, and MaxKey. Binary values retain every subtype and apply the legacy subtype-2 nested length rule. Decoding produces the same unambiguous value model. Arbitrary Lua tables are rejected because neither their intended BSON type nor their iteration order is defined.
 
 Decoded int32, int64, and double values use explicit immutable wrappers carrying both the Lua value and original little-endian bytes. Their constructors also let callers force a numeric wire type; unwrapped Lua integers still select the smallest signed representation. This preserves small int64 values, double negative zero, and NaN payload bits across a decode/encode cycle without overloading arithmetic operators.
 
@@ -49,11 +49,11 @@ Decimal128 is stored as its exact 16-byte Binary Integer Decimal representation.
 
 ObjectId generators are stateful values constructed from an injected runtime. They obtain a five-byte generator identifier and three-byte initial counter from `runtime.entropy`, read seconds from `runtime.clock.wall_time`, and increment the 24-bit counter without importing platform time or randomness into BSON code. ObjectId, datetime, timestamp, regex, and binary values implement equality or ordering where their BSON semantics define it.
 
-All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, code-scope, array-index, boolean, terminator, trailing-byte, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. UTF-8 policy, configurable depth/size limits, exact numeric tags, and the remaining BSON types are added by the subsequent BSON slices.
+All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, code-scope, boolean, terminator, trailing-byte, UTF-8, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. Codec options bound document, string, binary, and nesting sizes; the defaults are 16 MiB for each size and 100 document levels. UTF-8 validation is on by default and may be disabled explicitly for byte-preserving diagnostic work. Degenerate array keys and unordered regex flags accepted by the BSON corpus are normalized when re-encoded.
 
 ## Planned layers
 
-1. **Values:** ordered containers, tagged values, and exact numeric handling are implemented; configurable codec limits and Extended JSON build on that boundary.
+1. **Values:** ordered containers, every BSON wire value, exact numeric handling, and configurable codec limits are implemented; Extended JSON builds on that boundary.
 2. **Runtime:** coroutine scheduling, monotonic time, cancellation/deadlines, locks, exact socket I/O, TLS, and crypto capabilities.
 3. **Protocol:** message framing, OP_MSG, command encoding, authentication conversations, and reply/error conversion.
 4. **Topology:** immutable server/topology descriptions, SDAM transitions, monitoring, selection, connection pools, and wait queues.
@@ -69,7 +69,7 @@ A public operation validates options, creates an operation context and deadline,
 
 ## Test architecture
 
-Each activity starts with a focused red test. Unit tests use fake clocks, sockets, and topology inputs. Integration tests exercise supported MongoDB 7.0–8.2 deployments. The unified runner consumes the pinned specification repository and reports every fixture as passed, failed, or explicitly deferred with a reason; unknown operations are failures. Release gates include packaging smoke tests, linting, the supported Lua/runtime matrix, and strict roadmap validation.
+Each activity starts with a focused red test. Unit tests use fake clocks, sockets, and topology inputs. The BSON unit gate loads the pinned corpus through a test-only Python fixture bridge: canonical and degenerate BSON, decode errors, and Decimal128 parse errors run against Lua; Extended JSON representations and its 49 remaining parse-error cases are reported as deferred until UTF-001 replaces the bridge with the ordered Lua JSON layer. Integration tests exercise supported MongoDB 7.0–8.2 deployments. The unified runner consumes the pinned specification repository and reports every fixture as passed, failed, or explicitly deferred with a reason; unknown operations are failures. Release gates include packaging smoke tests, linting, the supported Lua/runtime matrix, and strict roadmap validation.
 
 ## Intentional exclusions
 

@@ -26,7 +26,7 @@ local document, find_err = client:database("app")
 
 The initial compatibility target is Lua 5.4 with 64-bit `lua_Integer`, Copas 4.11, LuaSocket, LuaSec, and MongoDB server 7.0 through 8.2. Operational failures return `nil, structured_error`; programmer misuse may raise a Lua error.
 
-The implemented `mongodb.bson` foundation provides explicit ordered documents and arrays; immutable ObjectId, datetime, regex, timestamp, code, binary, Decimal128, exact numeric, MinKey, MaxKey, and null values; and bounded BSON encoding and decoding. ObjectId generation takes a runtime so time and entropy stay portable. Explicit containers prevent Lua table iteration order from changing command bytes, while exact wrappers preserve numeric wire types and bit patterns.
+The implemented `mongodb.bson` foundation provides explicit ordered documents and arrays; immutable values for every BSON wire type; exact Decimal128 and numeric wrappers; strict UTF-8 validation; and configurable size/depth bounds. ObjectId generation takes a runtime so time and entropy stay portable. Explicit containers prevent Lua table iteration order from changing command bytes, while exact wrappers preserve numeric wire types and bit patterns.
 
 ## Bootstrap
 
@@ -54,7 +54,7 @@ make lint
 make check
 ```
 
-Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. Integration tests begin with the command executor slice; the unified runner remains explicitly deferred until its roadmap activities rather than being counted as passing coverage.
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes the pinned BSON corpus and reports the Extended JSON cases deferred to the ordered JSON slice. Integration tests begin with the command executor slice; the unified runner remains explicitly deferred until its roadmap activities rather than being counted as passing coverage.
 
 ## Scope
 

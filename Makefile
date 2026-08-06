@@ -7,12 +7,12 @@ PYTHON ?= python3
 ROCKSPEC := lua-mongodb-scm-1.rockspec
 BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 
-.PHONY: check check-tools check-lua check-busted check-luacheck check-luarocks \
+.PHONY: check check-tools check-lua check-busted check-luacheck check-luarocks check-python \
 	test-unit test-integration test-unified lint rockspec planning-check
 
 check: test-unit test-integration test-unified lint rockspec planning-check
 
-check-tools: check-lua check-busted check-luacheck check-luarocks
+check-tools: check-lua check-busted check-luacheck check-luarocks check-python
 
 check-lua:
 	@command -v "$(LUA)" >/dev/null 2>&1 || { \
@@ -37,8 +37,14 @@ check-luarocks:
 		echo "LuaRocks not found; install LuaRocks for packaging checks" >&2; exit 127; \
 	}
 
-test-unit: check-busted
+check-python:
+	@command -v "$(PYTHON)" >/dev/null 2>&1 || { \
+		echo "Python 3 not found; set PYTHON=/path/to/python3" >&2; exit 127; \
+	}
+
+test-unit: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unit
+	@"$(PYTHON)" spec/corpus/run_bson_corpus.py --lua "$(LUA)"
 
 test-integration: check-busted
 	@if test -n "$$(find spec/integration -type f -name '*_spec.lua' -print -quit 2>/dev/null)"; then \
@@ -60,9 +66,5 @@ lint: check-luacheck
 rockspec: check-luarocks
 	@"$(LUAROCKS)" lint "$(ROCKSPEC)"
 
-planning-check:
-	@command -v "$(PYTHON)" >/dev/null 2>&1 || { \
-		echo "Python 3 not found; set PYTHON=/path/to/python3" >&2; exit 127; \
-	}
+planning-check: check-python
 	@"$(PYTHON)" planning/update_plan.py check
-

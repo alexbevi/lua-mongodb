@@ -320,6 +320,74 @@ function M.code(source, scope)
   }, CODE_METATABLE)
 end
 
+local SYMBOL_METHODS = {}
+local SYMBOL_METATABLE = {
+  __index = expose_methods(SYMBOL_METHODS),
+  __metatable = "mongodb.bson.symbol",
+  __newindex = immutable_value,
+}
+
+SYMBOL_METATABLE.__eq = function(left, right)
+  local left_state = TAGGED_STATES[left]
+  local right_state = TAGGED_STATES[right]
+  return left_state ~= nil and right_state ~= nil
+    and left_state.kind == "symbol"
+    and right_state.kind == "symbol"
+    and left_state.value == right_state.value
+end
+
+function M.symbol(symbol_value)
+  if type(symbol_value) ~= "string" then
+    error("BSON symbol value must be a string", 2)
+  end
+
+  return new_tagged({
+    kind = "symbol",
+    value = symbol_value,
+  }, SYMBOL_METATABLE)
+end
+
+local DB_POINTER_METHODS = {}
+local DB_POINTER_METATABLE = {
+  __index = expose_methods(DB_POINTER_METHODS),
+  __metatable = "mongodb.bson.db_pointer",
+  __newindex = immutable_value,
+}
+
+DB_POINTER_METATABLE.__eq = function(left, right)
+  local left_state = TAGGED_STATES[left]
+  local right_state = TAGGED_STATES[right]
+  return left_state ~= nil and right_state ~= nil
+    and left_state.kind == "db_pointer"
+    and right_state.kind == "db_pointer"
+    and left_state.namespace == right_state.namespace
+    and left_state.object_id == right_state.object_id
+end
+
+function M.db_pointer(namespace, object_id)
+  if type(namespace) ~= "string" then
+    error("BSON DBPointer namespace must be a string", 2)
+  end
+
+  if not M.is(object_id, "object_id") then
+    error("BSON DBPointer object_id must be an ObjectId", 2)
+  end
+
+  return new_tagged({
+    kind = "db_pointer",
+    namespace = namespace,
+    object_id = object_id,
+  }, DB_POINTER_METATABLE)
+end
+
+local UNDEFINED = new_tagged({ kind = "undefined" }, {
+  __metatable = "mongodb.bson.undefined",
+  __newindex = immutable_value,
+  __tostring = function()
+    return "undefined"
+  end,
+})
+
 local MIN_KEY = new_tagged({ kind = "min_key" }, {
   __metatable = "mongodb.bson.min_key",
   __newindex = immutable_value,
@@ -338,6 +406,7 @@ local MAX_KEY = new_tagged({ kind = "max_key" }, {
 
 M.min_key = MIN_KEY
 M.max_key = MAX_KEY
+M.undefined = UNDEFINED
 
 function M.is(value_to_check, kind)
   local state = TAGGED_STATES[value_to_check]

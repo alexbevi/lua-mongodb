@@ -10,12 +10,15 @@ local TYPE_STRING = 0x02
 local TYPE_DOCUMENT = 0x03
 local TYPE_ARRAY = 0x04
 local TYPE_BINARY = 0x05
+local TYPE_UNDEFINED = 0x06
 local TYPE_OBJECT_ID = 0x07
 local TYPE_BOOLEAN = 0x08
 local TYPE_DATETIME = 0x09
 local TYPE_NULL = 0x0a
 local TYPE_REGEX = 0x0b
+local TYPE_DB_POINTER = 0x0c
 local TYPE_CODE = 0x0d
+local TYPE_SYMBOL = 0x0e
 local TYPE_CODE_SCOPE = 0x0f
 local TYPE_INT32 = 0x10
 local TYPE_TIMESTAMP = 0x11
@@ -27,6 +30,50 @@ local TYPE_MIN_KEY = 0xff
 local INT32_MIN = -0x80000000
 local INT32_MAX = 0x7fffffff
 local MAX_BSON_SIZE = 0x7fffffff
+
+local DEFAULT_OPTIONS = {
+  max_binary_size = 16 * 1024 * 1024,
+  max_depth = 100,
+  max_document_size = 16 * 1024 * 1024,
+  max_string_size = 16 * 1024 * 1024,
+  validate_utf8 = true,
+}
+
+local function codec_options(options)
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("BSON codec options must be a table", 3)
+  end
+
+  local result = {}
+
+  for name, default in pairs(DEFAULT_OPTIONS) do
+    local option = options[name]
+
+    if option == nil then
+      option = default
+    end
+
+    if name == "validate_utf8" then
+      if type(option) ~= "boolean" then
+        error(name .. " must be a boolean", 3)
+      end
+    elseif math.type(option) ~= "integer" or option <= 0 or option > MAX_BSON_SIZE then
+      error(name .. " must be a positive signed 32-bit integer", 3)
+    end
+
+    result[name] = option
+  end
+
+  for name in pairs(options) do
+    if DEFAULT_OPTIONS[name] == nil then
+      error("unknown BSON codec option: " .. tostring(name), 3)
+    end
+  end
+
+  return result
+end
 
 local function bson_error(message, offset, details)
   details = details or {}
@@ -47,11 +94,43 @@ local function encode_error(message, details)
   })
 end
 
+local function invalid_utf8_offset(text)
+  local length, offset = utf8.len(text)
+
+  if length == nil then
+    return offset
+  end
+end
+
+local function validate_encode_utf8(text, description, key, options)
+  if not options.validate_utf8 then
+    return true
+  end
+
+  local offset = invalid_utf8_offset(text)
+
+  if offset then
+    return encode_error(description .. " contains invalid UTF-8", {
+      key = key,
+      utf8_offset = offset,
+    })
+  end
+
+  return true
+end
+
 local function encode_string_payload(string_value)
   return string.pack("<i4", #string_value + 1) .. string_value .. "\0"
 end
 
-local function encode_container(container, array)
+local function encode_container(container, array, context, depth)
+  if depth > context.max_depth then
+    return encode_error("BSON nesting exceeds the configured maximum depth", {
+      depth = depth,
+      max_depth = context.max_depth,
+    })
+  end
+
   local elements = {}
   local count = #container
 
@@ -66,7 +145,7 @@ local function encode_container(container, array)
       key, item = container:get_at(index)
     end
 
-    local encoded, err = M._encode_element(key, item)
+    local encoded, err = M._encode_element(key, item, context, depth)
 
     if not encoded then
       return nil, err
@@ -78,21 +157,33 @@ local function encode_container(container, array)
   local body = table.concat(elements) .. "\0"
   local length = 4 + #body
 
-  if length > MAX_BSON_SIZE then
-    return encode_error("BSON document exceeds the signed 32-bit length limit", {
+  if length > context.max_document_size then
+    return encode_error("BSON document exceeds the configured size limit", {
       length = length,
+      max_document_size = context.max_document_size,
     })
   end
 
   return string.pack("<i4", length) .. body
 end
 
-function M._encode_element(key, item)
+function M._encode_element(key, item, context, depth)
   local element_type
   local payload
   local item_type = type(item)
   local exact_kind = exact.kind(item)
   local tagged_kind = tagged.kind(item)
+
+  local valid, validation_error = validate_encode_utf8(
+    key,
+    "BSON document key",
+    key,
+    context
+  )
+
+  if not valid then
+    return nil, validation_error
+  end
 
   if value.is_null(item) then
     element_type = TYPE_NULL
@@ -100,7 +191,7 @@ function M._encode_element(key, item)
   elseif value.is_document(item) then
     element_type = TYPE_DOCUMENT
     local err
-    payload, err = encode_container(item, false)
+    payload, err = encode_container(item, false, context, depth + 1)
 
     if not payload then
       return nil, err
@@ -108,7 +199,7 @@ function M._encode_element(key, item)
   elseif value.is_array(item) then
     element_type = TYPE_ARRAY
     local err
-    payload, err = encode_container(item, true)
+    payload, err = encode_container(item, true, context, depth + 1)
 
     if not payload then
       return nil, err
@@ -116,10 +207,12 @@ function M._encode_element(key, item)
   elseif value.is_binary(item) then
     local length_overhead = item.subtype == 2 and 4 or 0
 
-    if #item.data > MAX_BSON_SIZE - length_overhead then
-      return encode_error("BSON binary value exceeds the signed 32-bit length limit", {
+    if #item.data > context.max_binary_size
+        or #item.data > MAX_BSON_SIZE - length_overhead then
+      return encode_error("BSON binary value exceeds the configured size limit", {
         key = key,
         length = #item.data,
+        max_binary_size = context.max_binary_size,
       })
     end
 
@@ -137,24 +230,50 @@ function M._encode_element(key, item)
     element_type = TYPE_DATETIME
     payload = string.pack("<i8", item.milliseconds)
   elseif tagged_kind == "regex" then
+    if #item.pattern > context.max_string_size then
+      return encode_error("BSON regex pattern exceeds the configured string size limit", {
+        key = key,
+        length = #item.pattern,
+        max_string_size = context.max_string_size,
+      })
+    end
+
+    valid, validation_error = validate_encode_utf8(
+      item.pattern,
+      "BSON regex pattern",
+      key,
+      context
+    )
+
+    if not valid then
+      return nil, validation_error
+    end
+
     element_type = TYPE_REGEX
     payload = item.pattern .. "\0" .. item.options .. "\0"
   elseif tagged_kind == "timestamp" then
     element_type = TYPE_TIMESTAMP
     payload = string.pack("<I4I4", item.increment, item.time)
   elseif tagged_kind == "code" then
-    if #item.source >= MAX_BSON_SIZE then
-      return encode_error("BSON code exceeds the signed 32-bit length limit", {
+    if #item.source > context.max_string_size or #item.source >= MAX_BSON_SIZE then
+      return encode_error("BSON code exceeds the configured string size limit", {
         key = key,
         length = #item.source,
+        max_string_size = context.max_string_size,
       })
+    end
+
+    valid, validation_error = validate_encode_utf8(item.source, "BSON code", key, context)
+
+    if not valid then
+      return nil, validation_error
     end
 
     if item.scope == nil then
       element_type = TYPE_CODE
       payload = encode_string_payload(item.source)
     else
-      local scope, err = encode_container(item.scope, false)
+      local scope, err = encode_container(item.scope, false, context, depth + 1)
 
       if not scope then
         return nil, err
@@ -179,6 +298,48 @@ function M._encode_element(key, item)
   elseif tagged_kind == "max_key" then
     element_type = TYPE_MAX_KEY
     payload = ""
+  elseif tagged_kind == "undefined" then
+    element_type = TYPE_UNDEFINED
+    payload = ""
+  elseif tagged_kind == "symbol" then
+    if #item.value > context.max_string_size or #item.value >= MAX_BSON_SIZE then
+      return encode_error("BSON symbol exceeds the configured string size limit", {
+        key = key,
+        length = #item.value,
+        max_string_size = context.max_string_size,
+      })
+    end
+
+    valid, validation_error = validate_encode_utf8(item.value, "BSON symbol", key, context)
+
+    if not valid then
+      return nil, validation_error
+    end
+
+    element_type = TYPE_SYMBOL
+    payload = encode_string_payload(item.value)
+  elseif tagged_kind == "db_pointer" then
+    if #item.namespace > context.max_string_size or #item.namespace >= MAX_BSON_SIZE then
+      return encode_error("BSON DBPointer namespace exceeds the configured string size limit", {
+        key = key,
+        length = #item.namespace,
+        max_string_size = context.max_string_size,
+      })
+    end
+
+    valid, validation_error = validate_encode_utf8(
+      item.namespace,
+      "BSON DBPointer namespace",
+      key,
+      context
+    )
+
+    if not valid then
+      return nil, validation_error
+    end
+
+    element_type = TYPE_DB_POINTER
+    payload = encode_string_payload(item.namespace) .. item.object_id.binary
   elseif exact_kind == "int32" then
     element_type = TYPE_INT32
     payload = item.bytes
@@ -195,11 +356,18 @@ function M._encode_element(key, item)
     element_type = TYPE_BOOLEAN
     payload = item and "\1" or "\0"
   elseif item_type == "string" then
-    if #item >= MAX_BSON_SIZE then
-      return encode_error("BSON string exceeds the signed 32-bit length limit", {
+    if #item > context.max_string_size or #item >= MAX_BSON_SIZE then
+      return encode_error("BSON string exceeds the configured size limit", {
         key = key,
         length = #item,
+        max_string_size = context.max_string_size,
       })
+    end
+
+    valid, validation_error = validate_encode_utf8(item, "BSON string", key, context)
+
+    if not valid then
+      return nil, validation_error
     end
 
     element_type = TYPE_STRING
@@ -262,7 +430,15 @@ local function read_cstring(data, position, limit, description)
   return data:sub(position, string_end - 1), string_end + 1
 end
 
-local function decode_container(data, position, limit, array)
+local function decode_container(data, position, limit, array, context, depth)
+  if depth > context.max_depth then
+    return nil, nil, bson_error(
+      "BSON nesting exceeds the configured maximum depth",
+      position,
+      { depth = depth, max_depth = context.max_depth }
+    )
+  end
+
   local length, body_position, err = read_integer(
     data,
     position,
@@ -281,6 +457,13 @@ local function decode_container(data, position, limit, array)
     })
   end
 
+  if length > context.max_document_size then
+    return nil, nil, bson_error("BSON document exceeds the configured size limit", position, {
+      length = length,
+      max_document_size = context.max_document_size,
+    })
+  end
+
   local document_end = position + length - 1
 
   if document_end > limit then
@@ -296,12 +479,12 @@ local function decode_container(data, position, limit, array)
 
   local entries = {}
   local cursor = body_position
-  local expected_array_index = 0
 
   while cursor < document_end do
     local element_type = data:byte(cursor)
     cursor = cursor + 1
 
+    local key_position = cursor
     local key_end = data:find("\0", cursor, true)
 
     if not key_end or key_end >= document_end then
@@ -311,15 +494,27 @@ local function decode_container(data, position, limit, array)
     local key = data:sub(cursor, key_end - 1)
     cursor = key_end + 1
 
-    if array and key ~= tostring(expected_array_index) then
-      return nil, nil, bson_error("BSON array keys must be consecutive decimal indexes", key_end, {
-        actual = key,
-        expected = tostring(expected_array_index),
-      })
+    if context.validate_utf8 then
+      local utf8_offset = invalid_utf8_offset(key)
+
+      if utf8_offset then
+        return nil, nil, bson_error(
+          "BSON document key contains invalid UTF-8",
+          key_position + utf8_offset - 1,
+          { utf8_offset = utf8_offset }
+        )
+      end
     end
 
     local item
-    item, cursor, err = M._decode_value(data, cursor, document_end - 1, element_type)
+    item, cursor, err = M._decode_value(
+      data,
+      cursor,
+      document_end - 1,
+      element_type,
+      context,
+      depth
+    )
 
     if err then
       return nil, nil, err
@@ -327,7 +522,6 @@ local function decode_container(data, position, limit, array)
 
     if array then
       entries[#entries + 1] = item
-      expected_array_index = expected_array_index + 1
     else
       entries[#entries + 1] = { key, item }
     end
@@ -341,9 +535,13 @@ local function decode_container(data, position, limit, array)
   return decoded, document_end + 1
 end
 
-function M._decode_value(data, position, limit, element_type)
+function M._decode_value(data, position, limit, element_type, context, depth)
   if element_type == TYPE_NULL then
     return value.null, position
+  end
+
+  if element_type == TYPE_UNDEFINED then
+    return tagged.undefined, position
   end
 
   if element_type == TYPE_BOOLEAN then
@@ -438,6 +636,13 @@ function M._decode_value(data, position, limit, element_type)
       })
     end
 
+    if length - 1 > context.max_string_size then
+      return nil, nil, bson_error("BSON string exceeds the configured size limit", position, {
+        length = length - 1,
+        max_string_size = context.max_string_size,
+      })
+    end
+
     local ok
     ok, err = require_bytes(string_position, length, limit, "BSON string")
 
@@ -451,7 +656,20 @@ function M._decode_value(data, position, limit, element_type)
       return nil, nil, bson_error("BSON string is missing its terminating NUL", string_end)
     end
 
-    return data:sub(string_position, string_end - 1), string_end + 1
+    local string_value = data:sub(string_position, string_end - 1)
+
+    if context.validate_utf8 then
+      local utf8_offset = invalid_utf8_offset(string_value)
+
+      if utf8_offset then
+        return nil, nil, bson_error(
+          "BSON string contains invalid UTF-8",
+          string_position + utf8_offset - 1
+        )
+      end
+    end
+
+    return string_value, string_end + 1
   end
 
   if element_type == TYPE_BINARY then
@@ -470,6 +688,13 @@ function M._decode_value(data, position, limit, element_type)
     if length < 0 then
       return nil, nil, bson_error("BSON binary length cannot be negative", position, {
         length = length,
+      })
+    end
+
+    if length > context.max_binary_size + 4 then
+      return nil, nil, bson_error("BSON binary value exceeds the configured size limit", position, {
+        length = length,
+        max_binary_size = context.max_binary_size,
       })
     end
 
@@ -503,6 +728,15 @@ function M._decode_value(data, position, limit, element_type)
       data_position = data_position + 4
     end
 
+    local data_length = next_position - data_position
+
+    if data_length > context.max_binary_size then
+      return nil, nil, bson_error("BSON binary value exceeds the configured size limit", position, {
+        length = data_length,
+        max_binary_size = context.max_binary_size,
+      })
+    end
+
     return value.binary(data:sub(data_position, next_position - 1), subtype), next_position
   end
 
@@ -518,6 +752,14 @@ function M._decode_value(data, position, limit, element_type)
       return nil, nil, err
     end
 
+    if #pattern > context.max_string_size then
+      return nil, nil, bson_error(
+        "BSON regex pattern exceeds the configured string size limit",
+        position,
+        { length = #pattern, max_string_size = context.max_string_size }
+      )
+    end
+
     local options, next_position
     options, next_position, err = read_cstring(
       data,
@@ -528,6 +770,17 @@ function M._decode_value(data, position, limit, element_type)
 
     if not options then
       return nil, nil, err
+    end
+
+    if context.validate_utf8 then
+      local utf8_offset = invalid_utf8_offset(pattern)
+
+      if utf8_offset then
+        return nil, nil, bson_error(
+          "BSON regex pattern contains invalid UTF-8",
+          position + utf8_offset - 1
+        )
+      end
     end
 
     local ok, regex = pcall(tagged.regex, pattern, options)
@@ -546,7 +799,9 @@ function M._decode_value(data, position, limit, element_type)
       data,
       position,
       limit,
-      TYPE_STRING
+      TYPE_STRING,
+      context,
+      depth
     )
 
     if err then
@@ -554,6 +809,54 @@ function M._decode_value(data, position, limit, element_type)
     end
 
     return tagged.code(source), next_position
+  end
+
+  if element_type == TYPE_SYMBOL then
+    local symbol_value, next_position, err = M._decode_value(
+      data,
+      position,
+      limit,
+      TYPE_STRING,
+      context,
+      depth
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    return tagged.symbol(symbol_value), next_position
+  end
+
+  if element_type == TYPE_DB_POINTER then
+    local namespace, object_id_position, err = M._decode_value(
+      data,
+      position,
+      limit,
+      TYPE_STRING,
+      context,
+      depth
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    local object_id, next_position
+    object_id, next_position, err = M._decode_value(
+      data,
+      object_id_position,
+      limit,
+      TYPE_OBJECT_ID,
+      context,
+      depth
+    )
+
+    if err then
+      return nil, nil, err
+    end
+
+    return tagged.db_pointer(namespace, object_id), next_position
   end
 
   if element_type == TYPE_CODE_SCOPE then
@@ -589,7 +892,9 @@ function M._decode_value(data, position, limit, element_type)
       data,
       source_position,
       code_end - 1,
-      TYPE_STRING
+      TYPE_STRING,
+      context,
+      depth
     )
 
     if err then
@@ -597,7 +902,14 @@ function M._decode_value(data, position, limit, element_type)
     end
 
     local scope, next_position
-    scope, next_position, err = decode_container(data, scope_position, code_end - 1, false)
+    scope, next_position, err = decode_container(
+      data,
+      scope_position,
+      code_end - 1,
+      false,
+      context,
+      depth + 1
+    )
 
     if err then
       return nil, nil, err
@@ -641,7 +953,14 @@ function M._decode_value(data, position, limit, element_type)
   end
 
   if element_type == TYPE_DOCUMENT or element_type == TYPE_ARRAY then
-    return decode_container(data, position, limit, element_type == TYPE_ARRAY)
+    return decode_container(
+      data,
+      position,
+      limit,
+      element_type == TYPE_ARRAY,
+      context,
+      depth + 1
+    )
   end
 
   return nil, nil, bson_error("unsupported BSON element type", position - 1, {
@@ -649,22 +968,23 @@ function M._decode_value(data, position, limit, element_type)
   })
 end
 
-function M.encode(document)
+function M.encode(document, options)
   if not value.is_document(document) then
     return encode_error("BSON root value must be an ordered document", {
       lua_type = type(document),
     })
   end
 
-  return encode_container(document, false)
+  return encode_container(document, false, codec_options(options), 1)
 end
 
-function M.decode(data)
+function M.decode(data, options)
   if type(data) ~= "string" then
     error("BSON input must be a string", 2)
   end
 
-  local document, next_position, err = decode_container(data, 1, #data, false)
+  local context = codec_options(options)
+  local document, next_position, err = decode_container(data, 1, #data, false, context, 1)
 
   if not document then
     return nil, err
