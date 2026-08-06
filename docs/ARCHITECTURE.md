@@ -63,6 +63,10 @@ Extended JSON conversion recognizes canonical, relaxed, and permitted degenerate
 
 The schema gate loads only fixture envelopes in Python and performs parsing and validation in Lua. Both `valid-pass` and `valid-fail` are schema-valid—the latter are reserved for later runner failures—while every file in `invalid` must be rejected. The gate currently covers all 320 distinct JSON meta-fixtures pinned with the specification checkout; equivalent YAML copies are not counted twice.
 
+`mongodb.unified.runner` is the execution-neutral core. Each test creates a runner with an isolated entity registry, environment facts, entity factories, per-entity-kind operation handlers, and an optional outcome reader. Entity IDs are unique and typed; missing entities, unsupported entity kinds, unsupported operations, and unknown match operators return visible `configuration` errors with document paths. This registry/dispatch boundary lets later slices connect real driver objects without teaching the runner about transports.
+
+Run-on requirements compare numeric version components and environment topology, authentication, serverless, server-parameter, and encryption facts. Matching implements strict nested documents, root subset matching, flexible BSON numbers, exact arrays, and the unified `$$exists`, `$$type`, `$$matchesEntity`, `$$matchesHexBytes`, `$$unsetOrMatches`, `$$lte`, `$$matchAsDocument`, and `$$matchAsRoot` operators. Thread entities schedule work through the injected runtime task interface, and bounded loops record iteration and success counters as BSON entities. Unit tests use the deterministic fake runtime and fake entity/operation handlers; no runner-core test opens a network connection.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

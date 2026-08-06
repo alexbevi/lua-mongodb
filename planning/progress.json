@@ -239,6 +239,28 @@
       "notes": [],
       "started_at": "2026-08-06T16:29:10+00:00",
       "completed_at": "2026-08-06T16:34:21+00:00"
+    },
+    "UTF-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/unified_runner_spec.lua",
+          "exit_code": 1,
+          "summary": "Runner contract fails because mongodb.unified.runner does not exist.",
+          "recorded_at": "2026-08-06T16:35:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "58 Lua unit tests and all BSON/Extended JSON corpora passed; 320 unified schema meta-fixtures passed; lint reported zero warnings.",
+          "recorded_at": "2026-08-06T16:40:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T16:35:24+00:00",
+      "completed_at": "2026-08-06T16:41:43+00:00"
     }
   },
   "verified_references": {
