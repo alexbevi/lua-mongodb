@@ -129,6 +129,14 @@ PATH_CLASSIFICATIONS = {
   ),
 }
 
+MUTATION_PREFIXES = (
+  "crud/tests/unified/deleteMany",
+  "crud/tests/unified/deleteOne",
+  "crud/tests/unified/replaceOne",
+  "crud/tests/unified/updateMany",
+  "crud/tests/unified/updateOne",
+)
+
 
 def generate() -> dict[str, object]:
   plan = json.loads(PLAN.read_text(encoding="utf-8"))
@@ -140,6 +148,8 @@ def generate() -> dict[str, object]:
 
     if path in PATH_CLASSIFICATIONS:
       activity, reason = PATH_CLASSIFICATIONS[path]
+    elif path.startswith(MUTATION_PREFIXES):
+      activity, reason = "CRUD-003", CRUD_DEFERRED_REASON
     elif specification in CLASSIFICATIONS:
       activity, reason = CLASSIFICATIONS[specification]
     else:

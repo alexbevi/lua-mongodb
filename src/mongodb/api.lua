@@ -287,6 +287,26 @@ function COLLECTION_METHODS:find_one(filter, options)
   return collection_operation(self, crud.find_one, filter, options)
 end
 
+function COLLECTION_METHODS:update_one(filter, update, options)
+  return collection_operation(self, crud.update_one, filter, update, options)
+end
+
+function COLLECTION_METHODS:update_many(filter, update, options)
+  return collection_operation(self, crud.update_many, filter, update, options)
+end
+
+function COLLECTION_METHODS:replace_one(filter, replacement, options)
+  return collection_operation(self, crud.replace_one, filter, replacement, options)
+end
+
+function COLLECTION_METHODS:delete_one(filter, options)
+  return collection_operation(self, crud.delete_one, filter, options)
+end
+
+function COLLECTION_METHODS:delete_many(filter, options)
+  return collection_operation(self, crud.delete_many, filter, options)
+end
+
 function COLLECTION_METHODS:find(filter, options)
   local cursor, err = collection_operation(self, crud.find, filter, options)
 

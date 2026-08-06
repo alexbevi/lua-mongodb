@@ -50,6 +50,40 @@ local INSERT_OPTIONS = {
   deadline = true,
   raw_data = true,
 }
+local UPDATE_OPTIONS = {
+  array_filters = true,
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  raw_data = true,
+  sort = true,
+  upsert = true,
+}
+local REPLACE_OPTIONS = {
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  raw_data = true,
+  sort = true,
+  upsert = true,
+}
+local DELETE_OPTIONS = {
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  raw_data = true,
+}
 
 for name in pairs(FIND_OPTION_FIELDS) do
   FIND_OPTIONS[name] = true
@@ -247,6 +281,353 @@ local function append_find_options(entries, state, options)
       end
     end
   end
+end
+
+local function require_document(name, value)
+  if not bson.is_document(value) then
+    error(name .. " must be a BSON document", 3)
+  end
+end
+
+local function require_boolean_option(options, name)
+  if options[name] ~= nil and type(options[name]) ~= "boolean" then
+    error(name .. " must be a boolean", 3)
+  end
+end
+
+local function require_document_option(options, name)
+  if options[name] ~= nil and not bson.is_document(options[name]) then
+    error(name .. " must be a BSON document", 3)
+  end
+end
+
+local function require_hint(options)
+  local hint = options.hint
+
+  if hint ~= nil and type(hint) ~= "string" and not bson.is_document(hint) then
+    error("hint must be an index name or BSON document", 3)
+  end
+end
+
+local function require_array_filters(options)
+  local array_filters = options.array_filters
+
+  if array_filters == nil then
+    return
+  end
+
+  if not bson.is_array(array_filters) then
+    error("array_filters must be a BSON array", 3)
+  end
+
+  for _, filter in array_filters:iter() do
+    if not bson.is_document(filter) then
+      error("array_filters must contain BSON documents", 3)
+    end
+  end
+end
+
+local function require_update(update)
+  if bson.is_document(update) then
+    local first = update:get_at(1)
+
+    if not first then
+      error("update document cannot be empty", 3)
+    end
+
+    if first:sub(1, 1) ~= "$" then
+      error("update document must begin with an atomic '$' modifier", 3)
+    end
+
+    return
+  end
+
+  if not bson.is_array(update) or #update == 0 then
+    error("update must be a non-empty BSON document or pipeline array", 3)
+  end
+
+  for _, stage in update:iter() do
+    if not bson.is_document(stage) then
+      error("update pipeline must contain BSON documents", 3)
+    end
+  end
+end
+
+local function require_replacement(replacement)
+  require_document("replacement", replacement)
+  local first = replacement:get_at(1)
+
+  if first and first:sub(1, 1) == "$" then
+    error("replacement document must not begin with an atomic '$' modifier", 3)
+  end
+end
+
+local function append_common_write_fields(entries, state, options, bypass)
+  if options.let ~= nil then
+    entries[#entries + 1] = { "let", options.let }
+  end
+
+  if options.comment ~= nil then
+    entries[#entries + 1] = { "comment", options.comment }
+  end
+
+  if bypass and options.bypass_document_validation ~= nil then
+    entries[#entries + 1] = {
+      "bypassDocumentValidation",
+      options.bypass_document_validation,
+    }
+  end
+
+  if options.raw_data ~= nil and state.max_wire_version >= 27 then
+    entries[#entries + 1] = { "rawData", options.raw_data }
+  end
+
+  local write_concern = concern_document(state.write_concern, true)
+
+  if write_concern then
+    entries[#entries + 1] = { "writeConcern", write_concern }
+  end
+end
+
+local function execute_write(state, entries, options)
+  local acknowledged = state.write_concern.w ~= 0
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      no_response = not acknowledged,
+    }
+  )
+
+  if not response then
+    return nil, nil, err
+  end
+
+  if acknowledged then
+    local valid
+    valid, err = check_write_response(response)
+
+    if not valid then
+      return nil, nil, err
+    end
+  end
+
+  return response, acknowledged
+end
+
+local function count_field(response, name)
+  local value = number_value(response:get(name))
+
+  if math.type(value) ~= "integer" or value < 0 then
+    return protocol_error("write response contains an invalid " .. name)
+  end
+
+  return value
+end
+
+local function update_result(response, acknowledged)
+  if not acknowledged then
+    return result({ acknowledged = false })
+  end
+
+  local matched, err = count_field(response, "n")
+
+  if matched == nil then
+    return nil, err
+  end
+
+  local modified
+  modified, err = count_field(response, "nModified")
+
+  if modified == nil then
+    return nil, err
+  end
+
+  local upserted = response:get("upserted")
+  local upserted_count = 0
+  local upserted_id
+
+  if upserted ~= nil then
+    if not bson.is_array(upserted) or #upserted > 1 then
+      return protocol_error("write response contains malformed upserted results")
+    end
+
+    if #upserted == 1 then
+      local item = upserted:get(1)
+
+      if not bson.is_document(item) or item:get("_id") == nil then
+        return protocol_error("write response contains a malformed upserted identifier")
+      end
+
+      upserted_count = 1
+      upserted_id = item:get("_id")
+      matched = 0
+    end
+  end
+
+  return result({
+    acknowledged = true,
+    matched_count = matched,
+    modified_count = modified,
+    upserted_count = upserted_count,
+    upserted_id = upserted_id,
+  })
+end
+
+local function update_operation(state, filter, update, options, multi, replacement)
+  require_document("filter", filter)
+
+  if replacement then
+    require_replacement(update)
+    options = validate_options(options, REPLACE_OPTIONS, "replace_one")
+  else
+    require_update(update)
+    options = validate_options(options, UPDATE_OPTIONS, multi and "update_many" or "update_one")
+  end
+
+  require_boolean_option(options, "upsert")
+  require_boolean_option(options, "bypass_document_validation")
+  require_boolean_option(options, "raw_data")
+  require_document_option(options, "collation")
+  require_document_option(options, "let")
+  require_document_option(options, "sort")
+  require_hint(options)
+  require_array_filters(options)
+
+  if multi and options.sort ~= nil then
+    error("sort is not supported by update_many", 3)
+  end
+
+  local acknowledged = state.write_concern.w ~= 0
+
+  if not acknowledged and options.collation ~= nil then
+    error("collation is unsupported for unacknowledged writes", 3)
+  end
+
+  if not acknowledged and options.array_filters ~= nil then
+    error("array_filters is unsupported for unacknowledged writes", 3)
+  end
+
+  if not acknowledged and options.hint ~= nil and state.max_wire_version < 8 then
+    error("unacknowledged update hint requires MongoDB 4.2 or newer", 3)
+  end
+
+  if not acknowledged and options.sort ~= nil and state.max_wire_version < 25 then
+    error("unacknowledged update sort requires MongoDB 8.0 or newer", 3)
+  end
+
+  local model_entries = {
+    { "q", filter },
+    { "u", update },
+    { "multi", multi },
+  }
+
+  if options.upsert ~= nil then
+    model_entries[#model_entries + 1] = { "upsert", options.upsert }
+  end
+
+  for _, field in ipairs({
+    { "array_filters", "arrayFilters" },
+    { "collation", "collation" },
+    { "hint", "hint" },
+    { "sort", "sort" },
+  }) do
+    if options[field[1]] ~= nil then
+      model_entries[#model_entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  local entries = {
+    { "update", state.name },
+    { "ordered", true },
+    { "updates", bson.array({ bson.document(model_entries) }) },
+  }
+
+  append_common_write_fields(entries, state, options, true)
+  local response, was_acknowledged, err = execute_write(state, entries, options)
+
+  if not response then
+    return nil, err
+  end
+
+  return update_result(response, was_acknowledged)
+end
+
+local function delete_operation(state, filter, options, multi)
+  require_document("filter", filter)
+  options = validate_options(options, DELETE_OPTIONS, multi and "delete_many" or "delete_one")
+  require_boolean_option(options, "raw_data")
+  require_document_option(options, "collation")
+  require_document_option(options, "let")
+  require_hint(options)
+  local acknowledged = state.write_concern.w ~= 0
+
+  if not acknowledged and options.collation ~= nil then
+    error("collation is unsupported for unacknowledged writes", 3)
+  end
+
+  if not acknowledged and options.hint ~= nil and state.max_wire_version < 9 then
+    error("unacknowledged delete hint requires MongoDB 4.4 or newer", 3)
+  end
+
+  local delete_entries = {
+    { "q", filter },
+    { "limit", multi and 0 or 1 },
+  }
+
+  for _, name in ipairs({ "collation", "hint" }) do
+    if options[name] ~= nil then
+      delete_entries[#delete_entries + 1] = { name, options[name] }
+    end
+  end
+
+  local entries = {
+    { "delete", state.name },
+    { "ordered", true },
+    { "deletes", bson.array({ bson.document(delete_entries) }) },
+  }
+
+  append_common_write_fields(entries, state, options, false)
+  local response, was_acknowledged, err = execute_write(state, entries, options)
+
+  if not response then
+    return nil, err
+  end
+
+  if not was_acknowledged then
+    return result({ acknowledged = false })
+  end
+
+  local deleted
+  deleted, err = count_field(response, "n")
+
+  if deleted == nil then
+    return nil, err
+  end
+
+  return result({ acknowledged = true, deleted_count = deleted })
+end
+
+function M.update_one(state, filter, update, options)
+  return update_operation(state, filter, update, options, false, false)
+end
+
+function M.update_many(state, filter, update, options)
+  return update_operation(state, filter, update, options, true, false)
+end
+
+function M.replace_one(state, filter, replacement, options)
+  return update_operation(state, filter, replacement, options, false, true)
+end
+
+function M.delete_one(state, filter, options)
+  return delete_operation(state, filter, options, false)
+end
+
+function M.delete_many(state, filter, options)
+  return delete_operation(state, filter, options, true)
 end
 
 function M.insert_one(state, document, options)

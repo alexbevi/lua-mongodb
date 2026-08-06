@@ -532,6 +532,28 @@
       "notes": [],
       "started_at": "2026-08-06T18:52:23+00:00",
       "completed_at": "2026-08-06T18:59:22+00:00"
+    },
+    "CRUD-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/crud_mutations_spec.lua",
+          "exit_code": 1,
+          "summary": "Public collection handle has no update_one method",
+          "recorded_at": "2026-08-06T19:01:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "99 unit tests plus upstream BSON and Extended JSON corpora, 12 integration tests, 320 unified schema meta-fixtures, all 483 unified fixtures explicitly classified, lint, packaging, planning, and strict validation pass; supplemental MongoDB 8.0 mutation round-trip also passed",
+          "recorded_at": "2026-08-06T19:08:20+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T19:00:00+00:00",
+      "completed_at": "2026-08-06T19:08:21+00:00"
     }
   },
   "verified_references": {

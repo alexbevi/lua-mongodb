@@ -145,6 +145,12 @@ The initial public lifecycle deliberately owns one authenticated connection and 
 
 Zero-id exhaustion closes the cursor locally. Explicit close sends `killCursors` only for a live identifier and is idempotent even after a command failure. Each client keeps a weak registry of live cursors and closes them before its executor connection, so early client shutdown also performs server cleanup. Network or malformed getMore failures close local cursor state and return a structured error. Cleanup is never initiated from a garbage-collection finalizer because runtime command I/O may yield; applications stop early with `cursor:close`, while normal exhaustion and `client:close` are deterministic.
 
+### Update, replace, and delete
+
+`mongodb.crud` maps `update_one`, `update_many`, and `replace_one` to distinct update command models. Atomic update documents must be non-empty and begin with a `$` field; update pipelines must be non-empty BSON arrays containing only documents. Replacement documents use the inverse validation and may not begin with an atomic modifier. The model carries `multi`, `upsert`, array filters, collation, hint, and single-update sort as applicable, while command-level validation, comments, `let`, raw-data, and inherited write concern remain ordered outside the model.
+
+`delete_one` and `delete_many` differ at the command boundary only by their normative limits of one and zero. Acknowledged mutation results expose immutable matched, modified, upserted, or deleted counts, and replacement/update upserts preserve the server-returned identifier. Unacknowledged mutations use OP_MSG `moreToCome`, expose no unavailable counts, and reject collation, array-filter, hint, or sort combinations that their negotiated wire version cannot safely execute. These command builders depend only on BSON and the executor interface; they introduce no runtime-specific networking behavior.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.
