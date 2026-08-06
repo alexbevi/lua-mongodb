@@ -69,14 +69,12 @@ LIVE_CRUD_REASON = (
 
 PATH_CLASSIFICATIONS = {
   "crud/tests/unified/bypassDocumentValidation.json": (
-    "BULK-001",
-    "the fixture mixes implemented operations with insertMany and collection bulkWrite, "
-    "which are owned by BULK-001",
+    "REL-001",
+    LIVE_CRUD_REASON,
   ),
   "crud/tests/unified/create-null-ids.json": (
-    "BULK-001",
-    "the fixture mixes implemented operations with insertMany, collection bulkWrite, "
-    "and post-v1 client bulkWrite models",
+    "ADV-007",
+    "the fixture includes post-v1 client bulkWrite in addition to implemented collection writes",
   ),
   "run-command/tests/unified/runCommand.json": (
     "TXN-002",
@@ -128,8 +126,7 @@ def generate() -> dict[str, object]:
     elif path.startswith(CORE_CRUD_PREFIXES):
       activity, reason = "REL-001", LIVE_CRUD_REASON
     elif path.startswith(COLLECTION_BULK_PREFIXES):
-      activity = "BULK-001"
-      reason = "insertMany and collection bulkWrite command batching are not implemented"
+      activity, reason = "REL-001", LIVE_CRUD_REASON
     elif path.startswith(CLIENT_BULK_PREFIX):
       activity = "ADV-007"
       reason = "client bulkWrite is a post-v1 capability"

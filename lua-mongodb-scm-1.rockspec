@@ -35,6 +35,7 @@ build = {
   modules = {
     mongodb = "src/mongodb/init.lua",
     ["mongodb.api"] = "src/mongodb/api.lua",
+    ["mongodb.bulk"] = "src/mongodb/bulk.lua",
     ["mongodb.bson.codec"] = "src/mongodb/bson/codec.lua",
     ["mongodb.bson.base64"] = "src/mongodb/bson/base64.lua",
     ["mongodb.bson.exact"] = "src/mongodb/bson/exact.lua",

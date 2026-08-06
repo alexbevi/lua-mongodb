@@ -166,6 +166,7 @@ local function execute(state, database, command, options)
     flags = options.no_response and op_msg.FLAG.MORE_TO_COME or nil,
     max_bson_size = state.max_bson_size,
     max_message_size = state.max_message_size,
+    max_sequence_document_size = options.max_sequence_document_size,
     request_id = request_id,
     sequences = options.sequences,
   })
@@ -406,6 +407,42 @@ function EXECUTOR_METHODS:command(database, command, options)
   end
 
   return execute(state, database, command, options)
+end
+
+function EXECUTOR_METHODS:measure(database, command, options)
+  local state = EXECUTOR_STATES[self]
+
+  if not state.handshake_complete then
+    return nil, errors.new({
+      category = errors.CATEGORY.CLIENT,
+      message = "connection handshake must complete before measuring commands",
+      server = state.server,
+    })
+  end
+
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("command measure options must be a table", 2)
+  end
+
+  if type(database) ~= "string" or database == "" then
+    error("command database must be a non-empty string", 2)
+  end
+
+  if not bson.is_document(command) then
+    error("command must be a BSON document", 2)
+  end
+
+  return op_msg.measure({
+    body = envelope(command, database, state.server_api),
+    direction = "request",
+    max_bson_size = state.max_bson_size,
+    max_message_size = state.max_message_size,
+    max_sequence_document_size = options.max_sequence_document_size,
+    request_id = 1,
+    sequences = options.sequences,
+  })
 end
 
 function EXECUTOR_METHODS:capabilities()

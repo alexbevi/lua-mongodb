@@ -157,6 +157,19 @@ local function prepare(options)
   end
 
   local max_bson_size, max_message_size = limits(options)
+  local max_sequence_document_size = options.max_sequence_document_size
+    or math.min(max_bson_size, max_message_size)
+
+  if math.type(max_sequence_document_size) ~= "integer"
+      or max_sequence_document_size <= 0
+      or max_sequence_document_size > max_message_size
+  then
+    error(
+      "max_sequence_document_size must be a positive integer no larger than max_message_size",
+      3
+    )
+  end
+
   local body_bytes, body_err = encode_document(options.body, max_bson_size, "OP_MSG body")
 
   if not body_bytes then
@@ -198,7 +211,7 @@ local function prepare(options)
     for document_index = 1, dense_length("OP_MSG sequence documents", documents) do
       local encoded, encode_err = encode_document(
         documents[document_index],
-        max_bson_size,
+        max_sequence_document_size,
         "OP_MSG sequence document"
       )
 

@@ -159,6 +159,14 @@ Collection aggregation validates an ordered BSON array of document stages and in
 
 The three find-and-modify helpers share one ordered `findAndModify` builder but retain update-versus-replacement validation. Delete sets `remove`; update and replacement set `update`, optional upsert, and a `new` boolean derived from the public `before`/`after` choice. Projection maps to the wire-level `fields` name. Array-filter and hint constraints are checked before unacknowledged I/O, write and write-concern errors reuse the structured write-error path, and BSON null results map to Lua `nil`.
 
+### Collection bulk writes
+
+`mongodb.bulk` defines immutable insert, update, replacement, and delete models shared by `collection:bulk_write`; `insert_many` builds the same insert models internally. Ordered execution preserves adjacent command-kind runs and stops on the first write error. Unordered execution groups compatible models while retaining each model's original 1-based request index for upsert identifiers and structured write errors. Every command in one call carries the same operation identifier.
+
+Batch construction observes `maxWriteBatchSize`, then uses the command executor's OP_MSG measurement path to fit each `documents`, `updates`, or `deletes` type-1 sequence within `maxMessageSizeBytes`. Individual insert and replacement documents are also checked against `maxBsonObjectSize` where an unacknowledged server cannot report the violation. This keeps framing arithmetic in the wire layer and leaves networking, TLS, and cryptography behind their existing runtime adapters.
+
+Acknowledged responses merge counts, upsert identifiers, write errors, write-concern errors, labels, and raw response documents into immutable results or structured partial-result errors. Unacknowledged requests use `moreToCome`; ordered multi-batch requests acknowledge intermediate batches so the driver can preserve stop-on-error semantics before sending the final unacknowledged batch.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

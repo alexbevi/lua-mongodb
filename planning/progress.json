@@ -576,6 +576,28 @@
       "notes": [],
       "started_at": "2026-08-06T19:08:58+00:00",
       "completed_at": "2026-08-06T19:19:04+00:00"
+    },
+    "BULK-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/bulk_spec.lua",
+          "exit_code": 1,
+          "summary": "Public collection handle has no insert_many method",
+          "recorded_at": "2026-08-06T19:21:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && packaged-module smoke && supplemental MongoDB 8.0.16 bulk round-trip",
+          "exit_code": 0,
+          "summary": "107 unit tests plus upstream BSON and Extended JSON corpora, 14 integrations, 320 unified schema meta-fixtures, all 483 unified fixtures explicitly classified, lint, rockspec, planning, strict validation, packaged mongodb.bulk module load, and supplemental MongoDB 8.0.16 bulk round-trip passed",
+          "recorded_at": "2026-08-06T20:31:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T19:19:53+00:00",
+      "completed_at": "2026-08-06T20:31:43+00:00"
     }
   },
   "verified_references": {

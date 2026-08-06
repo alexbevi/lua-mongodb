@@ -9,6 +9,7 @@ end
 local M = {
   _VERSION = "0.1.0-dev",
   bson = require("mongodb.bson"),
+  bulk = require("mongodb.bulk"),
   client = require("mongodb.client").connect,
   error = require("mongodb.error"),
   runtime = require("mongodb.runtime"),

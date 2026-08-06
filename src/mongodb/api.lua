@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local bulk = require("mongodb.bulk")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
@@ -232,7 +233,10 @@ function DATABASE_METHODS:collection(name, options)
     database_name = state.name,
     executor = CLIENT_STATES[state.client].executor,
     full_name = state.name .. "." .. name,
+    max_bson_size = CLIENT_STATES[state.client].max_bson_size,
+    max_message_size = CLIENT_STATES[state.client].max_message_size,
     max_wire_version = CLIENT_STATES[state.client].max_wire_version,
+    max_write_batch_size = CLIENT_STATES[state.client].max_write_batch_size,
     name = name,
     object_ids = CLIENT_STATES[state.client].object_ids,
     on_cursor_close = function(cursor)
@@ -281,6 +285,14 @@ end
 
 function COLLECTION_METHODS:insert_one(document, options)
   return collection_operation(self, crud.insert_one, document, options)
+end
+
+function COLLECTION_METHODS:insert_many(documents, options)
+  return collection_operation(self, bulk.insert_many, documents, options)
+end
+
+function COLLECTION_METHODS:bulk_write(models, options)
+  return collection_operation(self, bulk.execute, models, options)
 end
 
 function COLLECTION_METHODS:find_one(filter, options)
@@ -390,7 +402,10 @@ function M.new_client(executor, options, default_database_name, warnings, object
     cursors = setmetatable({}, { __mode = "k" }),
     default_database_name = default_database_name,
     executor = executor,
+    max_bson_size = capabilities and capabilities.max_bson_size or 16 * 1024 * 1024,
+    max_message_size = capabilities and capabilities.max_message_size or 48000000,
     max_wire_version = capabilities and capabilities.max_wire_version or 0,
+    max_write_batch_size = capabilities and capabilities.max_write_batch_size or 100000,
     object_ids = object_ids,
     options = options,
     read_concern = options.read_concern,
