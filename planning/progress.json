@@ -327,6 +327,28 @@
       "notes": [],
       "started_at": "2026-08-06T17:21:38+00:00",
       "completed_at": "2026-08-06T17:29:35+00:00"
+    },
+    "WIRE-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/op_msg_spec.lua",
+          "exit_code": 1,
+          "summary": "OP_MSG framing contract fails because mongodb.wire.op_msg does not exist.",
+          "recorded_at": "2026-08-06T17:31:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8 toolchain and OP_MSG golden/malformed frame coverage",
+          "exit_code": 0,
+          "summary": "69 Lua tests passed with golden kind-0/kind-1 framing, arbitrary section order, deterministic request IDs, size accounting, checksum/flag/frame/response correlation rejection, full corpora, unified, lint, rockspec, and planning gates green",
+          "recorded_at": "2026-08-06T17:35:38+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T17:30:10+00:00",
+      "completed_at": "2026-08-06T17:35:40+00:00"
     }
   },
   "verified_references": {

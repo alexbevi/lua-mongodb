@@ -81,6 +81,12 @@ URI inputs follow the normative warning policy: unknown keys, invalid non-securi
 
 Normalized defaults follow the specifications: 100-entry maximum and zero-entry minimum pools, two concurrent connections, 10-second connection and heartbeat intervals, 30-second server selection, 15-millisecond local threshold, primary read preference, retryable reads/writes enabled, and TLS disabled unless explicitly selected or implied by a TLS-specific setting. Downstream pool, SDAM, selection, command, retry, and timeout slices consume this value rather than re-parsing user input.
 
+### OP_MSG framing
+
+`mongodb.wire.op_msg` is the pure-Lua message boundary for opcode 2013. It encodes and decodes the 16-byte little-endian message header, flags, exactly one kind-0 BSON command body, and any number of uniquely named kind-1 document sequences in arbitrary section order. A deterministic request-ID generator assigns positive signed 32-bit IDs and wraps without using platform randomness; response decoding may require an exact `responseTo` match before exposing the body.
+
+The codec rejects checksum-bearing messages because CRC-32C support is intentionally absent, rejects unknown required flag bits and response-only misuse, and ignores unknown optional high bits as the specification requires. Declared frame/section/BSON lengths are checked before slicing or decoding, and negotiated `maxMessageSizeBytes` and `maxBsonObjectSize` limits are enforced on both paths. The size-accounting API uses the same encoding preparation as the wire writer, so later bulk batching can make decisions without maintaining a second overhead formula.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

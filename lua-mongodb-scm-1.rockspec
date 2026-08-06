@@ -48,5 +48,6 @@ build = {
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
     ["mongodb.unified.schema"] = "src/mongodb/unified/schema.lua",
     ["mongodb.unified.runner"] = "src/mongodb/unified/runner.lua",
+    ["mongodb.wire.op_msg"] = "src/mongodb/wire/op_msg.lua",
   },
 }
