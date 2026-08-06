@@ -15,7 +15,8 @@
     "Driver, BSON, wire, SDAM, CMAP, and selection logic are Lua and never wrap libmongoc.",
     "Each implementation activity observes a failing test before implementation and records passing verification.",
     "Operational failures return nil and a structured error; programmer misuse may raise.",
-    "Every unified fixture is runnable or explicitly deferred with a reason; unknown operations fail."
+    "Every unified test case is runnable or explicitly deferred with a reason and a real roadmap owner; unknown capabilities fail.",
+    "Each activity enables every newly applicable upstream test case in the same commit; schema and inventory success never count as fixture execution."
   ],
   "references": {
     "pymongo": {
@@ -223,7 +224,62 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable CMAP fixtures pass", "Cancellation and clear never leak checked-out connections"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(cmap): add connection pooling"
     },
     {
-      "id": "SDAM-002", "title": "Implement monitoring and replica-set discovery", "milestone": "production-core-v1", "depends_on": ["CMAP-001", "DDL-001"], "references": ["pymongo:topology", "pymongo:monitoring", "specifications:source"], "test_policy": "red_green",
+      "id": "UTF-005", "title": "Separate unified validation and execution gates", "milestone": "production-core-v1", "depends_on": ["CMAP-001"], "references": ["specifications:unified-format", "specifications:unified-schema-1.28"], "test_policy": "red_green",
+      "test_first": "Specify separate schema, inventory, meta-runner, and execution reports; require every discovered integration fixture to be parsed, version-checked, and schema-validated.", "implementation": "Split the unified gates, validate actual fixture documents through Lua Extended JSON and schema code, enumerate stable per-test identities, and prevent zero executed tests from being reported as conformance.",
+      "verification": ["make test-unit", "make test-unified", "make lint"], "acceptance": ["All 483 pinned integration files and their 1,900 tests are parsed and schema-compatible", "Reports distinguish validation, inventory, deferral, environment skips, execution passes, and failures"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(test-runner): make unified gates report execution"
+    },
+    {
+      "id": "UTF-006", "title": "Conform unified matcher semantics", "milestone": "production-core-v1", "depends_on": ["UTF-005"], "references": ["pymongo:unified-shared", "specifications:unified-format", "specifications:unified-meta-tests"], "test_policy": "red_green",
+      "test_first": "Execute the server-independent matcher valid-pass and valid-fail meta-tests, including root document contexts, exact outcomes, and every supported special operator.", "implementation": "Correct matcher context propagation, hexadecimal byte matching, session-LSID and entity matching, flexible numerics, Extended JSON document matching, and key-order-neutral exact outcome comparison.",
+      "verification": ["make test-unit", "make test-unified", "make lint"], "acceptance": ["Applicable upstream matcher valid-pass cases pass", "Applicable upstream matcher valid-fail cases fail for the specified reason"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(test-runner): conform unified matcher semantics"
+    },
+    {
+      "id": "UTF-007", "title": "Conform unified operation assertions", "milestone": "production-core-v1", "depends_on": ["UTF-006"], "references": ["pymongo:unified-runner", "pymongo:unified-shared", "specifications:unified-format", "specifications:unified-meta-tests"], "test_policy": "red_green",
+      "test_first": "Execute server-independent operation valid-pass and valid-fail meta-tests for expected errors, ignored results, unsupported arguments, entity integrity, and saved result types.", "implementation": "Implement the complete expected-error contract, ignoreResultAndError, typed saved entities, session argument resolution, argument validation boundaries, and explicit unsupported-operation failures.",
+      "verification": ["make test-unit", "make test-unified", "make lint"], "acceptance": ["Every supported expected-error field is asserted", "Unknown entities, operations, arguments, and incompatible saved results fail visibly"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(test-runner): conform unified operation assertions"
+    },
+    {
+      "id": "UTF-008", "title": "Track unified capabilities per test", "milestone": "production-core-v1", "depends_on": ["UTF-007"], "references": ["specifications:source", "specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Specify stable test IDs, content fingerprints, extracted capability requirements, real roadmap owners, completed-owner enforcement, and no-regression report ratchets.", "implementation": "Replace file-level classifications with generated per-test capability records and narrowly scoped overrides for cases static analysis cannot classify.",
+      "verification": ["make test-unit", "make test-unified", "make lint", "python3 planning/update_plan.py check --strict"], "acceptance": ["Every pinned unified test has one current classification", "Unknown capabilities and deferrals owned by completed or nonexistent activities fail"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): classify unified capabilities per test"
+    },
+    {
+      "id": "CON-001", "title": "Add specification conformance ledger", "milestone": "production-core-v1", "depends_on": ["UTF-008"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify machine-readable coverage for every pinned normative fixture suite, including unified and legacy BSON, URI, SDAM, selection, CMAP, sessions, and timeout formats.", "implementation": "Generate a conformance ledger linking each suite and case to its runner, scope, status, owning activity, and exact specification commit.",
+      "verification": ["make test-unit", "make test-unified", "python3 planning/update_plan.py check --strict"], "acceptance": ["Every in-scope normative fixture suite is run or explicitly owned", "Fixture additions and stale coverage entries fail validation"], "docs": ["README.md", "docs/ARCHITECTURE.md", "planning/reference_architecture.md"], "commit": "feat(conformance): add specification coverage ledger"
+    },
+    {
+      "id": "UTF-009", "title": "Implement unified test lifecycle", "milestone": "production-core-v1", "depends_on": ["CON-001"], "references": ["pymongo:unified-runner", "pymongo:spec-runner-utils", "specifications:unified-format", "specifications:unified-meta-tests"], "test_policy": "red_green",
+      "test_first": "Specify file and test runOnRequirements, skipReason, initial data, isolated entity maps, assertion ordering, and cleanup after both success and failure with deterministic fakes.", "implementation": "Implement the test-file orchestrator, environment facts, internal-client boundary, per-test isolation, finalizers, and per-test reports without yet adding broad driver operation adapters.",
+      "verification": ["make test-unit", "make test-unified", "make lint"], "acceptance": ["Tests continue independently after failures", "Clients, sessions, cursors, threads, and failpoints registered with the lifecycle are always cleaned up"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(test-runner): add unified test lifecycle"
+    },
+    {
+      "id": "UTF-010", "title": "Run the first standalone unified CRUD slice", "milestone": "production-core-v1", "depends_on": ["UTF-009"], "references": ["pymongo:unified-runner", "pymongo:collection", "specifications:unified-format", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable one pinned standalone insertOne test from initial data through result assertion and cleanup.", "implementation": "Connect internal, client, database, and collection entities to the public Lua driver and add the minimal insertOne argument and result adapter.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["At least one pinned CRUD test passes end to end through the Lua runner", "The report records an executed test rather than a classification-only success"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): execute first unified CRUD case"
+    },
+    {
+      "id": "UTF-011", "title": "Run unified collection read cases", "milestone": "production-core-v1", "depends_on": ["UTF-010"], "references": ["pymongo:unified-runner", "pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable supported standalone find, aggregate, countDocuments, estimatedDocumentCount, distinct, and findOneAnd read-result cases without command-event requirements.", "implementation": "Add collection read argument conversion, iterable coercion, cursor cleanup, and operation-specific result matching to the unified adapter.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Every newly supported standalone collection-read case is enabled and passes", "Unsupported arguments remain explicit per-test deferrals"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): execute unified collection reads"
+    },
+    {
+      "id": "UTF-012", "title": "Run unified collection write cases", "milestone": "production-core-v1", "depends_on": ["UTF-011"], "references": ["pymongo:unified-runner", "pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable supported standalone insertMany, update, replace, delete, collection bulkWrite, partial-error, and exact-outcome cases without failpoints.", "implementation": "Add write-model conversion, result coercion, full write-error assertions, and internal-client outcome reads to the unified adapter.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Every newly supported standalone collection-write case is enabled and passes", "Outcome checks use exact documents sorted by _id"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): execute unified collection writes"
+    },
+    {
+      "id": "UTF-013", "title": "Match unified command events", "milestone": "production-core-v1", "depends_on": ["UTF-012"], "references": ["pymongo:unified-runner", "pymongo:unified-shared", "pymongo:monitoring", "specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Enable pinned CRUD cases that assert command started, succeeded, and failed event sequences, filtering, and extra-event policy.", "implementation": "Create per-client event collectors and implement command-event normalization, filtering, sequence checks, server-connection assertions, and sensitive-command policy.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Supported CRUD command-event cases pass", "Missing, extra, reordered, and unknown events fail with test and event paths"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): match unified command events"
+    },
+    {
+      "id": "UTF-014", "title": "Execute unified failpoints", "milestone": "production-core-v1", "depends_on": ["UTF-013"], "references": ["pymongo:unified-runner", "pymongo:spec-runner-utils", "specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Enable one pinned failPoint case and prove that the failpoint is disabled on the same server after both passing and failing tests.", "implementation": "Implement internal failpoint configuration, tracking, guaranteed disable cleanup, and explicit environment skips when test commands are unavailable; retain targetedFailPoint for the sharded activity.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable standalone and replica-set failPoint cases can execute", "No configured failpoint survives test cleanup"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): execute unified failpoints"
+    },
+    {
+      "id": "SDAM-002", "title": "Implement monitoring and replica-set discovery", "milestone": "production-core-v1", "depends_on": ["UTF-014", "DDL-001"], "references": ["pymongo:topology", "pymongo:monitoring", "specifications:source"], "test_policy": "red_green",
       "test_first": "Specify monitor scheduling, awaitable hello, RTT, topology events, set discovery, pool clearing, and shutdown races.", "implementation": "Connect descriptions, selectors, monitors, pools, and client lifecycle for replica sets.",
       "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Replica-set discovery and failover tests pass", "SDAM event order follows the specification"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(sdam): add replica-set monitoring"
     },
@@ -258,8 +314,18 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable CSOT fixtures pass", "No layer resets or exceeds the operation budget"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(timeout): add client-side operation timeout"
     },
     {
-      "id": "REL-001", "title": "Harden and release production-core v1", "milestone": "production-core-v1", "depends_on": ["TIME-001"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Add packaging/install smoke, leak/race, compatibility, security-redaction, and full fixture-classification gates.", "implementation": "Close applicable v1 conformance gaps, finalize rockspec/API docs, CI MongoDB 7.0–8.2 matrix, changelog, and release checklist.",
+      "id": "QUA-001", "title": "Add coverage and deterministic stress gates", "milestone": "production-core-v1", "depends_on": ["TIME-001"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify source-coverage ratchets and seeded fault schedules for cancellation, checkout, pool clearing, monitoring, retry, and transaction cleanup boundaries.", "implementation": "Add reproducible coverage reporting, no-regression thresholds, and deterministic state-machine stress suites that retain failing seeds.",
+      "verification": ["make test-unit", "make test-integration", "make lint"], "acceptance": ["Coverage cannot regress silently", "Seeded concurrency and fault failures are reproducible"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(quality): add coverage and stress gates"
+    },
+    {
+      "id": "CMP-001", "title": "Add live MongoDB compatibility matrix", "milestone": "production-core-v1", "depends_on": ["QUA-001"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify reproducible CI jobs for MongoDB 7.0, 8.0, and 8.2 standalone and replica-set deployments with required authentication, TLS, and test-command variants.", "implementation": "Add pinned live-server orchestration, topology-aware test selection, machine-readable environment facts, and compatibility reports while retaining portable loopback jobs on both supported operating systems.",
+      "verification": ["make check", "make test-integration", "make test-unified", "python3 planning/update_plan.py check --strict"], "acceptance": ["The advertised server range is exercised in CI", "Standalone and replica-set v1 tests distinguish environment skips from unsupported features"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "ci(compat): test supported MongoDB deployments"
+    },
+    {
+      "id": "REL-001", "title": "Harden and release production-core v1", "milestone": "production-core-v1", "depends_on": ["CMP-001"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Add packaging/install smoke, leak checks, security-redaction audits, and zero-applicable-deferral release assertions.", "implementation": "Close only residual v1 conformance gaps, finalize rockspec/API docs, changelog, and the release checklist over the already-green compatibility matrix.",
       "verification": ["make check", "make test-integration", "make test-unified", "python3 planning/update_plan.py check --strict"], "acceptance": ["All applicable v1 fixtures pass and none are unclassified", "Package installs and target API works on supported matrix", "Security and cleanup gates pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "chore(release): prepare production-core v1"
     },
     {
@@ -288,6 +354,9 @@
     },
     {
       "id": "ADV-009", "title": "Add logging, telemetry, and backpressure", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Specify structured logging, OpenTelemetry boundaries, redaction, bounded queues, and slow-consumer behavior.", "implementation": "Add opt-in observability adapters and explicit backpressure policies.", "verification": ["make test-unit", "make test-integration"], "acceptance": ["Observability is redacted and does not alter semantics", "Queues remain bounded under load"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(observability): add telemetry and backpressure"
+    },
+    {
+      "id": "ADV-010", "title": "Design client-side encryption support", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "validation", "test_first": "Validate a design for pure-Lua driver integration with external cryptographic runtime capabilities, KMS isolation, credential handling, and explicit non-libmongoc boundaries.", "implementation": "Document the client-side field-level and queryable encryption architecture, capability dependencies, security model, and ordered implementation slices before enabling fixtures.", "verification": ["python3 planning/update_plan.py check --strict"], "acceptance": ["Every encryption fixture has an accountable roadmap owner", "The design preserves the pure-Lua driver boundary and isolates cryptography behind runtime adapters"], "docs": ["README.md", "docs/ARCHITECTURE.md", "planning/reference_architecture.md"], "commit": "docs(encryption): design client-side encryption support"
     }
   ]
 }

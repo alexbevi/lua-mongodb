@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "8297840b10055246f447a8b89f6a7fdb788bb14d95b6a97a40b0082289fa676f",
+  "plan_digest": "5b6cbb27dd545f9d4718bcfea532581c32e77276c19596fda8bbd2d0a1a3f43a",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -686,6 +686,21 @@
       "notes": [],
       "started_at": "2026-08-06T21:27:20+00:00",
       "completed_at": "2026-08-06T22:16:51+00:00"
+    },
+    "SDAM-002": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/topology_spec.lua",
+          "exit_code": 1,
+          "summary": "Monitored topology discovery test cannot run because mongodb.topology does not exist",
+          "recorded_at": "2026-08-06T22:22:00+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Insert reviewed unified-conformance prerequisites before SDAM implementation"
+      ]
     }
   },
   "verified_references": {
