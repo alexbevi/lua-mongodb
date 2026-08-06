@@ -307,6 +307,56 @@ function COLLECTION_METHODS:delete_many(filter, options)
   return collection_operation(self, crud.delete_many, filter, options)
 end
 
+local function register_cursor(collection, cursor)
+  if not cursor:is_closed() then
+    local state = COLLECTION_STATES[collection]
+
+    CLIENT_STATES[state.client].cursors[cursor] = true
+  end
+
+  return cursor
+end
+
+function COLLECTION_METHODS:aggregate(pipeline, options)
+  local cursor, err = collection_operation(self, crud.aggregate, pipeline, options)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_cursor(self, cursor)
+end
+
+function COLLECTION_METHODS:count_documents(filter, options)
+  return collection_operation(self, crud.count_documents, filter, options)
+end
+
+function COLLECTION_METHODS:estimated_document_count(options)
+  return collection_operation(self, crud.estimated_document_count, options)
+end
+
+function COLLECTION_METHODS:distinct(key, filter, options)
+  return collection_operation(self, crud.distinct, key, filter, options)
+end
+
+function COLLECTION_METHODS:find_one_and_delete(filter, options)
+  return collection_operation(self, crud.find_one_and_delete, filter, options)
+end
+
+function COLLECTION_METHODS:find_one_and_replace(filter, replacement, options)
+  return collection_operation(
+    self,
+    crud.find_one_and_replace,
+    filter,
+    replacement,
+    options
+  )
+end
+
+function COLLECTION_METHODS:find_one_and_update(filter, update, options)
+  return collection_operation(self, crud.find_one_and_update, filter, update, options)
+end
+
 function COLLECTION_METHODS:find(filter, options)
   local cursor, err = collection_operation(self, crud.find, filter, options)
 
@@ -314,10 +364,7 @@ function COLLECTION_METHODS:find(filter, options)
     return nil, err
   end
 
-  local state = COLLECTION_STATES[self]
-
-  CLIENT_STATES[state.client].cursors[cursor] = true
-  return cursor
+  return register_cursor(self, cursor)
 end
 
 function M.new_client(executor, options, default_database_name, warnings, object_ids)

@@ -84,6 +84,90 @@ local DELETE_OPTIONS = {
   let = true,
   raw_data = true,
 }
+local AGGREGATE_OPTIONS = {
+  allow_disk_use = true,
+  batch_size = true,
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  max_await_time_ms = true,
+  max_time_ms = true,
+  raw_data = true,
+}
+local COUNT_OPTIONS = {
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  limit = true,
+  max_time_ms = true,
+  raw_data = true,
+  skip = true,
+}
+local ESTIMATED_COUNT_OPTIONS = {
+  cancellation = true,
+  comment = true,
+  deadline = true,
+  max_time_ms = true,
+  raw_data = true,
+}
+local DISTINCT_OPTIONS = {
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  max_time_ms = true,
+  raw_data = true,
+}
+local FIND_AND_DELETE_OPTIONS = {
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  max_time_ms = true,
+  projection = true,
+  raw_data = true,
+  sort = true,
+}
+local FIND_AND_REPLACE_OPTIONS = {
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  max_time_ms = true,
+  projection = true,
+  raw_data = true,
+  return_document = true,
+  sort = true,
+  upsert = true,
+}
+local FIND_AND_UPDATE_OPTIONS = {
+  array_filters = true,
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  max_time_ms = true,
+  projection = true,
+  raw_data = true,
+  return_document = true,
+  sort = true,
+  upsert = true,
+}
 
 for name in pairs(FIND_OPTION_FIELDS) do
   FIND_OPTIONS[name] = true
@@ -608,6 +692,455 @@ local function delete_operation(state, filter, options, multi)
   end
 
   return result({ acknowledged = true, deleted_count = deleted })
+end
+
+local function require_nonnegative_integer(options, name)
+  local value = options[name]
+
+  if value ~= nil and (math.type(value) ~= "integer" or value < 0) then
+    error(name .. " must be a non-negative integer", 3)
+  end
+end
+
+local function require_pipeline(pipeline)
+  if not bson.is_array(pipeline) then
+    error("pipeline must be a BSON array", 3)
+  end
+
+  for _, stage in pipeline:iter() do
+    if not bson.is_document(stage) then
+      error("pipeline must contain BSON documents", 3)
+    end
+  end
+end
+
+local function pipeline_writes(pipeline)
+  if #pipeline == 0 then
+    return false
+  end
+
+  local last = pipeline:get(#pipeline)
+  local name = last:get_at(1)
+
+  return name == "$out" or name == "$merge"
+end
+
+local function append_read_concern(entries, state)
+  local read_concern = concern_document(state.read_concern, false)
+
+  if read_concern then
+    entries[#entries + 1] = { "readConcern", read_concern }
+  end
+end
+
+local function append_raw_data(entries, state, options)
+  if options.raw_data ~= nil and state.max_wire_version >= 27 then
+    entries[#entries + 1] = { "rawData", options.raw_data }
+  end
+end
+
+local function aggregate_entries(state, pipeline, options, writes)
+  local cursor_entries = {}
+
+  if options.batch_size ~= nil and not writes then
+    cursor_entries[#cursor_entries + 1] = { "batchSize", options.batch_size }
+  end
+
+  local entries = {
+    { "aggregate", state.name },
+    { "pipeline", pipeline },
+    { "cursor", bson.document(cursor_entries) },
+  }
+
+  for _, field in ipairs({
+    { "allow_disk_use", "allowDiskUse" },
+    { "collation", "collation" },
+    { "comment", "comment" },
+    { "hint", "hint" },
+    { "let", "let" },
+    { "max_time_ms", "maxTimeMS" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  if writes and options.bypass_document_validation == true then
+    entries[#entries + 1] = { "bypassDocumentValidation", true }
+  end
+
+  append_raw_data(entries, state, options)
+
+  if not writes or state.max_wire_version >= 8 then
+    append_read_concern(entries, state)
+  end
+
+  if writes then
+    local write_concern = concern_document(state.write_concern, true)
+
+    if write_concern then
+      entries[#entries + 1] = { "writeConcern", write_concern }
+    end
+  end
+
+  return entries
+end
+
+local function aggregate_response(state, pipeline, options, writes)
+  local entries = aggregate_entries(state, pipeline, options, writes)
+
+  if writes then
+    local response, acknowledged, err = execute_write(state, entries, options)
+
+    if not response then
+      return nil, err
+    end
+
+    if not acknowledged and not bson.is_document(response:get("cursor")) then
+      response = bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", state.full_name },
+          { "firstBatch", bson.array({}) },
+        }) },
+      })
+    end
+
+    return response
+  end
+
+  return state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+    }
+  )
+end
+
+local function cursor_from_response(state, response, options)
+  return cursor_model.new(response, {
+    batch_size = options.batch_size or 0,
+    cancellation = options.cancellation,
+    client_state = state.client_state,
+    collection_name = state.name,
+    comment = options.comment,
+    database_name = state.database_name,
+    deadline = options.deadline,
+    executor = state.executor,
+    max_await_time_ms = options.max_await_time_ms,
+    on_close = state.on_cursor_close,
+  })
+end
+
+local function count_from_aggregate(response)
+  local cursor = response:get("cursor")
+
+  if not bson.is_document(cursor) then
+    return protocol_error("count response is missing its cursor document")
+  end
+
+  local batch = cursor:get("firstBatch")
+
+  if not bson.is_array(batch) then
+    return protocol_error("count response is missing its firstBatch array")
+  end
+
+  if #batch == 0 then
+    return 0
+  end
+
+  if #batch ~= 1 or not bson.is_document(batch:get(1)) then
+    return protocol_error("count response contains a malformed result")
+  end
+
+  local count = number_value(batch:get(1):get("n"))
+
+  if math.type(count) ~= "integer" or count < 0 then
+    return protocol_error("count response contains an invalid n")
+  end
+
+  return count
+end
+
+local function find_and_modify(state, filter, change, options, kind)
+  require_document("filter", filter)
+
+  local allowed
+
+  if kind == "delete" then
+    allowed = FIND_AND_DELETE_OPTIONS
+  elseif kind == "replace" then
+    require_replacement(change)
+    allowed = FIND_AND_REPLACE_OPTIONS
+  else
+    require_update(change)
+    allowed = FIND_AND_UPDATE_OPTIONS
+  end
+
+  options = validate_options(options, allowed, "find_one_and_" .. kind)
+  require_boolean_option(options, "bypass_document_validation")
+  require_boolean_option(options, "raw_data")
+  require_boolean_option(options, "upsert")
+  require_document_option(options, "collation")
+  require_document_option(options, "let")
+  require_document_option(options, "projection")
+  require_document_option(options, "sort")
+  require_nonnegative_integer(options, "max_time_ms")
+  require_hint(options)
+  require_array_filters(options)
+
+  local return_document = options.return_document or "before"
+
+  if return_document ~= "before" and return_document ~= "after" then
+    error("return_document must be 'before' or 'after'", 3)
+  end
+
+  local acknowledged = state.write_concern.w ~= 0
+
+  if options.array_filters ~= nil and not acknowledged then
+    error("array_filters is unsupported for unacknowledged writes", 3)
+  end
+
+  if options.hint ~= nil and state.max_wire_version < 8 then
+    error("find-and-modify hint requires MongoDB 4.2 or newer", 3)
+  end
+
+  if options.hint ~= nil and not acknowledged and state.max_wire_version < 9 then
+    error("unacknowledged find-and-modify hint requires MongoDB 4.4 or newer", 3)
+  end
+
+  local entries = {
+    { "findAndModify", state.name },
+    { "query", filter },
+    { "new", return_document == "after" },
+  }
+
+  if kind == "delete" then
+    entries[#entries + 1] = { "remove", true }
+  else
+    entries[#entries + 1] = { "update", change }
+  end
+
+  for _, field in ipairs({
+    { "array_filters", "arrayFilters" },
+    { "collation", "collation" },
+    { "hint", "hint" },
+    { "max_time_ms", "maxTimeMS" },
+    { "projection", "fields" },
+    { "sort", "sort" },
+    { "upsert", "upsert" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  append_common_write_fields(entries, state, options, kind ~= "delete")
+  local response, was_acknowledged, err = execute_write(state, entries, options)
+
+  if not response then
+    return nil, err
+  end
+
+  if not was_acknowledged then
+    return nil
+  end
+
+  local value = response:get("value")
+
+  if value == nil or bson.is_null(value) then
+    return nil
+  end
+
+  if not bson.is_document(value) then
+    return protocol_error("findAndModify response contains a non-document value")
+  end
+
+  return value
+end
+
+function M.aggregate(state, pipeline, options)
+  require_pipeline(pipeline)
+  options = validate_options(options, AGGREGATE_OPTIONS, "aggregate")
+  require_boolean_option(options, "allow_disk_use")
+  require_boolean_option(options, "bypass_document_validation")
+  require_boolean_option(options, "raw_data")
+  require_document_option(options, "collation")
+  require_document_option(options, "let")
+  require_hint(options)
+  require_nonnegative_integer(options, "batch_size")
+  require_nonnegative_integer(options, "max_await_time_ms")
+  require_nonnegative_integer(options, "max_time_ms")
+  local writes = pipeline_writes(pipeline)
+  local response, err = aggregate_response(state, pipeline, options, writes)
+
+  if not response then
+    return nil, err
+  end
+
+  return cursor_from_response(state, response, options)
+end
+
+function M.count_documents(state, filter, options)
+  require_document("filter", filter)
+  options = validate_options(options, COUNT_OPTIONS, "count_documents")
+  require_document_option(options, "collation")
+  require_boolean_option(options, "raw_data")
+  require_hint(options)
+  require_nonnegative_integer(options, "skip")
+  require_nonnegative_integer(options, "max_time_ms")
+
+  if options.limit ~= nil and (math.type(options.limit) ~= "integer" or options.limit <= 0) then
+    error("limit must be a positive integer", 2)
+  end
+
+  local stages = {
+    bson.document({ { "$match", filter } }),
+  }
+
+  if options.skip ~= nil then
+    stages[#stages + 1] = bson.document({ { "$skip", options.skip } })
+  end
+
+  if options.limit ~= nil then
+    stages[#stages + 1] = bson.document({ { "$limit", options.limit } })
+  end
+
+  stages[#stages + 1] = bson.document({
+    { "$group", bson.document({
+      { "_id", 1 },
+      { "n", bson.document({ { "$sum", 1 } }) },
+    }) },
+  })
+  local aggregate_options = {
+    cancellation = options.cancellation,
+    collation = options.collation,
+    comment = options.comment,
+    deadline = options.deadline,
+    hint = options.hint,
+    max_time_ms = options.max_time_ms,
+    raw_data = options.raw_data,
+  }
+  local response, err = aggregate_response(
+    state,
+    bson.array(stages),
+    aggregate_options,
+    false
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  return count_from_aggregate(response)
+end
+
+function M.estimated_document_count(state, options)
+  options = validate_options(
+    options,
+    ESTIMATED_COUNT_OPTIONS,
+    "estimated_document_count"
+  )
+  require_boolean_option(options, "raw_data")
+  require_nonnegative_integer(options, "max_time_ms")
+  local entries = { { "count", state.name } }
+
+  if options.max_time_ms ~= nil then
+    entries[#entries + 1] = { "maxTimeMS", options.max_time_ms }
+  end
+
+  if options.comment ~= nil then
+    entries[#entries + 1] = { "comment", options.comment }
+  end
+
+  append_raw_data(entries, state, options)
+  append_read_concern(entries, state)
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+    }
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  return count_field(response, "n")
+end
+
+function M.distinct(state, key, filter, options)
+  if type(key) ~= "string" or key == "" then
+    error("distinct key must be a non-empty string", 2)
+  end
+
+  if filter == nil then
+    filter = bson.document({})
+  else
+    require_document("filter", filter)
+  end
+
+  options = validate_options(options, DISTINCT_OPTIONS, "distinct")
+  require_boolean_option(options, "raw_data")
+  require_document_option(options, "collation")
+  require_hint(options)
+  require_nonnegative_integer(options, "max_time_ms")
+  local entries = {
+    { "distinct", state.name },
+    { "key", key },
+    { "query", filter },
+  }
+
+  for _, field in ipairs({
+    { "collation", "collation" },
+    { "comment", "comment" },
+    { "hint", "hint" },
+    { "max_time_ms", "maxTimeMS" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  append_raw_data(entries, state, options)
+  append_read_concern(entries, state)
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+    }
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  local values = response:get("values")
+
+  if not bson.is_array(values) then
+    return protocol_error("distinct response is missing its values array")
+  end
+
+  return values
+end
+
+function M.find_one_and_delete(state, filter, options)
+  return find_and_modify(state, filter, nil, options, "delete")
+end
+
+function M.find_one_and_replace(state, filter, replacement, options)
+  return find_and_modify(state, filter, replacement, options, "replace")
+end
+
+function M.find_one_and_update(state, filter, update, options)
+  return find_and_modify(state, filter, update, options, "update")
 end
 
 function M.update_one(state, filter, update, options)

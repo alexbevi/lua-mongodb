@@ -151,6 +151,14 @@ Zero-id exhaustion closes the cursor locally. Explicit close sends `killCursors`
 
 `delete_one` and `delete_many` differ at the command boundary only by their normative limits of one and zero. Acknowledged mutation results expose immutable matched, modified, upserted, or deleted counts, and replacement/update upserts preserve the server-returned identifier. Unacknowledged mutations use OP_MSG `moreToCome`, expose no unavailable counts, and reject collation, array-filter, hint, or sort combinations that their negotiated wire version cannot safely execute. These command builders depend only on BSON and the executor interface; they introduce no runtime-specific networking behavior.
 
+### Core collection read and modify operations
+
+Collection aggregation validates an ordered BSON array of document stages and inspects only the final stage to identify `$out` or `$merge`. Read pipelines inherit read concern. Write pipelines inherit write concern, add read concern on MongoDB 4.2 and newer, ignore an initial batch size, and synthesize an exhausted cursor after an unacknowledged OP_MSG send. All other aggregate results enter the existing cursor model, so batch size, getMore comment and maximum await time, explicit kill, and client-close cleanup have one implementation.
+
+`count_documents` builds the normative `$match`, optional `$skip` and `$limit`, and `$group` pipeline and parses its single cursor result, treating an empty batch as zero. `estimated_document_count` intentionally uses the metadata-based `count` command, while `distinct` validates and returns the server's BSON values array. These read helpers inherit read concern and use the same deadline/cancellation executor boundary as find.
+
+The three find-and-modify helpers share one ordered `findAndModify` builder but retain update-versus-replacement validation. Delete sets `remove`; update and replacement set `update`, optional upsert, and a `new` boolean derived from the public `before`/`after` choice. Projection maps to the wire-level `fields` name. Array-filter and hint constraints are checked before unacknowledged I/O, write and write-concern errors reuse the structured write-error path, and BSON null results map to Lua `nil`.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

@@ -31,8 +31,9 @@ CLASSIFICATIONS = {
     "client-side field-level and queryable encryption require a separate design",
   ),
   "crud": (
-    "API-003",
-    "CRUD command and public API slices are not implemented",
+    "REL-001",
+    "the fixture requires a CRUD operation outside the current collection API or "
+    "the live unified execution bridge completed by REL-001",
   ),
   "mongodb-handshake": (
     "CMAP-001",
@@ -60,64 +61,22 @@ CLASSIFICATIONS = {
   ),
 }
 
-CRUD_DEFERRED_REASON = (
-  "live unified CRUD entities, command events, and outcome execution are deferred "
-  "until all core CRUD command models exist"
+LIVE_CRUD_REASON = (
+  "live unified CRUD entities, server requirements, command-event matching, "
+  "failpoints, and outcome execution are deferred to the REL-001 conformance bridge; "
+  "command models are covered by unit, loopback, and real-server integration tests"
 )
 
 PATH_CLASSIFICATIONS = {
-  "crud/tests/unified/find-allowdiskuse-serverError.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
+  "crud/tests/unified/bypassDocumentValidation.json": (
+    "BULK-001",
+    "the fixture mixes implemented operations with insertMany and collection bulkWrite, "
+    "which are owned by BULK-001",
   ),
-  "crud/tests/unified/find-allowdiskuse.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/find-collation.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/find-comment.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/find-let.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/find-rawdata.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/find.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/findOne.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/insertOne-comment.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/insertOne-dots_and_dollars.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/insertOne-errorResponse.json": (
-    "CRUD-003",
-    "live unified failpoints and CRUD error-response execution are deferred until all "
-    "core CRUD command models exist",
-  ),
-  "crud/tests/unified/insertOne-rawdata.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
-  ),
-  "crud/tests/unified/insertOne.json": (
-    "CRUD-003",
-    CRUD_DEFERRED_REASON,
+  "crud/tests/unified/create-null-ids.json": (
+    "BULK-001",
+    "the fixture mixes implemented operations with insertMany, collection bulkWrite, "
+    "and post-v1 client bulkWrite models",
   ),
   "run-command/tests/unified/runCommand.json": (
     "TXN-002",
@@ -129,13 +88,31 @@ PATH_CLASSIFICATIONS = {
   ),
 }
 
-MUTATION_PREFIXES = (
+CORE_CRUD_PREFIXES = (
+  "crud/tests/unified/aggregate",
+  "crud/tests/unified/countDocuments",
   "crud/tests/unified/deleteMany",
   "crud/tests/unified/deleteOne",
+  "crud/tests/unified/distinct",
+  "crud/tests/unified/estimatedDocumentCount",
+  "crud/tests/unified/find-",
+  "crud/tests/unified/find.json",
+  "crud/tests/unified/findOne",
+  "crud/tests/unified/insertOne",
   "crud/tests/unified/replaceOne",
   "crud/tests/unified/updateMany",
   "crud/tests/unified/updateOne",
 )
+COLLECTION_BULK_PREFIXES = (
+  "crud/tests/unified/bulkWrite",
+  "crud/tests/unified/insertMany",
+)
+CLIENT_BULK_PREFIX = "crud/tests/unified/client-bulkWrite"
+LEGACY_COUNT_PREFIXES = (
+  "crud/tests/unified/count-",
+  "crud/tests/unified/count.json",
+)
+DATABASE_AGGREGATE_PREFIX = "crud/tests/unified/db-aggregate"
 
 
 def generate() -> dict[str, object]:
@@ -148,8 +125,23 @@ def generate() -> dict[str, object]:
 
     if path in PATH_CLASSIFICATIONS:
       activity, reason = PATH_CLASSIFICATIONS[path]
-    elif path.startswith(MUTATION_PREFIXES):
-      activity, reason = "CRUD-003", CRUD_DEFERRED_REASON
+    elif path.startswith(CORE_CRUD_PREFIXES):
+      activity, reason = "REL-001", LIVE_CRUD_REASON
+    elif path.startswith(COLLECTION_BULK_PREFIXES):
+      activity = "BULK-001"
+      reason = "insertMany and collection bulkWrite command batching are not implemented"
+    elif path.startswith(CLIENT_BULK_PREFIX):
+      activity = "ADV-007"
+      reason = "client bulkWrite is a post-v1 capability"
+    elif path.startswith(LEGACY_COUNT_PREFIXES):
+      activity = "REL-001"
+      reason = (
+        "the fixture mixes supported count helpers with the deprecated count operation, "
+        "which v1 intentionally does not expose; partial execution awaits REL-001"
+      )
+    elif path.startswith(DATABASE_AGGREGATE_PREFIX):
+      activity = "REL-001"
+      reason = "database-level aggregate and its live unified execution bridge await REL-001"
     elif specification in CLASSIFICATIONS:
       activity, reason = CLASSIFICATIONS[specification]
     else:

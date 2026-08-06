@@ -676,878 +676,878 @@
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-allowdiskuse.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-merge-errorResponse.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-merge.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-out-readConcern.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-out.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate-write-readPreference.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/aggregate.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-arrayFilters.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-delete-hint.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-deleteMany-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-deleteOne-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-errorResponse.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-replaceOne-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-replaceOne-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-replaceOne-sort.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-update-hint.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-update-validation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateMany-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateMany-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateMany-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateMany-pipeline.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateMany-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateOne-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateOne-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateOne-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateOne-pipeline.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateOne-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite-updateOne-sort.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bulkWrite.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/bypassDocumentValidation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "the fixture mixes implemented operations with insertMany and collection bulkWrite, which are owned by BULK-001",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-delete-options.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-delete-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-errorResponse.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-errors.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-mixed-namespaces.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-options.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-ordered.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-replaceOne-sort.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-results.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-update-options.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-update-pipeline.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-update-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/client-bulkWrite-updateOne-sort.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "ADV-007",
+      "reason": "client bulkWrite is a post-v1 capability",
       "status": "deferred"
     },
     "crud/tests/unified/count-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "the fixture mixes supported count helpers with the deprecated count operation, which v1 intentionally does not expose; partial execution awaits REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/count-empty.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "the fixture mixes supported count helpers with the deprecated count operation, which v1 intentionally does not expose; partial execution awaits REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/count-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "the fixture mixes supported count helpers with the deprecated count operation, which v1 intentionally does not expose; partial execution awaits REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/count.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "the fixture mixes supported count helpers with the deprecated count operation, which v1 intentionally does not expose; partial execution awaits REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/countDocuments-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/countDocuments-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/create-null-ids.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "the fixture mixes implemented operations with insertMany, collection bulkWrite, and post-v1 client bulkWrite models",
       "status": "deferred"
     },
     "crud/tests/unified/db-aggregate-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "database-level aggregate and its live unified execution bridge await REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "database-level aggregate and its live unified execution bridge await REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/db-aggregate.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "database-level aggregate and its live unified execution bridge await REL-001",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-collation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-hint.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-let.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteMany.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-collation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-errorResponse.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-hint.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-let.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/deleteOne.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/distinct-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/distinct-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/distinct-hint.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/distinct-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/distinct.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/estimatedDocumentCount-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/estimatedDocumentCount.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find-allowdiskuse.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find-collation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find-let.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/find.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOne.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-hint.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-hint.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace-upsert.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndReplace.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-arrayFilters.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-collation.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-hint.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-let.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-pipeline.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndUpdate.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/insertMany-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/insertMany-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/insertMany.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "BULK-001",
+      "reason": "insertMany and collection bulkWrite command batching are not implemented",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-errorResponse.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified failpoints and CRUD error-response execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-collation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-hint-unacknowledged.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-hint.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-let.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-sort.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-validation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-arrayFilters.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-collation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-dots_and_dollars.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-hint-unacknowledged.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-hint.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-let.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-pipeline.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany-validation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateMany.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-arrayFilters.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-collation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-comment.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-dots_and_dollars.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-errorResponse.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-hint-unacknowledged.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-hint.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-let.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-pipeline.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-rawdata.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-sort.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne-validation.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "crud/tests/unified/updateOne.json": {
-      "activity": "CRUD-003",
-      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
+      "activity": "REL-001",
+      "reason": "live unified CRUD entities, server requirements, command-event matching, failpoints, and outcome execution are deferred to the REL-001 conformance bridge; command models are covered by unit, loopback, and real-server integration tests",
       "status": "deferred"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json": {

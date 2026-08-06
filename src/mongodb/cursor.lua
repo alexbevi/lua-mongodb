@@ -141,6 +141,10 @@ local function get_more(value, state)
     entries[#entries + 1] = { "comment", state.comment }
   end
 
+  if state.max_await_time_ms ~= nil then
+    entries[#entries + 1] = { "maxTimeMS", state.max_await_time_ms }
+  end
+
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
@@ -303,6 +307,7 @@ function M.new(response, options)
     executor = options.executor,
     id = batch.id,
     limit = options.limit or 0,
+    max_await_time_ms = options.max_await_time_ms,
     numeric_id = batch.numeric_id,
     on_close = options.on_close,
     position = 1,
