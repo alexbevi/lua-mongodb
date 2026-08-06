@@ -65,6 +65,7 @@ build = {
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
+    ["mongodb.sdam"] = "src/mongodb/sdam.lua",
     ["mongodb.unified.schema"] = "src/mongodb/unified/schema.lua",
     ["mongodb.unified.runner"] = "src/mongodb/unified/runner.lua",
     ["mongodb.wire.op_msg"] = "src/mongodb/wire/op_msg.lua",

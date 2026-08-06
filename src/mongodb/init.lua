@@ -13,6 +13,7 @@ local M = {
   client = require("mongodb.client").connect,
   error = require("mongodb.error"),
   runtime = require("mongodb.runtime"),
+  sdam = require("mongodb.sdam"),
 }
 
 M.index_model = require("mongodb.admin").index_model

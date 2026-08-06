@@ -175,6 +175,14 @@ Database enumeration wraps the command's returned array in an exhausted local co
 
 Immutable index models retain ordered key documents, validate supported directions and option types locally, and generate deterministic key-direction names. `create_index` delegates to the same createIndexes path as multi-index creation. The boundary rejects `commit_quorum` before MongoDB 4.4 and gates internal raw-data fields on the MongoDB 8.2 wire version; all network behavior remains behind the command executor and runtime adapters.
 
+### SDAM descriptions and transitions
+
+`mongodb.sdam` is the side-effect-free phase-one SDAM core. It parses modern `hello` and legacy `ismaster` replies into immutable server descriptions, including replica-set membership, topology versions, generations, wire compatibility, election metadata, session timeout, tags, and server limits. Topology updates return new immutable descriptions and leave every prior snapshot unchanged, so monitor scheduling and selection can publish consistent views without sharing mutable transition state.
+
+The transition table covers Single, Unknown, Sharded, ReplicaSetNoPrimary, and ReplicaSetWithPrimary descriptions. It discovers and removes replica-set members, rejects mismatched set names and stale primaries, invalidates an older primary when a newer one appears, preserves monotonic election metadata, ignores stale topology versions and connection generations, and computes topology-wide wire compatibility and logical-session timeout. The v1 client range is wire version 21 through 27, matching MongoDB 7.0 through 8.2.
+
+This module performs no I/O and imports no runtime provider. SDAM-002 will own monitor scheduling, live replica-set discovery, heartbeat/event publication, and connection-error feedback; server selection and connection pools remain in their subsequent slices. Unified SDAM fixtures that require those live behaviors stay explicitly deferred to SDAM-002.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.

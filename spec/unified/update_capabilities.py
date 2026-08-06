@@ -48,8 +48,10 @@ CLASSIFICATIONS = {
     "retryable writes are not implemented",
   ),
   "server-discovery-and-monitoring": (
-    "SDAM-001",
-    "server discovery and monitoring are not implemented",
+    "SDAM-002",
+    "immutable phase-one descriptions and transitions are implemented; live monitor "
+    "scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed "
+    "execution are owned by SDAM-002",
   ),
   "transactions": (
     "TXN-002",

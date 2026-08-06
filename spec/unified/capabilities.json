@@ -1966,183 +1966,183 @@
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/auth-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/auth-misc-command-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/auth-network-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/auth-shutdown-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-single.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-server-description-unchanged-on-min-pool-size-population-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/cancel-server-check.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/connectTimeoutMS.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/find-network-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/find-network-timeout-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/find-shutdown-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/hello-command-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/hello-network-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/insert-network-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/insert-shutdown-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/loadbalanced-emit-topology-changed-before-close.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-application-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-checkout-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/pool-cleared-error.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/sharded-emit-topology-changed-before-close.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json": {
-      "activity": "SDAM-001",
-      "reason": "server discovery and monitoring are not implemented",
+      "activity": "SDAM-002",
+      "reason": "immutable phase-one descriptions and transitions are implemented; live monitor scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed execution are owned by SDAM-002",
       "status": "deferred"
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json": {

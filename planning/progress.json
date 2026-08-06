@@ -620,6 +620,28 @@
       "notes": [],
       "started_at": "2026-08-06T20:33:49+00:00",
       "completed_at": "2026-08-06T20:55:48+00:00"
+    },
+    "SDAM-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/sdam_spec.lua",
+          "exit_code": 1,
+          "summary": "Pinned standalone discovery fixture cannot run because mongodb.sdam does not exist",
+          "recorded_at": "2026-08-06T20:59:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "All 105 pinned phase-one SDAM topology transition fixtures pass within 116 unit tests; 15 integration tests, 320 unified schema fixtures, 483 classified fixtures, lint, rockspec, packaging smoke, and strict planning validation pass",
+          "recorded_at": "2026-08-06T21:08:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T20:59:21+00:00",
+      "completed_at": "2026-08-06T21:08:31+00:00"
     }
   },
   "verified_references": {
