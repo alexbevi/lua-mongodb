@@ -201,6 +201,10 @@ function CLIENT_METHODS:close()
     return false
   end
 
+  for cursor in pairs(state.cursors) do
+    cursor:close()
+  end
+
   state.closed = true
   state.executor:close()
   return true
@@ -223,6 +227,7 @@ function DATABASE_METHODS:collection(name, options)
 
   COLLECTION_STATES[value] = {
     client = state.client,
+    client_state = CLIENT_STATES[state.client],
     database = self,
     database_name = state.name,
     executor = CLIENT_STATES[state.client].executor,
@@ -230,6 +235,9 @@ function DATABASE_METHODS:collection(name, options)
     max_wire_version = CLIENT_STATES[state.client].max_wire_version,
     name = name,
     object_ids = CLIENT_STATES[state.client].object_ids,
+    on_cursor_close = function(cursor)
+      CLIENT_STATES[state.client].cursors[cursor] = nil
+    end,
     read_concern = concerns.read_concern,
     read_preference = concerns.read_preference,
     write_concern = concerns.write_concern,
@@ -279,6 +287,19 @@ function COLLECTION_METHODS:find_one(filter, options)
   return collection_operation(self, crud.find_one, filter, options)
 end
 
+function COLLECTION_METHODS:find(filter, options)
+  local cursor, err = collection_operation(self, crud.find, filter, options)
+
+  if not cursor then
+    return nil, err
+  end
+
+  local state = COLLECTION_STATES[self]
+
+  CLIENT_STATES[state.client].cursors[cursor] = true
+  return cursor
+end
+
 function M.new_client(executor, options, default_database_name, warnings, object_ids)
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
@@ -299,6 +320,7 @@ function M.new_client(executor, options, default_database_name, warnings, object
 
   CLIENT_STATES[value] = {
     closed = false,
+    cursors = setmetatable({}, { __mode = "k" }),
     default_database_name = default_database_name,
     executor = executor,
     max_wire_version = capabilities and capabilities.max_wire_version or 0,

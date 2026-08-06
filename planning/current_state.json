@@ -17,18 +17,18 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 23,
+    "completed": 24,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 25
+    "pending": 24
   },
   "active": [],
   "ready": [
-    "CUR-001",
+    "CRUD-002",
     "SDAM-001"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "CUR-001"
+  "next_ready": "CRUD-002"
 }

@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local cursor_model = require("mongodb.cursor")
 
 local M = {}
 
@@ -36,8 +37,11 @@ local FIND_OPTION_FIELDS = {
   sort = { "sort", "document" },
 }
 local FIND_OPTIONS = {
+  batch_size = true,
   cancellation = true,
   deadline = true,
+  limit = true,
+  no_cursor_timeout = true,
 }
 local INSERT_OPTIONS = {
   bypass_document_validation = true,
@@ -322,6 +326,93 @@ function M.insert_one(state, document, options)
   return result({
     acknowledged = acknowledged,
     inserted_id = acknowledged and identifier or nil,
+  })
+end
+
+function M.find(state, filter, options)
+  if filter == nil then
+    filter = bson.document({})
+  elseif not bson.is_document(filter) then
+    error("find filter must be a BSON document", 2)
+  end
+
+  options = validate_options(options, FIND_OPTIONS, "find")
+  local batch_size = options.batch_size or 0
+  local limit = options.limit or 0
+
+  if math.type(batch_size) ~= "integer" or batch_size < 0 then
+    error("batch_size must be a non-negative integer", 2)
+  end
+
+  if math.type(limit) ~= "integer" then
+    error("limit must be an integer", 2)
+  end
+
+  if options.no_cursor_timeout ~= nil and type(options.no_cursor_timeout) ~= "boolean" then
+    error("no_cursor_timeout must be a boolean", 2)
+  end
+
+  local single_batch = limit < 0
+  local absolute_limit = math.abs(limit)
+  local entries = {
+    { "find", state.name },
+    { "filter", filter },
+  }
+
+  append_find_options(entries, state, options)
+
+  if absolute_limit > 0 then
+    entries[#entries + 1] = { "limit", absolute_limit }
+  end
+
+  if batch_size > 0 then
+    local command_batch_size = batch_size
+
+    if absolute_limit > 0 and batch_size == absolute_limit then
+      command_batch_size = batch_size + 1
+    end
+
+    entries[#entries + 1] = { "batchSize", command_batch_size }
+  end
+
+  if single_batch then
+    entries[#entries + 1] = { "singleBatch", true }
+  end
+
+  if options.no_cursor_timeout ~= nil then
+    entries[#entries + 1] = { "noCursorTimeout", options.no_cursor_timeout }
+  end
+
+  local read_concern = concern_document(state.read_concern, false)
+
+  if read_concern then
+    entries[#entries + 1] = { "readConcern", read_concern }
+  end
+
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+    }
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  return cursor_model.new(response, {
+    batch_size = batch_size,
+    cancellation = options.cancellation,
+    client_state = state.client_state,
+    collection_name = state.name,
+    comment = options.comment,
+    database_name = state.database_name,
+    deadline = options.deadline,
+    executor = state.executor,
+    limit = absolute_limit,
+    on_close = state.on_cursor_close,
   })
 end
 

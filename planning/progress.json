@@ -510,6 +510,28 @@
       "notes": [],
       "started_at": "2026-08-06T18:42:26+00:00",
       "completed_at": "2026-08-06T18:51:58+00:00"
+    },
+    "CUR-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/cursor_spec.lua",
+          "exit_code": 1,
+          "summary": "Public collection handle has no find cursor method",
+          "recorded_at": "2026-08-06T18:53:39+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "97 unit tests, 11 integrations, unified schema/classification, lint, rockspec, planning, and strict gates passed; supplemental MongoDB 8.0 multi-batch and early killCursors check passed",
+          "recorded_at": "2026-08-06T18:59:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T18:52:23+00:00",
+      "completed_at": "2026-08-06T18:59:22+00:00"
     }
   },
   "verified_references": {

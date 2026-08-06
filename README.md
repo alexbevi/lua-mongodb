@@ -1,6 +1,6 @@
 # Lua MongoDB Driver
 
-This repository is the planning and implementation workspace for a pure-Lua MongoDB driver. It is pre-alpha: the standalone client, `run_command`, `insert_one`, and `find_one` APIs are implemented while the remaining CRUD and production topology behavior are added incrementally.
+This repository is the planning and implementation workspace for a pure-Lua MongoDB driver. It is pre-alpha: the standalone client, `run_command`, single-document CRUD, and multi-batch find cursor APIs are implemented while the remaining CRUD and production topology behavior are added incrementally.
 
 The driver will implement BSON, the MongoDB wire protocol, topology and connection management, authentication, sessions, retry behavior, and a unified specification-test runner in Lua. It will not wrap `libmongoc`. Native Lua modules may be used only behind runtime adapters for TCP, TLS, and cryptography.
 
@@ -55,6 +55,8 @@ The default `mongodb.runtime.copas` runtime wraps established sockets with LuaSe
 `mongodb.client` parses and normalizes a non-SRV URI, opens one standalone connection through the supplied runtime, performs TLS and hello, authenticates URI credentials with SCRAM, and returns immutable client, database, and collection handles. Database and collection handles inherit read concern, read preference, and write concern unless explicitly overridden. `database:run_command` accepts a command name or ordered BSON document; operational failures return structured errors. Closing a client is idempotent, and later operations on any of its database handles return a predictable client error. This initial lifecycle intentionally accepts exactly one TCP seed and owns one connection; pooling, replica-set discovery, sessions, and the remaining CRUD API belong to subsequent roadmap slices.
 
 `collection:insert_one` accepts an ordered BSON document, preserves an existing `_id`, or prepends a generated ObjectId without mutating the caller's value. Its immutable result reports acknowledgement and the inserted identifier. `collection:find_one` accepts an ordered filter or an `_id` value and supports the initial find option set, always sending `limit: 1` and `singleBatch: true` so the server closes the cursor. Both operations inherit collection concerns. Command-level failures keep their server response, while write and write-concern failures retain codes, labels, response documents, and unparsed `errInfo` in structured errors. Additional CRUD methods, general cursors, retries, and sessions remain in later slices.
+
+`collection:find` returns an immutable cursor over the initial `firstBatch`. `cursor:next()` fetches subsequent batches with `getMore` and returns `nil, structured_error` on operational failure; `cursor:iter()` is available when only successful document iteration is needed. Batch sizes are capped by the remaining limit, and equal limit/batch-size inputs use the specification's `limit + 1` initial batch rule. Exhausted zero-id cursors close locally. Call `cursor:close()` when stopping early; it sends `killCursors` if the server cursor is still live. `client:close()` closes every registered cursor before closing its connection, providing deterministic cleanup without attempting coroutine network I/O from a garbage-collection finalizer.
 
 ## Bootstrap
 

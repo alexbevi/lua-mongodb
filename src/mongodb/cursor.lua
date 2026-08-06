@@ -1,0 +1,320 @@
+local bson = require("mongodb.bson")
+local errors = require("mongodb.error")
+
+local M = {}
+
+local CURSOR_STATES = setmetatable({}, { __mode = "k" })
+local CURSOR_METHODS = {}
+
+local function immutable()
+  error("MongoDB cursors are immutable", 2)
+end
+
+local CURSOR_METATABLE = {
+  __index = function(value, key)
+    local method = CURSOR_METHODS[key]
+
+    if method then
+      return method
+    end
+
+    local state = CURSOR_STATES[value]
+
+    if state then
+      return state[key]
+    end
+  end,
+  __metatable = "mongodb.cursor",
+  __newindex = immutable,
+}
+
+local function protocol_error(message)
+  return nil, errors.new({
+    category = errors.CATEGORY.PROTOCOL,
+    message = message,
+  })
+end
+
+local function client_error(message)
+  return nil, errors.new({
+    category = errors.CATEGORY.CLIENT,
+    message = message,
+  })
+end
+
+local function number_value(value)
+  if type(value) == "number" then
+    return value
+  end
+
+  if bson.is_exact(value) then
+    return value:to_number()
+  end
+end
+
+local function cursor_id(value)
+  local numeric = number_value(value)
+
+  if math.type(numeric) ~= "integer" then
+    return protocol_error("cursor response contains an invalid cursor id")
+  end
+
+  return value, numeric
+end
+
+local function response_batch(response, name)
+  local cursor = response:get("cursor")
+
+  if not bson.is_document(cursor) then
+    return protocol_error("cursor response is missing its cursor document")
+  end
+
+  local id, numeric_id = cursor_id(cursor:get("id"))
+
+  if id == nil then
+    return nil, numeric_id
+  end
+
+  local batch = cursor:get(name)
+
+  if not bson.is_array(batch) then
+    return protocol_error("cursor response is missing its " .. name .. " array")
+  end
+
+  local documents = {}
+
+  for index, document in batch:iter() do
+    if not bson.is_document(document) then
+      return protocol_error("cursor batch contains a non-document")
+    end
+
+    documents[index] = document
+  end
+
+  return {
+    documents = documents,
+    id = id,
+    numeric_id = numeric_id,
+  }
+end
+
+local function mark_closed(value, state)
+  if state.closed then
+    return
+  end
+
+  state.closed = true
+  state.id = bson.int64(0)
+  state.numeric_id = 0
+  state.documents = {}
+  state.position = 1
+
+  if state.on_close then
+    state.on_close(value)
+  end
+end
+
+local function client_is_closed(state)
+  return state.client_state and state.client_state.closed == true
+end
+
+local function get_more(value, state)
+  local entries = {
+    { "getMore", state.id },
+    { "collection", state.collection_name },
+  }
+  local batch_size = state.batch_size
+
+  if state.limit > 0 then
+    local remaining = state.limit - state.retrieved
+
+    if batch_size == 0 or remaining < batch_size then
+      batch_size = remaining
+    end
+  end
+
+  if batch_size > 0 then
+    entries[#entries + 1] = { "batchSize", batch_size }
+  end
+
+  if state.comment ~= nil then
+    entries[#entries + 1] = { "comment", state.comment }
+  end
+
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = state.cancellation,
+      deadline = state.deadline,
+    }
+  )
+
+  if not response then
+    mark_closed(value, state)
+    return nil, err
+  end
+
+  local batch
+  batch, err = response_batch(response, "nextBatch")
+
+  if not batch then
+    mark_closed(value, state)
+    return nil, err
+  end
+
+  state.documents = batch.documents
+  state.id = batch.id
+  state.numeric_id = batch.numeric_id
+  state.position = 1
+  return true
+end
+
+function CURSOR_METHODS:next()
+  local state = CURSOR_STATES[self]
+
+  if state.closed then
+    if client_is_closed(state) then
+      return client_error("client is closed")
+    end
+
+    return nil
+  end
+
+  while true do
+    if state.limit > 0 and state.retrieved >= state.limit then
+      local closed, err = self:close()
+
+      if closed == nil then
+        return nil, err
+      end
+
+      return nil
+    end
+
+    local document = state.documents[state.position]
+
+    if document then
+      state.position = state.position + 1
+      state.retrieved = state.retrieved + 1
+
+      if state.position > #state.documents and state.numeric_id == 0 then
+        mark_closed(self, state)
+      end
+
+      return document
+    end
+
+    if state.numeric_id == 0 then
+      mark_closed(self, state)
+      return nil
+    end
+
+    if client_is_closed(state) then
+      mark_closed(self, state)
+      return client_error("client is closed")
+    end
+
+    local fetched, err = get_more(self, state)
+
+    if not fetched then
+      return nil, err
+    end
+  end
+end
+
+function CURSOR_METHODS:iter()
+  return function()
+    return self:next()
+  end
+end
+
+function CURSOR_METHODS:is_closed()
+  return CURSOR_STATES[self].closed
+end
+
+function CURSOR_METHODS:close(options)
+  local state = CURSOR_STATES[self]
+
+  if state.closed then
+    return false
+  end
+
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("cursor close options must be a table", 2)
+  end
+
+  if client_is_closed(state) or state.numeric_id == 0 then
+    mark_closed(self, state)
+    return true
+  end
+
+  local id = state.id
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document({
+      { "killCursors", state.collection_name },
+      { "cursors", bson.array({ id }) },
+    }),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+    }
+  )
+
+  mark_closed(self, state)
+
+  if not response then
+    return nil, err
+  end
+
+  return true
+end
+
+function M.new(response, options)
+  if not bson.is_document(response) then
+    error("cursor creation requires a command response", 2)
+  end
+
+  if type(options) ~= "table" then
+    error("cursor creation options must be a table", 2)
+  end
+
+  local batch, err = response_batch(response, "firstBatch")
+
+  if not batch then
+    return nil, err
+  end
+
+  local value = {}
+
+  CURSOR_STATES[value] = {
+    batch_size = options.batch_size or 0,
+    cancellation = options.cancellation,
+    client_state = options.client_state,
+    closed = false,
+    collection_name = options.collection_name,
+    comment = options.comment,
+    database_name = options.database_name,
+    deadline = options.deadline,
+    documents = batch.documents,
+    executor = options.executor,
+    id = batch.id,
+    limit = options.limit or 0,
+    numeric_id = batch.numeric_id,
+    on_close = options.on_close,
+    position = 1,
+    retrieved = 0,
+  }
+  local result = setmetatable(value, CURSOR_METATABLE)
+
+  if batch.numeric_id == 0 and #batch.documents == 0 then
+    mark_closed(result, CURSOR_STATES[result])
+  end
+
+  return result
+end
+
+return M

@@ -66,6 +66,34 @@ CRUD_DEFERRED_REASON = (
 )
 
 PATH_CLASSIFICATIONS = {
+  "crud/tests/unified/find-allowdiskuse-serverError.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/find-allowdiskuse.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/find-collation.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/find-comment.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/find-let.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/find-rawdata.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/find.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
   "crud/tests/unified/findOne.json": (
     "CRUD-003",
     CRUD_DEFERRED_REASON,
