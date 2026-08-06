@@ -10,6 +10,8 @@ The production goal stops after `production-core-v1`. Do not begin post-v1 work 
 
 ## Activity workflow
 
+Keep commits small. Each commit must be the smallest practical vertical slice that delivers one independently verifiable behavior from its tests through its implementation and required documentation. If an activity is too large for one such commit, split it into ordered plan activities before implementation; never accumulate several behaviors into a broad checkpoint commit.
+
 1. Run `python3 planning/update_plan.py check --strict` and `next`.
 2. Start exactly one ready activity through the script.
 3. Add the smallest failing test that defines the vertical slice, run it, and record the red result.
@@ -31,4 +33,3 @@ Target Lua 5.4 and require a 64-bit `lua_Integer`. Treat operational failures as
 ## Verification
 
 Once the foundation activity creates the build harness, the standard gates are `make test-unit`, `make test-integration`, `make test-unified`, `make lint`, and `make check`. Until then, use `python3 -m unittest discover -s planning/tests -v` and both skill validators.
-
