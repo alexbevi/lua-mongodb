@@ -24,7 +24,7 @@ local document, find_err = client:database("app")
   :find_one(query)
 ```
 
-The initial compatibility target is Lua 5.4 with 64-bit `lua_Integer`, Copas 4.11, LuaSocket, LuaSec, and MongoDB server 7.0 through 8.2. Operational failures return `nil, structured_error`; programmer misuse may raise a Lua error.
+The initial compatibility target is Lua 5.4 with 64-bit `lua_Integer`, Copas 4.11, LuaSocket, LuaSec, luaossl, and MongoDB server 7.0 through 8.2. Operational failures return `nil, structured_error`; programmer misuse may raise a Lua error.
 
 The implemented `mongodb.bson` foundation provides explicit ordered documents and arrays; immutable values for every BSON wire type; exact Decimal128 and numeric wrappers; strict UTF-8 validation; configurable size/depth bounds; and ordered canonical/relaxed Extended JSON. ObjectId generation takes a runtime so time and entropy stay portable. Explicit containers prevent Lua table iteration order from changing command bytes, while exact wrappers preserve numeric wire types and bit patterns.
 
@@ -32,7 +32,9 @@ The implemented `mongodb.bson` foundation provides explicit ordered documents an
 
 Unsupported or invalid URI options are ignored with returned warnings as required by the connection-string specification; unsupported programmatic keys and invalid programmatic values return structured configuration errors. Advanced post-v1 settings such as compression, SRV, proxy, and load-balanced options are intentionally not accepted by the v1 programmatic configuration boundary.
 
-The internal `mongodb.command.executor` now performs the mandatory OP_MSG connection handshake and exact command exchange on one transport connection. It sends bounded client metadata, negotiates legacy `ismaster` to modern `hello`, carries Stable API settings and `$db` without mutating the caller's ordered command, validates correlated replies, and returns server codes, code names, labels, and response documents through structured errors. The public client/database `run_command` API, connection pooling, authentication, sessions, and monitoring remain owned by their later roadmap slices.
+The internal `mongodb.command.executor` performs the mandatory OP_MSG connection handshake and exact command exchange on one transport connection. It sends bounded client metadata, negotiates legacy `ismaster` to modern `hello`, carries Stable API settings and `$db` without mutating the caller's ordered command, validates correlated replies, and returns server codes, code names, labels, and response documents through structured errors. Command monitoring publishes immutable events with normative authentication redaction.
+
+`mongodb.auth.scram` authenticates a handshaken command executor with SCRAM-SHA-256 or SCRAM-SHA-1, including secure nonces, the minimum iteration check, server nonce/signature verification, derived-key caching, and the optional third empty exchange. SCRAM-SHA-256 passwords pass through a pure-Lua Unicode 3.2 SASLprep implementation. The default Copas runtime obtains entropy and MD5/SHA/HMAC/PBKDF2 operations through its luaossl adapter; secrets are excluded from authentication errors and monitoring events. The public client/database API, connection pooling, automatic mechanism negotiation, and sessions remain owned by later roadmap slices.
 
 ## Bootstrap
 
@@ -50,7 +52,7 @@ Architecture decisions are maintained in [`docs/ARCHITECTURE.md`](docs/ARCHITECT
 
 ## Development
 
-The project requires Lua 5.4 with 64-bit `lua_Integer`, LuaRocks, Copas 4.11, Busted 2.3, and Luacheck 1.2. Install the rockspec's runtime and development dependencies, then run:
+The project requires Lua 5.4 with 64-bit `lua_Integer`, LuaRocks, Copas 4.11, luaossl, Busted 2.3, and Luacheck 1.2. Install the rockspec's runtime and development dependencies, then run:
 
 ```sh
 make test-unit
@@ -60,7 +62,7 @@ make lint
 make check
 ```
 
-Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport plus OP_MSG handshake and ping execution without requiring an external server process.
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport plus OP_MSG handshake, SCRAM-SHA-256 authentication, and authenticated ping execution without requiring an external server process.
 
 The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
 

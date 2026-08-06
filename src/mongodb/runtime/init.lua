@@ -14,6 +14,7 @@ local REQUIRED_CAPABILITIES = {
   "socket.connect",
   "tls.wrap",
   "entropy.bytes",
+  "crypto.md5",
   "crypto.sha1",
   "crypto.sha256",
   "crypto.hmac_sha1",

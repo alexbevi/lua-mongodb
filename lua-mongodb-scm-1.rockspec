@@ -21,6 +21,7 @@ dependencies = {
   "lua >= 5.4, < 5.5",
   "copas >= 4.11, < 4.12",
   "luasocket >= 3.1, < 4",
+  "luaossl >= 20220711",
 }
 
 test_dependencies = {
@@ -43,12 +44,16 @@ build = {
     ["mongodb.config.uri"] = "src/mongodb/config/uri.lua",
     ["mongodb.command.executor"] = "src/mongodb/command/executor.lua",
     ["mongodb.command.hello"] = "src/mongodb/command/hello.lua",
+    ["mongodb.auth.saslprep"] = "src/mongodb/auth/saslprep.lua",
+    ["mongodb.auth.scram"] = "src/mongodb/auth/scram.lua",
+    ["mongodb.auth.stringprep_tables"] = "src/mongodb/auth/stringprep_tables.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
     ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",
     ["mongodb.runtime.copas_socket"] = "src/mongodb/runtime/copas_socket.lua",
+    ["mongodb.runtime.openssl"] = "src/mongodb/runtime/openssl.lua",
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",

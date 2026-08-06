@@ -19,8 +19,8 @@ OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
 
 CLASSIFICATIONS = {
   "auth": (
-    "AUTH-002",
-    "SCRAM authentication and authenticated unified execution are not implemented",
+    "ADV-008",
+    "the pinned authentication fixture requires post-v1 OIDC authentication",
   ),
   "change-streams": (
     "ADV-001",

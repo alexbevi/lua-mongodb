@@ -415,6 +415,28 @@
       "notes": [],
       "started_at": "2026-08-06T17:55:13+00:00",
       "completed_at": "2026-08-06T18:01:14+00:00"
+    },
+    "AUTH-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/auth_scram_spec.lua",
+          "exit_code": 1,
+          "summary": "Normative SCRAM-SHA-256 conversation fails because mongodb.auth.scram does not exist",
+          "recorded_at": "2026-08-06T18:06:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "86 unit tests, three loopback integrations including SCRAM authenticated ping, live MongoDB 8.0.16 authenticated ping, 320 unified schema cases, 483 explicit fixture classifications, lint, rockspec, and planning gates passed",
+          "recorded_at": "2026-08-06T18:17:50+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T18:01:39+00:00",
+      "completed_at": "2026-08-06T18:18:22+00:00"
     }
   },
   "verified_references": {

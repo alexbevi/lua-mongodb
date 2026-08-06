@@ -1,8 +1,8 @@
 {
   "fixtures": {
     "auth/tests/unified/mongodb-oidc-no-retry.json": {
-      "activity": "AUTH-002",
-      "reason": "SCRAM authentication and authenticated unified execution are not implemented",
+      "activity": "ADV-008",
+      "reason": "the pinned authentication fixture requires post-v1 OIDC authentication",
       "status": "deferred"
     },
     "change-streams/tests/unified/change-streams-clusterTime.json": {

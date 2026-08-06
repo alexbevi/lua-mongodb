@@ -309,6 +309,11 @@ function M.new(options)
   require_positive_number("lock_poll_interval", poll_interval, 2)
 
   local adapter = {}
+  local openssl
+
+  if options.entropy == nil or options.crypto == nil then
+    openssl = require("mongodb.runtime.openssl").new()
+  end
 
   adapter.clock = new_clock(adapter, copas, raw_gettime, raw_wall_time)
   adapter.cancellation = { new = cancellation.new }
@@ -319,15 +324,8 @@ function M.new(options)
     poll_interval = poll_interval,
   })
   adapter.tls = options.tls or unavailable_provider("TLS", { "wrap" })
-  adapter.entropy = options.entropy or unavailable_provider("entropy", { "bytes" })
-  adapter.crypto = options.crypto or unavailable_provider("crypto", {
-    "sha1",
-    "sha256",
-    "hmac_sha1",
-    "hmac_sha256",
-    "pbkdf2_sha1",
-    "pbkdf2_sha256",
-  })
+  adapter.entropy = options.entropy or openssl.entropy
+  adapter.crypto = options.crypto or openssl.crypto
 
   return runtime_contract.validate(adapter)
 end

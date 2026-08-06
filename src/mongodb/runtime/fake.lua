@@ -461,6 +461,7 @@ local function new_entropy_capability(owner)
 end
 
 local CRYPTO_OPERATIONS = {
+  "md5",
   "sha1",
   "sha256",
   "hmac_sha1",
@@ -492,6 +493,9 @@ end
 
 local function new_crypto_capability(owner)
   return {
+    md5 = function(_, data)
+      return crypto_call(owner, "md5", data)
+    end,
     sha1 = function(_, data)
       return crypto_call(owner, "sha1", data)
     end,
