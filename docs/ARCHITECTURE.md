@@ -1,6 +1,6 @@
 # Architecture
 
-Status: foundation implementation in progress. This document must be updated in the same activity that changes an architectural contract.
+Status: standalone-core implementation in progress. This document must be updated in the same activity that changes an architectural contract.
 
 ## Design constraints
 
@@ -70,6 +70,12 @@ Run-on requirements compare numeric version components and environment topology,
 The filesystem-facing unified CLI is a Python envelope around the Lua schema/runner layers, like the BSON corpus loader. It discovers every pinned path matching `*/tests/unified/*.json`, validates exact coverage against `spec/unified/capabilities.json`, applies repeatable glob include filters, and emits a versioned JSON report. The manifest records the pinned specifications commit and assigns each fixture either `runnable` or `deferred` with an owning activity and concrete reason. Missing or stale entries, unknown statuses, empty deferral reasons, empty discovery, and runnable fixtures without an executor are hard failures.
 
 At the foundation boundary all 483 discovered integration fixtures are deferred to the driver slice that can first execute them; client-side encryption is explicitly outside the roadmap pending a separate design. Later activities change only their newly supported manifest entries to `runnable` in the same commit as the implementation and tests. The generator's `--check` mode prevents hand-edited or stale classification drift, while normal reports retain a row for every selected fixture so exclusions cannot disappear into aggregate counts.
+
+### Connection-string syntax
+
+`mongodb.config.uri` owns parsing for `mongodb://` connection strings without importing networking or authentication implementations. It returns an ordered seed list whose entries distinguish hostnames, IPv4 addresses, bracketed IPv6 literals, and encoded Unix socket paths; decoded credentials and authentication database; and query pairs in source order. Hostnames are normalized to lowercase, ports are range checked, percent escapes and decoded UTF-8 are validated, and repeated query keys produce explicit warnings.
+
+This layer intentionally preserves option values as decoded strings. Option aliases, supported-key policy, value typing, precedence, read/write concerns, read preferences, and Stable API validation belong to the shared immutable option layer in `CFG-002`. The pinned connection-string corpus is therefore fully exercised here for URI validity and structural host/auth parsing, while warning expectations that depend on option semantics remain assigned to `CFG-002`. Structured parse errors identify only the failed component and never embed the URI or credential text.
 
 ## Planned layers
 

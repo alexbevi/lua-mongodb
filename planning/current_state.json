@@ -17,19 +17,19 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 13,
+    "completed": 14,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 35
+    "pending": 34
   },
   "active": [],
   "ready": [
-    "CFG-001",
+    "CFG-002",
     "WIRE-001",
     "NET-001"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "CFG-001"
+  "next_ready": "CFG-002"
 }

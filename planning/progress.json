@@ -283,6 +283,28 @@
       "notes": [],
       "started_at": "2026-08-06T16:42:34+00:00",
       "completed_at": "2026-08-06T16:45:41+00:00"
+    },
+    "CFG-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/config_uri_spec.lua",
+          "exit_code": 1,
+          "summary": "Connection-string contract fails because mongodb.config.uri does not exist.",
+          "recorded_at": "2026-08-06T16:46:50+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8 toolchain and pinned connection-string corpus",
+          "exit_code": 0,
+          "summary": "61 Lua tests plus all 98 pinned non-SRV connection-string syntax fixtures passed; BSON/Extended JSON corpora, 320 schema meta-fixtures, 483 classified unified fixtures, lint, rockspec, and planning validation passed",
+          "recorded_at": "2026-08-06T17:20:49+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T16:46:20+00:00",
+      "completed_at": "2026-08-06T17:20:51+00:00"
     }
   },
   "verified_references": {
