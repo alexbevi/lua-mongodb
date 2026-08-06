@@ -19,6 +19,28 @@
         "Planning bootstrap created from the reviewed implementation design."
       ],
       "completed_at": "2026-08-06T14:36:10+00:00"
+    },
+    "FND-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "/tmp/lua-mongodb-tools.VEJKxC/rocks/bin/busted --lpath='src/?.lua' --lpath='src/?/init.lua' spec/unit",
+          "exit_code": 1,
+          "summary": "Four bootstrap tests error because mongodb and mongodb.runtime_guard do not exist",
+          "recorded_at": "2026-08-06T14:42:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8, LuaRocks 3.12.2, Busted 2.3.0, and Luacheck 1.2.0",
+          "exit_code": 0,
+          "summary": "4 unit tests passed; deferred gates explicit; lint, rockspec, planning state, package install, CI YAML, and skill validation passed",
+          "recorded_at": "2026-08-06T14:45:14+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T14:39:19+00:00",
+      "completed_at": "2026-08-06T14:45:15+00:00"
     }
   },
   "verified_references": {

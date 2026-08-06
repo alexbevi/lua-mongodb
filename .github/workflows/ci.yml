@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install development dependencies
+        run: |
+          luarocks install busted 2.3.0-1
+          luarocks install luacheck 1.2.0-1
+
+      - name: Run all foundation checks
+        run: make check
+
+      - name: Verify executable roadmap and commit evidence
+        run: python3 planning/update_plan.py check --strict
+

@@ -39,6 +39,20 @@ The roadmap lives in [`planning/plan.json`](planning/plan.json). [`planning/curr
 
 Architecture decisions are maintained in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), while [`planning/reference_architecture.md`](planning/reference_architecture.md) maps PyMongo and the MongoDB specifications to the planned Lua components.
 
+## Development
+
+The project requires Lua 5.4 with 64-bit `lua_Integer`, LuaRocks, Busted 2.3, and Luacheck 1.2. Install the rockspec's development dependencies, then run:
+
+```sh
+make test-unit
+make test-integration
+make test-unified
+make lint
+make check
+```
+
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. Integration tests begin with the command executor slice; the unified runner remains explicitly deferred until its roadmap activities rather than being counted as passing coverage.
+
 ## Scope
 
 The `production-core-v1` milestone covers standalone and replica-set CRUD, TLS and SCRAM, SDAM and CMAP, monitoring, sessions, retries, transactions, and client-side operation timeout. Advanced features such as change streams, GridFS, SRV, compression, sharded and load-balanced deployments, extra authentication mechanisms, and client bulk write remain post-v1. Client-side field-level/queryable encryption and GSSAPI require separate designs.
@@ -46,4 +60,3 @@ The `production-core-v1` milestone covers standalone and replica-set CRUD, TLS a
 ## License
 
 Apache License 2.0. See [`LICENSE`](LICENSE).
-
