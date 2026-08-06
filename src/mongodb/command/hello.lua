@@ -174,6 +174,18 @@ function M.new(document)
     return nil, err
   end
 
+  local connection_id = document:get("connectionId")
+
+  if connection_id ~= nil then
+    connection_id = number_value(connection_id)
+
+    if math.type(connection_id) ~= "integer" then
+      return protocol_error("hello response contains an invalid connectionId", {
+        field = "connectionId",
+      })
+    end
+  end
+
   local kind = server_type(document)
   local is_writable = kind == "standalone" or kind == "mongos"
     or kind == "load_balancer" or kind == "rs_primary"
@@ -181,6 +193,7 @@ function M.new(document)
   local value = {}
 
   HELLO_STATES[value] = {
+    connection_id = connection_id,
     document = document,
     hello_ok = hello_ok,
     is_readable = is_readable,

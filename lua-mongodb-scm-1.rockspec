@@ -44,6 +44,7 @@ build = {
     ["mongodb.command.executor"] = "src/mongodb/command/executor.lua",
     ["mongodb.command.hello"] = "src/mongodb/command/hello.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
+    ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
     ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",

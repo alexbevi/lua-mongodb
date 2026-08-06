@@ -393,6 +393,28 @@
       "notes": [],
       "started_at": "2026-08-06T17:43:00+00:00",
       "completed_at": "2026-08-06T17:53:50+00:00"
+    },
+    "MON-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/command_monitoring_spec.lua",
+          "exit_code": 1,
+          "summary": "Command event ordering, correlation, duration, listener isolation, and redaction contract fails because mongodb.monitoring does not exist.",
+          "recorded_at": "2026-08-06T17:57:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && make lint && make rockspec",
+          "exit_code": 0,
+          "summary": "79 unit tests, all BSON/Extended JSON corpora, 320 unified schema cases, 483 explicit fixture classifications, complete sensitive-command redaction, listener isolation, lint, and rockspec gates passed.",
+          "recorded_at": "2026-08-06T18:01:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T17:55:13+00:00",
+      "completed_at": "2026-08-06T18:01:14+00:00"
     }
   },
   "verified_references": {

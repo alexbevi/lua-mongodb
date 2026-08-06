@@ -122,6 +122,19 @@ local function envelope(command, database, server_api)
   return bson.document(entries)
 end
 
+local function monitored_envelope(body, sequences)
+  local entries = body:entries()
+
+  for _, sequence in ipairs(sequences or {}) do
+    entries[#entries + 1] = {
+      sequence.identifier,
+      bson.array(sequence.documents or {}),
+    }
+  end
+
+  return bson.document(entries)
+end
+
 local function close_with(state, err)
   state.connection:close()
   return nil, err
@@ -147,8 +160,9 @@ local function execute(state, database, command, options)
   end
 
   local request_id = state.request_ids:next()
+  local body = envelope(command, database, state.server_api)
   local bytes, err = op_msg.encode({
-    body = envelope(command, database, state.server_api),
+    body = body,
     max_bson_size = state.max_bson_size,
     max_message_size = state.max_message_size,
     request_id = request_id,
@@ -159,10 +173,28 @@ local function execute(state, database, command, options)
     return nil, err
   end
 
+  local span
+
+  if options.monitor ~= false and state.monitoring and state.monitoring:has_listeners() then
+    span = state.monitoring:start({
+      command = monitored_envelope(body, options.sequences),
+      connection_id = state.server,
+      database_name = database,
+      operation_id = options.operation_id,
+      request_id = request_id,
+      server_connection_id = state.server_connection_id,
+      service_id = state.service_id,
+    })
+  end
+
   local written
   written, err = state.connection:write_all(bytes, options.deadline, options.cancellation)
 
   if not written then
+    if span then
+      span:failed(err)
+    end
+
     return close_with(state, err)
   end
 
@@ -174,6 +206,10 @@ local function execute(state, database, command, options)
   )
 
   if not response_bytes then
+    if span then
+      span:failed(err)
+    end
+
     return close_with(state, err)
   end
 
@@ -186,21 +222,47 @@ local function execute(state, database, command, options)
   })
 
   if not response then
+    if span then
+      span:failed(err)
+    end
+
     return close_with(state, err)
   end
 
   if response.more_to_come then
-    return close_with(state, protocol_error("command response unexpectedly has moreToCome set"))
+    err = protocol_error("command response unexpectedly has moreToCome set")
+
+    if span then
+      span:failed(err)
+    end
+
+    return close_with(state, err)
   end
 
   local ok = number_value(response.body:get("ok"))
 
   if ok == nil then
-    return close_with(state, protocol_error("command response is missing a numeric ok field"))
+    err = protocol_error("command response is missing a numeric ok field")
+
+    if span then
+      span:failed(err)
+    end
+
+    return close_with(state, err)
   end
 
   if ok == 0 then
-    return nil, server_error(state, response.body)
+    err = server_error(state, response.body)
+
+    if span then
+      span:failed(err)
+    end
+
+    return nil, err
+  end
+
+  if span then
+    span:succeeded(response.body)
   end
 
   return response.body
@@ -286,7 +348,13 @@ function EXECUTOR_METHODS:hello(options)
     entries[#entries + 1] = { "client", state.metadata }
   end
 
-  local response, err = execute(state, "admin", bson.document(entries), options)
+  options = options or {}
+
+  local response, err = execute(state, "admin", bson.document(entries), {
+    cancellation = options.cancellation,
+    deadline = options.deadline,
+    monitor = false,
+  })
 
   if not response then
     return nil, err
@@ -303,6 +371,7 @@ function EXECUTOR_METHODS:hello(options)
   state.hello_ok = state.hello_ok or hello.hello_ok
   state.max_bson_size = hello.max_bson_size
   state.max_message_size = hello.max_message_size
+  state.server_connection_id = hello.connection_id
   state.hello = hello
   return hello
 end
@@ -352,9 +421,12 @@ function M.new(connection, options)
     max_bson_size = DEFAULT_MAX_BSON_SIZE,
     max_message_size = DEFAULT_MAX_MESSAGE_SIZE,
     metadata = metadata(options),
+    monitoring = options.monitoring,
     request_ids = options.request_ids or op_msg.request_ids(),
     server = options.server,
+    server_connection_id = nil,
     server_api = options.server_api,
+    service_id = nil,
   }
 
   return setmetatable(value, EXECUTOR_METATABLE)

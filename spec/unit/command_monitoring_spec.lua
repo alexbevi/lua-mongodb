@@ -1,0 +1,239 @@
+local bson = require("mongodb.bson")
+local command_executor = require("mongodb.command.executor")
+local errors = require("mongodb.error")
+local monitoring = require("mongodb.monitoring")
+local op_msg = require("mongodb.wire.op_msg")
+
+local function fake_connection(responses)
+  local connection = { requests = {}, responses = responses }
+
+  function connection:write_all(bytes)
+    self.requests[#self.requests + 1] = assert(op_msg.decode(bytes, { direction = "request" }))
+    return true
+  end
+
+  function connection:read_frame()
+    local request = self.requests[#self.requests]
+    return assert(op_msg.encode({
+      body = table.remove(self.responses, 1),
+      direction = "response",
+      request_id = 500 + #self.requests,
+      response_to = request.request_id,
+    }))
+  end
+
+  function connection.close()
+    return true
+  end
+
+  return connection
+end
+
+local function clock(values)
+  return {
+    now = function()
+      return table.remove(values, 1)
+    end,
+  }
+end
+
+describe("command monitoring", function()
+  it("publishes correlated ordered outcomes and isolates listeners", function()
+    local observed = {}
+    local listener_errors = {}
+    local noisy = {
+      started = function(_, event)
+        assert.has_error(function()
+          event.request_id = 0
+        end, "command monitoring events are immutable")
+        error("listener exploded")
+      end,
+    }
+    local recorder = {
+      started = function(_, event)
+        observed[#observed + 1] = event
+      end,
+      succeeded = function(_, event)
+        observed[#observed + 1] = event
+      end,
+      failed = function(_, event)
+        observed[#observed + 1] = event
+      end,
+    }
+    local events = monitoring.new({
+      clock = clock({ 10, 10.25, 20, 20.5 }),
+      listeners = { noisy, recorder },
+      on_listener_error = function(err)
+        listener_errors[#listener_errors + 1] = err
+      end,
+    })
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "connectionId", 99 }, { "maxWireVersion", 25 } }),
+      bson.document({ { "ok", 1 } }),
+      bson.document({ { "ok", 0 }, { "errmsg", "bad command" }, { "code", 2 } }),
+    })
+    local commands = command_executor.new(connection, {
+      monitoring = events,
+      server = "db.example:27017",
+    })
+
+    assert(commands:hello())
+    assert(commands:command("app", bson.document({ { "insert", "items" } }), {
+      operation_id = 700,
+      sequences = {
+        {
+          documents = { bson.document({ { "name", "Ada" } }) },
+          identifier = "documents",
+        },
+      },
+    }))
+    local response, err = commands:command("app", bson.document({ { "bad", 1 } }))
+
+    assert.is_nil(response)
+    assert.is_true(errors.is(err, errors.CATEGORY.SERVER))
+    assert.are.equal(2, #listener_errors)
+    assert.are.same(
+      { "command_started", "command_succeeded", "command_started", "command_failed" },
+      { observed[1].type, observed[2].type, observed[3].type, observed[4].type }
+    )
+    assert.are.equal(observed[1].request_id, observed[2].request_id)
+    assert.are.equal(observed[3].request_id, observed[4].request_id)
+    assert.are.equal(700, observed[1].operation_id)
+    assert.are.equal(250, observed[2].duration_ms)
+    assert.are.equal(500, observed[4].duration_ms)
+    assert.are.equal("db.example:27017", observed[1].connection_id)
+    assert.are.equal(99, observed[1].server_connection_id)
+    assert.are.equal("app", observed[1].database_name)
+    assert.are.equal("insert", observed[1].command_name)
+    assert.are.equal("Ada", observed[1].command:get("documents"):get(1):get("name"))
+    assert.are.equal("bad command", observed[4].failure.message)
+  end)
+
+  it("redacts credentials, auth replies, and sensitive server failures", function()
+    local observed = {}
+    local events = monitoring.new({
+      clock = clock({ 1, 2, 3, 4 }),
+      listeners = {
+        {
+          started = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          succeeded = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          failed = function(_, event)
+            observed[#observed + 1] = event
+          end,
+        },
+      },
+    })
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      bson.document({ { "ok", 1 }, { "payload", "server-secret" } }),
+      bson.document({
+        { "ok", 0 },
+        { "errmsg", "credential leaked" },
+        { "code", 18 },
+        { "codeName", "AuthenticationFailed" },
+        { "errorLabels", bson.array({ "HandshakeError" }) },
+      }),
+    })
+    local commands = command_executor.new(connection, { monitoring = events })
+
+    assert(commands:hello())
+    assert(commands:command("admin", bson.document({
+      { "saslStart", 1 },
+      { "payload", bson.binary("client-secret") },
+    })))
+    local response = commands:command("admin", bson.document({
+      { "authenticate", 1 },
+      { "user", "private" },
+    }))
+
+    assert.is_nil(response)
+    assert.are.equal(0, #observed[1].command)
+    assert.are.equal(0, #observed[2].reply)
+    assert.are.equal(0, #observed[3].command)
+    assert.are.same({ "code", "codeName", "errorLabels" }, observed[4].failure:keys())
+    assert.is_nil(observed[4].failure:get("errmsg"))
+  end)
+
+  it("redacts the complete normative sensitive-command list", function()
+    local observed = {}
+    local current_time = 0
+    local events = monitoring.new({
+      clock = {
+        now = function()
+          current_time = current_time + 0.001
+          return current_time
+        end,
+      },
+      listeners = {
+        {
+          started = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          succeeded = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          failed = function(_, event)
+            observed[#observed + 1] = event
+          end,
+        },
+      },
+    })
+    local commands = {
+      "authenticate",
+      "saslStart",
+      "saslContinue",
+      "getnonce",
+      "createUser",
+      "updateUser",
+      "copydbgetnonce",
+      "copydbsaslstart",
+      "copydb",
+    }
+
+    for index, name in ipairs(commands) do
+      local span = events:start({
+        command = bson.document({ { name, 1 }, { "secret", "client-secret" } }),
+        connection_id = "localhost:27017",
+        database_name = "admin",
+        request_id = index,
+      })
+
+      span:succeeded(bson.document({ { "ok", 1 }, { "secret", "server-secret" } }))
+      assert.are.equal(0, #observed[#observed - 1].command)
+      assert.are.equal(0, #observed[#observed].reply)
+    end
+
+    for index, name in ipairs({ "hello", "ismaster", "isMaster" }) do
+      local span = events:start({
+        command = bson.document({
+          { name, 1 },
+          { "speculativeAuthenticate", bson.document({ { "payload", "secret" } }) },
+        }),
+        database_name = "admin",
+        request_id = 100 + index,
+      })
+
+      span:succeeded(bson.document({ { "ok", 1 }, { "payload", "secret" } }))
+      assert.are.equal(0, #observed[#observed - 1].command)
+      assert.are.equal(0, #observed[#observed].reply)
+    end
+
+    local network_failure = errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "socket closed",
+    })
+    local span = events:start({
+      command = bson.document({ { "saslStart", 1 }, { "payload", "secret" } }),
+      database_name = "admin",
+      request_id = 200,
+    })
+
+    span:failed(network_failure)
+    assert.are.equal(0, #observed[#observed - 1].command)
+    assert.are.equal(network_failure, observed[#observed].failure)
+  end)
+end)

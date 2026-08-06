@@ -63,7 +63,7 @@ CLASSIFICATIONS = {
 PATH_CLASSIFICATIONS = {
   "run-command/tests/unified/runCommand.json": (
     "TXN-002",
-    "the public command API, sessions, monitoring, and transaction execution are not implemented",
+    "the public command API, sessions, and transaction execution are not implemented",
   ),
   "run-command/tests/unified/runCursorCommand.json": (
     "SES-001",

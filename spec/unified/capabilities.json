@@ -1957,7 +1957,7 @@
     },
     "run-command/tests/unified/runCommand.json": {
       "activity": "TXN-002",
-      "reason": "the public command API, sessions, monitoring, and transaction execution are not implemented",
+      "reason": "the public command API, sessions, and transaction execution are not implemented",
       "status": "deferred"
     },
     "run-command/tests/unified/runCursorCommand.json": {

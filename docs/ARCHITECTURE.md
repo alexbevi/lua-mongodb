@@ -101,6 +101,14 @@ Commands are copied from the caller's ordered BSON document, preserving the comm
 
 `mongodb.command.hello` is the immutable per-connection capability model. It validates and supplies defaults for negotiated wire, BSON, message, batch, and logical-session fields and exposes the server's basic readability/writability shape for later SDAM work. It does not select servers, pool connections, authenticate, or import runtime-specific networking; those responsibilities remain in their dedicated layers.
 
+### Command monitoring
+
+`mongodb.monitoring` publishes immutable command-started, command-succeeded, and command-failed events synchronously around application command I/O. The executor supplies a single request ID to each correlated pair, accepts an optional operation ID for multi-command work, reports the database and connection identities, and reconstructs OP_MSG document sequences as arrays in the started event. Durations come from an injected monotonic clock capability and cover the command exchange. Initial connection handshakes are excluded from command monitoring.
+
+Listeners are copied at monitor construction and invoked in registration order. Each callback runs behind an isolated protected call, so listener failures cannot change command results or prevent later listeners from observing the event; an optional error callback receives listener failures under the same isolation rule. Event and BSON values are immutable, preventing one listener from changing what another listener observes.
+
+Authentication commands (`authenticate`, SASL commands, nonce/user/copydb commands) and hello commands containing `speculativeAuthenticate` publish empty command and reply documents. Sensitive server failures retain only `code`, `codeName`, and `errorLabels`; network and other client-side failures remain inspectable because they do not contain server authentication payloads. Redaction occurs before listener dispatch, so no listener can opt into credential-bearing values.
+
 ## Planned layers
 
 1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.
