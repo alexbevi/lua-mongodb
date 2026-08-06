@@ -97,9 +97,23 @@ def explain_failure(output: str, cases: list[tuple[str, bool, Path]]) -> str:
   return f"{output}\nfixture: {directory}/{path.name}"
 
 
+def build_report(cases: list[tuple[str, bool, Path]], passed: bool) -> dict[str, object]:
+  return {
+    "report_version": 2,
+    "summary": {
+      "executed": len(cases) if passed else 0,
+      "failed": 0 if passed else 1,
+      "passed": len(cases) if passed else 0,
+      "selected": len(cases),
+    },
+    "type": "meta_runner",
+  }
+
+
 def main() -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--lua", default=os.environ.get("LUA", "lua"))
+  parser.add_argument("--report", type=Path)
   arguments = parser.parse_args()
   cases = load_cases()
   process = subprocess.run(
@@ -113,8 +127,19 @@ def main() -> int:
 
   if process.returncode != 0:
     output = process.stdout + process.stderr
+    if arguments.report:
+      arguments.report.write_text(
+        json.dumps(build_report(cases, False), indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+      )
     print(explain_failure(output, cases), file=sys.stderr)
     return process.returncode
+
+  if arguments.report:
+    arguments.report.write_text(
+      json.dumps(build_report(cases, True), indent=2, sort_keys=True) + "\n",
+      encoding="utf-8",
+    )
 
   print(process.stdout, end="")
   return 0

@@ -16,6 +16,7 @@ DEFAULT_SOURCE = ROOT / "planning" / "specifications" / "source"
 DEFAULT_MANIFEST = ROOT / "spec" / "unified" / "capabilities.json"
 DEFAULT_PLAN = ROOT / "planning" / "plan.json"
 VALID_STATUSES = {"deferred", "runnable"}
+REPORT_VERSION = 2
 
 
 class CapabilityError(ValueError):
@@ -151,15 +152,59 @@ def select_classifications(
   ]
 
 
+def build_inventory_report(fixtures: list[dict[str, Any]]) -> dict[str, Any]:
+  """Return a deterministic inventory with one stable identity per test."""
+  files = []
+  tests = []
+
+  for fixture in sorted(fixtures, key=lambda value: value["path"]):
+    path = fixture["path"]
+    descriptions = fixture["tests"]
+    files.append({
+      "description": fixture["description"],
+      "path": path,
+      "schema_version": fixture["schema_version"],
+      "tests": len(descriptions),
+    })
+
+    for index, description in enumerate(descriptions, 1):
+      tests.append({
+        "description": description,
+        "fixture": path,
+        "id": f"{path}::test[{index}]",
+        "index": index,
+      })
+
+  return {
+    "files": files,
+    "report_version": REPORT_VERSION,
+    "summary": {"files": len(files), "tests": len(tests)},
+    "tests": tests,
+    "type": "inventory",
+  }
+
+
 def build_report(classifications: list[dict[str, str]]) -> dict[str, Any]:
+  """Build an execution report without conflating deferral with execution."""
   fixtures = []
-  summary = {"deferred": 0, "failed": 0, "passed": 0, "selected": len(classifications)}
+  summary = {
+    "conformant": False,
+    "deferred_unsupported": 0,
+    "environment_skipped": 0,
+    "executed": 0,
+    "excluded_scope": 0,
+    "failed": 0,
+    "invalid_or_incompatible": 0,
+    "passed": 0,
+    "selected": len(classifications),
+  }
 
   for classification in classifications:
     item = dict(classification)
 
     if item["status"] == "deferred":
-      summary["deferred"] += 1
+      item["status"] = "deferred_unsupported"
+      summary["deferred_unsupported"] += 1
     else:
       item["status"] = "failed"
       item["error"] = "runnable fixture has no registered executor"
@@ -169,8 +214,9 @@ def build_report(classifications: list[dict[str, str]]) -> dict[str, Any]:
 
   return {
     "fixtures": fixtures,
-    "report_version": 1,
+    "report_version": REPORT_VERSION,
     "summary": summary,
+    "type": "execution",
   }
 
 
@@ -210,9 +256,11 @@ def main(argv: list[str] | None = None) -> int:
 
   summary = report["summary"]
   print(
-    f"{summary['selected']} unified fixtures classified: "
-    f"{summary['deferred']} deferred, {summary['passed']} passed, "
-    f"{summary['failed']} failed",
+    f"unified execution: {summary['executed']} executed, "
+    f"{summary['passed']} passed, {summary['failed']} failed, "
+    f"{summary['environment_skipped']} environment-skipped, "
+    f"{summary['deferred_unsupported']} deferred-unsupported; "
+    f"conformant={str(summary['conformant']).lower()}",
     file=sys.stderr if arguments.report == "-" else sys.stdout,
   )
   return 1 if summary["failed"] else 0

@@ -8,7 +8,8 @@ ROCKSPEC := lua-mongodb-scm-1.rockspec
 BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 
 .PHONY: check check-tools check-lua check-busted check-luacheck check-luarocks check-python \
-	test-unit test-integration test-unified lint rockspec planning-check
+	test-unit test-integration test-unified test-unified-schema test-unified-inventory \
+	test-unified-meta test-unified-execution lint rockspec planning-check
 
 check: test-unit test-integration test-unified lint rockspec planning-check
 
@@ -53,15 +54,26 @@ test-integration: check-busted
 		echo "test-integration: no integration slices yet (first added by CMD-001)"; \
 	fi
 
-test-unified: check-busted check-python
+test-unified: test-unified-schema test-unified-inventory test-unified-meta \
+	test-unified-execution
+
+test-unified-schema: check-busted check-python
 	@if test -n "$$(find spec/unified -type f -name '*_spec.lua' -print -quit 2>/dev/null)"; then \
 		"$(BUSTED)" $(BUSTED_PATHS) spec/unified; \
 	else \
 		echo "test-unified: unified runner explicitly deferred until UTF-004"; \
 	fi
-	@"$(PYTHON)" spec/unified/run_schema_meta.py --lua "$(LUA)"
+	@"$(PYTHON)" spec/unified/validate_fixtures.py --lua "$(LUA)"
+
+test-unified-inventory: check-python check-lua
+	@"$(PYTHON)" spec/unified/validate_fixtures.py --lua "$(LUA)"
 	@"$(PYTHON)" -m unittest spec.unified.test_cli -v
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
+
+test-unified-meta: check-python check-lua
+	@"$(PYTHON)" spec/unified/run_schema_meta.py --lua "$(LUA)"
+
+test-unified-execution: check-python
 	@"$(PYTHON)" spec/unified/run.py
 
 lint: check-luacheck

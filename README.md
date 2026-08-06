@@ -104,21 +104,24 @@ The project requires Lua 5.4 with 64-bit `lua_Integer`, LuaRocks, Copas 4.11, lu
 make test-unit
 make test-integration
 make test-unified
+make test-unified-schema test-unified-inventory test-unified-meta test-unified-execution
 make lint
 make check
 ```
 
-Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` validates all 320 distinct JSON meta-fixtures against the pinned unified schema 1.28 with the pure-Lua validator; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport, verified and insecure LuaSec handshakes, the public standalone lifecycle, OP_MSG handshake, SCRAM-SHA-256 authentication, and authenticated ping execution without requiring an external server process.
+Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` separately runs all 320 JSON meta-fixtures, parses and schema-validates all 483 pinned integration files through the Lua Extended JSON and schema implementations, inventories their 1,900 tests, and reports execution status. An all-deferred execution report is explicitly non-conformant; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport, verified and insecure LuaSec handshakes, the public standalone lifecycle, OP_MSG handshake, SCRAM-SHA-256 authentication, and authenticated ping execution without requiring an external server process.
 
 The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
 
 ```sh
 python3 spec/unified/run.py
 python3 spec/unified/run.py --include 'run-command/**' --report report.json
+python3 spec/unified/validate_fixtures.py --schema-report schema.json --inventory-report inventory.json
+python3 spec/unified/run_schema_meta.py --report meta.json
 python3 spec/unified/update_capabilities.py --check
 ```
 
-The checked-in manifest currently classifies all 483 discovered fixtures with owning roadmap activities and concrete reasons. A missing fixture, stale entry, unknown status, empty deferral reason, or runnable fixture without an executor fails the command.
+Schema, inventory, meta-runner, and execution reports have distinct types and counters. Per-test inventory identities use the stable form `fixture/path.json::test[N]`; execution reports distinguish passes, failures, environment skips, unsupported deferrals, scope exclusions, and invalid or incompatible inputs. The checked-in manifest currently classifies all 483 discovered fixtures with owning roadmap activities and concrete reasons. A missing fixture, stale entry, unknown status, empty deferral reason, or runnable fixture without an executor fails the command.
 
 ## Scope
 

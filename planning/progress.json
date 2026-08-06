@@ -701,6 +701,28 @@
       "notes": [
         "Requeued: Insert reviewed unified-conformance prerequisites before SDAM implementation"
       ]
+    },
+    "UTF-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_inventory_reports_stable_per_test_identities -v",
+          "exit_code": 1,
+          "summary": "Stable per-test inventory contract fails because build_inventory_report does not exist",
+          "recorded_at": "2026-08-06T22:42:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "127 Lua unit and 16 integration tests pass; all BSON/Extended JSON corpora pass; 320 unified meta-fixtures pass; 483/483 integration files parse and validate through Lua with 1,900 stable test identities; execution reports 0 passed, 0 failed, 0 environment-skipped, 483 deferred-unsupported, conformant=false; lint, rockspec, and planning gates pass",
+          "recorded_at": "2026-08-06T22:48:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T22:41:55+00:00",
+      "completed_at": "2026-08-06T22:48:30+00:00"
     }
   },
   "verified_references": {

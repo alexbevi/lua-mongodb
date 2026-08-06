@@ -2,14 +2,59 @@
 
 from __future__ import annotations
 
+import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
 
 from spec.unified import run
+from spec.unified import validate_fixtures
 
 
 class UnifiedCliTests(unittest.TestCase):
+  def test_inventory_reports_stable_per_test_identities(self) -> None:
+    fixtures = [
+      {
+        "description": "fixture",
+        "path": "crud/tests/unified/find.json",
+        "schema_version": "1.0",
+        "tests": ["returns one", "returns none"],
+      },
+    ]
+
+    report = run.build_inventory_report(fixtures)
+
+    self.assertEqual(1, report["summary"]["files"])
+    self.assertEqual(2, report["summary"]["tests"])
+    self.assertEqual(
+      "crud/tests/unified/find.json::test[1]",
+      report["tests"][0]["id"],
+    )
+    self.assertEqual("returns one", report["tests"][0]["description"])
+
+  def test_fixture_validation_rejects_incompatible_schema_versions(self) -> None:
+    with tempfile.TemporaryDirectory() as directory:
+      source = Path(directory)
+      relative = "crud/tests/unified/incompatible.json"
+      fixture = source / relative
+      fixture.parent.mkdir(parents=True)
+      fixture.write_text(json.dumps({
+        "description": "incompatible",
+        "schemaVersion": "2.0",
+        "tests": [{"description": "test", "operations": []}],
+      }), encoding="utf-8")
+
+      with self.assertRaisesRegex(
+        validate_fixtures.ValidationError,
+        "incompatible schemaVersion 2.0",
+      ):
+        validate_fixtures.validate_fixture_documents(
+          source,
+          [relative],
+          os.environ.get("LUA", "lua"),
+        )
+
   def test_discovery_filters_and_rejects_unclassified_fixtures(self) -> None:
     with tempfile.TemporaryDirectory() as directory:
       source = Path(directory)
@@ -75,8 +120,11 @@ class UnifiedCliTests(unittest.TestCase):
     report = run.build_report(selected)
 
     self.assertEqual(1, report["summary"]["selected"])
-    self.assertEqual(1, report["summary"]["deferred"])
+    self.assertEqual(1, report["summary"]["deferred_unsupported"])
+    self.assertEqual(0, report["summary"]["executed"])
+    self.assertFalse(report["summary"]["conformant"])
     self.assertEqual("a/tests/unified/test.json", report["fixtures"][0]["path"])
+    self.assertEqual("deferred_unsupported", report["fixtures"][0]["status"])
 
 
 if __name__ == "__main__":
