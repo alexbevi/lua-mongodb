@@ -12,6 +12,7 @@ local M = {
   bulk = require("mongodb.bulk"),
   client = require("mongodb.client").connect,
   error = require("mongodb.error"),
+  pool = require("mongodb.pool"),
   runtime = require("mongodb.runtime"),
   sdam = require("mongodb.sdam"),
   selection = require("mongodb.selection"),

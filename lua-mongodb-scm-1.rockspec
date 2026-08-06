@@ -57,6 +57,7 @@ build = {
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",
+    ["mongodb.pool"] = "src/mongodb/pool.lua",
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
     ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",
     ["mongodb.runtime.copas_socket"] = "src/mongodb/runtime/copas_socket.lua",

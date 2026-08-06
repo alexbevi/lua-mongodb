@@ -36,8 +36,9 @@ CLASSIFICATIONS = {
     "the live unified execution bridge completed by REL-001",
   ),
   "mongodb-handshake": (
-    "CMAP-001",
-    "metadata append propagation requires public clients, CMAP, and event execution",
+    "SDAM-002",
+    "pool lifecycle is implemented; metadata append propagation requires the public "
+    "pooled client, handshake event bridge, and multi-connection execution owned by SDAM-002",
   ),
   "retryable-reads": (
     "RET-001",

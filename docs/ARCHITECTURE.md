@@ -181,15 +181,25 @@ Immutable index models retain ordered key documents, validate supported directio
 
 The transition table covers Single, Unknown, Sharded, ReplicaSetNoPrimary, and ReplicaSetWithPrimary descriptions. It discovers and removes replica-set members, rejects mismatched set names and stale primaries, invalidates an older primary when a newer one appears, preserves monotonic election metadata, ignores stale topology versions and connection generations, and computes topology-wide wire compatibility and logical-session timeout. The v1 client range is wire version 21 through 27, matching MongoDB 7.0 through 8.2.
 
-This module performs no I/O and imports no runtime provider. SDAM-002 will own monitor scheduling, live replica-set discovery, heartbeat/event publication, and connection-error feedback; server selection and connection pools remain in their subsequent slices. Unified SDAM fixtures that require those live behaviors stay explicitly deferred to SDAM-002.
+This module performs no I/O and imports no runtime provider. SDAM-002 will own monitor scheduling, live replica-set discovery, heartbeat/event publication, connection-error feedback, and the bridge between selection and per-server pools. Unified SDAM fixtures that require those live behaviors stay explicitly deferred to SDAM-002.
 
 ### Server selection
 
-`mongodb.selection` composes immutable read preferences with an immutable SDAM topology snapshot. It applies topology and operation rules first, retries without address deprioritization when the preferred set is empty, then filters replica-set reads by max staleness and the first matching tag set. An optional application selector runs before the final `localThresholdMS` latency window. Selection from that window uses the power-of-two choice rule against caller-supplied operation counts; CMAP-001 will own those mutable counters.
+`mongodb.selection` composes immutable read preferences with an immutable SDAM topology snapshot. It applies topology and operation rules first, retries without address deprioritization when the preferred set is empty, then filters replica-set reads by max staleness and the first matching tag set. An optional application selector runs before the final `localThresholdMS` latency window. Selection from that window uses the power-of-two choice rule against caller-supplied operation counts supplied by each connection pool.
 
 Max staleness is validated against both the 90-second minimum and `heartbeatFrequencyMS + 10 seconds`. Estimates use the normative with-primary and no-primary formulas over hello `lastWriteDate` and local `lastUpdateTime` values. RTT samples use the specified 0.2/0.8 exponentially weighted moving average. Invalid preferences and unavailable RTT data return structured configuration errors, while an exhausted selection returns a structured timeout whose message and `topology` field describe the final immutable snapshot.
 
 The layer is pure and never sleeps or performs I/O. It evaluates the snapshot supplied by its caller; SDAM-002 will own monitor wakeups, topology-change waits, and passing the final snapshot into the timeout path. The unit gate runs all 88 pinned JSON server-selection filtering fixtures, 32 max-staleness fixtures, 7 RTT vectors, and 8 operation-count choice distributions. Their YAML files duplicate the same cases. The five structured server-selection logging fixtures are explicitly deferred to post-v1 `ADV-009`, which owns logging and telemetry.
+
+### Connection pools and CMAP
+
+`mongodb.pool` owns one coroutine-safe pool per server. It starts paused, enters the ready state explicitly, assigns monotonically increasing connection identifiers, and maintains distinct pending, available, and checked-out sets. A FIFO wait queue enforces `maxPoolSize` and `maxConnecting`; its operation count includes queued, connecting, and checked-out work so server selection observes actual load. Cancellation, timeout, setup failure, check-in, clear, and close each release their owned capacity exactly once.
+
+Connection establishment is an injected adapter that returns an already connected, TLS-upgraded, handshaken, and authenticated resource or a structured error. The pool itself imports only the runtime contract and structured-error layer. It therefore contains no socket, TLS, cryptography, hello, or authentication implementation. Network and timeout failures during setup receive the backpressure labels required by the pooling specification, except authentication and explicitly exempt failures.
+
+Generation changes make available connections stale, clear queued work, and optionally interrupt pending and checked-out connections. Maintenance prunes idle or closed resources and restores `minPoolSize`; SDAM-002 owns the long-lived scheduling policy and connects pool clears to monitoring. Pool and connection lifecycle events are immutable and published in normative order. Load-balanced service-specific generations remain post-v1 with load balancing.
+
+The unit gate executes all 26 pinned JSON CMAP unit fixtures. The integration gate executes all seven pinned establishment, cancellation, and `maxConnecting` timing fixtures against an injected asynchronous connection adapter; their YAML counterparts duplicate the same cases. Live-server variants and handshake metadata propagation require the public pooled client and are classified to SDAM-002. The two JSON CMAP logging fixtures are deferred to post-v1 `ADV-009`, which owns logging and telemetry.
 
 ## Planned layers
 

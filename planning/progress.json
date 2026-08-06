@@ -664,6 +664,28 @@
       "notes": [],
       "started_at": "2026-08-06T21:11:26+00:00",
       "completed_at": "2026-08-06T21:22:18+00:00"
+    },
+    "CMAP-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/pool_spec.lua",
+          "exit_code": 1,
+          "summary": "Pool lifecycle test cannot run because mongodb.pool does not exist",
+          "recorded_at": "2026-08-06T21:27:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && LuaRocks package smoke for mongodb.pool",
+          "exit_code": 0,
+          "summary": "All 26 pinned JSON CMAP unit fixtures and 7 asynchronous establishment/maxConnecting fixtures pass within 127 unit and 16 integration tests; unified schema/classification, lint, rockspec, package load, Lua 5.4/64-bit compatibility, and planning gates pass",
+          "recorded_at": "2026-08-06T22:16:50+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T21:27:20+00:00",
+      "completed_at": "2026-08-06T22:16:51+00:00"
     }
   },
   "verified_references": {

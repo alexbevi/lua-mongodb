@@ -1551,8 +1551,8 @@
       "status": "deferred"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json": {
-      "activity": "CMAP-001",
-      "reason": "metadata append propagation requires public clients, CMAP, and event execution",
+      "activity": "SDAM-002",
+      "reason": "pool lifecycle is implemented; metadata append propagation requires the public pooled client, handshake event bridge, and multi-connection execution owned by SDAM-002",
       "status": "deferred"
     },
     "retryable-reads/tests/unified/aggregate-merge.json": {
