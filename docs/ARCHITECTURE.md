@@ -51,9 +51,15 @@ ObjectId generators are stateful values constructed from an injected runtime. Th
 
 All lengths and element payloads are checked against their containing frame before reading. Invalid document, string, binary, code-scope, boolean, terminator, trailing-byte, UTF-8, and unsupported-type encodings return structured `bson` errors carrying a one-based byte offset. Codec options bound document, string, binary, and nesting sizes; the defaults are 16 MiB for each size and 100 document levels. UTF-8 validation is on by default and may be disabled explicitly for byte-preserving diagnostic work. Degenerate array keys and unordered regex flags accepted by the BSON corpus are normalized when re-encoded.
 
+### Ordered JSON and Extended JSON
+
+`mongodb.bson.json` parses JSON directly into the ordered BSON value model, including explicit arrays, null, and exact numeric wrappers. The recursive-descent parser validates JSON number grammar, UTF-8, escapes and surrogate pairs, trailing input, and configurable input/string/depth limits. It does not pass object pairs through an unordered Lua table.
+
+Extended JSON conversion recognizes canonical, relaxed, and permitted degenerate representations for every BSON wire value. Known wrapper keys require their exact fields and types; unknown dollar-prefixed documents remain ordinary documents. Generation supports canonical and relaxed modes, preserves field order, uses canonical Base64/subtype encoding, and emits ISO-8601 UTC datetimes only where relaxed Extended JSON permits them.
+
 ## Planned layers
 
-1. **Values:** ordered containers, every BSON wire value, exact numeric handling, and configurable codec limits are implemented; Extended JSON builds on that boundary.
+1. **Values:** ordered containers and JSON, every BSON wire value, exact numeric handling, configurable codec limits, and canonical/relaxed Extended JSON are implemented.
 2. **Runtime:** coroutine scheduling, monotonic time, cancellation/deadlines, locks, exact socket I/O, TLS, and crypto capabilities.
 3. **Protocol:** message framing, OP_MSG, command encoding, authentication conversations, and reply/error conversion.
 4. **Topology:** immutable server/topology descriptions, SDAM transitions, monitoring, selection, connection pools, and wait queues.
@@ -69,7 +75,7 @@ A public operation validates options, creates an operation context and deadline,
 
 ## Test architecture
 
-Each activity starts with a focused red test. Unit tests use fake clocks, sockets, and topology inputs. The BSON unit gate loads the pinned corpus through a test-only Python fixture bridge: canonical and degenerate BSON, decode errors, and Decimal128 parse errors run against Lua; Extended JSON representations and its 49 remaining parse-error cases are reported as deferred until UTF-001 replaces the bridge with the ordered Lua JSON layer. Integration tests exercise supported MongoDB 7.0–8.2 deployments. The unified runner consumes the pinned specification repository and reports every fixture as passed, failed, or explicitly deferred with a reason; unknown operations are failures. Release gates include packaging smoke tests, linting, the supported Lua/runtime matrix, and strict roadmap validation.
+Each activity starts with a focused red test. Unit tests use fake clocks, sockets, and topology inputs. The BSON unit gate uses Python only to load the pinned corpus envelope; all 728 canonical BSON cases, 4 degenerate BSON forms, 75 decode errors, 1,080 Extended JSON representations, 180 parse errors, and canonical/relaxed generation execute against the Lua codecs. Integration tests exercise supported MongoDB 7.0–8.2 deployments. The unified runner consumes the pinned specification repository and reports every fixture as passed, failed, or explicitly deferred with a reason; unknown operations are failures. Release gates include packaging smoke tests, linting, the supported Lua/runtime matrix, and strict roadmap validation.
 
 ## Intentional exclusions
 

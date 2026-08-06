@@ -195,6 +195,28 @@
       "notes": [],
       "started_at": "2026-08-06T16:07:26+00:00",
       "completed_at": "2026-08-06T16:15:56+00:00"
+    },
+    "UTF-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-unit with isolated Lua 5.4.8 and Busted 2.3.0",
+          "exit_code": 2,
+          "summary": "Extended JSON contract fails because mongodb.bson.json is missing; existing 49 Lua tests and BSON corpus gates pass",
+          "recorded_at": "2026-08-06T16:16:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with full pinned BSON/Extended JSON corpus, isolated Lua 5.4.8, fresh-tree rock install/load, planning tests, and CI YAML validation",
+          "exit_code": 0,
+          "summary": "53 Lua tests; 1080 official Extended JSON representations and 180 parse errors passed; canonical/relaxed generation covered 728 BSON vectors; lint and package smoke passed",
+          "recorded_at": "2026-08-06T16:27:11+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T16:16:27+00:00",
+      "completed_at": "2026-08-06T16:27:13+00:00"
     }
   },
   "verified_references": {

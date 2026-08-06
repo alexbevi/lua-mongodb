@@ -31,6 +31,7 @@ local M = {
   symbol = tagged.symbol,
   int32 = exact.int32,
   int64 = exact.int64,
+  json = require("mongodb.bson.json"),
   timestamp = tagged.timestamp,
   undefined = tagged.undefined,
 }
