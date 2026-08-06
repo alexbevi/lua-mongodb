@@ -60,7 +60,37 @@ CLASSIFICATIONS = {
   ),
 }
 
+CRUD_DEFERRED_REASON = (
+  "live unified CRUD entities, command events, and outcome execution are deferred "
+  "until all core CRUD command models exist"
+)
+
 PATH_CLASSIFICATIONS = {
+  "crud/tests/unified/findOne.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/insertOne-comment.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/insertOne-dots_and_dollars.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/insertOne-errorResponse.json": (
+    "CRUD-003",
+    "live unified failpoints and CRUD error-response execution are deferred until all "
+    "core CRUD command models exist",
+  ),
+  "crud/tests/unified/insertOne-rawdata.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
+  "crud/tests/unified/insertOne.json": (
+    "CRUD-003",
+    CRUD_DEFERRED_REASON,
+  ),
   "run-command/tests/unified/runCommand.json": (
     "TXN-002",
     "the public command API, sessions, and transaction execution are not implemented",

@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
+local crud = require("mongodb.crud")
 
 local M = {}
 
@@ -223,8 +224,12 @@ function DATABASE_METHODS:collection(name, options)
   COLLECTION_STATES[value] = {
     client = state.client,
     database = self,
+    database_name = state.name,
+    executor = CLIENT_STATES[state.client].executor,
     full_name = state.name .. "." .. name,
+    max_wire_version = CLIENT_STATES[state.client].max_wire_version,
     name = name,
+    object_ids = CLIENT_STATES[state.client].object_ids,
     read_concern = concerns.read_concern,
     read_preference = concerns.read_preference,
     write_concern = concerns.write_concern,
@@ -254,7 +259,27 @@ function DATABASE_METHODS:run_command(command, options)
   return client_state.executor:command(state.name, command, options)
 end
 
-function M.new_client(executor, options, default_database_name, warnings)
+local function collection_operation(collection, operation, ...)
+  local state = COLLECTION_STATES[collection]
+  local client_state = CLIENT_STATES[state.client]
+  local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  return operation(state, ...)
+end
+
+function COLLECTION_METHODS:insert_one(document, options)
+  return collection_operation(self, crud.insert_one, document, options)
+end
+
+function COLLECTION_METHODS:find_one(filter, options)
+  return collection_operation(self, crud.find_one, filter, options)
+end
+
+function M.new_client(executor, options, default_database_name, warnings, object_ids)
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
   then
@@ -270,11 +295,14 @@ function M.new_client(executor, options, default_database_name, warnings)
   end
 
   local value = {}
+  local capabilities = type(executor.capabilities) == "function" and executor:capabilities()
 
   CLIENT_STATES[value] = {
     closed = false,
     default_database_name = default_database_name,
     executor = executor,
+    max_wire_version = capabilities and capabilities.max_wire_version or 0,
+    object_ids = object_ids,
     options = options,
     read_concern = options.read_concern,
     read_preference = options.read_preference,

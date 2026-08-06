@@ -163,6 +163,7 @@ local function execute(state, database, command, options)
   local body = envelope(command, database, state.server_api)
   local bytes, err = op_msg.encode({
     body = body,
+    flags = options.no_response and op_msg.FLAG.MORE_TO_COME or nil,
     max_bson_size = state.max_bson_size,
     max_message_size = state.max_message_size,
     request_id = request_id,
@@ -196,6 +197,10 @@ local function execute(state, database, command, options)
     end
 
     return close_with(state, err)
+  end
+
+  if options.no_response then
+    return bson.document({ { "ok", 1 } })
   end
 
   local response_bytes

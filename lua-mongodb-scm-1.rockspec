@@ -50,6 +50,7 @@ build = {
     ["mongodb.auth.scram"] = "src/mongodb/auth/scram.lua",
     ["mongodb.auth.stringprep_tables"] = "src/mongodb/auth/stringprep_tables.lua",
     ["mongodb.client"] = "src/mongodb/client.lua",
+    ["mongodb.crud"] = "src/mongodb/crud.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",

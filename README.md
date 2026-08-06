@@ -1,6 +1,6 @@
 # Lua MongoDB Driver
 
-This repository is the planning and implementation workspace for a pure-Lua MongoDB driver. It is pre-alpha: the standalone client and `run_command` API are implemented while CRUD and production topology behavior are added incrementally.
+This repository is the planning and implementation workspace for a pure-Lua MongoDB driver. It is pre-alpha: the standalone client, `run_command`, `insert_one`, and `find_one` APIs are implemented while the remaining CRUD and production topology behavior are added incrementally.
 
 The driver will implement BSON, the MongoDB wire protocol, topology and connection management, authentication, sessions, retry behavior, and a unified specification-test runner in Lua. It will not wrap `libmongoc`. Native Lua modules may be used only behind runtime adapters for TCP, TLS, and cryptography.
 
@@ -26,6 +26,14 @@ copas.loop(function()
     print(command_err.message)
   end
 
+  local users = client:database():collection("users")
+  local inserted = assert(users:insert_one(
+    mongodb.bson.document({ { "name", "Ada" } })
+  ))
+  local document = assert(users:find_one(inserted.inserted_id))
+
+  print(document:get("name"))
+
   client:close()
 end)
 ```
@@ -44,7 +52,9 @@ The internal `mongodb.command.executor` performs the mandatory OP_MSG connection
 
 The default `mongodb.runtime.copas` runtime wraps established sockets with LuaSec when TLS is requested. It verifies the certificate chain and server name by default, sends SNI for DNS names, supports custom CA bundles and encrypted combined client certificate/key files, and applies the connection's absolute deadline and cancellation token throughout the handshake. `tlsInsecure` disables both chain and hostname verification; the two granular allow-invalid settings disable only their documented checks. LuaSec does not provide OCSP endpoint or CRL revocation checking, so the corresponding disable options do not change adapter behavior.
 
-`mongodb.client` parses and normalizes a non-SRV URI, opens one standalone connection through the supplied runtime, performs TLS and hello, authenticates URI credentials with SCRAM, and returns immutable client, database, and collection handles. Database and collection handles inherit read concern, read preference, and write concern unless explicitly overridden. `database:run_command` accepts a command name or ordered BSON document; operational failures return structured errors. Closing a client is idempotent, and later operations on any of its database handles return a predictable client error. This initial lifecycle intentionally accepts exactly one TCP seed and owns one connection; pooling, replica-set discovery, sessions, and CRUD belong to subsequent roadmap slices.
+`mongodb.client` parses and normalizes a non-SRV URI, opens one standalone connection through the supplied runtime, performs TLS and hello, authenticates URI credentials with SCRAM, and returns immutable client, database, and collection handles. Database and collection handles inherit read concern, read preference, and write concern unless explicitly overridden. `database:run_command` accepts a command name or ordered BSON document; operational failures return structured errors. Closing a client is idempotent, and later operations on any of its database handles return a predictable client error. This initial lifecycle intentionally accepts exactly one TCP seed and owns one connection; pooling, replica-set discovery, sessions, and the remaining CRUD API belong to subsequent roadmap slices.
+
+`collection:insert_one` accepts an ordered BSON document, preserves an existing `_id`, or prepends a generated ObjectId without mutating the caller's value. Its immutable result reports acknowledgement and the inserted identifier. `collection:find_one` accepts an ordered filter or an `_id` value and supports the initial find option set, always sending `limit: 1` and `singleBatch: true` so the server closes the cursor. Both operations inherit collection concerns. Command-level failures keep their server response, while write and write-concern failures retain codes, labels, response documents, and unparsed `errInfo` in structured errors. Additional CRUD methods, general cursors, retries, and sessions remain in later slices.
 
 ## Bootstrap
 

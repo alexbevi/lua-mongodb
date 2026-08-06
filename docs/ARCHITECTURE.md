@@ -131,7 +131,13 @@ Authentication commands (`authenticate`, SASL commands, nonce/user/copydb comman
 
 `mongodb.api` owns immutable client, database, and collection handles whose state is kept outside the visible tables. Database names reject the server-prohibited characters except for the authentication namespace `$external`; collection names reject empty components, null bytes, invalid dots, and unsupported dollar forms. Database and collection handles inherit normalized read concern, read preference, and write concern, with validated per-handle overrides. A database runs a command through the shared executor without changing the caller's ordered BSON document. Client close is idempotent and closes the executor once; all derived database handles observe the same closed state and return a structured `client` error before I/O.
 
-The initial public lifecycle deliberately owns one authenticated connection and performs no selection, pooling, sessions, retries, CRUD, or cursor management. Those layers extend this stable handle boundary in later activities. API objects depend only on configuration, runtime, transport, command, authentication, and monitoring interfaces; runtime-specific networking, TLS, and cryptography remain behind adapters.
+The initial public lifecycle deliberately owns one authenticated connection and performs no selection, pooling, sessions, retries, or cursor management. Those layers extend this stable handle boundary in later activities. API objects depend only on configuration, runtime, transport, command, authentication, and monitoring interfaces; runtime-specific networking, TLS, and cryptography remain behind adapters.
+
+### Single-document CRUD
+
+`mongodb.crud` builds single-document insert and find commands from collection state without importing a runtime-specific module. Insert prepends a lazily generated ObjectId only when `_id` is absent, leaving the caller's immutable BSON document unchanged. The command carries inherited write concern plus supported insert options; `w: 0` uses OP_MSG `moreToCome`, publishes no synthetic command-success event, and returns an unacknowledged immutable result. Acknowledged replies are inspected for both `writeErrors` and `writeConcernError`; structured `write` errors retain the numeric code, labels, complete immutable response, operation index, and unparsed `errInfo`.
+
+`find_one` accepts either an ordered filter or a scalar `_id`, maps validated options to their command names, and always appends `limit: 1` and `singleBatch: true` without a batch size. It returns the first document from `cursor.firstBatch`, returns `nil` when that batch is empty, and treats malformed cursor replies as protocol errors. Raw-data options are emitted only at the negotiated MongoDB 8.2 wire version. General cursors and `getMore` are deliberately outside this slice.
 
 ## Planned layers
 

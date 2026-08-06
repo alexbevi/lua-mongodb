@@ -89,6 +89,26 @@ local function combine_warnings(parsed, normalized)
   return result
 end
 
+local function lazy_object_ids(runtime)
+  local generator
+  local value = {}
+
+  function value.new()
+    if generator == nil then
+      local err
+      generator, err = bson.object_id_generator(runtime)
+
+      if not generator then
+        return nil, err
+      end
+    end
+
+    return generator:new()
+  end
+
+  return value
+end
+
 local function mechanism_from(hello, configured)
   if configured ~= nil then
     if configured ~= "SCRAM-SHA-1" and configured ~= "SCRAM-SHA-256" then
@@ -222,7 +242,8 @@ function M.connect(uri, values)
     executor,
     config,
     parsed.database,
-    combine_warnings(parsed, option_warnings)
+    combine_warnings(parsed, option_warnings),
+    lazy_object_ids(runtime)
   )
 end
 

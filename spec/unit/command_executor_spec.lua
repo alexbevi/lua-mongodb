@@ -154,4 +154,18 @@ describe("single-connection command executor", function()
     assert.is_true(errors.is(err, errors.CATEGORY.PROTOCOL))
     assert.is_true(connection.closed)
   end)
+
+  it("sends unacknowledged commands with moreToCome without reading a reply", function()
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+    })
+    local commands = assert(executor.new(connection))
+
+    assert(commands:hello())
+    assert(commands:command("app", bson.document({ { "insert", "users" } }), {
+      no_response = true,
+    }))
+    assert.is_true(connection.requests[2].more_to_come)
+    assert.are.equal(0, #connection.responses)
+  end)
 end)

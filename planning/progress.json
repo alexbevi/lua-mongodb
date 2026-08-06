@@ -488,6 +488,28 @@
       "notes": [],
       "started_at": "2026-08-06T18:32:33+00:00",
       "completed_at": "2026-08-06T18:41:43+00:00"
+    },
+    "CRUD-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unit/crud_spec.lua",
+          "exit_code": 1,
+          "summary": "Public collection handle has no insert_one method",
+          "recorded_at": "2026-08-06T18:44:43+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "93 unit tests, 10 integrations, unified schema/classification, lint, rockspec, planning, and strict gates passed; supplemental MongoDB 8.0 insert/find/duplicate-key check passed",
+          "recorded_at": "2026-08-06T18:51:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T18:42:26+00:00",
+      "completed_at": "2026-08-06T18:51:58+00:00"
     }
   },
   "verified_references": {

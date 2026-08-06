@@ -1181,8 +1181,8 @@
       "status": "deferred"
     },
     "crud/tests/unified/findOne.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "CRUD-003",
+      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
       "status": "deferred"
     },
     "crud/tests/unified/findOneAndDelete-collation.json": {
@@ -1356,28 +1356,28 @@
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-comment.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "CRUD-003",
+      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "CRUD-003",
+      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-errorResponse.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "CRUD-003",
+      "reason": "live unified failpoints and CRUD error-response execution are deferred until all core CRUD command models exist",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne-rawdata.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "CRUD-003",
+      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
       "status": "deferred"
     },
     "crud/tests/unified/insertOne.json": {
-      "activity": "API-003",
-      "reason": "CRUD command and public API slices are not implemented",
+      "activity": "CRUD-003",
+      "reason": "live unified CRUD entities, command events, and outcome execution are deferred until all core CRUD command models exist",
       "status": "deferred"
     },
     "crud/tests/unified/replaceOne-collation.json": {
