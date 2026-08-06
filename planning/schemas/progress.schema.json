@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "progress.schema.json",
+  "title": "Lua MongoDB driver progress",
+  "type": "object",
+  "required": ["schema_version", "plan_id", "plan_digest", "activities", "verified_references"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "plan_id": {"type": "string"},
+    "plan_digest": {"type": "string", "pattern": "^([0-9a-f]{64})?$"},
+    "activities": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["status", "evidence", "notes"],
+        "properties": {
+          "status": {"enum": ["pending", "in_progress", "blocked", "completed", "needs_review"]},
+          "evidence": {"type": "array"},
+          "notes": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "verified_references": {"type": "object"}
+  }
+}
+

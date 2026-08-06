@@ -1,0 +1,4 @@
+interface:
+  display_name: "Refresh MongoDB References"
+  short_description: "Review and repin MongoDB source references"
+  default_prompt: "Use $refresh-mongodb-references to review and update the pinned PyMongo and specifications references."

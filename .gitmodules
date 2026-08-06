@@ -1,0 +1,9 @@
+[submodule "planning/pymongo"]
+	path = planning/pymongo
+	url = https://github.com/mongodb/mongo-python-driver.git
+	shallow = true
+[submodule "planning/specifications"]
+	path = planning/specifications
+	url = https://github.com/mongodb/specifications.git
+	shallow = true
+

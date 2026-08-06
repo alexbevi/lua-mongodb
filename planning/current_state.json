@@ -1,0 +1,33 @@
+{
+  "$schema": "./schemas/current_state.schema.json",
+  "schema_version": 1,
+  "plan_id": "lua-mongodb-driver-v1",
+  "plan_digest": "8297840b10055246f447a8b89f6a7fdb788bb14d95b6a97a40b0082289fa676f",
+  "references": {
+    "pymongo": {
+      "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
+      "actual": "d03d621ef5fe567f941f4c28395a376a1899f77c",
+      "status": "ok"
+    },
+    "specifications": {
+      "expected": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "actual": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "ok"
+    }
+  },
+  "counts": {
+    "blocked": 0,
+    "completed": 1,
+    "in_progress": 0,
+    "needs_review": 0,
+    "pending": 47
+  },
+  "active": [],
+  "ready": [
+    "FND-001"
+  ],
+  "blocked": [],
+  "needs_review": [],
+  "stale": [],
+  "next_ready": "FND-001"
+}

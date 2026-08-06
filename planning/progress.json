@@ -1,0 +1,34 @@
+{
+  "$schema": "./schemas/progress.schema.json",
+  "schema_version": 1,
+  "plan_id": "lua-mongodb-driver-v1",
+  "plan_digest": "8297840b10055246f447a8b89f6a7fdb788bb14d95b6a97a40b0082289fa676f",
+  "activities": {
+    "PLN-000": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "python3 -m unittest discover -s planning/tests -v; quick_validate both skills; reference-report; check",
+          "exit_code": 0,
+          "summary": "9 planning tests passed; both skills valid; reference pins and generated state valid",
+          "recorded_at": "2026-08-06T14:36:09+00:00"
+        }
+      ],
+      "notes": [
+        "Planning bootstrap created from the reviewed implementation design."
+      ],
+      "completed_at": "2026-08-06T14:36:10+00:00"
+    }
+  },
+  "verified_references": {
+    "pymongo": {
+      "commit": "d03d621ef5fe567f941f4c28395a376a1899f77c",
+      "status": "ok"
+    },
+    "specifications": {
+      "commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "ok"
+    }
+  }
+}

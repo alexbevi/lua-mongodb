@@ -1,0 +1,293 @@
+{
+  "$schema": "./schemas/plan.schema.json",
+  "schema_version": 1,
+  "plan_id": "lua-mongodb-driver-v1",
+  "title": "Pure-Lua MongoDB driver",
+  "target": {
+    "lua": "5.4 with 64-bit lua_Integer",
+    "mongodb_servers": ["7.0", "8.0", "8.2"],
+    "runtime": "Coroutine-aware interface; Copas 4.11 default adapter",
+    "license": "Apache-2.0",
+    "v1_milestone": "production-core-v1"
+  },
+  "principles": [
+    "MongoDB specifications are normative and pinned PyMongo is a behavioral reference.",
+    "Driver, BSON, wire, SDAM, CMAP, and selection logic are Lua and never wrap libmongoc.",
+    "Each implementation activity observes a failing test before implementation and records passing verification.",
+    "Operational failures return nil and a structured error; programmer misuse may raise.",
+    "Every unified fixture is runnable or explicitly deferred with a reason; unknown operations fail."
+  ],
+  "references": {
+    "pymongo": {
+      "path": "planning/pymongo",
+      "url": "https://github.com/mongodb/mongo-python-driver.git",
+      "commit": "d03d621ef5fe567f941f4c28395a376a1899f77c",
+      "mappings": [
+        {"name": "bson", "path": "bson/__init__.py"},
+        {"name": "objectid", "path": "bson/objectid.py", "symbol": "ObjectId"},
+        {"name": "decimal128", "path": "bson/decimal128.py", "symbol": "Decimal128"},
+        {"name": "extended-json", "path": "bson/json_util.py"},
+        {"name": "errors", "path": "pymongo/errors.py", "symbol": "PyMongoError"},
+        {"name": "uri", "path": "pymongo/synchronous/uri_parser.py", "symbol": "parse_uri"},
+        {"name": "wire", "path": "pymongo/message.py", "symbol": "_op_msg"},
+        {"name": "network", "path": "pymongo/network_layer.py"},
+        {"name": "auth", "path": "pymongo/synchronous/auth.py"},
+        {"name": "topology", "path": "pymongo/synchronous/topology.py", "symbol": "Topology"},
+        {"name": "pool", "path": "pymongo/synchronous/pool.py", "symbol": "Pool"},
+        {"name": "client", "path": "pymongo/synchronous/mongo_client.py", "symbol": "MongoClient"},
+        {"name": "collection", "path": "pymongo/synchronous/collection.py", "symbol": "Collection"},
+        {"name": "sessions", "path": "pymongo/synchronous/client_session.py", "symbol": "ClientSession"},
+        {"name": "monitoring", "path": "pymongo/monitoring.py"},
+        {"name": "unified-runner", "path": "test/unified_format.py", "symbol": "UnifiedSpecTestMixinV1"},
+        {"name": "unified-shared", "path": "test/unified_format_shared.py"},
+        {"name": "spec-runner-utils", "path": "test/utils_spec_runner.py"}
+      ]
+    },
+    "specifications": {
+      "path": "planning/specifications",
+      "url": "https://github.com/mongodb/specifications.git",
+      "commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "mappings": [
+        {"name": "source", "path": "source"},
+        {"name": "unified-format", "path": "source/unified-test-format"},
+        {"name": "unified-meta-tests", "path": "source/unified-test-format/tests"},
+        {"name": "unified-schema-1.28", "path": "source/unified-test-format/schema-1.28.json"}
+      ]
+    }
+  },
+  "milestones": [
+    {"id": "planning", "goal": "A validated, executable roadmap and pinned references."},
+    {"id": "foundation", "goal": "Portable values, runtime interfaces, and a useful unified runner."},
+    {"id": "standalone-core", "goal": "Authenticated TLS CRUD against a standalone server."},
+    {"id": "production-core-v1", "goal": "Production-ready standalone and replica-set behavior."},
+    {"id": "post-v1", "goal": "Advanced deployment, API, observability, and authentication features."}
+  ],
+  "activities": [
+    {
+      "id": "PLN-000", "title": "Bootstrap executable roadmap", "milestone": "planning", "depends_on": [], "references": ["pymongo:unified-runner", "specifications:unified-format"], "test_policy": "validation",
+      "test_first": "Define planning-tool tests and skill validation before marking the bootstrap complete.",
+      "implementation": "Create pinned references, architecture and contributor docs, state schemas, roadmap tooling, agent skills, and the goal prompt.",
+      "verification": ["python3 -m unittest discover -s planning/tests -v", "python3 planning/update_plan.py check", "python3 planning/update_plan.py reference-report"],
+      "acceptance": ["All planning artifacts validate", "References match exact commits", "Next activity is deterministic"],
+      "docs": ["README.md", "AGENTS.md", "docs/ARCHITECTURE.md", "planning/reference_architecture.md"],
+      "commit": "chore(planning): bootstrap Lua MongoDB driver roadmap"
+    },
+    {
+      "id": "FND-001", "title": "Create LuaRocks, test, lint, and CI skeleton", "milestone": "foundation", "depends_on": ["PLN-000"], "references": [], "test_policy": "red_green",
+      "test_first": "Add smoke tests for module loading, Lua version/integer guards, and Make targets.", "implementation": "Create rockspec, src/spec layout, test harness, lint configuration, Makefile, and CI matrix.",
+      "verification": ["make check"], "acceptance": ["Lua 5.4 smoke test passes", "All standard gates exist and fail on missing prerequisites clearly"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "build(core): add Lua 5.4 project skeleton"
+    },
+    {
+      "id": "ERR-001", "title": "Define structured error contract", "milestone": "foundation", "depends_on": ["FND-001"], "references": ["pymongo:errors"], "test_policy": "red_green",
+      "test_first": "Specify categories, labels, causes, string conversion, and programmer-error boundaries.", "implementation": "Implement immutable structured operational errors and helper predicates.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Operational errors are returned as nil, err", "Labels and causes remain inspectable"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(error): add structured operational errors"
+    },
+    {
+      "id": "RUN-001", "title": "Define runtime interface and deterministic fake", "milestone": "foundation", "depends_on": ["ERR-001"], "references": ["pymongo:network"], "test_policy": "red_green",
+      "test_first": "Specify monotonic clocks, deadlines, cancellation, task, lock, socket, TLS, entropy, and crypto capabilities.", "implementation": "Implement runtime validation plus fake clock/socket/task controls for deterministic tests.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Core code can depend only on runtime capabilities", "Fake runtime deterministically advances time and I/O"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(runtime): define portable runtime interface"
+    },
+    {
+      "id": "RUN-002", "title": "Implement Copas scheduling primitives", "milestone": "foundation", "depends_on": ["RUN-001"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify Copas task spawning, locks, monotonic deadlines, cancellation, and cleanup.", "implementation": "Implement the Copas 4.11 runtime task, clock, lock, and cancellation adapter.",
+      "verification": ["make test-unit", "make test-integration", "make lint"], "acceptance": ["Cancellation wakes waiters", "Deadlines use a monotonic clock", "Resources clean up after task errors"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(runtime): add Copas coroutine adapter"
+    },
+    {
+      "id": "BSON-001", "title": "Implement ordered containers and BSON primitives", "milestone": "foundation", "depends_on": ["FND-001", "ERR-001"], "references": ["pymongo:bson"], "test_policy": "red_green",
+      "test_first": "Specify ordered document semantics, arrays, null, booleans, strings, binary, doubles, and signed integers.", "implementation": "Implement explicit ordered documents and primitive BSON encoding/decoding with bounds checks.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Round trips preserve document order", "Malformed lengths return structured errors"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(bson): add ordered primitive codecs"
+    },
+    {
+      "id": "BSON-002", "title": "Implement tagged BSON types", "milestone": "foundation", "depends_on": ["BSON-001"], "references": ["pymongo:objectid", "pymongo:bson"], "test_policy": "red_green",
+      "test_first": "Specify ObjectId, datetime, regex, timestamp, code, MinKey, MaxKey, and binary subtypes.", "implementation": "Implement immutable tagged values, validation, comparison where defined, and codecs.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Tagged values round trip without ambiguity", "ObjectId generation uses runtime entropy and time"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(bson): add tagged BSON values"
+    },
+    {
+      "id": "BSON-003", "title": "Implement Decimal128 and exact numeric behavior", "milestone": "foundation", "depends_on": ["BSON-002"], "references": ["pymongo:decimal128"], "test_policy": "red_green",
+      "test_first": "Specify Decimal128 interchange, int32/int64 selection, overflow, NaN, infinity, and negative zero.", "implementation": "Implement Decimal128 bit/string conversion and explicit exact numeric wrappers.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Official Decimal128 vectors pass", "No precision is silently lost"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(bson): add exact numeric types"
+    },
+    {
+      "id": "BSON-004", "title": "Complete and harden BSON codecs", "milestone": "foundation", "depends_on": ["BSON-003"], "references": ["pymongo:bson", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Import BSON corpus cases and malformed/truncated/nested-depth tests.", "implementation": "Complete remaining supported types, configurable limits, UTF-8 checks, recursion protection, and corpus coverage.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Applicable BSON corpus passes", "Decoder never reads outside declared frames"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(bson): complete hardened BSON codec"
+    },
+    {
+      "id": "UTF-001", "title": "Implement ordered JSON and Extended JSON", "milestone": "foundation", "depends_on": ["BSON-004"], "references": ["pymongo:extended-json", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify ordered JSON parsing and canonical/relaxed Extended JSON fixtures.", "implementation": "Implement a bounded JSON parser/writer and Extended JSON conversion over BSON values.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Official applicable Extended JSON cases pass", "Object key order is preserved"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(test-runner): add ordered Extended JSON"
+    },
+    {
+      "id": "UTF-002", "title": "Implement unified schema subset", "milestone": "foundation", "depends_on": ["UTF-001"], "references": ["specifications:unified-schema-1.28", "specifications:unified-meta-tests"], "test_policy": "red_green",
+      "test_first": "Run unified valid-pass, valid-fail, and invalid meta-fixtures against a failing validator shell.", "implementation": "Implement the JSON Schema subset and semantic validation required through unified schema 1.28.",
+      "verification": ["make test-unit", "make test-unified"], "acceptance": ["Unified meta-test expectations pass", "Validation errors include document paths"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(test-runner): validate unified schema 1.28"
+    },
+    {
+      "id": "UTF-003", "title": "Implement unified runner core", "milestone": "foundation", "depends_on": ["UTF-002", "RUN-002"], "references": ["pymongo:unified-runner", "pymongo:unified-shared", "pymongo:spec-runner-utils", "specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Specify runOnRequirements, entity registry, operations, matcher, outcomes, threads, loops, and deterministic fake entities.", "implementation": "Implement runner core with registries and explicit unsupported-operation errors.",
+      "verification": ["make test-unit", "make test-unified", "make lint"], "acceptance": ["Runner meta-tests use deterministic fakes", "Unknown entities and operations fail visibly"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(test-runner): add unified execution core"
+    },
+    {
+      "id": "UTF-004", "title": "Add unified CLI, capabilities, and reports", "milestone": "foundation", "depends_on": ["UTF-003"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify fixture discovery, include filters, capability classification, deferred reasons, and machine-readable reports.", "implementation": "Implement the unified CLI and checked-in capability manifest for all discovered fixtures.",
+      "verification": ["make test-unit", "make test-unified", "make lint"], "acceptance": ["All discovered fixtures are run or deferred with a reason", "Unknown or unclassified fixtures fail"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(test-runner): add unified capability reporting"
+    },
+    {
+      "id": "CFG-001", "title": "Parse non-SRV MongoDB URIs", "milestone": "standalone-core", "depends_on": ["BSON-004", "ERR-001"], "references": ["pymongo:uri", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run connection-string valid and invalid non-SRV cases.", "implementation": "Implement host, IPv6, percent-decoding, credentials, database, and query parsing with duplicate handling.",
+      "verification": ["make test-unit", "make test-unified"], "acceptance": ["Applicable connection-string cases pass", "Secrets are redacted from errors"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(config): parse MongoDB connection strings"
+    },
+    {
+      "id": "CFG-002", "title": "Normalize options, concerns, preferences, and Stable API", "milestone": "standalone-core", "depends_on": ["CFG-001"], "references": ["pymongo:client", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify precedence, type/range validation, read/write concerns, read preferences, and Stable API fields.", "implementation": "Implement immutable normalized option values shared by URI and programmatic configuration.",
+      "verification": ["make test-unit", "make test-unified"], "acceptance": ["URI and table options share validation", "Unsupported options fail explicitly"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(config): normalize driver options"
+    },
+    {
+      "id": "WIRE-001", "title": "Implement OP_MSG", "milestone": "standalone-core", "depends_on": ["BSON-004", "ERR-001"], "references": ["pymongo:wire", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify request IDs, flags, kind-0 bodies, kind-1 sequences, checksums rejection, framing, and reply correlation.", "implementation": "Implement bounded OP_MSG encode/decode and batching size accounting.",
+      "verification": ["make test-unit", "make lint"], "acceptance": ["Golden messages round trip", "Invalid flags, frames, and response IDs fail safely"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(wire): implement OP_MSG framing"
+    },
+    {
+      "id": "NET-001", "title": "Implement coroutine TCP exact I/O", "milestone": "standalone-core", "depends_on": ["RUN-002", "ERR-001"], "references": ["pymongo:network"], "test_policy": "red_green",
+      "test_first": "Specify connect/read/write deadlines, partial I/O, cancellation, EOF, and close idempotency with fake sockets.", "implementation": "Implement exact framed I/O over the runtime and Copas LuaSocket adapter.",
+      "verification": ["make test-unit", "make test-integration", "make lint"], "acceptance": ["Partial reads/writes are handled", "Timeout and cancellation errors are distinct"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(network): add coroutine TCP transport"
+    },
+    {
+      "id": "CMD-001", "title": "Execute hello and commands", "milestone": "standalone-core", "depends_on": ["WIRE-001", "NET-001", "CFG-002"], "references": ["pymongo:client", "pymongo:errors", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify handshake metadata, hello negotiation, command envelope, response validation, and server error conversion.", "implementation": "Implement a single-connection command executor and hello capability model.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["ping succeeds on supported standalone servers", "Server codes and labels reach structured errors"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): execute hello and commands"
+    },
+    {
+      "id": "MON-001", "title": "Implement command monitoring and redaction", "milestone": "standalone-core", "depends_on": ["CMD-001"], "references": ["pymongo:monitoring", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify started/succeeded/failed ordering, duration, request/operation IDs, listener isolation, and sensitive command redaction.", "implementation": "Emit command events around the executor through safe listener dispatch.",
+      "verification": ["make test-unit", "make test-unified"], "acceptance": ["Monitoring spec cases pass", "Credentials and auth payloads never reach listeners"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(monitoring): add command events and redaction"
+    },
+    {
+      "id": "AUTH-001", "title": "Implement SCRAM authentication", "milestone": "standalone-core", "depends_on": ["CMD-001", "RUN-001"], "references": ["pymongo:auth", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify crypto adapter vectors, SASLprep, SCRAM-SHA-256/1 conversations, nonce/signature checks, and cache behavior.", "implementation": "Implement Lua SASLprep and SCRAM state machine using runtime OpenSSL SHA/HMAC/PBKDF2 capabilities.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["SCRAM vectors and authenticated ping pass", "Secrets are never logged or included in errors"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(auth): add SCRAM authentication"
+    },
+    {
+      "id": "TLS-001", "title": "Implement LuaSec TLS transport", "milestone": "standalone-core", "depends_on": ["NET-001", "CFG-002"], "references": ["pymongo:network", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify hostname and CA validation, client certificates, insecure flags, handshake deadlines, and redacted errors.", "implementation": "Implement runtime TLS wrapping with a supported LuaSec adapter.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Valid TLS connections succeed", "Invalid host/CA/cert cases fail as specified"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(tls): add LuaSec transport adapter"
+    },
+    {
+      "id": "API-001", "title": "Add client, database, collection, and run_command", "milestone": "standalone-core", "depends_on": ["AUTH-001", "TLS-001", "MON-001", "UTF-004"], "references": ["pymongo:client", "pymongo:collection"], "test_policy": "red_green",
+      "test_first": "Specify handle immutability, namespace validation, option inheritance, close behavior, and run_command.", "implementation": "Implement idiomatic public module tables and a minimal authenticated standalone client lifecycle.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Target API can run ping", "Closed clients fail predictably"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(api): add core MongoDB handles"
+    },
+    {
+      "id": "CRUD-001", "title": "Implement insert_one and find_one", "milestone": "standalone-core", "depends_on": ["API-001"], "references": ["pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run narrow CRUD cases for insertOne/find and define result/error contracts.", "implementation": "Encode insert and find commands, generate _id, and expose insert/find-one results.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable insertOne/findOne slices pass", "Write and duplicate-key errors retain details"], "docs": ["README.md"], "commit": "feat(crud): add insert_one and find_one"
+    },
+    {
+      "id": "CUR-001", "title": "Implement find cursors and cleanup", "milestone": "standalone-core", "depends_on": ["CRUD-001"], "references": ["pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify firstBatch/getMore iteration, limits, batch sizes, explicit close, exhaustion, errors, and killCursors.", "implementation": "Implement coroutine-aware cursor state and deterministic server cleanup.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Multi-batch find works", "Close and early termination issue killCursors when required"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(cursor): add find and getMore lifecycle"
+    },
+    {
+      "id": "CRUD-002", "title": "Implement update, replace, and delete", "milestone": "standalone-core", "depends_on": ["CUR-001"], "references": ["pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run CRUD updateOne/updateMany/replaceOne/deleteOne/deleteMany cases.", "implementation": "Implement update and delete command models, validation, and result values.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable CRUD mutation cases pass", "Replacement/update validation is distinct"], "docs": ["README.md"], "commit": "feat(crud): add update replace and delete"
+    },
+    {
+      "id": "CRUD-003", "title": "Complete core read and aggregation operations", "milestone": "standalone-core", "depends_on": ["CRUD-002"], "references": ["pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify aggregate, countDocuments, estimatedDocumentCount, distinct, and findOneAnd* cases.", "implementation": "Implement remaining v1 collection read/modify command models and command cursors.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable operations pass unified CRUD cases", "Aggregation cursors share cleanup semantics"], "docs": ["README.md"], "commit": "feat(crud): complete core collection operations"
+    },
+    {
+      "id": "BULK-001", "title": "Implement insert_many and collection bulk write", "milestone": "standalone-core", "depends_on": ["CRUD-003", "WIRE-001"], "references": ["pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify ordered/unordered batches, max message/write counts, index remapping, partial results, and write concern errors.", "implementation": "Implement collection bulk models and exact command batching.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Bulk spec cases pass for supported operations", "Batch errors map to original operation indices"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(bulk): add collection bulk writes"
+    },
+    {
+      "id": "DDL-001", "title": "Implement database, collection, and index management", "milestone": "standalone-core", "depends_on": ["BULK-001"], "references": ["pymongo:collection", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify list/create/drop databases, collections, and indexes including name generation.", "implementation": "Implement v1 administration command wrappers and result cursors.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Supported management operations pass integration tests", "Namespaces and index models validate locally"], "docs": ["README.md"], "commit": "feat(admin): add collection and index management"
+    },
+    {
+      "id": "SDAM-001", "title": "Implement SDAM description transitions", "milestone": "production-core-v1", "depends_on": ["CMD-001", "CFG-002"], "references": ["pymongo:topology", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run SDAM phase-one topology/server description transition fixtures.", "implementation": "Implement immutable descriptions, hello parsing, compatibility checks, topologyVersion, generations, and transition rules.",
+      "verification": ["make test-unit", "make test-unified"], "acceptance": ["Applicable SDAM transition fixtures pass", "State changes are deterministic and side-effect free"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(sdam): add topology description transitions"
+    },
+    {
+      "id": "SEL-001", "title": "Implement server selection", "milestone": "production-core-v1", "depends_on": ["SDAM-001"], "references": ["pymongo:topology", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run server-selection and max-staleness fixtures, including latency windows and tag sets.", "implementation": "Implement selector composition, read preference, staleness validation, latency window, and timeout diagnostics.",
+      "verification": ["make test-unit", "make test-unified"], "acceptance": ["Applicable server selection fixtures pass", "Timeout errors describe the final topology"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(sdam): add server selection"
+    },
+    {
+      "id": "CMAP-001", "title": "Implement connection pools and CMAP events", "milestone": "production-core-v1", "depends_on": ["SEL-001", "RUN-002", "MON-001"], "references": ["pymongo:pool", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run CMAP fixtures for limits, wait queues, generations, clears, handshakes, maintenance, close, and events.", "implementation": "Implement coroutine-safe per-server pools and checkout lifecycle.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable CMAP fixtures pass", "Cancellation and clear never leak checked-out connections"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(cmap): add connection pooling"
+    },
+    {
+      "id": "SDAM-002", "title": "Implement monitoring and replica-set discovery", "milestone": "production-core-v1", "depends_on": ["CMAP-001", "DDL-001"], "references": ["pymongo:topology", "pymongo:monitoring", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify monitor scheduling, awaitable hello, RTT, topology events, set discovery, pool clearing, and shutdown races.", "implementation": "Connect descriptions, selectors, monitors, pools, and client lifecycle for replica sets.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Replica-set discovery and failover tests pass", "SDAM event order follows the specification"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(sdam): add replica-set monitoring"
+    },
+    {
+      "id": "SES-001", "title": "Implement sessions and causal consistency", "milestone": "production-core-v1", "depends_on": ["SDAM-002"], "references": ["pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run session and causal-consistency fixtures for implicit/explicit lifecycle, pools, cluster/operation time, and dirty sessions.", "implementation": "Implement server sessions, client sessions, command decoration, time advancement, and cleanup.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable session fixtures pass", "Ended/dirty sessions cannot be reused incorrectly"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(session): add causal sessions"
+    },
+    {
+      "id": "RETRY-001", "title": "Implement retryable reads", "milestone": "production-core-v1", "depends_on": ["SES-001"], "references": ["pymongo:client", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run retryable-read fixtures for eligibility, error labels/codes, reselection, and command monitoring.", "implementation": "Implement a deadline-aware read retry state machine with one retry and final-error selection.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable retryable-read fixtures pass", "Retries preserve session and operation identity"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(retry): add retryable reads"
+    },
+    {
+      "id": "RETRY-002", "title": "Implement retryable writes", "milestone": "production-core-v1", "depends_on": ["RETRY-001"], "references": ["pymongo:client", "pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run retryable-write fixtures for txnNumber, eligibility, labels, bulk batches, and unsupported topologies.", "implementation": "Implement write retry orchestration and transaction number ownership.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable retryable-write fixtures pass", "A logical write never increments txnNumber twice"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(retry): add retryable writes"
+    },
+    {
+      "id": "TXN-001", "title": "Implement explicit transactions", "milestone": "production-core-v1", "depends_on": ["RETRY-002"], "references": ["pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run transaction fixtures for state transitions, pinning, concerns, commit, abort, labels, and recovery tokens.", "implementation": "Implement transaction state and command decoration for replica sets.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable explicit transaction fixtures pass", "Invalid state transitions fail before I/O"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(transaction): add explicit transactions"
+    },
+    {
+      "id": "TXN-002", "title": "Implement convenient transaction retry", "milestone": "production-core-v1", "depends_on": ["TXN-001"], "references": ["pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run convenient-transaction fixtures for callback and commit retries, time budget, cleanup, and error propagation.", "implementation": "Implement with_transaction retry loops using runtime monotonic deadlines.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Convenient transaction fixtures pass", "Callback results/errors and abort cleanup are preserved"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(transaction): add convenient retries"
+    },
+    {
+      "id": "TIME-001", "title": "Implement client-side operation timeout", "milestone": "production-core-v1", "depends_on": ["TXN-002"], "references": ["pymongo:client", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Run CSOT fixtures for nested timeouts, selection, checkout, connection, socket I/O, getMore, retries, and transactions.", "implementation": "Propagate one monotonic operation deadline through every blocking layer and derive server maxTimeMS where specified.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified"], "acceptance": ["Applicable CSOT fixtures pass", "No layer resets or exceeds the operation budget"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(timeout): add client-side operation timeout"
+    },
+    {
+      "id": "REL-001", "title": "Harden and release production-core v1", "milestone": "production-core-v1", "depends_on": ["TIME-001"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Add packaging/install smoke, leak/race, compatibility, security-redaction, and full fixture-classification gates.", "implementation": "Close applicable v1 conformance gaps, finalize rockspec/API docs, CI MongoDB 7.0–8.2 matrix, changelog, and release checklist.",
+      "verification": ["make check", "make test-integration", "make test-unified", "python3 planning/update_plan.py check --strict"], "acceptance": ["All applicable v1 fixtures pass and none are unclassified", "Package installs and target API works on supported matrix", "Security and cleanup gates pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "chore(release): prepare production-core v1"
+    },
+    {
+      "id": "ADV-001", "title": "Implement change streams", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable change-stream unified slices.", "implementation": "Implement resumable change stream cursors and tokens.", "verification": ["make test-unified"], "acceptance": ["Applicable change-stream fixtures pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(change-stream): add resumable streams"
+    },
+    {
+      "id": "ADV-002", "title": "Implement GridFS", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable GridFS specification slices.", "implementation": "Implement bucket upload, download, delete, rename, and indexes.", "verification": ["make test-unified"], "acceptance": ["Applicable GridFS fixtures pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(gridfs): add GridFS buckets"
+    },
+    {
+      "id": "ADV-003", "title": "Implement SRV and TXT discovery", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable initial and polling SRV fixtures.", "implementation": "Add DNS runtime capability, TXT validation, and SRV monitor.", "verification": ["make test-unified"], "acceptance": ["Applicable DNS seedlist fixtures pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(discovery): add SRV and TXT polling"
+    },
+    {
+      "id": "ADV-004", "title": "Implement wire compression", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Specify negotiation, framing, limits, and optional codecs.", "implementation": "Implement OP_COMPRESSED with runtime codec capabilities.", "verification": ["make test-unit", "make test-integration"], "acceptance": ["Negotiated compressors round trip safely"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(wire): add message compression"
+    },
+    {
+      "id": "ADV-005", "title": "Support sharded deployments", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable sharded SDAM, retry, session, and transaction slices.", "implementation": "Complete mongos selection and sharded execution behavior.", "verification": ["make test-integration", "make test-unified"], "acceptance": ["Applicable sharded fixtures pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(sdam): support sharded deployments"
+    },
+    {
+      "id": "ADV-006", "title": "Support load-balanced deployments", "milestone": "post-v1", "depends_on": ["ADV-005"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable load-balancer SDAM, CMAP, session, and transaction slices.", "implementation": "Implement serviceId-aware pools and connection pinning.", "verification": ["make test-integration", "make test-unified"], "acceptance": ["Applicable load-balanced fixtures pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(sdam): support load-balanced deployments"
+    },
+    {
+      "id": "ADV-007", "title": "Implement client bulk write", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable client bulk-write command and retry fixtures.", "implementation": "Implement multi-namespace bulk models, batching, results, cursors, and retries.", "verification": ["make test-integration", "make test-unified"], "acceptance": ["Applicable client bulk-write fixtures pass"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(bulk): add client bulk write"
+    },
+    {
+      "id": "ADV-008", "title": "Add X509, PLAIN, AWS, and OIDC authentication", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["pymongo:auth", "specifications:source"], "test_policy": "red_green", "test_first": "Enable each mechanism's unit and unified fixtures independently.", "implementation": "Add isolated runtime credentials and mechanism state machines; exclude GSSAPI pending design.", "verification": ["make test-integration", "make test-unified"], "acceptance": ["Applicable mechanism fixtures pass without credential leakage"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(auth): add advanced mechanisms"
+    },
+    {
+      "id": "ADV-009", "title": "Add logging, telemetry, and backpressure", "milestone": "post-v1", "depends_on": ["REL-001"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Specify structured logging, OpenTelemetry boundaries, redaction, bounded queues, and slow-consumer behavior.", "implementation": "Add opt-in observability adapters and explicit backpressure policies.", "verification": ["make test-unit", "make test-integration"], "acceptance": ["Observability is redacted and does not alter semantics", "Queues remain bounded under load"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(observability): add telemetry and backpressure"
+    }
+  ]
+}

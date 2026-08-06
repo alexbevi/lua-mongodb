@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "plan.schema.json",
+  "title": "Lua MongoDB driver plan",
+  "type": "object",
+  "required": ["schema_version", "plan_id", "target", "references", "milestones", "activities"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "plan_id": {"type": "string", "minLength": 1},
+    "references": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["path", "url", "commit", "mappings"],
+        "properties": {
+          "path": {"type": "string"},
+          "url": {"type": "string"},
+          "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "mappings": {"type": "array"}
+        }
+      }
+    },
+    "activities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "title", "milestone", "depends_on", "references", "test_policy", "test_first", "implementation", "verification", "acceptance", "docs", "commit"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^[A-Z]+-[0-9]{3}$"},
+          "depends_on": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+          "test_policy": {"enum": ["red_green", "validation"]},
+          "commit": {"type": "string", "pattern": "^[a-z]+\\([a-z0-9-]+\\): .+"}
+        }
+      }
+    }
+  }
+}
+

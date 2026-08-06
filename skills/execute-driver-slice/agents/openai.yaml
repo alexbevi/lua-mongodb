@@ -1,0 +1,4 @@
+interface:
+  display_name: "Execute MongoDB Driver Slice"
+  short_description: "Implement one verified MongoDB driver slice"
+  default_prompt: "Use $execute-driver-slice to implement the next ready activity in planning/plan.json."

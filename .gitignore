@@ -1,0 +1,16 @@
+.DS_Store
+*.rock
+*.tmp
+*.log
+*.luac
+.rocks/
+lua_modules/
+build/
+dist/
+coverage/
+luacov.*
+.pytest_cache/
+__pycache__/
+*.py[cod]
+.tmp-certs/
+
