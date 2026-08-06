@@ -349,6 +349,28 @@
       "notes": [],
       "started_at": "2026-08-06T17:30:10+00:00",
       "completed_at": "2026-08-06T17:35:40+00:00"
+    },
+    "NET-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/network_transport_spec.lua",
+          "exit_code": 1,
+          "summary": "Exact transport contract fails because mongodb.network.transport does not exist.",
+          "recorded_at": "2026-08-06T17:36:59+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check with isolated Lua 5.4.8, Copas 4.11, and LuaSocket loopback transport coverage",
+          "exit_code": 0,
+          "summary": "72 Lua tests and real loopback integration passed; connect/read/write deadlines, cancellation, partial exact I/O, framed reads, EOF, idempotent close, full corpora, unified, lint, rockspec, and planning gates green",
+          "recorded_at": "2026-08-06T17:41:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T17:36:11+00:00",
+      "completed_at": "2026-08-06T17:41:42+00:00"
     }
   },
   "verified_references": {

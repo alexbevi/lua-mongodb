@@ -24,12 +24,7 @@ describe("Copas runtime adapter", function()
     local adapter = runtime.copas()
 
     assert.are.equal(adapter, runtime.validate(adapter))
-
-    local value, err = adapter.socket:connect()
-
-    assert.is_nil(value)
-    assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
-    assert.matches("socket capability is not configured", err.message)
+    assert.is_function(adapter.socket.connect)
   end)
 
   it("rejects unsupported Copas versions", function()

@@ -314,7 +314,10 @@ function M.new(options)
   adapter.cancellation = { new = cancellation.new }
   adapter.task = new_task_capability(copas.future)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)
-  adapter.socket = options.socket or unavailable_provider("socket", { "connect" })
+  adapter.socket = options.socket or require("mongodb.runtime.copas_socket").new(adapter, {
+    copas = copas,
+    poll_interval = poll_interval,
+  })
   adapter.tls = options.tls or unavailable_provider("TLS", { "wrap" })
   adapter.entropy = options.entropy or unavailable_provider("entropy", { "bytes" })
   adapter.crypto = options.crypto or unavailable_provider("crypto", {

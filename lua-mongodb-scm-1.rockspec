@@ -20,6 +20,7 @@ description = {
 dependencies = {
   "lua >= 5.4, < 5.5",
   "copas >= 4.11, < 4.12",
+  "luasocket >= 3.1, < 4",
 }
 
 test_dependencies = {
@@ -41,8 +42,10 @@ build = {
     ["mongodb.config.options"] = "src/mongodb/config/options.lua",
     ["mongodb.config.uri"] = "src/mongodb/config/uri.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
+    ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",
     ["mongodb.runtime.cancellation"] = "src/mongodb/runtime/cancellation.lua",
     ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",
+    ["mongodb.runtime.copas_socket"] = "src/mongodb/runtime/copas_socket.lua",
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
