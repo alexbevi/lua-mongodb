@@ -94,6 +94,7 @@ python3 planning/update_plan.py next
 The roadmap lives in [`planning/plan.json`](planning/plan.json). [`planning/current_state.json`](planning/current_state.json) is generated from it and the mutable progress ledger. Use the commands documented in [`planning/README.md`](planning/README.md); do not edit generated state directly.
 
 Architecture decisions are maintained in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), while [`planning/reference_architecture.md`](planning/reference_architecture.md) maps PyMongo and the MongoDB specifications to the planned Lua components.
+The reusable implementation, evidence, and conformance method is documented in [`planning/strategy.md`](planning/strategy.md).
 
 ## Development
 
