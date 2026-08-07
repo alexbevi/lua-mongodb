@@ -2,18 +2,20 @@ LUA ?= lua
 LUAROCKS ?= luarocks
 BUSTED ?= busted
 LUACHECK ?= luacheck
+LUACOV ?= luacov
 PYTHON ?= python3
 
 ROCKSPEC := lua-mongodb-scm-1.rockspec
 BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 
-.PHONY: check check-tools check-lua check-busted check-luacheck check-luarocks check-python \
+.PHONY: check check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-unit test-integration test-unified test-unified-schema test-unified-inventory \
-	test-unified-meta test-unified-execution test-conformance lint rockspec planning-check
+	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
+	test-stress lint rockspec planning-check
 
-check: test-unit test-integration test-unified lint rockspec planning-check
+check: test-unit test-integration test-unified test-quality lint rockspec planning-check
 
-check-tools: check-lua check-busted check-luacheck check-luarocks check-python
+check-tools: check-lua check-busted check-luacheck check-luacov check-luarocks check-python
 
 check-lua:
 	@command -v "$(LUA)" >/dev/null 2>&1 || { \
@@ -31,6 +33,11 @@ check-busted: check-lua
 check-luacheck: check-lua
 	@command -v "$(LUACHECK)" >/dev/null 2>&1 || { \
 		echo "Luacheck not found; install test dependencies with LuaRocks" >&2; exit 127; \
+	}
+
+check-luacov: check-lua
+	@command -v "$(LUACOV)" >/dev/null 2>&1 || { \
+		echo "LuaCov not found; install test dependencies with LuaRocks" >&2; exit 127; \
 	}
 
 check-luarocks:
@@ -70,6 +77,24 @@ test-unified-inventory: check-python check-lua
 test-conformance: check-python
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
 	@"$(PYTHON)" spec/conformance/ledger.py --check
+
+test-quality: test-coverage test-stress
+
+test-coverage: check-busted check-luacov check-python
+	@mkdir -p build/quality
+	@"$(LUA)" -e 'os.remove("build/quality/luacov.stats.out"); os.remove("build/quality/luacov.report.out")'
+	@"$(BUSTED)" --coverage --coverage-config-file=spec/quality/luacov.config \
+		--seed=1 --sort \
+		$(BUSTED_PATHS) spec/unit spec/integration
+	@"$(LUACOV)" -c spec/quality/luacov.config
+	@"$(PYTHON)" -m unittest spec.quality.test_coverage_gate -v
+	@"$(PYTHON)" spec/quality/coverage_gate.py \
+		--report build/quality/luacov.report.out \
+		--baseline spec/quality/coverage-baseline.json
+
+test-stress: check-lua
+	@mkdir -p build/quality
+	@"$(LUA)" spec/quality/run_stress.lua
 
 test-unified-meta: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/matcher_spec.lua \

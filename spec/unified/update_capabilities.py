@@ -133,6 +133,18 @@ TEST_OVERRIDES = {
   for identity, value in EXECUTOR_TESTS.items()
 }
 TEST_OVERRIDES.update({
+  "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": (
+    "REL-001",
+    "legacy wTimeoutMS requires the release unified write-concern mapping",
+  ),
+  "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
+    "REL-001",
+    "listIndexNames requires the release unified operation-timeout adapter",
+  ),
+  "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
+    "REL-001",
+    "listIndexNames requires the release unified operation-timeout adapter",
+  ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "REL-001",
     "database aggregate is outside the v1 public collection adapter",
@@ -322,6 +334,37 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
 def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   fixture = Path(test["fixture"]).name
   operations = set(test["requirements"]["operations"])
+  entities = set(test["requirements"]["entities"])
+
+  if "createChangeStream" in operations:
+    return "ADV-001", OWNER_REASONS["ADV-001"]
+
+  if "bucket" in entities:
+    return (
+      "ADV-002",
+      "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+    )
+
+  unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS
+
+  if unsupported:
+    return (
+      "REL-001",
+      "the CSOT case requires v1 release unified operation adapters: "
+      + ", ".join(sorted(unsupported)),
+    )
+
+  if "aggregate on database" in test["description"]:
+    return (
+      "REL-001",
+      "database aggregate requires the release unified database adapter",
+    )
+
+  if fixture == "retryability-legacy-timeouts.json":
+    return (
+      "REL-001",
+      "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+    )
 
   if fixture in {
     "deprecated-options.json",
@@ -344,7 +387,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       "tailable cursor unified adapters are outside the v1 public cursor surface",
     )
 
-  if fixture == "change-streams.json" or "createChangeStream" in operations:
+  if fixture == "change-streams.json":
     return "ADV-001", OWNER_REASONS["ADV-001"]
 
   if fixture.startswith("gridfs-") or {"upload", "download", "delete"} & operations:
@@ -352,15 +395,6 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if fixture == "bulkWrite.json" or "clientBulkWrite" in operations:
     return "ADV-007", OWNER_REASONS["ADV-007"]
-
-  unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS
-
-  if unsupported:
-    return (
-      "REL-001",
-      "the CSOT case requires post-v1 unified operation adapters: "
-      + ", ".join(sorted(unsupported)),
-    )
 
   return "TIME-001", None
 

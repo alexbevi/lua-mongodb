@@ -1098,6 +1098,28 @@
       "notes": [],
       "started_at": "2026-08-07T06:33:22+00:00",
       "completed_at": "2026-08-07T08:12:35+00:00"
+    },
+    "QUA-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.quality.test_coverage_gate -v",
+          "exit_code": 1,
+          "summary": "No source-coverage ratchet existed, so a measured per-file and total coverage regression could not be detected.",
+          "recorded_at": "2026-08-07T08:15:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-quality && make lint",
+          "exit_code": 0,
+          "summary": "172 unit tests and all BSON corpus vectors passed; 18 integration tests passed; LuaCov measured 17637/20996 source lines against a 17630/20996 ratchet with no per-file or total regressions; 32 retained seeds passed four deterministic stress rounds each; 256 newly applicable CSOT matrix cases passed, 139 cases retained explicit post-v1 or release owners, and 0 QUA-001 deferrals remain; lint reported 0 warnings across 110 files.",
+          "recorded_at": "2026-08-07T09:23:24+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T08:14:00+00:00",
+      "completed_at": "2026-08-07T09:24:06+00:00"
     }
   },
   "verified_references": {

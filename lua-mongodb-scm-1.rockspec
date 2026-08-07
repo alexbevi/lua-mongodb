@@ -28,6 +28,7 @@ dependencies = {
 test_dependencies = {
   "busted == 2.3.0-1",
   "luacheck == 1.2.0-1",
+  "luacov == 0.17.0-1",
 }
 
 build = {

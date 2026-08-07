@@ -81,8 +81,8 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 2629,
-      "passed": 2895,
+      "deferred_unsupported": 2373,
+      "passed": 3151,
     }, generated["summary"]["statuses"])
 
   def test_unknown_runnable_unified_case_has_no_implicit_executor(self) -> None:

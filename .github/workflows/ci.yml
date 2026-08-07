@@ -37,6 +37,7 @@ jobs:
           luarocks install --only-deps lua-mongodb-scm-1.rockspec
           luarocks install busted 2.3.0-1
           luarocks install luacheck 1.2.0-1
+          luarocks install luacov 0.17.0-1
 
       - name: Install MongoDB 8.0 on Linux
         if: runner.os == 'Linux'
