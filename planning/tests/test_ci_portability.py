@@ -39,6 +39,11 @@ class CiPortabilityTests(unittest.TestCase):
       'OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"',
       workflow,
     )
+    self.assertIn('if test -n "${OPENSSL_DIR:-}"; then', workflow)
+    self.assertIn(
+      "else\n            luarocks install --only-deps lua-mongodb-scm-1.rockspec",
+      workflow,
+    )
 
   def test_portable_jobs_do_not_install_an_unused_mongodb_server(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")

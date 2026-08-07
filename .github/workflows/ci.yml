@@ -42,7 +42,11 @@ jobs:
 
       - name: Install development dependencies
         run: |
-          luarocks install --only-deps lua-mongodb-scm-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
+          if test -n "${OPENSSL_DIR:-}"; then
+            luarocks install --only-deps lua-mongodb-scm-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
+          else
+            luarocks install --only-deps lua-mongodb-scm-1.rockspec
+          fi
           luarocks install busted 2.3.0-1
           luarocks install luacheck 1.2.0-1
           luarocks install luacov 0.17.0-1
