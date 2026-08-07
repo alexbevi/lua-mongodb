@@ -578,6 +578,7 @@ function RUNNER_METHODS:add_entity(id, kind, value)
   end
 
   state.entities[id] = { kind = kind, value = value }
+  state.entity_order[#state.entity_order + 1] = id
   return true
 end
 
@@ -596,6 +597,139 @@ function RUNNER_METHODS:get_entity(id, expected_kind, path)
   end
 
   return entity.value, entity.kind
+end
+
+function RUNNER_METHODS:each_entity(callback)
+  if type(callback) ~= "function" then
+    error("unified entity visitor must be a function", 2)
+  end
+
+  local state = RUNNER_STATES[self]
+
+  for _, id in ipairs(state.entity_order) do
+    local entity = state.entities[id]
+
+    if entity then
+      callback(id, entity.kind, entity.value)
+    end
+  end
+
+  return true
+end
+
+function RUNNER_METHODS:add_finalizer(callback)
+  if type(callback) ~= "function" then
+    error("unified finalizer must be a function", 2)
+  end
+
+  local finalizers = RUNNER_STATES[self].finalizers
+
+  finalizers[#finalizers + 1] = callback
+  return true
+end
+
+local function cleanup_error(value)
+  if errors.is(value) then
+    return value
+  end
+
+  return configuration_error("unified cleanup failed: " .. tostring(value), "$.cleanup")
+end
+
+local function call_cleanup(callback, ...)
+  local result = table.pack(pcall(callback, ...))
+
+  if not result[1] then
+    return nil, cleanup_error(result[2])
+  end
+
+  if result[2] == false or result[2] == nil and result[3] ~= nil then
+    return nil, cleanup_error(result[3])
+  end
+
+  return true
+end
+
+function RUNNER_METHODS:run_finalizers()
+  local finalizers = RUNNER_STATES[self].finalizers
+  local first_error
+
+  while #finalizers > 0 do
+    local callback = table.remove(finalizers)
+    local ok, err = call_cleanup(callback, self)
+
+    if not ok and first_error == nil then
+      first_error = err
+    end
+  end
+
+  if first_error then
+    return nil, first_error
+  end
+
+  return true
+end
+
+
+local function cleanup_thread(state, thread)
+  for _, task in ipairs(thread.tasks) do
+    local ok, err = state.runtime.task:await(task)
+
+    if not ok then
+      return nil, err
+    end
+  end
+
+  thread.tasks = {}
+  return true
+end
+
+local function cleanup_entity(runner, state, id, entity)
+  local callback = state.entity_finalizers[entity.kind]
+
+  if callback then
+    return call_cleanup(callback, runner, entity.value, id)
+  end
+
+  if entity.kind == "thread" then
+    return call_cleanup(cleanup_thread, state, entity.value)
+  end
+
+  local method_name = entity.kind == "session" and "end_session" or "close"
+  local method = type(entity.value) == "table" and entity.value[method_name]
+
+  if type(method) == "function" then
+    return call_cleanup(method, entity.value)
+  end
+
+  return true
+end
+
+function RUNNER_METHODS:cleanup()
+  local state = RUNNER_STATES[self]
+  local _, first_error = self:run_finalizers()
+
+  for index = #state.entity_order, 1, -1 do
+    local id = state.entity_order[index]
+    local entity = state.entities[id]
+
+    if entity then
+      local ok, err = cleanup_entity(self, state, id, entity)
+
+      if not ok and first_error == nil then
+        first_error = err
+      end
+    end
+  end
+
+  state.entities = {}
+  state.entity_order = {}
+
+  if first_error then
+    return nil, first_error
+  end
+
+  return true
 end
 
 function RUNNER_METHODS:should_run(requirements)
@@ -1529,13 +1663,21 @@ function M.new(options)
     error("unified runner session_lsid must be a function", 2)
   end
 
+  for kind, callback in pairs(options.entity_finalizers or {}) do
+    if type(kind) ~= "string" or type(callback) ~= "function" then
+      error("unified entity finalizers must map kinds to functions", 2)
+    end
+  end
+
   local runtime = runtime_contract.validate(options.runtime)
   local runner = {}
   local environment = options.environment or {}
 
   RUNNER_STATES[runner] = {
     entities = {},
+    entity_finalizers = options.entity_finalizers or {},
     entity_factories = options.entity_factories or {},
+    entity_order = {},
     environment = {
       auth = environment.auth == true,
       auth_mechanism = environment.auth_mechanism,
@@ -1551,6 +1693,7 @@ function M.new(options)
     runtime = runtime,
     session_lsid = options.session_lsid,
     test_operations = options.test_operations or {},
+    finalizers = {},
   }
 
   return setmetatable(runner, RUNNER_METATABLE)

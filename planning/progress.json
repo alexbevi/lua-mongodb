@@ -811,6 +811,28 @@
       "notes": [],
       "started_at": "2026-08-07T00:12:35+00:00",
       "completed_at": "2026-08-07T00:21:07+00:00"
+    },
+    "UTF-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/unified_lifecycle_spec.lua",
+          "exit_code": 1,
+          "summary": "The unified lifecycle module did not exist, so a failed test could not be isolated from the next test and per-test client cleanup was unavailable.",
+          "recorded_at": "2026-08-07T00:24:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "130 unit tests passed, including 3 deterministic lifecycle cases; unified validation covered 483 files / 1900 tests with 0 executed, 0 passed, 0 environment-skipped, 1900 deferred-unsupported, and 0 failed; 12 runner tests and 320 meta-fixtures passed, the 5524-case conformance ledger remained current, and lint passed with 0 warnings/errors.",
+          "recorded_at": "2026-08-07T00:28:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T00:21:35+00:00",
+      "completed_at": "2026-08-07T00:29:21+00:00"
     }
   },
   "verified_references": {
