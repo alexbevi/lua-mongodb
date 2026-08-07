@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "5b6cbb27dd545f9d4718bcfea532581c32e77276c19596fda8bbd2d0a1a3f43a",
+  "plan_digest": "c5867c357bb2d7e8f288732b06627feb5fcc939e7022d86793eed36e719eda5f",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -1142,6 +1142,28 @@
       "notes": [],
       "started_at": "2026-08-07T09:25:37+00:00",
       "completed_at": "2026-08-07T11:17:20+00:00"
+    },
+    "REL-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.release.test_scope -v",
+          "exit_code": 1,
+          "summary": "No release-scope validator existed, so 330 unified and 530 total deferred cases could remain under the ambiguous final REL-001 checkpoint instead of concrete implementation slices or post-v1 owners.",
+          "recorded_at": "2026-08-07T11:23:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-conformance && make test-unified-inventory && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "All 5524 normative cases validated: 3151 passed, 516 applicable release gaps assigned to REL-002 through REL-006, 1857 post-v1 exclusions assigned to 12 concrete capabilities, 0 ambiguous REL-001/REL-009 owners, and 0 unclassified or stale cases.",
+          "recorded_at": "2026-08-07T11:29:23+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T11:23:10+00:00",
+      "completed_at": "2026-08-07T11:29:24+00:00"
     }
   },
   "verified_references": {

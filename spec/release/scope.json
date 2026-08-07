@@ -1,0 +1,46 @@
+{
+  "deferred_by_activity": {
+    "ADV-001": 189,
+    "ADV-002": 169,
+    "ADV-003": 64,
+    "ADV-004": 5,
+    "ADV-005": 111,
+    "ADV-006": 43,
+    "ADV-007": 65,
+    "ADV-008": 74,
+    "ADV-009": 240,
+    "ADV-010": 777,
+    "ADV-011": 105,
+    "ADV-012": 15,
+    "REL-002": 22,
+    "REL-003": 211,
+    "REL-004": 146,
+    "REL-005": 36,
+    "REL-006": 101
+  },
+  "deferred_by_scope": {
+    "applicable-release-gap": 516,
+    "post-v1-exclusion": 1857
+  },
+  "post_v1_reasons": {
+    "ADV-001": "change streams are outside production-core v1",
+    "ADV-002": "GridFS is outside production-core v1",
+    "ADV-003": "SRV and TXT discovery are outside production-core v1",
+    "ADV-004": "wire compression is outside production-core v1",
+    "ADV-005": "sharded deployment behavior is outside production-core v1",
+    "ADV-006": "load-balanced deployment behavior is outside production-core v1",
+    "ADV-007": "client bulk write is outside production-core v1",
+    "ADV-008": "advanced authentication mechanisms are outside production-core v1",
+    "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
+    "ADV-010": "client-side encryption requires a separate post-v1 design",
+    "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
+    "ADV-012": "proxy transports are outside production-core v1"
+  },
+  "schema_version": 1,
+  "statuses": {
+    "deferred_unsupported": 2373,
+    "passed": 3151
+  },
+  "total_cases": 5524,
+  "type": "production-core-release-scope"
+}

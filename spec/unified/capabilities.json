@@ -17197,9 +17197,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "21e9b9c35379c7ecfa55a383b16aacc5eb6c6040decc4f7e36375f70e34b8bb3",
-      "reason": "the CSOT case requires v1 release unified operation adapters: close, createFindCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: close, createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -17236,9 +17236,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/close-cursors.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "05bd88ecd604920f6ccdce00a9cecca960ef5a865c0df820b86380da0df79e25",
-      "reason": "the CSOT case requires v1 release unified operation adapters: close, createFindCursor",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: close, createFindCursor",
       "requirements": {
         "arguments": [
           "close.timeoutMS",
@@ -17543,7 +17543,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/cursors.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "67b98dce8653628f75c652848f52d964828fcc47372783b31e077cb3871a5f98",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -21307,9 +21307,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[19]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "b4dfd2d3f41ad26a31bc19038c0a756631e590de2bba7b36d91c35d7aac61ad7",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -21382,9 +21382,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[20]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "384a56f0931c67aab01b302f8dca71fb6cedb4c34bb4cdc4cf6fffd00d235e94",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -23057,9 +23057,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[61]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "42ee54213117b313b3781bb506a62eac05bb7b59abdf079a365cb099e8855d0c",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -23095,9 +23095,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[62]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "308b92dec8c4e35a796ff03f4f12a5458597e856c80e6b7d21fe606785e6ae0a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -23136,9 +23136,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[63]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "827cd961f02385f289c9b617614ca5243ca346b76576a57d80554295a3ded6ac",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -23173,9 +23173,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[64]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "fe76007d3a9eac417027be83c15822ea5410a0f77e6629ed943e7a9d5b6d0918",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -23248,9 +23248,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "f707767ad0cdf149405c900ca4c57f1ebee0d725b3d8d47442866d2958ef8844",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -23286,9 +23286,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "fee2916710c51c01ab46f5f1d7d5d6169b62455483e4b189b0e426d767e52fba",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -24240,7 +24240,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "a983bab143b7885cc748c77ca7223090bd19d0e938bae90fefc36bed0efd64ea",
       "reason": "legacy wTimeoutMS requires the release unified write-concern mapping",
       "requirements": {
@@ -25791,9 +25791,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "0f977c03b29d3d9d49562dea003cbd8bfa8bcec1c39e0321e0b30294808756c0",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26017,9 +26017,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[45]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "5fb414ccead25d0418bbb1a20e8c025e57dfdd22c862e4abbbe8580582233111",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -26058,9 +26058,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[46]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "79239615ebcc59c98d23baa6129beae2742fcf7f3dc1f2e935ba304e079b5d1e",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -26099,9 +26099,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[47]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "0e1f6da801d6841ba4da62c9fa7027b8560e7650a92a042d6440445c9a6b8575",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -26136,9 +26136,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[48]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "97cdbd31a4ffb87fd8aa145edd8aa27611c6a439146df5edafef346bb23b349b",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -26173,9 +26173,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "9c97f52714ae3d885b96fd903585f9bba56458b46c6b7be831902078db3eb62b",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26507,9 +26507,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[13]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "582fac1b4c243b7486b5229d10901457324d1c02f4504d8673af0f9da0d432f2",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26545,9 +26545,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[14]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "06538fe5b4984df9826dd2043d2869d30db01cdeb893e8d90a0f0379fcb30804",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26767,9 +26767,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "f965b2c2080ff44f76060e75fd9128024432965d812d791ee7eefff77cbe08e5",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -27173,9 +27173,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "300fefd73602e90b7916992dfe036be0ebd9408490b1ec443f8fdb65ce885fc7",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -28223,9 +28223,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[55]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "48d47aee89728fc22be41736ba718992ad0f3962fd56e0cd327be4b1883f6f9a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -28264,9 +28264,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[56]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "fd711ad418af1d91a7e70fdfd6c6488c2130a729e33a0061886f7e2093edc3ab",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -28305,9 +28305,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[57]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "8ca060b6fb817ab2828201093b716666cb182fbd33c3516f827457d533317ac4",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -28342,9 +28342,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[58]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "091de5b37b827be23fad8a72f296957f5a53ae8968bb69488d8230e6105daade",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -28895,9 +28895,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[19]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "3a8dbfeb117710ed6ccc745d215542d17bf29629b886df8cb87c786b3c2311e0",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -28968,9 +28968,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[20]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "ebdc85f27d0c37aa2dbc17b01d3407c451e29b3be2858b4345da69dacd1fda91",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -29471,7 +29471,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "77f0023aabf122690d8ebdb3e1ca9e96637c3e87501ee4ad8c413dbc0a010960",
       "reason": "listIndexNames requires the release unified operation-timeout adapter",
       "requirements": {
@@ -29507,7 +29507,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "aa0cd66359ed50572061615d334b9adf4fe26d910e7b24a84603601c5d9ef21a",
       "reason": "listIndexNames requires the release unified operation-timeout adapter",
       "requirements": {
@@ -30600,9 +30600,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[61]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "4029ac72bad8c2a439ca70f6880c5558f1d9faa5885c4b01900b72e053222877",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createIndex.keys",
@@ -30641,9 +30641,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[62]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "18795968bd2dae02e6d4009343bfa2e6cda5fa7e961acd769fcb5093d10758b2",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndex",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
         "arguments": [
           "createIndex.keys",
@@ -30682,9 +30682,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[63]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "60ae5c9c8f8ede20a9b3e849c5dc11361f9e876a68314b81b02c6d5debfc221c",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "dropIndexes.timeoutMS",
@@ -30718,9 +30718,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[64]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "82725af2dc44a27228d0e8c268fe6aad5f67574edd8adbf221bb2a4c28977c0a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: dropIndexes",
+      "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
         "arguments": [
           "dropIndexes.timeoutMS",
@@ -30791,9 +30791,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "ce7d435fec63f3db572a3f58f2f5de5cf7c466eec214a0b234d9edbca3de6220",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30828,9 +30828,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "4f922b5f4f397251040cf00ea1a2c0d01800de7eef85edaffcb98db74919d13b",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30901,7 +30901,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[10]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "897d12b4488b27b15c572cf66d6eff4c77392dc751c321f8f9846238f9d3f095",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -30936,7 +30936,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[11]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "6a73b345803ef958b55ff0810cb4fb3d1da8dfd301d17b0e3eb7d61efadd3d76",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -30970,7 +30970,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[12]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "450eec1d95c0e08c32d394db5a1e958ab64e6a3e5a24ff408fa3677b3100782c",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31004,7 +31004,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[13]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "41c49607241b66885ff87acb6b70d63b22259bebabcc056151b3653e0fa07af0",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31039,7 +31039,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[14]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d4127af5cbe8c2160d8ab8ee39dc03d57dd38490dcff2e3c530dbb02304cede3",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31074,7 +31074,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[15]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "074e782165675a7f60e1aed306e2d7e5da5c9c16a7f6dfcd198d5b2ba8658e08",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31109,7 +31109,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[16]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "03e3deb196b9763fa1b4b4dec80e9de8218e0ae408b7f2bfda0979654079f219",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31144,7 +31144,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[17]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "92a31c4f23fed2d0088c34ca7ec340bf8ee604d67197ae6aa5355ac356ebf6c6",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31178,7 +31178,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[18]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "35db2a2c3f8462298b7d8653260f18656265d0d574f15820e81c4ee195c5a406",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31212,7 +31212,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[19]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "c8f4fe755cdc24ce8cd81958059c47b24486572e4554de9e3638eff73bc5a09e",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31246,7 +31246,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "cfcf4cee89758152e6f87e6bf754bdaf307e9c7d950182cf90a8dea357301410",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31280,7 +31280,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[20]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "15abdeff207fa1e6549cfd5c62ce46b59739e1b6a1431623e45f46e66ebaef4f",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31314,7 +31314,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[21]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "9e58a4d18a747b08d4f9dc6a3a6c51d952127bf896b045bd8101b40bf733b9b1",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31347,7 +31347,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[22]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "a03677023ba2461d616f216c9a2743cfe2c4db97811b1d36db71c89e26d1a85a",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31448,9 +31448,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[25]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "e8498e6b611bd7f96e5b53a4c5a57561e85d842875cab1f50b795937628a9c9b",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31482,9 +31482,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[26]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "3bf53e8fbf46433fb0d9c95f2a80e5e3686b0ba99f2a9314e86db4cc58f12952",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31516,7 +31516,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[27]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "4850d6d33e41c8e0169b32c3077a96de1c4ff56a2d0617094108c44ceca1ab60",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31550,7 +31550,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[28]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ab9dfc8954980a5e2c5eacaaf04361ed39167958ce47887aa808a037fa852484",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31584,7 +31584,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[29]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "db853aeae10af14cec0725b706fc35516700ff9209ba168b4ed744a6d1fb77b3",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31618,7 +31618,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "246e1d63187a5efa46191ff777b114d1063ebfe81d803887f246a57dbb298de0",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31652,7 +31652,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[30]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "5fd1ee1a183816a2b8e803b9cc79613dc40609fff50a5cfe1f411050648b9bc7",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31754,7 +31754,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[33]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "1ac18dd8c3d50f0e0bfb785d9c9b9f14102617a0ec8df7ccc6325205b519dd7a",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31788,7 +31788,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[34]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ffca21ff8605cbee1a10c58a1566742c1fe45c644bf744c83f4cbff79f3d8ea0",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31822,9 +31822,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[35]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "31bc7633378b0a8d351a063449c91286d9f3f301a2a68d25c1e342b7e0d21265",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -31856,9 +31856,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[36]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "154b38076c25f65047def0a4871bcc4aab058383382d084627ce66962bb46ba6",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -31890,7 +31890,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[37]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "21f421b7749aca3523732ce182f6ec17c630161d54d66f5eeef8b12607d658fd",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31924,7 +31924,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[38]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "3f4dca694b403b3bddacd359f12bc7a1f26b73cfeac3de78c8e198497a91274b",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31958,7 +31958,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[39]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "5f0915666fac7187e255b3e5d0c913f2e675485658fb05d2184b336e719c2db3",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -31991,7 +31991,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "323f24c911cd4bcd33599e2166a6bf5bc48e97ada9f772e89ca772c60af1932f",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32025,7 +32025,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[40]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "431a47bcd938a89633613b2b5854bf9eb89b7387f58e78f1f2cbfbbe4ed10f93",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32058,7 +32058,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[41]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "22743d68374d52bd02fc23b4ea1ae1e729064edb6be771f84518e692f147e8c9",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32093,7 +32093,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[42]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "22c0471a753ff0d573c6db97c8b8b0d78ad10e8f7e0de6b0cc544f077cd15b1d",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32128,7 +32128,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[43]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "267785c69831d68c3ae45ded5b46dad571022d28dd3fb7f9d0edc98fc6c72326",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32162,7 +32162,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[44]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ac316a2dfd24b8e41e2619df3f39037a3cfa40afff41be2e613a47378a68d409",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32196,7 +32196,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[45]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ec927fa5ff73722d2f093cb37be762ace0e9498fc6e5dd926e5ad979a727dae9",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32230,7 +32230,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[46]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d9ce8098899fc1c88753af509db27a441f3a3ad9ead958dc37dffda82366b97c",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32264,7 +32264,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[47]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "6a0ec636811813f261370e7e03667de7e3c866974f2626d16b94148ed573df65",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32297,7 +32297,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[48]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "cc54250357af67e3cce7ccb44c654ab09fc11b35ad2cde7ee3a5a06d0f06271d",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32364,7 +32364,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d0584c01ffe222a7782bc24b9b330c0ec8c76ce38a46880a0346ff08e78b3d2b",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32432,7 +32432,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d1495e18833b0ab795d9e0dfc268ac6e056b8e0c23bff74bfbd7018dcb68a5a0",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32466,7 +32466,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "83f3a742e242d7d5651ca210769181d1f6a30c49b8f6b3946183269eb5e9b3b1",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32500,7 +32500,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "4fee2a9bbbaa9fc82d2b9a3e53e5628721314e89f6fbb5570ad6bd80090a5843",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32535,7 +32535,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "81aeb612ace6de1314f7cd6d91f17f2a47a67ee5e97cdf868f4d682756566605",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -32570,7 +32570,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "735038924f33d6beb7dbf97d07acad3d5827d00cda7becdd8146972abe812ba8",
       "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
       "requirements": {
@@ -33611,9 +33611,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[37]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "1f77a7f8d92b4a3910b01705cf54d05bfc04813cf1c6ded145271772360734a5",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -33643,9 +33643,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[38]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "940250db3f2c9f975edf6c860d34f863bec4ab9af1969ab8622ee42cbf887fb4",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -33680,9 +33680,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[39]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "752bd40da237f579d957885f6756e0505b92ac2583345e4977962a301a2778fe",
-      "reason": "database aggregate requires the release unified database adapter",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -34199,9 +34199,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[52]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "117536d3f8e6f9d2bcf6ea6758cf2f0f98201a3db4784947789088d328eabc5a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -34231,9 +34231,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[53]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "5dd041e6aeedfb98f206e66fab3114438f2d0d6d7f0bc1ba5921bcc379242c0e",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -34268,9 +34268,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[54]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "b74939daf04520f09ba56ef5a1e7ec43c8dfa26702a7a98e99061a639427555d",
-      "reason": "the CSOT case requires v1 release unified operation adapters: count",
+      "reason": "legacy count is outside the v1 public API: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -35201,9 +35201,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "c4875a029f2a90d4b204b9b47017e3511b3033c7fdddc451ae80210f64a14c02",
-      "reason": "the CSOT case requires v1 release unified operation adapters: runCursorCommand",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -35228,9 +35228,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "22e8d87e90d2467712b0baf617cfcd5972c725c54eae17198e20a200f4a2bf79",
-      "reason": "the CSOT case requires v1 release unified operation adapters: runCursorCommand",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -35256,9 +35256,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "befdeb4cd840258c4c84a6b70761f4c27c0956f09d491b11f1ca1fcf85a4543a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: runCursorCommand",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35292,9 +35292,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "7ea2c7b6c05706aba1500147cc446923115390cc3f9ed546d128955d0372cede",
-      "reason": "the CSOT case requires v1 release unified operation adapters: runCursorCommand",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35330,9 +35330,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "d45ef83db87ffcf661184b0bc365646283e0fdfdb1c3226f5eef3632f1c78f7b",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createCommandCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createCommandCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -35379,9 +35379,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "c02068748ffddf99e0727fddf30dc1ac1d037a2bcb402f011b7bbd6b9a0fdeb3",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createCommandCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createCommandCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -35785,9 +35785,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[10]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "481a34973fcf0926bd5bc0504a79f11a6b6f4fab84dc7d722dcba87fb2990129",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35824,9 +35824,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[11]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "d2bab5260e06a37661b1cffdf6b6d75da61c11a8194d42a1de7291f61b1c59f5",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35861,9 +35861,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[12]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "a3852a9f20329f7342fc55b42b26e764f87977405a9a8ccaab8f9e450ef9b23d",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateOnce, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateOnce, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35900,9 +35900,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[13]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "5d24d8043b9b16648e324a7ac9dc7f9375082b7c0bfe56157ee178e9818ce9f0",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateOnce",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateOnce",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35934,7 +35934,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "693bb001a82af1046585aae676f4400054cf21369d84afe4c7b712e8d3cf8218",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -35961,7 +35961,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "c7dfa36ebc2a224cd5f201d87812754549d627cede39164b97515cb99ae1dbae",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -35989,7 +35989,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "2c270e84a797aaf5d88fbe01172ce529e187961de5def7556f82d62b484771b7",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -36043,7 +36043,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "3b5526ff463f47c6082a47cc16863aa4259977b841ce7a16c44954484254ce95",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -36071,7 +36071,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "69bf73d583d17559ed52db8dd1d6c3db0c78c551c7e4d27953e437b7f297a567",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -36125,7 +36125,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "01a1cd722010beb5d7506d1df62d767b64d1a278546446712fc0641baee17d13",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -36159,9 +36159,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "45c088cf34d465467574b039df0cfd26069ddd31779a5ce5a936cfc1f7fbcc6a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36197,7 +36197,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "963e5c87a68c0b013a11c6d9853615fbcde7dcf10935e9c9d239ef84fe8d0f3e",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -36224,7 +36224,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "6d0d005b9db6d1f572cabf63dbbae8446e3681096070eee78d7ddba408aa8713",
       "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
@@ -36258,9 +36258,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "5cbcd32cba03875ee80b54a9c8ab8fd9e4cc59f871f04ee6a16c870c0e619b6a",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36296,9 +36296,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "636a07e485f2f9e8a0714b819188c94fabcb50a49d7f2bda5e4e0f6445d82750",
-      "reason": "the CSOT case requires v1 release unified operation adapters: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36516,9 +36516,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "0457cbe0817d4850dd2ac63211944bcd36277109e279d38c61ea00679b2d7c34",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -36571,9 +36571,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "48d54183a4dd6e81c24a3fd0d48f0031f7776cffb53cb42326760feecc92aa54",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -36599,7 +36599,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "560cf7445d28c0c764ede1801bfc0198d8f944c2e8941b69b1b8f4b702e8e1dd",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -36758,9 +36758,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "b8c85dc47bdf96a82805e662045037a5ee495b348883bea08bef724f748da367",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36788,9 +36788,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "2e27df7f9814cb567481d92d76be4e79a51c36c9a8fb8a25bbec2a213fa19678",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36818,9 +36818,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "dc933c8f7f9bf8c409d04c9cc7188902db4bd08cf32d87b056f244698ddb1ac6",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36848,9 +36848,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "c966daaa3aac629fc4ecad92c6cb14993431464e8c88a09c36c20ba897912494",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36928,9 +36928,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "ceb73a6ebabe0632572c37018e860f1875671d8b9e015151e55b82989af46ab0",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -36985,9 +36985,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3a7d581911b6310d8352774399c99547d11f5c0ce84d1eee0c97486c64d16f6b",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37016,9 +37016,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "45bf64d7c844c65654b8ba96bbe7a13879b455c776aa097c6eea133bf4c2ce15",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37049,9 +37049,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "5b9dcd05958a9d3a5e79a2deb3e0a7d100a4e022062e635617ba33090e8488f6",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37080,9 +37080,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "d192be5813a37909789134e0122f624f3a3f5406a1a2d705eda68850d2e11adb",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37196,9 +37196,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3b0a5676a78ad33f857fc3a7be0777fa3abcb7c1954dae7396e37aabd242d151",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.comment",
@@ -37254,9 +37254,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "f5483fb6ef4821ef644275f774cc132c3f5db64589c7198268db3b36fe13e57a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -37508,9 +37508,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "2f8a6133f680791dadcaa03ca97d30ff10ecabeb210ef8ef7bec4ca6d07fb40d",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.comment",
@@ -37536,9 +37536,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "cd04a66f6cdd808c49a83897af906c5c5b054c37953c398c83f1f3d9823ca6bb",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -37564,9 +37564,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "17764c7a78fea7f97d345ce791f0a97d54a56fe2e838b0de7ac83b0db017f39d",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -37650,7 +37650,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "970c99460e9128455d056434055b192d34230e7f551ccf2ac46808ac1843e8a3",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -37675,7 +37675,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "1c38269fac90488867509f02ee4191a2c7cfb6925151e400297ed9af93c8ff10",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -37785,9 +37785,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3d8e62d51ee2a2d55897b12daf68090818efdae832f21e6c8f4bc82e53091f7e",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -37813,9 +37813,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "05b1f145766696a7d4c2b1a3dae74b1fb924d1606c8cdc01a0fc8cb3c7276220",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -37870,7 +37870,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "e2ab1e73c25663119f60bcc1dd7057ed8fbd8ea35d6011111b2e991401e360ea",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -37895,7 +37895,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "92897b243c86c4a1845367a1e75c3cc634b76cbb7e360d5accdc6b8067d43a63",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -38005,9 +38005,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "571a1366d06370e85c7093ed7622624b6f21bf1a83aca4afad63cc5431cabdf3",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -38033,9 +38033,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "bc832ba1b00247c5e1f362610b5d7d0995d1f9055cecb08de641e2b4e98313b0",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -38150,9 +38150,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "0bf7ec17e191debf465842d786e29fc3f493a86082044913e9e48c2c0fd0f3ac",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38317,9 +38317,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "123ce0af925cbc6c86794037a91cd5b25eb62675c60882188677365208984bce",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38461,9 +38461,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "d45da63d00461b168fb22dae1027886f40d7d7d389e6a9d3cb21c6768fbe8f0c",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -38491,9 +38491,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "ed931108dc8beec8b6c6e714438b0c4da47053cab86ada07ca54c10297c6ad3b",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -38580,9 +38580,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-sort.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "a97bc6111f844448c31725f7773fa5e35f933aaff6bd9468103c6612dd205d1a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38967,9 +38967,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "5631df326566b7d9ef56e96f62efa1a6cf91fd6f22b1d41714cd916115a5ff0b",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -39025,9 +39025,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "a9d583cd56dcd3eeaf7ed1431d44c08867428554b8e2895fee929d348c078a96",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -39284,9 +39284,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "90a3fc998e5cfad1c368d6779f0ce662b024085b1d917da603589351bd091261",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -39342,9 +39342,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "d704d91c0c3fe7959c6a24ea8f3945cb3466e2c66d8204d3af12f7b4458b0409",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -39431,9 +39431,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-sort.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "23878d8e881ea56259f70c796efc9363e6a290b91db69bd2666d603c544643ca",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -41493,9 +41493,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/count-collation.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "2cea301a712cbab4d8c38d38d372a8dfaa67a71e107f07145a75dbe72d632c22",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.collation",
@@ -41565,9 +41565,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/count-empty.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "6bda9caf6e6630d529af1bad7ef97989bf675fc2002aa14c4bba68b6950ab3a1",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.filter"
@@ -41590,9 +41590,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/count-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "0d57c1679c697d5756011be750b4460a2601cb34bdeb2a54a6b908ec04d4992c",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -41618,9 +41618,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/count-rawdata.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "c7836bd92e3e9e908112b93a18e34f3012c39944b1f84d7fc885ba8deebbc04f",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -41744,9 +41744,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/count.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "1717c1f3c6c47772d3db4c3ab58d99e9cd4a72babfc38074df0731039a6dee4b",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.filter"
@@ -41769,9 +41769,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/count.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "0bc59ffd328bdbb387ba5d08bf24cea7edbd9ec56825856c9549f41faccf31b4",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.filter"
@@ -41794,9 +41794,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/count.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "5c00040332135cefbcfff5727a6ea4fa108a93c54a3780ec26c7aca6f3d6aa15",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -41875,9 +41875,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/countDocuments-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "6f7365efa5023f245f7263455bb6451307d7af248e8256ac19b4fdd7e98d3cb4",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "countDocuments.comment",
@@ -41903,9 +41903,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/countDocuments-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "7831612b14be4c52cb5b2f15d3de1b78a89ea5a907ec3d91c464397627f05e46",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -42149,7 +42149,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "14c778737de6f76cf689faad36aa3fd0df02b61ee637b6e3b223b69938d9e68b",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42179,7 +42179,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-rawdata.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "b2e66c11922408dd234b8cbc536208f1cedcc3c49690e6d2f18ed59192d096e7",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42209,7 +42209,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "d06f901672a91cc611c1765eec1e82b6aa926c42341a838cba666e87e772a2af",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42238,7 +42238,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "700021ca77b32d344d52224c693f5dc4e05ca893365fb03965787b31c247f847",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42269,7 +42269,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "f6f0cc696a634e6759aaab56cc72d3641248bf8d62d756dea6dfd71bf8e862b6",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42298,7 +42298,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "39a3c6225754193a2280f522b7b4993af1b288e4ae4bc59341f77889b0e62e4d",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42329,7 +42329,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "91525ebd7cbfcb25204febec9551ac84b5277f4101dce2aa053c55bdcae9f5ed",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42354,7 +42354,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "0ffb715db6f6622c9e962e41aa252918730cfd99569a82c18f1ec8864c49274c",
       "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
@@ -42459,9 +42459,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteMany-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "96cb9d59acee870205ceef6eabab438089ff4b1faf8662ba097fe52db5a29c9a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteMany.comment",
@@ -42487,9 +42487,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3ff633561c60e67a9fa3dcc7ac8d56bd20b002a291d8674237a349437d206839",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42515,9 +42515,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3d23b5f4dff4f3e4ddb12140b7a18ae5852a844612f0e8e95c79d65a1097db4b",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42543,7 +42543,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "43bcc468349a5ccdf43f9c0035a6272448199cb8942913d276380bbf522704f8",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -42569,7 +42569,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "86749752895a11764500a8a969e08e60bd3deec603e5e406fc2a310f5e9ecdad",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -42736,9 +42736,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteMany-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "6df0ef48fecd3d14d7c14c9bf1ddcbc66724f2ad1c0aa75b2df3ee4076ebecf3",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42764,9 +42764,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "e32f1277ae910ee226e378f5e5501e489ae14a4221efd5299bfb9117624a8763",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42948,9 +42948,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteOne-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "08f6ec7c642544af2e157559666f9229adac452903d1e55989499058792b8748",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteOne.comment",
@@ -43008,9 +43008,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3e0d975d1ef8ab550c63e8e97fcdcc554b1e78712dc5a65d478ed99896181ffe",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43036,9 +43036,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "d7e06d162f71c6fa3dc5b0c63d1fb895bf3174bea44effd5bae72c20c7b9754f",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43064,7 +43064,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "535020e8c374ded6a0a2558907170f8dad5881442015e94f6d95012618bd2c93",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -43090,7 +43090,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "39867c02e8411f4e1321c6bde01e9fb5d9ba639b5c6f1e1faf166108701f550c",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -43257,9 +43257,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteOne-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "a0156b16bb1b7b6bc89b101a77ee1e501393d806069e4d21d50649c01a23c06c",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43285,9 +43285,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "90e6125df06558846fe4da089687b38e29d1f57675e843d422dedc2a6e11e3c8",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43496,9 +43496,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/distinct-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "5cefd159a8c330bd06fdc6d214705ac67fc1ac8ff966c0a776a3a77040cd1537",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "distinct.comment",
@@ -43581,9 +43581,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/distinct-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "eb7eb21837cebac4bce4624fb317ef5b4589e4ec8a4cfb20ff6473e9d77a88be",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -43742,9 +43742,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "44e25169104337597fd7cd9dba07535de40e349dd71518bd675eb71a40083408",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.comment"
@@ -43772,9 +43772,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "c001f1f13bed9ba542576114c02b03152e427b4f13b9cf2df4d32075a2258744",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.rawData"
@@ -43967,9 +43967,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "73f6eaa656821f110301f517238b60cf7fab18f06d4155073813eaabbadedc7e",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "createCollection.collection",
@@ -43999,9 +43999,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "c169f04febf57156a5589155d0d3538d8b0ec2cf1afc2ffdcc84f06c780f6b3c",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -44027,9 +44027,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "e1cc82ff58c6fd1eb68bcb9a993161791b874808182fbe6d8978609e7dc1ce94",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -44216,9 +44216,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "1249432587925f6597ead1f1b5b7345a8e8134def4e44fe3366a1fcaa037b7a0",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "find.comment",
@@ -44274,9 +44274,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "9e303a066beaba142e3b635999cb23b465432319740dd831eab4153d06355110",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -44333,9 +44333,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/find-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "8c59d670fa4306359ddac92bb1918e387292061cb868ffc37eff21d340f5c1a5",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -44361,9 +44361,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "a45b7d6eb6049832d94579030925a000c39c339076f1667bec78d81c21f84365",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -44693,9 +44693,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "4b841c5bb8cdd99ba0b5314e96c71c35511138ff0063fbb17b7c481eca428552",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndDelete.comment",
@@ -44721,9 +44721,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "84feeba5823b6f816d79e582603eb2cb5f63930ed13913f855769342e829cd44",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -44749,9 +44749,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "55f16d0896c5c50bc41b36c53541a5ab1937b0c0ec59ce1ec9be8dc585be46b4",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -44777,7 +44777,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "b9635a1df3fcec7354071c71d832fb5701f930f70fdf5b6f10d5424bd3721618",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -44803,7 +44803,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "caca4036c1082852ce81d8b914e089a7e9d6e6a35e8e1426eec9a527b110bedc",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -44970,9 +44970,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "85db8b7c2fc3ea06cb2b2d8e21f971858aa472dbc921adff5801e8a84368407f",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -44998,9 +44998,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "1c4a77da07aee9f1f04ba924945d871656dccda369b61928622821d095b980a4",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -45218,9 +45218,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "e91cfcd5f1a7325944d8de8716f18b11e21ab6c35006bae4972f24bec90e3c0b",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndReplace.comment",
@@ -45305,9 +45305,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "4b9ce95b5963734ae0f61cb7415ac5af33c6d40af2e4582ca7caccf7283eb382",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45364,9 +45364,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "dbda23b132f67363389c87eee9d0f69768358d96cd815c0e149622cd15f6683a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45393,9 +45393,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "4beed59c7077ad1eafe1fcf33d5ef10e70c5a4cb44a7921551e1bd9188fdfe15",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45422,7 +45422,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "1576f454fe76915105a8795c983c0123b5f1fab8bd229b0c70a71f083c0870e6",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -45449,7 +45449,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "8b3d008c6ce70a8272c2d0e928440c91c71bb48d3d5c43893f5a660e32a80633",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -45622,9 +45622,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "b5522dabc8e9686fda3c4a27da4d7b2f2ac5caed76aa843ec41e42781bd1f488",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45651,9 +45651,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "2417a5b0e60b9be89fb499f599afa67a31a23393e191c1f7abfe07d10afdfb93",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -46149,9 +46149,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "c4049e17316d1efe3eea53417f82ea0727e47fd124337f49519c77d7cbfd4058",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.comment",
@@ -46294,9 +46294,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "9123a735cb340df3a5748a533d0714a690f68008df5840efe26b113c2bc65102",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "createIndex.keys",
@@ -46324,9 +46324,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "3ce216cf2f88f62d2912714851ad9e6213241d9c3ebaf4ee7c7ef235e368004a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46355,9 +46355,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "23ab4debae3c3cc882a579129d0eaa8bde90b997ad5f7bc5015ad0a52d1ef837",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46384,9 +46384,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "49037b863510469508c03175974013f867731a45e391bb94113a26568174fb2e",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46413,7 +46413,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "d12e921d97b00789c484b2fa181b2747c7ee2cefd82e18f0b5df95daa4442c7e",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -46440,7 +46440,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "da37086023f3f77856f1026fc0a3491366e4bed59623f45f6e7d682e1817631a",
       "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
@@ -46613,9 +46613,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "5d72c368543f16e0931763c2fe0223fa5269717ec9a6296cc24649fbc66dec51",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46669,9 +46669,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "7d7e764b86be9567a770080177d569777c4a1080e0f3ec3d41587a1512cb53c1",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -47003,9 +47003,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "cf76abe49fd491de942b4e71d8443bc866e85be44a94e678c6752136b8520625",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertMany.comment",
@@ -47059,9 +47059,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "4a38ef3889f95893be2191d8949d0cfbf3068cb006547316a00e7f32bd5f903f",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -47170,9 +47170,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "60d64223eb603fefcc1637a13d03128ab3d06b1583b6f9d61bd39e693ab379ac",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -47358,9 +47358,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "efbf28fc98ac928e4e0429921ef7c13f63ccb5b48e1898c3d4b4b340b5159be1",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertOne.comment",
@@ -47414,9 +47414,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "6fdf0bcb01588c986948fb9873c8e45ae745d577a0bef4ba7484c275b98ff926",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -47607,9 +47607,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "1b8584badbfcc2e1e87c7e1cf71cef23071302f9406bbd8126fda453cd68a649",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -47668,9 +47668,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "a221c53cef2b79ba326705f92702517fa8b1a5ac955bfec5fe245f906309c9a0",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -47837,9 +47837,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "7a82ea66446f4e5888461fee9a407cc60edc017464f00e33eebf9681aa183d8a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "replaceOne.comment",
@@ -47926,9 +47926,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "d7a0ff52c81a15d3925ecb5cc3fd4ff31ba74a7bb12c097dc119187395110d29",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -47985,9 +47985,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "4a90f7d371a38193ccfe95f06cd9b90190fb1e41bfda3a4a46dd4c3a22f4cde9",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48167,9 +48167,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "11339127051c1e062baa3f6a26b7ec9ef82aca216bd6b7c22a7f0d25d3d740f2",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48198,9 +48198,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/replaceOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "b5fe507f8f8ba27721433ccc50d53677e2487ebc3e2794c3f621591141433fa9",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48291,9 +48291,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-sort.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "418b9b6a938ac6a8639b94e026be26e6fe22caea2e4d44f862ff5b196b78b294",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48638,9 +48638,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateMany-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "192de775889260307df0a96a222f44900e2b71cf1935889e40902f9b939d775a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateMany.comment",
@@ -48937,9 +48937,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateMany-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "38fff32be51a1c145011220bdc26c618bf2b8800980eb11a4e533ddb1589614c",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -48997,9 +48997,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateMany-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "616975640995bded9e55a5c522c4c9af6fe2cac8cf170abacd227568b6ee26b1",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -49401,9 +49401,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-comment.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "2a0e42cf94b657787f47a25ae276db21ddd456d0d084da9211e3bf7978b1b82d",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateOne.comment",
@@ -49733,9 +49733,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-let.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "764546d7010e132169ed9329440c11fc09b336c86ce47405ba3c9a3d2f4906ec",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -49793,9 +49793,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-rawdata.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "eebbad712c3469bb0e106960bb0f5912c8095ac71769d67ceb750e1a8cd6852d",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -49886,9 +49886,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-sort.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-004",
       "fingerprint": "f9f27891b0b4b6151e18d9f86e5689146932c169604205927f4bdfbced5e8df9",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 CRUD and administration conformance slice",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -50043,9 +50043,9 @@
       "status": "runnable"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "bccaeb73717e28c477514884a6f70c5ca2e9d2a30a812d2c684987411b45f81f",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "appendMetadata.driverInfoOptions",
@@ -52467,7 +52467,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[10]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "01d7b807f94a793f6c95addce065553dd76efbd734482b0df327342cd6c09260",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52503,7 +52503,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[11]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "d36b48a62ec78d8dddd2b2e224decd01edd78648723f449603cf6904a6a90df4",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52539,7 +52539,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[12]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "8a1d35a29182cb4a0b1f438366e1fe0bfe91e0220cd1d873ff53236ee248ace4",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52575,7 +52575,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[13]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "7de249ba01cc1968c7ddb839bab3a0c56b762f8043ad095918dc904370acec85",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52613,7 +52613,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "6f71900f5093ee747e423bef9ebeaf6e9d08f2d5dbffbaff2acb975bb6450888",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52649,7 +52649,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "3c17cdec11e7fa4ccda3bc88e7c84af0eb7ab88f25afd27745886d1d22606ece",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52685,7 +52685,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "5365772b36735e1c4e32580ad58f3d540684c1f0571f2cd2d8046ce0c3feaae5",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52721,7 +52721,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "a5c4bdc79a0f05c48f521215b07d2960b66e094590d80c5e77c819f9821e5506",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52757,7 +52757,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "8bcea1fd3dcee6d5e617a619186138da05d8990bb7c96aef81738d7da4ef7a39",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52793,7 +52793,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "bfdc5cb038923fab7c94ddd91289153da872d70766ae56de9acfbc5e40d192be",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52829,7 +52829,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "3c823cbc5c516c501b504a25039486cb8105420ca84f3905a8fe5a9de5f1c7dd",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52865,7 +52865,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "f0849ebfd56fa1b88612a3f674a1fc081a450ad414ba76b6ffa2f046221fab8f",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52901,7 +52901,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "f0a187f5732d6c0fbce942a4752e30c516278a753245a3a5007ad0206b058d54",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52937,7 +52937,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "19b5a93f761ce8d9817e485d878d50a8a2b730805799ae4680c7bd3235fbce59",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -52969,7 +52969,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "4abdf7b89aeeae656b883d55dc59660aef92ea3dc792905fc36b913a33280b7d",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -53005,7 +53005,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "4978d4987b2937d80169570e15b1ced5eb26b7f75cb40cfca6920a852cf843d2",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -53043,7 +53043,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "7a1892dadcd9497ce02752b1369f4157175d7edc77fe25514c19f7453f00e0ab",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -57420,9 +57420,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[10]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ab6c55d37a2a441112f8527c56f6c213e1db2ce5033be1d5a21916ffbf7738c0",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -57461,9 +57461,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[11]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "654e40996f92e487f7219f58a5d50d8441e504cf28f7b4f1a50a3359e35e6e1b",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -57502,9 +57502,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[12]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "bb6c189126dfb5e1b4d8a93f19eb85d8b790788043cb32eaf23c8d25c10398b3",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -57543,9 +57543,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[13]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "cb9230a011a541a179775d1d28fe116572394b669b424d57d187fb30e5969db7",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -57584,9 +57584,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[14]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "dce2630761bd7f3c1d0f3cda86d1c896149c2ba6846d216e6a403387aa080d2c",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -57625,9 +57625,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[15]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "f4c3c72c3a7ff242724dc6842cc834692b4641e6ee2285ec1706e06a2216882b",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -57666,9 +57666,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[16]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "a64bb500cf998244b62aacf5d82698998629a71dfa8a7c395a7367bcb73f9ee1",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -57707,9 +57707,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[17]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "752c47f97e696a73bc924dffab22c285c50790df842e38ad139c95e4f1b0b4b1",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -57748,9 +57748,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[18]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "7541ac5cad14a6b591f4c0751fb8265b757233727b2fbd78d825ffbb2d81fca9",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -57789,9 +57789,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[19]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "2d3f0b5f483e66ff1f962e1a5401c2d4c536295e838b0cad23cac84392f12b3e",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -57829,9 +57829,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d786c0dd7dcc36a5d42fb390594b4c672c3eafe575a6bbf4a759aaaf74490d49",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -57870,9 +57870,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[20]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "643a7320115776552da2d24ba93d51c7ae95eb4304997803e05ba5fd579619fd",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -57910,9 +57910,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[21]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "f19f16b580c0c221b118cffd225cbd891d48911f65fa455230f144cbcb64eae0",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -57952,9 +57952,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[22]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "3cb5f12f9b5e3382c284843e59b13584c02a6bc0ca4c735d04e3693b2f2d5c09",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -57994,9 +57994,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[23]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "8f43e3da7c9bf774cc054e8c51e3b7bb417d767ee0d52fa51a4c336e05026827",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58035,9 +58035,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[24]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "0d53241a6f3c694663692621d67e1a698f9b259be5f8c8a46ea65dc01dfe02d4",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58076,9 +58076,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[25]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "99f8108f21856f87e88695af90e37ab87161859e67fc88657054b2f7483a1dd3",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58117,9 +58117,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[26]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "a0bdf9ccc4194d5c53e98358172017251ff36a867533171bdff424750a254986",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58158,9 +58158,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[27]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "af1e8fde0f493929093f354206aef35023f941e1d05e1c67ae752a0fef26f489",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58198,9 +58198,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[28]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "21497457347750d79f3c74deb84f6edbd6a60995822d2fadeba56479319cfee3",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58238,9 +58238,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[29]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ebf52db991b2cec6302c0686b6d1adf906b124946eadea66d842f7a99d51b945",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58278,9 +58278,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "dc06b14f5a1936dd20923cc2b836fbc74ff5553fe9d24dd122fd55b687ce2ced",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58319,9 +58319,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[30]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "473b3ede1f87d109bc94bab1bcbb05aec6ae3d95765847e2957fae0097ab2d7b",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58359,9 +58359,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[31]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "7478c16d7657d27cc386cc4f5b400a24b57912b183026e7e4fc5c815ecdb35c0",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58400,9 +58400,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[32]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "af60d15dae6aa74d4953c247c40cc95729e0f715e9a2e97fffb5b0599a0b8a9a",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58441,9 +58441,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "9cec0afa6d1c5ca2a203d8a6293412d2c577b1548d86224e7604b416652fe6dc",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58481,9 +58481,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ce379ddc8ecc003c2b1a81495e735dfa0a9fb33f4b322f14a4a71200822faeb0",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58521,9 +58521,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "5acc09ec867ecc969899431b5481e85068cc5beb7b52d96afd62f2040ca026dc",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58562,9 +58562,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "e129026e2352436603bc9439c8f8e6f5986e062de3f886b1fa10d9b4b0311bab",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58603,9 +58603,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "8817e5482e27c0f03107b32e13e0e890d3b276e0862b2c09a8d08b04597f5f6b",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -58644,9 +58644,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "f9536efd2b6c0246e6049a0bd5ef369899e7a8d5574443f0195133edb344aea6",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -58685,9 +58685,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "dd4d76b7ac5ca7cbcc98d35ce63db92d5f089371897b431a4cead7ca496eca5f",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -63189,7 +63189,7 @@
       "status": "runnable"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "bc2b7b4726700cfee35e2a98f79a943f6a4a7e663835bb99a8547cb19eb5187a",
       "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
@@ -63223,7 +63223,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "e1e9d4262af1ef18069322e05fe0dc1184a5c7bfc62c5c2dfb9f37fba2bdf86e",
       "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
@@ -63261,7 +63261,7 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "dc32ebbe932286f3122afeb1927c5b90be5ea19cf8fb9399f990c07e7eddabeb",
       "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
@@ -65353,9 +65353,9 @@
       "status": "runnable"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[10]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ff94da30c7d36355b825a90eef9027a7e013aef8f9c22ae8db0211a75d231bbb",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65395,9 +65395,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[11]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "dafe02b27e4a1a51a757bc5745f738a1e1bb1e2c64a34e85acb8c2481893161e",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65437,9 +65437,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[12]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "75bf9a11177eee578b6c691caded44d3c54f076ad7dd62d0b6ab004896e95ab0",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65479,9 +65479,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[13]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d8951587e5534d1d91876d76899043eab84870e450e06077702eb15adc762363",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65520,9 +65520,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[14]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "8a15aa72f7407c8a74b9c857bc5ad690b6bb72c9c08ec32a5a8bf59c992e3e2e",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65561,9 +65561,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[15]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "d8211bed6c7d7d853fac9ed415b6cf99bf3da91588c6c087b9a56157fbcef15d",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65603,9 +65603,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[16]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "19b742bc8cb1d8917508acd4b7ed1a2ec7dd0f9f9f14face50c919480515ef21",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65645,9 +65645,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[17]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "c898dc999d9e562579d994e77454da85d20e9da0929803fd30fc37745ade6533",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65687,9 +65687,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[18]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ab3cf6b7957fb2d54ce039f38436bee801009975265a2aa73b9e13f60fe5c2ab",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65729,9 +65729,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[19]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "e89bd84ba6605b76ee98376e1490c1f9d70468f48e0d2f45151840f59f7d92cb",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -65770,9 +65770,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "1eaca69b9cc03d0796bb53a7ad8dd5f67bcf4a7c86a173f5bc735e708ba2eebc",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65811,9 +65811,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[20]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "6b200363ebc628ad0632ca0405c8cbe86feb0a306e70739670579a0fddfb2135",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -65852,9 +65852,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "be45d476aeb013c712947effa4bcfcaee93914ea22055e398b6747c968899d9a",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65893,9 +65893,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "b66666cc52cd4e0042dc3ae59721961a802d65f70dafc3135731191fd0dea87f",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65934,9 +65934,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "1d49004cef143d70287be918e3e02e5983c57cca5b44e3cb8ed05065c03a1b5f",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -65975,9 +65975,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "a481f5eca1e0af9e76b039deaa5adb2ebb80c504bc62a1d9319a539d151960bc",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66016,9 +66016,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "0d70f4ce90364bddf50792fbac90a9966b35f7c510e0ab5fa283096e06d8a39f",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66057,9 +66057,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "ceb5f51a542bce3f2124b1a0d356b5ec82ecb955c2979c4545966ab27670e5a1",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -66098,9 +66098,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "6169377bba602afe8d6b031634a357a709308f92fc8006817e644afda37dae9a",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -66139,9 +66139,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "55bd8b95b42b78b79cd06cdf389781a4b100df11247ad539de5e215f5964bbbe",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -68278,9 +68278,9 @@
       "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[11]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "fc46257c131844e2944c0697ec6091d10f4c07117db5ea041f56a50cc3c3a6d8",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68309,9 +68309,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "a27e186daf7cb8da7c6a20baca1e1ef3a6f3e92a297e9ad8907853100ab2c333",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68340,9 +68340,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "505798d163e834b0b74d06e997133ad90239be5aa9290e41b35eacd77a1663f1",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68374,9 +68374,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "7d719db594ec75b253873c5fd4dfe175f22876c120962974535e29d3ce782de4",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68406,9 +68406,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "5123bb487c29f901687ec5390caa2b4a17e9a782aebe5c6904a60446db22c2f2",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68440,9 +68440,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "8eed0eb4bd3f96513f4fcd9ab9a189d303e89d1af2143bfce11b097ad4045a47",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68474,9 +68474,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "f84c0d5c46f86c32ac2592738bf5baa1a7af040603cd4c5dfc1dd4ac870ab91f",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68506,9 +68506,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "48241fa481ff26289834cb22e02fb6908084b9a82033b74ad40819f6c008ff5b",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68537,9 +68537,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "1822eed3b9e1f0a83fc1eeee806a829c8b569b17f117268bc445f4b57593fc52",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -68568,9 +68568,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "85553f81994aca2f0d07b8859d5407ffbc1e76ffa127998b08499d161dd5a66e",
-      "reason": "general runCommand conformance is outside convenient transactions",
+      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -68599,9 +68599,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[10]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "1c5ec997298379804fea3f3a3085e9e983a723a34f68d0c759e9118b349f0b2e",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -68644,9 +68644,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "b163f5af3054e5fb460274d20178fddca877912a334dfd2af39ec5d013c7aa7d",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -68677,9 +68677,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "fb2b45b72c26dd6dedaf6c963c4c7614c65d08e5d867526388265bf54d823298",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "createCommandCursor.command",
@@ -68704,9 +68704,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[3]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "7d3cf30ec37e1bc9c3593999f73bf963a6aeb342c135bc351c20e47e4c9742ed",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -68739,9 +68739,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[4]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "e2cc52e11b7ce81dd2f997f8be9c582a4460f51af8bddca02b236173f9b99041",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -68775,9 +68775,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[5]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "e7f6311ae3921425d3da576d86a55605356c55fc01d1fbd29a04e3e43c753fba",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -68819,9 +68819,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[6]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "3627623fe17a9d9857461413935e8664e5124bd865b8c852181fc1d40b60d9b0",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -68853,9 +68853,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[7]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "7956033f5e75e5757f822931a122725e548c512552448996e7c9baa11fc4e9ae",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.batchSize",
@@ -68886,9 +68886,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[8]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "6baa16bd52fb4adde5c86d56917c358b2f566699f5ae5c39412d5fe7c70192b0",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -68919,9 +68919,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[9]": {
-      "activity": "REL-001",
+      "activity": "REL-005",
       "fingerprint": "39b4ee59a764894d9405cfcab6cb20a3a07801b289da8cb44aad0c955d5de347",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -70491,9 +70491,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "f7bca7692652c185c78613bd9b7b2e8f5f31748dd342239c9d7c54b7794c32e4",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70618,9 +70618,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "02266813bddbc447a2afcc74d84bed3d266b202e0c72d7274b0cc27c7cf35623",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -70650,9 +70650,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "0fd50565b295a218cb06fc64b38ff524aa1abdd3c964e9617f2f0b245e78353a",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70734,9 +70734,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "732bfdf3dc8e535a1acc6ff132b477383e024d5c0cc8946963762aaebee5c8ce",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70784,9 +70784,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "3406d589e98a2f141dc5504cf0a57123b8cb1cc012a7a5b5bbe81c319c4c3aa4",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71087,9 +71087,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "f7bc175f6916ac580ae60c2f48e061ab732c11efc678d5e61be4c06d05fc1952",
-      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+      "reason": "the case awaits release retry and handshake hardening",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73475,7 +73475,7 @@
       "status": "runnable"
     },
     "transactions/tests/unified/count.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "ADV-011",
       "fingerprint": "dff7fd444e85d0e917a5958399c2960a1ea9ee30de92a775c7f0f7ae5261264f",
       "reason": "legacy count is outside the v1 public API",
       "requirements": {
@@ -80089,9 +80089,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/retryable-abort-handshake.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "539193072ddfb546e23178c1d2b23674a79f6ab89107f871b80f22a8bd5536de",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -81023,9 +81023,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/retryable-commit-handshake.json::test[1]": {
-      "activity": "REL-001",
+      "activity": "REL-006",
       "fingerprint": "70c7b73ebcf5296c0ac2c37f77522c9b10a8cf17a12db481d38c6898ca05ced5",
-      "reason": "handshake retry requires the release command adapter",
+      "reason": "handshake retry awaits release hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",

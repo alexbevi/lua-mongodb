@@ -35,7 +35,12 @@ OWNER_REASONS = {
   "ADV-008": "the test requires a post-v1 authentication mechanism",
   "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
-  "REL-001": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+  "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+  "REL-002": "BSON vector behavior awaits the dedicated release conformance slice",
+  "REL-003": "the case awaits the v1 configuration conformance slice",
+  "REL-004": "the case awaits the v1 CRUD and administration conformance slice",
+  "REL-005": "the case awaits the v1 command and cursor conformance slice",
+  "REL-006": "the case awaits release retry and handshake hardening",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -54,7 +59,7 @@ SPECIFICATION_OWNERS = {
   "auth": "ADV-008",
   "change-streams": "ADV-001",
   "client-side-encryption": "ADV-010",
-  "mongodb-handshake": "REL-001",
+  "mongodb-handshake": "REL-006",
   "retryable-reads": "RETRY-001",
   "retryable-writes": "RETRY-002",
   "transactions": "TXN-001",
@@ -133,37 +138,37 @@ TEST_OVERRIDES = {
 }
 TEST_OVERRIDES.update({
   "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": (
-    "REL-001",
+    "REL-005",
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
-    "REL-001",
+    "REL-004",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
-    "REL-001",
+    "REL-004",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
-    "REL-001",
+    "ADV-011",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": (
-    "REL-001",
+    "ADV-011",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "crud/tests/unified/db-aggregate.json::test[1]": (
-    "REL-001",
+    "ADV-011",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "crud/tests/unified/db-aggregate.json::test[2]": (
-    "REL-001",
+    "ADV-011",
     "database aggregate is outside the v1 public collection adapter",
   ),
 })
 
 for fixture, count, owner, reason in (
-  ("count", 17, "REL-001", "legacy count is outside the v1 public API"),
+  ("count", 17, "ADV-011", "legacy count is outside the v1 public API"),
   ("changeStreams-client.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
   ("changeStreams-db.coll.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
   ("changeStreams-db.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
@@ -183,8 +188,8 @@ for fixture, count, owner, reason in (
     ] = (owner, reason)
 
 for fixture, count, owner, reason in (
-  ("handshakeError", 32, "REL-001", "handshake retry requires the release command adapter"),
-  ("mapReduce", 3, "REL-001", "legacy mapReduce is outside the v1 public API"),
+  ("handshakeError", 32, "REL-006", "handshake retry awaits release hardening"),
+  ("mapReduce", 3, "ADV-011", "legacy mapReduce is outside the v1 public API"),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
@@ -203,15 +208,15 @@ for fixture, count in (
 for index in range(1, 21):
   TEST_OVERRIDES[
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("REL-001", "handshake retry requires the release command adapter")
+  ] = ("REL-006", "handshake retry awaits release hardening")
 
 for index in range(1, 12):
   if index != 10:
     TEST_OVERRIDES[
       f"run-command/tests/unified/runCommand.json::test[{index}]"
     ] = (
-      "REL-001",
-      "general runCommand conformance is outside convenient transactions",
+      "REL-005",
+      "general runCommand conformance awaits the v1 command adapter",
     )
 
 for fixture, count in (
@@ -231,7 +236,7 @@ for index in range(1, 4):
   ] = ("ADV-007", OWNER_REASONS["ADV-007"])
 
 TEST_OVERRIDES["transactions/tests/unified/count.json::test[1]"] = (
-  "REL-001",
+  "ADV-011",
   "legacy count is outside the v1 public API",
 )
 
@@ -250,7 +255,7 @@ for fixture, count in (
 for fixture in ("retryable-abort-handshake", "retryable-commit-handshake"):
   TEST_OVERRIDES[
     f"transactions/tests/unified/{fixture}.json::test[1]"
-  ] = ("REL-001", "handshake retry requires the release command adapter")
+  ] = ("REL-006", "handshake retry awaits release hardening")
 
 for fixture, count in (
   ("db-aggregate-rawdata", 2),
@@ -258,7 +263,7 @@ for fixture, count in (
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
-      "REL-001",
+      "ADV-011",
       "database aggregate is outside the v1 public collection adapter",
     )
 
@@ -267,7 +272,7 @@ for operation in ("Delete", "Replace", "Update"):
     TEST_OVERRIDES[
       f"crud/tests/unified/findOneAnd{operation}-hint-unacknowledged.json::test[{index}]"
     ] = (
-      "REL-001",
+      "ADV-011",
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
@@ -279,7 +284,7 @@ for fixture in (
 ):
   for index in (1, 2):
     TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
-      "REL-001",
+      "ADV-011",
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
@@ -296,9 +301,9 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   elif "failPoint" in special or "targetedFailPoint" in special:
     owner = "UTF-014"
   elif requirements["events"]:
-    owner = "REL-001"
+    owner = "REL-004"
   elif operations & MANAGEMENT_OPERATIONS:
-    owner = "REL-001"
+    owner = "REL-004"
   elif operations & WRITE_OPERATIONS:
     owner = "UTF-012"
   elif operations & READ_OPERATIONS:
@@ -325,7 +330,7 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   elif {"sharded", "sharded-replicaset"} & topologies or "sharded-" in path:
     owner = "ADV-005"
   else:
-    owner = "REL-001"
+    owner = "REL-006"
 
   return owner, OWNER_REASONS[owner]
 
@@ -347,21 +352,30 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS
 
   if unsupported:
+    if "count" in unsupported:
+      owner = "ADV-011"
+      reason = "legacy count is outside the v1 public API"
+    elif unsupported <= {"dropIndex", "dropIndexes"}:
+      owner = "REL-004"
+      reason = "index operation timeout coverage awaits v1 administration conformance"
+    else:
+      owner = "REL-005"
+      reason = "cursor operation timeout coverage awaits v1 command conformance"
+
     return (
-      "REL-001",
-      "the CSOT case requires v1 release unified operation adapters: "
-      + ", ".join(sorted(unsupported)),
+      owner,
+      reason + ": " + ", ".join(sorted(unsupported)),
     )
 
   if "aggregate on database" in test["description"]:
     return (
-      "REL-001",
-      "database aggregate requires the release unified database adapter",
+      "ADV-011",
+      "database aggregate is outside the v1 public API",
     )
 
   if fixture == "retryability-legacy-timeouts.json":
     return (
-      "REL-001",
+      "REL-006",
       "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
     )
 
@@ -382,7 +396,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if fixture.startswith("tailable-"):
     return (
-      "REL-001",
+      "ADV-011",
       "tailable cursor unified adapters are outside the v1 public cursor surface",
     )
 
@@ -420,7 +434,7 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     return classify_sdam(test)
 
   if specification == "run-command":
-    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "REL-001"
+    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "REL-005"
     return owner, OWNER_REASONS[owner]
 
   raise run.CapabilityError(f"no classification rule for {test['id']}")

@@ -11,7 +11,7 @@ BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 .PHONY: check check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-unit test-integration test-unified test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
-	test-stress test-compatibility test-compatibility-live lint rockspec planning-check
+	test-stress test-compatibility test-compatibility-live test-release-scope lint rockspec planning-check
 
 check: test-unit test-integration test-unified test-quality test-compatibility lint rockspec planning-check
 
@@ -74,9 +74,13 @@ test-unified-inventory: check-python check-lua
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
 	@$(MAKE) --no-print-directory test-conformance
 
-test-conformance: check-python
+test-conformance: check-python test-release-scope
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
 	@"$(PYTHON)" spec/conformance/ledger.py --check
+
+test-release-scope: check-python
+	@"$(PYTHON)" -m unittest spec.release.test_scope -v
+	@"$(PYTHON)" spec/release/scope.py --check
 
 test-quality: test-coverage test-stress
 

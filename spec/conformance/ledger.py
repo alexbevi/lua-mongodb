@@ -31,23 +31,23 @@ RUNNABLE_CASES = {
 
 DEFAULT_OWNERS = {
   "auth": "ADV-008",
-  "bson-binary-vector": "REL-001",
+  "bson-binary-vector": "REL-002",
   "causal-consistency": "SES-001",
   "change-streams": "ADV-001",
   "client-backpressure": "ADV-009",
   "client-side-encryption": "ADV-010",
   "client-side-operations-timeout": "TIME-001",
-  "collection-management": "REL-001",
+  "collection-management": "REL-004",
   "command-logging-and-monitoring": "ADV-009",
   "connection-monitoring-and-pooling": "CMAP-001",
-  "crud": "REL-001",
+  "crud": "REL-004",
   "gridfs": "ADV-002",
-  "index-management": "REL-001",
+  "index-management": "REL-004",
   "initial-dns-seedlist-discovery": "ADV-003",
   "load-balancers": "ADV-006",
-  "mongodb-handshake": "REL-001",
+  "mongodb-handshake": "REL-006",
   "open-telemetry": "ADV-009",
-  "read-write-concern": "REL-001",
+  "read-write-concern": "REL-003",
   "retryable-reads": "RETRY-001",
   "retryable-writes": "RETRY-002",
   "run-command": "TXN-001",
@@ -56,8 +56,8 @@ DEFAULT_OWNERS = {
   "sessions": "SES-001",
   "transactions": "TXN-001",
   "transactions-convenient-api": "TXN-002",
-  "uri-options": "REL-001",
-  "versioned-api": "REL-001",
+  "uri-options": "REL-003",
+  "versioned-api": "REL-003",
 }
 KNOWN_SUITES = set(DEFAULT_OWNERS) | {
   "bson-corpus",
@@ -291,6 +291,19 @@ def classify_case(
       "make test-unit",
     )
 
+  if suite == "uri-options":
+    if path.endswith("/auth-options.json") and identity.endswith("::test[1]"):
+      return _deferred(case, "ADV-008", activities)
+
+    owner_by_file = {
+      "client-backpressure-options.json": "ADV-009",
+      "compression-options.json": "ADV-004",
+      "proxy-options.json": "ADV-012",
+      "srv-options.json": "ADV-003",
+    }
+    owner = owner_by_file.get(Path(path).name, "REL-003")
+    return _deferred(case, owner, activities)
+
   if suite == "max-staleness" or (
     suite == "server-selection"
     and "/logging/" not in path
@@ -342,7 +355,7 @@ def classify_case(
 
   if suite == "sessions":
     if "snapshot-sessions" in path:
-      return _deferred(case, "REL-001", activities)
+      return _deferred(case, "ADV-011", activities)
 
     if "implicit-sessions-default-causal-consistency" in path:
       return _passed(
