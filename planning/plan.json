@@ -364,12 +364,17 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the four exact write-sort fixtures on MongoDB 7.0 and 8.0", "make lint"], "acceptance": ["Sort succeeds on MongoDB 8.0", "The same options surface server errors on MongoDB 7.0"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run pre-8.0 write sort conformance"
     },
     {
-      "id": "REL-013", "title": "Close remaining v1 CRUD and administration conformance", "milestone": "production-core-v1", "depends_on": ["REL-012"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-013", "title": "Run v1 rawData write conformance", "milestone": "production-core-v1", "depends_on": ["REL-012"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable MongoDB 8.2 rawData fixtures for bulk, insert, update, replace, delete, and find-and-modify operations.", "implementation": "Register the exact 8.2 write executors for the existing validated rawData option and retain pre-8.2 omission coverage.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the fifteen exact rawData write fixtures on MongoDB 8.0 and 8.2", "make lint"], "acceptance": ["Applicable rawData write fixtures pass", "The option is omitted before MongoDB 8.2"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run rawData write conformance"
+    },
+    {
+      "id": "REL-014", "title": "Close remaining v1 CRUD and administration conformance", "milestone": "production-core-v1", "depends_on": ["REL-013"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Split and enable the next minimal residual CRUD, collection-management, or index-management behavior group.", "implementation": "Complete only the next public v1 CRUD or administration adapter group, splitting again before implementation when more than one vertical behavior remains.",
       "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact affected unified fixture subset", "make lint"], "acceptance": ["Every implemented behavior group has exact fixture evidence", "Legacy and pre-v1-server cases remain explicit exclusions"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): close remaining CRUD conformance"
     },
     {
-      "id": "REL-005", "title": "Close v1 command and cursor conformance", "milestone": "production-core-v1", "depends_on": ["REL-013"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-005", "title": "Close v1 command and cursor conformance", "milestone": "production-core-v1", "depends_on": ["REL-014"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable applicable database command, command-cursor, explicit cursor-lifecycle, session, and CSOT unified fixtures.", "implementation": "Add the remaining public database command and cursor adapters with the existing session and operation-deadline boundaries.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable command, cursor, session, and CSOT fixtures pass", "Tailable cursors and database aggregation remain explicitly outside v1"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): close v1 command cursor conformance"
     },
