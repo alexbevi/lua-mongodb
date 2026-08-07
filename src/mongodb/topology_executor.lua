@@ -18,6 +18,13 @@ local READ_COMMANDS = {
   listIndexes = true,
 }
 
+local WIRE_READ_PREFERENCE_MODES = {
+  nearest = "nearest",
+  primary_preferred = "primaryPreferred",
+  secondary = "secondary",
+  secondary_preferred = "secondaryPreferred",
+}
+
 local METATABLE = {
   __index = METHODS,
   __metatable = "mongodb.topology_executor",
@@ -52,6 +59,54 @@ local function operation_for(command)
   return READ_COMMANDS[name] and "read" or "write"
 end
 
+local function decorate_read_preference(selected, command)
+  local preference = selected.read_preference
+  local command_name = command:keys()[1]
+
+  if preference == nil or preference.mode == "primary"
+      or command_name == "getMore"
+      or command:get("$readPreference") ~= nil
+      or selected.server_type == "Standalone"
+  then
+    return command
+  end
+
+  local preference_entries = {
+    { "mode", WIRE_READ_PREFERENCE_MODES[preference.mode] },
+  }
+
+  if #preference.tag_sets > 1
+      or (#preference.tag_sets == 1 and next(preference.tag_sets[1]) ~= nil)
+  then
+    local tag_sets = {}
+
+    for index, tag_set in ipairs(preference.tag_sets) do
+      tag_sets[index] = bson.document(tag_set)
+    end
+
+    preference_entries[#preference_entries + 1] = {
+      "tags",
+      bson.array(tag_sets),
+    }
+  end
+
+  if preference.max_staleness_seconds ~= nil
+      and preference.max_staleness_seconds ~= -1
+  then
+    preference_entries[#preference_entries + 1] = {
+      "maxStalenessSeconds",
+      preference.max_staleness_seconds,
+    }
+  end
+
+  local entries = command:entries()
+  entries[#entries + 1] = {
+    "$readPreference",
+    bson.document(preference_entries),
+  }
+  return bson.document(entries)
+end
+
 local function application_error_type(err)
   if errors.is(err, errors.CATEGORY.NETWORK) then
     return "network"
@@ -79,9 +134,20 @@ end
 local function select_connection(state, operation, options)
   local context = operation_timeout.current()
   local deadline = options and options.deadline or context and context.deadline
+  local read_preference = operation == "read"
+    and options and options.read_preference or nil
+
+  if operation == "read" and read_preference == nil then
+    read_preference = state.read_preference
+  end
+
+  if read_preference ~= nil then
+    read_preference = copy_read_preference(read_preference)
+  end
+
   local selected, pool_or_err = state.topology:select_server(
     operation,
-    operation == "read" and state.read_preference or nil,
+    read_preference,
     {
       cancellation = options and options.cancellation,
       deadline = deadline,
@@ -123,6 +189,8 @@ local function select_connection(state, operation, options)
     executor = connection.resource,
     minimum_round_trip_time_ms = selected.minimum_round_trip_time or 0,
     pool = pool,
+    read_preference = read_preference,
+    server_type = selected.type,
   }
 end
 
@@ -168,6 +236,7 @@ function METHODS:command(database, command, options)
   command_options.minimum_round_trip_time_ms =
     selected.minimum_round_trip_time_ms
   local response
+  command = decorate_read_preference(selected, command)
   response, err = selected.executor:command(database, command, command_options)
   finish_connection(state, selected, err)
   return response, err
@@ -194,6 +263,7 @@ function METHODS:measure(database, command, options)
 
   measure_options.minimum_round_trip_time_ms =
     selected.minimum_round_trip_time_ms
+  command = decorate_read_preference(selected, command)
   measurement, err = selected.executor:measure(database, command, measure_options)
   finish_connection(state, selected, err)
   return measurement, err

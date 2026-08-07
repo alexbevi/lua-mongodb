@@ -1459,6 +1459,10 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/aggregate-out-readConcern.json::test[1]": {"activity": "REL-016", "environment": "live-replicaset"},
+    "crud/tests/unified/aggregate-out-readConcern.json::test[2]": {"activity": "REL-016", "environment": "live-replicaset"},
+    "crud/tests/unified/aggregate-out-readConcern.json::test[3]": {"activity": "REL-016", "environment": "live-replicaset"},
+    "crud/tests/unified/aggregate-out-readConcern.json::test[4]": {"activity": "REL-016", "environment": "live-replicaset"},
     "crud/tests/unified/aggregate-out.json::test[1]": {
       "activity": "UTF-011",
       "environment": "live-standalone"
@@ -1467,6 +1471,10 @@
       "activity": "UTF-011",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/aggregate-write-readPreference.json::test[1]": {"activity": "REL-016", "environment": "live-replicaset"},
+    "crud/tests/unified/aggregate-write-readPreference.json::test[2]": {"activity": "REL-016", "environment": "live-replicaset"},
+    "crud/tests/unified/aggregate-write-readPreference.json::test[3]": {"activity": "REL-016", "environment": "live-replicaset"},
+    "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {"activity": "REL-016", "environment": "live-replicaset"},
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
       "activity": "REL-004",
       "environment": "live-standalone"

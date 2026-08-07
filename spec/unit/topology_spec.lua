@@ -227,6 +227,7 @@ describe("monitored topology", function()
   it("checks pooled commands out from the selected replica-set member", function()
     local runtime = fake_runtime.new()
     local command_addresses = {}
+    local sent_commands = {}
     local manager
     local function pool_factory(address)
       return pool.new({
@@ -242,8 +243,9 @@ describe("monitored topology", function()
             return true
           end
 
-          function resource.command()
+          function resource.command(_, _, command)
             command_addresses[#command_addresses + 1] = address
+            sent_commands[#sent_commands + 1] = command
             return bson.document({ { "ok", 1 } })
           end
 
@@ -267,18 +269,27 @@ describe("monitored topology", function()
     assert(manager:open({ background = false }))
     assert(manager:process_hello("a:27017", hello(false), { duration = 0.001 }))
     assert(manager:process_hello("b:27017", hello(true), { duration = 0.001 }))
-    local commands = topology_executor.new(manager, {
-      read_preference = {
-        max_staleness_seconds = -1,
-        mode = "secondary",
-        tag_sets = { {} },
-      },
-    })
+    local commands = topology_executor.new(manager)
 
-    assert(commands:command("db", bson.document({ { "find", "items" } })))
+    assert(commands:command(
+      "db",
+      bson.document({ { "find", "items" } }),
+      {
+        read_preference = {
+          max_staleness_seconds = -1,
+          mode = "secondary",
+          tag_sets = { {} },
+        },
+      }
+    ))
     assert(commands:command("db", bson.document({ { "insert", "items" } })))
 
     assert.same({ "a:27017", "b:27017" }, command_addresses)
+    assert.are.equal(
+      "secondary",
+      sent_commands[1]:get("$readPreference"):get("mode")
+    )
+    assert.is_nil(sent_commands[2]:get("$readPreference"))
     assert.are.equal(0, manager:pool("a:27017").operation_count)
     assert.are.equal(0, manager:pool("b:27017").operation_count)
     assert(commands:close())

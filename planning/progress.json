@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "5add10fa4c74c58abbd9772035faac14d0b4044c039b4474669c8ddb1ff5c860",
+  "plan_digest": "4e11b9c26a2943d153f76d2ed37fa7c0574585e2398af79e23c2f252b917d73e",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -1391,6 +1391,28 @@
       "notes": [],
       "started_at": "2026-08-07T13:57:29+00:00",
       "completed_at": "2026-08-07T14:01:24+00:00"
+    },
+    "REL-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_aggregate_write_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "Ten aggregate write-stage concern, preference, and event cases are deferred because they lack exact executors",
+          "recorded_at": "2026-08-07T14:02:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint; python3 spec/unified/run.py --include aggregate fixtures",
+          "exit_code": 0,
+          "summary": "176 unit and 18 integration tests passed; 521 fixtures/2491 tests schema-valid and inventoried; 320 meta fixtures passed; exact aggregate subset selected 8, executed 6, passed 6, environment-skipped 2 pre-5.0 branches, deferred 0, failed 0; lint passed 114 files with zero warnings",
+          "recorded_at": "2026-08-07T14:19:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T14:02:20+00:00",
+      "completed_at": "2026-08-07T14:19:30+00:00"
     }
   },
   "verified_references": {

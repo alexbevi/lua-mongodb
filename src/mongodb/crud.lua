@@ -493,7 +493,7 @@ local function write_acknowledged(state, options)
     or options.session ~= nil and options.session:is_in_transaction()
 end
 
-local function execute_write(state, entries, options, retryable)
+local function execute_write(state, entries, options, retryable, read_preference)
   local acknowledged = write_acknowledged(state, options)
   local response, err = state.executor:command(
     state.database_name,
@@ -502,6 +502,7 @@ local function execute_write(state, entries, options, retryable)
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      read_preference = read_preference,
       retryable_write = acknowledged and retryable == true,
       session = options.session,
     }
@@ -825,7 +826,13 @@ local function aggregate_response(state, pipeline, options, writes)
   local entries = aggregate_entries(state, pipeline, options, writes)
 
   if writes then
-    local response, acknowledged, err = execute_write(state, entries, options)
+    local response, acknowledged, err = execute_write(
+      state,
+      entries,
+      options,
+      false,
+      state.read_preference
+    )
 
     if not response then
       return nil, err
@@ -851,6 +858,7 @@ local function aggregate_response(state, pipeline, options, writes)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      read_preference = state.read_preference,
       retryable_read = not writes,
       session = options.session,
       session_context = options.session_context,

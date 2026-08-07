@@ -380,7 +380,7 @@
     },
     {
       "id": "REL-016", "title": "Run aggregate write conformance", "milestone": "production-core-v1", "depends_on": ["REL-015"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Enable the ten aggregate write-stage read-concern, read-preference, and command-event cases.", "implementation": "Register the exact collection aggregate executors against the existing read/write pipeline semantics.",
+      "test_first": "Enable eight aggregate write-stage read-concern/read-preference cases and classify two pre-4.4 comment branches.", "implementation": "Register exact collection aggregate executors against the existing read/write pipeline semantics and assign only the capped legacy cases to ADV-011.",
       "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact aggregate fixture subset", "make lint"], "acceptance": ["Write-stage aggregate concern and preference fixtures pass", "Aggregate command events remain exact"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run aggregate write conformance"
     },
     {
