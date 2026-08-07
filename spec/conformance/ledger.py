@@ -37,12 +37,12 @@ DEFAULT_OWNERS = {
   "client-backpressure": "ADV-009",
   "client-side-encryption": "ADV-010",
   "client-side-operations-timeout": "TIME-001",
-  "collection-management": "REL-017",
+  "collection-management": "REL-021",
   "command-logging-and-monitoring": "ADV-009",
   "connection-monitoring-and-pooling": "CMAP-001",
-  "crud": "REL-017",
+  "crud": "REL-021",
   "gridfs": "ADV-002",
-  "index-management": "REL-017",
+  "index-management": "REL-018",
   "initial-dns-seedlist-discovery": "ADV-003",
   "load-balancers": "ADV-006",
   "mongodb-handshake": "REL-006",
@@ -405,6 +405,33 @@ def classify_case(
       "make test-unit",
       "deterministic-runtime",
     )
+
+  if suite == "collection-management" and Path(path).name in {
+    "createCollection-pre_and_post_images.json",
+    "modifyCollection-pre_and_post_images.json",
+  }:
+    return _deferred(case, "ADV-001", activities)
+
+  if suite == "collection-management" and Path(path).name in {
+    "listCollections-rawdata.json",
+  }:
+    return _deferred(case, "REL-018", activities)
+
+  if suite == "collection-management" and Path(path).name in {
+    "clustered-indexes.json",
+    "timeseries-collection.json",
+  }:
+    return _deferred(case, "REL-019", activities)
+
+  if suite == "index-management" and Path(path).name in {
+    "createSearchIndex.json",
+    "createSearchIndexes.json",
+    "dropSearchIndex.json",
+    "listSearchIndexes.json",
+    "searchIndexIgnoresReadWriteConcern.json",
+    "updateSearchIndex.json",
+  }:
+    return _deferred(case, "ADV-011", activities)
 
   if suite == "causal-consistency" and "clientBulkWrite" not in path:
     return _passed(

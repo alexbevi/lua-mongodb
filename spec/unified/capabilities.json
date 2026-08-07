@@ -23057,7 +23057,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[61]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "42ee54213117b313b3781bb506a62eac05bb7b59abdf079a365cb099e8855d0c",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -23095,7 +23095,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[62]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "308b92dec8c4e35a796ff03f4f12a5458597e856c80e6b7d21fe606785e6ae0a",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -23136,7 +23136,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[63]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "827cd961f02385f289c9b617614ca5243ca346b76576a57d80554295a3ded6ac",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -23173,7 +23173,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[64]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "fe76007d3a9eac417027be83c15822ea5410a0f77e6629ed943e7a9d5b6d0918",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -26017,7 +26017,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[45]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "5fb414ccead25d0418bbb1a20e8c025e57dfdd22c862e4abbbe8580582233111",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -26058,7 +26058,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[46]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "79239615ebcc59c98d23baa6129beae2742fcf7f3dc1f2e935ba304e079b5d1e",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -26099,7 +26099,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[47]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "0e1f6da801d6841ba4da62c9fa7027b8560e7650a92a042d6440445c9a6b8575",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -26136,7 +26136,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[48]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "97cdbd31a4ffb87fd8aa145edd8aa27611c6a439146df5edafef346bb23b349b",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -28223,7 +28223,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[55]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "48d47aee89728fc22be41736ba718992ad0f3962fd56e0cd327be4b1883f6f9a",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -28264,7 +28264,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[56]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "fd711ad418af1d91a7e70fdfd6c6488c2130a729e33a0061886f7e2093edc3ab",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -28305,7 +28305,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[57]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "8ca060b6fb817ab2828201093b716666cb182fbd33c3516f827457d533317ac4",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -28342,7 +28342,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[58]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "091de5b37b827be23fad8a72f296957f5a53ae8968bb69488d8230e6105daade",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -29471,7 +29471,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "77f0023aabf122690d8ebdb3e1ca9e96637c3e87501ee4ad8c413dbc0a010960",
       "reason": "listIndexNames requires the release unified operation-timeout adapter",
       "requirements": {
@@ -29507,7 +29507,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "aa0cd66359ed50572061615d334b9adf4fe26d910e7b24a84603601c5d9ef21a",
       "reason": "listIndexNames requires the release unified operation-timeout adapter",
       "requirements": {
@@ -30600,7 +30600,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[61]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "4029ac72bad8c2a439ca70f6880c5558f1d9faa5885c4b01900b72e053222877",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -30641,7 +30641,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[62]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "18795968bd2dae02e6d4009343bfa2e6cda5fa7e961acd769fcb5093d10758b2",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -30682,7 +30682,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[63]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "60ae5c9c8f8ede20a9b3e849c5dc11361f9e876a68314b81b02c6d5debfc221c",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -30718,7 +30718,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[64]": {
-      "activity": "REL-017",
+      "activity": "REL-020",
       "fingerprint": "82725af2dc44a27228d0e8c268fe6aad5f67574edd8adbf221bb2a4c28977c0a",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -46269,9 +46269,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[1]": {
-      "activity": "REL-017",
+      "activity": "REL-021",
       "fingerprint": "9123a735cb340df3a5748a533d0714a690f68008df5840efe26b113c2bc65102",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the case awaits v1 modifyCollection and find-and-modify error conformance",
       "requirements": {
         "arguments": [
           "createIndex.keys",
@@ -46299,9 +46299,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[2]": {
-      "activity": "REL-017",
+      "activity": "REL-021",
       "fingerprint": "3ce216cf2f88f62d2912714851ad9e6213241d9c3ebaf4ee7c7ef235e368004a",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the case awaits v1 modifyCollection and find-and-modify error conformance",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",

@@ -1413,6 +1413,28 @@
       "notes": [],
       "started_at": "2026-08-07T14:02:20+00:00",
       "completed_at": "2026-08-07T14:19:30+00:00"
+    },
+    "REL-017": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.conformance.test_ledger.ConformanceLedgerTests.test_advanced_management_cases_are_post_v1_exclusions -v",
+          "exit_code": 1,
+          "summary": "Nineteen Atlas Search and change-stream pre/post-image management cases remain assigned to the production-core residual owner instead of named post-v1 capabilities",
+          "recorded_at": "2026-08-07T14:23:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m unittest spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope -v; make test-unified-schema test-unified-inventory test-unified-meta lint",
+          "exit_code": 0,
+          "summary": "Nineteen advanced management cases classified: 17 Atlas Search cases to ADV-011 and 2 change-stream pre/post-image cases to ADV-001; 35 classification/conformance tests passed; 521 fixtures/2491 tests schema-valid and inventoried; 320 meta fixtures passed; lint passed 114 files with zero warnings; live execution not applicable to an exclusion-only slice",
+          "recorded_at": "2026-08-07T14:25:52+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T14:23:14+00:00",
+      "completed_at": "2026-08-07T14:25:53+00:00"
     }
   },
   "verified_references": {

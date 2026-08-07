@@ -49,6 +49,10 @@ OWNER_REASONS = {
   "REL-015": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "REL-016": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "REL-017": "the case awaits the remaining v1 CRUD and administration conformance slices",
+  "REL-018": "the case awaits v1 management rawData conformance",
+  "REL-019": "the case awaits v1 collection option conformance",
+  "REL-020": "the case awaits v1 index operation-timeout conformance",
+  "REL-021": "the case awaits v1 modifyCollection and find-and-modify error conformance",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -150,11 +154,11 @@ TEST_OVERRIDES.update({
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
-    "REL-017",
+    "REL-020",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
-    "REL-017",
+    "REL-020",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
@@ -429,9 +433,9 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   elif "failPoint" in special or "targetedFailPoint" in special:
     owner = "UTF-014"
   elif requirements["events"]:
-    owner = "REL-017"
+    owner = "REL-021"
   elif operations & MANAGEMENT_OPERATIONS:
-    owner = "REL-017"
+    owner = "REL-021"
   elif operations & WRITE_OPERATIONS:
     owner = "UTF-012"
   elif operations & READ_OPERATIONS:
@@ -484,7 +488,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       owner = "ADV-011"
       reason = "legacy count is outside the v1 public API"
     elif unsupported <= {"dropIndex", "dropIndexes"}:
-      owner = "REL-017"
+      owner = "REL-020"
       reason = "index operation timeout coverage awaits v1 administration conformance"
     else:
       owner = "REL-005"

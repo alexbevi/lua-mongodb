@@ -102,6 +102,46 @@ class ConformanceLedgerTests(unittest.TestCase):
         {identity: {"activity": "UTF-010", "status": "runnable"}},
       )
 
+  def test_advanced_management_cases_are_post_v1_exclusions(self) -> None:
+    cases = ledger.generate()["cases"]
+    pre_post_images = [
+      "collection-management/tests/"
+        "createCollection-pre_and_post_images.json::test[1]",
+      "collection-management/tests/"
+        "modifyCollection-pre_and_post_images.json::test[1]",
+    ]
+    search_indexes = [
+      *[
+        f"index-management/tests/createSearchIndex.json::test[{index}]"
+        for index in range(1, 4)
+      ],
+      *[
+        f"index-management/tests/createSearchIndexes.json::test[{index}]"
+        for index in range(1, 5)
+      ],
+      "index-management/tests/dropSearchIndex.json::test[1]",
+      *[
+        f"index-management/tests/listSearchIndexes.json::test[{index}]"
+        for index in range(1, 4)
+      ],
+      *[
+        "index-management/tests/"
+          f"searchIndexIgnoresReadWriteConcern.json::test[{index}]"
+        for index in range(1, 6)
+      ],
+      "index-management/tests/updateSearchIndex.json::test[1]",
+    ]
+
+    self.assertEqual(
+      ["ADV-001"] * len(pre_post_images),
+      [cases[identity]["activity"] for identity in pre_post_images],
+    )
+    self.assertEqual(
+      ["ADV-011"] * len(search_indexes),
+      [cases[identity]["activity"] for identity in search_indexes],
+    )
+    self.assertNotIn("REL-017", {case["activity"] for case in cases.values()})
+
 
 if __name__ == "__main__":
   unittest.main()
