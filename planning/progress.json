@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "c0e1e0f740b0f1073a34be113bef059db9567a08efe82b5aa892192f5be018f5",
+  "plan_digest": "3e8b868630021e4157024012d6a1352be55382974347f4379f0872a40c5f34bd",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -1523,6 +1523,21 @@
       "notes": [],
       "started_at": "2026-08-07T14:46:23+00:00",
       "completed_at": "2026-08-07T14:54:13+00:00"
+    },
+    "REL-005": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env LUA_PATH='/tmp/lua-mongodb-tools/share/lua/5.4/?.lua;/tmp/lua-mongodb-tools/share/lua/5.4/?/init.lua;;' LUA_CPATH='/tmp/lua-mongodb-tools/lib/lua/5.4/?.so;;' /tmp/lua-mongodb-tools/bin/busted --lua=/opt/homebrew/opt/lua@5.4/bin/lua5.4 --lpath='src/?.lua' --lpath='src/?/init.lua' spec/unit/api_handles_spec.lua",
+          "exit_code": 1,
+          "summary": "2 existing tests passed; the new generic-command test failed because read_operation was nil instead of true and the database read preference was inherited rather than defaulting to primary.",
+          "recorded_at": "2026-08-07T17:57:53+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Full unified verification exposed REL-028 transaction read-preference enforcement as a prerequisite; REL-005 implementation and red test are preserved in named stashes."
+      ]
     }
   },
   "verified_references": {

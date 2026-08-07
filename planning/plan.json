@@ -409,7 +409,7 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact modifyCollection fixture subset", "make lint"], "acceptance": ["prepareUnique violations remain accessible", "findOneAndUpdate error details match exact fixtures"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(admin): support modify collection conformance"
     },
     {
-      "id": "REL-005", "title": "Add generic database command execution", "milestone": "production-core-v1", "depends_on": ["REL-021"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-005", "title": "Add generic database command execution", "milestone": "production-core-v1", "depends_on": ["REL-028"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable the ten applicable runCommand unified cases.", "implementation": "Expose generic database commands through the public API and unified adapter with explicit read-preference selection.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable runCommand fixtures pass", "Arbitrary commands default to primary unless an explicit read preference is supplied"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): add generic database commands"
     },
@@ -444,12 +444,12 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["CSOT removes deprecated write concern timeouts", "Commands never send an empty writeConcern document"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(timeout): remove deprecated write concern timeouts"
     },
     {
-      "id": "REL-028", "title": "Enforce transaction read preferences", "milestone": "production-core-v1", "depends_on": ["REL-027"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-028", "title": "Enforce transaction read preferences", "milestone": "production-core-v1", "depends_on": ["REL-021"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Specify transaction command rejection when either the transaction or operation read preference is non-primary.", "implementation": "Validate both transaction-level and operation-level read preferences before transaction command execution.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Transactions reject every non-primary read preference source", "Existing transaction and command fixtures remain green"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(transaction): enforce primary read preference"
     },
     {
-      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-028"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-027"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable residual retryable read/write, handshake, transaction, monitoring, and legacy-timeout fixtures applicable to standalone and replica sets.", "implementation": "Close per-attempt deadline, handshake retry, error-label, and topology-observation gaps without expanding deployment scope.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retry and handshake fixtures pass", "Timeouts, labels, and cleanup remain deterministic under retained stress seeds"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): harden release edge cases"
     },
