@@ -61,8 +61,10 @@ local function client_factory(state)
       local options_valid
       options_valid, err = validate_fields(uri_options, {
         readConcernLevel = true,
+        readPreference = true,
         retryReads = true,
         retryWrites = true,
+        socketTimeoutMS = true,
         w = true,
       }, "$.client.uriOptions")
 
@@ -74,9 +76,14 @@ local function client_factory(state)
       local retry_reads = uri_options:get("retryReads")
       local retry_writes = uri_options:get("retryWrites")
       local w = uri_options:get("w")
+      local socket_timeout_ms = uri_options:get("socketTimeoutMS")
 
       if read_concern ~= nil then
         options.read_concern = { level = read_concern }
+      end
+
+      if uri_options:get("readPreference") ~= nil then
+        options.read_preference = { mode = uri_options:get("readPreference") }
       end
 
       if retry_reads ~= nil then
@@ -85,6 +92,14 @@ local function client_factory(state)
 
       if retry_writes ~= nil then
         options.retry_writes = retry_writes
+      end
+
+      if bson.is_exact(socket_timeout_ms) then
+        socket_timeout_ms = socket_timeout_ms:to_number()
+      end
+
+      if socket_timeout_ms ~= nil then
+        options.socket_timeout_ms = socket_timeout_ms
       end
 
       if bson.is_exact(w) then
@@ -111,6 +126,7 @@ end
 local function database_factory(runner, specification)
   local valid, err = validate_fields(specification, {
     client = true,
+    databaseOptions = true,
     databaseName = true,
     id = true,
   }, "$.database")
@@ -130,7 +146,29 @@ local function database_factory(runner, specification)
     return nil, err
   end
 
-  return client:database(specification:get("databaseName"))
+  local options = {}
+  local database_options = specification:get("databaseOptions")
+
+  if database_options then
+    local read_concern = database_options:get("readConcern")
+    local read_preference = database_options:get("readPreference")
+    local write_concern = database_options:get("writeConcern")
+
+    if read_concern then
+      options.read_concern = { level = read_concern:get("level") }
+    end
+
+    if read_preference then
+      options.read_preference = { mode = read_preference:get("mode") }
+    end
+
+    if write_concern then
+      local w = write_concern:get("w")
+      options.write_concern = { w = bson.is_exact(w) and w:to_number() or w }
+    end
+  end
+
+  return client:database(specification:get("databaseName"), options)
 end
 
 local function collection_factory(runner, specification)
@@ -245,7 +283,7 @@ local function session_factory(runner, specification)
   if session_options then
     valid, err = validate_fields(
       session_options,
-      { causalConsistency = true },
+      { causalConsistency = true, defaultTransactionOptions = true },
       "$.session.sessionOptions"
     )
 
@@ -254,6 +292,22 @@ local function session_factory(runner, specification)
     end
 
     options.causal_consistency = session_options:get("causalConsistency")
+    local defaults = session_options:get("defaultTransactionOptions")
+
+    if defaults then
+      local max_commit_time_ms = defaults:get("maxCommitTimeMS")
+
+      if bson.is_exact(max_commit_time_ms) then
+        max_commit_time_ms = max_commit_time_ms:to_number()
+      end
+
+      options.default_transaction_options = {
+        max_commit_time_ms = max_commit_time_ms,
+        read_concern = defaults:get("readConcern"),
+        read_preference = defaults:get("readPreference"),
+        write_concern = defaults:get("writeConcern"),
+      }
+    end
   end
 
   return client:start_session(options)
@@ -313,6 +367,41 @@ local function end_session(_, session)
   return session:end_session()
 end
 
+local function start_transaction(_, session, arguments)
+  local options = {}
+  local read_concern = arguments:get("readConcern")
+  local write_concern = arguments:get("writeConcern")
+  local max_commit_time = arguments:get("maxCommitTimeMS")
+  local read_preference = arguments:get("readPreference")
+
+  if read_concern then
+    options.read_concern = read_concern
+  end
+
+  if write_concern then
+    options.write_concern = write_concern
+  end
+
+  if read_preference then
+    options.read_preference = read_preference
+  end
+
+  if bson.is_exact(max_commit_time) then
+    max_commit_time = max_commit_time:to_number()
+  end
+
+  options.max_commit_time_ms = max_commit_time
+  return session:start_transaction(options)
+end
+
+local function commit_transaction(_, session)
+  return session:commit_transaction()
+end
+
+local function abort_transaction(_, session)
+  return session:abort_transaction()
+end
+
 local function assert_session_dirty(expected)
   return function(runner, arguments, path)
     local session, err = runner:get_entity(
@@ -330,6 +419,106 @@ local function assert_session_dirty(expected)
         expected and "session is not dirty" or "session is dirty",
         path
       )
+    end
+
+    return true
+  end
+end
+
+local function assert_session_transaction_state(runner, arguments, path)
+  local session, err = runner:get_entity(
+    arguments:get("session"),
+    "session",
+    path .. ".arguments.session"
+  )
+
+  if not session then
+    return nil, err
+  end
+
+  if session:get_transaction_state() ~= arguments:get("state") then
+    return configuration_error("session transaction state does not match", path)
+  end
+
+  return true
+end
+
+local function assert_collection_exists(state, expected)
+  return function(_, arguments, path)
+    local database, err = state.internal_client:database(
+      arguments:get("databaseName")
+    )
+
+    if not database then
+      return nil, err
+    end
+
+    local names
+    names, err = database:list_collection_names()
+
+    if not names then
+      return nil, err
+    end
+
+    local found = false
+
+    for _, name in ipairs(names) do
+      found = found or name == arguments:get("collectionName")
+    end
+
+    if found ~= expected then
+      return configuration_error("collection existence does not match", path)
+    end
+
+    return true
+  end
+end
+
+local function assert_index_exists(state, expected)
+  return function(_, arguments, path)
+    local database, err = state.internal_client:database(
+      arguments:get("databaseName")
+    )
+
+    if not database then
+      return nil, err
+    end
+
+    local collection
+    collection, err = database:collection(arguments:get("collectionName"))
+
+    if not collection then
+      return nil, err
+    end
+
+    local cursor
+    cursor, err = collection:list_indexes()
+
+    if not cursor then
+      return nil, err
+    end
+
+    local found = false
+
+    while true do
+      local index
+      index, err = cursor:next()
+
+      if index == nil then
+        cursor:close()
+
+        if err then
+          return nil, err
+        end
+
+        break
+      end
+
+      found = found or index:get("name") == arguments:get("indexName")
+    end
+
+    if found ~= expected then
+      return configuration_error("index existence does not match", path)
     end
 
     return true
@@ -431,6 +620,34 @@ local function list_collection_names(_, database, arguments)
   return database:list_collection_names(operation_options(arguments, {
     filter = "filter",
   }))
+end
+
+local function run_command(_, database, arguments)
+  return database:run_command(arguments:get("command"), operation_options(
+    arguments,
+    { readPreference = "read_preference" }
+  ))
+end
+
+local function create_collection(_, database, arguments)
+  return database:create_collection(arguments:get("collection"), operation_options(
+    arguments,
+    {}
+  ))
+end
+
+local function drop_collection(_, database, arguments)
+  return database:drop_collection(arguments:get("collection"), operation_options(
+    arguments,
+    {}
+  ))
+end
+
+local function create_index(_, collection, arguments)
+  return collection:create_index(arguments:get("keys"), operation_options(
+    arguments,
+    { name = "name" }
+  ))
 end
 
 local function list_indexes(_, collection)
@@ -975,6 +1192,7 @@ function M.new(options)
 
   local state = {
     collectors = setmetatable({}, { __mode = "k" }),
+    internal_client = internal_client,
     runtime = options.runtime,
     uri = options.uri,
   }
@@ -1029,6 +1247,10 @@ function M.new(options)
         },
       },
       collection = {
+        createIndex = {
+          arguments = { "keys", "name" },
+          handler = create_index,
+        },
         aggregate = {
           arguments = {
             "allowDiskUse", "batchSize", "bypassDocumentValidation", "collation",
@@ -1158,6 +1380,14 @@ function M.new(options)
         },
       },
       database = {
+        createCollection = {
+          arguments = { "collection" },
+          handler = create_collection,
+        },
+        dropCollection = {
+          arguments = { "collection" },
+          handler = drop_collection,
+        },
         listCollectionNames = {
           arguments = { "filter" },
           handler = list_collection_names,
@@ -1170,20 +1400,43 @@ function M.new(options)
           arguments = { "filter" },
           handler = list_collections,
         },
+        runCommand = {
+          arguments = { "command", "commandName", "readPreference" },
+          handler = run_command,
+        },
       },
       session = {
+        abortTransaction = {
+          arguments = {},
+          handler = abort_transaction,
+        },
+        commitTransaction = {
+          arguments = {},
+          handler = commit_transaction,
+        },
         endSession = {
           arguments = {},
           handler = end_session,
+        },
+        startTransaction = {
+          arguments = {
+            "maxCommitTimeMS", "readConcern", "readPreference", "writeConcern",
+          },
+          handler = start_transaction,
         },
       },
     },
     runtime = options.runtime,
     test_operations = {
+      assertCollectionExists = assert_collection_exists(state, true),
+      assertCollectionNotExists = assert_collection_exists(state, false),
       assertDifferentLsidOnLastTwoCommands = assert_last_lsids(state, false),
+      assertIndexExists = assert_index_exists(state, true),
+      assertIndexNotExists = assert_index_exists(state, false),
       assertSameLsidOnLastTwoCommands = assert_last_lsids(state, true),
       assertSessionDirty = assert_session_dirty(true),
       assertSessionNotDirty = assert_session_dirty(false),
+      assertSessionTransactionState = assert_session_transaction_state,
       failPoint = failpoint_handler,
     },
   })

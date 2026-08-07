@@ -121,6 +121,7 @@ local function finish_connection(state, selected, err)
   if err then
     if errors.is(err, errors.CATEGORY.NETWORK)
         or errors.is(err, errors.CATEGORY.PROTOCOL)
+        or errors.is(err, errors.CATEGORY.TIMEOUT)
     then
       selected.connection:mark_error()
     end

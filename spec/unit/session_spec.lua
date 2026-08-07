@@ -236,4 +236,42 @@ describe("client sessions", function()
     assert.are.equal(bson.int64(1), commands[2]:get("txnNumber"))
     assert.are.equal(bson.int64(2), commands[3]:get("txnNumber"))
   end)
+
+  it("decorates and commits one explicit transaction", function()
+    local transaction_commands = {}
+    local sessions = session_module.new({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function(_, name)
+        transaction_commands[#transaction_commands + 1] = name
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction({
+      read_concern = bson.document({ { "level", "majority" } }),
+    }))
+    assert.is_true(session:is_in_transaction())
+    local first = assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    local second = assert(sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { session = session }
+    ))
+
+    assert.is_true(first:get("startTransaction"))
+    assert.is_false(first:get("autocommit"))
+    assert.are.equal("majority", first:get("readConcern"):get("level"))
+    assert.are.equal(first:get("txnNumber"), second:get("txnNumber"))
+    assert.is_nil(second:get("startTransaction"))
+    assert.is_nil(second:get("readConcern"))
+    assert(session:commit_transaction())
+    assert.same({ "commitTransaction" }, transaction_commands)
+    assert.is_false(session:is_in_transaction())
+    assert(session:commit_transaction())
+    assert.same({ "commitTransaction", "commitTransaction" }, transaction_commands)
+  end)
 end)

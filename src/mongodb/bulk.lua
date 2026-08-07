@@ -1093,6 +1093,7 @@ local function execute(state, models, options, allowed, kind, inserted_ids)
   options.session_context = options.session == nil
     and type(state.executor.release_session_context) == "function" and {} or nil
   local acknowledged = state.write_concern.w ~= 0
+    or options.session ~= nil and options.session:is_in_transaction()
   local batches
   batches, err = create_batches(state, operations, options)
 
@@ -1166,6 +1167,7 @@ function M.insert_many(state, documents, options)
   options.session_context = options.session == nil
     and type(state.executor.release_session_context) == "function" and {} or nil
   local acknowledged = state.write_concern.w ~= 0
+    or options.session ~= nil and options.session:is_in_transaction()
   local batches
   batches, err = create_batches(state, operations, options)
 

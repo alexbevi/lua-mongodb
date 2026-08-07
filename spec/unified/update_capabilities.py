@@ -164,6 +164,52 @@ for index in range(1, 21):
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
   ] = ("REL-001", "handshake retry requires the release command adapter")
 
+for index in range(1, 12):
+  TEST_OVERRIDES[
+    f"run-command/tests/unified/runCommand.json::test[{index}]"
+  ] = (
+    "TXN-002",
+    "withTransaction callback retry belongs to the convenient transaction API",
+  )
+
+for fixture, count in (
+  ("backpressure-retryable-abort", 2),
+  ("backpressure-retryable-commit", 2),
+  ("backpressure-retryable-reads", 2),
+  ("backpressure-retryable-writes", 3),
+):
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[
+      f"transactions/tests/unified/{fixture}.json::test[{index}]"
+    ] = ("ADV-009", OWNER_REASONS["ADV-009"])
+
+for index in range(1, 4):
+  TEST_OVERRIDES[
+    f"transactions/tests/unified/client-bulkWrite.json::test[{index}]"
+  ] = ("ADV-007", OWNER_REASONS["ADV-007"])
+
+TEST_OVERRIDES["transactions/tests/unified/count.json::test[1]"] = (
+  "REL-001",
+  "legacy count is outside the v1 public API",
+)
+
+for fixture, count in (
+  ("mongos-pin-auto", 59),
+  ("mongos-recovery-token-errorLabels", 1),
+  ("mongos-recovery-token", 3),
+  ("mongos-unpin", 7),
+  ("pin-mongos", 9),
+):
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[
+      f"transactions/tests/unified/{fixture}.json::test[{index}]"
+    ] = ("ADV-005", OWNER_REASONS["ADV-005"])
+
+for fixture in ("retryable-abort-handshake", "retryable-commit-handshake"):
+  TEST_OVERRIDES[
+    f"transactions/tests/unified/{fixture}.json::test[1]"
+  ] = ("REL-001", "handshake retry requires the release command adapter")
+
 for fixture, count in (
   ("db-aggregate-rawdata", 2),
   ("db-aggregate-write-readPreference", 4),

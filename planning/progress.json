@@ -1032,6 +1032,28 @@
       "notes": [],
       "started_at": "2026-08-07T02:52:55+00:00",
       "completed_at": "2026-08-07T03:33:42+00:00"
+    },
+    "TXN-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "Client sessions exposed no start_transaction method, so explicit state transitions and transaction command decoration were unavailable.",
+          "recorded_at": "2026-08-07T03:34:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint && make rockspec && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "158 unit tests and all BSON/Extended JSON corpora passed; 18 integration tests passed; 832 unified cases executed and passed with 0 failures, 3 environment skips, and 1,065 explicitly deferred cases. The focused transaction corpus executed 164 cases with 164 passed, 0 failed, 0 environment-skipped, and 94 deferred to concrete later owners. Lint, rockspec packaging, unified schema/inventory/meta, conformance ledger (2,835 passed/2,689 deferred), and strict planning checks passed.",
+          "recorded_at": "2026-08-07T05:30:05+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T03:34:14+00:00",
+      "completed_at": "2026-08-07T05:30:05+00:00"
     }
   },
   "verified_references": {

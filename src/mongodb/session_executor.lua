@@ -11,18 +11,26 @@ local METATABLE = {
   end,
 }
 
-local function command_options(options, on_attempt_error, retryable_write)
+local function command_options(
+  options,
+  on_attempt_error,
+  retryable_write,
+  in_transaction
+)
   local result = {}
 
   for key, value in pairs(options or {}) do
     if key ~= "no_session" and key ~= "session" and key ~= "session_context"
-        and key ~= "read_concern"
+        and key ~= "read_concern" and key ~= "retryable_read"
+        and key ~= "transaction_control"
     then
       result[key] = value
     end
   end
 
   result.on_attempt_error = on_attempt_error
+  result.retryable_read = options and options.retryable_read == true
+    and not in_transaction
   result.retryable_write = retryable_write
   return result
 end
@@ -39,6 +47,21 @@ local function apply_error(state, session, err)
   then
     session:mark_dirty()
   end
+end
+
+local function transaction_error(session, err, transaction_control)
+  if transaction_control or not session:is_in_transaction() then
+    return err
+  end
+
+  if errors.is(err, errors.CATEGORY.NETWORK)
+      or errors.is(err, errors.CATEGORY.TIMEOUT)
+  then
+    err = errors.with_label(err, "TransientTransactionError")
+  end
+
+  err = errors.without_label(err, "RetryableWriteError")
+  return errors.without_label(err, "UnknownTransactionCommitResult")
 end
 
 local function command_session(state, options)
@@ -82,23 +105,38 @@ local function command_session(state, options)
   return session, context == nil
 end
 
-local function prepared_command(state, command, options, session, retryable_write)
+local function prepared_command(
+  state,
+  command,
+  options,
+  session,
+  retryable_write,
+  measurement
+)
   if session == nil then
     return command
   end
 
   return state.manager:decorate(command, {
     read_concern = options and options.read_concern,
+    read_preference = options and options.read_preference,
     retryable_write = retryable_write,
     session = session,
+    transaction_control = options and options.transaction_control == true,
+    measurement = measurement == true,
   })
 end
 
 function METHODS:command(database, command, options)
   local state = STATES[self]
-  local retryable_write = state.retryable_writes
-    and options and options.retryable_write == true
+  local requested_retryable_write = options and options.retryable_write == true
+  local transaction_control = options and options.transaction_control == true
   local session, owned, err = command_session(state, options)
+  local in_transaction = session and session:is_in_transaction() or false
+
+  local retryable_write = requested_retryable_write
+    and state.retryable_writes
+    and (not in_transaction or transaction_control)
 
   if err then
     return nil, err
@@ -133,12 +171,13 @@ function METHODS:command(database, command, options)
   response, err = state.executor:command(
     database,
     decorated,
-    command_options(options, on_attempt_error, retryable_write)
+    command_options(options, on_attempt_error, retryable_write, in_transaction)
   )
 
   if response and state.manager then
     state.manager:advance(response, session)
   elseif err and session then
+    err = transaction_error(session, err, transaction_control)
     apply_error(state, session, err)
   end
 
@@ -158,7 +197,7 @@ function METHODS:measure(database, command, options)
   end
 
   local decorated
-  decorated, err = prepared_command(state, command, options, session)
+  decorated, err = prepared_command(state, command, options, session, false, true)
 
   if not decorated then
     if owned then

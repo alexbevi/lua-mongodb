@@ -10,6 +10,7 @@ local scram = require("mongodb.auth.scram")
 local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
+local socket_timeout_executor = require("mongodb.socket_timeout_executor")
 local standalone_executor = require("mongodb.standalone_executor")
 local topology = require("mongodb.topology")
 local topology_executor = require("mongodb.topology_executor")
@@ -141,6 +142,60 @@ local function session_id_factory(runtime)
   end
 end
 
+local function transaction_concern(values, write)
+  local entries = {}
+
+  if write and values.journal ~= nil then
+    entries[#entries + 1] = { "j", values.journal }
+  end
+
+  if values.level ~= nil then
+    entries[#entries + 1] = { "level", values.level }
+  end
+
+  if write and values.w ~= nil then
+    entries[#entries + 1] = { "w", values.w }
+  end
+
+  if write and values.w_timeout_ms ~= nil then
+    entries[#entries + 1] = { "wtimeoutMS", values.w_timeout_ms }
+  end
+
+  return #entries > 0 and bson.document(entries) or nil
+end
+
+local function transaction_write_concern(value, retry)
+  local entries = {}
+  local has_timeout = false
+
+  for key, item in (value or bson.document({})):iter() do
+    if key ~= "w" then
+      if key == "journal" then
+        key = "j"
+      elseif key == "wtimeoutMS" then
+        key = "wtimeout"
+        has_timeout = true
+      elseif key == "wtimeout" then
+        has_timeout = true
+      end
+
+      entries[#entries + 1] = { key, item }
+    end
+  end
+
+  local w = retry and "majority" or value:get("w")
+
+  if w ~= nil then
+    entries[#entries + 1] = { "w", w }
+  end
+
+  if retry and not has_timeout then
+    entries[#entries + 1] = { "wtimeout", 10000 }
+  end
+
+  return bson.document(entries)
+end
+
 local function public_client(executor, config, parsed, warnings, runtime)
   local capabilities, err = executor:capabilities()
 
@@ -155,21 +210,100 @@ local function public_client(executor, config, parsed, warnings, runtime)
     and capabilities.max_wire_version >= 6
     and capabilities.server_type ~= "standalone"
 
+  local timed = socket_timeout_executor.new(executor, runtime, config.socket_timeout_ms)
+  local retrying = retry_executor.new(timed, {
+    enabled_reads = config.retry_reads,
+    enabled_writes = retryable_writes,
+  })
+  local decorated
+
   if capabilities.logical_session_timeout_minutes ~= nil then
     sessions = session_module.new({
       clock = runtime.clock,
+      default_transaction_options = {
+        read_concern = transaction_concern(config.read_concern, false),
+        read_preference = config.read_preference,
+        write_concern = transaction_concern(config.write_concern, true),
+      },
       id_factory = session_id_factory(runtime),
       timeout_minutes = capabilities.logical_session_timeout_minutes,
+      transaction_command = function(session, name, transaction_options, retry)
+        local entries = { { name, 1 } }
+
+        if name == "commitTransaction"
+            and transaction_options.max_commit_time_ms ~= nil
+        then
+          entries[#entries + 1] = {
+            "maxTimeMS",
+            transaction_options.max_commit_time_ms,
+          }
+        end
+
+        if retry and name == "commitTransaction" then
+          entries[#entries + 1] = {
+            "writeConcern",
+            transaction_write_concern(
+              transaction_options.write_concern,
+              true
+            ),
+          }
+        elseif transaction_options.write_concern ~= nil then
+          entries[#entries + 1] = {
+            "writeConcern",
+            transaction_write_concern(
+              transaction_options.write_concern,
+              false
+            ),
+          }
+        end
+
+        local response, command_err = decorated:command(
+          "admin",
+          bson.document(entries),
+          {
+            session = session,
+            transaction_control = true,
+          }
+        )
+        local concern = response and response:get("writeConcernError")
+
+        if bson.is_document(concern) then
+          local labels = {}
+          local response_labels = response:get("errorLabels")
+
+          if bson.is_array(response_labels) then
+            for _, label in response_labels:iter() do
+              labels[#labels + 1] = label
+            end
+          end
+
+          local code = concern:get("code")
+
+          if bson.is_exact(code) then
+            code = code:to_number()
+          end
+
+          return nil, errors.new({
+            category = errors.CATEGORY.WRITE,
+            code = code,
+            code_name = concern:get("codeName"),
+            details = { response = response },
+            labels = labels,
+            message = concern:get("errmsg") or "write concern failed",
+          })
+        end
+
+        return response, command_err
+      end,
     })
   end
 
+  decorated = session_executor.new(retrying, sessions, {
+    retryable_writes = retryable_writes,
+  })
+
   return api.new_client(
-    session_executor.new(retry_executor.new(executor, {
-      enabled_reads = config.retry_reads,
-      enabled_writes = retryable_writes,
-    }), sessions, {
-      retryable_writes = retryable_writes,
-    }),
+    decorated,
     config,
     parsed.database,
     warnings,

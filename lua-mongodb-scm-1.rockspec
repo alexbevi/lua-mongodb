@@ -70,6 +70,7 @@ build = {
     ["mongodb.sdam"] = "src/mongodb/sdam.lua",
     ["mongodb.session"] = "src/mongodb/session.lua",
     ["mongodb.session_executor"] = "src/mongodb/session_executor.lua",
+    ["mongodb.socket_timeout_executor"] = "src/mongodb/socket_timeout_executor.lua",
     ["mongodb.standalone_executor"] = "src/mongodb/standalone_executor.lua",
     ["mongodb.selection"] = "src/mongodb/selection.lua",
     ["mongodb.topology"] = "src/mongodb/topology.lua",

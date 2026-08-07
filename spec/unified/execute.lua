@@ -19,6 +19,14 @@ local function equal(expected, actual, message)
   ))
 end
 
+local function report_error(err)
+  if type(err) == "table" and err.details and err.details.path then
+    return tostring(err) .. " at " .. tostring(err.details.path)
+  end
+
+  return err
+end
+
 local function receive_frame(peer)
   local header = assert(peer:receive(4))
   local size = string.unpack("<i4", header)
@@ -192,7 +200,7 @@ local function run_loopback(identity, fixture, index)
       local report = assert(lifecycle:run_file(selected_document(document, index), identity))
 
       if report.summary.failed > 0 then
-        error(report.tests[1].error, 0)
+        error(report_error(report.tests[1].error), 0)
       end
 
       equal(1, report.summary.executed)
@@ -250,7 +258,7 @@ local function run_live(identity, fixture, index, topology)
         ))
 
         if report.summary.failed > 0 then
-          error(report.tests[1].error, 0)
+          error(report_error(report.tests[1].error), 0)
         end
 
         if report.summary.skipped > 0 then

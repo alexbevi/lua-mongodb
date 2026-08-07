@@ -108,9 +108,7 @@ local function write_concern_error(response)
     message = concern:get("errmsg") or "write concern failed",
   })
 
-  if retryable_write(err) then
-    return err
-  end
+  return err
 end
 
 local function labelled_write_error(err)
@@ -138,7 +136,8 @@ end
 function METHODS:command(database, command, options)
   local state = STATES[self]
   local read = state.enabled_reads and options and options.retryable_read == true
-  local write = state.enabled_writes and options and options.retryable_write == true
+  local write = state.enabled_writes and options
+    and options.retryable_write == true
   local enabled = read or write
 
   if not enabled then

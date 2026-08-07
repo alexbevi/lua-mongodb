@@ -160,6 +160,7 @@ local function execute(state, database, command, options)
   end
 
   local request_id = state.request_ids:next()
+  local io_deadline = options.socket_deadline or options.deadline
   local body = envelope(command, database, state.server_api)
   local bytes, err = op_msg.encode({
     body = body,
@@ -190,7 +191,7 @@ local function execute(state, database, command, options)
   end
 
   local written
-  written, err = state.connection:write_all(bytes, options.deadline, options.cancellation)
+  written, err = state.connection:write_all(bytes, io_deadline, options.cancellation)
 
   if not written then
     if span then
@@ -207,7 +208,7 @@ local function execute(state, database, command, options)
   local response_bytes
   response_bytes, err = state.connection:read_frame(
     state.max_message_size,
-    options.deadline,
+    io_deadline,
     options.cancellation
   )
 

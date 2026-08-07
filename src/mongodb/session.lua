@@ -6,6 +6,16 @@ local M = {}
 local MANAGER_STATES = setmetatable({}, { __mode = "k" })
 local SESSION_STATES = setmetatable({}, { __mode = "k" })
 local SESSION_METHODS = {}
+local READ_COMMANDS = {
+  aggregate = true,
+  count = true,
+  distinct = true,
+  find = true,
+  getMore = true,
+  listCollections = true,
+  listDatabases = true,
+  listIndexes = true,
+}
 local SESSION_METATABLE = {
   __index = SESSION_METHODS,
   __metatable = "mongodb.client_session",
@@ -99,13 +109,7 @@ local function check_session(session)
 end
 
 function SESSION_METHODS:get_lsid()
-  local state, err = check_session(self)
-
-  if not state then
-    return nil, err
-  end
-
-  return state.server_session.id
+  return SESSION_STATES[self].server_session.id
 end
 
 function SESSION_METHODS:advance_operation_time(value)
@@ -156,7 +160,13 @@ function SESSION_METHODS:end_session()
   local state = SESSION_STATES[self]
 
   if state.ended then
-    return false
+    return true
+  end
+
+  if state.transaction.state == "starting"
+      or state.transaction.state == "in_progress"
+  then
+    self:abort_transaction()
   end
 
   state.ended = true
@@ -189,6 +199,187 @@ function SESSION_METHODS:get_cluster_time()
   return SESSION_STATES[self].cluster_time
 end
 
+local function transaction_active(transaction)
+  return transaction.state == "starting" or transaction.state == "in_progress"
+end
+
+function SESSION_METHODS:is_in_transaction()
+  return transaction_active(SESSION_STATES[self].transaction)
+end
+
+function SESSION_METHODS:get_transaction_state()
+  return SESSION_STATES[self].transaction.state
+end
+
+function SESSION_METHODS:start_transaction(options)
+  local state, err = check_session(self)
+
+  if not state then
+    return nil, err
+  end
+
+  if transaction_active(state.transaction) then
+    return client_error("transaction already in progress")
+  end
+
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("transaction options must be a table", 2)
+  end
+
+  for key in pairs(options) do
+    if key ~= "max_commit_time_ms" and key ~= "read_concern"
+        and key ~= "read_preference" and key ~= "write_concern"
+    then
+      error("unknown transaction option: " .. tostring(key), 2)
+    end
+  end
+
+  if options.read_concern ~= nil and not bson.is_document(options.read_concern) then
+    error("transaction read_concern must be a BSON document", 2)
+  end
+
+  if options.write_concern ~= nil and not bson.is_document(options.write_concern) then
+    error("transaction write_concern must be a BSON document", 2)
+  end
+
+  if options.read_preference ~= nil
+      and not bson.is_document(options.read_preference)
+      and type(options.read_preference) ~= "table"
+  then
+    error("transaction read_preference must be a table or BSON document", 2)
+  end
+
+  local transaction_options = {}
+
+  for key, value in pairs(state.default_transaction_options) do
+    transaction_options[key] = value
+  end
+
+  for key, value in pairs(options) do
+    transaction_options[key] = value
+  end
+
+  local write_concern = transaction_options.write_concern
+  local w = write_concern and write_concern:get("w")
+
+  if bson.is_exact(w) then
+    w = w:to_number()
+  end
+
+  if w == 0 then
+    return client_error("transactions do not support unacknowledged write concern")
+  end
+
+  state.server_session.transaction_number =
+    state.server_session.transaction_number + 1
+  state.transaction = { options = transaction_options, state = "starting" }
+  return true
+end
+
+local function finish_transaction(session, name)
+  local state, err = check_session(session)
+
+  if not state then
+    return nil, err
+  end
+
+  local transaction = state.transaction
+
+  if transaction.state == "none" then
+    return client_error("no transaction started")
+  elseif name == "commitTransaction" and transaction.state == "aborted" then
+    return client_error(
+      "Cannot call commitTransaction after calling abortTransaction"
+    )
+  elseif name == "abortTransaction" and transaction.state == "aborted" then
+    return client_error("cannot call abortTransaction twice")
+  elseif name == "abortTransaction"
+      and (transaction.state == "committed"
+        or transaction.state == "committed_empty")
+  then
+    return client_error(
+      "Cannot call abortTransaction after calling commitTransaction"
+    )
+  end
+
+  if transaction.state == "starting" then
+    transaction.state = name == "commitTransaction"
+      and "committed_empty" or "aborted"
+    return true
+  end
+
+  if name == "commitTransaction" and transaction.state == "committed_empty" then
+    return true
+  end
+
+  local retrying_commit = false
+  if name == "commitTransaction" and transaction.state == "committed" then
+    transaction.state = "in_progress"
+    retrying_commit = true
+  end
+
+  local manager = MANAGER_STATES[state.manager]
+
+  if type(manager.transaction_command) ~= "function" then
+    return client_error("session manager cannot execute transaction commands")
+  end
+
+  local response
+  response, err = manager.transaction_command(
+    session,
+    name,
+    transaction.options,
+    retrying_commit
+  )
+
+  if err and (errors.is(err, errors.CATEGORY.NETWORK)
+      or errors.is(err, errors.CATEGORY.TIMEOUT)
+      or err:has_label("RetryableWriteError"))
+  then
+    response, err = manager.transaction_command(
+      session,
+      name,
+      transaction.options,
+      name == "commitTransaction"
+    )
+  end
+
+  if err and name == "commitTransaction" then
+    if errors.is(err, errors.CATEGORY.NETWORK)
+        or errors.is(err, errors.CATEGORY.TIMEOUT)
+    then
+      err = errors.with_label(err, "RetryableWriteError")
+    end
+
+    if errors.is(err, errors.CATEGORY.NETWORK)
+        or errors.is(err, errors.CATEGORY.TIMEOUT)
+        or errors.is(err, errors.CATEGORY.WRITE)
+          and err.code ~= 79 and err.code ~= 100
+        or err.code == 50
+        or err:has_label("RetryableWriteError")
+    then
+      err = errors.with_label(err, "UnknownTransactionCommitResult")
+    end
+  end
+  transaction.state = name == "commitTransaction" and "committed" or "aborted"
+
+  if name == "abortTransaction" then
+    return true
+  end
+
+  return response, err
+end
+
+function SESSION_METHODS:commit_transaction()
+  return finish_transaction(self, "commitTransaction")
+end
+
+function SESSION_METHODS:abort_transaction()
+  return finish_transaction(self, "abortTransaction")
+end
+
 local MANAGER_METHODS = {}
 local MANAGER_METATABLE = {
   __index = MANAGER_METHODS,
@@ -197,7 +388,6 @@ local MANAGER_METATABLE = {
     error("MongoDB session managers are immutable", 2)
   end,
 }
-
 function MANAGER_METHODS:start(options)
   options = options or {}
 
@@ -206,7 +396,7 @@ function MANAGER_METHODS:start(options)
   end
 
   for key in pairs(options) do
-    if key ~= "causal_consistency" then
+    if key ~= "causal_consistency" and key ~= "default_transaction_options" then
       error("unknown session option: " .. tostring(key), 2)
     end
   end
@@ -245,14 +435,25 @@ function MANAGER_METHODS:start(options)
   end
 
   local session = {}
+  local default_transaction_options = {}
+
+  for key, value in pairs(manager_state.default_transaction_options) do
+    default_transaction_options[key] = value
+  end
+
+  for key, value in pairs(options.default_transaction_options or {}) do
+    default_transaction_options[key] = value
+  end
 
   SESSION_STATES[session] = {
     causal_consistency = options.causal_consistency ~= false,
     cluster_time = nil,
     ended = false,
     manager = self,
+    default_transaction_options = default_transaction_options,
     operation_time = nil,
     server_session = server_session,
+    transaction = { state = "none" },
   }
   manager_state.active[session] = true
   return setmetatable(session, SESSION_METATABLE)
@@ -282,10 +483,42 @@ function MANAGER_METHODS:decorate(command, options)
   local replace_read_concern = options.read_concern ~= nil
     or add_causal_read_concern
   local retryable_write = options.retryable_write == true
+  local transaction_control = options.transaction_control == true
+  local transaction = session_state.transaction
+
+  if not transaction_control and (transaction.state == "aborted"
+      or transaction.state == "committed"
+      or transaction.state == "committed_empty")
+  then
+    transaction = { state = "none" }
+    session_state.transaction = transaction
+  end
+
+  local in_transaction = transaction_active(transaction)
+  local starting_transaction = transaction.state == "starting"
+
+  if in_transaction then
+    local read_preference = options.read_preference
+      or transaction.options.read_preference
+    local mode
+
+    if bson.is_document(read_preference) then
+      mode = read_preference:get("mode")
+    elseif type(read_preference) == "table" then
+      mode = read_preference.mode
+    end
+
+    if READ_COMMANDS[command:keys()[1]] and mode ~= nil and mode ~= "primary" then
+      return client_error("read preference in a transaction must be primary")
+    end
+  end
+  replace_read_concern = replace_read_concern and not in_transaction
 
   for key, value in command:iter() do
     if key ~= "lsid" and key ~= "$clusterTime"
-        and (key ~= "txnNumber" or not retryable_write)
+        and (key ~= "txnNumber" or (not retryable_write and not in_transaction))
+        and (not in_transaction or transaction_control or key ~= "writeConcern")
+        and (not in_transaction or key ~= "readConcern")
         and (key ~= "readConcern" or not replace_read_concern)
     then
       entries[#entries + 1] = { key, value }
@@ -294,7 +527,45 @@ function MANAGER_METHODS:decorate(command, options)
 
   entries[#entries + 1] = { "lsid", session_state.server_session.id }
 
-  if retryable_write then
+  if in_transaction then
+    entries[#entries + 1] = {
+      "txnNumber",
+      bson.int64(session_state.server_session.transaction_number),
+    }
+    entries[#entries + 1] = { "autocommit", false }
+
+    if starting_transaction then
+      entries[#entries + 1] = { "startTransaction", true }
+
+      local read_concern = transaction.options.read_concern
+
+      if read_concern ~= nil or add_causal_read_concern then
+        local concern_entries = {}
+
+        for key, value in (read_concern or bson.document({})):iter() do
+          if key ~= "afterClusterTime" then
+            concern_entries[#concern_entries + 1] = { key, value }
+          end
+        end
+
+        if add_causal_read_concern then
+          concern_entries[#concern_entries + 1] = {
+            "afterClusterTime",
+            session_state.operation_time,
+          }
+        end
+
+        entries[#entries + 1] = {
+          "readConcern",
+          bson.document(concern_entries),
+        }
+      end
+
+      if not options.measurement then
+        transaction.state = "in_progress"
+      end
+    end
+  elseif retryable_write then
     local server_session = session_state.server_session
 
     server_session.transaction_number = server_session.transaction_number + 1
@@ -404,6 +675,18 @@ function M.new(options)
     error("session manager requires an id_factory", 2)
   end
 
+  if options.transaction_command ~= nil
+      and type(options.transaction_command) ~= "function"
+  then
+    error("transaction_command must be a function", 2)
+  end
+
+  if options.default_transaction_options ~= nil
+      and type(options.default_transaction_options) ~= "table"
+  then
+    error("default_transaction_options must be a table", 2)
+  end
+
   if options.timeout_minutes ~= nil
     and (math.type(options.timeout_minutes) ~= "integer" or options.timeout_minutes < 0)
   then
@@ -417,9 +700,11 @@ function M.new(options)
     clock = options.clock,
     closed = false,
     cluster_time = nil,
+    default_transaction_options = options.default_transaction_options or {},
     id_factory = options.id_factory,
     pool = {},
     timeout_minutes = options.timeout_minutes,
+    transaction_command = options.transaction_command,
   }
   return setmetatable(manager, MANAGER_METATABLE)
 end

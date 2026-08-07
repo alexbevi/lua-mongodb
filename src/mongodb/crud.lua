@@ -485,8 +485,13 @@ local function append_common_write_fields(entries, state, options, bypass)
   end
 end
 
+local function write_acknowledged(state, options)
+  return state.write_concern.w ~= 0
+    or options.session ~= nil and options.session:is_in_transaction()
+end
+
 local function execute_write(state, entries, options, retryable)
-  local acknowledged = state.write_concern.w ~= 0
+  local acknowledged = write_acknowledged(state, options)
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
@@ -598,7 +603,7 @@ local function update_operation(state, filter, update, options, multi, replaceme
     error("sort is not supported by update_many", 3)
   end
 
-  local acknowledged = state.write_concern.w ~= 0
+  local acknowledged = write_acknowledged(state, options)
 
   if not acknowledged and options.collation ~= nil then
     error("collation is unsupported for unacknowledged writes", 3)
@@ -665,7 +670,7 @@ local function delete_operation(state, filter, options, multi)
   require_document_option(options, "collation")
   require_document_option(options, "let")
   require_hint(options)
-  local acknowledged = state.write_concern.w ~= 0
+  local acknowledged = write_acknowledged(state, options)
 
   if not acknowledged and options.collation ~= nil then
     error("collation is unsupported for unacknowledged writes", 3)
@@ -930,7 +935,7 @@ local function find_and_modify(state, filter, change, options, kind)
     error("return_document must be 'before' or 'after'", 3)
   end
 
-  local acknowledged = state.write_concern.w ~= 0
+  local acknowledged = write_acknowledged(state, options)
 
   if options.array_filters ~= nil and not acknowledged then
     error("array_filters is unsupported for unacknowledged writes", 3)
@@ -1261,7 +1266,7 @@ function M.insert_one(state, document, options)
     entries[#entries + 1] = { "writeConcern", write_concern }
   end
 
-  local acknowledged = state.write_concern.w ~= 0
+  local acknowledged = write_acknowledged(state, options)
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
