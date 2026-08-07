@@ -1054,6 +1054,28 @@
       "notes": [],
       "started_at": "2026-08-07T03:34:14+00:00",
       "completed_at": "2026-08-07T05:30:05+00:00"
+    },
+    "TXN-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "Client sessions exposed no with_transaction method, so callback results could not be committed or propagated by the convenient transaction API.",
+          "recorded_at": "2026-08-07T05:33:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint && make rockspec && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "163 unit tests and all BSON/Extended JSON corpora passed; 18 integration tests passed; the focused convenient-transaction corpus executed 30 cases with 30 passed and 0 failed, skipped, or deferred. The full unified gate executed and passed 862 cases with 0 failures, 3 environment skips, and 1,035 explicitly deferred cases. Unified schema/inventory/meta, the conformance ledger (2,865 passed/2,659 deferred), lint, rockspec packaging, and strict planning validation passed.",
+          "recorded_at": "2026-08-07T06:29:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T05:32:54+00:00",
+      "completed_at": "2026-08-07T06:29:10+00:00"
     }
   },
   "verified_references": {

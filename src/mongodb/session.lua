@@ -6,6 +6,9 @@ local M = {}
 local MANAGER_STATES = setmetatable({}, { __mode = "k" })
 local SESSION_STATES = setmetatable({}, { __mode = "k" })
 local SESSION_METHODS = {}
+local WITH_TRANSACTION_TIMEOUT_SECONDS = 120
+local TRANSACTION_BACKOFF_INITIAL_SECONDS = 0.005
+local TRANSACTION_BACKOFF_MAX_SECONDS = 0.500
 local READ_COMMANDS = {
   aggregate = true,
   count = true,
@@ -380,6 +383,169 @@ function SESSION_METHODS:abort_transaction()
   return finish_transaction(self, "abortTransaction")
 end
 
+local function retry_timeout(err)
+  if err:is_timeout() then
+    return err
+  end
+
+  local labels = {}
+
+  for index, label in ipairs(err.labels) do
+    labels[index] = label
+  end
+
+  return errors.new({
+    category = errors.CATEGORY.TIMEOUT,
+    cause = err,
+    labels = labels,
+    message = "with_transaction retry time limit exceeded: " .. err.message,
+  })
+end
+
+local function within_retry_time(manager, started_at, delay)
+  return manager.clock:now() + (delay or 0) - started_at
+    < manager.transaction_retry_timeout_seconds
+end
+
+local function sleep_before_transaction_retry(manager, started_at, attempt, err)
+  local jitter, jitter_err = manager.transaction_jitter()
+
+  if jitter == nil then
+    return nil, jitter_err
+  end
+
+  if type(jitter) ~= "number" or jitter < 0 or jitter > 1 then
+    error("transaction_jitter must return a number from 0 through 1", 0)
+  end
+
+  local ceiling = math.min(
+    TRANSACTION_BACKOFF_INITIAL_SECONDS * 1.5 ^ attempt,
+    TRANSACTION_BACKOFF_MAX_SECONDS
+  )
+  local delay = jitter * ceiling
+
+  if not within_retry_time(manager, started_at, delay) then
+    return nil, retry_timeout(err)
+  end
+
+  return manager.clock:sleep(delay)
+end
+
+function SESSION_METHODS:with_transaction(callback, options)
+  local state, err = check_session(self)
+
+  if not state then
+    return nil, err
+  end
+
+  if type(callback) ~= "function" then
+    error("transaction callback must be a function", 2)
+  end
+
+  local manager = MANAGER_STATES[state.manager]
+
+  if type(manager.clock) ~= "table"
+      or type(manager.clock.now) ~= "function"
+      or type(manager.clock.sleep) ~= "function"
+  then
+    error("with_transaction requires a runtime clock adapter", 2)
+  end
+
+  local started_at = manager.clock:now()
+  local retry_attempt = 0
+  local previous_err
+
+  while true do
+    if previous_err ~= nil then
+      local slept
+      slept, err = sleep_before_transaction_retry(
+        manager,
+        started_at,
+        retry_attempt,
+        previous_err
+      )
+
+      if not slept then
+        return nil, err
+      end
+
+      retry_attempt = retry_attempt + 1
+    end
+
+    local started
+    started, err = self:start_transaction(options)
+
+    if not started then
+      return nil, err
+    end
+
+    local callback_ok, result, callback_err = pcall(callback, self)
+
+    if not callback_ok then
+      if self:is_in_transaction() then
+        self:abort_transaction()
+      end
+
+      if errors.is(result) then
+        callback_err = result
+        result = nil
+      else
+        error(result, 0)
+      end
+    end
+
+    if callback_err ~= nil and not errors.is(callback_err) then
+      if self:is_in_transaction() then
+        self:abort_transaction()
+      end
+
+      error("transaction callback error must be a structured error", 2)
+    end
+
+    if callback_err ~= nil then
+      if self:is_in_transaction() then
+        self:abort_transaction()
+      end
+
+      if callback_err:has_label("TransientTransactionError")
+          and within_retry_time(manager, started_at)
+      then
+        previous_err = callback_err
+      else
+        return nil, within_retry_time(manager, started_at)
+          and callback_err or retry_timeout(callback_err)
+      end
+    elseif not self:is_in_transaction() then
+      return result
+    else
+      while true do
+        local committed
+        committed, err = self:commit_transaction()
+
+        if committed then
+          return result
+        end
+
+        local retry_commit = err.code ~= 50
+          and err:has_label("UnknownTransactionCommitResult")
+          and within_retry_time(manager, started_at)
+
+        if not retry_commit then
+          if err:has_label("TransientTransactionError")
+              and within_retry_time(manager, started_at)
+          then
+            previous_err = err
+            break
+          end
+
+          return nil, within_retry_time(manager, started_at)
+              and err or retry_timeout(err)
+        end
+      end
+    end
+  end
+end
+
 local MANAGER_METHODS = {}
 local MANAGER_METATABLE = {
   __index = MANAGER_METHODS,
@@ -681,6 +847,19 @@ function M.new(options)
     error("transaction_command must be a function", 2)
   end
 
+  if options.transaction_jitter ~= nil
+      and type(options.transaction_jitter) ~= "function"
+  then
+    error("transaction_jitter must be a function", 2)
+  end
+
+  if options.transaction_retry_timeout_seconds ~= nil
+      and (type(options.transaction_retry_timeout_seconds) ~= "number"
+        or options.transaction_retry_timeout_seconds <= 0)
+  then
+    error("transaction_retry_timeout_seconds must be positive", 2)
+  end
+
   if options.default_transaction_options ~= nil
       and type(options.default_transaction_options) ~= "table"
   then
@@ -705,6 +884,12 @@ function M.new(options)
     pool = {},
     timeout_minutes = options.timeout_minutes,
     transaction_command = options.transaction_command,
+    transaction_jitter = options.transaction_jitter or function()
+      return 0
+    end,
+    transaction_retry_timeout_seconds =
+      options.transaction_retry_timeout_seconds
+        or WITH_TRANSACTION_TIMEOUT_SECONDS,
   }
   return setmetatable(manager, MANAGER_METATABLE)
 end

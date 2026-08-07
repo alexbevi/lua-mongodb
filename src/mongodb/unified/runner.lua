@@ -1193,7 +1193,7 @@ local function operation_contract(operation, path)
   return true
 end
 
-local function execute_regular(runner, operation, path)
+local function execute_regular(runner, operation, path, propagate_callback_errors)
   local state = RUNNER_STATES[runner]
   local name = operation:get("name")
   local object = operation:get("object")
@@ -1231,7 +1231,7 @@ local function execute_regular(runner, operation, path)
     return nil, argument_err
   end
 
-  local result, err = descriptor.handler(runner, entity, arguments, operation)
+  local result, err = descriptor.handler(runner, entity, arguments, operation, path)
   local has_expect_error, expect_error = document_has(operation, "expectError")
   local ignore = operation:get("ignoreResultAndError") == true
 
@@ -1244,6 +1244,10 @@ local function execute_regular(runner, operation, path)
       return nil, err
     end
 
+    if err and propagate_callback_errors then
+      return nil, err
+    end
+
     return true
   end
 
@@ -1252,7 +1256,22 @@ local function execute_regular(runner, operation, path)
       return nil, err
     end
 
-    return assert_expected_error(runner, err, expect_error, append_path(path, "expectError"))
+    local matched, match_err = assert_expected_error(
+      runner,
+      err,
+      expect_error,
+      append_path(path, "expectError")
+    )
+
+    if not matched then
+      return nil, match_err
+    end
+
+    if propagate_callback_errors then
+      return nil, err
+    end
+
+    return true
   elseif has_expect_error then
     return nil, configuration_error("operation succeeded but an error was expected", path)
   end
@@ -1489,7 +1508,7 @@ local SPECIAL_OPERATIONS = {
   waitForThread = wait_for_thread,
 }
 
-function RUNNER_METHODS:execute(operation, path)
+function RUNNER_METHODS:execute(operation, path, propagate_callback_errors)
   path = path or "$.operation"
 
   if not bson.is_document(operation) then
@@ -1497,7 +1516,7 @@ function RUNNER_METHODS:execute(operation, path)
   end
 
   if operation:get("object") ~= "testRunner" then
-    return execute_regular(self, operation, path)
+    return execute_regular(self, operation, path, propagate_callback_errors)
   end
 
   local state = RUNNER_STATES[self]
@@ -1515,7 +1534,7 @@ function RUNNER_METHODS:execute(operation, path)
   return handler(self, operation:get("arguments") or bson.document({}), path)
 end
 
-function RUNNER_METHODS:execute_all(operations, path)
+function RUNNER_METHODS:execute_all(operations, path, propagate_callback_errors)
   path = path or "$.operations"
 
   if not bson.is_array(operations) then
@@ -1523,7 +1542,11 @@ function RUNNER_METHODS:execute_all(operations, path)
   end
 
   for index, operation in operations:iter() do
-    local ok, err = self:execute(operation, path .. "[" .. index .. "]")
+    local ok, err = self:execute(
+      operation,
+      path .. "[" .. index .. "]",
+      propagate_callback_errors
+    )
 
     if not ok then
       return nil, err

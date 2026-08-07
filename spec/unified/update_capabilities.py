@@ -165,12 +165,13 @@ for index in range(1, 21):
   ] = ("REL-001", "handshake retry requires the release command adapter")
 
 for index in range(1, 12):
-  TEST_OVERRIDES[
-    f"run-command/tests/unified/runCommand.json::test[{index}]"
-  ] = (
-    "TXN-002",
-    "withTransaction callback retry belongs to the convenient transaction API",
-  )
+  if index != 10:
+    TEST_OVERRIDES[
+      f"run-command/tests/unified/runCommand.json::test[{index}]"
+    ] = (
+      "REL-001",
+      "general runCommand conformance is outside convenient transactions",
+    )
 
 for fixture, count in (
   ("backpressure-retryable-abort", 2),

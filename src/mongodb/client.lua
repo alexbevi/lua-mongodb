@@ -142,6 +142,22 @@ local function session_id_factory(runtime)
   end
 end
 
+local function transaction_jitter(runtime)
+  return function()
+    local bytes, err = runtime.entropy:bytes(4)
+
+    if not bytes then
+      return nil, err
+    end
+
+    if #bytes ~= 4 then
+      error("runtime entropy adapter returned invalid transaction jitter", 0)
+    end
+
+    return string.unpack(">I4", bytes) / 0xffffffff
+  end
+end
+
 local function transaction_concern(values, write)
   local entries = {}
 
@@ -227,6 +243,7 @@ local function public_client(executor, config, parsed, warnings, runtime)
       },
       id_factory = session_id_factory(runtime),
       timeout_minutes = capabilities.logical_session_timeout_minutes,
+      transaction_jitter = transaction_jitter(runtime),
       transaction_command = function(session, name, transaction_options, retry)
         local entries = { { name, 1 } }
 

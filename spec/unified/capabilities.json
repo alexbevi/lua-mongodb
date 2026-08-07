@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 835,
-    "runnable": 835
+    "passed": 865,
+    "runnable": 865
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -48733,7 +48733,6 @@
     "run-command/tests/unified/runCommand.json::test[10]": {
       "activity": "TXN-002",
       "fingerprint": "74bc61b3652d3769f2bcb410f4bb5c56f91659fd3b8469f107b2f6606e78a28c",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -48764,12 +48763,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[11]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "fc46257c131844e2944c0697ec6091d10f4c07117db5ea041f56a50cc3c3a6d8",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48798,9 +48797,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[1]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "a27e186daf7cb8da7c6a20baca1e1ef3a6f3e92a297e9ad8907853100ab2c333",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48829,9 +48828,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[2]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "505798d163e834b0b74d06e997133ad90239be5aa9290e41b35eacd77a1663f1",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48863,9 +48862,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[3]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "7d719db594ec75b253873c5fd4dfe175f22876c120962974535e29d3ce782de4",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48895,9 +48894,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[4]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "5123bb487c29f901687ec5390caa2b4a17e9a782aebe5c6904a60446db22c2f2",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48929,9 +48928,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[5]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "8eed0eb4bd3f96513f4fcd9ab9a189d303e89d1af2143bfce11b097ad4045a47",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48963,9 +48962,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[6]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "f84c0d5c46f86c32ac2592738bf5baa1a7af040603cd4c5dfc1dd4ac870ab91f",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -48995,9 +48994,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[7]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "48241fa481ff26289834cb22e02fb6908084b9a82033b74ad40819f6c008ff5b",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -49026,9 +49025,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[8]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "1822eed3b9e1f0a83fc1eeee806a829c8b569b17f117268bc445f4b57593fc52",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -49057,9 +49056,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCommand.json::test[9]": {
-      "activity": "TXN-002",
+      "activity": "REL-001",
       "fingerprint": "85553f81994aca2f0d07b8859d5407ffbc1e76ffa127998b08499d161dd5a66e",
-      "reason": "withTransaction callback retry belongs to the convenient transaction API",
+      "reason": "general runCommand conformance is outside convenient transactions",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -51613,7 +51612,6 @@
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "3fa60a8d35285243cc8d1be2d5133e28484240f488d9ac73337a460dae7a79c1",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -51644,12 +51642,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "010860419e0488b71300bea4211100566d067181ee4e113d320812a40c78e08e",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -51674,12 +51671,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[3]": {
       "activity": "TXN-002",
       "fingerprint": "08858875f04e5722f6055b023ef0c4f4797c922d084aae12ad302c6a87d53412",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -51710,12 +51706,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-commits.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "f0923bf6c6998b16803e1b9b4ebb7e5cea8492021ce68ae09d4af70d50dfe3c3",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -51746,12 +51741,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-commits.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "74f9cbcefd612f082c2f8e93c9080c3607b52967e299bda5c125ac12eee7ca7d",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -51782,12 +51776,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-retry.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "04500b5666530aa47fb448778a54a96367a8b102f137d50a139074fd8b2962bb",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -51821,12 +51814,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-retry.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "c7473fb7430be82c2148803fa63c45f2bc90977d49ff11fd282f67f66311f3bd",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -51857,12 +51849,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-retry-errorLabels.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "453dee2e5da4d96acc0f8b3a38fd89730a614dcfc96b01097b01b4a1fd6e6286",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -51897,12 +51888,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-retry.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "7677c83106f9a2477aa38862f9e9d3bcd9a4039dc3b372935403ffdafd12b058",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -51937,12 +51927,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-retry.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "1f534a5f7bd75c73d9543c9ce097a76ba81285514d2712f1f529cefe98af23b1",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -51978,12 +51967,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-retry.json::test[3]": {
       "activity": "TXN-002",
       "fingerprint": "7141e8bf5a60f9cb4490f06bcba0bd6097e09622ad3aa72176a5775fbea6ec11",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52019,12 +52007,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror-4.2.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "db5e3948ce7627b673a302cd96f1e5499520a10ecf4020fc0451724cd99260be",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52059,12 +52046,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "6daf6241d9102942037df41742b486bd2429bd160a55dc8cd68d5c7a06b4d2a2",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52099,12 +52085,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "e11db5bb82cfa91c84afcfce16fa2a051632aea0ec4b7f0fb82ee35857c4aff4",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52139,12 +52124,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror.json::test[3]": {
       "activity": "TXN-002",
       "fingerprint": "ea402c0cf8342776a31239ffb682187829dbfa7036609a2f5e7a1856271f1ce2",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52179,12 +52163,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-transienttransactionerror.json::test[4]": {
       "activity": "TXN-002",
       "fingerprint": "e5923c8b3176bfb4c5e430d2aa618c0492135241cd2e8dcde4aec79baa505660",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52219,12 +52202,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-writeconcernerror.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "1c89e0858e1eff25ad769bd6857eaf9bfc0d8620def158750f40821148d1d027",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52259,12 +52241,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-writeconcernerror.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "b459693836e19073ccb5ee6d973808fcb314cf75ad698f42d71a3e0e820f06b3",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52299,12 +52280,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-writeconcernerror.json::test[3]": {
       "activity": "TXN-002",
       "fingerprint": "7af620c9c80fe49be03df7191f982b260301fab34b1f71d67ab0d2a3f5f5e37f",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52339,12 +52319,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-writeconcernerror.json::test[4]": {
       "activity": "TXN-002",
       "fingerprint": "6c086acf989d5ef95a2941d3cbd6e3158194867950b0b249935f50c8b0af7cae",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52379,12 +52358,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit-writeconcernerror.json::test[5]": {
       "activity": "TXN-002",
       "fingerprint": "290e0b26cb5a95623dac958cbfc800f6cf7a68506aa0df6d0a99dc73d5f66b7c",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -52419,12 +52397,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "f55a097348828d4f48642013e0373eedc7f16dc43e36461275133413aed5dc49",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -52455,12 +52432,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/commit.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "c33106df4d5902e162fade2bd0910c585859e1b6a2cdac1941140a4176e4a842",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -52491,12 +52467,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "38fa32ecdc81aaf9b7a77e5bd88b6b3e164858514866be43f4ac99e03e59394f",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback"
@@ -52527,12 +52502,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[2]": {
       "activity": "TXN-002",
       "fingerprint": "bd57e72ff52bf74cd04d4344e710f3165e5b8bd4d0e2c007916a7b3f17e82775",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -52566,12 +52540,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[3]": {
       "activity": "TXN-002",
       "fingerprint": "2b57467a9fa6687f592e0923b0fd1b896a0b7c21646f67025d8db32a487e2567",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -52605,12 +52578,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[4]": {
       "activity": "TXN-002",
       "fingerprint": "987bba96a63eaeca378497d91ce6b7124af0ec850018e52a8c38727a6e9fca2d",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "withTransaction.callback",
@@ -52643,12 +52615,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[5]": {
       "activity": "TXN-002",
       "fingerprint": "eb5075ea59c04827c1af7e35322990c0edd05808dae15fc7a9b4544fa5257509",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -52684,12 +52655,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[6]": {
       "activity": "TXN-002",
       "fingerprint": "4f5bb6e8ce1561e5148e18731294ddd9792450d20e6720b9d03fb124b6bcb513",
-      "reason": "convenient transaction retry execution is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -52725,7 +52695,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/abort.json::test[1]": {
       "activity": "TXN-001",

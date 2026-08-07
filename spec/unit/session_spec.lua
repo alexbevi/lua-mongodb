@@ -274,4 +274,188 @@ describe("client sessions", function()
     assert(session:commit_transaction())
     assert.same({ "commitTransaction", "commitTransaction" }, transaction_commands)
   end)
+
+  it("returns the callback value after a convenient transaction commits", function()
+    local transaction_commands = {}
+    local sessions = session_module.new({
+      clock = {
+        now = function() return 0 end,
+        sleep = function() return true end,
+        wall_time = function() return 0 end,
+      },
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function(_, name)
+        transaction_commands[#transaction_commands + 1] = name
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+    local result = assert(session:with_transaction(function(active_session)
+      assert.are.equal(session, active_session)
+      assert(sessions:decorate(
+        bson.document({ { "insert", "items" } }),
+        { session = active_session }
+      ))
+      return "callback result"
+    end))
+
+    assert.are.equal("callback result", result)
+    assert.same({ "commitTransaction" }, transaction_commands)
+  end)
+
+  it("retries a transient callback after aborting and backing off", function()
+    local current_time = 0
+    local sleeps = {}
+    local transaction_commands = {}
+    local sessions = session_module.new({
+      clock = {
+        now = function() return current_time end,
+        sleep = function(_, duration)
+          sleeps[#sleeps + 1] = duration
+          current_time = current_time + duration
+          return true
+        end,
+        wall_time = function() return 0 end,
+      },
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function(_, name)
+        transaction_commands[#transaction_commands + 1] = name
+        return bson.document({ { "ok", 1 } })
+      end,
+      transaction_jitter = function() return 1 end,
+    })
+    local session = assert(sessions:start())
+    local callback_count = 0
+    local result = assert(session:with_transaction(function(active_session)
+      callback_count = callback_count + 1
+      assert(sessions:decorate(
+        bson.document({ { "insert", "items" } }),
+        { session = active_session }
+      ))
+
+      if callback_count == 1 then
+        return nil, errors.new({
+          category = errors.CATEGORY.SERVER,
+          labels = { "TransientTransactionError" },
+          message = "retry transaction",
+        })
+      end
+
+      return "retried result"
+    end))
+
+    assert.are.equal("retried result", result)
+    assert.are.equal(2, callback_count)
+    assert.same({ 0.005 }, sleeps)
+    assert.same({ "abortTransaction", "commitTransaction" }, transaction_commands)
+  end)
+
+  it("retries an unknown commit result without rerunning the callback", function()
+    local commit_count = 0
+    local sessions = session_module.new({
+      clock = {
+        now = function() return 0 end,
+        sleep = function() return true end,
+        wall_time = function() return 0 end,
+      },
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function()
+        commit_count = commit_count + 1
+
+        if commit_count == 1 then
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            labels = { "UnknownTransactionCommitResult" },
+            message = "unknown commit result",
+          })
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+    local callback_count = 0
+
+    assert(session:with_transaction(function(active_session)
+      callback_count = callback_count + 1
+      assert(sessions:decorate(
+        bson.document({ { "insert", "items" } }),
+        { session = active_session }
+      ))
+      return true
+    end))
+    assert.are.equal(1, callback_count)
+    assert.are.equal(2, commit_count)
+  end)
+
+  it("aborts and returns a callback error without retrying", function()
+    local transaction_commands = {}
+    local callback_err = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "callback failed",
+    })
+    local sessions = session_module.new({
+      clock = {
+        now = function() return 0 end,
+        sleep = function() return true end,
+        wall_time = function() return 0 end,
+      },
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function(_, name)
+        transaction_commands[#transaction_commands + 1] = name
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+    local result, err = session:with_transaction(function(active_session)
+      assert(sessions:decorate(
+        bson.document({ { "insert", "items" } }),
+        { session = active_session }
+      ))
+      return nil, callback_err
+    end)
+
+    assert.is_nil(result)
+    assert.are.equal(callback_err, err)
+    assert.same({ "abortTransaction" }, transaction_commands)
+  end)
+
+  it("preserves the retry cause and labels when its time budget expires", function()
+    local callback_err = errors.new({
+      category = errors.CATEGORY.SERVER,
+      labels = { "TransientTransactionError" },
+      message = "retry transaction",
+    })
+    local sessions = session_module.new({
+      clock = {
+        now = function() return 0 end,
+        sleep = function() return true end,
+        wall_time = function() return 0 end,
+      },
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function()
+        return bson.document({ { "ok", 1 } })
+      end,
+      transaction_jitter = function() return 1 end,
+      transaction_retry_timeout_seconds = 0.004,
+    })
+    local session = assert(sessions:start())
+    local result, err = session:with_transaction(function(active_session)
+      assert(sessions:decorate(
+        bson.document({ { "insert", "items" } }),
+        { session = active_session }
+      ))
+      return nil, callback_err
+    end)
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+    assert.are.equal(callback_err, err.cause)
+    assert.is_true(err:has_label("TransientTransactionError"))
+  end)
 end)

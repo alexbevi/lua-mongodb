@@ -36,6 +36,7 @@ local function client_factory(state)
       ignoreCommandMonitoringEvents = true,
       observeEvents = true,
       observeSensitiveCommands = true,
+      serverApi = true,
       uriOptions = true,
       useMultipleMongoses = true,
     }, "$.client")
@@ -55,6 +56,26 @@ local function client_factory(state)
       command_listeners = { collector.listener },
       runtime = state.runtime,
     }
+    local server_api = specification:get("serverApi")
+
+    if server_api then
+      local api_valid
+      api_valid, err = validate_fields(server_api, {
+        deprecationErrors = true,
+        strict = true,
+        version = true,
+      }, "$.client.serverApi")
+
+      if not api_valid then
+        return nil, err
+      end
+
+      options.server_api = {
+        deprecation_errors = server_api:get("deprecationErrors"),
+        strict = server_api:get("strict"),
+        version = server_api:get("version"),
+      }
+    end
     local uri_options = specification:get("uriOptions")
 
     if uri_options then
@@ -367,7 +388,7 @@ local function end_session(_, session)
   return session:end_session()
 end
 
-local function start_transaction(_, session, arguments)
+local function transaction_options(arguments)
   local options = {}
   local read_concern = arguments:get("readConcern")
   local write_concern = arguments:get("writeConcern")
@@ -391,7 +412,21 @@ local function start_transaction(_, session, arguments)
   end
 
   options.max_commit_time_ms = max_commit_time
+  return options
+end
+
+local function start_transaction(_, session, arguments)
+  local options = transaction_options(arguments)
+
   return session:start_transaction(options)
+end
+
+local function with_transaction(runner, session, arguments, _, path)
+  local callback = arguments:get("callback")
+
+  return session:with_transaction(function()
+    return runner:execute_all(callback, path .. ".arguments.callback", true)
+  end, transaction_options(arguments))
 end
 
 local function commit_transaction(_, session)
@@ -1423,6 +1458,13 @@ function M.new(options)
             "maxCommitTimeMS", "readConcern", "readPreference", "writeConcern",
           },
           handler = start_transaction,
+        },
+        withTransaction = {
+          arguments = {
+            "callback", "maxCommitTimeMS", "readConcern", "readPreference",
+            "writeConcern",
+          },
+          handler = with_transaction,
         },
       },
     },
