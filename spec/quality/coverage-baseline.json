@@ -205,7 +205,21 @@
       "covered": 251
     }
   },
-  "schema_version": 1,
+  "platform_adjustments": {
+    "linux": {
+      "files": {
+        "src/mongodb/client.lua": {
+          "active": -4,
+          "covered": -5
+        }
+      },
+      "total": {
+        "active": -2,
+        "covered": -2
+      }
+    }
+  },
+  "schema_version": 2,
   "total": {
     "active": 21117,
     "covered": 17744

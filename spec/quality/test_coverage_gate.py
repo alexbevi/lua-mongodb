@@ -6,6 +6,39 @@ from spec.quality import coverage_gate
 
 
 class CoverageGateTests(unittest.TestCase):
+  def test_applies_platform_adjustments_without_mutating_the_baseline(self):
+    baseline = {
+      "files": {
+        "src/mongodb/a.lua": {"covered": 8, "active": 10},
+        "src/mongodb/b.lua": {"covered": 5, "active": 5},
+      },
+      "platform_adjustments": {
+        "linux": {
+          "files": {
+            "src/mongodb/a.lua": {"covered": -1, "active": -2},
+          },
+          "total": {"covered": -1, "active": -2},
+        },
+      },
+      "total": {"covered": 13, "active": 15},
+    }
+
+    effective = coverage_gate.apply_platform_adjustments(baseline, "linux")
+
+    self.assertEqual(
+      {"covered": 7, "active": 8},
+      effective["files"]["src/mongodb/a.lua"],
+    )
+    self.assertEqual(
+      {"covered": 5, "active": 5},
+      effective["files"]["src/mongodb/b.lua"],
+    )
+    self.assertEqual({"covered": 12, "active": 13}, effective["total"])
+    self.assertEqual(
+      {"covered": 8, "active": 10},
+      baseline["files"]["src/mongodb/a.lua"],
+    )
+
   def test_rejects_a_per_file_or_total_coverage_regression(self):
     baseline = {
       "files": {

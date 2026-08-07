@@ -11,7 +11,7 @@ import sys
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 SOURCE_ROW = re.compile(
   r"^(?P<file>src/mongodb/\S+\.lua)\s+"
   r"(?P<hits>\d+)\s+(?P<missed>\d+)\s+\d+(?:\.\d+)?%$"
@@ -82,7 +82,36 @@ def parse_report(path: Path) -> dict[str, Any]:
   }
 
 
-def load_baseline(path: Path) -> dict[str, Any]:
+def apply_platform_adjustments(
+  baseline: dict[str, Any], platform: str
+) -> dict[str, Any]:
+  """Return a platform-specific baseline while preserving the canonical input."""
+  effective = {
+    "schema_version": baseline.get("schema_version"),
+    "files": {
+      filename: dict(metric)
+      for filename, metric in baseline["files"].items()
+    },
+    "total": dict(baseline["total"]),
+  }
+  adjustments = baseline.get("platform_adjustments", {}).get(platform, {})
+
+  for filename, delta in adjustments.get("files", {}).items():
+    if filename not in effective["files"]:
+      raise CoverageError(
+        f"platform adjustment references unknown source file {filename}"
+      )
+
+    for key in ("covered", "active"):
+      effective["files"][filename][key] += delta[key]
+
+  for key in ("covered", "active"):
+    effective["total"][key] += adjustments.get("total", {}).get(key, 0)
+
+  return effective
+
+
+def load_baseline(path: Path, platform: str) -> dict[str, Any]:
   try:
     baseline = json.loads(path.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as exc:
@@ -94,7 +123,10 @@ def load_baseline(path: Path) -> dict[str, Any]:
   if not isinstance(baseline.get("files"), dict):
     raise CoverageError("coverage baseline files must be an object")
 
-  return baseline
+  if not isinstance(baseline.get("platform_adjustments", {}), dict):
+    raise CoverageError("coverage baseline platform_adjustments must be an object")
+
+  return apply_platform_adjustments(baseline, platform)
 
 
 def _is_lower(measured: dict[str, int], baseline: dict[str, int]) -> bool:
@@ -147,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
   parser = argparse.ArgumentParser(description=__doc__)
   parser.add_argument("--report", type=Path, required=True)
   parser.add_argument("--baseline", type=Path, required=True)
+  parser.add_argument("--platform", default=sys.platform)
   parser.add_argument("--write-baseline", action="store_true")
   args = parser.parse_args(argv)
 
@@ -165,7 +198,7 @@ def main(argv: list[str] | None = None) -> int:
       )
       return 0
 
-    baseline = load_baseline(args.baseline)
+    baseline = load_baseline(args.baseline, args.platform)
     violations = regressions(measured, baseline)
   except CoverageError as exc:
     print(f"coverage gate: {exc}", file=sys.stderr)
