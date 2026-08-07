@@ -14,10 +14,10 @@
     "ADV-012": 15,
     "REL-005": 36,
     "REL-006": 101,
-    "REL-012": 88
+    "REL-013": 84
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 225,
+    "applicable-release-gap": 221,
     "post-v1-exclusion": 1921
   },
   "post_v1_reasons": {
@@ -36,8 +36,8 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 2146,
-    "passed": 3378
+    "deferred_unsupported": 2142,
+    "passed": 3382
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

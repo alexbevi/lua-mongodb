@@ -1616,6 +1616,10 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/bulkWrite-replaceOne-sort.json::test[2]": {
+      "activity": "REL-012",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/bulkWrite-update-hint.json::test[1]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1714,6 +1718,10 @@
     },
     "crud/tests/unified/bulkWrite-updateOne-sort.json::test[1]": {
       "activity": "UTF-013",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/bulkWrite-updateOne-sort.json::test[2]": {
+      "activity": "REL-012",
       "environment": "live-standalone"
     },
     "crud/tests/unified/bulkWrite.json::test[10]": {
@@ -2476,6 +2484,10 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/replaceOne-sort.json::test[2]": {
+      "activity": "REL-012",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/replaceOne-validation.json::test[1]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2671,6 +2683,10 @@
     },
     "crud/tests/unified/updateOne-sort.json::test[1]": {
       "activity": "UTF-013",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/updateOne-sort.json::test[2]": {
+      "activity": "REL-012",
       "environment": "live-standalone"
     },
     "crud/tests/unified/updateOne-validation.json::test[1]": {

@@ -1303,6 +1303,28 @@
       "notes": [],
       "started_at": "2026-08-07T13:39:56+00:00",
       "completed_at": "2026-08-07T13:42:01+00:00"
+    },
+    "REL-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_pre_8_0_write_sort_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "Four MongoDB 7.0 write-sort server-error branches are deferred because they have no exact executors",
+          "recorded_at": "2026-08-07T13:43:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "exact four-fixture write-sort runs on MongoDB 7.0.39 and 8.0.16; make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint",
+          "exit_code": 0,
+          "summary": "Four MongoDB 7.0 server-error branches and four MongoDB 8.0 supported branches passed; 176 unit, 18 integration, 21 unified CLI, 12 meta, 320 schema-meta, conformance, release, and lint gates passed",
+          "recorded_at": "2026-08-07T13:47:22+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T13:43:31+00:00",
+      "completed_at": "2026-08-07T13:47:23+00:00"
     }
   },
   "verified_references": {
