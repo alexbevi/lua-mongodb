@@ -11,9 +11,9 @@ BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 .PHONY: check check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-unit test-integration test-unified test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
-	test-stress lint rockspec planning-check
+	test-stress test-compatibility test-compatibility-live lint rockspec planning-check
 
-check: test-unit test-integration test-unified test-quality lint rockspec planning-check
+check: test-unit test-integration test-unified test-quality test-compatibility lint rockspec planning-check
 
 check-tools: check-lua check-busted check-luacheck check-luacov check-luarocks check-python
 
@@ -95,6 +95,21 @@ test-coverage: check-busted check-luacov check-python
 test-stress: check-lua
 	@mkdir -p build/quality
 	@"$(LUA)" spec/quality/run_stress.lua
+
+test-compatibility: check-python
+	@"$(PYTHON)" -m unittest spec.compatibility.test_matrix -v
+	@"$(PYTHON)" spec/compatibility/matrix.py
+
+test-compatibility-live: check-python check-lua
+	@test -n "$(COMPATIBILITY_ENTRY)" || { \
+		echo "Set COMPATIBILITY_ENTRY to a checked-in compatibility matrix row" >&2; \
+		exit 2; \
+	}
+	@mkdir -p build/compatibility
+	@"$(PYTHON)" spec/compatibility/run.py \
+		--entry "$(COMPATIBILITY_ENTRY)" \
+		--lua "$(LUA)" \
+		--report "build/compatibility/$(COMPATIBILITY_ENTRY).json"
 
 test-unified-meta: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/matcher_spec.lua \

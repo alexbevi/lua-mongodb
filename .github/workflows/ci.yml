@@ -8,7 +8,7 @@ permissions:
   contents: read
 
 jobs:
-  check:
+  portable:
     strategy:
       fail-fast: false
       matrix:
@@ -55,8 +55,49 @@ jobs:
           brew tap mongodb/brew
           brew install mongodb-community@8.0
 
-      - name: Run all foundation checks
+      - name: Run all portable and loopback checks
         run: make check
 
       - name: Verify executable roadmap and commit evidence
         run: python3 planning/update_plan.py check --strict
+
+  compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        series: ["7.0", "8.0", "8.2"]
+        topology: [standalone, replicaset]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install driver dependencies
+        run: luarocks install --only-deps lua-mongodb-scm-1.rockspec
+
+      - name: Run pinned live compatibility row
+        run: >-
+          make test-compatibility-live
+          COMPATIBILITY_ENTRY=mongodb-${{ matrix.series }}-${{ matrix.topology }}
+
+      - name: Upload machine-readable environment facts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compatibility-${{ matrix.series }}-${{ matrix.topology }}
+          path: build/compatibility/*.json
+          if-no-files-found: error

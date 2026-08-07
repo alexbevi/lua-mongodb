@@ -1120,6 +1120,28 @@
       "notes": [],
       "started_at": "2026-08-07T08:14:00+00:00",
       "completed_at": "2026-08-07T09:24:06+00:00"
+    },
+    "CMP-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.compatibility.test_matrix -v",
+          "exit_code": 1,
+          "summary": "No validated live-server matrix existed, so CI could silently omit an advertised MongoDB series or topology.",
+          "recorded_at": "2026-08-07T09:27:01+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check && make test-integration && make test-unified && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "Unit 172/172, integration 18/18, unified 1148 executed and passed with 0 failed, 3 environment-skipped, and 1288 concretely deferred; all 6 pinned server/topology rows and 30 security profiles validated; coverage 17630/20996 with no regressions, 32 stress seeds passed 4 rounds, lint 111 files, packaging and strict roadmap checks passed.",
+          "recorded_at": "2026-08-07T11:17:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T09:25:37+00:00",
+      "completed_at": "2026-08-07T11:17:20+00:00"
     }
   },
   "verified_references": {

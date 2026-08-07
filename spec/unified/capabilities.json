@@ -36516,9 +36516,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "0457cbe0817d4850dd2ac63211944bcd36277109e279d38c61ea00679b2d7c34",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -36571,9 +36571,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[4]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "48d54183a4dd6e81c24a3fd0d48f0031f7776cffb53cb42326760feecc92aa54",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -36758,9 +36758,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "b8c85dc47bdf96a82805e662045037a5ee495b348883bea08bef724f748da367",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36788,9 +36788,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "2e27df7f9814cb567481d92d76be4e79a51c36c9a8fb8a25bbec2a213fa19678",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36818,9 +36818,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "dc933c8f7f9bf8c409d04c9cc7188902db4bd08cf32d87b056f244698ddb1ac6",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36848,9 +36848,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[4]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "c966daaa3aac629fc4ecad92c6cb14993431464e8c88a09c36c20ba897912494",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -36928,9 +36928,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "ceb73a6ebabe0632572c37018e860f1875671d8b9e015151e55b82989af46ab0",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -36985,9 +36985,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3a7d581911b6310d8352774399c99547d11f5c0ce84d1eee0c97486c64d16f6b",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37016,9 +37016,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "45bf64d7c844c65654b8ba96bbe7a13879b455c776aa097c6eea133bf4c2ce15",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37049,9 +37049,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "5b9dcd05958a9d3a5e79a2deb3e0a7d100a4e022062e635617ba33090e8488f6",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37080,9 +37080,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "d192be5813a37909789134e0122f624f3a3f5406a1a2d705eda68850d2e11adb",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37196,9 +37196,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[4]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3b0a5676a78ad33f857fc3a7be0777fa3abcb7c1954dae7396e37aabd242d151",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.comment",
@@ -37254,9 +37254,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[6]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "f5483fb6ef4821ef644275f774cc132c3f5db64589c7198268db3b36fe13e57a",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -37508,9 +37508,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "2f8a6133f680791dadcaa03ca97d30ff10ecabeb210ef8ef7bec4ca6d07fb40d",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.comment",
@@ -37536,9 +37536,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "cd04a66f6cdd808c49a83897af906c5c5b054c37953c398c83f1f3d9823ca6bb",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -37564,9 +37564,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "17764c7a78fea7f97d345ce791f0a97d54a56fe2e838b0de7ac83b0db017f39d",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -37785,9 +37785,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3d8e62d51ee2a2d55897b12daf68090818efdae832f21e6c8f4bc82e53091f7e",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -37813,9 +37813,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "05b1f145766696a7d4c2b1a3dae74b1fb924d1606c8cdc01a0fc8cb3c7276220",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -38005,9 +38005,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "571a1366d06370e85c7093ed7622624b6f21bf1a83aca4afad63cc5431cabdf3",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -38033,9 +38033,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "bc832ba1b00247c5e1f362610b5d7d0995d1f9055cecb08de641e2b4e98313b0",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -38150,9 +38150,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "0bf7ec17e191debf465842d786e29fc3f493a86082044913e9e48c2c0fd0f3ac",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38317,9 +38317,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "123ce0af925cbc6c86794037a91cd5b25eb62675c60882188677365208984bce",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38461,9 +38461,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "d45da63d00461b168fb22dae1027886f40d7d7d389e6a9d3cb21c6768fbe8f0c",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -38491,9 +38491,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "ed931108dc8beec8b6c6e714438b0c4da47053cab86ada07ca54c10297c6ad3b",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -38580,9 +38580,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-sort.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "a97bc6111f844448c31725f7773fa5e35f933aaff6bd9468103c6612dd205d1a",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38967,9 +38967,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "5631df326566b7d9ef56e96f62efa1a6cf91fd6f22b1d41714cd916115a5ff0b",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -39025,9 +39025,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "a9d583cd56dcd3eeaf7ed1431d44c08867428554b8e2895fee929d348c078a96",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -39284,9 +39284,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "90a3fc998e5cfad1c368d6779f0ce662b024085b1d917da603589351bd091261",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -39342,9 +39342,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "d704d91c0c3fe7959c6a24ea8f3945cb3466e2c66d8204d3af12f7b4458b0409",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -39431,9 +39431,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-sort.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "23878d8e881ea56259f70c796efc9363e6a290b91db69bd2666d603c544643ca",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -41875,9 +41875,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/countDocuments-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "6f7365efa5023f245f7263455bb6451307d7af248e8256ac19b4fdd7e98d3cb4",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "countDocuments.comment",
@@ -41903,9 +41903,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/countDocuments-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "7831612b14be4c52cb5b2f15d3de1b78a89ea5a907ec3d91c464397627f05e46",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -42459,9 +42459,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteMany-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "96cb9d59acee870205ceef6eabab438089ff4b1faf8662ba097fe52db5a29c9a",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteMany.comment",
@@ -42487,9 +42487,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3ff633561c60e67a9fa3dcc7ac8d56bd20b002a291d8674237a349437d206839",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42515,9 +42515,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3d23b5f4dff4f3e4ddb12140b7a18ae5852a844612f0e8e95c79d65a1097db4b",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42736,9 +42736,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteMany-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "6df0ef48fecd3d14d7c14c9bf1ddcbc66724f2ad1c0aa75b2df3ee4076ebecf3",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42764,9 +42764,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "e32f1277ae910ee226e378f5e5501e489ae14a4221efd5299bfb9117624a8763",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -42948,9 +42948,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteOne-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "08f6ec7c642544af2e157559666f9229adac452903d1e55989499058792b8748",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteOne.comment",
@@ -43008,9 +43008,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3e0d975d1ef8ab550c63e8e97fcdcc554b1e78712dc5a65d478ed99896181ffe",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43036,9 +43036,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "d7e06d162f71c6fa3dc5b0c63d1fb895bf3174bea44effd5bae72c20c7b9754f",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43257,9 +43257,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/deleteOne-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "a0156b16bb1b7b6bc89b101a77ee1e501393d806069e4d21d50649c01a23c06c",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43285,9 +43285,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "90e6125df06558846fe4da089687b38e29d1f57675e843d422dedc2a6e11e3c8",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43496,9 +43496,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/distinct-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "5cefd159a8c330bd06fdc6d214705ac67fc1ac8ff966c0a776a3a77040cd1537",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "distinct.comment",
@@ -43581,9 +43581,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/distinct-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "eb7eb21837cebac4bce4624fb317ef5b4589e4ec8a4cfb20ff6473e9d77a88be",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -43742,9 +43742,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "44e25169104337597fd7cd9dba07535de40e349dd71518bd675eb71a40083408",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.comment"
@@ -43772,9 +43772,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "c001f1f13bed9ba542576114c02b03152e427b4f13b9cf2df4d32075a2258744",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.rawData"
@@ -43999,9 +43999,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "c169f04febf57156a5589155d0d3538d8b0ec2cf1afc2ffdcc84f06c780f6b3c",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -44027,9 +44027,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "e1cc82ff58c6fd1eb68bcb9a993161791b874808182fbe6d8978609e7dc1ce94",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -44216,9 +44216,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "1249432587925f6597ead1f1b5b7345a8e8134def4e44fe3366a1fcaa037b7a0",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "find.comment",
@@ -44274,9 +44274,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[5]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "9e303a066beaba142e3b635999cb23b465432319740dd831eab4153d06355110",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -44333,9 +44333,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/find-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "8c59d670fa4306359ddac92bb1918e387292061cb868ffc37eff21d340f5c1a5",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -44361,9 +44361,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "a45b7d6eb6049832d94579030925a000c39c339076f1667bec78d81c21f84365",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -44693,9 +44693,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "4b841c5bb8cdd99ba0b5314e96c71c35511138ff0063fbb17b7c481eca428552",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndDelete.comment",
@@ -44721,9 +44721,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "84feeba5823b6f816d79e582603eb2cb5f63930ed13913f855769342e829cd44",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -44749,9 +44749,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "55f16d0896c5c50bc41b36c53541a5ab1937b0c0ec59ce1ec9be8dc585be46b4",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -44970,9 +44970,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "85db8b7c2fc3ea06cb2b2d8e21f971858aa472dbc921adff5801e8a84368407f",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -44998,9 +44998,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "1c4a77da07aee9f1f04ba924945d871656dccda369b61928622821d095b980a4",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -45218,9 +45218,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "e91cfcd5f1a7325944d8de8716f18b11e21ab6c35006bae4972f24bec90e3c0b",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndReplace.comment",
@@ -45305,9 +45305,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "4b9ce95b5963734ae0f61cb7415ac5af33c6d40af2e4582ca7caccf7283eb382",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45364,9 +45364,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "dbda23b132f67363389c87eee9d0f69768358d96cd815c0e149622cd15f6683a",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45393,9 +45393,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "4beed59c7077ad1eafe1fcf33d5ef10e70c5a4cb44a7921551e1bd9188fdfe15",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45622,9 +45622,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "b5522dabc8e9686fda3c4a27da4d7b2f2ac5caed76aa843ec41e42781bd1f488",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -45651,9 +45651,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "2417a5b0e60b9be89fb499f599afa67a31a23393e191c1f7abfe07d10afdfb93",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -46149,9 +46149,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "c4049e17316d1efe3eea53417f82ea0727e47fd124337f49519c77d7cbfd4058",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.comment",
@@ -46355,9 +46355,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "23ab4debae3c3cc882a579129d0eaa8bde90b997ad5f7bc5015ad0a52d1ef837",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46384,9 +46384,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "49037b863510469508c03175974013f867731a45e391bb94113a26568174fb2e",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46613,9 +46613,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "5d72c368543f16e0931763c2fe0223fa5269717ec9a6296cc24649fbc66dec51",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46669,9 +46669,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "7d7e764b86be9567a770080177d569777c4a1080e0f3ec3d41587a1512cb53c1",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -47003,9 +47003,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "cf76abe49fd491de942b4e71d8443bc866e85be44a94e678c6752136b8520625",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertMany.comment",
@@ -47059,9 +47059,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "4a38ef3889f95893be2191d8949d0cfbf3068cb006547316a00e7f32bd5f903f",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -47170,9 +47170,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "60d64223eb603fefcc1637a13d03128ab3d06b1583b6f9d61bd39e693ab379ac",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -47358,9 +47358,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "efbf28fc98ac928e4e0429921ef7c13f63ccb5b48e1898c3d4b4b340b5159be1",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertOne.comment",
@@ -47414,9 +47414,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "6fdf0bcb01588c986948fb9873c8e45ae745d577a0bef4ba7484c275b98ff926",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -47607,9 +47607,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[9]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "1b8584badbfcc2e1e87c7e1cf71cef23071302f9406bbd8126fda453cd68a649",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -47668,9 +47668,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "a221c53cef2b79ba326705f92702517fa8b1a5ac955bfec5fe245f906309c9a0",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -47837,9 +47837,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "7a82ea66446f4e5888461fee9a407cc60edc017464f00e33eebf9681aa183d8a",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "replaceOne.comment",
@@ -47926,9 +47926,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "d7a0ff52c81a15d3925ecb5cc3fd4ff31ba74a7bb12c097dc119187395110d29",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -47985,9 +47985,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[5]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "4a90f7d371a38193ccfe95f06cd9b90190fb1e41bfda3a4a46dd4c3a22f4cde9",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48167,9 +48167,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "11339127051c1e062baa3f6a26b7ec9ef82aca216bd6b7c22a7f0d25d3d740f2",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48198,9 +48198,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/replaceOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "b5fe507f8f8ba27721433ccc50d53677e2487ebc3e2794c3f621591141433fa9",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48291,9 +48291,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-sort.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "418b9b6a938ac6a8639b94e026be26e6fe22caea2e4d44f862ff5b196b78b294",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48638,9 +48638,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateMany-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "192de775889260307df0a96a222f44900e2b71cf1935889e40902f9b939d775a",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateMany.comment",
@@ -48937,9 +48937,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateMany-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "38fff32be51a1c145011220bdc26c618bf2b8800980eb11a4e533ddb1589614c",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -48997,9 +48997,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateMany-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "616975640995bded9e55a5c522c4c9af6fe2cac8cf170abacd227568b6ee26b1",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -49401,9 +49401,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-comment.json::test[3]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "2a0e42cf94b657787f47a25ae276db21ddd456d0d084da9211e3bf7978b1b82d",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateOne.comment",
@@ -49733,9 +49733,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-let.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "764546d7010e132169ed9329440c11fc09b336c86ce47405ba3c9a3d2f4906ec",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -49793,9 +49793,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-rawdata.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "eebbad712c3469bb0e106960bb0f5912c8095ac71769d67ceb750e1a8cd6852d",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -49886,9 +49886,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/updateOne-sort.json::test[2]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "f9f27891b0b4b6151e18d9f86e5689146932c169604205927f4bdfbced5e8df9",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -70734,9 +70734,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "732bfdf3dc8e535a1acc6ff132b477383e024d5c0cc8946963762aaebee5c8ce",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70784,9 +70784,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "CMP-001",
+      "activity": "REL-001",
       "fingerprint": "3406d589e98a2f141dc5504cf0a57123b8cb1cc012a7a5b5bbe81c319c4c3aa4",
-      "reason": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "createEntities.entities",
