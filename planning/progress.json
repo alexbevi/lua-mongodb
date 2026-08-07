@@ -745,6 +745,28 @@
       "notes": [],
       "started_at": "2026-08-06T22:50:54+00:00",
       "completed_at": "2026-08-06T22:58:57+00:00"
+    },
+    "UTF-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lpath=src/?.lua --lpath=src/?/init.lua spec/unified/operation_spec.lua",
+          "exit_code": 1,
+          "summary": "Pinned expectedError.errorResponse assertion is silently ignored when a server error lacks a response",
+          "recorded_at": "2026-08-06T23:01:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "All 17 applicable upstream operation assertion pass/fail cases and every expected-error field pass within 7 operation meta-tests; 127 unit and 16 integration tests, 320 schema meta-fixtures, 483-file/1,900-test validation and inventory, execution classification, lint, rockspec, and planning gates pass",
+          "recorded_at": "2026-08-07T00:02:37+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-06T23:00:38+00:00",
+      "completed_at": "2026-08-07T00:02:37+00:00"
     }
   },
   "verified_references": {

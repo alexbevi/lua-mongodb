@@ -67,7 +67,8 @@ test-unified-inventory: check-python check-lua
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
 
 test-unified-meta: check-busted check-python
-	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/matcher_spec.lua
+	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/matcher_spec.lua \
+		spec/unified/operation_spec.lua
 	@"$(PYTHON)" spec/unified/run_schema_meta.py --lua "$(LUA)"
 
 test-unified-execution: check-python

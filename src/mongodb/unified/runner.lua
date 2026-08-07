@@ -681,6 +681,384 @@ function RUNNER_METHODS:match(expected, actual, path)
   return match_value(self, expected, actual, path or "$", true)
 end
 
+local function camel_case(name)
+  return (name:gsub("_([a-z])", function(character)
+    return character:upper()
+  end))
+end
+
+local function is_bson_value(value)
+  local value_type = type(value)
+
+  return value_type == "boolean"
+    or value_type == "number"
+    or value_type == "string"
+    or bson.is_array(value)
+    or bson.is_binary(value)
+    or bson.is_document(value)
+    or bson.is_exact(value)
+    or bson.is_null(value)
+    or bson.is_tagged(value)
+end
+
+local function table_to_bson(value)
+  if is_bson_value(value) then
+    return value
+  end
+
+  if type(value) ~= "table" then
+    return value
+  end
+
+  local length = #value
+  local count = 0
+  local sequence = length > 0
+
+  for key in pairs(value) do
+    count = count + 1
+
+    if math.type(key) ~= "integer" or key < 1 or key > length then
+      sequence = false
+    end
+  end
+
+  if sequence and count == length then
+    local items = {}
+
+    for index = 1, length do
+      items[index] = table_to_bson(value[index])
+    end
+
+    return bson.array(items)
+  end
+
+  local entries = {}
+
+  for key, item in pairs(value) do
+    if item ~= nil then
+      entries[#entries + 1] = {
+        camel_case(tostring(key)),
+        table_to_bson(item),
+      }
+    end
+  end
+
+  table.sort(entries, function(left, right)
+    return left[1] < right[1]
+  end)
+  return bson.document(entries)
+end
+
+local function write_errors_document(value)
+  if bson.is_document(value) then
+    return value
+  end
+
+  if type(value) ~= "table" then
+    return nil
+  end
+
+  local entries = {}
+
+  for _, item in ipairs(value) do
+    local index = item.index
+
+    if math.type(index) ~= "integer" or index < 1 then
+      return nil
+    end
+
+    local fields = {}
+
+    for key, field in pairs(item) do
+      if key ~= "index" and field ~= nil then
+        fields[#fields + 1] = { camel_case(tostring(key)), table_to_bson(field) }
+      end
+    end
+
+    table.sort(fields, function(left, right)
+      return left[1] < right[1]
+    end)
+    entries[#entries + 1] = { tostring(index - 1), bson.document(fields) }
+  end
+
+  return bson.document(entries)
+end
+
+local function write_concern_errors_array(value)
+  if bson.is_array(value) then
+    return value
+  end
+
+  if type(value) ~= "table" then
+    return nil
+  end
+
+  local items = {}
+
+  for index, item in ipairs(value) do
+    items[index] = table_to_bson(item)
+  end
+
+  return bson.array(items)
+end
+
+local function expectation_mismatch(message, path, field)
+  return nil, configuration_error(message, append_path(path, field))
+end
+
+local function error_response(err)
+  local details = err.details
+  return details and details.response or nil
+end
+
+local function error_is_client(err)
+  return err.category ~= errors.CATEGORY.SERVER
+    and error_response(err) == nil
+end
+
+local function assert_expected_error(runner, err, expected, path)
+  if not errors.is(err) then
+    return expectation_mismatch("operation returned an unstructured error", path, "expectError")
+  end
+
+  local supported_fields = {
+    errorCode = true,
+    errorCodeName = true,
+    errorContains = true,
+    errorLabelsContain = true,
+    errorLabelsOmit = true,
+    errorResponse = true,
+    expectResult = true,
+    isClientError = true,
+    isError = true,
+    isTimeoutError = true,
+    writeConcernErrors = true,
+    writeErrors = true,
+  }
+
+  for key, value in expected:iter() do
+    if not supported_fields[key] then
+      return expectation_mismatch("unsupported expected error field", path, key)
+    end
+
+    if key == "isError" and value ~= true then
+      return expectation_mismatch("isError must be true", path, key)
+    end
+  end
+
+  local present, wanted = document_has(expected, "isClientError")
+
+  if present and error_is_client(err) ~= wanted then
+    return expectation_mismatch("error client origin does not match", path, "isClientError")
+  end
+
+  present, wanted = document_has(expected, "isTimeoutError")
+
+  if present and err:is_timeout() ~= wanted then
+    return expectation_mismatch("error timeout status does not match", path, "isTimeoutError")
+  end
+
+  local contains = expected:get("errorContains")
+
+  if contains and not tostring(err):lower():find(contains:lower(), 1, true) then
+    return expectation_mismatch("error message did not contain expectation", path, "errorContains")
+  end
+
+  local code = expected:get("errorCode")
+
+  if code and err.code ~= as_number(code) then
+    return expectation_mismatch("error code does not match", path, "errorCode")
+  end
+
+  local code_name = expected:get("errorCodeName")
+
+  if code_name and (type(err.code_name) ~= "string"
+    or err.code_name:lower() ~= code_name:lower()) then
+    return expectation_mismatch("error code name does not match", path, "errorCodeName")
+  end
+
+  local labels = expected:get("errorLabelsContain")
+
+  if labels then
+    for _, label in labels:iter() do
+      if not err:has_label(label) then
+        return expectation_mismatch("error is missing label " .. label, path, "errorLabelsContain")
+      end
+    end
+  end
+
+  labels = expected:get("errorLabelsOmit")
+
+  if labels then
+    for _, label in labels:iter() do
+      if err:has_label(label) then
+        return expectation_mismatch(
+          "error unexpectedly has label " .. label,
+          path,
+          "errorLabelsOmit"
+        )
+      end
+    end
+  end
+
+  local expected_write_errors = expected:get("writeErrors")
+
+  if expected_write_errors then
+    local actual = write_errors_document(err.details and err.details.write_errors)
+
+    if not actual then
+      return expectation_mismatch("error has no write errors", path, "writeErrors")
+    end
+
+    if #actual ~= #expected_write_errors then
+      return expectation_mismatch("write error count does not match", path, "writeErrors")
+    end
+
+    for index, expected_write_error in expected_write_errors:iter() do
+      local exists, actual_write_error = document_has(actual, index)
+
+      if not exists then
+        return expectation_mismatch("write error index is missing", path, "writeErrors")
+      end
+
+      local ok, match_err = runner:match(
+        expected_write_error,
+        actual_write_error,
+        append_path(append_path(path, "writeErrors"), index)
+      )
+
+      if not ok then
+        return nil, match_err
+      end
+    end
+  end
+
+  local expected_concern_errors = expected:get("writeConcernErrors")
+
+  if expected_concern_errors then
+    local actual = write_concern_errors_array(
+      err.details and err.details.write_concern_errors
+    )
+
+    if not actual then
+      return expectation_mismatch(
+        "error has no write concern errors",
+        path,
+        "writeConcernErrors"
+      )
+    end
+
+    local ok, match_err = runner:match(
+      expected_concern_errors,
+      actual,
+      append_path(path, "writeConcernErrors")
+    )
+
+    if not ok then
+      return nil, match_err
+    end
+  end
+
+  local expected_response = expected:get("errorResponse")
+
+  if expected_response then
+    local response = error_response(err)
+
+    if not bson.is_document(response) then
+      return expectation_mismatch("error has no server response", path, "errorResponse")
+    end
+
+    local ok, match_err = runner:match(
+      expected_response,
+      response,
+      append_path(path, "errorResponse")
+    )
+
+    if not ok then
+      return nil, match_err
+    end
+  end
+
+  local expected_result = expected:get("expectResult")
+
+  if expected_result then
+    local result = err.details and err.details.partial_result
+
+    if result == nil then
+      return expectation_mismatch("error has no partial result", path, "expectResult")
+    end
+
+    local ok, match_err = runner:match(
+      expected_result,
+      table_to_bson(result),
+      append_path(path, "expectResult")
+    )
+
+    if not ok then
+      return nil, match_err
+    end
+  end
+
+  return true
+end
+
+local function prepare_arguments(runner, descriptor, arguments, path)
+  if not bson.is_document(arguments) then
+    return nil, configuration_error("operation arguments must be an object", path)
+  end
+
+  local entries = {}
+
+  for key, value in arguments:iter() do
+    local argument_path = append_path(path, key)
+
+    if descriptor.arguments and not descriptor.arguments[key] then
+      return nil, configuration_error(
+        "unsupported argument " .. key,
+        argument_path,
+        { argument = key }
+      )
+    end
+
+    if key == "session" then
+      local session, err = runner:get_entity(value, "session", argument_path)
+
+      if session == nil then
+        return nil, err
+      end
+
+      value = session
+    end
+
+    entries[#entries + 1] = { key, value }
+  end
+
+  return bson.document(entries)
+end
+
+local function operation_contract(operation, path)
+  local has_error = document_has(operation, "expectError")
+  local has_result = document_has(operation, "expectResult")
+  local has_save = document_has(operation, "saveResultAsEntity")
+  local ignore = operation:get("ignoreResultAndError") == true
+
+  if ignore and (has_error or has_result or has_save) then
+    return nil, configuration_error(
+      "ignoreResultAndError conflicts with result, error, or saved entity assertions",
+      path
+    )
+  end
+
+  if has_error and (has_result or has_save) then
+    return nil, configuration_error(
+      "expectError conflicts with result or saved entity assertions",
+      path
+    )
+  end
+
+  return true
+end
+
 local function execute_regular(runner, operation, path)
   local state = RUNNER_STATES[runner]
   local name = operation:get("name")
@@ -692,9 +1070,9 @@ local function execute_regular(runner, operation, path)
   end
 
   local handlers = state.operations[kind]
-  local handler = handlers and handlers[name]
+  local descriptor = handlers and handlers[name]
 
-  if not handler then
+  if not descriptor then
     return nil, configuration_error(
       "unsupported unified operation " .. tostring(name) .. " for " .. kind,
       append_path(path, "name"),
@@ -702,22 +1080,45 @@ local function execute_regular(runner, operation, path)
     )
   end
 
-  local arguments = operation:get("arguments") or bson.document({})
-  local result, err = handler(runner, entity, arguments, operation)
+  local valid, validation_err = operation_contract(operation, path)
+
+  if not valid then
+    return nil, validation_err
+  end
+
+  local arguments, argument_err = prepare_arguments(
+    runner,
+    descriptor,
+    operation:get("arguments") or bson.document({}),
+    append_path(path, "arguments")
+  )
+
+  if not arguments then
+    return nil, argument_err
+  end
+
+  local result, err = descriptor.handler(runner, entity, arguments, operation)
   local has_expect_error, expect_error = document_has(operation, "expectError")
+  local ignore = operation:get("ignoreResultAndError") == true
+
+  if err and not errors.is(err) then
+    return nil, configuration_error("operation returned an unstructured error", path)
+  end
+
+  if ignore then
+    if err and errors.is(err, errors.CATEGORY.CONFIGURATION) then
+      return nil, err
+    end
+
+    return true
+  end
 
   if err then
     if not has_expect_error then
       return nil, err
     end
 
-    local contains = expect_error:get("errorContains")
-
-    if contains and not err.message:find(contains, 1, true) then
-      return nil, configuration_error("error message did not contain expectation", path)
-    end
-
-    return true
+    return assert_expected_error(runner, err, expect_error, append_path(path, "expectError"))
   elseif has_expect_error then
     return nil, configuration_error("operation succeeded but an error was expected", path)
   end
@@ -725,7 +1126,17 @@ local function execute_regular(runner, operation, path)
   local has_expected, expected = document_has(operation, "expectResult")
 
   if has_expected then
-    local ok, match_err = runner:match(expected, result, append_path(path, "expectResult"))
+    local comparable = result
+
+    if descriptor.coerce_result then
+      comparable = descriptor.coerce_result(result)
+    end
+
+    local ok, match_err = runner:match(
+      expected,
+      comparable,
+      append_path(path, "expectResult")
+    )
 
     if not ok then
       return nil, match_err
@@ -735,7 +1146,27 @@ local function execute_regular(runner, operation, path)
   local save_as = operation:get("saveResultAsEntity")
 
   if save_as then
-    local ok, save_err = runner:add_entity(save_as, "bson", result)
+    local result_kind = descriptor.result_kind
+
+    if result == nil then
+      return nil, configuration_error(
+        "operation returned no result to save",
+        append_path(path, "saveResultAsEntity")
+      )
+    end
+
+    if result_kind == nil and is_bson_value(result) then
+      result_kind = "bson"
+    end
+
+    if result_kind == nil or result_kind == "bson" and not is_bson_value(result) then
+      return nil, configuration_error(
+        "operation result has an unsupported entity type",
+        append_path(path, "saveResultAsEntity")
+      )
+    end
+
+    local ok, save_err = runner:add_entity(save_as, result_kind, result)
 
     if not ok then
       return nil, save_err
@@ -745,7 +1176,30 @@ local function execute_regular(runner, operation, path)
   return true, result
 end
 
+local function validate_special_arguments(arguments, allowed, path)
+  for key in arguments:iter() do
+    if not allowed[key] then
+      return nil, configuration_error(
+        "unsupported special operation argument " .. key,
+        append_path(append_path(path, "arguments"), key),
+        { argument = key }
+      )
+    end
+  end
+
+  return true
+end
+
 local function run_thread(runner, arguments, path)
+  local valid, validation_err = validate_special_arguments(arguments, {
+    operation = true,
+    thread = true,
+  }, path)
+
+  if not valid then
+    return nil, validation_err
+  end
+
   local state = RUNNER_STATES[runner]
   local name = arguments:get("thread")
   local thread, err = runner:get_entity(name, "thread", append_path(path, "thread"))
@@ -770,6 +1224,14 @@ local function run_thread(runner, arguments, path)
 end
 
 local function wait_for_thread(runner, arguments, path)
+  local valid, validation_err = validate_special_arguments(arguments, {
+    thread = true,
+  }, path)
+
+  if not valid then
+    return nil, validation_err
+  end
+
   local state = RUNNER_STATES[runner]
   local name = arguments:get("thread")
   local thread, err = runner:get_entity(name, "thread", append_path(path, "thread"))
@@ -811,6 +1273,17 @@ local function store_counter(runner, name, value)
 end
 
 local function run_loop(runner, arguments, path)
+  local valid, validation_err = validate_special_arguments(arguments, {
+    numIterations = true,
+    operations = true,
+    storeIterationsAsEntity = true,
+    storeSuccessesAsEntity = true,
+  }, path)
+
+  if not valid then
+    return nil, validation_err
+  end
+
   local iterations = as_number(arguments:get("numIterations"))
 
   if math.type(iterations) ~= "integer" or iterations < 0 then
@@ -860,7 +1333,23 @@ local function run_loop(runner, arguments, path)
   return true
 end
 
+local function create_entities_operation(runner, arguments, path)
+  local valid, validation_err = validate_special_arguments(arguments, {
+    entities = true,
+  }, path)
+
+  if not valid then
+    return nil, validation_err
+  end
+
+  return runner:create_entities(
+    arguments:get("entities"),
+    append_path(append_path(path, "arguments"), "entities")
+  )
+end
+
 local SPECIAL_OPERATIONS = {
+  createEntities = create_entities_operation,
   loop = run_loop,
   runOnThread = run_thread,
   waitForThread = wait_for_thread,
@@ -942,18 +1431,87 @@ function RUNNER_METHODS:verify_outcomes(outcomes, path)
   return true
 end
 
+local SAVED_RESULT_KINDS = {
+  bson = true,
+  changeStream = true,
+  commandCursor = true,
+  findCursor = true,
+}
+
 local function copy_handlers(source)
   local result = {}
 
   for kind, handlers in pairs(source or {}) do
     result[kind] = {}
 
-    for name, handler in pairs(handlers) do
-      if type(handler) ~= "function" then
-        error("unified operation handlers must be functions", 3)
+    for name, definition in pairs(handlers) do
+      local descriptor
+
+      if type(definition) == "function" then
+        descriptor = { handler = definition }
+      elseif type(definition) == "table" then
+        for key in pairs(definition) do
+          if key ~= "arguments" and key ~= "coerce_result"
+            and key ~= "handler" and key ~= "result_kind" then
+            error("unknown unified operation descriptor option: " .. tostring(key), 3)
+          end
+        end
+
+        if type(definition.handler) ~= "function" then
+          error("unified operation descriptor handler must be a function", 3)
+        end
+
+        if definition.coerce_result ~= nil
+          and type(definition.coerce_result) ~= "function" then
+          error("unified operation coerce_result must be a function", 3)
+        end
+
+        if definition.result_kind ~= nil
+          and (type(definition.result_kind) ~= "string"
+            or not SAVED_RESULT_KINDS[definition.result_kind]) then
+          error("unified operation result_kind is unsupported", 3)
+        end
+
+        local arguments
+
+        if definition.arguments ~= nil then
+          if type(definition.arguments) ~= "table" then
+            error("unified operation arguments must be an array", 3)
+          end
+
+          arguments = {}
+
+          for index, argument in ipairs(definition.arguments) do
+            if type(argument) ~= "string" or argument == "" then
+              error("unified operation arguments must contain strings", 3)
+            end
+
+            arguments[argument] = true
+
+            if definition.arguments[index] ~= argument then
+              error("unified operation arguments must be a dense array", 3)
+            end
+          end
+
+          for key in pairs(definition.arguments) do
+            if math.type(key) ~= "integer"
+              or key < 1 or key > #definition.arguments then
+              error("unified operation arguments must be a dense array", 3)
+            end
+          end
+        end
+
+        descriptor = {
+          arguments = arguments,
+          coerce_result = definition.coerce_result,
+          handler = definition.handler,
+          result_kind = definition.result_kind,
+        }
+      else
+        error("unified operation handlers must be functions or descriptors", 3)
       end
 
-      result[kind][name] = handler
+      result[kind][name] = descriptor
     end
   end
 
