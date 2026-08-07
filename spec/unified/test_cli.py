@@ -374,6 +374,21 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1, report["summary"]["environment_skipped"])
     self.assertEqual("environment_skipped", report["tests"][0]["status"])
 
+  def test_csot_reuses_the_shared_replica_set(self) -> None:
+    csot = "client-side-operations-timeout/tests/command-execution.json::test[1]"
+    transaction = "transactions/tests/unified/commit.json::test[1]"
+    registry = {
+      csot: {"environment": "isolated-replicaset", "testCommands": True},
+      transaction: {"environment": "isolated-replicaset"},
+    }
+
+    effective = run.apply_environment_overrides(registry)
+
+    self.assertEqual("live-replicaset", effective[csot]["environment"])
+    self.assertEqual("isolated-replicaset", effective[transaction]["environment"])
+    self.assertEqual("isolated-replicaset", registry[csot]["environment"])
+    self.assertTrue(effective[csot]["testCommands"])
+
 
 if __name__ == "__main__":
   unittest.main()

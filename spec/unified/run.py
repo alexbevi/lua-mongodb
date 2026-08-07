@@ -27,6 +27,7 @@ DEFAULT_PLAN = ROOT / "planning" / "plan.json"
 DEFAULT_PROGRESS = ROOT / "planning" / "progress.json"
 DEFAULT_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
 DEFAULT_EXECUTOR_REGISTRY = ROOT / "spec" / "unified" / "executors.json"
+CSOT_FIXTURE_PREFIX = "client-side-operations-timeout/"
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
 KNOWN_REQUIREMENT_KEYS = {
@@ -597,6 +598,23 @@ def load_executor_registry(path: Path = DEFAULT_EXECUTOR_REGISTRY) -> dict[str, 
   return registry["tests"]
 
 
+def apply_environment_overrides(registry: dict[str, Any]) -> dict[str, Any]:
+  """Reuse one replica set for CSOT while retaining all other isolation."""
+  effective = {
+    identity: dict(entry)
+    for identity, entry in registry.items()
+  }
+
+  for identity, entry in effective.items():
+    if (
+      identity.startswith(CSOT_FIXTURE_PREFIX)
+      and entry.get("environment") == "isolated-replicaset"
+    ):
+      entry["environment"] = "live-replicaset"
+
+  return effective
+
+
 def _free_port() -> int:
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
     listener.bind(("127.0.0.1", 0))
@@ -898,7 +916,7 @@ def main(argv: list[str] | None = None) -> int:
       manifest["ratchets"].get("passed", 0),
     )
     selected = select_classifications(classified, arguments.include)
-    registry = load_executor_registry()
+    registry = apply_environment_overrides(load_executor_registry())
 
     def execute_selected(classification: dict[str, Any], environment: dict[str, str]):
       entry = registry.get(classification["id"], {})
