@@ -1208,6 +1208,35 @@
       "notes": [],
       "started_at": "2026-08-07T11:41:45+00:00",
       "completed_at": "2026-08-07T12:48:44+00:00"
+    },
+    "CI-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_ci_portability -v",
+          "exit_code": 1,
+          "summary": "Four CI portability contracts fail: continued Lua inline program, missing macOS OpenSSL setup, unused MongoDB installs, and artifact upload masking",
+          "recorded_at": "2026-08-07T12:57:35+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_ci_portability.CiPortabilityTests.test_macos_openssl_is_configured_before_luarocks_dependencies -v",
+          "exit_code": 1,
+          "summary": "Exact macOS install proves luaossl also requires CRYPTO_DIR from the Homebrew OpenSSL prefix",
+          "recorded_at": "2026-08-07T13:00:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m unittest planning.tests.test_ci_portability -v; python3 -m unittest discover -s planning/tests -v; make check; Ruby YAML matrix validation; git diff --check",
+          "exit_code": 0,
+          "summary": "4 CI portability contracts and 14 planning tests passed; make check passed 176 unit, 18 integration, unified schema/conformance/release, quality, compatibility, lint, rockspec, and planning gates; workflow YAML exposes two portable and six compatibility rows",
+          "recorded_at": "2026-08-07T13:01:35+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T12:57:02+00:00",
+      "completed_at": "2026-08-07T13:02:13+00:00"
     }
   },
   "verified_references": {

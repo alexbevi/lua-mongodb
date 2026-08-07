@@ -22,8 +22,7 @@ check-lua:
 		echo "Lua 5.4 interpreter not found; set LUA=/path/to/lua" >&2; exit 127; \
 	}
 	@"$(LUA)" -e 'assert(_VERSION == "Lua 5.4", "lua-mongodb requires Lua 5.4")'
-	@"$(LUA)" -e 'assert(math.maxinteger >= 0x7fffffffffffffff, \
-		"lua-mongodb requires 64-bit lua_Integer")'
+	@"$(LUA)" -e 'assert(math.maxinteger >= 0x7fffffffffffffff, "lua-mongodb requires 64-bit lua_Integer")'
 
 check-busted: check-lua
 	@command -v "$(BUSTED)" >/dev/null 2>&1 || { \
