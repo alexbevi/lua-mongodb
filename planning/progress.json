@@ -1501,6 +1501,28 @@
       "notes": [],
       "started_at": "2026-08-07T14:37:43+00:00",
       "completed_at": "2026-08-07T14:44:51+00:00"
+    },
+    "REL-021": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_modify_collection_error_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "Three exact modifyCollection error-response cases remained deferred_unsupported.",
+          "recorded_at": "2026-08-07T14:46:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGOD=/tmp/lua-mongodb-8.2.12.UyPD6o/mongodb-macos-aarch64--8.2.12/bin/mongod python3 spec/unified/run.py --include 'collection-management/tests/modifyCollection-errorResponse.json::test?1?' --include 'crud/tests/unified/findOneAndUpdate-errorResponse.json::test?1?' --include 'crud/tests/unified/findOneAndUpdate-errorResponse.json::test?2?'; make test-unit; make test-integration; make test-unified-schema test-unified-inventory test-unified-meta; make lint",
+          "exit_code": 0,
+          "summary": "Three exact live cases passed; 177 unit and 18 integration specs passed; 534 fixtures/2521 tests and 320 meta-fixtures passed; conformance 3437/2087 and release scope 137/1950; lint zero warnings.",
+          "recorded_at": "2026-08-07T14:54:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T14:46:23+00:00",
+      "completed_at": "2026-08-07T14:54:13+00:00"
     }
   },
   "verified_references": {

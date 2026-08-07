@@ -1537,6 +1537,9 @@
     "collection-management/tests/timeseries-collection.json::test[1]": {"activity": "REL-019", "environment": "live-standalone"},
     "collection-management/tests/timeseries-collection.json::test[2]": {"activity": "REL-019", "environment": "live-standalone"},
     "collection-management/tests/timeseries-collection.json::test[3]": {"activity": "REL-019", "environment": "live-standalone"},
+    "collection-management/tests/modifyCollection-errorResponse.json::test[1]": {"activity": "REL-021", "environment": "live-standalone"},
+    "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[1]": {"activity": "REL-021", "environment": "live-standalone"},
+    "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[2]": {"activity": "REL-021", "environment": "live-standalone"},
     "index-management/tests/index-rawdata.json::test[1]": {"activity": "REL-018", "environment": "live-standalone"},
     "index-management/tests/index-rawdata.json::test[2]": {"activity": "REL-018", "environment": "live-standalone"},
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {

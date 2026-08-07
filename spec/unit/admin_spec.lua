@@ -46,6 +46,36 @@ describe("database and collection management", function()
     assert.are.equal(4096, sent.command:get("size"))
   end)
 
+  it("modifies collection validation and index constraints", function()
+    local sent
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, database, command)
+        sent = { command = command, database = database }
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local database = assert(api.new_client(executor, config({
+      write_concern = { w = "majority" },
+    })):database("app"))
+    local response = assert(database:modify_collection("events", {
+      index = bson.document({
+        { "keyPattern", bson.document({ { "x", 1 } }) },
+        { "prepareUnique", true },
+      }),
+      validator = bson.document({ { "x", bson.document({ { "$type", "string" } }) } }),
+    }))
+
+    assert.are.equal(1, response:get("ok"))
+    assert.are.equal("app", sent.database)
+    assert.are.equal("collMod", sent.command:keys()[1])
+    assert.are.equal("events", sent.command:get("collMod"))
+    assert.is_true(sent.command:get("index"):get("prepareUnique"))
+    assert.are.equal("majority", sent.command:get("writeConcern"):get("w"))
+  end)
+
   it("lists and drops databases and collections with command cursors", function()
     local commands = {}
     local responses = {

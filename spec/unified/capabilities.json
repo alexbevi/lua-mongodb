@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1260,
-    "runnable": 1260
+    "passed": 1263,
+    "runnable": 1263
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36551,7 +36551,6 @@
     "collection-management/tests/modifyCollection-errorResponse.json::test[1]": {
       "activity": "REL-021",
       "fingerprint": "7855aee8faaffcff7312e0a6ec52e04871dd9ca030bf9012cceaf871d08e09dd",
-      "reason": "the case awaits v1 modifyCollection and find-and-modify error conformance",
       "requirements": {
         "arguments": [
           "createIndex.keys",
@@ -36576,7 +36575,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/modifyCollection-pre_and_post_images.json::test[1]": {
       "activity": "ADV-001",
@@ -46613,7 +46612,6 @@
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[1]": {
       "activity": "REL-021",
       "fingerprint": "9123a735cb340df3a5748a533d0714a690f68008df5840efe26b113c2bc65102",
-      "reason": "the case awaits v1 modifyCollection and find-and-modify error conformance",
       "requirements": {
         "arguments": [
           "createIndex.keys",
@@ -46638,12 +46636,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[2]": {
       "activity": "REL-021",
       "fingerprint": "3ce216cf2f88f62d2912714851ad9e6213241d9c3ebaf4ee7c7ef235e368004a",
-      "reason": "the case awaits v1 modifyCollection and find-and-modify error conformance",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -46669,7 +46666,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[1]": {
       "activity": "ADV-011",

@@ -379,6 +379,20 @@ function DATABASE_METHODS:create_collection(name, options)
   return collection
 end
 
+function DATABASE_METHODS:modify_collection(name, options)
+  self:collection(name)
+  local state = DATABASE_STATES[self]
+  local open, err = ensure_open(CLIENT_STATES[state.client])
+
+  if not open then
+    return nil, err
+  end
+
+  return run_operation(state, options, function(prepared)
+    return admin.modify_collection(state, name, prepared)
+  end)
+end
+
 function DATABASE_METHODS:drop_collection(name_or_collection, options)
   local name = name_or_collection
 

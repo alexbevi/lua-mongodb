@@ -43,6 +43,17 @@ local CREATE_COLLECTION_OPTIONS = {
   session = true,
 }
 
+local MODIFY_COLLECTION_OPTIONS = {
+  cancellation = true,
+  comment = true,
+  deadline = true,
+  index = true,
+  session = true,
+  validation_action = true,
+  validation_level = true,
+  validator = true,
+}
+
 local LIST_DATABASE_OPTIONS = {
   authorized_databases = true,
   cancellation = true,
@@ -605,6 +616,43 @@ function M.create_collection(state, name, options)
   end
 
   append_raw_data(entries, state, options)
+  return execute_write(state, state.name, entries, options)
+end
+
+function M.modify_collection(state, name, options)
+  options = validate_options(options, MODIFY_COLLECTION_OPTIONS, "modify_collection")
+  require_document(options, "index")
+  require_document(options, "validator")
+
+  if options.validation_level ~= nil
+      and options.validation_level ~= "off"
+      and options.validation_level ~= "strict"
+      and options.validation_level ~= "moderate"
+  then
+    error("validation_level must be 'off', 'strict', or 'moderate'", 3)
+  end
+
+  if options.validation_action ~= nil
+      and options.validation_action ~= "error"
+      and options.validation_action ~= "warn"
+  then
+    error("validation_action must be 'error' or 'warn'", 3)
+  end
+
+  local entries = { { "collMod", name } }
+
+  for _, field in ipairs({
+    { "validator", "validator" },
+    { "validation_level", "validationLevel" },
+    { "validation_action", "validationAction" },
+    { "index", "index" },
+    { "comment", "comment" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
   return execute_write(state, state.name, entries, options)
 end
 

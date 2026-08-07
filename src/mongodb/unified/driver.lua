@@ -839,6 +839,18 @@ local function create_collection(_, database, arguments)
   ))
 end
 
+local function modify_collection(_, database, arguments)
+  return database:modify_collection(arguments:get("collection"), operation_options(
+    arguments,
+    {
+      index = "index",
+      validationAction = "validation_action",
+      validationLevel = "validation_level",
+      validator = "validator",
+    }
+  ))
+end
+
 local function drop_collection(_, database, arguments)
   return database:drop_collection(arguments:get("collection"), operation_options(
     arguments,
@@ -849,7 +861,7 @@ end
 local function create_index(_, collection, arguments)
   return collection:create_index(arguments:get("keys"), operation_options(
     arguments,
-    { name = "name", rawData = "raw_data" }
+    { name = "name", rawData = "raw_data", unique = "unique" }
   ))
 end
 
@@ -1465,7 +1477,7 @@ function M.new(options)
       },
       collection = {
         createIndex = {
-          arguments = { "keys", "name", "rawData", "timeoutMS" },
+          arguments = { "keys", "name", "rawData", "timeoutMS", "unique" },
           handler = create_index,
         },
         dropIndex = {
@@ -1627,6 +1639,12 @@ function M.new(options)
         listCollections = {
           arguments = { "filter", "rawData" },
           handler = list_collections,
+        },
+        modifyCollection = {
+          arguments = {
+            "collection", "index", "validationAction", "validationLevel", "validator",
+          },
+          handler = modify_collection,
         },
         runCommand = {
           arguments = { "command", "commandName", "readPreference" },
