@@ -80,6 +80,7 @@ local function new_server_session(state)
     dirty = false,
     id = identifier,
     last_used_at = now(state),
+    transaction_number = 0,
   }
 end
 
@@ -280,9 +281,11 @@ function MANAGER_METHODS:decorate(command, options)
     and session_state.operation_time ~= nil
   local replace_read_concern = options.read_concern ~= nil
     or add_causal_read_concern
+  local retryable_write = options.retryable_write == true
 
   for key, value in command:iter() do
     if key ~= "lsid" and key ~= "$clusterTime"
+        and (key ~= "txnNumber" or not retryable_write)
         and (key ~= "readConcern" or not replace_read_concern)
     then
       entries[#entries + 1] = { key, value }
@@ -290,6 +293,16 @@ function MANAGER_METHODS:decorate(command, options)
   end
 
   entries[#entries + 1] = { "lsid", session_state.server_session.id }
+
+  if retryable_write then
+    local server_session = session_state.server_session
+
+    server_session.transaction_number = server_session.transaction_number + 1
+    entries[#entries + 1] = {
+      "txnNumber",
+      bson.int64(server_session.transaction_number),
+    }
+  end
   local cluster_time = later_cluster_time(
     manager_state.cluster_time,
     session_state.cluster_time

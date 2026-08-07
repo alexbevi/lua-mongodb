@@ -150,6 +150,10 @@ local function public_client(executor, config, parsed, warnings, runtime)
   end
 
   local sessions
+  local retryable_writes = config.retry_writes
+    and capabilities.logical_session_timeout_minutes ~= nil
+    and capabilities.max_wire_version >= 6
+    and capabilities.server_type ~= "standalone"
 
   if capabilities.logical_session_timeout_minutes ~= nil then
     sessions = session_module.new({
@@ -161,8 +165,11 @@ local function public_client(executor, config, parsed, warnings, runtime)
 
   return api.new_client(
     session_executor.new(retry_executor.new(executor, {
-      enabled = config.retry_reads,
-    }), sessions),
+      enabled_reads = config.retry_reads,
+      enabled_writes = retryable_writes,
+    }), sessions, {
+      retryable_writes = retryable_writes,
+    }),
     config,
     parsed.database,
     warnings,

@@ -146,3 +146,85 @@ describe("retryable read executor", function()
     assert.same({ "a:27017" }, calls[2].deprioritized_servers)
   end)
 end)
+
+describe("retryable write executor", function()
+  it("retries once with one stable transaction number", function()
+    local commands = {}
+    local underlying = {}
+
+    function underlying.command(_, _, command)
+      commands[#commands + 1] = command
+
+      if #commands == 1 then
+        return nil, errors.new({
+          category = errors.CATEGORY.SERVER,
+          labels = { "RetryableWriteError" },
+          message = "retry write",
+        })
+      end
+
+      return bson.document({ { "ok", 1 } })
+    end
+
+    function underlying.close()
+      return true
+    end
+
+    local executor = retry_executor.new(underlying, {
+      enabled_reads = true,
+      enabled_writes = true,
+    })
+    local command = bson.document({
+      { "insert", "items" },
+      { "txnNumber", bson.int64(1) },
+    })
+
+    assert(executor:command("db", command, { retryable_write = true }))
+    assert.are.equal(2, #commands)
+    assert.are.equal(command, commands[1])
+    assert.are.equal(command, commands[2])
+    assert.are.equal(bson.int64(1), commands[2]:get("txnNumber"))
+  end)
+
+  it("retries a labelled write concern error and preserves attempted errors", function()
+    local calls = 0
+    local first = bson.document({
+      { "ok", 1 },
+      { "errorLabels", bson.array({ "RetryableWriteError" }) },
+      { "writeConcernError", bson.document({
+        { "code", 91 },
+        { "errmsg", "shutdown" },
+      }) },
+    })
+    local underlying = {}
+
+    function underlying.command()
+      calls = calls + 1
+
+      if calls == 1 then
+        return first
+      end
+
+      return nil, errors.new({
+        category = errors.CATEGORY.POOL,
+        message = "checkout failed",
+      })
+    end
+
+    function underlying.close()
+      return true
+    end
+
+    local executor = retry_executor.new(underlying, { enabled_writes = true })
+    local response, err = executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { retryable_write = true }
+    )
+
+    assert.is_nil(response)
+    assert.are.equal(91, err.code)
+    assert.is_true(err:has_label("RetryableWriteError"))
+    assert.are.equal(first, err.details.response)
+  end)
+end)

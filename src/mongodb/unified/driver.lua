@@ -278,6 +278,10 @@ local function insert_one(_, collection, arguments)
     return nil, err
   end
 
+  if not result.acknowledged then
+    return bson.document({ { "acknowledged", false } })
+  end
+
   return bson.document({ { "insertedId", result.inserted_id } })
 end
 

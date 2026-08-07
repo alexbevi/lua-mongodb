@@ -214,9 +214,13 @@ local function run_loopback(identity, fixture, index)
   print("unified executor: 1 executed, 1 passed, 0 failed")
 end
 
-local function run_live(identity, fixture, index)
-  local uri = os.getenv("MONGODB_UNIFIED_URI")
-  local server_version = os.getenv("MONGODB_UNIFIED_SERVER_VERSION")
+local function run_live(identity, fixture, index, topology)
+  local replica_set = topology == "replicaset"
+  local uri = os.getenv(replica_set
+    and "MONGODB_UNIFIED_REPLICA_SET_URI" or "MONGODB_UNIFIED_URI")
+  local server_version = os.getenv(replica_set
+    and "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
+    or "MONGODB_UNIFIED_SERVER_VERSION")
 
   if type(uri) ~= "string" or uri == "" then
     error("live unified executor requires MONGODB_UNIFIED_URI", 0)
@@ -234,27 +238,48 @@ local function run_live(identity, fixture, index)
       local lifecycle = assert(unified_driver.new({
         environment = {
           server_version = server_version,
-          topology = "single",
+          topology = topology,
         },
         runtime = runtime_module.copas(),
         uri = uri,
       }))
-      local report = assert(lifecycle:run_file(selected_document(document, index), identity))
+      local executed = table.pack(pcall(function()
+        local report = assert(lifecycle:run_file(
+          selected_document(document, index),
+          identity
+        ))
 
-      if report.summary.failed > 0 then
-        error(report.tests[1].error, 0)
+        if report.summary.failed > 0 then
+          error(report.tests[1].error, 0)
+        end
+
+        if report.summary.skipped > 0 then
+          return "environment_skipped"
+        end
+
+        equal(1, report.summary.executed)
+        equal(1, report.summary.passed)
+        equal(0, report.summary.failed)
+        equal(0, report.summary.skipped)
+        return "passed"
+      end))
+
+      assert(lifecycle:close())
+
+      if not executed[1] then
+        error(executed[2], 0)
       end
 
-      equal(1, report.summary.executed)
-      equal(1, report.summary.passed)
-      equal(0, report.summary.failed)
-      equal(0, report.summary.skipped)
-      assert(lifecycle:close())
+      return executed[2]
     end))
   end)
 
   if not outcome[1] then
     error(outcome[2], 0)
+  end
+
+  if outcome[2] == "environment_skipped" then
+    return "environment_skipped"
   end
 
   print("unified executor: 1 executed, 1 passed, 0 failed")
@@ -273,7 +298,9 @@ local function run(identity)
   if environment == "deterministic-loopback" then
     return run_loopback(identity, fixture, index)
   elseif environment == "live-standalone" then
-    return run_live(identity, fixture, index)
+    return run_live(identity, fixture, index, "single")
+  elseif environment == "live-replicaset" then
+    return run_live(identity, fixture, index, "replicaset")
   end
 
   error("unknown unified executor environment: " .. tostring(environment), 0)

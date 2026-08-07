@@ -485,7 +485,7 @@ local function append_common_write_fields(entries, state, options, bypass)
   end
 end
 
-local function execute_write(state, entries, options)
+local function execute_write(state, entries, options, retryable)
   local acknowledged = state.write_concern.w ~= 0
   local response, err = state.executor:command(
     state.database_name,
@@ -494,6 +494,7 @@ local function execute_write(state, entries, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      retryable_write = acknowledged and retryable == true,
       session = options.session,
     }
   )
@@ -643,7 +644,12 @@ local function update_operation(state, filter, update, options, multi, replaceme
   }
 
   append_common_write_fields(entries, state, options, true)
-  local response, was_acknowledged, err = execute_write(state, entries, options)
+  local response, was_acknowledged, err = execute_write(
+    state,
+    entries,
+    options,
+    not multi
+  )
 
   if not response then
     return nil, err
@@ -687,7 +693,12 @@ local function delete_operation(state, filter, options, multi)
   }
 
   append_common_write_fields(entries, state, options, false)
-  local response, was_acknowledged, err = execute_write(state, entries, options)
+  local response, was_acknowledged, err = execute_write(
+    state,
+    entries,
+    options,
+    not multi
+  )
 
   if not response then
     return nil, err
@@ -960,7 +971,12 @@ local function find_and_modify(state, filter, change, options, kind)
   end
 
   append_common_write_fields(entries, state, options, kind ~= "delete")
-  local response, was_acknowledged, err = execute_write(state, entries, options)
+  local response, was_acknowledged, err = execute_write(
+    state,
+    entries,
+    options,
+    true
+  )
 
   if not response then
     return nil, err
@@ -1253,6 +1269,7 @@ function M.insert_one(state, document, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      retryable_write = acknowledged,
       session = options.session,
     }
   )

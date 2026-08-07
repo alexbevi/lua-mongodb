@@ -1010,6 +1010,28 @@
       "notes": [],
       "started_at": "2026-08-07T02:23:03+00:00",
       "completed_at": "2026-08-07T02:52:20+00:00"
+    },
+    "RETRY-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/retry_executor_spec.lua",
+          "exit_code": 1,
+          "summary": "The retry executor rejected enabled_writes and could not retry a RetryableWriteError while preserving the command transaction number.",
+          "recorded_at": "2026-08-07T02:53:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint && make rockspec",
+          "exit_code": 0,
+          "summary": "156 unit tests and all BSON/Extended JSON corpora passed; 18 integration tests passed; 668 unified cases executed and passed with 0 failures, 3 server-version environment skips, and 1,229 explicitly deferred cases; schema, inventory, 320 meta-fixtures, conformance ledger (2,671 passed/2,853 deferred), lint, rockspec packaging, and planning tests passed.",
+          "recorded_at": "2026-08-07T03:33:42+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T02:52:55+00:00",
+      "completed_at": "2026-08-07T03:33:42+00:00"
     }
   },
   "verified_references": {

@@ -11,7 +11,7 @@ local METATABLE = {
   end,
 }
 
-local function command_options(options, on_attempt_error)
+local function command_options(options, on_attempt_error, retryable_write)
   local result = {}
 
   for key, value in pairs(options or {}) do
@@ -23,6 +23,7 @@ local function command_options(options, on_attempt_error)
   end
 
   result.on_attempt_error = on_attempt_error
+  result.retryable_write = retryable_write
   return result
 end
 
@@ -81,19 +82,22 @@ local function command_session(state, options)
   return session, context == nil
 end
 
-local function prepared_command(state, command, options, session)
+local function prepared_command(state, command, options, session, retryable_write)
   if session == nil then
     return command
   end
 
   return state.manager:decorate(command, {
     read_concern = options and options.read_concern,
+    retryable_write = retryable_write,
     session = session,
   })
 end
 
 function METHODS:command(database, command, options)
   local state = STATES[self]
+  local retryable_write = state.retryable_writes
+    and options and options.retryable_write == true
   local session, owned, err = command_session(state, options)
 
   if err then
@@ -101,7 +105,13 @@ function METHODS:command(database, command, options)
   end
 
   local decorated
-  decorated, err = prepared_command(state, command, options, session)
+  decorated, err = prepared_command(
+    state,
+    command,
+    options,
+    session,
+    retryable_write
+  )
 
   if not decorated then
     if owned then
@@ -123,7 +133,7 @@ function METHODS:command(database, command, options)
   response, err = state.executor:command(
     database,
     decorated,
-    command_options(options, on_attempt_error)
+    command_options(options, on_attempt_error, retryable_write)
   )
 
   if response and state.manager then
@@ -199,7 +209,7 @@ function METHODS:close()
   return STATES[self].executor:close()
 end
 
-function M.new(executor, manager)
+function M.new(executor, manager, options)
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
   then
@@ -210,9 +220,31 @@ function M.new(executor, manager)
     error("session executor manager must be a table", 2)
   end
 
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("session executor options must be a table", 2)
+  end
+
+  for key in pairs(options) do
+    if key ~= "retryable_writes" then
+      error("unknown session executor option: " .. tostring(key), 2)
+    end
+  end
+
+  if options.retryable_writes ~= nil
+      and type(options.retryable_writes) ~= "boolean"
+  then
+    error("retryable_writes must be a boolean", 2)
+  end
+
   local value = {}
 
-  STATES[value] = { executor = executor, manager = manager }
+  STATES[value] = {
+    executor = executor,
+    manager = manager,
+    retryable_writes = options.retryable_writes == true,
+  }
   return setmetatable(value, METATABLE)
 end
 

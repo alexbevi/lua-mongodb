@@ -408,7 +408,11 @@ def select_classifications(
   patterns = includes or ["*"]
   return [
     value for value in classifications
-    if any(fnmatch.fnmatchcase(value["fixture"], pattern) for pattern in patterns)
+    if any(
+      fnmatch.fnmatchcase(value["fixture"], pattern)
+      or fnmatch.fnmatchcase(value["id"], pattern)
+      for pattern in patterns
+    )
   ]
 
 
@@ -692,6 +696,145 @@ def standalone_environment(
           process.wait(timeout=5)
 
 
+@contextmanager
+def replica_set_environment(
+  classifications: list[dict[str, Any]],
+  registry: dict[str, Any],
+  base_environment: dict[str, str],
+):
+  needs_server = any(
+    value["status"] == "runnable"
+    and registry.get(value["id"], {}).get("environment") == "live-replicaset"
+    for value in classifications
+  )
+  environment = base_environment.copy()
+
+  if not needs_server:
+    yield environment
+    return
+
+  configured_uri = environment.get("MONGODB_UNIFIED_REPLICA_SET_URI")
+
+  if configured_uri:
+    if not environment.get("MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"):
+      raise CapabilityError(
+        "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION is required with "
+        "MONGODB_UNIFIED_REPLICA_SET_URI"
+      )
+
+    yield environment
+    return
+
+  executable = environment.get("MONGOD") or shutil.which("mongod")
+  shell = environment.get("MONGOSH") or shutil.which("mongosh")
+
+  if not executable or not shell:
+    raise CapabilityError(
+      "runnable replica-set cases require mongod and mongosh"
+    )
+
+  version = _mongod_version(executable)
+  port = _free_port()
+  set_name = "lua-mongodb-unified"
+  direct_uri = f"mongodb://127.0.0.1:{port}"
+
+  with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-rs-") as directory:
+    root = Path(directory)
+    (root / "db").mkdir()
+    process = subprocess.Popen(
+      [
+        executable,
+        "--bind_ip", "127.0.0.1",
+        "--dbpath", str(root / "db"),
+        "--logpath", str(root / "mongod.log"),
+        "--nounixsocket",
+        "--port", str(port),
+        "--quiet",
+        "--replSet", set_name,
+        "--setParameter", "enableTestCommands=1",
+      ],
+      stdout=subprocess.DEVNULL,
+      stderr=subprocess.DEVNULL,
+    )
+
+    try:
+      deadline = time.monotonic() + 20
+
+      while time.monotonic() < deadline:
+        if process.poll() is not None:
+          log = root / "mongod.log"
+          detail = log.read_text(encoding="utf-8")[-2000:] if log.exists() else ""
+          raise CapabilityError(
+            f"ephemeral replica set exited {process.returncode}: {detail.strip()}"
+          )
+
+        try:
+          with socket.create_connection(("127.0.0.1", port), timeout=0.2):
+            break
+        except OSError:
+          time.sleep(0.05)
+      else:
+        raise CapabilityError("ephemeral replica set did not start within 20 seconds")
+
+      initiate = subprocess.run(
+        [
+          shell,
+          direct_uri,
+          "--quiet",
+          "--eval",
+          (
+            f'rs.initiate({{_id:"{set_name}",members:['
+            f'{{_id:0,host:"127.0.0.1:{port}"}}]}})'
+          ),
+        ],
+        capture_output=True,
+        text=True,
+      )
+
+      if initiate.returncode != 0:
+        raise CapabilityError(
+          "could not initiate ephemeral replica set: "
+          + (initiate.stderr or initiate.stdout).strip()
+        )
+
+      while time.monotonic() < deadline:
+        primary = subprocess.run(
+          [
+            shell,
+            direct_uri,
+            "--quiet",
+            "--eval",
+            "quit(db.hello().isWritablePrimary ? 0 : 1)",
+          ],
+          stdout=subprocess.DEVNULL,
+          stderr=subprocess.DEVNULL,
+        )
+
+        if primary.returncode == 0:
+          break
+
+        time.sleep(0.1)
+      else:
+        raise CapabilityError("ephemeral replica set did not elect a primary")
+
+      environment["MONGODB_UNIFIED_REPLICA_SET_URI"] = (
+        f"{direct_uri}/?replicaSet={set_name}"
+        "&serverSelectionTimeoutMS=5000&heartbeatFrequencyMS=500"
+      )
+      environment["MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"] = version
+      environment["MONGODB_UNIFIED_TEST_COMMANDS"] = "1"
+      yield environment
+    finally:
+      if process.poll() is None:
+        process.terminate()
+
+        try:
+          process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+          process.kill()
+          process.wait(timeout=5)
+
+
 def write_report(report: dict[str, Any], destination: str | None) -> None:
   encoded = json.dumps(report, indent=2, sort_keys=True) + "\n"
 
@@ -730,12 +873,13 @@ def main(argv: list[str] | None = None) -> int:
     selected = select_classifications(classified, arguments.include)
     registry = load_executor_registry()
 
-    with standalone_environment(selected, registry) as environment:
-      report = build_report(
-        selected,
-        manifest["ratchets"] if not arguments.include else None,
-        lua_executor(arguments.lua, arguments.executor, environment),
-      )
+    with standalone_environment(selected, registry) as standalone:
+      with replica_set_environment(selected, registry, standalone) as environment:
+        report = build_report(
+          selected,
+          manifest["ratchets"] if not arguments.include else None,
+          lua_executor(arguments.lua, arguments.executor, environment),
+        )
     write_report(report, arguments.report)
   except CapabilityError as exc:
     print(f"unified capabilities: {exc}", file=sys.stderr)

@@ -151,6 +151,20 @@ for fixture, count, owner, reason in (
     ] = (owner, reason)
 
 for fixture, count in (
+  ("client-bulkWrite-clientErrors", 2),
+  ("client-bulkWrite-serverErrors", 5),
+):
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[
+      f"retryable-writes/tests/unified/{fixture}.json::test[{index}]"
+    ] = ("ADV-007", OWNER_REASONS["ADV-007"])
+
+for index in range(1, 21):
+  TEST_OVERRIDES[
+    f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("REL-001", "handshake retry requires the release command adapter")
+
+for fixture, count in (
   ("db-aggregate-rawdata", 2),
   ("db-aggregate-write-readPreference", 4),
 ):

@@ -2,6 +2,7 @@ local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local api = require("mongodb.api")
 local driver_options = require("mongodb.config.options")
+local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
 
@@ -186,5 +187,53 @@ describe("client sessions", function()
 
     assert(session:end_session())
     assert.are_not.equal(dirty_lsid, assert(sessions:start():get_lsid()))
+  end)
+
+  it("increments txnNumber once for each logical retryable write", function()
+    local sessions = session_module.new({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local commands = {}
+    local underlying = {}
+
+    function underlying.command(_, _, command)
+      commands[#commands + 1] = command
+
+      if #commands == 1 then
+        return nil, errors.new({
+          category = errors.CATEGORY.SERVER,
+          labels = { "RetryableWriteError" },
+          message = "retry",
+        })
+      end
+
+      return bson.document({ { "ok", 1 } })
+    end
+
+    function underlying.close()
+      return true
+    end
+
+    local executor = session_executor.new(
+      retry_executor.new(underlying, { enabled_writes = true }),
+      sessions,
+      { retryable_writes = true }
+    )
+    local session = assert(sessions:start())
+
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { retryable_write = true, session = session }
+    ))
+    assert(executor:command(
+      "db",
+      bson.document({ { "update", "items" } }),
+      { retryable_write = true, session = session }
+    ))
+    assert.are.equal(bson.int64(1), commands[1]:get("txnNumber"))
+    assert.are.equal(bson.int64(1), commands[2]:get("txnNumber"))
+    assert.are.equal(bson.int64(2), commands[3]:get("txnNumber"))
   end)
 end)

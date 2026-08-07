@@ -379,6 +379,7 @@ local function model_wire(state, model, original_index)
       inserted_id = identifier,
       kind = "insert",
       original_index = original_index,
+      retryable = true,
       wire = document,
     }
   end
@@ -407,6 +408,7 @@ local function model_wire(state, model, original_index)
     return {
       kind = "update",
       original_index = original_index,
+      retryable = not fields.multi,
       wire = bson.document(entries),
     }
   end
@@ -425,6 +427,7 @@ local function model_wire(state, model, original_index)
   return {
     kind = "delete",
     original_index = original_index,
+    retryable = not fields.multi,
     wire = bson.document(entries),
   }
 end
@@ -987,6 +990,15 @@ local function execute_batches(state, operations, batches, options, acknowledged
       documents[index] = operation.wire
     end
 
+    local retryable_write = batch_acknowledged
+
+    for _, operation in ipairs(batch.operations) do
+      if not operation.retryable then
+        retryable_write = false
+        break
+      end
+    end
+
     local response, err = state.executor:command(
       state.database_name,
       command,
@@ -995,6 +1007,7 @@ local function execute_batches(state, operations, batches, options, acknowledged
         deadline = options.deadline,
         no_response = not batch_acknowledged,
         operation_id = bulk_operation_id,
+        retryable_write = retryable_write,
         session = options.session,
         session_context = options.session_context,
         max_sequence_document_size = state.max_message_size,
