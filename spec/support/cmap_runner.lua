@@ -233,8 +233,11 @@ local function new_resource()
   return resource
 end
 
-local function run_inside_copas(path, fixture, integration)
-  local scale = integration and 0.1 or 1
+local function run_inside_copas(path, fixture, _integration)
+  -- Preserve upstream timing margins for scheduling assertions. Compressing the
+  -- integration fixtures made their 400 ms versus 800 ms ordering window
+  -- sensitive to hosted-runner load, especially on macOS.
+  local scale = 1
   local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
   local events = {}
   local fail_point = fixture:get("failPoint")
