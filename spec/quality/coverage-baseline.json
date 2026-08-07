@@ -218,8 +218,8 @@
         }
       },
       "total": {
-        "active": 0,
-        "covered": 18
+        "active": -4,
+        "covered": -4
       }
     }
   },
