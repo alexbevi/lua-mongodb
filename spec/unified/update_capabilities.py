@@ -43,6 +43,7 @@ OWNER_REASONS = {
   "REL-006": "the case awaits release retry and handshake hardening",
   "REL-010": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "REL-011": "the case awaits the remaining v1 CRUD and administration conformance slices",
+  "REL-012": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -144,11 +145,11 @@ TEST_OVERRIDES.update({
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
-    "REL-011",
+    "REL-012",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
-    "REL-011",
+    "REL-012",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
@@ -238,6 +239,35 @@ TEST_OVERRIDES["crud/tests/unified/aggregate-let.json::test[4]"] = (
   "ADV-011",
   "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
 )
+
+for identity in (
+  "crud/tests/unified/count-collation.json::test[2]",
+  "crud/tests/unified/count-empty.json::test[3]",
+  "crud/tests/unified/count-rawdata.json::test[1]",
+  "crud/tests/unified/count-rawdata.json::test[2]",
+  "crud/tests/unified/count.json::test[5]",
+  "crud/tests/unified/count.json::test[6]",
+  "crud/tests/unified/count.json::test[7]",
+):
+  TEST_OVERRIDES[identity] = (
+    "ADV-011",
+    "legacy count is outside the v1 public API",
+  )
+
+for fixture in (
+  "bulkWrite-delete-hint-serverError",
+  "deleteMany-hint-serverError",
+  "deleteOne-hint-serverError",
+  "find-allowdiskuse-serverError",
+  "findOneAndDelete-hint-serverError",
+  "findOneAndReplace-hint-serverError",
+  "findOneAndUpdate-hint-serverError",
+):
+  for index in (1, 2):
+    TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
+      "ADV-011",
+      "the pre-4.4 server requirement is outside the v1 compatibility matrix",
+    )
 
 for fixture, count, owner, reason in (
   ("count", 17, "ADV-011", "legacy count is outside the v1 public API"),
@@ -373,9 +403,9 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   elif "failPoint" in special or "targetedFailPoint" in special:
     owner = "UTF-014"
   elif requirements["events"]:
-    owner = "REL-011"
+    owner = "REL-012"
   elif operations & MANAGEMENT_OPERATIONS:
-    owner = "REL-011"
+    owner = "REL-012"
   elif operations & WRITE_OPERATIONS:
     owner = "UTF-012"
   elif operations & READ_OPERATIONS:
@@ -428,7 +458,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       owner = "ADV-011"
       reason = "legacy count is outside the v1 public API"
     elif unsupported <= {"dropIndex", "dropIndexes"}:
-      owner = "REL-011"
+      owner = "REL-012"
       reason = "index operation timeout coverage awaits v1 administration conformance"
     else:
       owner = "REL-005"

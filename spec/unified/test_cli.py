@@ -120,6 +120,36 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
 
+  def test_legacy_crud_cases_are_post_v1_exclusions(self) -> None:
+    manifest = update_capabilities.generate()
+    identities = [
+      "crud/tests/unified/count-collation.json::test[2]",
+      "crud/tests/unified/count-empty.json::test[3]",
+      "crud/tests/unified/count-rawdata.json::test[1]",
+      "crud/tests/unified/count-rawdata.json::test[2]",
+      "crud/tests/unified/count.json::test[5]",
+      "crud/tests/unified/count.json::test[6]",
+      "crud/tests/unified/count.json::test[7]",
+    ]
+    server_error_fixtures = [
+      "bulkWrite-delete-hint-serverError",
+      "deleteMany-hint-serverError",
+      "deleteOne-hint-serverError",
+      "find-allowdiskuse-serverError",
+      "findOneAndDelete-hint-serverError",
+      "findOneAndReplace-hint-serverError",
+      "findOneAndUpdate-hint-serverError",
+    ]
+
+    for fixture in server_error_fixtures:
+      for index in (1, 2):
+        identities.append(f"crud/tests/unified/{fixture}.json::test[{index}]")
+
+    self.assertEqual(
+      ["ADV-011"] * len(identities),
+      [manifest["tests"][identity]["activity"] for identity in identities],
+    )
+
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
     classifications = {discovered[0]["id"]: classification("DONE-001", "stale")}

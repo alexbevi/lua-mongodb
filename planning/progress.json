@@ -1281,6 +1281,28 @@
       "notes": [],
       "started_at": "2026-08-07T13:32:46+00:00",
       "completed_at": "2026-08-07T13:38:09+00:00"
+    },
+    "REL-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_legacy_crud_cases_are_post_v1_exclusions -v",
+          "exit_code": 1,
+          "summary": "Twenty-one legacy count and pre-4.4 server-error cases are incorrectly owned as production-core gaps by REL-011",
+          "recorded_at": "2026-08-07T13:40:17+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m unittest spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope -v; make test-unified-schema test-unified-inventory test-unified-meta lint",
+          "exit_code": 0,
+          "summary": "Twenty-one exact legacy CRUD cases are assigned to ADV-011 with compatibility reasons; 28 focused Python tests, 521 fixture validation, 20 unified CLI tests, 12 meta tests, 320 schema meta-fixtures, conformance/release checks, and lint passed",
+          "recorded_at": "2026-08-07T13:42:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T13:39:56+00:00",
+      "completed_at": "2026-08-07T13:42:01+00:00"
     }
   },
   "verified_references": {
