@@ -5,7 +5,7 @@ LUACHECK ?= luacheck
 LUACOV ?= luacov
 PYTHON ?= python3
 
-ROCKSPEC := lua-mongodb-scm-1.rockspec
+ROCKSPEC := mongodb-scm-1.rockspec
 BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 
 .PHONY: check check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
