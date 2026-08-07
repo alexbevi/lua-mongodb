@@ -122,8 +122,15 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       and parts[0] == "client-side-operations-timeout"
       and parts[1] == "tests"
     )
+    is_release_directory = (
+      len(parts) == 3 and parts[0] == "versioned-api" and parts[1] == "tests"
+    ) or (
+      len(parts) == 4
+      and parts[0] == "read-write-concern"
+      and parts[1:3] == ("tests", "operation")
+    )
 
-    if not is_unified_directory and not is_csot_directory:
+    if not is_unified_directory and not is_csot_directory and not is_release_directory:
       continue
 
     name = relative.as_posix()
@@ -651,21 +658,33 @@ def standalone_environment(
 
   version = _mongod_version(executable)
   port = _free_port()
+  mongod_command = [
+    executable,
+    "--bind_ip", "127.0.0.1",
+    "--dbpath", "",
+    "--logpath", "",
+    "--nounixsocket",
+    "--port", str(port),
+    "--quiet",
+    "--setParameter", "enableTestCommands=1",
+  ]
+  accepts_api_version_2 = any(
+    value["status"] == "runnable"
+    and registry.get(value["id"], {}).get("acceptApiVersion2") is True
+    for value in classifications
+  )
 
   with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-") as directory:
     root = Path(directory)
     (root / "db").mkdir()
+    mongod_command[4] = str(root / "db")
+    mongod_command[6] = str(root / "mongod.log")
+
+    if accepts_api_version_2:
+      mongod_command.extend(["--setParameter", "acceptApiVersion2=1"])
+
     process = subprocess.Popen(
-      [
-        executable,
-        "--bind_ip", "127.0.0.1",
-        "--dbpath", str(root / "db"),
-        "--logpath", str(root / "mongod.log"),
-        "--nounixsocket",
-        "--port", str(port),
-        "--quiet",
-        "--setParameter", "enableTestCommands=1",
-      ],
+      mongod_command,
       stdout=subprocess.DEVNULL,
       stderr=subprocess.DEVNULL,
     )

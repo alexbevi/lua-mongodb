@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1151,
-    "runnable": 1151
+    "passed": 1198,
+    "runnable": 1198
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50072,6 +50072,339 @@
       },
       "status": "deferred_unsupported"
     },
+    "read-write-concern/tests/operation/default-write-concern-2.6.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "31466522ff105d1e366f8dfe367d2e9edcbc845cd0b10c7befa33c3985bb0b8c",
+      "requirements": {
+        "arguments": [
+          "deleteOne.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "deleteOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-2.6.json::test[2]": {
+      "activity": "REL-003",
+      "fingerprint": "1559fd800168bdcc2958ebfd240f1b82192129915ff720ea74a36a5fe56a8361",
+      "requirements": {
+        "arguments": [
+          "deleteMany.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "deleteMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-2.6.json::test[3]": {
+      "activity": "REL-003",
+      "fingerprint": "82aadaef797cab5023f4f2e4346a268a4e3d54ee0cbd5534db3fb903e4ef1f4f",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.ordered",
+          "bulkWrite.requests"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-2.6.json::test[4]": {
+      "activity": "REL-003",
+      "fingerprint": "fe264abeb25ecd601c5dc6c4eb953bb5b56a884c26751e958ae3533862102c10",
+      "requirements": {
+        "arguments": [
+          "insertMany.documents",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "insertMany",
+          "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-2.6.json::test[5]": {
+      "activity": "REL-003",
+      "fingerprint": "d7a353bbb1b7f886456e683cf9f26f6db9dbff244a51537c5c18b5a9aa0d79e4",
+      "requirements": {
+        "arguments": [
+          "replaceOne.filter",
+          "replaceOne.replacement",
+          "updateMany.filter",
+          "updateMany.update",
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "replaceOne",
+          "updateMany",
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-3.2.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "e6860c89ce4a553ce0c064dd90feed4c99dd93cac50725b66c877c9e55d854ec",
+      "requirements": {
+        "arguments": [
+          "findOneAndDelete.filter",
+          "findOneAndReplace.filter",
+          "findOneAndReplace.replacement",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "findOneAndDelete",
+          "findOneAndReplace",
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "42a74e516572c26a054ed9ba9c3960b28a05a71080d8c93600d52e11de3149d2",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[2]": {
+      "activity": "REL-003",
+      "fingerprint": "9db835ad6d37033b6d47deaa9e708024385775dee681100f37805e19c750a256",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[3]": {
+      "activity": "REL-004",
+      "fingerprint": "26ee29e0d2c14cca31805b7fe52a2bff7e5e21484997145dfdea8388eeef4e14",
+      "reason": "dropIndex unified execution awaits v1 administration conformance",
+      "requirements": {
+        "arguments": [
+          "createIndex.keys",
+          "dropIndex.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "createIndex",
+          "dropIndex"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": {
+      "activity": "ADV-011",
+      "fingerprint": "ebeb6f0ac0086e8f1a13f278400315d7d6402bd37776d1f064e721e01005f980",
+      "reason": "legacy mapReduce is outside the v1 public API",
+      "requirements": {
+        "arguments": [
+          "mapReduce.map",
+          "mapReduce.out",
+          "mapReduce.reduce"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "mapReduce"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "read-write-concern/tests/operation/default-write-concern-4.2.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "064d9e7cac136af68df60958f6c7933dec5a2ebf04ad8212bde2f7d5110b472f",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
     "retryable-reads/tests/unified/aggregate-merge.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "f7cc594563d20d73395f460fd11e29d2abce37556b8a52d52b0b8c88e89a37da",
@@ -82704,6 +83037,1194 @@
         "operations": [
           "bulkWrite",
           "commitTransaction",
+          "startTransaction"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[10]": {
+      "activity": "REL-003",
+      "fingerprint": "f8bc8cf756fabee3f66f20f2569e49dbe9550ddaa031a0ddcc86a3a85e647ccf",
+      "requirements": {
+        "arguments": [
+          "findOneAndDelete.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "findOneAndDelete"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[11]": {
+      "activity": "REL-003",
+      "fingerprint": "55e36fb4e95f956a569becc3a8a5af987f10716dc611ac9e2a9800e06fb2db1d",
+      "requirements": {
+        "arguments": [
+          "findOneAndReplace.filter",
+          "findOneAndReplace.replacement"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "findOneAndReplace"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[12]": {
+      "activity": "REL-003",
+      "fingerprint": "d4fb4a976d5d2eb36dae4a6e7f7f533a2050ea03715e5f8c801129d83bcfe7df",
+      "requirements": {
+        "arguments": [
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[13]": {
+      "activity": "REL-003",
+      "fingerprint": "e76993fd5568125a6103034ec949888cfcab09c0ae8350b265f0f93f9880f42f",
+      "requirements": {
+        "arguments": [
+          "insertMany.documents"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "insertMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[14]": {
+      "activity": "REL-003",
+      "fingerprint": "bb62f9367f43aadcd43d77ccc1e9c076b0b3024b411af08fbcd7210f8d01d3a2",
+      "requirements": {
+        "arguments": [
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[15]": {
+      "activity": "REL-003",
+      "fingerprint": "fd7124ca2438fc88be7d4df43275a0eea62d66b1ec58935683dcbd88212d59fc",
+      "requirements": {
+        "arguments": [
+          "replaceOne.filter",
+          "replaceOne.replacement",
+          "replaceOne.upsert"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "replaceOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[16]": {
+      "activity": "REL-003",
+      "fingerprint": "3a4f7f576111df50ad0623d329c4d0a3c23a389f276b283774007bd8e9458920",
+      "requirements": {
+        "arguments": [
+          "updateMany.filter",
+          "updateMany.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[17]": {
+      "activity": "REL-003",
+      "fingerprint": "0cc128bce7ae18bcfc795093bb9a6ad71217c30bb39ae8043ef1c4ce6a611a05",
+      "requirements": {
+        "arguments": [
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "3a0be28a420ee7944db80db1415048e7e196ba2e392110f63ceaeaad46df10dc",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[2]": {
+      "activity": "ADV-011",
+      "fingerprint": "af832c8a7f7793bb48b95a882c3b045b1364e398c7d8a1c94c840ceb435a2573",
+      "reason": "database aggregate is outside the v1 public API",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[3]": {
+      "activity": "REL-003",
+      "fingerprint": "a5d97606f2d19d9c5d7e76119147c8887dbd79f108c6c1470b6ef9f5763b1b52",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.ordered",
+          "bulkWrite.requests"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[4]": {
+      "activity": "REL-003",
+      "fingerprint": "678bc4e630d095c09ce5a2daa8b9645d88dffc630f34b877245f984b68b4ed9c",
+      "requirements": {
+        "arguments": [
+          "countDocuments.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "countDocuments"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[5]": {
+      "activity": "REL-003",
+      "fingerprint": "08771197588cc1d388bfb3867d562e060a409ef823dedf7d8b53d39d8bb56ae8",
+      "requirements": {
+        "arguments": [
+          "deleteMany.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "deleteMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[6]": {
+      "activity": "REL-003",
+      "fingerprint": "2297a287c24d13ad1d1e041b97ec5a24d93b12efa96125987ec484697e0f888f",
+      "requirements": {
+        "arguments": [
+          "deleteOne.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "deleteOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[7]": {
+      "activity": "REL-003",
+      "fingerprint": "ea07a626b62a36d24446436ca3da392bd25fc00895e1d22a9d106a50f81453b2",
+      "requirements": {
+        "arguments": [
+          "distinct.fieldName",
+          "distinct.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "distinct"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[8]": {
+      "activity": "REL-003",
+      "fingerprint": "2c342528d8363e6ca4f4f80c5ac3ad3261ab36afce2e3acf2bc60b63ef3e2e18",
+      "requirements": {
+        "arguments": [],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "estimatedDocumentCount"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1-strict.json::test[9]": {
+      "activity": "REL-003",
+      "fingerprint": "d913bfbe1f54da5f9c36212e919cc0d96cc338de40382108677b73cc93983371",
+      "requirements": {
+        "arguments": [
+          "find.batchSize",
+          "find.filter",
+          "find.sort"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[10]": {
+      "activity": "REL-003",
+      "fingerprint": "cac76d1039dc8994acb919166802026bd6b6766f03597655f6e7935dfcd25534",
+      "requirements": {
+        "arguments": [
+          "find.batchSize",
+          "find.filter",
+          "find.sort"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[11]": {
+      "activity": "REL-003",
+      "fingerprint": "713f7ef41a399f7bb0cb8789dfea5820a941fcbff0ad5a53bbc99093ad341071",
+      "requirements": {
+        "arguments": [
+          "findOneAndDelete.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "findOneAndDelete"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[12]": {
+      "activity": "REL-003",
+      "fingerprint": "fa3ff9b5399d472eafea513ae4f0c75b39b7535a4f0d42891a58099eec4a3081",
+      "requirements": {
+        "arguments": [
+          "findOneAndReplace.filter",
+          "findOneAndReplace.replacement"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "findOneAndReplace"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[13]": {
+      "activity": "REL-003",
+      "fingerprint": "a27a30df6bc3dcf3345d49cd1db09516df9f8019b21757dbda09a6375caa7464",
+      "requirements": {
+        "arguments": [
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[14]": {
+      "activity": "REL-003",
+      "fingerprint": "bfb4db9d84995ed67622b6479a2ac0a5e685162b408d866601c29f09ed339d9d",
+      "requirements": {
+        "arguments": [
+          "insertMany.documents"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "insertMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[15]": {
+      "activity": "REL-003",
+      "fingerprint": "9734a4a7b2d26835adcdc979a5650b5cccb2335368c1d506030b441c699f1f64",
+      "requirements": {
+        "arguments": [
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[16]": {
+      "activity": "REL-003",
+      "fingerprint": "d4f9b04c9bc748130fd6aa669839eaea810e1056b268e9d4b4f88e55c43973a0",
+      "requirements": {
+        "arguments": [
+          "replaceOne.filter",
+          "replaceOne.replacement",
+          "replaceOne.upsert"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "replaceOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[17]": {
+      "activity": "REL-003",
+      "fingerprint": "65dae9138d72a4f39515bdab5e977f23e996f5da5113f34a734e93fc3c66c3bc",
+      "requirements": {
+        "arguments": [
+          "updateMany.filter",
+          "updateMany.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[18]": {
+      "activity": "REL-003",
+      "fingerprint": "82fcf865dd848474f7381451d4ee4d6e6d324dbb040e9a52732cb343e68bbddf",
+      "requirements": {
+        "arguments": [
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "1c959b7933578d955b65ffcdf41cee30c6d13b30b2dd8856f1c534615e5df54a",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[2]": {
+      "activity": "ADV-011",
+      "fingerprint": "ac80d04d1773c0d26727247741b413cdc87dde722662b97a32d07af36476029b",
+      "reason": "database aggregate is outside the v1 public API",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[3]": {
+      "activity": "REL-003",
+      "fingerprint": "ce380c68d75a8a45e5db7d6806822a4796eda80fa0c853c40d7bf64a5845b9b4",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.ordered",
+          "bulkWrite.requests"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[4]": {
+      "activity": "ADV-007",
+      "fingerprint": "a8aa08da2e42a2a37ff942e31e05c10d409fa7f5942509f4fe8c26e9865b34d4",
+      "reason": "client bulkWrite is a post-v1 capability",
+      "requirements": {
+        "arguments": [
+          "clientBulkWrite.models",
+          "clientBulkWrite.verboseResults"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "clientBulkWrite"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[5]": {
+      "activity": "REL-003",
+      "fingerprint": "016908c6195cc8c794f879f042c682ce1b8016ef206b8e6cdab2ac483d87d23d",
+      "requirements": {
+        "arguments": [
+          "countDocuments.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "countDocuments"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[6]": {
+      "activity": "REL-003",
+      "fingerprint": "58872fa132b6a4884841803b070f61bf9d5fabcbbde42848f31c58893cf928ba",
+      "requirements": {
+        "arguments": [
+          "deleteMany.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "deleteMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[7]": {
+      "activity": "REL-003",
+      "fingerprint": "6c9ba4bacb794eebd97da60b28b171a82b89a6ad6423716e4a7e627dce894d55",
+      "requirements": {
+        "arguments": [
+          "deleteOne.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "deleteOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[8]": {
+      "activity": "REL-003",
+      "fingerprint": "c12e7be73b57de50b257b11ce0d648c2da966d4ce2c88136fc19179d39deff44",
+      "requirements": {
+        "arguments": [
+          "distinct.fieldName",
+          "distinct.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "distinct"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/crud-api-version-1.json::test[9]": {
+      "activity": "REL-003",
+      "fingerprint": "cb2dfdd053031871e3a48aa659a9f860f368f3a35737654ba0c06468333ccb20",
+      "requirements": {
+        "arguments": [],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "estimatedDocumentCount"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/runcommand-helper-no-api-version-declared.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "0470f359e742c9b4d2bf878b9ad23be304b20bf74cdbbe8f02d73f49c0e18890",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/runcommand-helper-no-api-version-declared.json::test[2]": {
+      "activity": "REL-003",
+      "fingerprint": "ba730210883b096d2804847e626a72cf75584f33491543f4480a6419a988cbfe",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/test-commands-deprecation-errors.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "d7580eb69bd2c76f337967cebe7ce5735c4cb001bea1e496f520b8bc8b1a2572",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/test-commands-strict-mode.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "60692b6f12076c5a73b775648575e760a04fd3dfb348ea2a7c9a5d29297fffc3",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/transaction-handling.json::test[1]": {
+      "activity": "REL-003",
+      "fingerprint": "adac4cb73d5332726cea82459a21b477d01d22e02c01cb33eef834aeb1fa1440",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "insertOne.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$sessionLsid",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "commitTransaction",
+          "insertOne",
+          "startTransaction"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "versioned-api/tests/transaction-handling.json::test[2]": {
+      "activity": "REL-003",
+      "fingerprint": "d02eca90e4500ba459f2d980f23797c861608ebfe656b69af9cbf838ee95b703",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "insertOne.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$sessionLsid",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "abortTransaction",
+          "insertOne",
           "startTransaction"
         ],
         "special_operations": [],

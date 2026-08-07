@@ -630,6 +630,12 @@ function M.connect(uri, values)
     return nil, config_err
   end
 
+  local valid_uri, uri_err = driver_options.validate_uri(parsed, config)
+
+  if not valid_uri then
+    return nil, uri_err
+  end
+
   local runtime = special.runtime or runtime_contract.copas()
 
   runtime_contract.validate(runtime)

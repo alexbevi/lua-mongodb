@@ -1186,6 +1186,28 @@
       "notes": [],
       "started_at": "2026-08-07T11:30:42+00:00",
       "completed_at": "2026-08-07T11:37:40+00:00"
+    },
+    "REL-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted -v spec/unit/config_options_spec.lua",
+          "exit_code": 1,
+          "summary": "5 successes, 1 failure: serverSelectionTryOnce=false was ignored and config.server_selection_try_once remained nil",
+          "recorded_at": "2026-08-07T11:42:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "176 unit tests plus 728/75/180/4/1080/22 pinned corpus cases passed; unified 1195 passed, 0 failed, 3 environment skips, 1293 explicit deferrals; lint 114 files with 0 warnings; broader integration 18 passed and coverage 17761/21117 with no regression",
+          "recorded_at": "2026-08-07T12:48:20+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T11:41:45+00:00",
+      "completed_at": "2026-08-07T12:48:44+00:00"
     }
   },
   "verified_references": {

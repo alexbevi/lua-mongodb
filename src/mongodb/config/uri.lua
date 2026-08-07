@@ -260,7 +260,7 @@ local function parse_options(value)
       return parse_error("MongoDB URI option key cannot be empty", "options")
     end
 
-    if seen[key] then
+    if seen[key] and key ~= "readpreferencetags" then
       warnings[#warnings + 1] = "duplicate option: " .. key
     end
 

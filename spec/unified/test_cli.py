@@ -61,40 +61,40 @@ class UnifiedCliTests(unittest.TestCase):
     identity = "crud/tests/unified/insertOne.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1151, manifest["ratchets"]["runnable"])
-    self.assertEqual(1151, manifest["ratchets"]["passed"])
+    self.assertEqual(1198, manifest["ratchets"]["runnable"])
+    self.assertEqual(1198, manifest["ratchets"]["passed"])
 
   def test_first_standalone_find_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/find.json::test[2]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1151, manifest["ratchets"]["runnable"])
-    self.assertEqual(1151, manifest["ratchets"]["passed"])
+    self.assertEqual(1198, manifest["ratchets"]["runnable"])
+    self.assertEqual(1198, manifest["ratchets"]["passed"])
 
   def test_first_standalone_insert_many_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/insertMany.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1151, manifest["ratchets"]["runnable"])
-    self.assertEqual(1151, manifest["ratchets"]["passed"])
+    self.assertEqual(1198, manifest["ratchets"]["runnable"])
+    self.assertEqual(1198, manifest["ratchets"]["passed"])
 
   def test_first_standalone_command_event_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/find.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1151, manifest["ratchets"]["runnable"])
-    self.assertEqual(1151, manifest["ratchets"]["passed"])
+    self.assertEqual(1198, manifest["ratchets"]["runnable"])
+    self.assertEqual(1198, manifest["ratchets"]["passed"])
 
   def test_first_standalone_failpoint_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/insertOne-errorResponse.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1151, manifest["ratchets"]["runnable"])
-    self.assertEqual(1151, manifest["ratchets"]["passed"])
+    self.assertEqual(1198, manifest["ratchets"]["runnable"])
+    self.assertEqual(1198, manifest["ratchets"]["passed"])
 
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
@@ -172,6 +172,26 @@ class UnifiedCliTests(unittest.TestCase):
           [discovered_test("crud/tests/unified/find.json::test[1]")],
           {},
         )
+
+  def test_discovery_includes_release_unified_fixture_locations(self) -> None:
+    with tempfile.TemporaryDirectory() as directory:
+      source = Path(directory)
+      fixtures = [
+        source / "versioned-api" / "tests" / "stable.json",
+        source / "read-write-concern" / "tests" / "operation" / "concern.json",
+      ]
+
+      for fixture in fixtures:
+        fixture.parent.mkdir(parents=True, exist_ok=True)
+        fixture.write_text("{}", encoding="utf-8")
+
+      self.assertEqual(
+        [
+          "read-write-concern/tests/operation/concern.json",
+          "versioned-api/tests/stable.json",
+        ],
+        run.discover_fixtures(source),
+      )
 
   def test_classification_rejects_stale_entries_and_empty_reasons(self) -> None:
     with self.assertRaisesRegex(run.CapabilityError, "undiscovered unified test"):

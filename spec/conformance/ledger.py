@@ -310,7 +310,31 @@ def classify_case(
       "srv-options.json": "ADV-003",
     }
     owner = owner_by_file.get(Path(path).name, "REL-003")
-    return _deferred(case, owner, activities)
+
+    if owner != "REL-003":
+      return _deferred(case, owner, activities)
+
+    if path.endswith("/connection-options.json") and any(
+      identity.endswith(f"::test[{index}]") for index in range(18, 25)
+    ):
+      return _deferred(case, "ADV-006", activities)
+
+    return _passed(
+      case,
+      "REL-003",
+      "spec/support/config_runner.lua",
+      "make test-unit",
+    )
+
+  if suite == "read-write-concern" and (
+    "/tests/connection-string/" in path or "/tests/document/" in path
+  ):
+    return _passed(
+      case,
+      "REL-003",
+      "spec/support/config_runner.lua",
+      "make test-unit",
+    )
 
   if suite == "max-staleness" or (
     suite == "server-selection"

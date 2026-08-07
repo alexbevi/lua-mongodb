@@ -25,6 +25,7 @@ local URI_NAMES = {
   retrywrites = "retry_writes",
   servermonitoringmode = "server_monitoring_mode",
   serverselectiontimeoutms = "server_selection_timeout_ms",
+  serverselectiontryonce = "server_selection_try_once",
   sockettimeoutms = "socket_timeout_ms",
   ssl = "tls",
   timeoutms = "timeout_ms",
@@ -61,6 +62,7 @@ local PROGRAMMATIC_NAMES = {
   retry_writes = true,
   server_monitoring_mode = true,
   server_selection_timeout_ms = true,
+  server_selection_try_once = true,
   socket_timeout_ms = true,
   timeout_ms = true,
   tls = true,
@@ -80,6 +82,7 @@ local BOOLEAN_OPTIONS = {
   journal = true,
   retry_reads = true,
   retry_writes = true,
+  server_selection_try_once = true,
   tls = true,
   tls_allow_invalid_certificates = true,
   tls_allow_invalid_hostnames = true,
@@ -148,6 +151,7 @@ local DEFAULTS = {
   retry_writes = true,
   server_monitoring_mode = "auto",
   server_selection_timeout_ms = 30000,
+  server_selection_try_once = true,
   tls = false,
 }
 
@@ -420,7 +424,7 @@ local function apply_option(state, option, value, from_uri)
       end
     end
   elseif option == "w" then
-    if from_uri and value:match("^%d+$") then
+    if from_uri and value:match("^%-?%d+$") then
       normalized, normalization_err = parse_uri_integer(option, value, false)
     end
 
@@ -475,7 +479,7 @@ local function apply_uri_options(state, uri_options)
     elseif pair.key == "wtimeout" and has_w_timeout_ms then
       state.warnings[#state.warnings + 1] = "deprecated URI option ignored: wtimeout"
     else
-      if uri_seen[option] and option ~= "read_preference_tags" then
+      if uri_seen[option] and option ~= "read_preference_tags" and option ~= "tls" then
         state.warnings[#state.warnings + 1] = "duplicate MongoDB URI option: " .. option
       end
 
@@ -754,6 +758,21 @@ function M.normalize(uri_options, programmatic)
   end
 
   return build_result(state.values), nil, readonly_copy(state.warnings)
+end
+
+function M.validate_uri(parsed, config)
+  if type(parsed) ~= "table" or type(config) ~= "table" then
+    error("URI validation requires parsed URI and normalized options tables", 2)
+  end
+
+  if config.direct_connection and #parsed.hosts ~= 1 then
+    return config_error(
+      "direct_connection",
+      "directConnection=true requires exactly one seed"
+    )
+  end
+
+  return true
 end
 
 return M

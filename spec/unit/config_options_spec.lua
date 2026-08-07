@@ -70,6 +70,17 @@ describe("driver option normalization", function()
     assert.are.equal("snapshot", config.read_concern.level)
   end)
 
+  it("normalizes the required single-threaded URI option", function()
+    local parsed = assert(uri.parse(
+      "mongodb://localhost/?serverSelectionTryOnce=false"
+    ))
+    local config, err, warnings = options.normalize(parsed.options)
+
+    assert.is_nil(err)
+    assert.are.same({}, warnings)
+    assert.is_false(config.server_selection_try_once)
+  end)
+
   it("ignores invalid URI options with warnings while keeping programmatic input strict", function()
     local cases = {
       "foo=bar",

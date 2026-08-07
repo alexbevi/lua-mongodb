@@ -165,6 +165,26 @@ TEST_OVERRIDES.update({
     "ADV-011",
     "database aggregate is outside the v1 public collection adapter",
   ),
+  "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": (
+    "ADV-011",
+    "legacy mapReduce is outside the v1 public API",
+  ),
+  "read-write-concern/tests/operation/default-write-concern-3.4.json::test[3]": (
+    "REL-004",
+    "dropIndex unified execution awaits v1 administration conformance",
+  ),
+  "versioned-api/tests/crud-api-version-1-strict.json::test[2]": (
+    "ADV-011",
+    "database aggregate is outside the v1 public API",
+  ),
+  "versioned-api/tests/crud-api-version-1.json::test[2]": (
+    "ADV-011",
+    "database aggregate is outside the v1 public API",
+  ),
+  "versioned-api/tests/crud-api-version-1.json::test[4]": (
+    "ADV-007",
+    "client bulkWrite is a post-v1 capability",
+  ),
 })
 
 for fixture, count, owner, reason in (
@@ -436,6 +456,9 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
   if specification == "run-command":
     owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "REL-005"
     return owner, OWNER_REASONS[owner]
+
+  if specification in {"read-write-concern", "versioned-api"}:
+    return "REL-003", None
 
   raise run.CapabilityError(f"no classification rule for {test['id']}")
 

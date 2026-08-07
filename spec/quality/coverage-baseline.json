@@ -57,8 +57,8 @@
       "covered": 543
     },
     "src/mongodb/client.lua": {
-      "active": 387,
-      "covered": 277
+      "active": 390,
+      "covered": 279
     },
     "src/mongodb/command/executor.lua": {
       "active": 310,
@@ -69,8 +69,8 @@
       "covered": 90
     },
     "src/mongodb/config/options.lua": {
-      "active": 450,
-      "covered": 396
+      "active": 462,
+      "covered": 427
     },
     "src/mongodb/config/uri.lua": {
       "active": 182,
@@ -207,7 +207,7 @@
   },
   "schema_version": 1,
   "total": {
-    "active": 21102,
-    "covered": 17711
+    "active": 21117,
+    "covered": 17744
   }
 }

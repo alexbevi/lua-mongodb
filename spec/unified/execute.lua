@@ -263,7 +263,7 @@ local function run_loopback(identity, fixture, index)
   print("unified executor: 1 executed, 1 passed, 0 failed")
 end
 
-local function run_live(identity, fixture, index, topology)
+local function run_live(identity, fixture, index, topology, entry)
   local replica_set = topology == "replicaset"
   local uri = os.getenv(replica_set
     and "MONGODB_UNIFIED_REPLICA_SET_URI" or "MONGODB_UNIFIED_URI")
@@ -290,6 +290,11 @@ local function run_live(identity, fixture, index, topology)
       reset_databases(runtime, uri, selected)
       local lifecycle = assert(unified_driver.new({
         environment = {
+          server_parameters = bson.document({
+            { "acceptApiVersion2", entry:get("acceptApiVersion2") == true },
+            { "enableTestCommands", os.getenv("MONGODB_UNIFIED_TEST_COMMANDS") == "1" },
+            { "requireApiVersion", false },
+          }),
           server_version = server_version,
           topology = topology,
         },
@@ -351,11 +356,11 @@ local function run(identity)
   if environment == "deterministic-loopback" then
     return run_loopback(identity, fixture, index)
   elseif environment == "live-standalone" then
-    return run_live(identity, fixture, index, "single")
+    return run_live(identity, fixture, index, "single", entry)
   elseif environment == "live-replicaset" then
-    return run_live(identity, fixture, index, "replicaset")
+    return run_live(identity, fixture, index, "replicaset", entry)
   elseif environment == "isolated-replicaset" then
-    return run_live(identity, fixture, index, "replicaset")
+    return run_live(identity, fixture, index, "replicaset", entry)
   end
 
   error("unknown unified executor environment: " .. tostring(environment), 0)
