@@ -17,7 +17,7 @@ Keep commits small. Each commit must be the smallest practical vertical slice th
 3. Add the smallest failing test that defines the vertical slice, run it, and record the red result.
 4. Implement only enough production behavior for the slice, preserving public contracts.
 5. Run targeted tests and the relevant broader gates until green; record green evidence.
-6. Update `README.md`, `docs/ARCHITECTURE.md`, spec classifications, and compatibility notes when behavior changes.
+6. Update `docs/ARCHITECTURE.md`, spec classifications, and compatibility evidence when behavior changes. Keep implementation design, internal behavior, and detailed verification evidence out of `README.md`; that file is limited to the project overview, public API outline, scope, generated specification-compatibility table, development entry points, and license. When the conformance ledger changes, run `python3 planning/update_readme_compatibility.py` and commit the resulting table.
 7. Complete and refresh state through `update_plan.py`.
 8. Commit one self-contained, verifiable unit with the activity's exact Conventional Commit subject and a `Plan-Activity: ID` trailer.
 9. Run strict validation again.

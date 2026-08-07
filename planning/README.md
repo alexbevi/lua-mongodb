@@ -23,9 +23,12 @@ python3 planning/update_plan.py unblock ID
 python3 planning/update_plan.py complete ID
 python3 planning/update_plan.py refresh
 python3 planning/update_plan.py reference-report
+python3 planning/update_readme_compatibility.py [--check]
 ```
 
 `check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally verifies completed-activity commit subjects and `Plan-Activity` trailers when the workspace is a Git repository. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
+
+`update_readme_compatibility.py` projects the conformance ledger into the README's driver-layer compatibility table. Run it whenever ledger statuses change; CI uses `--check` so the README cannot drift from executable evidence.
 
 Activity implementation follows red-green vertical slices. A `red_green` activity cannot complete without a recorded nonzero red command and successful green command. A `validation` activity requires successful green evidence. Only one activity may be `in_progress`.
 

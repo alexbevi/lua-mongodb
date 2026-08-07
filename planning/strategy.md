@@ -187,6 +187,14 @@ Differential tests are useful for deterministic behavior such as BSON/Extended J
 
 ## Measurement and release criteria
 
+### Public compatibility projection
+
+Present public specification compatibility in the architectural layer order described by the [MongoDB driver specifications onion model](https://alexbevi.com/specifications/): Serialization, Communication, Connectivity, Authentication, Availability, Resilience, Programmability, Observability, and Testability. This ordering is a documentation projection over the dependency graph; roadmap execution remains dependency-driven and does not need to force independent activities into a strictly linear layer sequence.
+
+Derive the README table from the checked-in conformance ledger. A specification suite is fully implemented and validated only when every tracked case passes, partially implemented when passing and unsupported cases coexist, and not implemented when no tracked case passes. New or removed suites must fail generation until they are assigned to a driver layer. Keep case counts, implementation internals, architectural decisions, and detailed evidence in machine-readable reports and `docs/ARCHITECTURE.md`, not in the README.
+
+The README is the stable public overview: project purpose, public API outline, scope, generated compatibility projection, development entry points, and license. Every activity may update architecture and evidence, but it updates the README only when one of those public overview surfaces changes.
+
 Publish and ratchet metrics instead of relying on prose summaries:
 
 - Discovered, parsed, schema-valid, executed, passed, failed, environment-skipped, deferred, and excluded unified tests.

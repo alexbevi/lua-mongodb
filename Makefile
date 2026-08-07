@@ -77,6 +77,7 @@ test-unified-inventory: check-python check-lua
 test-conformance: check-python test-release-scope
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
 	@"$(PYTHON)" spec/conformance/ledger.py --check
+	@"$(PYTHON)" planning/update_readme_compatibility.py --check
 
 test-release-scope: check-python
 	@"$(PYTHON)" -m unittest spec.release.test_scope -v
@@ -131,3 +132,4 @@ rockspec: check-luarocks
 
 planning-check: check-python
 	@"$(PYTHON)" planning/update_plan.py check
+	@"$(PYTHON)" planning/update_readme_compatibility.py --check
