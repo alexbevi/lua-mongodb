@@ -1435,6 +1435,28 @@
       "notes": [],
       "started_at": "2026-08-07T14:23:14+00:00",
       "completed_at": "2026-08-07T14:25:53+00:00"
+    },
+    "REL-018": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_management_raw_data_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "The unified manifest does not discover or register the four listCollections and index-management rawData cases",
+          "recorded_at": "2026-08-07T14:27:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint; run exact management rawData fixtures on MongoDB 8.0 and 8.2",
+          "exit_code": 0,
+          "summary": "176 unit and 18 integration tests passed; 534 fixtures/2521 tests schema-valid and inventoried; 320 meta fixtures passed; exact 8.0 and 8.2 runs selected 8 total, executed 4, passed 4, environment-skipped 4 complementary version branches, deferred 0, failed 0; every one of the four identities passed on its applicable server; lint passed 114 files with zero warnings",
+          "recorded_at": "2026-08-07T14:32:06+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T14:26:37+00:00",
+      "completed_at": "2026-08-07T14:32:07+00:00"
     }
   },
   "verified_references": {

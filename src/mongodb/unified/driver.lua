@@ -803,6 +803,7 @@ end
 local function list_collections(_, database, arguments)
   local cursor, err = database:list_collections(operation_options(arguments, {
     filter = "filter",
+    rawData = "raw_data",
   }))
 
   if not cursor then
@@ -845,21 +846,21 @@ end
 local function create_index(_, collection, arguments)
   return collection:create_index(arguments:get("keys"), operation_options(
     arguments,
-    { name = "name" }
+    { name = "name", rawData = "raw_data" }
   ))
 end
 
 local function drop_index(_, collection, arguments)
   return collection:drop_index(arguments:get("name"), operation_options(
     arguments,
-    {}
+    { rawData = "raw_data" }
   ))
 end
 
 local function list_indexes(_, collection, arguments)
   local cursor, err = collection:list_indexes(operation_options(
     arguments or bson.document({}),
-    {}
+    { rawData = "raw_data" }
   ))
 
   if not cursor then
@@ -1457,11 +1458,11 @@ function M.new(options)
       },
       collection = {
         createIndex = {
-          arguments = { "keys", "name" },
+          arguments = { "keys", "name", "rawData" },
           handler = create_index,
         },
         dropIndex = {
-          arguments = { "name" },
+          arguments = { "name", "rawData" },
           handler = drop_index,
         },
         aggregate = {
@@ -1564,7 +1565,7 @@ function M.new(options)
           handler = list_index_names,
         },
         listIndexes = {
-          arguments = {},
+          arguments = { "rawData" },
           handler = list_indexes,
         },
         replaceOne = {
@@ -1606,11 +1607,11 @@ function M.new(options)
           handler = list_collection_names,
         },
         listCollectionObjects = {
-          arguments = { "filter" },
+          arguments = { "filter", "rawData" },
           handler = list_collections,
         },
         listCollections = {
-          arguments = { "filter" },
+          arguments = { "filter", "rawData" },
           handler = list_collections,
         },
         runCommand = {

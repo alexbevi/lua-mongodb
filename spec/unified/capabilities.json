@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1232,
-    "runnable": 1232
+    "passed": 1236,
+    "runnable": 1236
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36379,6 +36379,372 @@
       },
       "status": "runnable"
     },
+    "collection-management/tests/clustered-indexes.json::test[1]": {
+      "activity": "REL-019",
+      "fingerprint": "53ad081e058b3cc22546fb766191020dc4444030ad6d9ab6aa41ac45f5c0f3c5",
+      "reason": "the case awaits v1 collection option conformance",
+      "requirements": {
+        "arguments": [
+          "assertCollectionExists.collectionName",
+          "assertCollectionExists.databaseName",
+          "createCollection.clusteredIndex",
+          "createCollection.collection",
+          "dropCollection.collection"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createCollection",
+          "dropCollection"
+        ],
+        "special_operations": [
+          "assertCollectionExists"
+        ],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/clustered-indexes.json::test[2]": {
+      "activity": "REL-019",
+      "fingerprint": "3ed2dacbedf04fdd5341fe0cf196803ad8d4357444e25041db176b72f081bd0e",
+      "reason": "the case awaits v1 collection option conformance",
+      "requirements": {
+        "arguments": [
+          "createCollection.clusteredIndex",
+          "createCollection.collection",
+          "dropCollection.collection",
+          "listCollections.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "createCollection",
+          "dropCollection",
+          "listCollections"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/clustered-indexes.json::test[3]": {
+      "activity": "REL-019",
+      "fingerprint": "519db65d8bd74167488733f5fac291510d944a1e5968af6a9300515ef3a0c0b1",
+      "reason": "the case awaits v1 collection option conformance",
+      "requirements": {
+        "arguments": [
+          "createCollection.clusteredIndex",
+          "createCollection.collection",
+          "dropCollection.collection"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "createCollection",
+          "dropCollection",
+          "listIndexes"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/createCollection-pre_and_post_images.json::test[1]": {
+      "activity": "ADV-001",
+      "fingerprint": "b0b2272a4f65da575f422f83c2eab5f2a5a77b02f81cc4b050dfb5a14d3c632f",
+      "reason": "change streams are a post-v1 capability",
+      "requirements": {
+        "arguments": [
+          "assertCollectionExists.collectionName",
+          "assertCollectionExists.databaseName",
+          "createCollection.changeStreamPreAndPostImages",
+          "createCollection.collection",
+          "dropCollection.collection"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createCollection",
+          "dropCollection"
+        ],
+        "special_operations": [
+          "assertCollectionExists"
+        ],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/listCollections-rawdata.json::test[1]": {
+      "activity": "REL-018",
+      "fingerprint": "62cbc92e5ac3054e264b88b4dd5e02c2da366846c40f08efbac7f3587ea279ac",
+      "requirements": {
+        "arguments": [
+          "listCollections.rawData"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "listCollections"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "collection-management/tests/listCollections-rawdata.json::test[2]": {
+      "activity": "REL-018",
+      "fingerprint": "257123ffb99c2740adb1ac3a991ec128a7b7491f900d7cc7967ea42bf9e45eb9",
+      "requirements": {
+        "arguments": [
+          "listCollections.rawData"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "listCollections"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "collection-management/tests/modifyCollection-errorResponse.json::test[1]": {
+      "activity": "REL-021",
+      "fingerprint": "7855aee8faaffcff7312e0a6ec52e04871dd9ca030bf9012cceaf871d08e09dd",
+      "reason": "the case awaits v1 modifyCollection and find-and-modify error conformance",
+      "requirements": {
+        "arguments": [
+          "createIndex.keys",
+          "insertOne.document",
+          "modifyCollection.collection",
+          "modifyCollection.index"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createIndex",
+          "insertOne",
+          "modifyCollection"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/modifyCollection-pre_and_post_images.json::test[1]": {
+      "activity": "ADV-001",
+      "fingerprint": "6588720151e55d1c043cfbfd4d3d9a295051097bfc0148065d0525d889df4de0",
+      "reason": "change streams are a post-v1 capability",
+      "requirements": {
+        "arguments": [
+          "assertCollectionExists.collectionName",
+          "assertCollectionExists.databaseName",
+          "createCollection.changeStreamPreAndPostImages",
+          "createCollection.collection",
+          "dropCollection.collection",
+          "modifyCollection.changeStreamPreAndPostImages",
+          "modifyCollection.collection"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createCollection",
+          "dropCollection",
+          "modifyCollection"
+        ],
+        "special_operations": [
+          "assertCollectionExists"
+        ],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/timeseries-collection.json::test[1]": {
+      "activity": "REL-019",
+      "fingerprint": "7889d013f521460edac8487bbc5cb0d63290a7752b4db48a7b32241a5d72ba8d",
+      "reason": "the case awaits v1 collection option conformance",
+      "requirements": {
+        "arguments": [
+          "assertCollectionExists.collectionName",
+          "assertCollectionExists.databaseName",
+          "createCollection.collection",
+          "createCollection.expireAfterSeconds",
+          "createCollection.timeseries",
+          "dropCollection.collection"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createCollection",
+          "dropCollection"
+        ],
+        "special_operations": [
+          "assertCollectionExists"
+        ],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/timeseries-collection.json::test[2]": {
+      "activity": "REL-019",
+      "fingerprint": "26783ebef3f61a251128eaa5d0b4730d304f6b6575bed847c32ffdf9aa4b781a",
+      "reason": "the case awaits v1 collection option conformance",
+      "requirements": {
+        "arguments": [
+          "assertCollectionExists.collectionName",
+          "assertCollectionExists.databaseName",
+          "createCollection.collection",
+          "createCollection.expireAfterSeconds",
+          "createCollection.timeseries",
+          "dropCollection.collection",
+          "find.filter",
+          "find.sort",
+          "insertMany.documents"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createCollection",
+          "dropCollection",
+          "find",
+          "insertMany"
+        ],
+        "special_operations": [
+          "assertCollectionExists"
+        ],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "collection-management/tests/timeseries-collection.json::test[3]": {
+      "activity": "REL-019",
+      "fingerprint": "d8eeac26770809d6d260e0ca9daf211ebafe3ab59b80cdcdf0ef8d3950432fc5",
+      "reason": "the case awaits v1 collection option conformance",
+      "requirements": {
+        "arguments": [
+          "assertCollectionExists.collectionName",
+          "assertCollectionExists.databaseName",
+          "createCollection.collection",
+          "createCollection.timeseries",
+          "dropCollection.collection"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createCollection",
+          "dropCollection"
+        ],
+        "special_operations": [
+          "assertCollectionExists"
+        ],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "e43c8ca4f096598892c762cb5665b2128b4a1e80e7a13bef063d2e1cae2aaf1b",
@@ -50008,6 +50374,608 @@
         "topologies": []
       },
       "status": "runnable"
+    },
+    "index-management/tests/createSearchIndex.json::test[1]": {
+      "activity": "ADV-011",
+      "fingerprint": "13b9e941ea663486c93b5088c45ae4e2bf35bb6e32a77113f85168098dbcbc14",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndex.model"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/createSearchIndex.json::test[2]": {
+      "activity": "ADV-011",
+      "fingerprint": "49e7a78d1ef9ad7a62d74450d239d96992b56a88f8a635ce88ff15c42b561b44",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndex.model"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/createSearchIndex.json::test[3]": {
+      "activity": "ADV-011",
+      "fingerprint": "247b6335470a1196b9bdb0275006b4fb39d5c80530fcd3319e115a211129ed5d",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndex.model"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/createSearchIndexes.json::test[1]": {
+      "activity": "ADV-011",
+      "fingerprint": "b69c43066425459b651b1afd59b0a06562f2bf5ac80d6c23567897aedef93d51",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndexes.models"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/createSearchIndexes.json::test[2]": {
+      "activity": "ADV-011",
+      "fingerprint": "7ab202fde92248d0e88254f6b3e513593a8464c115ab8f7ed6474c1b065d968b",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndexes.models"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/createSearchIndexes.json::test[3]": {
+      "activity": "ADV-011",
+      "fingerprint": "4dc09b65c4536a7570433cba1b7fca3db734786b408ebd3b7947c4b13f2641d8",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndexes.models"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/createSearchIndexes.json::test[4]": {
+      "activity": "ADV-011",
+      "fingerprint": "ef15b64db4c318baa90d18948eda6dbaa928456993e6baed32a1018227d7bacf",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndexes.models"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/dropSearchIndex.json::test[1]": {
+      "activity": "ADV-011",
+      "fingerprint": "3c45c443fe6cbf89df593bb400549611b3577735768108806b03064e7bde6708",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "dropSearchIndex.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "dropSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/index-rawdata.json::test[1]": {
+      "activity": "REL-018",
+      "fingerprint": "dcba58bb416d52376f1277ee2a7c1fc1df03302223b48b31a2e870ad8af8590c",
+      "requirements": {
+        "arguments": [
+          "createIndex.keys",
+          "createIndex.rawData",
+          "dropIndex.name",
+          "dropIndex.rawData",
+          "listIndexes.rawData"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "createIndex",
+          "dropIndex",
+          "listIndexes"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "index-management/tests/index-rawdata.json::test[2]": {
+      "activity": "REL-018",
+      "fingerprint": "b69180989aad48bc5e9a65c5238f649a2658a0956071e3a3a91f6e56660a68fd",
+      "requirements": {
+        "arguments": [
+          "createIndex.keys",
+          "createIndex.rawData",
+          "dropIndex.name",
+          "dropIndex.rawData",
+          "listIndexes.rawData"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "createIndex",
+          "dropIndex",
+          "listIndexes"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "index-management/tests/listSearchIndexes.json::test[1]": {
+      "activity": "ADV-011",
+      "fingerprint": "08f8a2728c030773dad0243d87d9e6d61e5b957d074e564f44192c797405dbde",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "listSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/listSearchIndexes.json::test[2]": {
+      "activity": "ADV-011",
+      "fingerprint": "9f0af305827a5ad86b00faeb341a036dc2faac9ec56f1261fab2c24ec6ae9194",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "listSearchIndexes.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "listSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/listSearchIndexes.json::test[3]": {
+      "activity": "ADV-011",
+      "fingerprint": "10d26f14f67d45e8922da3fd2e46ef7ce4280c5fd82e1c401f908c902b42eb7e",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "listSearchIndexes.aggregationOptions",
+          "listSearchIndexes.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "listSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[1]": {
+      "activity": "ADV-011",
+      "fingerprint": "97afa48af689bedeb99e612b8c84c48240a87a7f5e2f16f803e4b4403e4bfe59",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndex.model"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "createSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[2]": {
+      "activity": "ADV-011",
+      "fingerprint": "6a14158b5bc2f2115694075c1f05bbc43aeaccb7daa9d23c77acea4edc5e4055",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "createSearchIndexes.models"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "createSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[3]": {
+      "activity": "ADV-011",
+      "fingerprint": "a33cf7cb83522ce7b32a1301b09f78f080108adf76223c8cfa3c33d257b0543a",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "dropSearchIndex.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "dropSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[4]": {
+      "activity": "ADV-011",
+      "fingerprint": "3efe25e1c60c6371b79b43953b4c6635dd521ab6fda905142b18037b8b6ba652",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "listSearchIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[5]": {
+      "activity": "ADV-011",
+      "fingerprint": "0773e6e37ca3e72ef14f41904376acc99482c7d260dd8da59abc1e4a5d90f988",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "updateSearchIndex.definition",
+          "updateSearchIndex.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "updateSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "index-management/tests/updateSearchIndex.json::test[1]": {
+      "activity": "ADV-011",
+      "fingerprint": "248b593e7881da9bcc7499f35afcdf1ce119d20bb53eb1d2e6926aa1ccf82b5a",
+      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "requirements": {
+        "arguments": [
+          "updateSearchIndex.definition",
+          "updateSearchIndex.name"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "updateSearchIndex"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]": {
       "activity": "REL-006",

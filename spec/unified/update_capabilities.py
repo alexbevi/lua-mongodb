@@ -562,6 +562,24 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
   if specification == "crud":
     return classify_crud(test)
 
+  if specification == "collection-management":
+    fixture = Path(test["fixture"]).name
+
+    if "pre_and_post_images" in fixture:
+      return "ADV-001", OWNER_REASONS["ADV-001"]
+    elif fixture in {"clustered-indexes.json", "timeseries-collection.json"}:
+      return "REL-019", OWNER_REASONS["REL-019"]
+    elif fixture == "modifyCollection-errorResponse.json":
+      return "REL-021", OWNER_REASONS["REL-021"]
+
+    return "REL-018", OWNER_REASONS["REL-018"]
+
+  if specification == "index-management":
+    if Path(test["fixture"]).name == "index-rawdata.json":
+      return "REL-018", OWNER_REASONS["REL-018"]
+
+    return "ADV-011", OWNER_REASONS["ADV-011"]
+
   if specification == "server-discovery-and-monitoring":
     return classify_sdam(test)
 

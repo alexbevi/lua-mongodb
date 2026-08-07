@@ -66,18 +66,22 @@ KNOWN_OPERATIONS = {
   "abortTransaction", "addKeyAltName", "aggregate", "appendMetadata",
   "bulkWrite", "clientBulkWrite", "close", "commitTransaction", "count",
   "countDocuments", "createChangeStream", "createCollection",
-  "createCommandCursor", "createDataKey", "createFindCursor", "createIndex", "decrypt",
+  "createCommandCursor", "createDataKey", "createFindCursor", "createIndex",
+  "createSearchIndex", "createSearchIndexes", "decrypt",
   "delete", "deleteKey", "deleteMany", "deleteOne", "distinct", "download",
-  "downloadByName", "drop", "dropCollection", "dropIndex", "dropIndexes", "encrypt", "endSession",
+  "downloadByName", "drop", "dropCollection", "dropIndex", "dropIndexes",
+  "dropSearchIndex", "encrypt", "endSession",
   "estimatedDocumentCount", "find", "findOne", "findOneAndDelete",
   "findOneAndReplace", "findOneAndUpdate", "getKey", "getKeyByAltName",
   "getKeys", "insertMany", "insertOne", "iterateOnce",
   "iterateUntilDocumentOrError", "listCollectionNames",
   "listCollectionObjects", "listCollections", "listDatabaseNames",
   "listDatabaseObjects", "listDatabases", "listIndexNames", "listIndexes",
+  "listSearchIndexes",
   "mapReduce", "modifyCollection", "removeKeyAltName", "rename",
   "replaceOne", "rewrapManyDataKey", "runCommand", "runCursorCommand",
-  "startTransaction", "updateMany", "updateOne", "upload", "withTransaction",
+  "startTransaction", "updateMany", "updateOne", "updateSearchIndex", "upload",
+  "withTransaction",
 }
 KNOWN_SPECIAL_OPERATIONS = {
   "assertCollectionExists", "assertCollectionNotExists", "assertEventCount",
@@ -130,8 +134,18 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       and parts[0] == "read-write-concern"
       and parts[1:3] == ("tests", "operation")
     )
+    is_management_directory = (
+      len(parts) == 3
+      and parts[0] in {"collection-management", "index-management"}
+      and parts[1] == "tests"
+    )
 
-    if not is_unified_directory and not is_csot_directory and not is_release_directory:
+    if not (
+      is_unified_directory
+      or is_csot_directory
+      or is_release_directory
+      or is_management_directory
+    ):
       continue
 
     name = relative.as_posix()
