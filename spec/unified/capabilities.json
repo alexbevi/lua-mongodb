@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1236,
-    "runnable": 1236
+    "passed": 1242,
+    "runnable": 1242
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36382,7 +36382,6 @@
     "collection-management/tests/clustered-indexes.json::test[1]": {
       "activity": "REL-019",
       "fingerprint": "53ad081e058b3cc22546fb766191020dc4444030ad6d9ab6aa41ac45f5c0f3c5",
-      "reason": "the case awaits v1 collection option conformance",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -36411,12 +36410,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/clustered-indexes.json::test[2]": {
       "activity": "REL-019",
       "fingerprint": "3ed2dacbedf04fdd5341fe0cf196803ad8d4357444e25041db176b72f081bd0e",
-      "reason": "the case awaits v1 collection option conformance",
       "requirements": {
         "arguments": [
           "createCollection.clusteredIndex",
@@ -36445,12 +36443,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/clustered-indexes.json::test[3]": {
       "activity": "REL-019",
       "fingerprint": "519db65d8bd74167488733f5fac291510d944a1e5968af6a9300515ef3a0c0b1",
-      "reason": "the case awaits v1 collection option conformance",
       "requirements": {
         "arguments": [
           "createCollection.clusteredIndex",
@@ -36478,7 +36475,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/createCollection-pre_and_post_images.json::test[1]": {
       "activity": "ADV-001",
@@ -36639,7 +36636,6 @@
     "collection-management/tests/timeseries-collection.json::test[1]": {
       "activity": "REL-019",
       "fingerprint": "7889d013f521460edac8487bbc5cb0d63290a7752b4db48a7b32241a5d72ba8d",
-      "reason": "the case awaits v1 collection option conformance",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -36669,12 +36665,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/timeseries-collection.json::test[2]": {
       "activity": "REL-019",
       "fingerprint": "26783ebef3f61a251128eaa5d0b4730d304f6b6575bed847c32ffdf9aa4b781a",
-      "reason": "the case awaits v1 collection option conformance",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -36709,12 +36704,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/timeseries-collection.json::test[3]": {
       "activity": "REL-019",
       "fingerprint": "d8eeac26770809d6d260e0ca9daf211ebafe3ab59b80cdcdf0ef8d3950432fc5",
-      "reason": "the case awaits v1 collection option conformance",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -36743,7 +36737,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",

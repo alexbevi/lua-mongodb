@@ -1477,6 +1477,12 @@
     "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {"activity": "REL-016", "environment": "live-replicaset"},
     "collection-management/tests/listCollections-rawdata.json::test[1]": {"activity": "REL-018", "environment": "live-standalone"},
     "collection-management/tests/listCollections-rawdata.json::test[2]": {"activity": "REL-018", "environment": "live-standalone"},
+    "collection-management/tests/clustered-indexes.json::test[1]": {"activity": "REL-019", "environment": "live-standalone"},
+    "collection-management/tests/clustered-indexes.json::test[2]": {"activity": "REL-019", "environment": "live-standalone"},
+    "collection-management/tests/clustered-indexes.json::test[3]": {"activity": "REL-019", "environment": "live-standalone"},
+    "collection-management/tests/timeseries-collection.json::test[1]": {"activity": "REL-019", "environment": "live-standalone"},
+    "collection-management/tests/timeseries-collection.json::test[2]": {"activity": "REL-019", "environment": "live-standalone"},
+    "collection-management/tests/timeseries-collection.json::test[3]": {"activity": "REL-019", "environment": "live-standalone"},
     "index-management/tests/index-rawdata.json::test[1]": {"activity": "REL-018", "environment": "live-standalone"},
     "index-management/tests/index-rawdata.json::test[2]": {"activity": "REL-018", "environment": "live-standalone"},
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {

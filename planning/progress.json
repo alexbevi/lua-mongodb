@@ -1457,6 +1457,28 @@
       "notes": [],
       "started_at": "2026-08-07T14:26:37+00:00",
       "completed_at": "2026-08-07T14:32:07+00:00"
+    },
+    "REL-019": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_collection_option_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "All six clustered-index and time-series collection cases remain deferred because they lack exact executors and unified createCollection argument mappings",
+          "recorded_at": "2026-08-07T14:33:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint; run exact clustered-index and time-series fixture subset",
+          "exit_code": 0,
+          "summary": "176 unit and 18 integration tests passed; 534 fixtures/2521 tests schema-valid and inventoried; 320 meta fixtures passed; exact collection option subset selected 6, executed 6, passed 6, environment-skipped 0, deferred 0, failed 0; lint passed 114 files with zero warnings",
+          "recorded_at": "2026-08-07T14:36:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T14:32:48+00:00",
+      "completed_at": "2026-08-07T14:36:55+00:00"
     }
   },
   "verified_references": {

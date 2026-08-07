@@ -830,7 +830,10 @@ local function create_collection(_, database, arguments)
   return database:create_collection(arguments:get("collection"), operation_options(
     arguments,
     {
+      clusteredIndex = "clustered_index",
+      expireAfterSeconds = "expire_after_seconds",
       pipeline = "pipeline",
+      timeseries = "timeseries",
       viewOn = "view_on",
     }
   ))
@@ -1595,7 +1598,10 @@ function M.new(options)
       },
       database = {
         createCollection = {
-          arguments = { "collection", "pipeline", "viewOn" },
+          arguments = {
+            "clusteredIndex", "collection", "expireAfterSeconds", "pipeline",
+            "timeseries", "viewOn",
+          },
           handler = create_collection,
         },
         dropCollection = {
