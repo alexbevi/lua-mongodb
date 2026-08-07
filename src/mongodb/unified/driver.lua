@@ -828,7 +828,10 @@ end
 local function create_collection(_, database, arguments)
   return database:create_collection(arguments:get("collection"), operation_options(
     arguments,
-    {}
+    {
+      pipeline = "pipeline",
+      viewOn = "view_on",
+    }
   ))
 end
 
@@ -1591,7 +1594,7 @@ function M.new(options)
       },
       database = {
         createCollection = {
-          arguments = { "collection" },
+          arguments = { "collection", "pipeline", "viewOn" },
           handler = create_collection,
         },
         dropCollection = {

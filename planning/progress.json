@@ -1369,6 +1369,28 @@
       "notes": [],
       "started_at": "2026-08-07T13:54:08+00:00",
       "completed_at": "2026-08-07T13:56:34+00:00"
+    },
+    "REL-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_estimated_count_view_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "The estimatedDocumentCount-on-view fixture is deferred because it has no exact executor",
+          "recorded_at": "2026-08-07T13:57:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "exact estimatedDocumentCount fixture; make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint",
+          "exit_code": 0,
+          "summary": "All six estimatedDocumentCount cases passed including filtered view creation; 176 unit, 18 integration, 25 unified CLI, 12 meta, 320 schema-meta, conformance, release, and lint gates passed",
+          "recorded_at": "2026-08-07T14:01:23+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T13:57:29+00:00",
+      "completed_at": "2026-08-07T14:01:24+00:00"
     }
   },
   "verified_references": {
