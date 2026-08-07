@@ -17,17 +17,17 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 39,
+    "completed": 40,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 23
+    "pending": 22
   },
   "active": [],
   "ready": [
-    "UTF-012"
+    "UTF-013"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "UTF-012"
+  "next_ready": "UTF-013"
 }

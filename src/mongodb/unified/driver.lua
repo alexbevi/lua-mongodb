@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local bulk = require("mongodb.bulk")
 local client_module = require("mongodb.client")
 local errors = require("mongodb.error")
 local lifecycle_module = require("mongodb.unified.lifecycle")
@@ -282,6 +283,224 @@ local function null_result(value)
   return value == nil and bson.null or value
 end
 
+local function call_driver(callback)
+  local outcome = table.pack(pcall(callback))
+
+  if not outcome[1] then
+    return configuration_error(tostring(outcome[2]), "$.arguments")
+  end
+
+  return table.unpack(outcome, 2, outcome.n)
+end
+
+local function array_values(value)
+  local values = {}
+
+  for index, item in value:iter() do
+    values[index] = item
+  end
+
+  return values
+end
+
+local WRITE_OPTIONS = {
+  arrayFilters = "array_filters",
+  collation = "collation",
+  hint = "hint",
+  ordered = "ordered",
+  upsert = "upsert",
+}
+
+local function insert_many(_, collection, arguments)
+  return call_driver(function()
+    return collection:insert_many(
+      array_values(arguments:get("documents")),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end)
+end
+
+local function update_one(_, collection, arguments)
+  return call_driver(function()
+    return collection:update_one(
+      arguments:get("filter"),
+      arguments:get("update"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end)
+end
+
+local function update_many(_, collection, arguments)
+  return call_driver(function()
+    return collection:update_many(
+      arguments:get("filter"),
+      arguments:get("update"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end)
+end
+
+local function replace_one(_, collection, arguments)
+  return call_driver(function()
+    return collection:replace_one(
+      arguments:get("filter"),
+      arguments:get("replacement"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end)
+end
+
+local function delete_one(_, collection, arguments)
+  return call_driver(function()
+    return collection:delete_one(
+      arguments:get("filter"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end)
+end
+
+local function delete_many(_, collection, arguments)
+  return call_driver(function()
+    return collection:delete_many(
+      arguments:get("filter"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end)
+end
+
+local MODEL_FACTORIES = {
+  deleteMany = function(arguments)
+    return bulk.delete_many(
+      arguments:get("filter"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end,
+  deleteOne = function(arguments)
+    return bulk.delete_one(
+      arguments:get("filter"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end,
+  insertOne = function(arguments)
+    return bulk.insert_one(arguments:get("document"))
+  end,
+  replaceOne = function(arguments)
+    return bulk.replace_one(
+      arguments:get("filter"),
+      arguments:get("replacement"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end,
+  updateMany = function(arguments)
+    return bulk.update_many(
+      arguments:get("filter"),
+      arguments:get("update"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end,
+  updateOne = function(arguments)
+    return bulk.update_one(
+      arguments:get("filter"),
+      arguments:get("update"),
+      operation_options(arguments, WRITE_OPTIONS)
+    )
+  end,
+}
+
+local function bulk_write(_, collection, arguments)
+  return call_driver(function()
+    local models = {}
+
+    for index, request in arguments:get("requests"):iter() do
+      if not bson.is_document(request) or #request ~= 1 then
+        error("bulkWrite requests must contain exactly one write model", 0)
+      end
+
+      local name, model_arguments = request:get_at(1)
+      local factory = MODEL_FACTORIES[name]
+
+      if not factory then
+        error("unsupported unified bulkWrite model: " .. tostring(name), 0)
+      end
+
+      models[index] = factory(model_arguments)
+    end
+
+    return collection:bulk_write(
+      models,
+      operation_options(arguments, { ordered = "ordered" })
+    )
+  end)
+end
+
+local function indexed_ids(values)
+  local entries = {}
+
+  for index, value in pairs(values or {}) do
+    entries[#entries + 1] = { tostring(index - 1), value }
+  end
+
+  table.sort(entries, function(left, right)
+    return tonumber(left[1]) < tonumber(right[1])
+  end)
+  return bson.document(entries)
+end
+
+local function insert_many_result(value)
+  if not value.acknowledged then
+    return bson.document({ { "acknowledged", false } })
+  end
+
+  return bson.document({ { "insertedIds", indexed_ids(value.inserted_ids) } })
+end
+
+local function update_result(value)
+  if not value.acknowledged then
+    return bson.document({ { "acknowledged", false } })
+  end
+
+  local entries = {
+    { "matchedCount", value.matched_count },
+    { "modifiedCount", value.modified_count },
+    { "upsertedCount", value.upserted_count },
+  }
+
+  if value.upserted_id ~= nil then
+    entries[#entries + 1] = { "upsertedId", value.upserted_id }
+  end
+
+  return bson.document(entries)
+end
+
+local function delete_result(value)
+  if not value.acknowledged then
+    return bson.document({ { "acknowledged", false } })
+  end
+
+  return bson.document({ { "deletedCount", value.deleted_count } })
+end
+
+local function bulk_result(value)
+  if not value.acknowledged then
+    return bson.document({ { "acknowledged", false } })
+  end
+
+  local entries = {
+    { "deletedCount", value.deleted_count },
+    { "insertedCount", value.inserted_count },
+    { "matchedCount", value.matched_count },
+    { "modifiedCount", value.modified_count },
+    { "upsertedCount", value.upserted_count },
+    { "upsertedIds", indexed_ids(value.upserted_ids) },
+  }
+
+  if value.inserted_ids ~= nil then
+    entries[#entries + 1] = { "insertedIds", indexed_ids(value.inserted_ids) }
+  end
+
+  return bson.document(entries)
+end
+
 local function internal_client_adapter(client)
   local adapter = {}
 
@@ -477,9 +696,44 @@ function M.new(options)
           coerce_result = null_result,
           handler = find_one_and_update,
         },
+        bulkWrite = {
+          arguments = { "ordered", "requests" },
+          coerce_result = bulk_result,
+          handler = bulk_write,
+        },
+        deleteMany = {
+          arguments = { "collation", "filter", "hint" },
+          coerce_result = delete_result,
+          handler = delete_many,
+        },
+        deleteOne = {
+          arguments = { "collation", "filter", "hint" },
+          coerce_result = delete_result,
+          handler = delete_one,
+        },
+        insertMany = {
+          arguments = { "documents", "ordered" },
+          coerce_result = insert_many_result,
+          handler = insert_many,
+        },
         insertOne = {
           arguments = { "document" },
           handler = insert_one,
+        },
+        replaceOne = {
+          arguments = { "collation", "filter", "replacement", "upsert" },
+          coerce_result = update_result,
+          handler = replace_one,
+        },
+        updateMany = {
+          arguments = { "arrayFilters", "collation", "filter", "update", "upsert" },
+          coerce_result = update_result,
+          handler = update_many,
+        },
+        updateOne = {
+          arguments = { "arrayFilters", "collation", "filter", "update", "upsert" },
+          coerce_result = update_result,
+          handler = update_one,
         },
       },
     },

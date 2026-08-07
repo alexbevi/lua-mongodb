@@ -128,6 +128,31 @@ for operation in ("Delete", "Replace", "Update"):
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
+for fixture in (
+  "bulkWrite-deleteMany-hint-unacknowledged",
+  "bulkWrite-deleteOne-hint-unacknowledged",
+  "deleteMany-hint-unacknowledged",
+  "deleteOne-hint-unacknowledged",
+):
+  for index in (1, 2):
+    TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
+      "REL-001",
+      "the pre-4.4 server requirement is outside the v1 compatibility matrix",
+    )
+
+for identity in (
+  "crud/tests/unified/bulkWrite-update-validation.json::test[1]",
+  "crud/tests/unified/bulkWrite-update-validation.json::test[2]",
+  "crud/tests/unified/bulkWrite-update-validation.json::test[3]",
+  "crud/tests/unified/replaceOne-validation.json::test[1]",
+  "crud/tests/unified/updateMany-validation.json::test[1]",
+  "crud/tests/unified/updateOne-validation.json::test[1]",
+):
+  TEST_OVERRIDES[identity] = (
+    "UTF-013",
+    "the test asserts that client validation emits no command event",
+  )
+
 
 def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   requirements = test["requirements"]

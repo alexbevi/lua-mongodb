@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 46,
-    "runnable": 46
+    "passed": 99,
+    "runnable": 99
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -17876,7 +17876,6 @@
     "crud/tests/unified/bulkWrite-arrayFilters.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "dfca54b1e2de733317c6ca9d053e31ae0b28728a9dc3abc870ea87d9fd38f118",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -17899,12 +17898,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-collation.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "701c75f185705365af9537ffb94a45f5687184ad347ce2fbc702f751c4b1cf23",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -17927,12 +17925,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-collation.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "78683324e91445360d56f734cf4121fb6176ce9e73dfdaf8e62101ec29a8ed6a",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -17955,7 +17952,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -18162,9 +18159,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "970c99460e9128455d056434055b192d34230e7f551ccf2ac46808ac1843e8a3",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18187,9 +18184,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "1c38269fac90488867509f02ee4191a2c7cfb6925151e400297ed9af93c8ff10",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18386,9 +18383,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "e2ab1e73c25663119f60bcc1dd7057ed8fbd8ea35d6011111b2e991401e360ea",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18411,9 +18408,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "92897b243c86c4a1845367a1e75c3cc634b76cbb7e360d5accdc6b8067d43a63",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19232,9 +19229,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-update-validation.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "UTF-013",
       "fingerprint": "62c4f290838894f95e6599743310aa694b4baf11aeeb0dc63aeecdfbc29e138e",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19257,9 +19254,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-update-validation.json::test[2]": {
-      "activity": "UTF-012",
+      "activity": "UTF-013",
       "fingerprint": "80c407ef93a6eb13fdc3e6697989fa63aa2f1be91a5c80267c6270c6a03c728e",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19282,9 +19279,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-update-validation.json::test[3]": {
-      "activity": "UTF-012",
+      "activity": "UTF-013",
       "fingerprint": "f8619df2416352a3c65dfda23e35392512715ec80d067224fd1911f3d8852906",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -20020,7 +20017,6 @@
     "crud/tests/unified/bulkWrite.json::test[10]": {
       "activity": "UTF-012",
       "fingerprint": "07b4ce0ed78a7b2500115ac0c553a934ca207af55aae5f68ad975ad6c4e3678a",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20041,12 +20037,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "cc5406bde46de9bf6bd4aaaf1f1ea9372056c2484450d5c1a973362cac3b18db",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20069,12 +20064,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "7272904564dcc0acafd93ba6d77c10c140073bbf00631c543e4cfdbfdb669647",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20097,12 +20091,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "c621c60b941ce5fa9a33fb6b2ab0fa6a018eaa461017210527d31e83ff7157f5",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20125,12 +20118,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[4]": {
       "activity": "UTF-012",
       "fingerprint": "ac8a6f2933a8720c3882611ee5956012ff16f0c993a2a8d3860f6ab83c2d9397",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20153,12 +20145,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[5]": {
       "activity": "UTF-012",
       "fingerprint": "510f0779d6fce3b1eb0d4eb50bf585e96d141f479aad036a36db71eb582d5c4b",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20181,12 +20172,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[6]": {
       "activity": "UTF-012",
       "fingerprint": "3ddcdd804d608fc981d9a2cf21674f91e8c775e4cdb91c96707fdc25d5cd3057",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20209,12 +20199,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[7]": {
       "activity": "UTF-012",
       "fingerprint": "9b4e92f0717b6633ad64530e210f01bc036db4934e5b425563d8982d0c2ff657",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20237,12 +20226,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[8]": {
       "activity": "UTF-012",
       "fingerprint": "ba7ea9fccafe9bea0ec34e5fe951e183a2d7359b16a3c218ef7e5f199ab81f41",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20265,12 +20253,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite.json::test[9]": {
       "activity": "UTF-012",
       "fingerprint": "8800d008ce8fe09fc00a6d46944c3cb7adaae48a55a57168849f4ae8b75d5c3d",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -20291,7 +20278,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[1]": {
       "activity": "UTF-013",
@@ -22542,7 +22529,6 @@
     "crud/tests/unified/create-null-ids.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "413277f15b63d900512000829cec0be7addcdb3f7efe6357bd9c44b9905b8cfc",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22564,12 +22550,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "347a98d7c97d090cb49c93db0d5451eb54344419cafeb6356735706dff366387",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22591,12 +22576,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "750dac3ed84b7e041981c652acc2266f56ea6df60725871ae829b97a84605d50",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22620,12 +22604,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[4]": {
       "activity": "UTF-012",
       "fingerprint": "f780b8998e1759d997e66503c928541b9b419389edf4b2e507197fa96c009f35",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22649,12 +22632,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[5]": {
       "activity": "UTF-012",
       "fingerprint": "55f25375a317600bd372e1fa7912710eefe72d93045c6deb6932eb13478ae57e",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22678,12 +22660,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[6]": {
       "activity": "UTF-012",
       "fingerprint": "befcca57dc71f934edce15f69b2d29eafe0591e22868a99bf5812b2a019c90c3",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -22705,7 +22686,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[7]": {
       "activity": "ADV-007",
@@ -22968,7 +22949,6 @@
     "crud/tests/unified/deleteMany-collation.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "1798f23d00f32c91584bf28c6ef79c6635b0ad45e26b0292b5b07f0f2ec471d8",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.collation",
@@ -22989,7 +22969,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -23132,9 +23112,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "43bcc468349a5ccdf43f9c0035a6272448199cb8942913d276380bbf522704f8",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23158,9 +23138,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "86749752895a11764500a8a969e08e60bd3deec603e5e406fc2a310f5e9ecdad",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23418,7 +23398,6 @@
     "crud/tests/unified/deleteMany.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "b65566e419e5a585b40379a5ea874d1a7e3f07e1ea953bd2010539c255765259",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter"
@@ -23438,12 +23417,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "b986c4ca3897c4c96bbf01a430bfd4791289a4568934d07524df2b3127881695",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter"
@@ -23463,12 +23441,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-collation.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "0e80e4225e9256f64bb1fdeb295359b83b3d0cfab1763ccde38baa4abcf433e8",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.collation",
@@ -23489,7 +23466,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -23665,9 +23642,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "535020e8c374ded6a0a2558907170f8dad5881442015e94f6d95012618bd2c93",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23691,9 +23668,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-012",
+      "activity": "REL-001",
       "fingerprint": "39867c02e8411f4e1321c6bde01e9fb5d9ba639b5c6f1e1faf166108701f550c",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23951,7 +23928,6 @@
     "crud/tests/unified/deleteOne.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "a0e0d3bfd8d59ca9bc7c9d3856e40880cd7c2a9069fff40ecbcea2a4d80380a7",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter"
@@ -23971,12 +23947,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "b9e4c1749b146277430ada8dc095ceeb7d078d0da77217e155efc7cebc661c3c",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter"
@@ -23996,12 +23971,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "b532f8981b1e69bb1515de1a34cd262aef71846ded772a1c823cf87c04456094",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter"
@@ -24021,7 +23995,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct-collation.json::test[1]": {
       "activity": "UTF-011",
@@ -27903,7 +27877,6 @@
     "crud/tests/unified/insertMany.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "2e8e709d7d78b77849cbee53271b158ab97c148de42c762a4f17b6f619a50626",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -27926,12 +27899,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "8e952d4435bb03acbc29607302c079f32c2861724bd697b06130b6e1f8c29c75",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -27952,12 +27924,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "72a3375ead40d8d9a32221e46773552bde0614e3f17c3cadf6fdebd359afb66f",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -27978,7 +27949,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -28441,7 +28412,6 @@
     "crud/tests/unified/replaceOne-collation.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "ed7ee34e9a9bc8a82b6b6fd6fc68e76b48c4985636d8c926d034c8422b9268ee",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.collation",
@@ -28463,7 +28433,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -29023,9 +28993,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/replaceOne-validation.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "UTF-013",
       "fingerprint": "652b70c23276ce41866657840108b3a3345bb49afe2e6735cbd669e1daac0ba5",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29051,7 +29021,6 @@
     "crud/tests/unified/replaceOne.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "0435018592e23759de126b5d0fc4b209288c26cb319cae52c6f9efdf8fe3bdcd",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29072,12 +29041,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "7eff40cc386e617cac51c95d07609cb515ab9b7853c92fde154be3ead3508451",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29098,12 +29066,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "05bbe60ea3d463b3a70a0fd22a8d89d1dd469a52542b08944f39572669781894",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29124,12 +29091,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne.json::test[4]": {
       "activity": "UTF-012",
       "fingerprint": "c94af7de4907ac8f24c7b40158f8501656227b6ac3f8ba214e2caaebfbf52c35",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29151,12 +29117,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne.json::test[5]": {
       "activity": "UTF-012",
       "fingerprint": "262116d7de23e959779ef957548528be3d5976b73f11a143498ab286a7d39d7f",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29178,12 +29143,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-arrayFilters.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "ebd0d2f7dbe93126d232af759196945e61643b63858b376a57ba99c044c145c9",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.arrayFilters",
@@ -29205,12 +29169,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-arrayFilters.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "7e03f361aef542e654c9fd7a278cb52accb6acfb10083c6f50df667866b87f22",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.arrayFilters",
@@ -29232,12 +29195,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-arrayFilters.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "1c3354cfc84e70fcb38ef75370b16a90898da4616c2ec4a41b6ca86b62b34da4",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.arrayFilters",
@@ -29259,12 +29221,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-collation.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "ecc4e47a6fb3d9f7785d63da94a5a86a099198f84cf9e3425bc9cc0f4d5a9b28",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.collation",
@@ -29286,7 +29247,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -29783,9 +29744,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/updateMany-validation.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "UTF-013",
       "fingerprint": "bf036d3f742fe3900f40d1b7cb00cc1070534610470353a6baf8bfc045c88b07",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29811,7 +29772,6 @@
     "crud/tests/unified/updateMany.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "c3554310de439dea62648526a6fd11a7a0323ab6d7ee8a5b0ee4c30cebb3cd40",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29832,12 +29792,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "508a80156222606ea19216a6957513a48d8beca4e6106a0a7a98da3047be9816",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29858,12 +29817,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "a07ace05abcaf479bd65dc5b403b307da23aa38323b46298f69dff0345bb04ca",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29884,12 +29842,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany.json::test[4]": {
       "activity": "UTF-012",
       "fingerprint": "066e5d4a847fca7eb4231957ab8232ffc6d64f5353060f888d6987f791cba698",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29911,12 +29868,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-arrayFilters.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "71cf77c9af4870d7e7d17cdf5b9540a630ded4188b8c5d364df3d9b93ff10b61",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.arrayFilters",
@@ -29938,12 +29894,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-arrayFilters.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "9dda95a7a4108af0952e15758fceb4ddf3304da723c298a93619980bc777956c",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.arrayFilters",
@@ -29965,12 +29920,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-arrayFilters.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "e31ece99a9a7e5ec9c322b855a824e1c2b69cc957282f6edb7ec9c473c535828",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.arrayFilters",
@@ -29992,12 +29946,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-arrayFilters.json::test[4]": {
       "activity": "UTF-012",
       "fingerprint": "2d4611f645057237c13bb853a170db58f971bb5a0035f77cc3b8bb49f5e7e18e",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.arrayFilters",
@@ -30019,12 +29972,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-arrayFilters.json::test[5]": {
       "activity": "UTF-012",
       "fingerprint": "1ac12b2468e2ec51b65909b0201ca6418167ee82c3581838ebd40b483b5226d4",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.arrayFilters",
@@ -30046,12 +29998,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-collation.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "e56a13e50239f07fd7bcad2ea42cfbe019ca97d979ab7d4025d4c5979181b6d0",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.collation",
@@ -30073,7 +30024,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -30667,9 +30618,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/updateOne-validation.json::test[1]": {
-      "activity": "UTF-012",
+      "activity": "UTF-013",
       "fingerprint": "a88a82b6a289d936aed553349d2b816590bac6bbec6e7b5fe1be1ae806dfee2d",
-      "reason": "the unified collection-write adapters are not implemented",
+      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30695,7 +30646,6 @@
     "crud/tests/unified/updateOne.json::test[1]": {
       "activity": "UTF-012",
       "fingerprint": "0d37ed35df44632c9114e4f5e493fbb5794a183a774f7348a03bbd17ca084c67",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30716,12 +30666,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne.json::test[2]": {
       "activity": "UTF-012",
       "fingerprint": "282558b77cf28c6c1707383471758aedb87c096566a5babdecab5fb320536779",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30742,12 +30691,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne.json::test[3]": {
       "activity": "UTF-012",
       "fingerprint": "8c1e1e644f3b45555c0a5a1eee10412f6d34fc8736e20ace43f6f6bd9352fca4",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30768,12 +30716,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne.json::test[4]": {
       "activity": "UTF-012",
       "fingerprint": "4dad8540190db6446176c815d02450bb98bd9acdad8bc0adfd9f1803caaf718e",
-      "reason": "the unified collection-write adapters are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30795,7 +30742,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]": {
       "activity": "SDAM-002",
