@@ -1325,6 +1325,28 @@
       "notes": [],
       "started_at": "2026-08-07T13:43:31+00:00",
       "completed_at": "2026-08-07T13:47:23+00:00"
+    },
+    "REL-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_mongodb_8_2_raw_data_write_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "Fifteen MongoDB 8.2 rawData write fixtures are deferred because they have no exact executors",
+          "recorded_at": "2026-08-07T13:48:38+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "exact fifteen-fixture rawData write runs on MongoDB 8.0.16 and 8.2.12; make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint",
+          "exit_code": 0,
+          "summary": "Fifteen pre-8.2 omission branches and fifteen MongoDB 8.2 rawData write branches passed; 176 unit, 18 integration, 23 unified CLI, 12 meta, 320 schema-meta, conformance, release, and lint gates passed",
+          "recorded_at": "2026-08-07T13:52:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T13:48:17+00:00",
+      "completed_at": "2026-08-07T13:52:48+00:00"
     }
   },
   "verified_references": {

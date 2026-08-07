@@ -1543,6 +1543,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1559,6 +1560,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1608,6 +1610,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1676,6 +1679,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/bulkWrite-updateMany-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/bulkWrite-updateMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1712,6 +1716,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/bulkWrite-updateOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/bulkWrite-updateOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1900,6 +1905,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/deleteMany-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/deleteMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1949,6 +1955,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/deleteOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/deleteOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2139,6 +2146,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/findOneAndDelete-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/findOneAndDelete-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2199,6 +2207,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/findOneAndReplace-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/findOneAndReplace-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2307,6 +2316,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/findOneAndUpdate-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/findOneAndUpdate-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2367,6 +2377,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/insertMany-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/insertMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2424,6 +2435,7 @@
       "environment": "live-standalone",
       "testCommands": true
     },
+    "crud/tests/unified/insertOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/insertOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2476,6 +2488,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/replaceOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/replaceOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2576,6 +2589,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/updateMany-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/updateMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -2677,6 +2691,7 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/updateOne-rawdata.json::test[1]": {"activity": "REL-013", "environment": "live-standalone"},
     "crud/tests/unified/updateOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
