@@ -688,7 +688,7 @@
       "completed_at": "2026-08-06T22:16:51+00:00"
     },
     "SDAM-002": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -696,11 +696,20 @@
           "exit_code": 1,
           "summary": "Monitored topology discovery test cannot run because mongodb.topology does not exist",
           "recorded_at": "2026-08-06T22:22:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified",
+          "exit_code": 0,
+          "summary": "144 unit tests, including all 72 pinned SDAM application-error files and seven applicable monitoring-event files, 17 integration tests including replica-set primary discovery, and 313 exact unified cases passed. Unified execution reported 313 passed, 0 failed, 0 environment-skipped, and 1,587 explicit deferrals; the conformance ledger records 2,285 passing and 3,239 deferred cases. Additional lint passed with zero warnings.",
+          "recorded_at": "2026-08-07T01:52:34+00:00"
         }
       ],
       "notes": [
         "Requeued: Insert reviewed unified-conformance prerequisites before SDAM implementation"
-      ]
+      ],
+      "started_at": "2026-08-07T01:45:44+00:00",
+      "completed_at": "2026-08-07T01:52:57+00:00"
     },
     "UTF-005": {
       "status": "completed",

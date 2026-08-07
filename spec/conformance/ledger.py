@@ -45,7 +45,7 @@ DEFAULT_OWNERS = {
   "index-management": "REL-001",
   "initial-dns-seedlist-discovery": "ADV-003",
   "load-balancers": "ADV-006",
-  "mongodb-handshake": "SDAM-002",
+  "mongodb-handshake": "REL-001",
   "open-telemetry": "ADV-009",
   "read-write-concern": "REL-001",
   "retryable-reads": "RETRY-001",
@@ -311,7 +311,20 @@ def classify_case(
         "make test-unit",
       )
 
-    owner = "ADV-006" if "/tests/load-balanced/" in path else "SDAM-002"
+    if "/tests/errors/" in path or (
+      "/tests/monitoring/" in path and not path.endswith("load_balancer.json")
+    ):
+      return _passed(
+        case,
+        "SDAM-002",
+        "spec/support/sdam_runner.lua",
+        "make test-unit",
+        "deterministic-runtime",
+      )
+
+    owner = "ADV-006" if (
+      "/tests/load-balanced/" in path or path.endswith("/monitoring/load_balancer.json")
+    ) else "SDAM-002"
     return _deferred(case, owner, activities)
 
   if suite == "connection-monitoring-and-pooling":

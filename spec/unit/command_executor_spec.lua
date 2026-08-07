@@ -72,8 +72,28 @@ describe("single-connection command executor", function()
     assert.are.equal(25, hello.max_wire_version)
     assert.are.equal(30, hello.logical_session_timeout_minutes)
 
-    assert(commands:hello())
-    assert.are.same({ "hello", "backpressure", "$db" }, connection.requests[2].body:keys())
+    local process_id = assert(bson.object_id("000000000000000000000001"))
+    local topology_version = bson.document({
+      { "processId", process_id },
+      { "counter", bson.int64(1) },
+    })
+
+    assert(commands:hello({
+      max_await_time_ms = 10000,
+      topology_version = topology_version,
+    }))
+    assert.are.same(
+      { "hello", "backpressure", "topologyVersion", "maxAwaitTimeMS", "$db" },
+      connection.requests[2].body:keys()
+    )
+    assert.are.equal(
+      assert(bson.encode(topology_version)),
+      assert(bson.encode(connection.requests[2].body:get("topologyVersion")))
+    )
+    assert.are.equal(
+      10000,
+      connection.requests[2].body:get("maxAwaitTimeMS"):to_number()
+    )
 
     local command = bson.document({ { "ping", 1 }, { "comment", "unchanged" } })
     local response = assert(commands:command("admin", command))

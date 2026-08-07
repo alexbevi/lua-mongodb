@@ -4,8 +4,11 @@ local command_executor = require("mongodb.command.executor")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
 local monitoring = require("mongodb.monitoring")
+local pool = require("mongodb.pool")
 local runtime_contract = require("mongodb.runtime")
 local scram = require("mongodb.auth.scram")
+local topology = require("mongodb.topology")
+local topology_executor = require("mongodb.topology_executor")
 local transport = require("mongodb.network.transport")
 local uri_parser = require("mongodb.config.uri")
 
@@ -15,8 +18,11 @@ local SPECIAL_OPTIONS = {
   cancellation = true,
   command_listeners = true,
   deadline = true,
+  heartbeat_listeners = true,
   on_listener_error = true,
+  pool_listeners = true,
   runtime = true,
+  sdam_listeners = true,
 }
 
 local function configuration_error(message)
@@ -131,21 +137,276 @@ local function mechanism_from(hello, configured)
   return "SCRAM-SHA-1"
 end
 
+local function host_from_address(value)
+  local host
+  local port
+
+  if value:sub(1, 1) == "[" then
+    local close = assert(value:find("]", 2, true))
+
+    host = value:sub(2, close - 1)
+    port = tonumber(value:sub(close + 2))
+  else
+    local colon = assert(value:match("^.*():"))
+
+    host = value:sub(1, colon - 1)
+    port = tonumber(value:sub(colon + 1))
+  end
+
+  return {
+    host = host,
+    port = port,
+    type = host:find(":", 1, true) and "ip_literal" or "hostname",
+  }
+end
+
+local function connection_deadline(runtime, config, deadline)
+  if config.connect_timeout_ms == 0 then
+    return deadline
+  end
+
+  local connect_deadline = runtime_contract.deadline_after(
+    runtime,
+    config.connect_timeout_ms / 1000
+  )
+
+  return deadline and math.min(deadline, connect_deadline) or connect_deadline
+end
+
+local function open_executor(
+  runtime,
+  config,
+  parsed,
+  monitor,
+  server_address,
+  fields,
+  authenticate
+)
+  local host = host_from_address(server_address)
+  local deadline = connection_deadline(runtime, config, fields.deadline)
+  local connection, err = transport.connect(runtime, host.host, host.port, {
+    cancellation = fields.cancellation,
+    deadline = deadline,
+    tls = tls_options(config, host),
+  })
+
+  if not connection then
+    return nil, err
+  end
+
+  local executor = command_executor.new(connection, {
+    app_name = config.app_name,
+    monitoring = monitor,
+    server = server_address,
+    server_api = config.server_api,
+  })
+  local auth_source = config.auth_source or parsed.database or "admin"
+  local hello_options = {
+    cancellation = fields.cancellation,
+    deadline = deadline,
+    max_await_time_ms = fields.max_await_time_ms,
+    topology_version = fields.topology_version,
+  }
+
+  if parsed.username ~= nil and authenticate then
+    hello_options.sasl_supported_mechs = auth_source .. "." .. parsed.username
+  end
+
+  local hello
+  hello, err = executor:hello(hello_options)
+
+  if not hello then
+    executor:close()
+    return nil, err
+  end
+
+  if authenticate and parsed.username ~= nil then
+    local mechanism
+    mechanism, err = mechanism_from(hello, config.auth_mechanism)
+
+    if not mechanism then
+      executor:close()
+      return nil, err
+    end
+
+    local authenticated
+    authenticated, err = scram.authenticate(executor, runtime, {
+      mechanism = mechanism,
+      password = parsed.password or "",
+      source = auth_source,
+      username = parsed.username,
+    }, {
+      cancellation = fields.cancellation,
+      deadline = deadline,
+    })
+
+    if not authenticated then
+      executor:close()
+      return nil, err
+    end
+  end
+
+  return executor, nil, hello
+end
+
+local function connect_replica_set(parsed, config, special, runtime, monitor, warnings)
+  local seeds = {}
+
+  for index, host in ipairs(parsed.hosts) do
+    if host.type == "unix" then
+      return configuration_error("Unix domain sockets are not supported by the current runtime")
+    end
+
+    seeds[index] = address(host)
+  end
+
+  local monitor_connections = {}
+  local manager
+  local function monitor_check(server_address, fields)
+    local executor = monitor_connections[server_address]
+    local hello
+    local err
+
+    if executor then
+      hello, err = executor:hello({
+        cancellation = fields.cancellation,
+        max_await_time_ms = fields.max_await_time_ms,
+        topology_version = fields.topology_version,
+      })
+    else
+      executor, err, hello = open_executor(
+        runtime,
+        config,
+        parsed,
+        monitor,
+        server_address,
+        fields,
+        false
+      )
+      monitor_connections[server_address] = executor
+    end
+
+    if not hello then
+      if executor then
+        executor:close()
+      end
+
+      monitor_connections[server_address] = nil
+      return nil, err
+    end
+
+    return hello.document
+  end
+
+  local function rtt_check(server_address, fields)
+    local started_at = runtime.clock:now()
+    local executor = open_executor(
+      runtime,
+      config,
+      parsed,
+      monitor,
+      server_address,
+      fields,
+      false
+    )
+
+    if not executor then
+      return nil
+    end
+
+    executor:close()
+    return (runtime.clock:now() - started_at) * 1000
+  end
+
+  local function pool_factory(server_address)
+    return pool.new({
+      address = server_address,
+      connect = function(fields)
+        return open_executor(
+          runtime,
+          config,
+          parsed,
+          monitor,
+          server_address,
+          fields,
+          true
+        )
+      end,
+      listeners = special.pool_listeners or {},
+      max_connecting = config.max_connecting,
+      max_idle_time_ms = config.max_idle_time_ms,
+      max_pool_size = config.max_pool_size,
+      min_pool_size = config.min_pool_size,
+      on_connection_error = function(connection_err)
+        if manager then
+          manager:handle_application_error(server_address, {
+            error = connection_err,
+            type = "handshake",
+            when = "beforeHandshakeCompletes",
+          })
+        end
+      end,
+      on_listener_error = special.on_listener_error,
+      runtime = runtime,
+      wait_queue_timeout_ms = config.wait_queue_timeout_ms or 0,
+    })
+  end
+
+  manager = topology.new({
+    check = monitor_check,
+    heartbeat_frequency_ms = config.heartbeat_frequency_ms,
+    heartbeat_listeners = special.heartbeat_listeners,
+    listeners = special.sdam_listeners or {},
+    on_listener_error = special.on_listener_error,
+    on_server_close = function(server_address)
+      local connection = monitor_connections[server_address]
+
+      if connection then
+        connection:close()
+        monitor_connections[server_address] = nil
+      end
+    end,
+    pool_factory = pool_factory,
+    rtt_check = rtt_check,
+    runtime = runtime,
+    seeds = seeds,
+    server_monitoring_mode = config.server_monitoring_mode,
+    set_name = config.replica_set,
+    type = config.direct_connection and "Single" or "ReplicaSetNoPrimary",
+  })
+  assert(manager:open())
+  local executor = topology_executor.new(manager, {
+    local_threshold_ms = config.local_threshold_ms,
+    on_close = function()
+      for server_address, connection in pairs(monitor_connections) do
+        connection:close()
+        monitor_connections[server_address] = nil
+      end
+    end,
+    read_preference = config.read_preference,
+    server_selection_timeout_ms = config.server_selection_timeout_ms,
+  })
+  local capabilities, err = executor:capabilities()
+
+  if not capabilities then
+    executor:close()
+    return nil, err
+  end
+
+  return api.new_client(
+    executor,
+    config,
+    parsed.database,
+    warnings,
+    lazy_object_ids(runtime)
+  )
+end
+
 function M.connect(uri, values)
   local parsed, err = uri_parser.parse(uri)
 
   if not parsed then
     return nil, err
-  end
-
-  if #parsed.hosts ~= 1 then
-    return configuration_error("the standalone client requires exactly one seed")
-  end
-
-  local host = parsed.hosts[1]
-
-  if host.type == "unix" then
-    return configuration_error("Unix domain sockets are not supported by the current runtime")
   end
 
   local programmatic, special = split_options(values)
@@ -172,6 +433,24 @@ function M.connect(uri, values)
     listeners = special.command_listeners or {},
     on_listener_error = special.on_listener_error,
   })
+  local warnings = combine_warnings(parsed, option_warnings)
+
+  if config.replica_set ~= nil then
+    return connect_replica_set(parsed, config, special, runtime, monitor, warnings)
+  end
+
+  if #parsed.hosts ~= 1 then
+    return configuration_error(
+      "multiple seeds require replicaSet; sharded deployments are post-v1"
+    )
+  end
+
+  local host = parsed.hosts[1]
+
+  if host.type == "unix" then
+    return configuration_error("Unix domain sockets are not supported by the current runtime")
+  end
+
   local connection
   connection, err = transport.connect(runtime, host.host, host.port or 27017, {
     cancellation = special.cancellation,
@@ -242,7 +521,7 @@ function M.connect(uri, values)
     executor,
     config,
     parsed.database,
-    combine_warnings(parsed, option_warnings),
+    warnings,
     lazy_object_ids(runtime)
   )
 end

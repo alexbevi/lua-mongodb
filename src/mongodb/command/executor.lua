@@ -356,6 +356,41 @@ function EXECUTOR_METHODS:hello(options)
 
   options = options or {}
 
+  if type(options) ~= "table" then
+    error("hello options must be a table", 2)
+  end
+
+  for key in pairs(options) do
+    if key ~= "cancellation" and key ~= "deadline"
+        and key ~= "max_await_time_ms" and key ~= "sasl_supported_mechs"
+        and key ~= "topology_version"
+    then
+      error("unknown hello option: " .. tostring(key), 2)
+    end
+  end
+
+  if options.max_await_time_ms ~= nil
+      and (math.type(options.max_await_time_ms) ~= "integer"
+        or options.max_await_time_ms < 0)
+  then
+    error("max_await_time_ms must be a non-negative integer", 2)
+  end
+
+  if options.topology_version ~= nil
+      and not bson.is_document(options.topology_version)
+  then
+    error("topology_version must be a BSON document", 2)
+  end
+
+  if (options.max_await_time_ms == nil) ~= (options.topology_version == nil) then
+    error("awaitable hello requires topology_version and max_await_time_ms", 2)
+  end
+
+  if options.topology_version then
+    entries[#entries + 1] = { "topologyVersion", options.topology_version }
+    entries[#entries + 1] = { "maxAwaitTimeMS", options.max_await_time_ms }
+  end
+
   if options.sasl_supported_mechs ~= nil then
     if type(options.sasl_supported_mechs) ~= "string"
         or options.sasl_supported_mechs == ""

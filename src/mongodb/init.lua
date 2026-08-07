@@ -16,6 +16,7 @@ local M = {
   runtime = require("mongodb.runtime"),
   sdam = require("mongodb.sdam"),
   selection = require("mongodb.selection"),
+  topology = require("mongodb.topology"),
 }
 
 M.index_model = require("mongodb.admin").index_model

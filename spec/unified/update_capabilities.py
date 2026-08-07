@@ -34,7 +34,7 @@ OWNER_REASONS = {
   "ADV-008": "the test requires a post-v1 authentication mechanism",
   "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
-  "CMP-001": "the case requires a MongoDB server version outside the current 8.0 unified gate",
+  "CMP-001": "the case requires a server or deployment outside the current 8.0 standalone unified gate",
   "REL-001": "the operation is outside the v1 unified adapters and awaits release conformance closure",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
@@ -54,7 +54,7 @@ SPECIFICATION_OWNERS = {
   "auth": "ADV-008",
   "change-streams": "ADV-001",
   "client-side-encryption": "ADV-010",
-  "mongodb-handshake": "SDAM-002",
+  "mongodb-handshake": "REL-001",
   "retryable-reads": "RETRY-001",
   "retryable-writes": "RETRY-002",
   "transactions": "TXN-001",
@@ -193,7 +193,7 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   elif {"sharded", "sharded-replicaset"} & topologies or "sharded-" in path:
     owner = "ADV-005"
   else:
-    owner = "SDAM-002"
+    owner = "CMP-001" if "replicaset" in topologies else "REL-001"
 
   return owner, OWNER_REASONS[owner]
 

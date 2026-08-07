@@ -74,4 +74,85 @@ describe("public standalone client API", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("discovers a replica set and executes through the primary pool", function()
+    local servers = {
+      a = assert(socket.bind("127.0.0.1", 0)),
+      b = assert(socket.bind("127.0.0.1", 0)),
+    }
+    local _, port_a = assert(servers.a:getsockname())
+    local _, port_b = assert(servers.b:getsockname())
+    local addresses = {
+      a = "127.0.0.1:" .. assert(math.tointeger(port_a)),
+      b = "127.0.0.1:" .. assert(math.tointeger(port_b)),
+    }
+    local ping_address
+    local outcome
+    local function serve(name)
+      return function(peer)
+        peer = copas.wrap(peer)
+
+        while true do
+          local received, request = pcall(receive_frame, peer)
+
+          if not received then
+            break
+          end
+
+          local command_name = request.body:keys()[1]
+
+          if command_name == "hello" or command_name == "ismaster" then
+            if request.body:get("maxAwaitTimeMS") ~= nil then
+              copas.pause(0.005)
+            end
+
+            send_response(peer, request, bson.document({
+              { "ok", 1 },
+              { "helloOk", true },
+              { "isWritablePrimary", name == "b" },
+              { "secondary", name == "a" },
+              { "setName", "rs" },
+              { "hosts", bson.array({ addresses.a, addresses.b }) },
+              { "primary", addresses.b },
+              { "minWireVersion", 21 },
+              { "maxWireVersion", 25 },
+            }))
+          elseif command_name == "ping" then
+            ping_address = name
+            send_response(peer, request, bson.document({ { "ok", 1 } }))
+          else
+            error("unexpected replica-set command " .. tostring(command_name))
+          end
+        end
+
+        peer:close()
+      end
+    end
+
+    copas.addserver(servers.a, serve("a"))
+    copas.addserver(servers.b, serve("b"))
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://" .. addresses.a .. "," .. addresses.b .. "/app?replicaSet=rs",
+          {
+            heartbeat_frequency_ms = 500,
+            runtime = mongodb.runtime.copas({ lock_poll_interval = 0.001 }),
+            server_selection_timeout_ms = 2000,
+          }
+        ))
+        local reply = assert(client:database():run_command("ping"))
+
+        assert.are.equal(1, reply:get("ok"):to_number())
+        assert.are.equal("b", ping_address)
+        assert(client:close())
+      end))
+      copas.removeserver(servers.a)
+      copas.removeserver(servers.b)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)
