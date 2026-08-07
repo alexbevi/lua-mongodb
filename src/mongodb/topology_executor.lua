@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -76,12 +77,14 @@ local function report_error(state, address, generation, err, when)
 end
 
 local function select_connection(state, operation, options)
+  local context = operation_timeout.current()
+  local deadline = options and options.deadline or context and context.deadline
   local selected, pool_or_err = state.topology:select_server(
     operation,
     operation == "read" and state.read_preference or nil,
     {
       cancellation = options and options.cancellation,
-      deadline = options and options.deadline,
+      deadline = deadline,
       deprioritized_servers = options and options.deprioritized_servers,
       local_threshold_ms = state.local_threshold_ms,
       timeout_ms = state.server_selection_timeout_ms,
@@ -95,17 +98,22 @@ local function select_connection(state, operation, options)
   local pool = pool_or_err
   local connection, checkout_err = pool:check_out({
     cancellation = options and options.cancellation,
-    deadline = options and options.deadline,
+    deadline = deadline,
   })
 
   if not connection then
-    report_error(
-      state,
-      selected.address,
-      pool.generation or 0,
-      checkout_err,
-      "beforeHandshakeCompletes"
-    )
+    if not (errors.is(checkout_err, errors.CATEGORY.POOL)
+        and checkout_err:is_timeout())
+    then
+      report_error(
+        state,
+        selected.address,
+        pool.generation or 0,
+        checkout_err,
+        "beforeHandshakeCompletes"
+      )
+    end
+
     return nil, checkout_err
   end
 
@@ -113,6 +121,7 @@ local function select_connection(state, operation, options)
     address = selected.address,
     connection = connection,
     executor = connection.resource,
+    minimum_round_trip_time_ms = selected.minimum_round_trip_time or 0,
     pool = pool,
   }
 end
@@ -150,8 +159,16 @@ function METHODS:command(database, command, options)
     return nil, err
   end
 
+  local command_options = {}
+
+  for key, value in pairs(options or {}) do
+    command_options[key] = value
+  end
+
+  command_options.minimum_round_trip_time_ms =
+    selected.minimum_round_trip_time_ms
   local response
-  response, err = selected.executor:command(database, command, options)
+  response, err = selected.executor:command(database, command, command_options)
   finish_connection(state, selected, err)
   return response, err
 end
@@ -169,7 +186,15 @@ function METHODS:measure(database, command, options)
   end
 
   local measurement
-  measurement, err = selected.executor:measure(database, command, options)
+  local measure_options = {}
+
+  for key, value in pairs(options or {}) do
+    measure_options[key] = value
+  end
+
+  measure_options.minimum_round_trip_time_ms =
+    selected.minimum_round_trip_time_ms
+  measurement, err = selected.executor:measure(database, command, measure_options)
   finish_connection(state, selected, err)
   return measurement, err
 end

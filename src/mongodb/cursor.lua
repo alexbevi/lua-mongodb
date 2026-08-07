@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -152,15 +153,21 @@ local function get_more(value, state)
     entries[#entries + 1] = { "maxTimeMS", state.max_await_time_ms }
   end
 
-  local response, err = state.executor:command(
-    state.database_name,
-    bson.document(entries),
-    {
-      cancellation = state.cancellation,
-      deadline = state.deadline,
-      session = state.session,
-      session_context = state.session_context,
-    }
+  local response, err = operation_timeout.resume(
+    state.timeout_context,
+    state.timeout_mode == "iteration",
+    function(timeout_options)
+      return state.executor:command(
+        state.database_name,
+        bson.document(entries),
+        {
+          cancellation = state.cancellation,
+          deadline = timeout_options.deadline or state.deadline,
+          session = state.session,
+          session_context = state.session_context,
+        }
+      )
+    end
   )
 
   if not response then
@@ -265,19 +272,45 @@ function CURSOR_METHODS:close(options)
   end
 
   local id = state.id
-  local response, err = state.executor:command(
-    state.database_name,
-    bson.document({
-      { "killCursors", state.collection_name },
-      { "cursors", bson.array({ id }) },
-    }),
-    {
-      cancellation = options.cancellation,
-      deadline = options.deadline,
-      session = state.session,
-      session_context = state.session_context,
-    }
-  )
+  local context = state.timeout_context
+  local response, err
+
+  if context then
+    response, err = operation_timeout.run(
+      context.runtime,
+      context.timeout_ms,
+      options,
+      function(timeout_options)
+        return state.executor:command(
+          state.database_name,
+          bson.document({
+            { "killCursors", state.collection_name },
+            { "cursors", bson.array({ id }) },
+          }),
+          {
+            cancellation = options.cancellation,
+            deadline = timeout_options.deadline,
+            session = state.session,
+            session_context = state.session_context,
+          }
+        )
+      end
+    )
+  else
+    response, err = state.executor:command(
+      state.database_name,
+      bson.document({
+        { "killCursors", state.collection_name },
+        { "cursors", bson.array({ id }) },
+      }),
+      {
+        cancellation = options.cancellation,
+        deadline = options.deadline,
+        session = state.session,
+        session_context = state.session_context,
+      }
+    )
+  end
 
   mark_closed(self, state)
 
@@ -331,6 +364,8 @@ function M.new(response, options)
     retrieved = 0,
     session = options.session,
     session_context = options.session_context,
+    timeout_context = options.timeout_context,
+    timeout_mode = options.timeout_mode or "cursor_lifetime",
   }
   local result = setmetatable(value, CURSOR_METATABLE)
 

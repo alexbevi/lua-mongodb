@@ -1146,7 +1146,9 @@ local function prepare_arguments(runner, descriptor, arguments, path)
   for key, value in arguments:iter() do
     local argument_path = append_path(path, key)
 
-    if descriptor.arguments and not descriptor.arguments[key] and key ~= "session" then
+    if descriptor.arguments and not descriptor.arguments[key] and key ~= "session"
+        and key ~= "timeoutMS" and key ~= "timeoutMode"
+    then
       return nil, configuration_error(
         "unsupported argument " .. key,
         argument_path,
@@ -1409,6 +1411,31 @@ local function wait_for_thread(runner, arguments, path)
   return true
 end
 
+local function wait_operation(runner, arguments, path)
+  local valid, validation_err = validate_special_arguments(arguments, {
+    ms = true,
+  }, path)
+
+  if not valid then
+    return nil, validation_err
+  end
+
+  local milliseconds = arguments:get("ms")
+
+  if bson.is_exact(milliseconds) then
+    milliseconds = milliseconds:to_number()
+  end
+
+  if math.type(milliseconds) ~= "integer" or milliseconds < 0 then
+    return nil, configuration_error(
+      "wait ms must be a non-negative integer",
+      append_path(path, "ms")
+    )
+  end
+
+  return RUNNER_STATES[runner].runtime.clock:sleep(milliseconds / 1000)
+end
+
 local function store_counter(runner, name, value)
   if not name then
     return true
@@ -1505,6 +1532,7 @@ local SPECIAL_OPERATIONS = {
   createEntities = create_entities_operation,
   loop = run_loop,
   runOnThread = run_thread,
+  wait = wait_operation,
   waitForThread = wait_for_thread,
 }
 

@@ -3,6 +3,7 @@ local ROOT = os.getenv("PWD") or "."
 package.path = ROOT .. "/src/?.lua;" .. ROOT .. "/src/?/init.lua;" .. package.path
 
 local bson = require("mongodb.bson")
+local client_module = require("mongodb.client")
 local copas = require("copas")
 local op_msg = require("mongodb.wire.op_msg")
 local runtime_module = require("mongodb.runtime")
@@ -141,6 +142,46 @@ local function selected_document(document, wanted_index)
   return bson.document(entries)
 end
 
+local function database_names(value, result)
+  result = result or {}
+
+  if bson.is_document(value) then
+    local name = value:get("databaseName")
+
+    if type(name) == "string" and name ~= "admin" and name ~= "config"
+        and name ~= "local"
+    then
+      result[name] = true
+    end
+
+    for _, item in value:iter() do
+      database_names(item, result)
+    end
+  elseif bson.is_array(value) then
+    for _, item in value:iter() do
+      database_names(item, result)
+    end
+  end
+
+  return result
+end
+
+local function reset_databases(runtime, uri, document)
+  local client = assert(client_module.connect(uri, { runtime = runtime }))
+  local admin = assert(client:database("admin"))
+
+  admin:run_command(bson.document({
+    { "configureFailPoint", "failCommand" },
+    { "mode", "off" },
+  }), { monitor = false })
+
+  for name in pairs(database_names(document)) do
+    assert(client:drop_database(name))
+  end
+
+  assert(client:close())
+end
+
 local function load_json(path)
   local file = assert(io.open(path, "rb"))
   local document = assert(bson.json.decode(file:read("*a")))
@@ -243,17 +284,21 @@ local function run_live(identity, fixture, index, topology)
 
   copas.loop(function()
     outcome = table.pack(pcall(function()
+      local runtime = runtime_module.copas()
+      local selected = selected_document(document, index)
+
+      reset_databases(runtime, uri, selected)
       local lifecycle = assert(unified_driver.new({
         environment = {
           server_version = server_version,
           topology = topology,
         },
-        runtime = runtime_module.copas(),
+        runtime = runtime,
         uri = uri,
       }))
       local executed = table.pack(pcall(function()
         local report = assert(lifecycle:run_file(
-          selected_document(document, index),
+          selected,
           identity
         ))
 
@@ -308,6 +353,8 @@ local function run(identity)
   elseif environment == "live-standalone" then
     return run_live(identity, fixture, index, "single")
   elseif environment == "live-replicaset" then
+    return run_live(identity, fixture, index, "replicaset")
+  elseif environment == "isolated-replicaset" then
     return run_live(identity, fixture, index, "replicaset")
   end
 

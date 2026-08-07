@@ -1,8 +1,39 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local retry_executor = require("mongodb.retry_executor")
+local operation_timeout = require("mongodb.operation_timeout")
+local fake_runtime = require("mongodb.runtime.fake")
 
 describe("retryable read executor", function()
+  it("retries until the operation deadline under CSOT", function()
+    local runtime = fake_runtime.new({ now = 0 })
+    local calls = 0
+    local underlying = {
+      close = function() return true end,
+      command = function()
+        calls = calls + 1
+        runtime:advance(0.004)
+        return nil, errors.new({
+          category = errors.CATEGORY.NETWORK,
+          message = "connection closed",
+        })
+      end,
+    }
+    local executor = retry_executor.new(underlying)
+    local result, err = operation_timeout.run(runtime, 10, {}, function(options)
+      options.retryable_read = true
+      return executor:command(
+        "db",
+        bson.document({ { "find", "items" } }),
+        options
+      )
+    end)
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+    assert.are.equal(3, calls)
+  end)
+
   it("retries once with the same command and operation id", function()
     local calls = {}
     local underlying = {}

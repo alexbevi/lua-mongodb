@@ -346,6 +346,7 @@ local function process_check_result(state, address, response, err, fields)
   local awaited = fields.awaited == true
   local current = state.description:server(address)
   local round_trip_time = fields.round_trip_time
+  local rtt_sample = fields.rtt_sample
 
   if awaited and round_trip_time == nil and current then
     round_trip_time = current.round_trip_time
@@ -353,10 +354,27 @@ local function process_check_result(state, address, response, err, fields)
 
   if response then
     if round_trip_time == nil and not awaited then
+      rtt_sample = duration * 1000
       round_trip_time = selection.average_rtt(
         current and current.round_trip_time or nil,
         duration * 1000
       )
+    end
+
+    if rtt_sample == nil and not awaited then
+      rtt_sample = round_trip_time
+    end
+
+    if type(rtt_sample) == "number" and rtt_sample >= 0 then
+      local samples = state.rtt_samples[address] or {}
+
+      samples[#samples + 1] = rtt_sample
+
+      if #samples > 10 then
+        table.remove(samples, 1)
+      end
+
+      state.rtt_samples[address] = samples
     end
 
     publish_heartbeat(state, "ServerHeartbeatSucceeded", {
@@ -380,10 +398,18 @@ local function process_check_result(state, address, response, err, fields)
   end
 
   assert(state.lock:acquire())
+  local minimum_round_trip_time
+  local samples = state.rtt_samples[address]
+
+  if samples and #samples >= 2 then
+    minimum_round_trip_time = math.min(table.unpack(samples))
+  end
+
   local processed = process_description(state, address, response, {
     error = err,
     generation = server.pool.generation or 0,
     last_update_time = state.runtime.clock:now(),
+    minimum_round_trip_time = minimum_round_trip_time,
     round_trip_time = round_trip_time,
   })
 
@@ -424,9 +450,10 @@ local function monitor_once(state, address)
     topology_version = awaited and current.topology_version or nil,
   })
   local duration = state.runtime.clock:now() - started_at
+  local rtt_sample
 
   if response and awaited and state.rtt_check then
-    local rtt_sample = state.rtt_check(address, {
+    rtt_sample = state.rtt_check(address, {
       cancellation = state.cancellation,
     })
 
@@ -444,6 +471,7 @@ local function monitor_once(state, address)
     awaited = awaited,
     duration = duration,
     round_trip_time = round_trip_time,
+    rtt_sample = rtt_sample,
     success = response ~= nil,
     timeout = errors.is(check_err, errors.CATEGORY.TIMEOUT),
   })
@@ -670,6 +698,7 @@ function M.new(options)
     on_listener_error = options.on_listener_error,
     on_server_close = options.on_server_close,
     pool_factory = options.pool_factory or no_op_pool,
+    rtt_samples = {},
     runtime = options.runtime,
     rtt_check = options.rtt_check,
     server_monitoring_mode = mode == "auto" and "stream" or mode,
@@ -766,6 +795,7 @@ function MANAGER_METHODS:process_hello(address, response, options)
     awaited = options.awaited == true,
     duration = options.duration or 0,
     round_trip_time = options.round_trip_time,
+    rtt_sample = options.round_trip_time,
     success = success,
   })
 end

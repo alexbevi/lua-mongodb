@@ -4,6 +4,7 @@ local bulk = require("mongodb.bulk")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -128,6 +129,7 @@ local function inherited_options(parent, overrides)
   local allowed = {
     read_concern = true,
     read_preference = true,
+    timeout_ms = true,
     write_concern = true,
   }
 
@@ -148,6 +150,8 @@ local function inherited_options(parent, overrides)
       and normalized.read_concern or parent.read_concern,
     read_preference = overrides.read_preference ~= nil
       and normalized.read_preference or parent.read_preference,
+    timeout_ms = overrides.timeout_ms ~= nil
+      and normalized.timeout_ms or parent.timeout_ms,
     write_concern = overrides.write_concern ~= nil
       and normalized.write_concern or parent.write_concern,
   }
@@ -159,6 +163,15 @@ local function ensure_open(state)
   end
 
   return true
+end
+
+local function run_operation(state, options, callback)
+  return operation_timeout.run(
+    state.runtime,
+    state.timeout_ms,
+    options,
+    callback
+  )
 end
 
 local function new_database(client, name, options)
@@ -181,6 +194,8 @@ local function new_database(client, name, options)
     on_cursor_close = client_state.on_cursor_close,
     read_concern = concerns.read_concern,
     read_preference = concerns.read_preference,
+    runtime = client_state.runtime,
+    timeout_ms = concerns.timeout_ms,
     write_concern = concerns.write_concern,
   }
   return setmetatable(value, DATABASE_METATABLE)
@@ -262,7 +277,9 @@ function CLIENT_METHODS:list_databases(options)
   end
 
   local cursor
-  cursor, err = admin.list_databases(state, options)
+  cursor, err = run_operation(state, options, function(prepared)
+    return admin.list_databases(state, prepared)
+  end)
 
   if not cursor then
     return nil, err
@@ -279,7 +296,9 @@ function CLIENT_METHODS:list_database_names(options)
     return nil, err
   end
 
-  return admin.list_database_names(state, options)
+  return run_operation(state, options, function(prepared)
+    return admin.list_database_names(state, prepared)
+  end)
 end
 
 function CLIENT_METHODS:drop_database(name_or_database, options)
@@ -297,7 +316,9 @@ function CLIENT_METHODS:drop_database(name_or_database, options)
     return nil, err
   end
 
-  return admin.drop_database(state, name, options)
+  return run_operation(state, options, function(prepared)
+    return admin.drop_database(state, name, prepared)
+  end)
 end
 
 function DATABASE_METHODS:collection(name, options)
@@ -329,6 +350,8 @@ function DATABASE_METHODS:collection(name, options)
     end,
     read_concern = concerns.read_concern,
     read_preference = concerns.read_preference,
+    runtime = state.runtime,
+    timeout_ms = concerns.timeout_ms,
     write_concern = concerns.write_concern,
   }
   return setmetatable(value, COLLECTION_METATABLE)
@@ -345,7 +368,9 @@ function DATABASE_METHODS:create_collection(name, options)
   end
 
   local response
-  response, err = admin.create_collection(state, name, options)
+  response, err = run_operation(state, options, function(prepared)
+    return admin.create_collection(state, name, prepared)
+  end)
 
   if not response then
     return nil, err
@@ -376,7 +401,9 @@ function DATABASE_METHODS:drop_collection(name_or_collection, options)
     return nil, err
   end
 
-  return admin.drop_collection(state, name, options)
+  return run_operation(state, options, function(prepared)
+    return admin.drop_collection(state, name, prepared)
+  end)
 end
 
 function DATABASE_METHODS:list_collections(options)
@@ -389,7 +416,9 @@ function DATABASE_METHODS:list_collections(options)
   end
 
   local cursor
-  cursor, err = admin.list_collections(state, options)
+  cursor, err = run_operation(state, options, function(prepared)
+    return admin.list_collections(state, prepared)
+  end)
 
   if not cursor then
     return nil, err
@@ -406,7 +435,9 @@ function DATABASE_METHODS:list_collection_names(options)
     return nil, err
   end
 
-  return admin.list_collection_names(state, options)
+  return run_operation(state, options, function(prepared)
+    return admin.list_collection_names(state, prepared)
+  end)
 end
 
 function DATABASE_METHODS:run_command(command, options)
@@ -428,7 +459,9 @@ function DATABASE_METHODS:run_command(command, options)
     error("command must be a name or BSON document", 2)
   end
 
-  return client_state.executor:command(state.name, command, options)
+  return run_operation(state, options, function(prepared)
+    return client_state.executor:command(state.name, command, prepared)
+  end)
 end
 
 local function collection_operation(collection, operation, ...)
@@ -440,7 +473,13 @@ local function collection_operation(collection, operation, ...)
     return nil, err
   end
 
-  return operation(state, ...)
+  local arguments = table.pack(...)
+  local options = arguments[arguments.n]
+
+  return run_operation(state, options, function(prepared)
+    arguments[arguments.n] = prepared
+    return operation(state, table.unpack(arguments, 1, arguments.n))
+  end)
 end
 
 function COLLECTION_METHODS:insert_one(document, options)
@@ -472,7 +511,13 @@ function COLLECTION_METHODS:drop(options)
     return nil, err
   end
 
-  return admin.drop_collection(DATABASE_STATES[state.database], state.name, options)
+  return run_operation(state, options, function(prepared)
+    return admin.drop_collection(
+      DATABASE_STATES[state.database],
+      state.name,
+      prepared
+    )
+  end)
 end
 
 function COLLECTION_METHODS:drop_index(name, options)
@@ -583,7 +628,8 @@ function M.new_client(
   default_database_name,
   warnings,
   object_ids,
-  sessions
+  sessions,
+  runtime
 )
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
@@ -615,7 +661,9 @@ function M.new_client(
     options = options,
     read_concern = options.read_concern,
     read_preference = options.read_preference,
+    runtime = runtime,
     sessions = sessions,
+    timeout_ms = options.timeout_ms,
     warnings = readonly_warnings(warnings or {}),
     write_concern = options.write_concern,
   }

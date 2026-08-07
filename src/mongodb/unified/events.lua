@@ -7,11 +7,13 @@ local EVENT_NAMES = {
   command_failed = "commandFailedEvent",
   command_started = "commandStartedEvent",
   command_succeeded = "commandSucceededEvent",
+  pool_cleared = "poolClearedEvent",
 }
 local EVENT_TYPES = {
   commandFailedEvent = "command_failed",
   commandStartedEvent = "command_started",
   commandSucceededEvent = "command_succeeded",
+  poolClearedEvent = "pool_cleared",
 }
 local SENSITIVE_COMMANDS = {
   authenticate = true,
@@ -106,6 +108,11 @@ local function record(collector, event)
     return
   end
 
+  if event.type == "pool_cleared" then
+    collector.events[#collector.events + 1] = event
+    return
+  end
+
   local command_name = event.command_name:lower()
 
   if collector.ignored[command_name]
@@ -120,6 +127,26 @@ end
 
 function COLLECTOR_METHODS:disable()
   self.active = false
+end
+
+function COLLECTOR_METHODS:count(event_name, command_name)
+  local event_type = EVENT_TYPES[event_name]
+
+  if not event_type then
+    return nil
+  end
+
+  local count = 0
+
+  for _, event in ipairs(self.events) do
+    if event.type == event_type
+        and (command_name == nil or event.command_name == command_name)
+    then
+      count = count + 1
+    end
+  end
+
+  return count
 end
 
 function M.new(specification)
@@ -169,6 +196,14 @@ function M.new(specification)
     end,
     succeeded = function(_, event)
       record(collector, event)
+    end,
+  }
+  collector.pool_listener = {
+    ConnectionPoolCleared = function(_, event)
+      record(collector, {
+        address = event.address,
+        type = "pool_cleared",
+      })
     end,
   }
   return collector
@@ -295,7 +330,7 @@ function M.assert_all(runner, expected_groups, collectors, path)
 
     local event_type = group:get("eventType") or "command"
 
-    if event_type ~= "command" then
+    if event_type ~= "command" and event_type ~= "cmap" then
       return configuration_error(
         "unsupported unified event category: " .. tostring(event_type),
         group_path .. ".eventType"
@@ -330,13 +365,25 @@ function M.assert_all(runner, expected_groups, collectors, path)
       )
     end
 
-    if #collector.events < #expected_events
-      or not ignore_extra and #collector.events ~= #expected_events
+    local actual_events = {}
+
+    for _, event in ipairs(collector.events) do
+      local is_command = event.type ~= "pool_cleared"
+
+      if event_type == "command" and is_command
+          or event_type == "cmap" and not is_command
+      then
+        actual_events[#actual_events + 1] = event
+      end
+    end
+
+    if #actual_events < #expected_events
+      or not ignore_extra and #actual_events ~= #expected_events
     then
       return configuration_error(
         "observed event count does not match",
         group_path .. ".events",
-        { actual = #collector.events, expected = #expected_events }
+        { actual = #actual_events, expected = #expected_events }
       )
     end
 
@@ -345,7 +392,7 @@ function M.assert_all(runner, expected_groups, collectors, path)
       matched, err = match_event(
         runner,
         expected,
-        collector.events[event_index],
+        actual_events[event_index],
         group_path .. ".events[" .. event_index .. "]"
       )
 

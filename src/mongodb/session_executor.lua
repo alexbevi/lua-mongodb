@@ -1,5 +1,6 @@
 local M = {}
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local STATES = setmetatable({}, { __mode = "k" })
 local METHODS = {}
@@ -168,11 +169,33 @@ function METHODS:command(database, command, options)
     end
   end
 
-  response, err = state.executor:command(
-    database,
-    decorated,
-    command_options(options, on_attempt_error, retryable_write, in_transaction)
+  local downstream_options = command_options(
+    options,
+    on_attempt_error,
+    retryable_write,
+    in_transaction
   )
+  local context = operation_timeout.current()
+  local session_runtime, session_timeout_ms
+
+  if session and type(session.get_timeout_context) == "function" then
+    session_runtime, session_timeout_ms = session:get_timeout_context()
+  end
+
+  if session_timeout_ms ~= nil and options and options.session ~= nil
+      and not (context and context.explicit_timeout)
+  then
+    response, err = operation_timeout.run(
+      session_runtime,
+      session_timeout_ms,
+      downstream_options,
+      function(prepared)
+        return state.executor:command(database, decorated, prepared)
+      end
+    )
+  else
+    response, err = state.executor:command(database, decorated, downstream_options)
+  end
 
   if response and state.manager then
     state.manager:advance(response, session)

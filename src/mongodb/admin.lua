@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local cursor_model = require("mongodb.cursor")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -62,6 +63,7 @@ local LIST_COLLECTION_OPTIONS = {
   name_only = true,
   raw_data = true,
   session = true,
+  timeout_mode = true,
 }
 
 local DROP_OPTIONS = {
@@ -98,6 +100,7 @@ local LIST_INDEX_OPTIONS = {
   deadline = true,
   raw_data = true,
   session = true,
+  timeout_mode = true,
 }
 
 local INDEX_OPTION_NAMES = {
@@ -404,6 +407,8 @@ local function cursor_from_response(state, response, options)
     on_close = state.on_cursor_close,
     session = options.session,
     session_context = options.session_context,
+    timeout_context = operation_timeout.capture(),
+    timeout_mode = options.timeout_mode,
   })
 end
 
@@ -691,6 +696,7 @@ function M.list_collections(state, options)
     deadline = options.deadline,
     session = options.session,
     session_context = options.session_context,
+    timeout_mode = options.timeout_mode,
   })
 end
 
@@ -1018,6 +1024,7 @@ function M.list_indexes(state, options)
     inherit_comment = true,
     session = options.session,
     session_context = options.session_context,
+    timeout_mode = options.timeout_mode,
   })
 end
 

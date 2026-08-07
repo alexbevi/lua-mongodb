@@ -1,4 +1,5 @@
 local runtime_contract = require("mongodb.runtime")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -19,7 +20,7 @@ local function command_options(state, options)
     result[key] = value
   end
 
-  if state.timeout_ms > 0 then
+  if operation_timeout.current() == nil and state.timeout_ms > 0 then
     local deadline = runtime_contract.deadline_after(
       state.runtime,
       state.timeout_ms / 1000

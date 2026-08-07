@@ -1076,6 +1076,28 @@
       "notes": [],
       "started_at": "2026-08-07T05:32:54+00:00",
       "completed_at": "2026-08-07T06:29:10+00:00"
+    },
+    "TIME-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/api_handles_spec.lua",
+          "exit_code": 1,
+          "summary": "A client timeout_ms was normalized but public operations passed no derived monotonic deadline to the executor, so the operation budget was not enforced.",
+          "recorded_at": "2026-08-07T06:34:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint && make rockspec",
+          "exit_code": 0,
+          "summary": "171 unit tests and all BSON corpus vectors passed; 18 integration tests passed; 892 unified cases executed and passed with 3 environment skips, 1544 explicitly owned deferrals, and 0 failures; all 30 applicable CSOT cases passed; lint reported 0 warnings across 107 files; rockspec validation passed.",
+          "recorded_at": "2026-08-07T08:12:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T06:33:22+00:00",
+      "completed_at": "2026-08-07T08:12:35+00:00"
     }
   },
   "verified_references": {

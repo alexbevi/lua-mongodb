@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local cursor_model = require("mongodb.cursor")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -43,6 +44,7 @@ local FIND_OPTIONS = {
   limit = true,
   no_cursor_timeout = true,
   session = true,
+  timeout_mode = true,
 }
 local INSERT_OPTIONS = {
   bypass_document_validation = true,
@@ -103,6 +105,7 @@ local AGGREGATE_OPTIONS = {
   max_time_ms = true,
   raw_data = true,
   session = true,
+  timeout_mode = true,
 }
 local COUNT_OPTIONS = {
   cancellation = true,
@@ -869,6 +872,8 @@ local function cursor_from_response(state, response, options)
     on_close = state.on_cursor_close,
     session = options.session,
     session_context = options.session_context,
+    timeout_context = operation_timeout.capture(),
+    timeout_mode = options.timeout_mode,
   })
 end
 
@@ -1019,6 +1024,18 @@ function M.aggregate(state, pipeline, options)
   options.session_context = options.session == nil
     and type(state.executor.release_session_context) == "function" and {} or nil
   local writes = pipeline_writes(pipeline)
+
+  if writes and options.timeout_mode == "iteration" then
+    if options.session_context then
+      state.executor:release_session_context(options.session_context)
+    end
+
+    return nil, errors.new({
+      category = errors.CATEGORY.CLIENT,
+      message = "iteration timeout mode is not supported for $out or $merge",
+    })
+  end
+
   local response, err = aggregate_response(state, pipeline, options, writes)
 
   if not response then
@@ -1393,6 +1410,8 @@ function M.find(state, filter, options)
     on_close = state.on_cursor_close,
     session = options.session,
     session_context = session_context,
+    timeout_context = operation_timeout.capture(),
+    timeout_mode = options.timeout_mode,
   })
 end
 

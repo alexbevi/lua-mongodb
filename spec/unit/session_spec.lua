@@ -5,6 +5,7 @@ local driver_options = require("mongodb.config.options")
 local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
+local fake_runtime = require("mongodb.runtime.fake")
 
 local function identifiers()
   local next_id = 0
@@ -21,6 +22,41 @@ local function identifiers()
 end
 
 describe("client sessions", function()
+  it("inherits and overrides the client operation timeout", function()
+    local runtime = fake_runtime.new({ now = 3 })
+    local deadlines = {}
+    local sessions = session_module.new({
+      clock = runtime.clock,
+      default_timeout_ms = 100,
+      id_factory = identifiers(),
+      runtime = runtime,
+      timeout_minutes = 30,
+    })
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        deadlines[#deadlines + 1] = options.deadline
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local executor = session_executor.new(underlying, sessions)
+    local inherited = assert(sessions:start())
+    local overridden = assert(sessions:start({ timeout_ms = 20 }))
+
+    assert(executor:command(
+      "db",
+      bson.document({ { "ping", 1 } }),
+      { session = inherited }
+    ))
+    assert(executor:command(
+      "db",
+      bson.document({ { "ping", 1 } }),
+      { session = overridden }
+    ))
+    assert.near(3.1, deadlines[1], 0.000001)
+    assert.near(3.02, deadlines[2], 0.000001)
+  end)
+
   it("decorates causal commands and rejects an ended session", function()
     local identifier = bson.document({
       { "id", bson.binary(string.rep("s", 16), bson.BINARY_SUBTYPE.UUID) },

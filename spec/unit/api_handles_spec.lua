@@ -2,6 +2,7 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
+local fake_runtime = require("mongodb.runtime.fake")
 
 describe("core MongoDB handles", function()
   it("validates immutable namespaces, inherits options, runs commands, and closes", function()
@@ -60,5 +61,30 @@ describe("core MongoDB handles", function()
     assert.is_nil(closed_reply)
     assert.is_true(errors.is(closed_err, errors.CATEGORY.CLIENT))
     assert.are.equal("client is closed", closed_err.message)
+  end)
+
+  it("derives one operation deadline from the inherited timeout", function()
+    local received
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        received = options
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 50 }))
+    local runtime = fake_runtime.new({ now = 10 })
+    local client = api.new_client(
+      executor,
+      config,
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+
+    assert(client:database("db"):run_command("ping"))
+    assert.near(10.05, received.deadline, 0.000001)
   end)
 end)

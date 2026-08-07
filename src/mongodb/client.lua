@@ -236,12 +236,14 @@ local function public_client(executor, config, parsed, warnings, runtime)
   if capabilities.logical_session_timeout_minutes ~= nil then
     sessions = session_module.new({
       clock = runtime.clock,
+      default_timeout_ms = config.timeout_ms,
       default_transaction_options = {
         read_concern = transaction_concern(config.read_concern, false),
         read_preference = config.read_preference,
         write_concern = transaction_concern(config.write_concern, true),
       },
       id_factory = session_id_factory(runtime),
+      runtime = runtime,
       timeout_minutes = capabilities.logical_session_timeout_minutes,
       transaction_jitter = transaction_jitter(runtime),
       transaction_command = function(session, name, transaction_options, retry)
@@ -325,7 +327,8 @@ local function public_client(executor, config, parsed, warnings, runtime)
     parsed.database,
     warnings,
     lazy_object_ids(runtime),
-    sessions
+    sessions,
+    runtime
   )
 end
 

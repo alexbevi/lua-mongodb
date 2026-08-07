@@ -1,5 +1,7 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
+local runtime_contract = require("mongodb.runtime")
 
 local M = {}
 
@@ -149,76 +151,76 @@ function METHODS:command(database, command, options)
   end
 
   local id = options.operation_id or operation_id()
-  local response, err = state.executor:command(
-    database,
-    command,
-    attempt_options(options, id)
-  )
+  local context = operation_timeout.current()
+  local first_err
+  local previous_err
+  local attempts = 0
 
-  if write and response then
-    err = write_concern_error(response)
+  while true do
+    local deprioritized
 
-    if err then
-      response = nil
-    end
-  end
-
-  if write and err then
-    err = labelled_write_error(err)
-  end
-
-  if response or not err then
-    return response, err
-  end
-
-  notify(options, err)
-
-  if not (read and retryable_read(err) or write and retryable_write(err)) then
-    return nil, err
-  end
-
-  local deprioritized
-
-  if err.server and err:has_label("SystemOverloadedError") then
-    deprioritized = { err.server }
-  end
-
-  local retry_response, retry_err = state.executor:command(
-    database,
-    command,
-    attempt_options(options, id, deprioritized)
-  )
-
-  if write and retry_response then
-    retry_err = write_concern_error(retry_response)
-
-    if retry_err then
-      retry_response = nil
-    end
-  end
-
-  if write and retry_err then
-    retry_err = labelled_write_error(retry_err)
-  end
-
-  if retry_response or not retry_err then
-    return retry_response, retry_err
-  end
-
-  notify(options, retry_err)
-
-  if write then
-    local retry_attempted = not no_attempt(retry_err)
-      and not retry_err:has_label("NoWritesPerformed")
-
-    if retry_attempted then
-      return nil, retry_err
+    if previous_err and previous_err.server
+        and previous_err:has_label("SystemOverloadedError")
+    then
+      deprioritized = { previous_err.server }
     end
 
-    return nil, err
-  end
+    local response, err = state.executor:command(
+      database,
+      command,
+      attempt_options(options, id, deprioritized)
+    )
 
-  return nil, no_attempt(retry_err) and err or retry_err
+    attempts = attempts + 1
+
+    if write and response then
+      err = write_concern_error(response)
+
+      if err then
+        response = nil
+      end
+    end
+
+    if write and err then
+      err = labelled_write_error(err)
+    end
+
+    if response or not err then
+      return response, err
+    end
+
+    first_err = first_err or err
+    notify(options, err)
+
+    if context == nil and attempts >= 2 then
+      if write then
+        local retry_attempted = not no_attempt(err)
+          and not err:has_label("NoWritesPerformed")
+
+        return nil, retry_attempted and err or first_err
+      end
+
+      return nil, no_attempt(err) and first_err or err
+    end
+
+    if not (read and retryable_read(err) or write and retryable_write(err)) then
+      return nil, err
+    end
+
+    if context and context.deadline then
+      local ok, timeout_err = runtime_contract.check(
+        context.runtime,
+        context.deadline,
+        options.cancellation
+      )
+
+      if not ok then
+        return nil, timeout_err
+      end
+    end
+
+    previous_err = err
+  end
 end
 
 function METHODS:measure(database, command, options)

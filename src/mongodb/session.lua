@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -202,6 +203,13 @@ function SESSION_METHODS:get_cluster_time()
   return SESSION_STATES[self].cluster_time
 end
 
+function SESSION_METHODS:get_timeout_context()
+  local state = SESSION_STATES[self]
+  local manager = MANAGER_STATES[state.manager]
+
+  return manager.runtime, state.timeout_ms
+end
+
 local function transaction_active(transaction)
   return transaction.state == "starting" or transaction.state == "in_progress"
 end
@@ -281,14 +289,36 @@ function SESSION_METHODS:start_transaction(options)
   return true
 end
 
-local function finish_transaction(session, name)
+local function finish_transaction(session, name, options)
   local state, err = check_session(session)
 
   if not state then
     return nil, err
   end
 
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("transaction command options must be a table", 2)
+  end
+
+  for key in pairs(options) do
+    if key ~= "timeout_ms" then
+      error("unknown transaction command option: " .. tostring(key), 2)
+    end
+  end
+
   local transaction = state.transaction
+
+  if operation_timeout.current() == nil
+      and (state.timeout_ms ~= nil or options.timeout_ms ~= nil)
+  then
+    local manager = MANAGER_STATES[state.manager]
+
+    return operation_timeout.run(manager.runtime, state.timeout_ms, options, function()
+      return finish_transaction(session, name, {})
+    end)
+  end
 
   if transaction.state == "none" then
     return client_error("no transaction started")
@@ -375,12 +405,24 @@ local function finish_transaction(session, name)
   return response, err
 end
 
-function SESSION_METHODS:commit_transaction()
-  return finish_transaction(self, "commitTransaction")
+function SESSION_METHODS:commit_transaction(options)
+  return finish_transaction(self, "commitTransaction", options)
 end
 
-function SESSION_METHODS:abort_transaction()
-  return finish_transaction(self, "abortTransaction")
+function SESSION_METHODS:abort_transaction(options)
+  return finish_transaction(self, "abortTransaction", options)
+end
+
+local function abort_with_refreshed_timeout(session)
+  local context = operation_timeout.current()
+
+  if context == nil then
+    return session:abort_transaction()
+  end
+
+  return operation_timeout.resume(context, true, function()
+    return session:abort_transaction()
+  end)
 end
 
 local function retry_timeout(err)
@@ -403,11 +445,23 @@ local function retry_timeout(err)
 end
 
 local function within_retry_time(manager, started_at, delay)
+  local context = operation_timeout.current()
+
+  if context and context.deadline then
+    return manager.clock:now() + (delay or 0) < context.deadline
+  elseif context then
+    return true
+  end
+
   return manager.clock:now() + (delay or 0) - started_at
     < manager.transaction_retry_timeout_seconds
 end
 
 local function sleep_before_transaction_retry(manager, started_at, attempt, err)
+  if operation_timeout.current() then
+    return true
+  end
+
   local jitter, jitter_err = manager.transaction_jitter()
 
   if jitter == nil then
@@ -444,6 +498,22 @@ function SESSION_METHODS:with_transaction(callback, options)
 
   local manager = MANAGER_STATES[state.manager]
 
+  if operation_timeout.current() == nil
+      and (state.timeout_ms ~= nil or options and options.timeout_ms ~= nil)
+  then
+    local transaction_options = {}
+
+    for key, value in pairs(options or {}) do
+      if key ~= "timeout_ms" then
+        transaction_options[key] = value
+      end
+    end
+
+    return operation_timeout.run(manager.runtime, state.timeout_ms, options, function()
+      return self:with_transaction(callback, transaction_options)
+    end)
+  end
+
   if type(manager.clock) ~= "table"
       or type(manager.clock.now) ~= "function"
       or type(manager.clock.sleep) ~= "function"
@@ -479,11 +549,15 @@ function SESSION_METHODS:with_transaction(callback, options)
       return nil, err
     end
 
-    local callback_ok, result, callback_err = pcall(callback, self)
+    local callback_ok, result, callback_err = pcall(
+      operation_timeout.transaction_callback,
+      callback,
+      self
+    )
 
     if not callback_ok then
       if self:is_in_transaction() then
-        self:abort_transaction()
+        abort_with_refreshed_timeout(self)
       end
 
       if errors.is(result) then
@@ -496,7 +570,7 @@ function SESSION_METHODS:with_transaction(callback, options)
 
     if callback_err ~= nil and not errors.is(callback_err) then
       if self:is_in_transaction() then
-        self:abort_transaction()
+        abort_with_refreshed_timeout(self)
       end
 
       error("transaction callback error must be a structured error", 2)
@@ -504,7 +578,7 @@ function SESSION_METHODS:with_transaction(callback, options)
 
     if callback_err ~= nil then
       if self:is_in_transaction() then
-        self:abort_transaction()
+        abort_with_refreshed_timeout(self)
       end
 
       if callback_err:has_label("TransientTransactionError")
@@ -562,7 +636,9 @@ function MANAGER_METHODS:start(options)
   end
 
   for key in pairs(options) do
-    if key ~= "causal_consistency" and key ~= "default_transaction_options" then
+    if key ~= "causal_consistency" and key ~= "default_transaction_options"
+        and key ~= "timeout_ms"
+    then
       error("unknown session option: " .. tostring(key), 2)
     end
   end
@@ -571,6 +647,12 @@ function MANAGER_METHODS:start(options)
     and type(options.causal_consistency) ~= "boolean"
   then
     error("causal_consistency must be a boolean", 2)
+  end
+
+  if options.timeout_ms ~= nil
+      and (math.type(options.timeout_ms) ~= "integer" or options.timeout_ms < 0)
+  then
+    error("timeout_ms must be a non-negative integer", 2)
   end
 
   local manager_state = MANAGER_STATES[self]
@@ -620,6 +702,8 @@ function MANAGER_METHODS:start(options)
     operation_time = nil,
     server_session = server_session,
     transaction = { state = "none" },
+    timeout_ms = options.timeout_ms ~= nil
+      and options.timeout_ms or manager_state.default_timeout_ms,
   }
   manager_state.active[session] = true
   return setmetatable(session, SESSION_METATABLE)
@@ -880,8 +964,10 @@ function M.new(options)
     closed = false,
     cluster_time = nil,
     default_transaction_options = options.default_transaction_options or {},
+    default_timeout_ms = options.default_timeout_ms,
     id_factory = options.id_factory,
     pool = {},
+    runtime = options.runtime,
     timeout_minutes = options.timeout_minutes,
     transaction_command = options.transaction_command,
     transaction_jitter = options.transaction_jitter or function()

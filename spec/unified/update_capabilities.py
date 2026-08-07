@@ -102,11 +102,41 @@ MANAGEMENT_OPERATIONS = {
   "rename",
 }
 
+CSOT_SUPPORTED_OPERATIONS = READ_OPERATIONS | WRITE_OPERATIONS | {
+  "abortTransaction",
+  "commitTransaction",
+  "createCollection",
+  "createIndex",
+  "dropCollection",
+  "listCollectionNames",
+  "listCollections",
+  "listDatabaseNames",
+  "listDatabases",
+  "listIndexNames",
+  "listIndexes",
+  "runCommand",
+  "startTransaction",
+  "withTransaction",
+}
+
+CSOT_TEST_OPERATIONS = {
+  "createEntities",
+  "failPoint",
+  "runOnThread",
+  "wait",
+  "waitForEvent",
+  "waitForThread",
+}
+
 TEST_OVERRIDES = {
   identity: (value["activity"], None)
   for identity, value in EXECUTOR_TESTS.items()
 }
 TEST_OVERRIDES.update({
+  "client-side-operations-timeout/tests/cursors.json::test[3]": (
+    "REL-001",
+    "database aggregate is outside the v1 public collection adapter",
+  ),
   "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": (
     "REL-001",
     "database aggregate is outside the v1 public collection adapter",
@@ -289,6 +319,52 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   return owner, OWNER_REASONS[owner]
 
 
+def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
+  fixture = Path(test["fixture"]).name
+  operations = set(test["requirements"]["operations"])
+
+  if fixture in {
+    "deprecated-options.json",
+    "global-timeoutMS.json",
+    "legacy-timeouts.json",
+    "override-collection-timeoutMS.json",
+    "override-database-timeoutMS.json",
+    "override-operation-timeoutMS.json",
+    "retryability-legacy-timeouts.json",
+    "retryability-timeoutMS.json",
+  }:
+    return (
+      "QUA-001",
+      "the generated cross-operation CSOT matrix belongs to the v1 coverage and deterministic stress gate",
+    )
+
+  if fixture.startswith("tailable-"):
+    return (
+      "REL-001",
+      "tailable cursor unified adapters are outside the v1 public cursor surface",
+    )
+
+  if fixture == "change-streams.json" or "createChangeStream" in operations:
+    return "ADV-001", OWNER_REASONS["ADV-001"]
+
+  if fixture.startswith("gridfs-") or {"upload", "download", "delete"} & operations:
+    return "ADV-002", OWNER_REASONS["ADV-002"]
+
+  if fixture == "bulkWrite.json" or "clientBulkWrite" in operations:
+    return "ADV-007", OWNER_REASONS["ADV-007"]
+
+  unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS
+
+  if unsupported:
+    return (
+      "REL-001",
+      "the CSOT case requires post-v1 unified operation adapters: "
+      + ", ".join(sorted(unsupported)),
+    )
+
+  return "TIME-001", None
+
+
 def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
   override = TEST_OVERRIDES.get(test["id"])
 
@@ -296,6 +372,9 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     return override
 
   specification = test["fixture"].split("/", 1)[0]
+
+  if specification == "client-side-operations-timeout":
+    return classify_csot(test)
 
   if specification in SPECIFICATION_OWNERS:
     owner = SPECIFICATION_OWNERS[specification]

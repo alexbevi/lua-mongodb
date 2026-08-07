@@ -2,8 +2,48 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local fake_runtime = require("mongodb.runtime.fake")
 
 describe("find cursor lifecycle", function()
+  it("keeps a lifetime deadline and refreshes an iteration deadline", function()
+    local runtime = fake_runtime.new({ now = 2 })
+    local deadlines = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(1) },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        deadlines[#deadlines + 1] = options.deadline
+        runtime:advance(0.010)
+        return table.remove(responses, 1)
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 50 }))
+    local client = api.new_client(executor, config, nil, nil, nil, nil, runtime)
+    local cursor = assert(client:database("db"):collection("items"):find(
+      nil,
+      { timeout_mode = "iteration" }
+    ))
+
+    assert.is_nil(cursor:next())
+    assert.near(2.05, deadlines[1], 0.000001)
+    assert.near(2.06, deadlines[2], 0.000001)
+  end)
+
   it("iterates firstBatch/getMore and kills a live cursor on close", function()
     local commands = {}
     local responses = {

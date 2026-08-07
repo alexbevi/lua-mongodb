@@ -51,6 +51,7 @@ KNOWN_ENTITIES = {
 }
 KNOWN_MATCH_OPERATORS = {
   "$$exists",
+  "$$hexBytes",
   "$$lte",
   "$$matchAsDocument",
   "$$matchAsRoot",
@@ -64,9 +65,9 @@ KNOWN_OPERATIONS = {
   "abortTransaction", "addKeyAltName", "aggregate", "appendMetadata",
   "bulkWrite", "clientBulkWrite", "close", "commitTransaction", "count",
   "countDocuments", "createChangeStream", "createCollection",
-  "createCommandCursor", "createDataKey", "createIndex", "decrypt",
-  "deleteKey", "deleteMany", "deleteOne", "distinct", "download",
-  "downloadByName", "dropCollection", "dropIndex", "encrypt", "endSession",
+  "createCommandCursor", "createDataKey", "createFindCursor", "createIndex", "decrypt",
+  "delete", "deleteKey", "deleteMany", "deleteOne", "distinct", "download",
+  "downloadByName", "drop", "dropCollection", "dropIndex", "dropIndexes", "encrypt", "endSession",
   "estimatedDocumentCount", "find", "findOne", "findOneAndDelete",
   "findOneAndReplace", "findOneAndUpdate", "getKey", "getKeyByAltName",
   "getKeys", "insertMany", "insertOne", "iterateOnce",
@@ -75,7 +76,7 @@ KNOWN_OPERATIONS = {
   "listDatabaseObjects", "listDatabases", "listIndexNames", "listIndexes",
   "mapReduce", "modifyCollection", "removeKeyAltName", "rename",
   "replaceOne", "rewrapManyDataKey", "runCommand", "runCursorCommand",
-  "startTransaction", "updateMany", "updateOne", "withTransaction",
+  "startTransaction", "updateMany", "updateOne", "upload", "withTransaction",
 }
 KNOWN_SPECIAL_OPERATIONS = {
   "assertCollectionExists", "assertCollectionNotExists", "assertEventCount",
@@ -115,7 +116,14 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
     relative = path.relative_to(source)
     parts = relative.parts
 
-    if len(parts) < 4 or parts[-3:-1] != ("tests", "unified"):
+    is_unified_directory = len(parts) >= 4 and parts[-3:-1] == ("tests", "unified")
+    is_csot_directory = (
+      len(parts) == 3
+      and parts[0] == "client-side-operations-timeout"
+      and parts[1] == "tests"
+    )
+
+    if not is_unified_directory and not is_csot_directory:
       continue
 
     name = relative.as_posix()
@@ -873,12 +881,42 @@ def main(argv: list[str] | None = None) -> int:
     selected = select_classifications(classified, arguments.include)
     registry = load_executor_registry()
 
+    def execute_selected(classification: dict[str, Any], environment: dict[str, str]):
+      entry = registry.get(classification["id"], {})
+
+      if entry.get("environment") != "isolated-replicaset":
+        return lua_executor(arguments.lua, arguments.executor, environment)(classification)
+
+      isolated_registry = {
+        classification["id"]: {"environment": "live-replicaset"},
+      }
+
+      with standalone_environment([classification], isolated_registry) as isolated_standalone:
+        with replica_set_environment(
+          [classification],
+          isolated_registry,
+          isolated_standalone,
+        ) as isolated_environment:
+          return lua_executor(
+            arguments.lua,
+            arguments.executor,
+            isolated_environment,
+          )(classification)
+
+    isolated_results = {
+      classification["id"]: execute_selected(classification, os.environ.copy())
+      for classification in selected
+      if registry.get(classification["id"], {}).get("environment")
+        == "isolated-replicaset"
+    }
+
     with standalone_environment(selected, registry) as standalone:
       with replica_set_environment(selected, registry, standalone) as environment:
         report = build_report(
           selected,
           manifest["ratchets"] if not arguments.include else None,
-          lua_executor(arguments.lua, arguments.executor, environment),
+          lambda classification: isolated_results.get(classification["id"])
+            or execute_selected(classification, environment),
         )
     write_report(report, arguments.report)
   except CapabilityError as exc:

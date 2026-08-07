@@ -33,6 +33,7 @@ local function client_factory(state)
   return function(_, specification)
     local valid, err = validate_fields(specification, {
       id = true,
+      awaitMinPoolSizeMS = true,
       ignoreCommandMonitoringEvents = true,
       observeEvents = true,
       observeSensitiveCommands = true,
@@ -54,6 +55,7 @@ local function client_factory(state)
 
     local options = {
       command_listeners = { collector.listener },
+      pool_listeners = { collector.pool_listener },
       runtime = state.runtime,
     }
     local server_api = specification:get("serverApi")
@@ -83,10 +85,18 @@ local function client_factory(state)
       options_valid, err = validate_fields(uri_options, {
         readConcernLevel = true,
         readPreference = true,
+        appName = true,
+        appname = true,
+        heartbeatFrequencyMS = true,
+        maxPoolSize = true,
+        minPoolSize = true,
         retryReads = true,
         retryWrites = true,
         socketTimeoutMS = true,
+        timeoutMS = true,
         w = true,
+        wTimeoutMS = true,
+        waitQueueTimeoutMS = true,
       }, "$.client.uriOptions")
 
       if not options_valid then
@@ -98,6 +108,7 @@ local function client_factory(state)
       local retry_writes = uri_options:get("retryWrites")
       local w = uri_options:get("w")
       local socket_timeout_ms = uri_options:get("socketTimeoutMS")
+      local timeout_ms = uri_options:get("timeoutMS")
 
       if read_concern ~= nil then
         options.read_concern = { level = read_concern }
@@ -123,12 +134,45 @@ local function client_factory(state)
         options.socket_timeout_ms = socket_timeout_ms
       end
 
+      if bson.is_exact(timeout_ms) then
+        timeout_ms = timeout_ms:to_number()
+      end
+
+      if timeout_ms ~= nil then
+        options.timeout_ms = timeout_ms
+      end
+
+      for unified_name, lua_name in pairs({
+        heartbeatFrequencyMS = "heartbeat_frequency_ms",
+        maxPoolSize = "max_pool_size",
+        minPoolSize = "min_pool_size",
+        waitQueueTimeoutMS = "wait_queue_timeout_ms",
+      }) do
+        local value = uri_options:get(unified_name)
+
+        if bson.is_exact(value) then
+          value = value:to_number()
+        end
+
+        if value ~= nil then
+          options[lua_name] = value
+        end
+      end
+
+      options.app_name = uri_options:get("appName") or uri_options:get("appname")
+
       if bson.is_exact(w) then
         w = w:to_number()
       end
 
       if w ~= nil then
-        options.write_concern = { w = w }
+        local w_timeout_ms = uri_options:get("wTimeoutMS")
+
+        if bson.is_exact(w_timeout_ms) then
+          w_timeout_ms = w_timeout_ms:to_number()
+        end
+
+        options.write_concern = { w = w, w_timeout_ms = w_timeout_ms }
       end
     end
 
@@ -137,6 +181,25 @@ local function client_factory(state)
 
     if not client then
       return nil, err
+    end
+
+    local await_min_pool_size_ms = specification:get("awaitMinPoolSizeMS")
+
+    if bson.is_exact(await_min_pool_size_ms) then
+      await_min_pool_size_ms = await_min_pool_size_ms:to_number()
+    end
+
+    if type(await_min_pool_size_ms) == "number" and await_min_pool_size_ms > 0 then
+      local slept
+
+      slept, err = state.runtime.clock:sleep(
+        math.min(await_min_pool_size_ms, 1000) / 1000
+      )
+
+      if not slept then
+        client:close()
+        return nil, err
+      end
     end
 
     state.collectors[client] = collector
@@ -174,6 +237,7 @@ local function database_factory(runner, specification)
     local read_concern = database_options:get("readConcern")
     local read_preference = database_options:get("readPreference")
     local write_concern = database_options:get("writeConcern")
+    local timeout_ms = database_options:get("timeoutMS")
 
     if read_concern then
       options.read_concern = { level = read_concern:get("level") }
@@ -187,6 +251,13 @@ local function database_factory(runner, specification)
       local w = write_concern:get("w")
       options.write_concern = { w = bson.is_exact(w) and w:to_number() or w }
     end
+
+
+    if bson.is_exact(timeout_ms) then
+      timeout_ms = timeout_ms:to_number()
+    end
+
+    options.timeout_ms = timeout_ms
   end
 
   return client:database(specification:get("databaseName"), options)
@@ -222,7 +293,12 @@ local function collection_factory(runner, specification)
     local options_valid
     options_valid, err = validate_fields(
       collection_options,
-      { readConcern = true, readPreference = true, writeConcern = true },
+      {
+        readConcern = true,
+        readPreference = true,
+        timeoutMS = true,
+        writeConcern = true,
+      },
       "$.collection.collectionOptions"
     )
 
@@ -233,6 +309,7 @@ local function collection_factory(runner, specification)
     local write_concern = collection_options:get("writeConcern")
     local read_concern = collection_options:get("readConcern")
     local read_preference = collection_options:get("readPreference")
+    local timeout_ms = collection_options:get("timeoutMS")
 
     if read_concern then
       options.read_concern = { level = read_concern:get("level") }
@@ -271,6 +348,13 @@ local function collection_factory(runner, specification)
 
       options.write_concern = { w = w }
     end
+
+
+    if bson.is_exact(timeout_ms) then
+      timeout_ms = timeout_ms:to_number()
+    end
+
+    options.timeout_ms = timeout_ms
   end
 
   return database:collection(specification:get("collectionName"), options)
@@ -304,7 +388,11 @@ local function session_factory(runner, specification)
   if session_options then
     valid, err = validate_fields(
       session_options,
-      { causalConsistency = true, defaultTransactionOptions = true },
+      {
+        causalConsistency = true,
+        defaultTimeoutMS = true,
+        defaultTransactionOptions = true,
+      },
       "$.session.sessionOptions"
     )
 
@@ -313,6 +401,13 @@ local function session_factory(runner, specification)
     end
 
     options.causal_consistency = session_options:get("causalConsistency")
+    local default_timeout_ms = session_options:get("defaultTimeoutMS")
+
+    if bson.is_exact(default_timeout_ms) then
+      default_timeout_ms = default_timeout_ms:to_number()
+    end
+
+    options.timeout_ms = default_timeout_ms
     local defaults = session_options:get("defaultTransactionOptions")
 
     if defaults then
@@ -363,6 +458,9 @@ end
 operation_options = function(arguments, fields)
   local options = {}
 
+  fields.timeoutMS = fields.timeoutMS or "timeout_ms"
+  fields.timeoutMode = fields.timeoutMode or "timeout_mode"
+
   for unified_name, lua_name in pairs(fields) do
     local value = arguments:get(unified_name)
 
@@ -371,6 +469,9 @@ operation_options = function(arguments, fields)
         value = value:to_number()
       elseif unified_name == "returnDocument" then
         value = value:lower()
+      elseif unified_name == "timeoutMode" then
+        value = value == "cursorLifetime" and "cursor_lifetime"
+          or value == "iteration" and "iteration" or value
       end
 
       options[lua_name] = value
@@ -412,6 +513,13 @@ local function transaction_options(arguments)
   end
 
   options.max_commit_time_ms = max_commit_time
+  local timeout_ms = arguments:get("timeoutMS")
+
+  if bson.is_exact(timeout_ms) then
+    timeout_ms = timeout_ms:to_number()
+  end
+
+  options.timeout_ms = timeout_ms
   return options
 end
 
@@ -429,12 +537,12 @@ local function with_transaction(runner, session, arguments, _, path)
   end, transaction_options(arguments))
 end
 
-local function commit_transaction(_, session)
-  return session:commit_transaction()
+local function commit_transaction(_, session, arguments)
+  return session:commit_transaction(operation_options(arguments, {}))
 end
 
-local function abort_transaction(_, session)
-  return session:abort_transaction()
+local function abort_transaction(_, session, arguments)
+  return session:abort_transaction(operation_options(arguments, {}))
 end
 
 local function assert_session_dirty(expected)
@@ -597,6 +705,59 @@ local function assert_last_lsids(state, expected_same)
   end
 end
 
+local function wait_for_event(state)
+  return function(runner, arguments, path)
+    local client, err = runner:get_entity(
+      arguments:get("client"),
+      "client",
+      path .. ".arguments.client"
+    )
+
+    if not client then
+      return nil, err
+    end
+
+    local expected = arguments:get("event")
+    local count = arguments:get("count")
+
+    if bson.is_exact(count) then
+      count = count:to_number()
+    end
+
+    if not bson.is_document(expected) or #expected ~= 1
+        or math.type(count) ~= "integer" or count < 1
+    then
+      return configuration_error("invalid waitForEvent arguments", path)
+    end
+
+    local event_name, specification = expected:get_at(1)
+    local command_name = bson.is_document(specification)
+      and specification:get("commandName") or nil
+    local collector = state.collectors[client]
+
+    if not collector or collector:count(event_name, command_name) == nil then
+      return configuration_error("unsupported waitForEvent event", path)
+    end
+
+    local deadline = state.runtime.clock:now() + 10
+
+    while collector:count(event_name, command_name) < count do
+      if state.runtime.clock:now() >= deadline then
+        return configuration_error("waitForEvent timed out", path)
+      end
+
+      local slept
+      slept, err = state.runtime.clock:sleep(0.01)
+
+      if not slept then
+        return nil, err
+      end
+    end
+
+    return true
+  end
+end
+
 local function collect_cursor(cursor)
   local documents = {}
 
@@ -685,8 +846,11 @@ local function create_index(_, collection, arguments)
   ))
 end
 
-local function list_indexes(_, collection)
-  local cursor, err = collection:list_indexes()
+local function list_indexes(_, collection, arguments)
+  local cursor, err = collection:list_indexes(operation_options(
+    arguments or bson.document({}),
+    {}
+  ))
 
   if not cursor then
     return nil, err
@@ -1480,6 +1644,7 @@ function M.new(options)
       assertSessionNotDirty = assert_session_dirty(false),
       assertSessionTransactionState = assert_session_transaction_state,
       failPoint = failpoint_handler,
+      waitForEvent = wait_for_event(state),
     },
   })
 

@@ -290,6 +290,7 @@ local function error_server(address, message, options, current_topology_version)
     max_write_batch_size = 100000,
     me = nil,
     min_wire_version = 0,
+    minimum_round_trip_time = nil,
     op_time = nil,
     passives = readonly_table({}, "addresses"),
     primary = nil,
@@ -555,6 +556,7 @@ local function parse_server(address, response, options)
     max_write_batch_size = max_write_batch_size,
     me = me,
     min_wire_version = min_wire,
+    minimum_round_trip_time = options.minimum_round_trip_time,
     op_time = op_time,
     passives = list_from_set(passives),
     primary = primary,
@@ -1054,7 +1056,7 @@ function TOPOLOGY_METHODS:update(address, response, options)
 
   for key in pairs(options) do
     if key ~= "error" and key ~= "generation" and key ~= "last_update_time"
-        and key ~= "round_trip_time"
+        and key ~= "minimum_round_trip_time" and key ~= "round_trip_time"
     then
       error("unknown SDAM update option: " .. tostring(key), 2)
     end
@@ -1076,6 +1078,7 @@ function TOPOLOGY_METHODS:update(address, response, options)
     error = options.error,
     generation = generation or current_state and current_state.generation or 0,
     last_update_time = options.last_update_time,
+    minimum_round_trip_time = options.minimum_round_trip_time,
     round_trip_time = options.round_trip_time,
   }
   local server = parse_server(normalized, response, parse_options)

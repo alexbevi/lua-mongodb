@@ -1,4 +1,5 @@
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 local runtime_contract = require("mongodb.runtime")
 
 local M = {}
@@ -628,7 +629,7 @@ function POOL_METHODS:check_out(options)
   local started_at = state.runtime.clock:now()
   local deadline = options.deadline
 
-  if state.wait_queue_timeout_ms > 0 then
+  if operation_timeout.current() == nil and state.wait_queue_timeout_ms > 0 then
     local wait_deadline = started_at + state.wait_queue_timeout_ms / 1000
 
     deadline = deadline and math.min(deadline, wait_deadline) or wait_deadline

@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local hello_model = require("mongodb.command.hello")
+local operation_timeout = require("mongodb.operation_timeout")
 local op_msg = require("mongodb.wire.op_msg")
 
 local M = {}
@@ -159,10 +160,24 @@ local function execute(state, database, command, options)
     error("command document must not be empty", 3)
   end
 
+  local err
+
+  if options.apply_operation_timeout ~= false then
+    command, err = operation_timeout.prepare_command(
+      command,
+      options.minimum_round_trip_time_ms
+    )
+
+    if not command then
+      return nil, err
+    end
+  end
+
   local request_id = state.request_ids:next()
   local io_deadline = options.socket_deadline or options.deadline
   local body = envelope(command, database, state.server_api)
-  local bytes, err = op_msg.encode({
+  local bytes
+  bytes, err = op_msg.encode({
     body = body,
     flags = options.no_response and op_msg.FLAG.MORE_TO_COME or nil,
     max_bson_size = state.max_bson_size,
@@ -406,6 +421,7 @@ function EXECUTOR_METHODS:hello(options)
   end
 
   local response, err = execute(state, "admin", bson.document(entries), {
+    apply_operation_timeout = false,
     cancellation = options.cancellation,
     deadline = options.deadline,
     monitor = false,
@@ -470,8 +486,17 @@ function EXECUTOR_METHODS:measure(database, command, options)
     error("command must be a BSON document", 2)
   end
 
+  local prepared, err = operation_timeout.prepare_command(
+    command,
+    options.minimum_round_trip_time_ms
+  )
+
+  if not prepared then
+    return nil, err
+  end
+
   return op_msg.measure({
-    body = envelope(command, database, state.server_api),
+    body = envelope(prepared, database, state.server_api),
     direction = "request",
     max_bson_size = state.max_bson_size,
     max_message_size = state.max_message_size,
