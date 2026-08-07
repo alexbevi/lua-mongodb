@@ -959,6 +959,35 @@
       "notes": [],
       "started_at": "2026-08-07T01:31:40+00:00",
       "completed_at": "2026-08-07T01:44:45+00:00"
+    },
+    "SES-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "The causal-session contract could not load because mongodb.session did not exist, so no server-session pool, lsid decoration, operation-time advancement, or ended-session rejection was available.",
+          "recorded_at": "2026-08-07T01:55:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "148 unit tests passed; 17 integration tests passed; 313 unified tests executed and passed with 0 failed and 0 environment-skipped, 1587 explicitly deferred; 25 pinned session/causal cases passed in deterministic fixture runner; lint, rockspec packaging, conformance ledger (2310 passed/3214 deferred), and planning checks passed",
+          "recorded_at": "2026-08-07T02:20:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "149 unit tests passed; 17 integration tests passed; 313 unified tests executed and passed with 0 failed and 0 environment-skipped, 1587 explicitly deferred; 25 pinned session/causal cases passed in deterministic fixture runner; lint, rockspec packaging, conformance ledger (2310 passed/3214 deferred), and planning checks passed",
+          "recorded_at": "2026-08-07T02:21:59+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T01:53:41+00:00",
+      "completed_at": "2026-08-07T02:22:07+00:00"
     }
   },
   "verified_references": {

@@ -42,6 +42,7 @@ local FIND_OPTIONS = {
   deadline = true,
   limit = true,
   no_cursor_timeout = true,
+  session = true,
 }
 local INSERT_OPTIONS = {
   bypass_document_validation = true,
@@ -49,6 +50,7 @@ local INSERT_OPTIONS = {
   comment = true,
   deadline = true,
   raw_data = true,
+  session = true,
 }
 local UPDATE_OPTIONS = {
   array_filters = true,
@@ -62,6 +64,7 @@ local UPDATE_OPTIONS = {
   raw_data = true,
   sort = true,
   upsert = true,
+  session = true,
 }
 local REPLACE_OPTIONS = {
   bypass_document_validation = true,
@@ -74,6 +77,7 @@ local REPLACE_OPTIONS = {
   raw_data = true,
   sort = true,
   upsert = true,
+  session = true,
 }
 local DELETE_OPTIONS = {
   cancellation = true,
@@ -83,6 +87,7 @@ local DELETE_OPTIONS = {
   hint = true,
   let = true,
   raw_data = true,
+  session = true,
 }
 local AGGREGATE_OPTIONS = {
   allow_disk_use = true,
@@ -97,6 +102,7 @@ local AGGREGATE_OPTIONS = {
   max_await_time_ms = true,
   max_time_ms = true,
   raw_data = true,
+  session = true,
 }
 local COUNT_OPTIONS = {
   cancellation = true,
@@ -108,6 +114,7 @@ local COUNT_OPTIONS = {
   max_time_ms = true,
   raw_data = true,
   skip = true,
+  session = true,
 }
 local ESTIMATED_COUNT_OPTIONS = {
   cancellation = true,
@@ -115,6 +122,7 @@ local ESTIMATED_COUNT_OPTIONS = {
   deadline = true,
   max_time_ms = true,
   raw_data = true,
+  session = true,
 }
 local DISTINCT_OPTIONS = {
   cancellation = true,
@@ -124,6 +132,7 @@ local DISTINCT_OPTIONS = {
   hint = true,
   max_time_ms = true,
   raw_data = true,
+  session = true,
 }
 local FIND_AND_DELETE_OPTIONS = {
   cancellation = true,
@@ -136,6 +145,7 @@ local FIND_AND_DELETE_OPTIONS = {
   projection = true,
   raw_data = true,
   sort = true,
+  session = true,
 }
 local FIND_AND_REPLACE_OPTIONS = {
   bypass_document_validation = true,
@@ -151,6 +161,7 @@ local FIND_AND_REPLACE_OPTIONS = {
   return_document = true,
   sort = true,
   upsert = true,
+  session = true,
 }
 local FIND_AND_UPDATE_OPTIONS = {
   array_filters = true,
@@ -167,6 +178,7 @@ local FIND_AND_UPDATE_OPTIONS = {
   return_document = true,
   sort = true,
   upsert = true,
+  session = true,
 }
 
 for name in pairs(FIND_OPTION_FIELDS) do
@@ -482,6 +494,7 @@ local function execute_write(state, entries, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      session = options.session,
     }
   )
 
@@ -819,6 +832,8 @@ local function aggregate_response(state, pipeline, options, writes)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      session = options.session,
+      session_context = options.session_context,
     }
   )
 end
@@ -835,6 +850,8 @@ local function cursor_from_response(state, response, options)
     executor = state.executor,
     max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
+    session = options.session,
+    session_context = options.session_context,
   })
 end
 
@@ -977,10 +994,16 @@ function M.aggregate(state, pipeline, options)
   require_nonnegative_integer(options, "batch_size")
   require_nonnegative_integer(options, "max_await_time_ms")
   require_nonnegative_integer(options, "max_time_ms")
+  options.session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
   local writes = pipeline_writes(pipeline)
   local response, err = aggregate_response(state, pipeline, options, writes)
 
   if not response then
+    if options.session_context then
+      state.executor:release_session_context(options.session_context)
+    end
+
     return nil, err
   end
 
@@ -1026,6 +1049,7 @@ function M.count_documents(state, filter, options)
     hint = options.hint,
     max_time_ms = options.max_time_ms,
     raw_data = options.raw_data,
+    session = options.session,
   }
   local response, err = aggregate_response(
     state,
@@ -1067,6 +1091,7 @@ function M.estimated_document_count(state, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      session = options.session,
     }
   )
 
@@ -1118,6 +1143,7 @@ function M.distinct(state, key, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      session = options.session,
     }
   )
 
@@ -1224,6 +1250,7 @@ function M.insert_one(state, document, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      session = options.session,
     }
   )
 
@@ -1254,6 +1281,8 @@ function M.find(state, filter, options)
   end
 
   options = validate_options(options, FIND_OPTIONS, "find")
+  local session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
   local batch_size = options.batch_size or 0
   local limit = options.limit or 0
 
@@ -1312,10 +1341,16 @@ function M.find(state, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      session = options.session,
+      session_context = session_context,
     }
   )
 
   if not response then
+    if session_context then
+      state.executor:release_session_context(session_context)
+    end
+
     return nil, err
   end
 
@@ -1330,6 +1365,8 @@ function M.find(state, filter, options)
     executor = state.executor,
     limit = absolute_limit,
     on_close = state.on_cursor_close,
+    session = options.session,
+    session_context = session_context,
   })
 end
 
@@ -1361,6 +1398,7 @@ function M.find_one(state, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      session = options.session,
     }
   )
 

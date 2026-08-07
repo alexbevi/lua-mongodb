@@ -1146,7 +1146,7 @@ local function prepare_arguments(runner, descriptor, arguments, path)
   for key, value in arguments:iter() do
     local argument_path = append_path(path, key)
 
-    if descriptor.arguments and not descriptor.arguments[key] then
+    if descriptor.arguments and not descriptor.arguments[key] and key ~= "session" then
       return nil, configuration_error(
         "unsupported argument " .. key,
         argument_path,

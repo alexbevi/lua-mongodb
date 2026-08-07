@@ -43,6 +43,7 @@ local BULK_OPTIONS = {
   let = true,
   ordered = true,
   raw_data = true,
+  session = true,
 }
 
 local INSERT_MANY_OPTIONS = {
@@ -52,6 +53,7 @@ local INSERT_MANY_OPTIONS = {
   deadline = true,
   ordered = true,
   raw_data = true,
+  session = true,
 }
 
 local UPDATE_MODEL_OPTIONS = {
@@ -587,7 +589,7 @@ local function fallback_measure(state, command, identifier, operations)
   return { message_size = size }
 end
 
-local function measure_batch(state, command, identifier, operations)
+local function measure_batch(state, command, identifier, operations, options)
   local documents = {}
 
   for index, operation in ipairs(operations) do
@@ -597,6 +599,8 @@ local function measure_batch(state, command, identifier, operations)
   if type(state.executor.measure) == "function" then
     return state.executor:measure(state.database_name, command, {
       max_sequence_document_size = state.max_message_size,
+      session = options and options.session,
+      session_context = options and options.session_context,
       sequences = { { identifier = identifier, documents = documents } },
     })
   end
@@ -629,7 +633,8 @@ local function create_batches(state, operations, options)
           state,
           command,
           metadata.identifier,
-          candidate
+          candidate,
+          options
         )
 
         if not measured then
@@ -990,6 +995,8 @@ local function execute_batches(state, operations, batches, options, acknowledged
         deadline = options.deadline,
         no_response = not batch_acknowledged,
         operation_id = bulk_operation_id,
+        session = options.session,
+        session_context = options.session_context,
         max_sequence_document_size = state.max_message_size,
         sequences = {
           { identifier = batch.identifier, documents = documents },
@@ -1069,16 +1076,27 @@ local function execute(state, models, options, allowed, kind, inserted_ids)
   if not options then
     return nil, err
   end
+
+  options.session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
   local acknowledged = state.write_concern.w ~= 0
   local batches
   batches, err = create_batches(state, operations, options)
 
   if not batches then
+    if options.session_context then
+      state.executor:release_session_context(options.session_context)
+    end
+
     return nil, err
   end
 
   local full
   full, err = execute_batches(state, operations, batches, options, acknowledged)
+
+  if options.session_context then
+    state.executor:release_session_context(options.session_context)
+  end
 
   if not full then
     return nil, err
@@ -1131,16 +1149,27 @@ function M.insert_many(state, documents, options)
   if not options then
     return nil, err
   end
+
+  options.session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
   local acknowledged = state.write_concern.w ~= 0
   local batches
   batches, err = create_batches(state, operations, options)
 
   if not batches then
+    if options.session_context then
+      state.executor:release_session_context(options.session_context)
+    end
+
     return nil, err
   end
 
   local full
   full, err = execute_batches(state, operations, batches, options, acknowledged)
+
+  if options.session_context then
+    state.executor:release_session_context(options.session_context)
+  end
 
   if not full then
     return nil, err

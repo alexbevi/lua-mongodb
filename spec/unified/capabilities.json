@@ -49446,9 +49446,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[10]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "1c5ec997298379804fea3f3a3085e9e983a723a34f68d0c759e9118b349f0b2e",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -49491,9 +49491,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[1]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "b163f5af3054e5fb460274d20178fddca877912a334dfd2af39ec5d013c7aa7d",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -49524,9 +49524,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[2]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "fb2b45b72c26dd6dedaf6c963c4c7614c65d08e5d867526388265bf54d823298",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "createCommandCursor.command",
@@ -49551,9 +49551,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[3]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "7d3cf30ec37e1bc9c3593999f73bf963a6aeb342c135bc351c20e47e4c9742ed",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -49586,9 +49586,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[4]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "e2cc52e11b7ce81dd2f997f8be9c582a4460f51af8bddca02b236173f9b99041",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -49622,9 +49622,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[5]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "e7f6311ae3921425d3da576d86a55605356c55fc01d1fbd29a04e3e43c753fba",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -49666,9 +49666,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[6]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "3627623fe17a9d9857461413935e8664e5124bd865b8c852181fc1d40b60d9b0",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -49700,9 +49700,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[7]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "7956033f5e75e5757f822931a122725e548c512552448996e7c9baa11fc4e9ae",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "runCursorCommand.batchSize",
@@ -49733,9 +49733,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[8]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "6baa16bd52fb4adde5c86d56917c358b2f566699f5ae5c39412d5fe7c70192b0",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -49766,9 +49766,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[9]": {
-      "activity": "SES-001",
+      "activity": "REL-001",
       "fingerprint": "39b4ee59a764894d9405cfcab6cb20a3a07801b289da8cb44aad0c955d5de347",
-      "reason": "session entities and causal command decoration are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",

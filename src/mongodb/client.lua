@@ -7,6 +7,8 @@ local monitoring = require("mongodb.monitoring")
 local pool = require("mongodb.pool")
 local runtime_contract = require("mongodb.runtime")
 local scram = require("mongodb.auth.scram")
+local session_module = require("mongodb.session")
+local session_executor = require("mongodb.session_executor")
 local topology = require("mongodb.topology")
 local topology_executor = require("mongodb.topology_executor")
 local transport = require("mongodb.network.transport")
@@ -113,6 +115,56 @@ local function lazy_object_ids(runtime)
   end
 
   return value
+end
+
+local function session_id_factory(runtime)
+  return function()
+    local bytes, err = runtime.entropy:bytes(16)
+
+    if not bytes then
+      return nil, err
+    end
+
+    local values = { string.byte(bytes, 1, 16) }
+
+    if #values ~= 16 then
+      error("runtime entropy adapter returned an invalid session id", 0)
+    end
+
+    values[7] = values[7] & 0x0f | 0x40
+    values[9] = values[9] & 0x3f | 0x80
+    return bson.document({
+      { "id", bson.binary(string.char(table.unpack(values)), bson.BINARY_SUBTYPE.UUID) },
+    })
+  end
+end
+
+local function public_client(executor, config, parsed, warnings, runtime)
+  local capabilities, err = executor:capabilities()
+
+  if not capabilities then
+    executor:close()
+    return nil, err
+  end
+
+  local sessions
+
+  if capabilities.logical_session_timeout_minutes ~= nil then
+    sessions = session_module.new({
+      clock = runtime.clock,
+      id_factory = session_id_factory(runtime),
+      timeout_minutes = capabilities.logical_session_timeout_minutes,
+    })
+  end
+
+  return api.new_client(
+    session_executor.new(executor, sessions),
+    config,
+    parsed.database,
+    warnings,
+    lazy_object_ids(runtime),
+    sessions
+  )
 end
 
 local function mechanism_from(hello, configured)
@@ -393,13 +445,7 @@ local function connect_replica_set(parsed, config, special, runtime, monitor, wa
     return nil, err
   end
 
-  return api.new_client(
-    executor,
-    config,
-    parsed.database,
-    warnings,
-    lazy_object_ids(runtime)
-  )
+  return public_client(executor, config, parsed, warnings, runtime)
 end
 
 function M.connect(uri, values)
@@ -517,13 +563,7 @@ function M.connect(uri, values)
     end
   end
 
-  return api.new_client(
-    executor,
-    config,
-    parsed.database,
-    warnings,
-    lazy_object_ids(runtime)
-  )
+  return public_client(executor, config, parsed, warnings, runtime)
 end
 
 return M

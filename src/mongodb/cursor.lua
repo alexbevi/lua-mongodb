@@ -109,6 +109,13 @@ local function mark_closed(value, state)
   state.documents = {}
   state.position = 1
 
+  if state.session_context
+      and type(state.executor.release_session_context) == "function"
+  then
+    state.executor:release_session_context(state.session_context)
+    state.session_context = nil
+  end
+
   if state.on_close then
     state.on_close(value)
   end
@@ -151,6 +158,8 @@ local function get_more(value, state)
     {
       cancellation = state.cancellation,
       deadline = state.deadline,
+      session = state.session,
+      session_context = state.session_context,
     }
   )
 
@@ -265,6 +274,8 @@ function CURSOR_METHODS:close(options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      session = state.session,
+      session_context = state.session_context,
     }
   )
 
@@ -289,6 +300,12 @@ function M.new(response, options)
   local batch, err = response_batch(response, "firstBatch")
 
   if not batch then
+    if options.session_context
+        and type(options.executor.release_session_context) == "function"
+    then
+      options.executor:release_session_context(options.session_context)
+    end
+
     return nil, err
   end
 
@@ -312,6 +329,8 @@ function M.new(response, options)
     on_close = options.on_close,
     position = 1,
     retrieved = 0,
+    session = options.session,
+    session_context = options.session_context,
   }
   local result = setmetatable(value, CURSOR_METATABLE)
 

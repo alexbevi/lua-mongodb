@@ -340,6 +340,30 @@ def classify_case(
 
     return _deferred(case, "ADV-009", activities)
 
+  if suite == "sessions":
+    if "snapshot-sessions" in path:
+      return _deferred(case, "REL-001", activities)
+
+    if "implicit-sessions-default-causal-consistency" in path:
+      return _deferred(case, "RETRY-001", activities)
+
+    return _passed(
+      case,
+      "SES-001",
+      "spec/support/session_runner.lua",
+      "make test-unit",
+      "deterministic-runtime",
+    )
+
+  if suite == "causal-consistency" and "clientBulkWrite" not in path:
+    return _passed(
+      case,
+      "SES-001",
+      "spec/support/session_runner.lua",
+      "make test-unit",
+      "deterministic-runtime",
+    )
+
   owner = DEFAULT_OWNERS.get(suite)
 
   if owner is None:

@@ -39,6 +39,7 @@ local CREATE_COLLECTION_OPTIONS = {
   validation_level = true,
   validator = true,
   view_on = true,
+  session = true,
 }
 
 local LIST_DATABASE_OPTIONS = {
@@ -48,6 +49,7 @@ local LIST_DATABASE_OPTIONS = {
   deadline = true,
   filter = true,
   name_only = true,
+  session = true,
 }
 
 local LIST_COLLECTION_OPTIONS = {
@@ -59,6 +61,7 @@ local LIST_COLLECTION_OPTIONS = {
   filter = true,
   name_only = true,
   raw_data = true,
+  session = true,
 }
 
 local DROP_OPTIONS = {
@@ -67,6 +70,7 @@ local DROP_OPTIONS = {
   deadline = true,
   max_time_ms = true,
   raw_data = true,
+  session = true,
 }
 
 local DROP_DATABASE_OPTIONS = {
@@ -74,6 +78,7 @@ local DROP_DATABASE_OPTIONS = {
   comment = true,
   deadline = true,
   max_time_ms = true,
+  session = true,
 }
 
 local CREATE_INDEX_OPTIONS = {
@@ -83,6 +88,7 @@ local CREATE_INDEX_OPTIONS = {
   deadline = true,
   max_time_ms = true,
   raw_data = true,
+  session = true,
 }
 
 local LIST_INDEX_OPTIONS = {
@@ -91,6 +97,7 @@ local LIST_INDEX_OPTIONS = {
   comment = true,
   deadline = true,
   raw_data = true,
+  session = true,
 }
 
 local INDEX_OPTION_NAMES = {
@@ -348,6 +355,7 @@ local function execute_write(state, database_name, entries, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      session = options.session,
     }
   )
 
@@ -394,6 +402,8 @@ local function cursor_from_response(state, response, options)
     deadline = options.deadline,
     executor = state.executor,
     on_close = state.on_cursor_close,
+    session = options.session,
+    session_context = options.session_context,
   })
 end
 
@@ -628,6 +638,8 @@ function M.list_collections(state, options)
   require_boolean(options, "authorized_collections")
   require_nonnegative_integer(options, "batch_size")
   require_boolean(options, "raw_data")
+  options.session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
   local cursor_entries = {}
 
   if options.batch_size ~= nil then
@@ -655,10 +667,19 @@ function M.list_collections(state, options)
   local response, err = state.executor:command(
     state.name,
     bson.document(entries),
-    { cancellation = options.cancellation, deadline = options.deadline }
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      session = options.session,
+      session_context = options.session_context,
+    }
   )
 
   if not response then
+    if options.session_context then
+      state.executor:release_session_context(options.session_context)
+    end
+
     return nil, err
   end
 
@@ -667,6 +688,8 @@ function M.list_collections(state, options)
     cancellation = options.cancellation,
     database_name = state.name,
     deadline = options.deadline,
+    session = options.session,
+    session_context = options.session_context,
   })
 end
 
@@ -713,7 +736,11 @@ function M.list_databases(state, options)
   local response, err = state.executor:command(
     "admin",
     bson.document(entries),
-    { cancellation = options.cancellation, deadline = options.deadline }
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      session = options.session,
+    }
   )
 
   if not response then
@@ -931,6 +958,8 @@ function M.list_indexes(state, options)
   options = validate_options(options, LIST_INDEX_OPTIONS, "list_indexes")
   require_nonnegative_integer(options, "batch_size")
   require_boolean(options, "raw_data")
+  options.session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
   local cursor_entries = {}
 
   if options.batch_size ~= nil then
@@ -950,11 +979,20 @@ function M.list_indexes(state, options)
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
-    { cancellation = options.cancellation, deadline = options.deadline }
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      session = options.session,
+      session_context = options.session_context,
+    }
   )
 
   if not response then
     if not err or err.code ~= 26 then
+      if options.session_context then
+        state.executor:release_session_context(options.session_context)
+      end
+
       return nil, err
     end
 
@@ -975,6 +1013,8 @@ function M.list_indexes(state, options)
     database_name = state.database_name,
     deadline = options.deadline,
     inherit_comment = true,
+    session = options.session,
+    session_context = options.session_context,
   })
 end
 

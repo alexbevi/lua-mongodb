@@ -200,6 +200,21 @@ function CLIENT_METHODS:database(name, options)
   return new_database(self, name, options)
 end
 
+function CLIENT_METHODS:start_session(options)
+  local state = CLIENT_STATES[self]
+  local open, err = ensure_open(state)
+
+  if not open then
+    return nil, err
+  end
+
+  if state.sessions == nil then
+    return client_error("deployment does not support sessions")
+  end
+
+  return state.sessions:start(options)
+end
+
 function CLIENT_METHODS:close()
   local state = CLIENT_STATES[self]
 
@@ -209,6 +224,16 @@ function CLIENT_METHODS:close()
 
   for cursor in pairs(state.cursors) do
     cursor:close()
+  end
+
+  if state.sessions then
+    local identifiers = state.sessions:close()
+
+    if #identifiers > 0 then
+      state.executor:command("admin", bson.document({
+        { "endSessions", identifiers },
+      }), { monitoring = false, no_session = true })
+    end
   end
 
   state.closed = true
@@ -552,7 +577,14 @@ function COLLECTION_METHODS:find(filter, options)
   return register_cursor(self, cursor)
 end
 
-function M.new_client(executor, options, default_database_name, warnings, object_ids)
+function M.new_client(
+  executor,
+  options,
+  default_database_name,
+  warnings,
+  object_ids,
+  sessions
+)
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
   then
@@ -583,6 +615,7 @@ function M.new_client(executor, options, default_database_name, warnings, object
     options = options,
     read_concern = options.read_concern,
     read_preference = options.read_preference,
+    sessions = sessions,
     warnings = readonly_warnings(warnings or {}),
     write_concern = options.write_concern,
   }

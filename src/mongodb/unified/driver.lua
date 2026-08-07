@@ -62,6 +62,7 @@ local function client_factory(state)
       options_valid, err = validate_fields(uri_options, {
         readConcernLevel = true,
         retryReads = true,
+        retryWrites = true,
         w = true,
       }, "$.client.uriOptions")
 
@@ -71,6 +72,7 @@ local function client_factory(state)
 
       local read_concern = uri_options:get("readConcernLevel")
       local retry_reads = uri_options:get("retryReads")
+      local retry_writes = uri_options:get("retryWrites")
       local w = uri_options:get("w")
 
       if read_concern ~= nil then
@@ -79,6 +81,10 @@ local function client_factory(state)
 
       if retry_reads ~= nil then
         options.retry_reads = retry_reads
+      end
+
+      if retry_writes ~= nil then
+        options.retry_writes = retry_writes
       end
 
       if bson.is_exact(w) then
@@ -211,6 +217,48 @@ local function collection_factory(runner, specification)
   return database:collection(specification:get("collectionName"), options)
 end
 
+local function session_factory(runner, specification)
+  local valid, err = validate_fields(specification, {
+    client = true,
+    id = true,
+    sessionOptions = true,
+  }, "$.session")
+
+  if not valid then
+    return nil, err
+  end
+
+  local client
+  client, err = runner:get_entity(
+    specification:get("client"),
+    "client",
+    "$.session.client"
+  )
+
+  if not client then
+    return nil, err
+  end
+
+  local options = {}
+  local session_options = specification:get("sessionOptions")
+
+  if session_options then
+    valid, err = validate_fields(
+      session_options,
+      { causalConsistency = true },
+      "$.session.sessionOptions"
+    )
+
+    if not valid then
+      return nil, err
+    end
+
+    options.causal_consistency = session_options:get("causalConsistency")
+  end
+
+  return client:start_session(options)
+end
+
 local call_driver
 local operation_options
 
@@ -250,7 +298,75 @@ operation_options = function(arguments, fields)
     end
   end
 
+  if arguments:get("session") ~= nil then
+    options.session = arguments:get("session")
+  end
+
   return options
+end
+
+local function end_session(_, session)
+  return session:end_session()
+end
+
+local function assert_session_dirty(expected)
+  return function(runner, arguments, path)
+    local session, err = runner:get_entity(
+      arguments:get("session"),
+      "session",
+      path .. ".arguments.session"
+    )
+
+    if not session then
+      return nil, err
+    end
+
+    if session:is_dirty() ~= expected then
+      return configuration_error(
+        expected and "session is not dirty" or "session is dirty",
+        path
+      )
+    end
+
+    return true
+  end
+end
+
+local function assert_last_lsids(state, expected_same)
+  return function(runner, arguments, path)
+    local client, err = runner:get_entity(
+      arguments:get("client"),
+      "client",
+      path .. ".arguments.client"
+    )
+
+    if not client then
+      return nil, err
+    end
+
+    local collector = state.collectors[client]
+    local lsids = {}
+
+    for _, event in ipairs(collector and collector.events or {}) do
+      if event.type == "command_started" then
+        local lsid = event.command:get("lsid")
+
+        if lsid then
+          lsids[#lsids + 1] = assert(bson.encode(lsid))
+        end
+      end
+    end
+
+    if #lsids < 2 or (lsids[#lsids - 1] == lsids[#lsids]) ~= expected_same then
+      return configuration_error(
+        expected_same and "last two commands have different lsids"
+          or "last two commands have the same lsid",
+        path
+      )
+    end
+
+    return true
+  end
 end
 
 local function collect_cursor(cursor)
@@ -828,6 +944,7 @@ function M.new(options)
       client = client_factory(state),
       collection = collection_factory,
       database = database_factory,
+      session = session_factory,
     },
     internal_client = internal_client_adapter(internal_client),
     operations = {
@@ -952,9 +1069,19 @@ function M.new(options)
           handler = update_one,
         },
       },
+      session = {
+        endSession = {
+          arguments = {},
+          handler = end_session,
+        },
+      },
     },
     runtime = options.runtime,
     test_operations = {
+      assertDifferentLsidOnLastTwoCommands = assert_last_lsids(state, false),
+      assertSameLsidOnLastTwoCommands = assert_last_lsids(state, true),
+      assertSessionDirty = assert_session_dirty(true),
+      assertSessionNotDirty = assert_session_dirty(false),
       failPoint = failpoint_handler,
     },
   })

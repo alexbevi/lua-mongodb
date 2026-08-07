@@ -217,7 +217,7 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     return classify_sdam(test)
 
   if specification == "run-command":
-    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "SES-001"
+    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "REL-001"
     return owner, OWNER_REASONS[owner]
 
   raise run.CapabilityError(f"no classification rule for {test['id']}")
