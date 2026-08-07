@@ -23057,7 +23057,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[61]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "42ee54213117b313b3781bb506a62eac05bb7b59abdf079a365cb099e8855d0c",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -23095,7 +23095,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[62]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "308b92dec8c4e35a796ff03f4f12a5458597e856c80e6b7d21fe606785e6ae0a",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -23136,7 +23136,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[63]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "827cd961f02385f289c9b617614ca5243ca346b76576a57d80554295a3ded6ac",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -23173,7 +23173,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[64]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "fe76007d3a9eac417027be83c15822ea5410a0f77e6629ed943e7a9d5b6d0918",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -26017,7 +26017,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[45]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "5fb414ccead25d0418bbb1a20e8c025e57dfdd22c862e4abbbe8580582233111",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -26058,7 +26058,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[46]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "79239615ebcc59c98d23baa6129beae2742fcf7f3dc1f2e935ba304e079b5d1e",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -26099,7 +26099,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[47]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "0e1f6da801d6841ba4da62c9fa7027b8560e7650a92a042d6440445c9a6b8575",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -26136,7 +26136,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[48]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "97cdbd31a4ffb87fd8aa145edd8aa27611c6a439146df5edafef346bb23b349b",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -28223,7 +28223,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[55]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "48d47aee89728fc22be41736ba718992ad0f3962fd56e0cd327be4b1883f6f9a",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -28264,7 +28264,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[56]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "fd711ad418af1d91a7e70fdfd6c6488c2130a729e33a0061886f7e2093edc3ab",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -28305,7 +28305,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[57]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "8ca060b6fb817ab2828201093b716666cb182fbd33c3516f827457d533317ac4",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -28342,7 +28342,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[58]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "091de5b37b827be23fad8a72f296957f5a53ae8968bb69488d8230e6105daade",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -29471,7 +29471,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "77f0023aabf122690d8ebdb3e1ca9e96637c3e87501ee4ad8c413dbc0a010960",
       "reason": "listIndexNames requires the release unified operation-timeout adapter",
       "requirements": {
@@ -29507,7 +29507,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "aa0cd66359ed50572061615d334b9adf4fe26d910e7b24a84603601c5d9ef21a",
       "reason": "listIndexNames requires the release unified operation-timeout adapter",
       "requirements": {
@@ -30600,7 +30600,7 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[61]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "4029ac72bad8c2a439ca70f6880c5558f1d9faa5885c4b01900b72e053222877",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -30641,7 +30641,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[62]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "18795968bd2dae02e6d4009343bfa2e6cda5fa7e961acd769fcb5093d10758b2",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndex",
       "requirements": {
@@ -30682,7 +30682,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[63]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "60ae5c9c8f8ede20a9b3e849c5dc11361f9e876a68314b81b02c6d5debfc221c",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -30718,7 +30718,7 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[64]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "82725af2dc44a27228d0e8c268fe6aad5f67574edd8adbf221bb2a4c28977c0a",
       "reason": "index operation timeout coverage awaits v1 administration conformance: dropIndexes",
       "requirements": {
@@ -36758,7 +36758,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[1]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "b8c85dc47bdf96a82805e662045037a5ee495b348883bea08bef724f748da367",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -36788,7 +36788,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[2]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "2e27df7f9814cb567481d92d76be4e79a51c36c9a8fb8a25bbec2a213fa19678",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -36818,7 +36818,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[3]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "dc933c8f7f9bf8c409d04c9cc7188902db4bd08cf32d87b056f244698ddb1ac6",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -36848,7 +36848,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[4]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "c966daaa3aac629fc4ecad92c6cb14993431464e8c88a09c36c20ba897912494",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -36984,7 +36984,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[1]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "3a7d581911b6310d8352774399c99547d11f5c0ce84d1eee0c97486c64d16f6b",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -37015,7 +37015,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[2]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "45bf64d7c844c65654b8ba96bbe7a13879b455c776aa097c6eea133bf4c2ce15",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -37048,7 +37048,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[3]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "5b9dcd05958a9d3a5e79a2deb3e0a7d100a4e022062e635617ba33090e8488f6",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -37079,7 +37079,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "d192be5813a37909789134e0122f624f3a3f5406a1a2d705eda68850d2e11adb",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -37195,7 +37195,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[4]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "3b0a5676a78ad33f857fc3a7be0777fa3abcb7c1954dae7396e37aabd242d151",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -37253,7 +37253,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[6]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "f5483fb6ef4821ef644275f774cc132c3f5db64589c7198268db3b36fe13e57a",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -38147,9 +38147,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "0bf7ec17e191debf465842d786e29fc3f493a86082044913e9e48c2c0fd0f3ac",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -38314,9 +38314,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "123ce0af925cbc6c86794037a91cd5b25eb62675c60882188677365208984bce",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -43954,7 +43954,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[6]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "73f6eaa656821f110301f517238b60cf7fab18f06d4155073813eaabbadedc7e",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -45290,9 +45290,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[3]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "4b9ce95b5963734ae0f61cb7415ac5af33c6d40af2e4582ca7caccf7283eb382",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -46278,7 +46278,7 @@
       "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[1]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "9123a735cb340df3a5748a533d0714a690f68008df5840efe26b113c2bc65102",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -46308,7 +46308,7 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[2]": {
-      "activity": "REL-014",
+      "activity": "REL-015",
       "fingerprint": "3ce216cf2f88f62d2912714851ad9e6213241d9c3ebaf4ee7c7ef235e368004a",
       "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
       "requirements": {
@@ -47042,9 +47042,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[2]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "4a38ef3889f95893be2191d8949d0cfbf3068cb006547316a00e7f32bd5f903f",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -47396,9 +47396,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "6fdf0bcb01588c986948fb9873c8e45ae745d577a0bef4ba7484c275b98ff926",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -47589,9 +47589,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[9]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "1b8584badbfcc2e1e87c7e1cf71cef23071302f9406bbd8126fda453cd68a649",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -47907,9 +47907,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "d7a0ff52c81a15d3925ecb5cc3fd4ff31ba74a7bb12c097dc119187395110d29",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -47966,9 +47966,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[5]": {
-      "activity": "REL-014",
+      "activity": "ADV-011",
       "fingerprint": "4a90f7d371a38193ccfe95f06cd9b90190fb1e41bfda3a4a46dd4c3a22f4cde9",
-      "reason": "the case awaits the remaining v1 CRUD and administration conformance slices",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "replaceOne.filter",

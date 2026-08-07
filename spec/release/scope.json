@@ -10,15 +10,15 @@
     "ADV-008": 74,
     "ADV-009": 240,
     "ADV-010": 777,
-    "ADV-011": 161,
+    "ADV-011": 169,
     "ADV-012": 15,
     "REL-005": 36,
     "REL-006": 101,
-    "REL-014": 69
+    "REL-015": 61
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 206,
-    "post-v1-exclusion": 1921
+    "applicable-release-gap": 198,
+    "post-v1-exclusion": 1929
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",

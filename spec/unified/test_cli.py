@@ -192,6 +192,24 @@ class UnifiedCliTests(unittest.TestCase):
       [manifest["tests"][identity]["status"] for identity in identities],
     )
 
+  def test_pre_5_0_dot_dollar_cases_are_post_v1_exclusions(self) -> None:
+    manifest = update_capabilities.generate()
+    identities = [
+      "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[2]",
+      "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[3]",
+      "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[3]",
+      "crud/tests/unified/insertMany-dots_and_dollars.json::test[2]",
+      "crud/tests/unified/insertOne-dots_and_dollars.json::test[2]",
+      "crud/tests/unified/insertOne-dots_and_dollars.json::test[9]",
+      "crud/tests/unified/replaceOne-dots_and_dollars.json::test[3]",
+      "crud/tests/unified/replaceOne-dots_and_dollars.json::test[5]",
+    ]
+
+    self.assertEqual(
+      ["ADV-011"] * len(identities),
+      [manifest["tests"][identity]["activity"] for identity in identities],
+    )
+
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
     classifications = {discovered[0]["id"]: classification("DONE-001", "stale")}
