@@ -33,6 +33,12 @@ The project is currently pre-alpha, and no release has been published under that
 
 ## Getting Started
 
+The driver runs network operations through a coroutine-aware runtime. With the default Copas adapter, create and use clients inside `copas.loop`. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.
+
+### Connecting
+
+Connect with a MongoDB URI, select the default database from that URI, and obtain a collection handle:
+
 ```lua
 local copas = require("copas")
 local mongodb = require("mongodb")
@@ -50,6 +56,95 @@ copas.loop(function()
   print(user:get("name"))
   assert(client:close())
 end)
+```
+
+### CRUD Operations
+
+The remaining examples assume they run inside the Copas loop above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
+
+```lua
+local doc = mongodb.bson.document
+local users = client:database("app"):collection("users")
+
+local inserted = assert(users:insert_one(doc({
+  { "name", "Ada" },
+  { "active", false },
+})))
+
+local user = assert(users:find_one(inserted.inserted_id))
+print(user:get("name"))
+
+local updated = assert(users:update_one(
+  doc({ { "_id", inserted.inserted_id } }),
+  doc({ { "$set", doc({ { "active", true } }) } })
+))
+print(updated.modified_count)
+
+local cursor = assert(users:find(
+  doc({ { "active", true } }),
+  { sort = doc({ { "name", 1 } }) }
+))
+
+for matching_user in cursor:iter() do
+  print(matching_user:get("name"))
+end
+
+local deleted = assert(users:delete_one(
+  doc({ { "_id", inserted.inserted_id } })
+))
+print(deleted.deleted_count)
+```
+
+### Bulk Operations
+
+Bulk writes combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
+
+```lua
+local doc = mongodb.bson.document
+local bulk = mongodb.bulk
+
+local written = assert(users:bulk_write({
+  bulk.insert_one(doc({ { "name", "Grace" }, { "active", false } })),
+  bulk.update_one(
+    doc({ { "name", "Grace" } }),
+    doc({ { "$set", doc({ { "active", true } }) } })
+  ),
+  bulk.delete_one(doc({ { "name", "Retired account" } })),
+}, { ordered = true }))
+
+print(written.inserted_count)
+print(written.modified_count)
+print(written.deleted_count)
+```
+
+### Transactions
+
+Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. `with_transaction` starts, commits, and applies the specification retry rules for transient failures. Pass the active session to every operation in the transaction, and keep the callback safe to run more than once.
+
+```lua
+local doc = mongodb.bson.document
+local accounts = client:database("bank"):collection("accounts")
+local session = assert(client:start_session())
+
+local transferred = assert(session:with_transaction(function(active_session)
+  assert(accounts:update_one(
+    doc({ { "_id", "checking" } }),
+    doc({ { "$inc", doc({ { "balance", -100 } }) } }),
+    { session = active_session }
+  ))
+  assert(accounts:update_one(
+    doc({ { "_id", "savings" } }),
+    doc({ { "$inc", doc({ { "balance", 100 } }) } }),
+    { session = active_session }
+  ))
+  return true
+end, {
+  read_concern = doc({ { "level", "snapshot" } }),
+  write_concern = doc({ { "w", "majority" } }),
+}))
+
+assert(transferred)
+assert(session:end_session())
 ```
 
 The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone and replica-set connections; SCRAM and TLS; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
