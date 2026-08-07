@@ -1525,7 +1525,7 @@
       "completed_at": "2026-08-07T14:54:13+00:00"
     },
     "REL-005": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -1533,11 +1533,27 @@
           "exit_code": 1,
           "summary": "2 existing tests passed; the new generic-command test failed because read_operation was nil instead of true and the database read preference was inherited rather than defaulting to primary.",
           "recorded_at": "2026-08-07T17:57:53+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "env PATH=/Users/alex/.luarocks/bin:/opt/homebrew/opt/lua@5.4/bin:$PATH LUA_PATH='src/?.lua;src/?/init.lua;/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT=spec/unit/api_handles_spec.lua",
+          "exit_code": 1,
+          "summary": "Two existing API handle tests passed; the generic-command test failed because read_operation was nil and generic commands did not default selection to primary.",
+          "recorded_at": "2026-08-07T19:18:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/api_handles_spec.lua FOCUS_UNIFIED='run-command/tests/unified/runCommand.json' FOCUS_LINT='src/mongodb/api.lua src/mongodb/topology_executor.lua src/mongodb/unified/driver.lua spec/unit/api_handles_spec.lua'; make test-focus FOCUS_UNIFIED='transactions/tests/unified/run-command.json'; make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope'; run generated capability, ledger, scope, and README checks",
+          "exit_code": 0,
+          "summary": "3 API unit tests passed; 16 exact unified cases executed and passed across generic and transaction run-command fixtures, with 0 failed, 0 environment-skipped, and 0 deferred; 41 capability/conformance/scope tests and all generated artifact checks passed; touched-file lint reported 0 warnings/errors.",
+          "recorded_at": "2026-08-07T19:20:54+00:00"
         }
       ],
       "notes": [
         "Requeued: Full unified verification exposed REL-028 transaction read-preference enforcement as a prerequisite; REL-005 implementation and red test are preserved in named stashes."
-      ]
+      ],
+      "started_at": "2026-08-07T19:17:52+00:00",
+      "completed_at": "2026-08-07T19:20:55+00:00"
     },
     "REL-028": {
       "status": "completed",

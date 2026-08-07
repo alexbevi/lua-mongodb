@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1263,
-    "runnable": 1263
+    "passed": 1273,
+    "runnable": 1273
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -69520,7 +69520,6 @@
     "run-command/tests/unified/runCommand.json::test[11]": {
       "activity": "REL-005",
       "fingerprint": "fc46257c131844e2944c0697ec6091d10f4c07117db5ea041f56a50cc3c3a6d8",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69546,12 +69545,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[1]": {
       "activity": "REL-005",
       "fingerprint": "a27e186daf7cb8da7c6a20baca1e1ef3a6f3e92a297e9ad8907853100ab2c333",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69577,12 +69575,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[2]": {
       "activity": "REL-005",
       "fingerprint": "505798d163e834b0b74d06e997133ad90239be5aa9290e41b35eacd77a1663f1",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69611,12 +69608,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[3]": {
       "activity": "REL-005",
       "fingerprint": "7d719db594ec75b253873c5fd4dfe175f22876c120962974535e29d3ce782de4",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69643,12 +69639,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[4]": {
       "activity": "REL-005",
       "fingerprint": "5123bb487c29f901687ec5390caa2b4a17e9a782aebe5c6904a60446db22c2f2",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69677,12 +69672,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[5]": {
       "activity": "REL-005",
       "fingerprint": "8eed0eb4bd3f96513f4fcd9ab9a189d303e89d1af2143bfce11b097ad4045a47",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69711,12 +69705,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[6]": {
       "activity": "REL-005",
       "fingerprint": "f84c0d5c46f86c32ac2592738bf5baa1a7af040603cd4c5dfc1dd4ac870ab91f",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69743,12 +69736,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[7]": {
       "activity": "REL-005",
       "fingerprint": "48241fa481ff26289834cb22e02fb6908084b9a82033b74ad40819f6c008ff5b",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69774,12 +69766,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[8]": {
       "activity": "REL-005",
       "fingerprint": "1822eed3b9e1f0a83fc1eeee806a829c8b569b17f117268bc445f4b57593fc52",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69805,12 +69796,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[9]": {
       "activity": "REL-005",
       "fingerprint": "85553f81994aca2f0d07b8859d5407ffbc1e76ffa127998b08499d161dd5a66e",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -69836,7 +69826,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[10]": {
       "activity": "ADV-011",

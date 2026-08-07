@@ -15,6 +15,12 @@ local CLIENT_METHODS = {}
 local DATABASE_METHODS = {}
 local COLLECTION_METHODS = {}
 
+local PRIMARY_READ_PREFERENCE = {
+  max_staleness_seconds = -1,
+  mode = "primary",
+  tag_sets = { {} },
+}
+
 local function immutable(kind)
   return function()
     error("MongoDB " .. kind .. " handles are immutable", 2)
@@ -172,6 +178,47 @@ local function run_operation(state, options, callback)
     options,
     callback
   )
+end
+
+local function command_document(command)
+  if type(command) == "string" then
+    if command == "" then
+      error("command name must be non-empty", 3)
+    end
+
+    return bson.document({ { command, 1 } })
+  elseif not bson.is_document(command) then
+    error("command must be a name or BSON document", 3)
+  elseif #command == 0 then
+    error("command document must not be empty", 3)
+  end
+
+  return command
+end
+
+local function command_options(options)
+  local result = {}
+
+  for key, value in pairs(options) do
+    result[key] = value
+  end
+
+  if options.read_preference == nil then
+    result.read_preference = PRIMARY_READ_PREFERENCE
+  else
+    local normalized, err = driver_options.normalize(nil, {
+      read_preference = options.read_preference,
+    })
+
+    if not normalized then
+      return nil, err
+    end
+
+    result.read_preference = normalized.read_preference
+  end
+
+  result.read_operation = true
+  return result
 end
 
 local function new_database(client, name, options)
@@ -463,18 +510,16 @@ function DATABASE_METHODS:run_command(command, options)
     return nil, err
   end
 
-  if type(command) == "string" then
-    if command == "" then
-      error("command name must be non-empty", 2)
-    end
-
-    command = bson.document({ { command, 1 } })
-  elseif not bson.is_document(command) then
-    error("command must be a name or BSON document", 2)
-  end
+  command = command_document(command)
 
   return run_operation(state, options, function(prepared)
-    return client_state.executor:command(state.name, command, prepared)
+    local execution_options, option_err = command_options(prepared)
+
+    if not execution_options then
+      return nil, option_err
+    end
+
+    return client_state.executor:command(state.name, command, execution_options)
   end)
 end
 

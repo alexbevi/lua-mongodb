@@ -87,4 +87,23 @@ describe("core MongoDB handles", function()
     assert(client:database("db"):run_command("ping"))
     assert.near(10.05, received.deadline, 0.000001)
   end)
+
+  it("defaults generic command selection to primary", function()
+    local received
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        received = options
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {
+      read_preference = { mode = "secondary" },
+    }))
+    local client = api.new_client(executor, config)
+
+    assert(client:database("db"):run_command("ping"))
+    assert.is_true(received.read_operation)
+    assert.are.equal("primary", received.read_preference.mode)
+  end)
 end)

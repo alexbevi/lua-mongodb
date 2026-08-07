@@ -432,6 +432,41 @@ end
 local call_driver
 local operation_options
 
+local function convert_read_preference(value)
+  if not bson.is_document(value) then
+    return value
+  end
+
+  local max_staleness = value:get("maxStalenessSeconds")
+
+  if bson.is_exact(max_staleness) then
+    max_staleness = max_staleness:to_number()
+  end
+
+  local tag_sets = {}
+  local tags = value:get("tagSets")
+
+  if bson.is_array(tags) then
+    for index, tag_set in tags:iter() do
+      local converted = {}
+
+      if bson.is_document(tag_set) then
+        for key, item in tag_set:iter() do
+          converted[key] = item
+        end
+      end
+
+      tag_sets[index] = converted
+    end
+  end
+
+  return {
+    max_staleness_seconds = max_staleness,
+    mode = value:get("mode"),
+    tag_sets = #tag_sets > 0 and tag_sets or nil,
+  }
+end
+
 local function insert_one(_, collection, arguments)
   local result, err = call_driver(function()
     return collection:insert_one(arguments:get("document"), operation_options(
@@ -820,10 +855,30 @@ local function list_collection_names(_, database, arguments)
 end
 
 local function run_command(_, database, arguments)
-  return database:run_command(arguments:get("command"), operation_options(
+  local command = arguments:get("command")
+  local command_name = arguments:get("commandName")
+
+  if not bson.is_document(command) or type(command_name) ~= "string"
+      or command_name == ""
+  then
+    return configuration_error("invalid runCommand arguments", "$.arguments")
+  end
+
+  local entries = { { command_name, command:get(command_name) or 1 } }
+
+  for key, value in command:iter() do
+    if key ~= command_name then
+      entries[#entries + 1] = { key, value }
+    end
+  end
+
+  local options = operation_options(
     arguments,
     { readPreference = "read_preference" }
-  ))
+  )
+
+  options.read_preference = convert_read_preference(options.read_preference)
+  return database:run_command(bson.document(entries), options)
 end
 
 local function create_collection(_, database, arguments)

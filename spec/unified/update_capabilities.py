@@ -341,15 +341,6 @@ for index in range(1, 21):
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
   ] = ("REL-006", "handshake retry awaits release hardening")
 
-for index in range(1, 12):
-  if index != 10:
-    TEST_OVERRIDES[
-      f"run-command/tests/unified/runCommand.json::test[{index}]"
-    ] = (
-      "REL-005",
-      "general runCommand conformance awaits the v1 command adapter",
-    )
-
 for index in (2, 3, 4, 7, 8, 9):
   TEST_OVERRIDES[
     f"run-command/tests/unified/runCursorCommand.json::test[{index}]"
