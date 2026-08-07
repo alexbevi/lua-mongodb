@@ -33,20 +33,17 @@ The project is currently pre-alpha, and no release has been published under that
 
 ## Getting Started
 
-The driver runs network operations through a coroutine-aware runtime. With the default Copas adapter, create and use clients inside `copas.loop`. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.
+The driver runs network operations through a coroutine-aware runtime. For standalone programs, `mongodb.run` starts the default Copas scheduler and runs the application callback inside it. Applications that already own a Copas loop may create clients directly inside that loop instead. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.
 
 ### Connecting
 
 Connect with a MongoDB URI, select the default database from that URI, and obtain a collection handle:
 
 ```lua
-local copas = require("copas")
 local mongodb = require("mongodb")
 
-copas.loop(function()
-  local client = assert(mongodb.client("mongodb://localhost:27017/app", {
-    runtime = mongodb.runtime.copas(),
-  }))
+mongodb.run(function()
+  local client = assert(mongodb.client("mongodb://localhost:27017/app"))
   local users = client:database():collection("users")
   local result = assert(users:insert_one(
     mongodb.bson.document({ { "name", "Ada" } })
@@ -62,7 +59,7 @@ Set the optional handshake application name with the URI `appName` option or the
 
 ### CRUD Operations
 
-The remaining examples assume they run inside the Copas loop above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
+The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
 
 ```lua
 local doc = mongodb.bson.document

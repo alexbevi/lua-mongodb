@@ -1620,6 +1620,28 @@
       "notes": [],
       "started_at": "2026-08-07T19:35:22+00:00",
       "completed_at": "2026-08-07T19:42:53+00:00"
+    },
+    "RUN-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/run_spec.lua",
+          "exit_code": 2,
+          "summary": "The three focused runner cases fail because mongodb.run is absent.",
+          "recorded_at": "2026-08-07T20:01:39+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA_PATH=/Users/alex/.luarocks/share/lua/5.4/?.lua:/Users/alex/.luarocks/share/lua/5.4/?/init.lua LUA_CPATH=/Users/alex/.luarocks/lib/lua/5.4/?.so make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/run_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_LINT='src/mongodb/init.lua src/mongodb/runtime/copas.lua spec/unit/run_spec.lua'",
+          "exit_code": 0,
+          "summary": "All 13 focused runner and Copas runtime cases passed; touched-file lint reported zero warnings; rockspec validation passed.",
+          "recorded_at": "2026-08-07T20:03:01+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T20:01:05+00:00",
+      "completed_at": "2026-08-07T20:03:02+00:00"
     }
   },
   "verified_references": {

@@ -1,5 +1,6 @@
 local runtime_guard = require("mongodb.runtime_guard")
 local handshake_metadata = require("mongodb.handshake.metadata")
+local copas_runtime = require("mongodb.runtime.copas")
 
 local ok, message = runtime_guard.check(_VERSION, math.maxinteger)
 
@@ -14,6 +15,7 @@ local M = {
   client = require("mongodb.client").connect,
   error = require("mongodb.error"),
   pool = require("mongodb.pool"),
+  run = copas_runtime.run,
   runtime = require("mongodb.runtime"),
   sdam = require("mongodb.sdam"),
   selection = require("mongodb.selection"),

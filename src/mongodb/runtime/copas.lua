@@ -120,6 +120,17 @@ local function validate_options(options)
   end
 end
 
+local function require_copas(provided)
+  local copas = provided or require("copas")
+
+  if type(copas._VERSION) ~= "string"
+      or not string.match(copas._VERSION, "^Copas 4%.11%.") then
+    error("lua-mongodb requires Copas 4.11.x", 3)
+  end
+
+  return copas
+end
+
 local function new_clock(adapter, copas, raw_gettime, raw_wall_time)
   local last_now
   local clock = {}
@@ -267,12 +278,7 @@ function M.new(options)
   options = options or {}
   validate_options(options)
 
-  local copas = options.copas or require("copas")
-
-  if type(copas._VERSION) ~= "string"
-      or not string.match(copas._VERSION, "^Copas 4%.11%.") then
-    error("lua-mongodb requires Copas 4.11.x", 2)
-  end
+  local copas = require_copas(options.copas)
 
   local raw_gettime = options.gettime or copas.gettime
   local raw_wall_time = options.wall_time or os.time
@@ -315,6 +321,35 @@ function M.new(options)
   adapter.metadata = options.metadata
 
   return runtime_contract.validate(adapter)
+end
+
+function M.run(callback, ...)
+  if type(callback) ~= "function" then
+    error("mongodb.run callback must be a function", 2)
+  end
+
+  local copas = require_copas()
+
+  if copas.running then
+    error("mongodb.run cannot own an active Copas loop", 2)
+  end
+
+  local arguments = table.pack(...)
+  local outcome
+
+  copas.loop(function()
+    outcome = table.pack(pcall(callback, table.unpack(arguments, 1, arguments.n)))
+  end)
+
+  if outcome == nil then
+    error("Copas loop exited before mongodb.run callback completed", 2)
+  end
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  return table.unpack(outcome, 2, outcome.n)
 end
 
 return M
