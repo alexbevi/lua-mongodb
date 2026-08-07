@@ -214,6 +214,14 @@ local function transaction_active(transaction)
   return transaction.state == "starting" or transaction.state == "in_progress"
 end
 
+local function read_preference_mode(value)
+  if bson.is_document(value) then
+    return value:get("mode")
+  elseif type(value) == "table" then
+    return value.mode
+  end
+end
+
 function SESSION_METHODS:is_in_transaction()
   return transaction_active(SESSION_STATES[self].transaction)
 end
@@ -748,17 +756,15 @@ function MANAGER_METHODS:decorate(command, options)
   local starting_transaction = transaction.state == "starting"
 
   if in_transaction then
-    local read_preference = options.read_preference
-      or transaction.options.read_preference
-    local mode
+    local operation_mode = read_preference_mode(options.read_preference)
+    local transaction_mode = read_preference_mode(
+      transaction.options.read_preference
+    )
 
-    if bson.is_document(read_preference) then
-      mode = read_preference:get("mode")
-    elseif type(read_preference) == "table" then
-      mode = read_preference.mode
-    end
-
-    if READ_COMMANDS[command:keys()[1]] and mode ~= nil and mode ~= "primary" then
+    if READ_COMMANDS[command:keys()[1]]
+        and (operation_mode ~= nil and operation_mode ~= "primary"
+          or transaction_mode ~= nil and transaction_mode ~= "primary")
+    then
       return client_error("read preference in a transaction must be primary")
     end
   end

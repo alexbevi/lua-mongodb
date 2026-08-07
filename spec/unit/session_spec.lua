@@ -311,6 +311,28 @@ describe("client sessions", function()
     assert.same({ "commitTransaction", "commitTransaction" }, transaction_commands)
   end)
 
+  it("does not mask a transaction read preference with an operation preference", function()
+    local sessions = session_module.new({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction({
+      read_preference = { mode = "secondary" },
+    }))
+    local command, err = sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      {
+        read_preference = { mode = "primary" },
+        session = session,
+      }
+    )
+
+    assert.is_nil(command)
+    assert.matches("read preference in a transaction must be primary", err.message)
+  end)
+
   it("returns the callback value after a convenient transaction commits", function()
     local transaction_commands = {}
     local sessions = session_module.new({

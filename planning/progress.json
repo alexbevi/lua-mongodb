@@ -1538,6 +1538,28 @@
       "notes": [
         "Requeued: Full unified verification exposed REL-028 transaction read-preference enforcement as a prerequisite; REL-005 implementation and red test are preserved in named stashes."
       ]
+    },
+    "REL-028": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=/Users/alex/.luarocks/bin:/opt/homebrew/opt/lua@5.4/bin:$PATH LUA_PATH='src/?.lua;src/?/init.lua;/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT=spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "Twelve existing session tests passed; the new transaction read-preference test failed because a primary operation preference masked the transaction secondary preference and returned a command instead of the required client error.",
+          "recorded_at": "2026-08-07T19:07:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/session_spec.lua FOCUS_UNIFIED='transactions/tests/unified/read-pref.json' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua'; make test-focus FOCUS_UNIFIED='transactions/tests/unified/run-command.json'",
+          "exit_code": 0,
+          "summary": "13 session unit tests passed; 11 exact unified cases executed and passed across transaction read-preference and run-command fixtures, with 0 failed, 0 environment-skipped, and 0 deferred; touched-file lint reported 0 warnings/errors.",
+          "recorded_at": "2026-08-07T19:09:22+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T19:06:37+00:00",
+      "completed_at": "2026-08-07T19:09:22+00:00"
     }
   },
   "verified_references": {
