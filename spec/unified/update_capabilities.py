@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Regenerate the checked-in unified fixture capability manifest."""
+"""Regenerate per-test unified capability classifications."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import argparse
 import json
 from pathlib import Path
 import sys
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -15,148 +16,188 @@ from spec.unified import run  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
+PROGRESS = ROOT / "planning" / "progress.json"
 OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
+RATCHETS = {"classified": 1900, "passed": 0, "runnable": 0}
 
-CLASSIFICATIONS = {
-  "auth": (
-    "ADV-008",
-    "the pinned authentication fixture requires post-v1 OIDC authentication",
-  ),
-  "change-streams": (
-    "ADV-001",
-    "change streams are a post-v1 capability",
-  ),
-  "client-side-encryption": (
-    "ADV-010",
-    "client-side field-level and queryable encryption require a separate design",
-  ),
-  "crud": (
-    "REL-001",
-    "the fixture requires a CRUD operation outside the current collection API or "
-    "the live unified execution bridge completed by REL-001",
-  ),
-  "mongodb-handshake": (
-    "SDAM-002",
-    "pool lifecycle is implemented; metadata append propagation requires the public "
-    "pooled client, handshake event bridge, and multi-connection execution owned by SDAM-002",
-  ),
-  "retryable-reads": (
-    "RETRY-001",
-    "retryable reads are not implemented",
-  ),
-  "retryable-writes": (
-    "RETRY-002",
-    "retryable writes are not implemented",
-  ),
-  "server-discovery-and-monitoring": (
-    "SDAM-002",
-    "immutable phase-one descriptions and transitions are implemented; live monitor "
-    "scheduling, replica-set discovery, SDAM events, failpoints, and public multi-seed "
-    "execution are owned by SDAM-002",
-  ),
-  "transactions": (
-    "TXN-001",
-    "transaction execution is not implemented",
-  ),
-  "transactions-convenient-api": (
-    "TXN-002",
-    "the convenient transaction API is not implemented",
+OWNER_REASONS = {
+  "ADV-001": "change streams are a post-v1 capability",
+  "ADV-005": "sharded execution is a post-v1 capability",
+  "ADV-006": "load-balanced execution is a post-v1 capability",
+  "ADV-007": "client bulkWrite is a post-v1 capability",
+  "ADV-008": "the test requires a post-v1 authentication mechanism",
+  "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
+  "ADV-010": "client-side field-level and queryable encryption require a separate design",
+  "REL-001": "the operation is outside the v1 unified adapters and awaits release conformance closure",
+  "RETRY-001": "retryable-read orchestration is not implemented",
+  "RETRY-002": "retryable-write orchestration is not implemented",
+  "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
+  "SES-001": "session entities and causal command decoration are not implemented",
+  "TXN-001": "explicit transaction execution is not implemented",
+  "TXN-002": "convenient transaction retry execution is not implemented",
+  "UTF-009": "the unified per-test lifecycle and driver entity boundary are not implemented",
+  "UTF-010": "the first end-to-end standalone insertOne adapter is not implemented",
+  "UTF-011": "the unified collection-read adapters are not implemented",
+  "UTF-012": "the unified collection-write adapters are not implemented",
+  "UTF-013": "unified command-event collection and matching are not implemented",
+  "UTF-014": "unified failpoint configuration and cleanup are not implemented",
+}
+
+SPECIFICATION_OWNERS = {
+  "auth": "ADV-008",
+  "change-streams": "ADV-001",
+  "client-side-encryption": "ADV-010",
+  "mongodb-handshake": "SDAM-002",
+  "retryable-reads": "RETRY-001",
+  "retryable-writes": "RETRY-002",
+  "transactions": "TXN-001",
+  "transactions-convenient-api": "TXN-002",
+}
+
+READ_OPERATIONS = {
+  "aggregate",
+  "countDocuments",
+  "distinct",
+  "estimatedDocumentCount",
+  "find",
+  "findOne",
+  "findOneAndDelete",
+  "findOneAndReplace",
+  "findOneAndUpdate",
+}
+WRITE_OPERATIONS = {
+  "bulkWrite",
+  "deleteMany",
+  "deleteOne",
+  "insertMany",
+  "insertOne",
+  "replaceOne",
+  "updateMany",
+  "updateOne",
+}
+MANAGEMENT_OPERATIONS = {
+  "count",
+  "createCollection",
+  "createIndex",
+  "dropCollection",
+  "dropIndex",
+  "listCollectionNames",
+  "listCollectionObjects",
+  "listCollections",
+  "listDatabaseNames",
+  "listDatabaseObjects",
+  "listDatabases",
+  "listIndexNames",
+  "listIndexes",
+  "mapReduce",
+  "modifyCollection",
+  "rename",
+}
+
+TEST_OVERRIDES = {
+  "crud/tests/unified/insertOne.json::test[1]": (
+    "UTF-010",
+    "this is the pinned first standalone insertOne case selected for end-to-end execution",
   ),
 }
 
-LIVE_CRUD_REASON = (
-  "live unified CRUD entities, server requirements, command-event matching, "
-  "failpoints, and outcome execution are deferred to the REL-001 conformance bridge; "
-  "command models are covered by unit, loopback, and real-server integration tests"
-)
 
-PATH_CLASSIFICATIONS = {
-  "crud/tests/unified/bypassDocumentValidation.json": (
-    "REL-001",
-    LIVE_CRUD_REASON,
-  ),
-  "crud/tests/unified/create-null-ids.json": (
-    "ADV-007",
-    "the fixture includes post-v1 client bulkWrite in addition to implemented collection writes",
-  ),
-  "run-command/tests/unified/runCommand.json": (
-    "TXN-001",
-    "the public command API, sessions, and transaction execution are not implemented",
-  ),
-  "run-command/tests/unified/runCursorCommand.json": (
-    "SES-001",
-    "public cursor commands, pooling events, and session execution are not implemented",
-  ),
-}
+def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
+  requirements = test["requirements"]
+  operations = set(requirements["operations"])
+  special = set(requirements["special_operations"])
 
-CORE_CRUD_PREFIXES = (
-  "crud/tests/unified/aggregate",
-  "crud/tests/unified/countDocuments",
-  "crud/tests/unified/deleteMany",
-  "crud/tests/unified/deleteOne",
-  "crud/tests/unified/distinct",
-  "crud/tests/unified/estimatedDocumentCount",
-  "crud/tests/unified/find-",
-  "crud/tests/unified/find.json",
-  "crud/tests/unified/findOne",
-  "crud/tests/unified/insertOne",
-  "crud/tests/unified/replaceOne",
-  "crud/tests/unified/updateMany",
-  "crud/tests/unified/updateOne",
-)
-COLLECTION_BULK_PREFIXES = (
-  "crud/tests/unified/bulkWrite",
-  "crud/tests/unified/insertMany",
-)
-CLIENT_BULK_PREFIX = "crud/tests/unified/client-bulkWrite"
-LEGACY_COUNT_PREFIXES = (
-  "crud/tests/unified/count-",
-  "crud/tests/unified/count.json",
-)
-DATABASE_AGGREGATE_PREFIX = "crud/tests/unified/db-aggregate"
+  if "clientBulkWrite" in operations:
+    owner = "ADV-007"
+  elif "session" in requirements["entities"] \
+      or any(value.endswith(".session") for value in requirements["arguments"]):
+    owner = "SES-001"
+  elif "failPoint" in special or "targetedFailPoint" in special:
+    owner = "UTF-014"
+  elif requirements["events"]:
+    owner = "UTF-013"
+  elif operations & MANAGEMENT_OPERATIONS:
+    owner = "REL-001"
+  elif operations & WRITE_OPERATIONS:
+    owner = "UTF-012"
+  elif operations & READ_OPERATIONS:
+    owner = "UTF-011"
+  elif not operations:
+    owner = "UTF-009"
+  else:
+    raise run.CapabilityError(
+      f"no CRUD capability owner for {test['id']}: {sorted(operations)}"
+    )
+
+  return owner, OWNER_REASONS[owner]
+
+
+def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
+  path = test["fixture"].lower()
+  requirements = test["requirements"]
+  topologies = set(requirements["topologies"])
+
+  if requirements["logs"] or "/logging-" in path or "/backpressure-" in path:
+    owner = "ADV-009"
+  elif "load-balanced" in topologies or "loadbalanced" in path:
+    owner = "ADV-006"
+  elif {"sharded", "sharded-replicaset"} & topologies or "sharded-" in path:
+    owner = "ADV-005"
+  else:
+    owner = "SDAM-002"
+
+  return owner, OWNER_REASONS[owner]
+
+
+def classify_test(test: dict[str, Any]) -> tuple[str, str]:
+  override = TEST_OVERRIDES.get(test["id"])
+
+  if override:
+    return override
+
+  specification = test["fixture"].split("/", 1)[0]
+
+  if specification in SPECIFICATION_OWNERS:
+    owner = SPECIFICATION_OWNERS[specification]
+    return owner, OWNER_REASONS[owner]
+
+  if specification == "crud":
+    return classify_crud(test)
+
+  if specification == "server-discovery-and-monitoring":
+    return classify_sdam(test)
+
+  if specification == "run-command":
+    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "SES-001"
+    return owner, OWNER_REASONS[owner]
+
+  raise run.CapabilityError(f"no classification rule for {test['id']}")
 
 
 def generate() -> dict[str, object]:
   plan = json.loads(PLAN.read_text(encoding="utf-8"))
   commit = plan["references"]["specifications"]["commit"]
-  fixtures = {}
+  discovered = run.discover_tests(run.DEFAULT_SOURCE)
+  tests = {}
 
-  for path in run.discover_fixtures(run.DEFAULT_SOURCE):
-    specification = path.split("/", 1)[0]
-
-    if path in PATH_CLASSIFICATIONS:
-      activity, reason = PATH_CLASSIFICATIONS[path]
-    elif path.startswith(CORE_CRUD_PREFIXES):
-      activity, reason = "REL-001", LIVE_CRUD_REASON
-    elif path.startswith(COLLECTION_BULK_PREFIXES):
-      activity, reason = "REL-001", LIVE_CRUD_REASON
-    elif path.startswith(CLIENT_BULK_PREFIX):
-      activity = "ADV-007"
-      reason = "client bulkWrite is a post-v1 capability"
-    elif path.startswith(LEGACY_COUNT_PREFIXES):
-      activity = "REL-001"
-      reason = (
-        "the fixture mixes supported count helpers with the deprecated count operation, "
-        "which v1 intentionally does not expose; partial execution awaits REL-001"
-      )
-    elif path.startswith(DATABASE_AGGREGATE_PREFIX):
-      activity = "REL-001"
-      reason = "database-level aggregate and its live unified execution bridge await REL-001"
-    elif specification in CLASSIFICATIONS:
-      activity, reason = CLASSIFICATIONS[specification]
-    else:
-      raise run.CapabilityError(f"no classification rule for specification: {specification}")
-
-    fixtures[path] = {
+  for test in discovered:
+    activity, reason = classify_test(test)
+    tests[test["id"]] = {
       "activity": activity,
+      "fingerprint": test["fingerprint"],
       "reason": reason,
-      "status": "deferred",
+      "requirements": test["requirements"],
+      "status": "deferred_unsupported",
     }
 
+  states = run.load_activity_states(PLAN, PROGRESS)
+  classified = run.classify_tests(discovered, tests, states)
+  run.validate_ratchets(classified, RATCHETS)
   return {
-    "fixtures": fixtures,
-    "schema_version": 1,
+    "ratchets": RATCHETS,
+    "schema_version": 2,
     "specifications_commit": commit,
+    "tests": tests,
   }
 
 
@@ -164,7 +205,12 @@ def main(argv: list[str] | None = None) -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--check", action="store_true")
   arguments = parser.parse_args(argv)
-  encoded = json.dumps(generate(), indent=2, sort_keys=True) + "\n"
+
+  try:
+    encoded = json.dumps(generate(), indent=2, sort_keys=True) + "\n"
+  except (OSError, json.JSONDecodeError, run.CapabilityError) as exc:
+    print(f"unified capabilities: {exc}", file=sys.stderr)
+    return 2
 
   if arguments.check:
     if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8") != encoded:

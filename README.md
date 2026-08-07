@@ -111,7 +111,7 @@ make check
 
 Every target checks its prerequisites and explains how to select a missing tool through `LUA`, `LUAROCKS`, `BUSTED`, `LUACHECK`, or `PYTHON`. `make test-unit` includes every pinned BSON and Extended JSON corpus representation, all 98 non-SRV connection-string fixtures plus their option-warning semantics, and the deterministic unified runner core. `make test-unified` separately runs all 320 JSON meta-fixtures, parses and schema-validates all 483 pinned integration files through the Lua Extended JSON and schema implementations, inventories their 1,900 tests, and reports execution status. An all-deferred execution report is explicitly non-conformant; real fixture execution remains incremental. Integration coverage includes real Copas/LuaSocket loopback transport, verified and insecure LuaSec handshakes, the public standalone lifecycle, OP_MSG handshake, SCRAM-SHA-256 authentication, and authenticated ping execution without requiring an external server process.
 
-The unified capability CLI verifies that every pinned integration fixture is runnable or explicitly deferred. It supports repeatable glob filters and versioned JSON reports:
+The unified capability CLI verifies that every pinned integration test is runnable or explicitly classified. It supports repeatable fixture-path glob filters and versioned JSON reports:
 
 ```sh
 python3 spec/unified/run.py
@@ -121,7 +121,7 @@ python3 spec/unified/run_schema_meta.py --report meta.json
 python3 spec/unified/update_capabilities.py --check
 ```
 
-Schema, inventory, meta-runner, and execution reports have distinct types and counters. Per-test inventory identities use the stable form `fixture/path.json::test[N]`; execution reports distinguish passes, failures, environment skips, unsupported deferrals, scope exclusions, and invalid or incompatible inputs. The checked-in manifest currently classifies all 483 discovered fixtures with owning roadmap activities and concrete reasons. A missing fixture, stale entry, unknown status, empty deferral reason, or runnable fixture without an executor fails the command.
+Schema, inventory, meta-runner, and execution reports have distinct types and counters. Per-test identities use the stable form `fixture/path.json::test[N]`; each of the 1,900 checked-in classifications carries a content fingerprint, extracted capability requirements, a concrete reason, and a pending roadmap owner. Execution reports distinguish passes, failures, environment skips, unsupported deferrals, scope exclusions, and invalid or incompatible inputs. Missing or stale tests, unknown capabilities, completed deferral owners, empty reasons, or regressions below the classified, runnable, and passing ratchets fail the command. A runnable test without an executor is reported as a failure.
 
 ## Scope
 

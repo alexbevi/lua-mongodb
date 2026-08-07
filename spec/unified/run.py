@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import fnmatch
+import hashlib
 import json
 from pathlib import Path
 import sys
@@ -15,8 +16,77 @@ ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SOURCE = ROOT / "planning" / "specifications" / "source"
 DEFAULT_MANIFEST = ROOT / "spec" / "unified" / "capabilities.json"
 DEFAULT_PLAN = ROOT / "planning" / "plan.json"
-VALID_STATUSES = {"deferred", "runnable"}
+DEFAULT_PROGRESS = ROOT / "planning" / "progress.json"
+VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
+KNOWN_REQUIREMENT_KEYS = {
+  "arguments",
+  "entities",
+  "events",
+  "has_outcome",
+  "logs",
+  "match_operators",
+  "operations",
+  "special_operations",
+  "topologies",
+}
+KNOWN_ENTITIES = {
+  "bucket",
+  "client",
+  "clientEncryption",
+  "collection",
+  "database",
+  "session",
+  "thread",
+}
+KNOWN_MATCH_OPERATORS = {
+  "$$exists",
+  "$$lte",
+  "$$matchAsDocument",
+  "$$matchAsRoot",
+  "$$matchesEntity",
+  "$$matchesHexBytes",
+  "$$sessionLsid",
+  "$$type",
+  "$$unsetOrMatches",
+}
+KNOWN_OPERATIONS = {
+  "abortTransaction", "addKeyAltName", "aggregate", "appendMetadata",
+  "bulkWrite", "clientBulkWrite", "close", "commitTransaction", "count",
+  "countDocuments", "createChangeStream", "createCollection",
+  "createCommandCursor", "createDataKey", "createIndex", "decrypt",
+  "deleteKey", "deleteMany", "deleteOne", "distinct", "download",
+  "downloadByName", "dropCollection", "dropIndex", "encrypt", "endSession",
+  "estimatedDocumentCount", "find", "findOne", "findOneAndDelete",
+  "findOneAndReplace", "findOneAndUpdate", "getKey", "getKeyByAltName",
+  "getKeys", "insertMany", "insertOne", "iterateOnce",
+  "iterateUntilDocumentOrError", "listCollectionNames",
+  "listCollectionObjects", "listCollections", "listDatabaseNames",
+  "listDatabaseObjects", "listDatabases", "listIndexNames", "listIndexes",
+  "mapReduce", "modifyCollection", "removeKeyAltName", "rename",
+  "replaceOne", "rewrapManyDataKey", "runCommand", "runCursorCommand",
+  "startTransaction", "updateMany", "updateOne", "withTransaction",
+}
+KNOWN_SPECIAL_OPERATIONS = {
+  "assertCollectionExists", "assertCollectionNotExists", "assertEventCount",
+  "assertIndexExists", "assertIndexNotExists", "assertNumberConnectionsCheckedOut",
+  "assertSameLsidOnLastTwoCommands", "assertSessionPinned",
+  "assertSessionTransactionState", "assertSessionUnpinned", "assertTopologyType",
+  "createEntities", "failPoint", "recordTopologyDescription", "runOnThread",
+  "targetedFailPoint", "wait", "waitForEvent", "waitForPrimaryChange",
+  "waitForThread",
+}
+KNOWN_EVENTS = {
+  "commandFailedEvent", "commandStartedEvent", "commandSucceededEvent",
+  "connectionCheckOutStartedEvent", "connectionCheckedInEvent",
+  "connectionCheckedOutEvent", "connectionClosedEvent", "connectionCreatedEvent",
+  "connectionReadyEvent", "poolClearedEvent", "serverDescriptionChangedEvent",
+  "serverHeartbeatStartedEvent", "serverHeartbeatSucceededEvent",
+  "topologyClosedEvent", "topologyDescriptionChangedEvent", "topologyOpeningEvent",
+}
+KNOWN_TOPOLOGIES = {
+  "load-balanced", "replicaset", "sharded", "sharded-replicaset", "single",
+}
 
 
 class CapabilityError(ValueError):
@@ -46,92 +116,272 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
   return sorted(fixtures)
 
 
+def _walk_requirements(value: Any, operators: set[str]) -> None:
+  if isinstance(value, dict):
+    for key, item in value.items():
+      if key.startswith("$$"):
+        operators.add(key)
+
+      _walk_requirements(item, operators)
+  elif isinstance(value, list):
+    for item in value:
+      _walk_requirements(item, operators)
+
+
+def extract_requirements(document: dict[str, Any], test: dict[str, Any]) -> dict[str, Any]:
+  entities = set()
+  operations = set()
+  special_operations = set()
+  arguments = set()
+  events = set()
+  match_operators = set()
+  topologies = set()
+
+  for entity in document.get("createEntities", []):
+    entities.update(entity)
+
+  for operation in test.get("operations", []):
+    name = operation["name"]
+
+    if operation["object"] == "testRunner":
+      special_operations.add(name)
+    else:
+      operations.add(name)
+
+    arguments.update(f"{name}.{key}" for key in operation.get("arguments", {}))
+
+    if name == "createEntities":
+      for entity in operation.get("arguments", {}).get("entities", []):
+        entities.update(entity)
+
+  for expected in test.get("expectEvents", []):
+    for event in expected.get("events", []):
+      events.update(event)
+
+  for requirement in document.get("runOnRequirements", []):
+    topologies.update(requirement.get("topologies", []))
+
+  for requirement in test.get("runOnRequirements", []):
+    topologies.update(requirement.get("topologies", []))
+
+  _walk_requirements(test, match_operators)
+  return {
+    "arguments": sorted(arguments),
+    "entities": sorted(entities),
+    "events": sorted(events),
+    "has_outcome": "outcome" in test,
+    "logs": bool(test.get("expectLogMessages")),
+    "match_operators": sorted(match_operators),
+    "operations": sorted(operations),
+    "special_operations": sorted(special_operations),
+    "topologies": sorted(topologies),
+  }
+
+
+def discover_tests(source: Path, includes: list[str] | None = None) -> list[dict[str, Any]]:
+  """Return stable identities, fingerprints, and requirements for every test."""
+  result = []
+
+  for relative in discover_fixtures(source, includes):
+    path = source / relative
+
+    try:
+      document = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+      raise CapabilityError(f"could not load unified fixture {relative}: {exc}") from exc
+
+    context = {
+      key: value for key, value in document.items()
+      if key != "tests"
+    }
+
+    for index, test in enumerate(document.get("tests", []), 1):
+      identity = f"{relative}::test[{index}]"
+      content = json.dumps(
+        {"context": context, "test": test},
+        ensure_ascii=False,
+        separators=(",", ":"),
+        sort_keys=True,
+      ).encode("utf-8")
+      result.append({
+        "description": test.get("description"),
+        "fingerprint": hashlib.sha256(content).hexdigest(),
+        "fixture": relative,
+        "id": identity,
+        "index": index,
+        "requirements": extract_requirements(document, test),
+      })
+
+  return result
+
+
 def load_manifest(path: Path) -> dict[str, Any]:
   try:
     manifest = json.loads(path.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as exc:
     raise CapabilityError(f"could not load capability manifest {path}: {exc}") from exc
 
-  if manifest.get("schema_version") != 1:
-    raise CapabilityError("capability manifest schema_version must be 1")
+  if manifest.get("schema_version") != 2:
+    raise CapabilityError("capability manifest schema_version must be 2")
 
-  fixtures = manifest.get("fixtures")
+  tests = manifest.get("tests")
 
-  if not isinstance(fixtures, dict):
-    raise CapabilityError("capability manifest fixtures must be an object")
+  if not isinstance(tests, dict):
+    raise CapabilityError("capability manifest tests must be an object")
+
+  if not isinstance(manifest.get("ratchets"), dict):
+    raise CapabilityError("capability manifest ratchets must be an object")
 
   return manifest
 
 
-def load_activity_ids(path: Path) -> set[str]:
+def load_activity_states(plan_path: Path, progress_path: Path) -> dict[str, str]:
   try:
-    plan = json.loads(path.read_text(encoding="utf-8"))
+    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    progress = json.loads(progress_path.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as exc:
-    raise CapabilityError(f"could not load roadmap {path}: {exc}") from exc
+    raise CapabilityError(f"could not load roadmap state: {exc}") from exc
 
   activities = plan.get("activities")
 
   if not isinstance(activities, list):
     raise CapabilityError("roadmap activities must be an array")
 
-  result = {
-    value.get("id") for value in activities
-    if isinstance(value, dict) and isinstance(value.get("id"), str)
-  }
+  ids = [value.get("id") for value in activities if isinstance(value, dict)]
 
-  if len(result) != len(activities):
+  if len(set(ids)) != len(activities) or not all(isinstance(value, str) for value in ids):
     raise CapabilityError("every roadmap activity must have a unique string id")
 
-  return result
+  records = progress.get("activities")
+
+  if not isinstance(records, dict):
+    raise CapabilityError("roadmap progress activities must be an object")
+
+  return {
+    activity: records.get(activity, {}).get("status", "pending")
+    for activity in ids
+  }
 
 
-def classify_fixtures(
-  discovered: list[str],
+def _validate_requirement_values(identity: str, requirements: dict[str, Any]) -> None:
+  unknown_keys = set(requirements) - KNOWN_REQUIREMENT_KEYS
+
+  if unknown_keys:
+    raise CapabilityError(
+      f"classification for {identity} has unknown requirement: {sorted(unknown_keys)[0]}"
+    )
+
+  known_values = {
+    "entities": KNOWN_ENTITIES,
+    "events": KNOWN_EVENTS,
+    "match_operators": KNOWN_MATCH_OPERATORS,
+    "operations": KNOWN_OPERATIONS,
+    "special_operations": KNOWN_SPECIAL_OPERATIONS,
+    "topologies": KNOWN_TOPOLOGIES,
+  }
+
+  for key, allowed in known_values.items():
+    values = requirements.get(key)
+
+    if not isinstance(values, list) or values != sorted(set(values)):
+      raise CapabilityError(f"classification for {identity} has malformed {key}")
+
+    unknown = set(values) - allowed
+
+    if unknown:
+      raise CapabilityError(
+        f"classification for {identity} has unknown {key}: {sorted(unknown)[0]}"
+      )
+
+  arguments = requirements.get("arguments")
+
+  if not isinstance(arguments, list) or arguments != sorted(set(arguments)):
+    raise CapabilityError(f"classification for {identity} has malformed arguments")
+
+  if not isinstance(requirements.get("has_outcome"), bool):
+    raise CapabilityError(f"classification for {identity} has malformed has_outcome")
+
+  if not isinstance(requirements.get("logs"), bool):
+    raise CapabilityError(f"classification for {identity} has malformed logs")
+
+
+def classify_tests(
+  discovered: list[dict[str, Any]],
   classifications: dict[str, Any],
-  activity_ids: set[str] | None = None,
-) -> list[dict[str, str]]:
-  """Validate complete coverage and return normalized classifications."""
-  discovered_set = set(discovered)
+  activity_states: dict[str, str] | None = None,
+) -> list[dict[str, Any]]:
+  """Validate exact per-test coverage and return normalized classifications."""
+  discovered_by_id = {value["id"]: value for value in discovered}
+  discovered_set = set(discovered_by_id)
   classified_set = set(classifications)
   missing = sorted(discovered_set - classified_set)
   stale = sorted(classified_set - discovered_set)
 
   if missing:
-    raise CapabilityError(f"unclassified fixture: {missing[0]}")
+    raise CapabilityError(f"unclassified unified test: {missing[0]}")
 
   if stale:
-    raise CapabilityError(f"manifest references undiscovered fixture: {stale[0]}")
+    raise CapabilityError(f"manifest references undiscovered unified test: {stale[0]}")
 
   result = []
 
-  for path in discovered:
-    value = classifications[path]
+  for discovered_test in discovered:
+    identity = discovered_test["id"]
+    value = classifications[identity]
 
     if not isinstance(value, dict):
-      raise CapabilityError(f"classification for {path} must be an object")
+      raise CapabilityError(f"classification for {identity} must be an object")
 
     status = value.get("status")
     reason = value.get("reason")
     activity = value.get("activity")
+    fingerprint = value.get("fingerprint")
+    requirements = value.get("requirements")
 
     if status not in VALID_STATUSES:
-      raise CapabilityError(f"classification for {path} has unknown status: {status}")
+      raise CapabilityError(f"classification for {identity} has unknown status: {status}")
 
-    if status == "deferred" and (not isinstance(reason, str) or not reason.strip()):
-      raise CapabilityError(f"deferred fixture {path} must have a reason")
+    if status != "runnable" and (not isinstance(reason, str) or not reason.strip()):
+      raise CapabilityError(f"deferred unified test {identity} must have a reason")
 
     if status == "runnable" and reason is not None:
-      raise CapabilityError(f"runnable fixture {path} must not have a deferred reason")
+      raise CapabilityError(f"runnable unified test {identity} must not have a reason")
 
     if not isinstance(activity, str) or not activity:
-      raise CapabilityError(f"classification for {path} must name an activity")
+      raise CapabilityError(f"classification for {identity} must name an activity")
 
-    if activity_ids is not None and activity not in activity_ids:
+    if fingerprint != discovered_test["fingerprint"]:
+      raise CapabilityError(f"classification fingerprint is stale for {identity}")
+
+    if requirements != discovered_test["requirements"]:
+      raise CapabilityError(f"classification requirements are stale for {identity}")
+
+    _validate_requirement_values(identity, requirements)
+
+    if activity_states is not None and activity not in activity_states:
       raise CapabilityError(
-        f"classification for {path} has unknown activity owner: {activity}"
+        f"classification for {identity} has unknown activity owner: {activity}"
       )
 
-    row = {"activity": activity, "path": path, "status": status}
+    if (
+      status != "runnable"
+      and activity_states is not None
+      and activity_states[activity] == "completed"
+    ):
+      raise CapabilityError(
+        f"deferred unified test {identity} is owned by completed activity {activity}"
+      )
+
+    row = {
+      "activity": activity,
+      "description": discovered_test["description"],
+      "fingerprint": fingerprint,
+      "fixture": discovered_test["fixture"],
+      "id": identity,
+      "index": discovered_test["index"],
+      "requirements": requirements,
+      "status": status,
+    }
 
     if reason is not None:
       row["reason"] = reason
@@ -142,13 +392,13 @@ def classify_fixtures(
 
 
 def select_classifications(
-  classifications: list[dict[str, str]],
+  classifications: list[dict[str, Any]],
   includes: list[str] | None,
-) -> list[dict[str, str]]:
+) -> list[dict[str, Any]]:
   patterns = includes or ["*"]
   return [
     value for value in classifications
-    if any(fnmatch.fnmatchcase(value["path"], pattern) for pattern in patterns)
+    if any(fnmatch.fnmatchcase(value["fixture"], pattern) for pattern in patterns)
   ]
 
 
@@ -184,9 +434,39 @@ def build_inventory_report(fixtures: list[dict[str, Any]]) -> dict[str, Any]:
   }
 
 
-def build_report(classifications: list[dict[str, str]]) -> dict[str, Any]:
+def validate_ratchets(
+  classifications: list[dict[str, Any]],
+  ratchets: dict[str, Any],
+  passed: int = 0,
+) -> None:
+  expected = {"classified", "passed", "runnable"}
+
+  if set(ratchets) != expected:
+    raise CapabilityError("capability ratchets must define classified, passed, and runnable")
+
+  for key, value in ratchets.items():
+    if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+      raise CapabilityError(f"capability ratchet {key} must be a non-negative integer")
+
+  current = {
+    "classified": len(classifications),
+    "passed": passed,
+    "runnable": sum(value["status"] == "runnable" for value in classifications),
+  }
+
+  for key, minimum in ratchets.items():
+    if current[key] < minimum:
+      raise CapabilityError(
+        f"capability {key} regressed from {minimum} to {current[key]}"
+      )
+
+
+def build_report(
+  classifications: list[dict[str, Any]],
+  ratchets: dict[str, Any] | None = None,
+) -> dict[str, Any]:
   """Build an execution report without conflating deferral with execution."""
-  fixtures = []
+  tests = []
   summary = {
     "conformant": False,
     "deferred_unsupported": 0,
@@ -202,20 +482,25 @@ def build_report(classifications: list[dict[str, str]]) -> dict[str, Any]:
   for classification in classifications:
     item = dict(classification)
 
-    if item["status"] == "deferred":
-      item["status"] = "deferred_unsupported"
+    if item["status"] == "deferred_unsupported":
       summary["deferred_unsupported"] += 1
+    elif item["status"] == "excluded_scope":
+      summary["excluded_scope"] += 1
     else:
       item["status"] = "failed"
-      item["error"] = "runnable fixture has no registered executor"
+      item["error"] = "runnable test has no registered executor"
       summary["failed"] += 1
 
-    fixtures.append(item)
+    tests.append(item)
+
+  if ratchets is not None:
+    validate_ratchets(classifications, ratchets, summary["passed"])
 
   return {
-    "fixtures": fixtures,
+    "ratchets": ratchets or {"classified": 0, "passed": 0, "runnable": 0},
     "report_version": REPORT_VERSION,
     "summary": summary,
+    "tests": tests,
     "type": "execution",
   }
 
@@ -234,21 +519,26 @@ def main(argv: list[str] | None = None) -> int:
   parser.add_argument("--source", type=Path, default=DEFAULT_SOURCE)
   parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
   parser.add_argument("--plan", type=Path, default=DEFAULT_PLAN)
+  parser.add_argument("--progress", type=Path, default=DEFAULT_PROGRESS)
   parser.add_argument("--include", action="append")
   parser.add_argument("--report", metavar="PATH")
   arguments = parser.parse_args(argv)
 
   try:
-    discovered = discover_fixtures(arguments.source)
+    discovered = discover_tests(arguments.source)
 
     if not discovered:
       raise CapabilityError("unified fixture discovery found no files")
 
     manifest = load_manifest(arguments.manifest)
-    activity_ids = load_activity_ids(arguments.plan)
-    classified = classify_fixtures(discovered, manifest["fixtures"], activity_ids)
+    activity_states = load_activity_states(arguments.plan, arguments.progress)
+    classified = classify_tests(discovered, manifest["tests"], activity_states)
+    validate_ratchets(classified, manifest["ratchets"])
     selected = select_classifications(classified, arguments.include)
-    report = build_report(selected)
+    report = build_report(
+      selected,
+      manifest["ratchets"] if not arguments.include else None,
+    )
     write_report(report, arguments.report)
   except CapabilityError as exc:
     print(f"unified capabilities: {exc}", file=sys.stderr)

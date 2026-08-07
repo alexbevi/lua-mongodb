@@ -767,6 +767,28 @@
       "notes": [],
       "started_at": "2026-08-06T23:00:38+00:00",
       "completed_at": "2026-08-07T00:02:37+00:00"
+    },
+    "UTF-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_per_test_classification_rejects_completed_owners_and_stale_content -v",
+          "exit_code": 1,
+          "summary": "Per-test capability classification is missing, so stale fingerprints and deferrals owned by completed activities cannot be rejected",
+          "recorded_at": "2026-08-07T00:05:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && make lint && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "127 unit tests, 12 unified runner tests, 320 meta-fixtures, and all 483 integration files / 1900 tests passed validation; execution classified 0 executed, 0 passed, 0 environment-skipped, 1900 deferred-unsupported, and 0 failed; lint and strict roadmap validation passed.",
+          "recorded_at": "2026-08-07T00:11:50+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T00:03:07+00:00",
+      "completed_at": "2026-08-07T00:12:00+00:00"
     }
   },
   "verified_references": {

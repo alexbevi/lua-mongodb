@@ -12,7 +12,66 @@ from spec.unified import run
 from spec.unified import validate_fixtures
 
 
+EMPTY_REQUIREMENTS = {
+  "arguments": [],
+  "entities": [],
+  "events": [],
+  "has_outcome": False,
+  "logs": False,
+  "match_operators": [],
+  "operations": [],
+  "special_operations": [],
+  "topologies": [],
+}
+
+
+def discovered_test(identity: str, fingerprint: str = "current") -> dict[str, object]:
+  fixture, suffix = identity.split("::test[")
+  index = int(suffix[:-1])
+  return {
+    "description": "test",
+    "fingerprint": fingerprint,
+    "fixture": fixture,
+    "id": identity,
+    "index": index,
+    "requirements": EMPTY_REQUIREMENTS,
+  }
+
+
+def classification(
+  activity: str = "A-001",
+  fingerprint: str = "current",
+  reason: str = "not ready",
+) -> dict[str, object]:
+  return {
+    "activity": activity,
+    "fingerprint": fingerprint,
+    "reason": reason,
+    "requirements": EMPTY_REQUIREMENTS,
+    "status": "deferred_unsupported",
+  }
+
+
 class UnifiedCliTests(unittest.TestCase):
+  def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
+    discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
+    classifications = {discovered[0]["id"]: classification("DONE-001", "stale")}
+
+    with self.assertRaisesRegex(run.CapabilityError, "fingerprint"):
+      run.classify_tests(
+        discovered,
+        classifications,
+        {"DONE-001": "completed"},
+      )
+
+    classifications[discovered[0]["id"]]["fingerprint"] = "current"
+    with self.assertRaisesRegex(run.CapabilityError, "completed activity"):
+      run.classify_tests(
+        discovered,
+        classifications,
+        {"DONE-001": "completed"},
+      )
+
   def test_inventory_reports_stable_per_test_identities(self) -> None:
     fixtures = [
       {
@@ -65,55 +124,69 @@ class UnifiedCliTests(unittest.TestCase):
       discovered = run.discover_fixtures(source, ["crud/**"])
 
       self.assertEqual(["crud/tests/unified/find.json"], discovered)
-      with self.assertRaisesRegex(run.CapabilityError, "unclassified fixture"):
-        run.classify_fixtures(discovered, {})
+      with self.assertRaisesRegex(run.CapabilityError, "unclassified unified test"):
+        run.classify_tests(
+          [discovered_test("crud/tests/unified/find.json::test[1]")],
+          {},
+        )
 
   def test_classification_rejects_stale_entries_and_empty_reasons(self) -> None:
-    with self.assertRaisesRegex(run.CapabilityError, "undiscovered fixture"):
-      run.classify_fixtures([], {
-        "old/tests/unified/test.json": {
-          "activity": "OLD-001",
-          "reason": "old",
-          "status": "deferred",
-        },
+    with self.assertRaisesRegex(run.CapabilityError, "undiscovered unified test"):
+      run.classify_tests([], {
+        "old/tests/unified/test.json::test[1]": classification("OLD-001"),
       })
 
+    identity = "a/tests/unified/test.json::test[1]"
     with self.assertRaisesRegex(run.CapabilityError, "must have a reason"):
-      run.classify_fixtures(["a/tests/unified/test.json"], {
-        "a/tests/unified/test.json": {
-          "activity": "A-001",
-          "reason": "",
-          "status": "deferred",
-        },
+      run.classify_tests([discovered_test(identity)], {
+        identity: classification(reason=""),
       })
 
   def test_classification_rejects_unknown_activity_owners(self) -> None:
     with self.assertRaisesRegex(run.CapabilityError, "unknown activity owner"):
-      run.classify_fixtures(
-        ["a/tests/unified/test.json"],
-        {
-          "a/tests/unified/test.json": {
-            "activity": "MISSING-001",
-            "reason": "not implemented",
-            "status": "deferred",
-          },
-        },
-        {"REAL-001"},
+      identity = "a/tests/unified/test.json::test[1]"
+      run.classify_tests(
+        [discovered_test(identity)],
+        {identity: classification("MISSING-001")},
+        {"REAL-001": "pending"},
+      )
+
+  def test_classification_rejects_unknown_capabilities(self) -> None:
+    identity = "a/tests/unified/test.json::test[1]"
+    discovered = discovered_test(identity)
+    requirements = dict(EMPTY_REQUIREMENTS)
+    requirements["operations"] = ["futureOperation"]
+    discovered["requirements"] = requirements
+    value = classification()
+    value["requirements"] = requirements
+
+    with self.assertRaisesRegex(run.CapabilityError, "unknown operations"):
+      run.classify_tests([discovered], {identity: value})
+
+  def test_capability_ratchets_reject_regressions(self) -> None:
+    classified = [{"status": "deferred_unsupported"}]
+
+    with self.assertRaisesRegex(run.CapabilityError, "classified regressed"):
+      run.validate_ratchets(
+        classified,
+        {"classified": 2, "passed": 0, "runnable": 0},
       )
 
   def test_report_is_machine_readable_and_filters_classifications(self) -> None:
     classified = [
       {
         "activity": "A-001",
-        "path": "a/tests/unified/test.json",
+        "fixture": "a/tests/unified/test.json",
+        "id": "a/tests/unified/test.json::test[1]",
         "reason": "not ready",
-        "status": "deferred",
+        "status": "deferred_unsupported",
       },
       {
         "activity": "B-001",
-        "path": "b/tests/unified/test.json",
+        "fixture": "b/tests/unified/test.json",
+        "id": "b/tests/unified/test.json::test[1]",
         "reason": "not ready",
-        "status": "deferred",
+        "status": "deferred_unsupported",
       },
     ]
     selected = run.select_classifications(classified, ["a/**"])
@@ -123,8 +196,8 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1, report["summary"]["deferred_unsupported"])
     self.assertEqual(0, report["summary"]["executed"])
     self.assertFalse(report["summary"]["conformant"])
-    self.assertEqual("a/tests/unified/test.json", report["fixtures"][0]["path"])
-    self.assertEqual("deferred_unsupported", report["fixtures"][0]["status"])
+    self.assertEqual("a/tests/unified/test.json", report["tests"][0]["fixture"])
+    self.assertEqual("deferred_unsupported", report["tests"][0]["status"])
 
 
 if __name__ == "__main__":
