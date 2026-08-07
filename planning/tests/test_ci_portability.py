@@ -60,6 +60,12 @@ class CiPortabilityTests(unittest.TestCase):
 
     self.assertIn("if-no-files-found: warn", workflow)
 
+  def test_artifact_upload_uses_node_24_action(self) -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    self.assertIn("uses: actions/upload-artifact@v7", workflow)
+    self.assertNotIn("uses: actions/upload-artifact@v4", workflow)
+
 
 if __name__ == "__main__":
   unittest.main()
