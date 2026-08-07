@@ -1,4 +1,4 @@
-# Lua MongoDB Driver
+# MongoDB Lua Driver
 
 A pure-Lua MongoDB driver built directly from the MongoDB driver specifications, with the pinned PyMongo source as a behavioral reference. The project is pre-alpha and targets Lua 5.4 without binding or wrapping `libmongoc`.
 
