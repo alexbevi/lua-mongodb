@@ -52,6 +52,7 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertLess(workflow.index("Install MongoDB test tools on Linux"), checks)
     self.assertLess(workflow.index("Install MongoDB test tools on macOS"), checks)
     self.assertIn("mongodb-org-server mongodb-mongosh", workflow)
+    self.assertIn("brew trust mongodb/brew", workflow)
     self.assertIn("mongodb-community@8.0", workflow)
 
   def test_missing_compatibility_report_does_not_mask_primary_failure(self) -> None:
