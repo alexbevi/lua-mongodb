@@ -42,6 +42,7 @@ OWNER_REASONS = {
   "REL-005": "the case awaits the v1 command and cursor conformance slice",
   "REL-006": "the case awaits release retry and handshake hardening",
   "REL-010": "the case awaits the remaining v1 CRUD and administration conformance slices",
+  "REL-011": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -143,11 +144,11 @@ TEST_OVERRIDES.update({
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
-    "REL-010",
+    "REL-011",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
-    "REL-010",
+    "REL-011",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
@@ -169,10 +170,6 @@ TEST_OVERRIDES.update({
   "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": (
     "ADV-011",
     "legacy mapReduce is outside the v1 public API",
-  ),
-  "read-write-concern/tests/operation/default-write-concern-3.4.json::test[3]": (
-    "REL-010",
-    "dropIndex unified execution awaits v1 administration conformance",
   ),
   "versioned-api/tests/crud-api-version-1-strict.json::test[2]": (
     "ADV-011",
@@ -376,9 +373,9 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   elif "failPoint" in special or "targetedFailPoint" in special:
     owner = "UTF-014"
   elif requirements["events"]:
-    owner = "REL-010"
+    owner = "REL-011"
   elif operations & MANAGEMENT_OPERATIONS:
-    owner = "REL-010"
+    owner = "REL-011"
   elif operations & WRITE_OPERATIONS:
     owner = "UTF-012"
   elif operations & READ_OPERATIONS:
@@ -431,7 +428,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       owner = "ADV-011"
       reason = "legacy count is outside the v1 public API"
     elif unsupported <= {"dropIndex", "dropIndexes"}:
-      owner = "REL-010"
+      owner = "REL-011"
       reason = "index operation timeout coverage awaits v1 administration conformance"
     else:
       owner = "REL-005"

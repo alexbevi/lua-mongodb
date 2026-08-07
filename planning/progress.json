@@ -1259,6 +1259,28 @@
       "notes": [],
       "started_at": "2026-08-07T13:02:58+00:00",
       "completed_at": "2026-08-07T13:31:01+00:00"
+    },
+    "REL-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_drop_index_default_concern_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "The exact createIndex/dropIndex default-concern fixture is deferred because it has no unified executor",
+          "recorded_at": "2026-08-07T13:33:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "exact default-write-concern-3.4 fixture run; make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint",
+          "exit_code": 0,
+          "summary": "The exact REL-010 createIndex/dropIndex case and both existing supported fixture cases passed; mapReduce remained explicitly deferred; 176 unit, 18 integration, 19 unified CLI, 12 meta, 320 schema-meta, conformance, release, and lint gates passed",
+          "recorded_at": "2026-08-07T13:38:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T13:32:46+00:00",
+      "completed_at": "2026-08-07T13:38:09+00:00"
     }
   },
   "verified_references": {

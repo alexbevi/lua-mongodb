@@ -5246,6 +5246,7 @@
     "read-write-concern/tests/operation/default-write-concern-3.2.json::test[1]": {"activity": "REL-003", "environment": "live-standalone"},
     "read-write-concern/tests/operation/default-write-concern-3.4.json::test[1]": {"activity": "REL-003", "environment": "live-standalone"},
     "read-write-concern/tests/operation/default-write-concern-3.4.json::test[2]": {"activity": "REL-003", "environment": "live-standalone"},
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[3]": {"activity": "REL-010", "environment": "live-standalone"},
     "read-write-concern/tests/operation/default-write-concern-4.2.json::test[1]": {"activity": "REL-003", "environment": "live-standalone"},
     "versioned-api/tests/crud-api-version-1-strict.json::test[1]": {"activity": "REL-003", "environment": "live-standalone"},
     "versioned-api/tests/crud-api-version-1-strict.json::test[3]": {"activity": "REL-003", "environment": "live-standalone"},

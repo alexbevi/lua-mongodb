@@ -846,6 +846,13 @@ local function create_index(_, collection, arguments)
   ))
 end
 
+local function drop_index(_, collection, arguments)
+  return collection:drop_index(arguments:get("name"), operation_options(
+    arguments,
+    {}
+  ))
+end
+
 local function list_indexes(_, collection, arguments)
   local cursor, err = collection:list_indexes(operation_options(
     arguments or bson.document({}),
@@ -1449,6 +1456,10 @@ function M.new(options)
         createIndex = {
           arguments = { "keys", "name" },
           handler = create_index,
+        },
+        dropIndex = {
+          arguments = { "name" },
+          handler = drop_index,
         },
         aggregate = {
           arguments = {
