@@ -45345,7 +45345,7 @@
       "suite": "max-staleness"
     },
     "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-031",
       "fingerprint": "bccaeb73717e28c477514884a6f70c5ca2e9d2a30a812d2c684987411b45f81f",
       "format": "unified",
       "last_execution": null,
