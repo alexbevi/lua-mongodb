@@ -364,8 +364,24 @@ def git_commit_issues(
     activity_id = activity["id"]
     if status_for(progress, activity_id) != "completed":
       continue
+    record = progress.get("activities", {}).get(activity_id, {})
+    reopen_boundary = record.get("reopened_after_commit")
+    eligible_commits = commits
+
+    if reopen_boundary:
+      eligible_commits = [
+        item for item in commits
+        if item[0] != reopen_boundary
+        and run_git(
+          root,
+          ["merge-base", "--is-ancestor", reopen_boundary, item[0]],
+        ).returncode == 0
+      ]
+
     trailer = f"Plan-Activity: {activity_id}"
-    matching = [item for item in commits if trailer in item[2].splitlines()]
+    matching = [
+      item for item in eligible_commits if trailer in item[2].splitlines()
+    ]
     if not matching:
       issues.append(f"completed activity {activity_id} has no commit trailer")
       continue
@@ -520,8 +536,37 @@ def command_requeue(arguments: argparse.Namespace) -> int:
   assert_valid_core(plan, progress)
   require_activity(plan, arguments.activity_id)
   record = ensure_record(progress, arguments.activity_id)
-  if record["status"] != "in_progress":
+  previous_status = record["status"]
+
+  if previous_status not in {"in_progress", "completed"}:
     raise PlanError(f"cannot requeue {arguments.activity_id} from {record['status']}")
+
+  if previous_status == "completed":
+    completed_dependents = [
+      activity["id"] for activity in plan["activities"]
+      if arguments.activity_id in activity["depends_on"]
+      and status_for(progress, activity["id"]) == "completed"
+    ]
+
+    if completed_dependents:
+      raise PlanError(
+        f"cannot reopen {arguments.activity_id}; completed dependents: "
+        + ", ".join(completed_dependents)
+      )
+
+    probe = run_git(ROOT, ["rev-parse", "HEAD"])
+
+    if probe.returncode != 0:
+      raise PlanError(f"cannot record reopen commit boundary: {probe.stderr.strip()}")
+
+    record.setdefault("reopen_history", []).append({
+      "completed_at": record.get("completed_at"),
+      "evidence": list(record.get("evidence", [])),
+    })
+    record["evidence"] = []
+    record["reopened_after_commit"] = probe.stdout.strip()
+    record.pop("completed_at", None)
+
   record["status"] = "pending"
   record.pop("started_at", None)
   record.setdefault("notes", []).append(f"Requeued: {arguments.reason}")
@@ -652,7 +697,7 @@ def build_parser() -> argparse.ArgumentParser:
   start.set_defaults(function=command_start)
 
   requeue = subparsers.add_parser(
-    "requeue", help="return an in-progress activity to pending",
+    "requeue", help="return an in-progress or completed activity to pending",
   )
   requeue.add_argument("activity_id")
   requeue.add_argument("--reason", required=True)

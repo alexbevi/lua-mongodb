@@ -195,6 +195,45 @@ class EvidenceTests(unittest.TestCase):
           reason="not active",
         ))
 
+  def test_requeue_reopens_completed_activity_with_a_commit_boundary(self) -> None:
+    plan = minimal_plan([
+      activity("TST-001"),
+      activity("TST-002", ["TST-001"]),
+    ])
+    progress = progress_for(plan, {"TST-001": "completed"})
+    record = progress["activities"]["TST-001"]
+    record["completed_at"] = "2026-01-01T00:00:00+00:00"
+    record["evidence"] = [{"phase": "green", "exit_code": 0}]
+    boundary = "a" * 40
+    result = subprocess.CompletedProcess(
+      ["git", "rev-parse", "HEAD"],
+      0,
+      stdout=boundary + "\n",
+      stderr="",
+    )
+
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)), \
+        mock.patch.object(update_plan, "run_git", return_value=result), \
+        mock.patch.object(update_plan, "save_progress_and_state") as save:
+      status = update_plan.command_requeue(argparse.Namespace(
+        activity_id="TST-001",
+        reason="split broad activity",
+      ))
+
+    self.assertEqual(0, status)
+    self.assertEqual("pending", record["status"])
+    self.assertEqual([], record["evidence"])
+    self.assertNotIn("completed_at", record)
+    self.assertEqual(boundary, record["reopened_after_commit"])
+    self.assertEqual(
+      [{
+        "completed_at": "2026-01-01T00:00:00+00:00",
+        "evidence": [{"phase": "green", "exit_code": 0}],
+      }],
+      record["reopen_history"],
+    )
+    save.assert_called_once_with(plan, progress)
+
 
 class ReferenceTests(unittest.TestCase):
   def make_reference(self, root: Path) -> tuple[dict, str, str]:
@@ -284,6 +323,28 @@ class CommitTests(unittest.TestCase):
       plan = minimal_plan()
       progress = progress_for(plan, {"TST-001": "completed"})
       self.assertTrue(any("trailer is reused" in issue for issue in update_plan.git_commit_issues(plan, progress, root)))
+
+  def test_strict_commit_check_ignores_commits_before_reopen_boundary(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      (root / "file").write_text("first", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
+      (root / "file").write_text("boundary", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "chore(test): reopen activity")
+      boundary = git(root, "rev-parse", "HEAD")
+      (root / "file").write_text("replacement", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
+      plan = minimal_plan()
+      progress = progress_for(plan, {"TST-001": "completed"})
+      progress["activities"]["TST-001"]["reopened_after_commit"] = boundary
+
+      self.assertEqual(update_plan.git_commit_issues(plan, progress, root), [])
 
   def test_strict_commit_check_rejects_multiple_activity_trailers(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
