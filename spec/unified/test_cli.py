@@ -319,6 +319,51 @@ class UnifiedCliTests(unittest.TestCase):
       [manifest["tests"][identity]["status"] for identity in identities],
     )
 
+  def test_command_cursor_release_cases_keep_vertical_slice_owners(self) -> None:
+    manifest = update_capabilities.generate()
+    expected = {
+      **{
+        f"run-command/tests/unified/runCommand.json::test[{index}]": "REL-005"
+        for index in (*range(1, 10), 11)
+      },
+      **{
+        f"run-command/tests/unified/runCursorCommand.json::test[{index}]": "REL-022"
+        for index in (2, 3, 4, 7, 8, 9)
+      },
+      "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": "REL-023",
+      "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": "REL-023",
+      "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": "REL-024",
+      "client-side-operations-timeout/tests/close-cursors.json::test[1]": "REL-025",
+      "client-side-operations-timeout/tests/close-cursors.json::test[2]": "REL-025",
+      "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": "REL-026",
+    }
+    post_v1 = {
+      "run-command/tests/unified/runCursorCommand.json::test[1]": "ADV-005",
+      "run-command/tests/unified/runCursorCommand.json::test[5]": "ADV-006",
+      "run-command/tests/unified/runCursorCommand.json::test[6]": "ADV-006",
+      "run-command/tests/unified/runCursorCommand.json::test[10]": "ADV-011",
+      **{
+        f"client-side-operations-timeout/tests/runCursorCommand.json::test[{index}]": "ADV-011"
+        for index in (4, 5, 6)
+      },
+      **{
+        f"client-side-operations-timeout/tests/tailable-awaitData.json::test[{index}]": "ADV-011"
+        for index in range(9, 14)
+      },
+      **{
+        f"client-side-operations-timeout/tests/tailable-non-awaitData.json::test[{index}]": "ADV-011"
+        for index in range(3, 5)
+      },
+    }
+
+    self.assertEqual(
+      {**expected, **post_v1},
+      {
+        identity: manifest["tests"][identity]["activity"]
+        for identity in {**expected, **post_v1}
+      },
+    )
+
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
     classifications = {discovered[0]["id"]: classification("DONE-001", "stale")}

@@ -409,12 +409,47 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact modifyCollection fixture subset", "make lint"], "acceptance": ["prepareUnique violations remain accessible", "findOneAndUpdate error details match exact fixtures"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(admin): support modify collection conformance"
     },
     {
-      "id": "REL-005", "title": "Close v1 command and cursor conformance", "milestone": "production-core-v1", "depends_on": ["REL-021"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Enable applicable database command, command-cursor, explicit cursor-lifecycle, session, and CSOT unified fixtures.", "implementation": "Add the remaining public database command and cursor adapters with the existing session and operation-deadline boundaries.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable command, cursor, session, and CSOT fixtures pass", "Tailable cursors and database aggregation remain explicitly outside v1"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): close v1 command cursor conformance"
+      "id": "REL-005", "title": "Add generic database command execution", "milestone": "production-core-v1", "depends_on": ["REL-021"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the ten applicable runCommand unified cases.", "implementation": "Expose generic database commands through the public API and unified adapter with explicit read-preference selection.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable runCommand fixtures pass", "Arbitrary commands default to primary unless an explicit read preference is supplied"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): add generic database commands"
     },
     {
-      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-005"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-022", "title": "Add generic command cursor execution", "milestone": "production-core-v1", "depends_on": ["REL-005"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the six applicable runCursorCommand command-cursor cases.", "implementation": "Add the public generic command-cursor API and unified cursor operations over the existing cursor model.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable command-cursor fixtures pass", "Sharded, load-balanced, and tailable command cursors remain explicitly outside v1"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): add generic command cursors"
+    },
+    {
+      "id": "REL-023", "title": "Validate command cursor timeout options", "milestone": "production-core-v1", "depends_on": ["REL-022"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the two command-cursor CSOT option-validation cases.", "implementation": "Map timeout and cursor modes through the unified boundary and reject incompatible public option combinations.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["timeoutMode requires timeoutMS", "Tailable cursor lifetime mode is rejected without expanding the v1 cursor surface"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(timeout): validate command cursor options"
+    },
+    {
+      "id": "REL-024", "title": "Observe command cursor pool events", "milestone": "production-core-v1", "depends_on": ["REL-023"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the command-cursor CSOT pool-event case.", "implementation": "Collect and match the selected CMAP connection events needed by command-cursor timeout conformance.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Connection ready, checked-out, and checked-in events match exactly", "Unknown connection events remain hard failures"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(monitoring): observe command cursor pool events"
+    },
+    {
+      "id": "REL-025", "title": "Preserve cursor timeout cleanup", "milestone": "production-core-v1", "depends_on": ["REL-024"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the two explicit cursor-close CSOT cases.", "implementation": "Keep timed-out cursors closable, refresh close deadlines, and release implicit sessions at final server exhaustion.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Timed-out cursors remain available for explicit close", "Close deadlines and implicit-session cleanup are deterministic"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(cursor): preserve timeout cleanup lifecycle"
+    },
+    {
+      "id": "REL-026", "title": "Normalize legacy write timeout URI options", "milestone": "production-core-v1", "depends_on": ["REL-025"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the remaining applicable legacy wTimeoutMS CSOT case.", "implementation": "Preserve URI wTimeoutMS in unified client creation even when w is not explicitly supplied.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Legacy wTimeoutMS reaches acknowledged writes", "The option remains subordinate to timeoutMS under CSOT"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(config): normalize legacy write timeouts"
+    },
+    {
+      "id": "REL-027", "title": "Remove deprecated write concern timeouts", "milestone": "production-core-v1", "depends_on": ["REL-026"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify CSOT command shaping when writeConcern contains only a deprecated timeout.", "implementation": "Normalize wire write-concern timeout keys and omit an empty writeConcern after CSOT removes the deprecated field.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["CSOT removes deprecated write concern timeouts", "Commands never send an empty writeConcern document"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(timeout): remove deprecated write concern timeouts"
+    },
+    {
+      "id": "REL-028", "title": "Enforce transaction read preferences", "milestone": "production-core-v1", "depends_on": ["REL-027"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify transaction command rejection when either the transaction or operation read preference is non-primary.", "implementation": "Validate both transaction-level and operation-level read preferences before transaction command execution.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Transactions reject every non-primary read preference source", "Existing transaction and command fixtures remain green"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(transaction): enforce primary read preference"
+    },
+    {
+      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-028"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable residual retryable read/write, handshake, transaction, monitoring, and legacy-timeout fixtures applicable to standalone and replica sets.", "implementation": "Close per-attempt deadline, handshake retry, error-label, and topology-observation gaps without expanding deployment scope.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retry and handshake fixtures pass", "Timeouts, labels, and cleanup remain deterministic under retained stress seeds"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): harden release edge cases"
     },

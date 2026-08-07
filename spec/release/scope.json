@@ -4,20 +4,25 @@
     "ADV-002": 169,
     "ADV-003": 64,
     "ADV-004": 5,
-    "ADV-005": 111,
-    "ADV-006": 50,
+    "ADV-005": 112,
+    "ADV-006": 52,
     "ADV-007": 66,
     "ADV-008": 74,
     "ADV-009": 240,
     "ADV-010": 777,
-    "ADV-011": 188,
+    "ADV-011": 199,
     "ADV-012": 15,
-    "REL-005": 36,
-    "REL-006": 101
+    "REL-005": 10,
+    "REL-006": 101,
+    "REL-022": 6,
+    "REL-023": 2,
+    "REL-024": 1,
+    "REL-025": 2,
+    "REL-026": 1
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 137,
-    "post-v1-exclusion": 1950
+    "applicable-release-gap": 123,
+    "post-v1-exclusion": 1964
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",

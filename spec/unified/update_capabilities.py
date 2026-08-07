@@ -39,7 +39,7 @@ OWNER_REASONS = {
   "REL-002": "BSON vector behavior awaits the dedicated release conformance slice",
   "REL-003": "the case awaits the v1 configuration conformance slice",
   "REL-004": "the case awaits the v1 CRUD and administration conformance slice",
-  "REL-005": "the case awaits the v1 command and cursor conformance slice",
+  "REL-005": "the case awaits generic database command execution",
   "REL-006": "the case awaits release retry and handshake hardening",
   "REL-010": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "REL-011": "the case awaits the remaining v1 CRUD and administration conformance slices",
@@ -53,6 +53,13 @@ OWNER_REASONS = {
   "REL-019": "the case awaits v1 collection option conformance",
   "REL-020": "the case awaits v1 index operation-timeout conformance",
   "REL-021": "the case awaits v1 modifyCollection and find-and-modify error conformance",
+  "REL-022": "the case awaits generic command cursor execution",
+  "REL-023": "the case awaits command cursor timeout option validation",
+  "REL-024": "the case awaits command cursor pool event observation",
+  "REL-025": "the case awaits cursor timeout cleanup hardening",
+  "REL-026": "the case awaits legacy write timeout URI normalization",
+  "REL-027": "the case awaits deprecated write concern timeout removal",
+  "REL-028": "the case awaits transaction read preference enforcement",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -150,7 +157,7 @@ TEST_OVERRIDES = {
 }
 TEST_OVERRIDES.update({
   "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": (
-    "REL-005",
+    "REL-026",
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
@@ -343,6 +350,62 @@ for index in range(1, 12):
       "general runCommand conformance awaits the v1 command adapter",
     )
 
+for index in (2, 3, 4, 7, 8, 9):
+  TEST_OVERRIDES[
+    f"run-command/tests/unified/runCursorCommand.json::test[{index}]"
+  ] = ("REL-022", OWNER_REASONS["REL-022"])
+
+TEST_OVERRIDES.update({
+  "run-command/tests/unified/runCursorCommand.json::test[1]": (
+    "ADV-005",
+    "checkMetadataConsistency requires a sharded deployment outside production-core v1",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[5]": (
+    "ADV-006",
+    "load-balanced command cursor pinning is outside production-core v1",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[6]": (
+    "ADV-006",
+    "load-balanced command cursor pinning is outside production-core v1",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[10]": (
+    "ADV-011",
+    "tailable command cursors are outside the v1 public cursor surface",
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": (
+    "REL-023",
+    OWNER_REASONS["REL-023"],
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": (
+    "REL-023",
+    OWNER_REASONS["REL-023"],
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": (
+    "REL-024",
+    OWNER_REASONS["REL-024"],
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": (
+    "ADV-011",
+    "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": (
+    "ADV-011",
+    "tailable command cursors are outside the v1 public cursor surface",
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
+    "ADV-011",
+    "tailable command cursors are outside the v1 public cursor surface",
+  ),
+  "client-side-operations-timeout/tests/close-cursors.json::test[1]": (
+    "REL-025",
+    OWNER_REASONS["REL-025"],
+  ),
+  "client-side-operations-timeout/tests/close-cursors.json::test[2]": (
+    "REL-025",
+    OWNER_REASONS["REL-025"],
+  ),
+})
+
 for fixture, count in (
   ("backpressure-retryable-abort", 2),
   ("backpressure-retryable-commit", 2),
@@ -473,6 +536,12 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       "the CSOT case requires the post-v1 GridFS bucket entity adapter",
     )
 
+  if fixture.startswith("tailable-"):
+    return (
+      "ADV-011",
+      "tailable cursor unified adapters are outside the v1 public cursor surface",
+    )
+
   unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS
 
   if unsupported:
@@ -516,12 +585,6 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
     return (
       "QUA-001",
       "the generated cross-operation CSOT matrix belongs to the v1 coverage and deterministic stress gate",
-    )
-
-  if fixture.startswith("tailable-"):
-    return (
-      "ADV-011",
-      "tailable cursor unified adapters are outside the v1 public cursor surface",
     )
 
   if fixture == "change-streams.json":
@@ -576,7 +639,7 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     return classify_sdam(test)
 
   if specification == "run-command":
-    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "REL-005"
+    owner = "TXN-001" if test["fixture"].endswith("runCommand.json") else "REL-022"
     return owner, OWNER_REASONS[owner]
 
   if specification in {"read-write-concern", "versioned-api"}:
