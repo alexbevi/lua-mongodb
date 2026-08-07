@@ -41,6 +41,7 @@ OWNER_REASONS = {
   "REL-004": "the case awaits the v1 CRUD and administration conformance slice",
   "REL-005": "the case awaits the v1 command and cursor conformance slice",
   "REL-006": "the case awaits release retry and handshake hardening",
+  "REL-010": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -142,11 +143,11 @@ TEST_OVERRIDES.update({
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
-    "REL-004",
+    "REL-010",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
-    "REL-004",
+    "REL-010",
     "listIndexNames requires the release unified operation-timeout adapter",
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
@@ -170,7 +171,7 @@ TEST_OVERRIDES.update({
     "legacy mapReduce is outside the v1 public API",
   ),
   "read-write-concern/tests/operation/default-write-concern-3.4.json::test[3]": (
-    "REL-004",
+    "REL-010",
     "dropIndex unified execution awaits v1 administration conformance",
   ),
   "versioned-api/tests/crud-api-version-1-strict.json::test[2]": (
@@ -186,6 +187,60 @@ TEST_OVERRIDES.update({
     "client bulkWrite is a post-v1 capability",
   ),
 })
+
+for fixture in (
+  "bulkWrite-comment",
+  "countDocuments-comment",
+  "deleteMany-comment",
+  "deleteOne-comment",
+  "distinct-comment",
+  "estimatedDocumentCount-comment",
+  "find-comment",
+  "findOneAndDelete-comment",
+  "findOneAndReplace-comment",
+  "findOneAndUpdate-comment",
+  "insertMany-comment",
+  "insertOne-comment",
+  "replaceOne-comment",
+  "updateMany-comment",
+  "updateOne-comment",
+):
+  TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[3]"] = (
+    "ADV-011",
+    "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+  )
+
+TEST_OVERRIDES["crud/tests/unified/find-comment.json::test[5]"] = (
+  "ADV-011",
+  "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+)
+
+for fixture in (
+  "aggregate-let",
+  "bulkWrite-deleteMany-let",
+  "bulkWrite-deleteOne-let",
+  "bulkWrite-replaceOne-let",
+  "bulkWrite-updateMany-let",
+  "bulkWrite-updateOne-let",
+  "deleteMany-let",
+  "deleteOne-let",
+  "find-let",
+  "findOneAndDelete-let",
+  "findOneAndReplace-let",
+  "findOneAndUpdate-let",
+  "replaceOne-let",
+  "updateMany-let",
+  "updateOne-let",
+):
+  TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[2]"] = (
+    "ADV-011",
+    "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+  )
+
+TEST_OVERRIDES["crud/tests/unified/aggregate-let.json::test[4]"] = (
+  "ADV-011",
+  "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+)
 
 for fixture, count, owner, reason in (
   ("count", 17, "ADV-011", "legacy count is outside the v1 public API"),
@@ -321,9 +376,9 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   elif "failPoint" in special or "targetedFailPoint" in special:
     owner = "UTF-014"
   elif requirements["events"]:
-    owner = "REL-004"
+    owner = "REL-010"
   elif operations & MANAGEMENT_OPERATIONS:
-    owner = "REL-004"
+    owner = "REL-010"
   elif operations & WRITE_OPERATIONS:
     owner = "UTF-012"
   elif operations & READ_OPERATIONS:
@@ -376,7 +431,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       owner = "ADV-011"
       reason = "legacy count is outside the v1 public API"
     elif unsupported <= {"dropIndex", "dropIndexes"}:
-      owner = "REL-004"
+      owner = "REL-010"
       reason = "index operation timeout coverage awaits v1 administration conformance"
     else:
       owner = "REL-005"

@@ -346,7 +346,7 @@
     {
       "id": "REL-004", "title": "Run v1 rawData read conformance", "milestone": "production-core-v1", "depends_on": ["REL-003"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable MongoDB 8.2 rawData fixtures for find, aggregate, distinct, and count helpers.", "implementation": "Register exact 8.2 executors for the existing validated rawData read option and retain pre-8.2 omission coverage.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable rawData read fixtures pass", "The option is omitted before MongoDB 8.2"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run rawData read conformance"
+      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the five exact rawData fixtures on MongoDB 8.0 and 8.2", "make lint"], "acceptance": ["Applicable rawData read fixtures pass", "The option is omitted before MongoDB 8.2"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run rawData read conformance"
     },
     {
       "id": "REL-010", "title": "Close remaining v1 CRUD and administration conformance", "milestone": "production-core-v1", "depends_on": ["REL-004"], "references": ["specifications:source"], "test_policy": "red_green",

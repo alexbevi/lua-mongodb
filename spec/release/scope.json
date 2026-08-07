@@ -10,15 +10,16 @@
     "ADV-008": 74,
     "ADV-009": 240,
     "ADV-010": 777,
-    "ADV-011": 108,
+    "ADV-011": 140,
     "ADV-012": 15,
-    "REL-004": 147,
+    "REL-004": 30,
     "REL-005": 36,
-    "REL-006": 101
+    "REL-006": 101,
+    "REL-010": 80
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 284,
-    "post-v1-exclusion": 1868
+    "applicable-release-gap": 247,
+    "post-v1-exclusion": 1900
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -36,8 +37,8 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 2152,
-    "passed": 3372
+    "deferred_unsupported": 2147,
+    "passed": 3377
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

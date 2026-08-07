@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "e44155e1c9d4df858f56022b9429a7ffa6dc7401aa4fc6b7774a43c0a10b4622",
+  "plan_digest": "5ae3690a9edf80ff2d634bdb2ec93805e801f7c81cbd7e2c38029d509b6ca51f",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -1237,6 +1237,28 @@
       "notes": [],
       "started_at": "2026-08-07T12:57:02+00:00",
       "completed_at": "2026-08-07T13:02:13+00:00"
+    },
+    "REL-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_mongodb_8_2_raw_data_read_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "Five MongoDB 8.2 rawData read fixtures are deferred because they have no exact unified executors",
+          "recorded_at": "2026-08-07T13:03:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit; make test-integration; make test-unified-schema test-unified-inventory test-unified-meta; exact rawData fixture runs with MongoDB 8.0.16 and 8.2.12; make lint",
+          "exit_code": 0,
+          "summary": "176 unit and 18 integration tests passed; 521 fixtures and 2491 tests validated; 18 unified CLI, 12 meta, 320 schema-meta, conformance, and release gates passed; five rawData read cases passed on MongoDB 8.2.12 and five omission cases passed on MongoDB 8.0.16; lint checked 114 files with zero warnings",
+          "recorded_at": "2026-08-07T13:31:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T13:02:58+00:00",
+      "completed_at": "2026-08-07T13:31:01+00:00"
     }
   },
   "verified_references": {

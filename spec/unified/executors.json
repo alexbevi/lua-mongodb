@@ -1467,6 +1467,10 @@
       "activity": "UTF-011",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/aggregate-rawdata.json::test[1]": {
+      "activity": "REL-004",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/aggregate-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1824,6 +1828,10 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/countDocuments-rawdata.json::test[1]": {
+      "activity": "REL-004",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/countDocuments-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1969,6 +1977,10 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/distinct-rawdata.json::test[1]": {
+      "activity": "REL-004",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/distinct-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "environment": "live-standalone"
@@ -1987,6 +1999,10 @@
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[2]": {
       "activity": "UTF-013",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[1]": {
+      "activity": "REL-004",
       "environment": "live-standalone"
     },
     "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[2]": {
@@ -2045,6 +2061,10 @@
     },
     "crud/tests/unified/find-let.json::test[1]": {
       "activity": "UTF-013",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/find-rawdata.json::test[1]": {
+      "activity": "REL-004",
       "environment": "live-standalone"
     },
     "crud/tests/unified/find-rawdata.json::test[2]": {
