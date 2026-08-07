@@ -12,15 +12,15 @@ The production goal stops after `production-core-v1`. Do not begin post-v1 work 
 
 Keep commits small. Each commit must be the smallest practical vertical slice that delivers one independently verifiable behavior from its tests through its implementation and required documentation. If an activity is too large for one such commit, split it into ordered plan activities before implementation; never accumulate several behaviors into a broad checkpoint commit.
 
-1. Run `python3 planning/update_plan.py check --strict` and `next`.
+1. Run `python3 planning/update_plan.py check --strict --pushed` and `next`.
 2. Start exactly one ready activity through the script.
 3. Add the smallest failing test that defines the vertical slice, run it, and record the red result.
 4. Implement only enough production behavior for the slice, preserving public contracts.
-5. Run targeted tests and the relevant broader gates until green; record green evidence.
+5. Run the narrowest effective local verification with `make test-focus`: the defining test, directly coupled integration or unified cases, touched-file lint, and any validator for generated artifacts changed by the slice. Record green evidence. Do not run full suites locally for an ordinary slice.
 6. Update `docs/ARCHITECTURE.md`, spec classifications, and compatibility evidence when behavior changes. Keep implementation design, internal behavior, and detailed verification evidence out of `README.md`; that file is limited to the project overview, public API outline, scope, generated specification-compatibility table, development entry points, and license. When the conformance ledger changes, run `python3 planning/update_readme_compatibility.py` and commit the resulting table.
 7. Complete and refresh state through `update_plan.py`.
 8. Commit one self-contained, verifiable unit with the activity's exact Conventional Commit subject and exactly one `Plan-Activity: ID` trailer, then push that commit.
-9. Run `python3 planning/update_plan.py check --strict --pushed` before starting another activity.
+9. Run `python3 planning/update_plan.py check --strict --pushed`, then wait for the pushed GitHub Actions run. Treat its full portable and compatibility jobs as the authoritative broad verification and resolve any failure before starting another activity.
 
 Never commit a red test state, silently skip an unknown unified operation, edit `current_state.json`, or mix unrelated cleanup into an activity. Every upstream fixture must be run or explicitly classified as deferred with a reason.
 
@@ -32,4 +32,6 @@ Target Lua 5.4 and require a 64-bit `lua_Integer`. Treat operational failures as
 
 ## Verification
 
-Once the foundation activity creates the build harness, the standard gates are `make test-unit`, `make test-integration`, `make test-unified`, `make lint`, and `make check`. Until then, use `python3 -m unittest discover -s planning/tests -v` and both skill validators.
+Local verification is selector-driven. Use `make test-focus` with one or more of `FOCUS_UNIT`, `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, `FOCUS_PYTHON`, and `FOCUS_LINT`. Start with the exact red test and broaden only when a shared boundary changed or a targeted failure gives evidence that adjacent behavior is affected. Run cheap artifact-specific checks such as rockspec lint or generated-file `--check` commands when those artifacts change.
+
+GitHub Actions owns the full `make check`, platform, coverage, stress, conformance, packaging, and live compatibility gates on every push. Run broad suites locally only when changing the test infrastructure itself, preparing a release, diagnosing a CI-only failure, or modifying a cross-cutting primitive for which no narrower trustworthy boundary exists.

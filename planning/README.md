@@ -24,6 +24,10 @@ python3 planning/update_plan.py complete ID
 python3 planning/update_plan.py refresh
 python3 planning/update_plan.py reference-report
 python3 planning/update_readme_compatibility.py [--check]
+make test-focus FOCUS_UNIT=spec/unit/example_spec.lua FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
+make test-focus FOCUS_INTEGRATION=spec/integration/example_spec.lua
+make test-focus FOCUS_UNIFIED='crud/tests/unified/example.json::test?1?'
+make test-focus FOCUS_PYTHON=planning.tests.test_update_plan.CommitTests
 ```
 
 `check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
@@ -31,6 +35,8 @@ python3 planning/update_readme_compatibility.py [--check]
 `update_readme_compatibility.py` projects the conformance ledger into the README's driver-layer compatibility table. Run it whenever ledger statuses change; CI uses `--check` so the README cannot drift from executable evidence.
 
 Activity implementation follows red-green vertical slices. A `red_green` activity cannot complete without a recorded nonzero red command and successful green command. A `validation` activity requires successful green evidence. Only one activity may be `in_progress`.
+
+`make test-focus` is the default local verification entry point. Every invocation requires an explicit selector, and multiple selectors may be combined when a slice crosses a directly coupled boundary. Full suites, coverage, stress, conformance reconciliation, platform checks, and the live compatibility matrix run in GitHub Actions after push. Run `make check` locally only for test-infrastructure changes, release preparation, cross-cutting primitives without a trustworthy focused boundary, or CI failure diagnosis.
 
 Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
 

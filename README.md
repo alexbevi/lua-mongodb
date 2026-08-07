@@ -228,6 +228,15 @@ make lint
 make check
 ```
 
+For ordinary local changes, prefer the narrow selector-driven target instead of the full gate:
+
+```sh
+make test-focus FOCUS_UNIT=spec/unit/example_spec.lua \
+  FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
+```
+
+Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for the directly affected boundary. GitHub Actions runs the complete gates and compatibility matrix after each push.
+
 See [`planning/README.md`](planning/README.md) for roadmap commands and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for implementation details and design decisions.
 
 ## License

@@ -57,12 +57,24 @@ The activity workflow is:
 4. Implement only the behavior required by that slice.
 5. Identify every upstream case made applicable by the change.
 6. Enable and execute those cases in the same activity.
-7. Run targeted and broader gates, recording the green result with execution counts.
+7. Run the narrowest effective local tests and validators, recording the green result with execution counts.
 8. Update architecture, compatibility, capability records, and the conformance ledger.
 9. Complete the activity and commit its exact subject with exactly one `Plan-Activity` trailer.
-10. Push the commit and run `check --strict --pushed` before selecting another activity. The next `start` transition independently refuses to proceed until all completed activity commits are unique and remote-reachable.
+10. Push the commit, run `check --strict --pushed`, and require the authoritative GitHub Actions run to pass before selecting another activity. The next `start` transition independently refuses to proceed until all completed activity commits are unique and remote-reachable.
 
 Do not use a release activity to construct missing conformance infrastructure or discover broad semantic gaps. Release hardening should verify a matrix that is already green.
+
+## Local and CI verification
+
+Local testing provides rapid, deterministic evidence for the behavior being changed. It is not a smaller imitation of the entire CI pipeline. Use `make test-focus` with explicit selectors and choose the minimum set that can falsify the slice:
+
+- Re-run the exact test that established red evidence.
+- Add the nearest integration case when behavior crosses a module, protocol, runtime, or server boundary.
+- Run only the newly applicable unified fixture or fixture family with `FOCUS_UNIFIED`.
+- Lint the touched Lua production and test files with `FOCUS_LINT`.
+- Run a format-specific validator when changing a generated ledger, capability map, compatibility projection, rockspec, workflow, or planning document.
+
+Broaden local testing only when the change affects a shared primitive, targeted evidence exposes adjacent risk, or the slice changes test infrastructure. Coverage, stress, the full unit/integration/unified corpora, complete conformance reconciliation, platform differences, and the supported live server matrix belong to GitHub Actions. A slice is locally verified when its focused evidence is green; it is fully integrated only after the pushed GitHub Actions run is green.
 
 ## Test and conformance layers
 
