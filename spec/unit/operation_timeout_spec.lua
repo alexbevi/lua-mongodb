@@ -63,4 +63,20 @@ describe("client-side operation timeout", function()
       assert.is_nil(command:get("maxTimeMS"))
     end)
   end)
+
+  it("omits a write concern that contains only a deprecated timeout", function()
+    local runtime = fake_runtime.new({ now = 1 })
+
+    operation_timeout.run(runtime, 100, {}, function()
+      local command = assert(operation_timeout.prepare_command(
+        bson.document({
+          { "commitTransaction", 1 },
+          { "writeConcern", bson.document({ { "wtimeout", 1 } }) },
+        }),
+        0
+      ))
+
+      assert.is_nil(command:get("writeConcern"))
+    end)
+  end)
 end)

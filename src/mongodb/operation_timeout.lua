@@ -44,7 +44,7 @@ local function without_wtimeout(value)
     end
   end
 
-  return bson.document(entries)
+  return #entries > 0 and bson.document(entries) or nil
 end
 
 local function transformed_timeout(err)
@@ -92,7 +92,9 @@ function M.prepare_command(command, minimum_round_trip_time_ms)
         value = without_wtimeout(value)
       end
 
-      entries[#entries + 1] = { key, value }
+      if value ~= nil then
+        entries[#entries + 1] = { key, value }
+      end
     end
   end
 

@@ -4,6 +4,7 @@ local bulk = require("mongodb.bulk")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
+local cursor_model = require("mongodb.cursor")
 local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
@@ -14,6 +15,12 @@ local COLLECTION_STATES = setmetatable({}, { __mode = "k" })
 local CLIENT_METHODS = {}
 local DATABASE_METHODS = {}
 local COLLECTION_METHODS = {}
+
+local PRIMARY_READ_PREFERENCE = {
+  max_staleness_seconds = -1,
+  mode = "primary",
+  tag_sets = { {} },
+}
 
 local function immutable(kind)
   return function()
@@ -172,6 +179,111 @@ local function run_operation(state, options, callback)
     options,
     callback
   )
+end
+
+local function command_document(command)
+  if type(command) == "string" then
+    if command == "" then
+      error("command name must be non-empty", 3)
+    end
+
+    return bson.document({ { command, 1 } })
+  elseif not bson.is_document(command) then
+    error("command must be a name or BSON document", 3)
+  elseif #command == 0 then
+    error("command document must not be empty", 3)
+  end
+
+  return command
+end
+
+local function command_options(options)
+  local result = {}
+
+  for key, value in pairs(options) do
+    result[key] = value
+  end
+
+  if options.read_preference == nil then
+    result.read_preference = PRIMARY_READ_PREFERENCE
+  else
+    local normalized, err = driver_options.normalize(nil, {
+      read_preference = options.read_preference,
+    })
+
+    if not normalized then
+      return nil, err
+    end
+
+    result.read_preference = normalized.read_preference
+  end
+
+  result.read_operation = true
+  return result
+end
+
+local function release_session_context(executor, context)
+  if context and type(executor.release_session_context) == "function" then
+    executor:release_session_context(context)
+  end
+end
+
+local function command_cursor(state, command, options)
+  local executor = state.executor
+  local session_context = options.session == nil
+    and type(executor.release_session_context) == "function" and {} or nil
+  local prepared, err = command_options(options)
+
+  if not prepared then
+    release_session_context(executor, session_context)
+    return nil, err
+  end
+
+  prepared.session_context = session_context
+  local response
+  response, err = executor:command(state.name, command, prepared)
+
+  if not response then
+    release_session_context(executor, session_context)
+    return nil, err
+  end
+
+  local cursor = response:get("cursor")
+
+  if not bson.is_document(cursor) then
+    release_session_context(executor, session_context)
+    return client_error("command does not return a cursor")
+  end
+
+  local namespace = cursor:get("ns")
+  local prefix = state.name .. "."
+
+  if type(namespace) ~= "string" or namespace:sub(1, #prefix) ~= prefix
+      or #namespace == #prefix
+  then
+    release_session_context(executor, session_context)
+    return nil, errors.new({
+      category = errors.CATEGORY.PROTOCOL,
+      message = "command cursor contains an invalid namespace",
+    })
+  end
+
+  return cursor_model.new(response, {
+    batch_size = options.batch_size or 0,
+    cancellation = options.cancellation,
+    client_state = state.client_state,
+    collection_name = namespace:sub(#prefix + 1),
+    comment = options.comment,
+    database_name = state.name,
+    deadline = options.deadline,
+    executor = executor,
+    max_await_time_ms = options.max_await_time_ms,
+    on_close = state.on_cursor_close,
+    session = options.session,
+    session_context = session_context,
+    timeout_context = operation_timeout.capture(),
+    timeout_mode = options.timeout_mode,
+  })
 end
 
 local function new_database(client, name, options)
@@ -463,19 +575,91 @@ function DATABASE_METHODS:run_command(command, options)
     return nil, err
   end
 
-  if type(command) == "string" then
-    if command == "" then
-      error("command name must be non-empty", 2)
-    end
-
-    command = bson.document({ { command, 1 } })
-  elseif not bson.is_document(command) then
-    error("command must be a name or BSON document", 2)
-  end
+  command = command_document(command)
 
   return run_operation(state, options, function(prepared)
-    return client_state.executor:command(state.name, command, prepared)
+    local execution_options, option_err = command_options(prepared)
+
+    if not execution_options then
+      return nil, option_err
+    end
+
+    return client_state.executor:command(state.name, command, execution_options)
   end)
+end
+
+function DATABASE_METHODS:run_cursor_command(command, options)
+  local state = DATABASE_STATES[self]
+  local client_state = CLIENT_STATES[state.client]
+  local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  command = command_document(command)
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("run_cursor_command options must be a table", 2)
+  end
+
+  local allowed = {
+    batch_size = true,
+    cancellation = true,
+    comment = true,
+    cursor_type = true,
+    deadline = true,
+    max_await_time_ms = true,
+    read_preference = true,
+    session = true,
+    timeout_mode = true,
+    timeout_ms = true,
+  }
+
+  for key in pairs(options) do
+    if not allowed[key] then
+      error("unknown run_cursor_command option: " .. tostring(key), 2)
+    end
+  end
+
+  if options.batch_size ~= nil
+      and (math.type(options.batch_size) ~= "integer" or options.batch_size < 0)
+  then
+    error("batch_size must be a non-negative integer", 2)
+  end
+
+  if options.max_await_time_ms ~= nil
+      and (math.type(options.max_await_time_ms) ~= "integer"
+        or options.max_await_time_ms < 0)
+  then
+    error("max_await_time_ms must be a non-negative integer", 2)
+  end
+
+  if options.cursor_type ~= nil and options.cursor_type ~= "non_tailable" then
+    return client_error("tailable command cursors are outside the v1 API")
+  end
+
+  local effective_timeout = options.timeout_ms
+
+  if effective_timeout == nil then
+    effective_timeout = state.timeout_ms
+  end
+
+  if options.max_await_time_ms ~= nil and effective_timeout ~= nil then
+    return client_error("max_await_time_ms cannot be combined with timeout_ms")
+  end
+
+  local cursor
+  cursor, err = run_operation(state, options, function(prepared)
+    return command_cursor(state, command, prepared)
+  end)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(state.client, cursor)
 end
 
 local function collection_operation(collection, operation, ...)

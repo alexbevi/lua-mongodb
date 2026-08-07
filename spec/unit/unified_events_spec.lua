@@ -59,6 +59,43 @@ local function setup()
 end
 
 describe("unified command events", function()
+  it("collects connection lifecycle events separately from command events", function()
+    local runner = runner_module.new({ runtime = fake_runtime.new() })
+    local client = {}
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({
+        "commandStartedEvent",
+        "connectionReadyEvent",
+        "connectionCheckedOutEvent",
+        "connectionCheckedInEvent",
+      }) },
+    })))
+
+    assert(runner:add_entity("client0", "client", client))
+    collector.listener:started(actual_event("command_started", "find"))
+    collector.pool_listener:ConnectionReady({ address = "localhost:27017" })
+    collector.pool_listener:ConnectionCheckedOut({ address = "localhost:27017" })
+    collector.pool_listener:ConnectionCheckedIn({ address = "localhost:27017" })
+
+    assert(event_module.assert_all(runner, array({
+      document({
+        { "client", "client0" },
+        { "eventType", "cmap" },
+        { "events", array({
+          document({ { "connectionReadyEvent", document({}) } }),
+          document({ { "connectionCheckedOutEvent", document({}) } }),
+          document({ { "connectionCheckedInEvent", document({}) } }),
+        }) },
+      }),
+      document({
+        { "client", "client0" },
+        { "events", array({
+          expected_event("commandStartedEvent", "find"),
+        }) },
+      }),
+    }), { [client] = collector }, "$.expectEvents"))
+  end)
+
   it("matches event order and permits only trailing events when requested", function()
     local runner, collector, collectors = setup()
 

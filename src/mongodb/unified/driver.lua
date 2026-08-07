@@ -107,6 +107,7 @@ local function client_factory(state)
       local retry_reads = uri_options:get("retryReads")
       local retry_writes = uri_options:get("retryWrites")
       local w = uri_options:get("w")
+      local w_timeout_ms = uri_options:get("wTimeoutMS")
       local socket_timeout_ms = uri_options:get("socketTimeoutMS")
       local timeout_ms = uri_options:get("timeoutMS")
 
@@ -165,13 +166,11 @@ local function client_factory(state)
         w = w:to_number()
       end
 
-      if w ~= nil then
-        local w_timeout_ms = uri_options:get("wTimeoutMS")
+      if bson.is_exact(w_timeout_ms) then
+        w_timeout_ms = w_timeout_ms:to_number()
+      end
 
-        if bson.is_exact(w_timeout_ms) then
-          w_timeout_ms = w_timeout_ms:to_number()
-        end
-
+      if w ~= nil or w_timeout_ms ~= nil then
         options.write_concern = { w = w, w_timeout_ms = w_timeout_ms }
       end
     end
@@ -432,6 +431,41 @@ end
 local call_driver
 local operation_options
 
+local function convert_read_preference(value)
+  if not bson.is_document(value) then
+    return value
+  end
+
+  local max_staleness = value:get("maxStalenessSeconds")
+
+  if bson.is_exact(max_staleness) then
+    max_staleness = max_staleness:to_number()
+  end
+
+  local tag_sets = {}
+  local tags = value:get("tagSets")
+
+  if bson.is_array(tags) then
+    for index, tag_set in tags:iter() do
+      local converted = {}
+
+      if bson.is_document(tag_set) then
+        for key, item in tag_set:iter() do
+          converted[key] = item
+        end
+      end
+
+      tag_sets[index] = converted
+    end
+  end
+
+  return {
+    max_staleness_seconds = max_staleness,
+    mode = value:get("mode"),
+    tag_sets = #tag_sets > 0 and tag_sets or nil,
+  }
+end
+
 local function insert_one(_, collection, arguments)
   local result, err = call_driver(function()
     return collection:insert_one(arguments:get("document"), operation_options(
@@ -467,11 +501,16 @@ operation_options = function(arguments, fields)
     if value ~= nil then
       if bson.is_exact(value) then
         value = value:to_number()
+      elseif unified_name == "readPreference" then
+        value = convert_read_preference(value)
       elseif unified_name == "returnDocument" then
         value = value:lower()
       elseif unified_name == "timeoutMode" then
         value = value == "cursorLifetime" and "cursor_lifetime"
           or value == "iteration" and "iteration" or value
+      elseif unified_name == "cursorType" then
+        value = value == "nonTailable" and "non_tailable"
+          or value == "tailableAwait" and "tailable_await" or value
       end
 
       options[lua_name] = value
@@ -820,10 +859,110 @@ local function list_collection_names(_, database, arguments)
 end
 
 local function run_command(_, database, arguments)
-  return database:run_command(arguments:get("command"), operation_options(
+  local command = arguments:get("command")
+  local command_name = arguments:get("commandName")
+  local entries = { { command_name, command:get(command_name) or 1 } }
+
+  for key, value in command:iter() do
+    if key ~= command_name then
+      entries[#entries + 1] = { key, value }
+    end
+  end
+
+  return database:run_command(bson.document(entries), operation_options(
     arguments,
     { readPreference = "read_preference" }
   ))
+end
+
+local function cursor_command_document(arguments)
+  local command = arguments:get("command")
+  local command_name = arguments:get("commandName")
+
+  if not bson.is_document(command) or type(command_name) ~= "string"
+      or command_name == ""
+  then
+    return configuration_error("invalid command cursor arguments", "$.arguments")
+  end
+
+  local entries = { { command_name, command:get(command_name) or 1 } }
+
+  for key, value in command:iter() do
+    if key ~= command_name then
+      entries[#entries + 1] = { key, value }
+    end
+  end
+
+  return bson.document(entries)
+end
+
+local function create_command_cursor(_, database, arguments)
+  local command, err = cursor_command_document(arguments)
+
+  if not command then
+    return nil, err
+  end
+
+  return call_driver(function()
+    return database:run_cursor_command(command, operation_options(arguments, {
+      batchSize = "batch_size",
+      comment = "comment",
+      cursorType = "cursor_type",
+      maxTimeMS = "max_await_time_ms",
+      readPreference = "read_preference",
+    }))
+  end)
+end
+
+local function run_cursor_command(runner, database, arguments)
+  local cursor, err = create_command_cursor(runner, database, arguments)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
+local function create_find_cursor(_, collection, arguments)
+  local cursor_type = arguments:get("cursorType")
+
+  if cursor_type ~= nil and cursor_type ~= "nonTailable" then
+    return nil, errors.new({
+      category = errors.CATEGORY.CLIENT,
+      message = "tailable cursors are outside the v1 API",
+    })
+  end
+
+  return call_driver(function()
+    return collection:find(arguments:get("filter"), operation_options(arguments, {
+      batchSize = "batch_size",
+    }))
+  end)
+end
+
+local function iterate_cursor(_, cursor)
+  return cursor:next()
+end
+
+local function close_cursor(_, cursor, arguments)
+  local closed, err = cursor:close(operation_options(arguments, {}))
+
+  if closed == nil then
+    return nil, err
+  end
+
+  return true
+end
+
+local function finalize_cursor(_, cursor)
+  local closed, err = cursor:close()
+
+  if closed == nil then
+    return nil, err
+  end
+
+  return true
 end
 
 local function create_collection(_, database, arguments)
@@ -1459,6 +1598,10 @@ function M.new(options)
       database = database_factory,
       session = session_factory,
     },
+    entity_finalizers = {
+      commandCursor = finalize_cursor,
+      findCursor = finalize_cursor,
+    },
     internal_client = internal_client_adapter(internal_client),
     operations = {
       client = {
@@ -1476,6 +1619,11 @@ function M.new(options)
         },
       },
       collection = {
+        createFindCursor = {
+          arguments = { "batchSize", "cursorType", "filter" },
+          handler = create_find_cursor,
+          result_kind = "findCursor",
+        },
         createIndex = {
           arguments = { "keys", "name", "rawData", "timeoutMS", "unique" },
           handler = create_index,
@@ -1617,6 +1765,14 @@ function M.new(options)
         },
       },
       database = {
+        createCommandCursor = {
+          arguments = {
+            "batchSize", "command", "commandName", "comment", "cursorType",
+            "maxTimeMS", "readPreference",
+          },
+          handler = create_command_cursor,
+          result_kind = "commandCursor",
+        },
         createCollection = {
           arguments = {
             "clusteredIndex", "collection", "expireAfterSeconds", "pipeline",
@@ -1649,6 +1805,33 @@ function M.new(options)
         runCommand = {
           arguments = { "command", "commandName", "readPreference" },
           handler = run_command,
+        },
+        runCursorCommand = {
+          arguments = {
+            "batchSize", "command", "commandName", "comment", "cursorType",
+            "maxTimeMS", "readPreference",
+          },
+          handler = run_cursor_command,
+        },
+      },
+      commandCursor = {
+        close = {
+          arguments = {},
+          handler = close_cursor,
+        },
+        iterateUntilDocumentOrError = {
+          arguments = {},
+          handler = iterate_cursor,
+        },
+      },
+      findCursor = {
+        close = {
+          arguments = {},
+          handler = close_cursor,
+        },
+        iterateUntilDocumentOrError = {
+          arguments = {},
+          handler = iterate_cursor,
         },
       },
       session = {

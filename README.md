@@ -25,7 +25,7 @@ copas.loop(function()
 end)
 ```
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone and replica-set connections; SCRAM and TLS; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone and replica-set connections; SCRAM and TLS; generic database command and command-cursor execution; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
 ## Specification compatibility
 

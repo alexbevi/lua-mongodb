@@ -1523,6 +1523,28 @@
       "notes": [],
       "started_at": "2026-08-07T14:46:23+00:00",
       "completed_at": "2026-08-07T14:54:13+00:00"
+    },
+    "REL-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "/tmp/lua-mongodb-tools/bin/busted --lpath='src/?.lua' --lpath='src/?/init.lua' spec/unit/api_handles_spec.lua",
+          "exit_code": 1,
+          "summary": "2 existing tests passed; the new generic cursor-command test errored because database:run_cursor_command is missing",
+          "recorded_at": "2026-08-07T15:05:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "Green: 182 unit successes plus BSON/vector corpus coverage; 18 integration successes; full unified gate 1254 executed, 1254 passed, 0 failed, 31 environment-skipped, 1236 explicitly deferred (all 1285 runnable cases accounted for); REL-005 exact selection 27/27 passed with 7 classified deferrals; luacheck 114 files with 0 warnings/errors.",
+          "recorded_at": "2026-08-07T17:25:16+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T15:00:18+00:00",
+      "completed_at": "2026-08-07T17:25:17+00:00"
     }
   },
   "verified_references": {

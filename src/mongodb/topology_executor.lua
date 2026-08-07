@@ -53,7 +53,11 @@ local function copy_read_preference(preference)
   }
 end
 
-local function operation_for(command)
+local function operation_for(command, options)
+  if options and options.read_operation == true then
+    return "read"
+  end
+
   local name = command:keys()[1]
 
   return READ_COMMANDS[name] and "read" or "write"
@@ -221,7 +225,7 @@ function METHODS:command(database, command, options)
   end
 
   local state = EXECUTOR_STATES[self]
-  local selected, err = select_connection(state, operation_for(command), options)
+  local selected, err = select_connection(state, operation_for(command, options), options)
 
   if not selected then
     return nil, err
@@ -248,7 +252,7 @@ function METHODS:measure(database, command, options)
   end
 
   local state = EXECUTOR_STATES[self]
-  local selected, err = select_connection(state, operation_for(command), options)
+  local selected, err = select_connection(state, operation_for(command, options), options)
 
   if not selected then
     return nil, err

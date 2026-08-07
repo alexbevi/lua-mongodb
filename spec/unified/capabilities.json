@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1263,
-    "runnable": 1263
+    "passed": 1285,
+    "runnable": 1285
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -17199,7 +17199,6 @@
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
       "activity": "REL-005",
       "fingerprint": "21e9b9c35379c7ecfa55a383b16aacc5eb6c6040decc4f7e36375f70e34b8bb3",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: close, createFindCursor, iterateUntilDocumentOrError",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -17233,12 +17232,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/close-cursors.json::test[2]": {
       "activity": "REL-005",
       "fingerprint": "05bd88ecd604920f6ccdce00a9cecca960ef5a865c0df820b86380da0df79e25",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: close, createFindCursor",
       "requirements": {
         "arguments": [
           "close.timeoutMS",
@@ -17271,7 +17269,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/command-execution.json::test[1]": {
       "activity": "TIME-001",
@@ -24238,7 +24236,6 @@
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": {
       "activity": "REL-005",
       "fingerprint": "a983bab143b7885cc748c77ca7223090bd19d0e938bae90fefc36bed0efd64ea",
-      "reason": "legacy wTimeoutMS requires the release unified write-concern mapping",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -24265,7 +24262,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[4]": {
       "activity": "QUA-001",
@@ -35185,7 +35182,6 @@
     "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": {
       "activity": "REL-005",
       "fingerprint": "c4875a029f2a90d4b204b9b47017e3511b3033c7fdddc451ae80210f64a14c02",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -35207,12 +35203,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": {
       "activity": "REL-005",
       "fingerprint": "22e8d87e90d2467712b0baf617cfcd5972c725c54eae17198e20a200f4a2bf79",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -35235,12 +35230,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": {
       "activity": "REL-005",
       "fingerprint": "befdeb4cd840258c4c84a6b70761f4c27c0956f09d491b11f1ca1fcf85a4543a",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35271,12 +35265,12 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": {
-      "activity": "REL-005",
+      "activity": "REL-006",
       "fingerprint": "7ea2c7b6c05706aba1500147cc446923115390cc3f9ed546d128955d0372cede",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: runCursorCommand",
+      "reason": "runCursorCommand iteration collection awaits release per-attempt deadline hardening",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35312,9 +35306,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "d45ef83db87ffcf661184b0bc365646283e0fdfdb1c3226f5eef3632f1c78f7b",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createCommandCursor, iterateUntilDocumentOrError",
+      "reason": "tailable command cursors are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -35361,9 +35355,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "c02068748ffddf99e0727fddf30dc1ac1d037a2bcb402f011b7bbd6b9a0fdeb3",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createCommandCursor, iterateUntilDocumentOrError",
+      "reason": "tailable-await command cursors are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -35767,9 +35761,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[10]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "481a34973fcf0926bd5bc0504a79f11a6b6f4fab84dc7d722dcba87fb2990129",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35806,9 +35800,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[11]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "d2bab5260e06a37661b1cffdf6b6d75da61c11a8194d42a1de7291f61b1c59f5",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35843,9 +35837,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[12]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "a3852a9f20329f7342fc55b42b26e764f87977405a9a8ccaab8f9e450ef9b23d",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateOnce, iterateUntilDocumentOrError",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35882,9 +35876,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[13]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "5d24d8043b9b16648e324a7ac9dc7f9375082b7c0bfe56157ee178e9818ce9f0",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateOnce",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36141,9 +36135,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[9]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "45c088cf34d465467574b039df0cfd26069ddd31779a5ce5a936cfc1f7fbcc6a",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36240,9 +36234,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "5cbcd32cba03875ee80b54a9c8ab8fd9e4cc59f871f04ee6a16c870c0e619b6a",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36278,9 +36272,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[4]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "636a07e485f2f9e8a0714b819188c94fabcb50a49d7f2bda5e4e0f6445d82750",
-      "reason": "cursor operation timeout coverage awaits v1 command conformance: createFindCursor, iterateUntilDocumentOrError",
+      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -69520,7 +69514,6 @@
     "run-command/tests/unified/runCommand.json::test[11]": {
       "activity": "REL-005",
       "fingerprint": "fc46257c131844e2944c0697ec6091d10f4c07117db5ea041f56a50cc3c3a6d8",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69546,12 +69539,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[1]": {
       "activity": "REL-005",
       "fingerprint": "a27e186daf7cb8da7c6a20baca1e1ef3a6f3e92a297e9ad8907853100ab2c333",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69577,12 +69569,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[2]": {
       "activity": "REL-005",
       "fingerprint": "505798d163e834b0b74d06e997133ad90239be5aa9290e41b35eacd77a1663f1",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69611,12 +69602,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[3]": {
       "activity": "REL-005",
       "fingerprint": "7d719db594ec75b253873c5fd4dfe175f22876c120962974535e29d3ce782de4",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69643,12 +69633,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[4]": {
       "activity": "REL-005",
       "fingerprint": "5123bb487c29f901687ec5390caa2b4a17e9a782aebe5c6904a60446db22c2f2",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69677,12 +69666,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[5]": {
       "activity": "REL-005",
       "fingerprint": "8eed0eb4bd3f96513f4fcd9ab9a189d303e89d1af2143bfce11b097ad4045a47",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69711,12 +69699,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[6]": {
       "activity": "REL-005",
       "fingerprint": "f84c0d5c46f86c32ac2592738bf5baa1a7af040603cd4c5dfc1dd4ac870ab91f",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69743,12 +69730,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[7]": {
       "activity": "REL-005",
       "fingerprint": "48241fa481ff26289834cb22e02fb6908084b9a82033b74ad40819f6c008ff5b",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69774,12 +69760,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[8]": {
       "activity": "REL-005",
       "fingerprint": "1822eed3b9e1f0a83fc1eeee806a829c8b569b17f117268bc445f4b57593fc52",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -69805,12 +69790,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCommand.json::test[9]": {
       "activity": "REL-005",
       "fingerprint": "85553f81994aca2f0d07b8859d5407ffbc1e76ffa127998b08499d161dd5a66e",
-      "reason": "general runCommand conformance awaits the v1 command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -69836,12 +69820,12 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[10]": {
-      "activity": "REL-005",
+      "activity": "ADV-011",
       "fingerprint": "1c5ec997298379804fea3f3a3085e9e983a723a34f68d0c759e9118b349f0b2e",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
+      "reason": "tailable command cursors are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -69884,9 +69868,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[1]": {
-      "activity": "REL-005",
+      "activity": "ADV-005",
       "fingerprint": "b163f5af3054e5fb460274d20178fddca877912a334dfd2af39ec5d013c7aa7d",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
+      "reason": "checkMetadataConsistency requires a sharded deployment outside production-core v1",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -69919,7 +69903,6 @@
     "run-command/tests/unified/runCursorCommand.json::test[2]": {
       "activity": "REL-005",
       "fingerprint": "fb2b45b72c26dd6dedaf6c963c4c7614c65d08e5d867526388265bf54d823298",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "createCommandCursor.command",
@@ -69941,12 +69924,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[3]": {
       "activity": "REL-005",
       "fingerprint": "7d3cf30ec37e1bc9c3593999f73bf963a6aeb342c135bc351c20e47e4c9742ed",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -69976,12 +69958,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[4]": {
       "activity": "REL-005",
       "fingerprint": "e2cc52e11b7ce81dd2f997f8be9c582a4460f51af8bddca02b236173f9b99041",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -70012,12 +69993,12 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[5]": {
-      "activity": "REL-005",
+      "activity": "ADV-006",
       "fingerprint": "e7f6311ae3921425d3da576d86a55605356c55fc01d1fbd29a04e3e43c753fba",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
+      "reason": "load-balanced command cursor pinning is outside production-core v1",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -70059,9 +70040,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[6]": {
-      "activity": "REL-005",
+      "activity": "ADV-006",
       "fingerprint": "3627623fe17a9d9857461413935e8664e5124bd865b8c852181fc1d40b60d9b0",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
+      "reason": "load-balanced command cursor pinning is outside production-core v1",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -70095,7 +70076,6 @@
     "run-command/tests/unified/runCursorCommand.json::test[7]": {
       "activity": "REL-005",
       "fingerprint": "7956033f5e75e5757f822931a122725e548c512552448996e7c9baa11fc4e9ae",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.batchSize",
@@ -70123,12 +70103,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[8]": {
       "activity": "REL-005",
       "fingerprint": "6baa16bd52fb4adde5c86d56917c358b2f566699f5ae5c39412d5fe7c70192b0",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -70156,12 +70135,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[9]": {
       "activity": "REL-005",
       "fingerprint": "39b4ee59a764894d9405cfcab6cb20a3a07801b289da8cb44aad0c955d5de347",
-      "reason": "the case awaits the v1 command and cursor conformance slice",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -70189,7 +70167,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/auth-error.json::test[1]": {
       "activity": "ADV-005",

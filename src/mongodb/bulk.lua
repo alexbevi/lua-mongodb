@@ -470,7 +470,7 @@ local function concern_document(concern)
   end
 
   if concern.w_timeout_ms ~= nil then
-    entries[#entries + 1] = { "wtimeoutMS", concern.w_timeout_ms }
+    entries[#entries + 1] = { "wtimeout", concern.w_timeout_ms }
   end
 
   if #entries > 0 then

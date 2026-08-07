@@ -122,6 +122,15 @@ local function mark_closed(value, state)
   end
 end
 
+local function release_session_context(state)
+  if state.session_context
+      and type(state.executor.release_session_context) == "function"
+  then
+    state.executor:release_session_context(state.session_context)
+    state.session_context = nil
+  end
+end
+
 local function client_is_closed(state)
   return state.client_state and state.client_state.closed == true
 end
@@ -171,7 +180,10 @@ local function get_more(value, state)
   )
 
   if not response then
-    mark_closed(value, state)
+    if not errors.is(err, errors.CATEGORY.TIMEOUT) then
+      mark_closed(value, state)
+    end
+
     return nil, err
   end
 
@@ -187,6 +199,11 @@ local function get_more(value, state)
   state.id = batch.id
   state.numeric_id = batch.numeric_id
   state.position = 1
+
+  if state.numeric_id == 0 then
+    release_session_context(state)
+  end
+
   return true
 end
 
@@ -368,6 +385,10 @@ function M.new(response, options)
     timeout_mode = options.timeout_mode or "cursor_lifetime",
   }
   local result = setmetatable(value, CURSOR_METATABLE)
+
+  if batch.numeric_id == 0 then
+    release_session_context(CURSOR_STATES[result])
+  end
 
   if batch.numeric_id == 0 and #batch.documents == 0 then
     mark_closed(result, CURSOR_STATES[result])

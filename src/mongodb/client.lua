@@ -174,7 +174,7 @@ local function transaction_concern(values, write)
   end
 
   if write and values.w_timeout_ms ~= nil then
-    entries[#entries + 1] = { "wtimeoutMS", values.w_timeout_ms }
+    entries[#entries + 1] = { "wtimeout", values.w_timeout_ms }
   end
 
   return #entries > 0 and bson.document(entries) or nil

@@ -87,4 +87,50 @@ describe("core MongoDB handles", function()
     assert(client:database("db"):run_command("ping"))
     assert.near(10.05, received.deadline, 0.000001)
   end)
+
+  it("returns a cursor for a generic cursor command", function()
+    local commands = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(41) },
+          { "ns", "app.items" },
+          { "firstBatch", bson.array({ bson.document({ { "n", 1 } }) }) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.items" },
+          { "nextBatch", bson.array({ bson.document({ { "n", 2 } }) }) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return table.remove(responses, 1)
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):run_cursor_command(
+      bson.document({ { "find", "items" }, { "batchSize", 1 } }),
+      {
+        batch_size = 2,
+        comment = bson.document({ { "source", "app" } }),
+        max_await_time_ms = 300,
+      }
+    ))
+
+    assert.are.equal(1, assert(cursor:next()):get("n"))
+    assert.are.equal(2, assert(cursor:next()):get("n"))
+    assert.are.equal("find", commands[1]:keys()[1])
+    assert.are.equal("getMore", commands[2]:keys()[1])
+    assert.are.equal(2, commands[2]:get("batchSize"))
+    assert.are.equal(300, commands[2]:get("maxTimeMS"))
+    assert.are.equal("app", commands[2]:get("comment"):get("source"))
+  end)
 end)

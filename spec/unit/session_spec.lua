@@ -311,6 +311,38 @@ describe("client sessions", function()
     assert.same({ "commitTransaction", "commitTransaction" }, transaction_commands)
   end)
 
+  it("rejects every non-primary read preference in a transaction", function()
+    local sessions = session_module.new({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction({
+      read_preference = { mode = "secondary" },
+    }))
+    local decorated, err = sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { read_preference = { mode = "primary" }, session = session }
+    )
+
+    assert.is_nil(decorated)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.matches("must be primary", tostring(err), nil, true)
+    assert(session:abort_transaction())
+
+    assert(session:start_transaction({
+      read_preference = { mode = "primary" },
+    }))
+    decorated, err = sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { read_preference = { mode = "nearest" }, session = session }
+    )
+
+    assert.is_nil(decorated)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+  end)
+
   it("returns the callback value after a convenient transaction commits", function()
     local transaction_commands = {}
     local sessions = session_module.new({

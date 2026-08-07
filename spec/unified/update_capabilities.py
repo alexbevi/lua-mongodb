@@ -343,6 +343,37 @@ for index in range(1, 12):
       "general runCommand conformance awaits the v1 command adapter",
     )
 
+TEST_OVERRIDES.update({
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": (
+    "REL-006",
+    "runCursorCommand iteration collection awaits release per-attempt deadline hardening",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[1]": (
+    "ADV-005",
+    "checkMetadataConsistency requires a sharded deployment outside production-core v1",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[5]": (
+    "ADV-006",
+    "load-balanced command cursor pinning is outside production-core v1",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[6]": (
+    "ADV-006",
+    "load-balanced command cursor pinning is outside production-core v1",
+  ),
+  "run-command/tests/unified/runCursorCommand.json::test[10]": (
+    "ADV-011",
+    "tailable command cursors are outside the v1 public cursor surface",
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": (
+    "ADV-011",
+    "tailable command cursors are outside the v1 public cursor surface",
+  ),
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
+    "ADV-011",
+    "tailable-await command cursors are outside the v1 public cursor surface",
+  ),
+})
+
 for fixture, count in (
   ("backpressure-retryable-abort", 2),
   ("backpressure-retryable-commit", 2),
@@ -412,6 +443,9 @@ for fixture in (
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
+for identity, value in EXECUTOR_TESTS.items():
+  TEST_OVERRIDES[identity] = (value["activity"], None)
+
 def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   requirements = test["requirements"]
   operations = set(requirements["operations"])
@@ -473,6 +507,12 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
       "the CSOT case requires the post-v1 GridFS bucket entity adapter",
     )
 
+  if fixture.startswith("tailable-"):
+    return (
+      "ADV-011",
+      "tailable cursor unified adapters are outside the v1 public cursor surface",
+    )
+
   unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS
 
   if unsupported:
@@ -516,12 +556,6 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
     return (
       "QUA-001",
       "the generated cross-operation CSOT matrix belongs to the v1 coverage and deterministic stress gate",
-    )
-
-  if fixture.startswith("tailable-"):
-    return (
-      "ADV-011",
-      "tailable cursor unified adapters are outside the v1 public cursor surface",
     )
 
   if fixture == "change-streams.json":

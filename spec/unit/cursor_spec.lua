@@ -240,4 +240,49 @@ describe("find cursor lifecycle", function()
     assert.is_nil(cursor:next())
     assert.are.equal(2, command_count)
   end)
+
+  it("keeps a timed-out cursor available for explicit close", function()
+    local runtime = fake_runtime.new({ now = 5 })
+    local commands = {}
+    local deadlines = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(10) },
+          { "ns", "app.items" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = options.deadline
+
+        if command:keys()[1] == "getMore" then
+          return nil, errors.new({
+            category = errors.CATEGORY.TIMEOUT,
+            message = "getMore timed out",
+            timeout = true,
+          })
+        end
+
+        return table.remove(responses, 1) or bson.document({ { "ok", 1 } })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 50 }))
+    local client = api.new_client(executor, config, nil, nil, nil, nil, runtime)
+    local cursor = assert(client:database("app"):collection("items"):find())
+    local document, err = cursor:next()
+
+    assert.is_nil(document)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+    assert.is_false(cursor:is_closed())
+    runtime:advance(1)
+    assert.is_true(cursor:close())
+    assert.are.equal("killCursors", commands[3]:keys()[1])
+    assert.near(6.05, deadlines[3], 0.000001)
+  end)
 end)
