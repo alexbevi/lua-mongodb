@@ -19,6 +19,13 @@ PROGRESS = ROOT / "planning" / "progress.json"
 CAPABILITIES = ROOT / "spec" / "unified" / "capabilities.json"
 OUTPUT = ROOT / "spec" / "conformance" / "ledger.json"
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "passed"}
+RUNNABLE_CASES = {
+  "crud/tests/unified/insertOne.json::test[1]": {
+    "environment": "deterministic-loopback",
+    "evidence": "make test-unified",
+    "runner": "spec/unified/execute.lua",
+  },
+}
 
 DEFAULT_OWNERS = {
   "auth": "ADV-008",
@@ -238,11 +245,23 @@ def classify_case(
 
   if identity in unified:
     value = unified[identity]
+
+    if value["status"] == "runnable":
+      execution = RUNNABLE_CASES.get(identity)
+
+      if execution is None:
+        raise LedgerError(f"runnable unified case has no exact executor: {identity}")
+
+      return _passed(
+        case,
+        value["activity"],
+        execution["runner"],
+        execution["evidence"],
+        execution["environment"],
+      )
+
     row = _deferred(case, value["activity"], activities, "spec/unified/run.py")
     row["status"] = value["status"]
-
-    if row["status"] == "runnable":
-      raise LedgerError(f"runnable unified case lacks execution evidence: {identity}")
 
     return row
 

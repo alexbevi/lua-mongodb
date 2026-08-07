@@ -80,6 +80,27 @@ class ConformanceLedgerTests(unittest.TestCase):
     }, formats)
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
+    self.assertEqual({
+      "deferred_unsupported": 3767,
+      "passed": 1757,
+    }, generated["summary"]["statuses"])
+
+  def test_unknown_runnable_unified_case_has_no_implicit_executor(self) -> None:
+    identity = "crud/tests/unified/insertOne.json::test[2]"
+    case = {
+      "fingerprint": "current",
+      "format": "unified",
+      "source": "crud/tests/unified/insertOne.json",
+      "suite": "crud",
+    }
+
+    with self.assertRaisesRegex(ledger.LedgerError, "no exact executor"):
+      ledger.classify_case(
+        identity,
+        case,
+        {"UTF-010": {"milestone": "production-core-v1", "status": "pending"}},
+        {identity: {"activity": "UTF-010", "status": "runnable"}},
+      )
 
 
 if __name__ == "__main__":

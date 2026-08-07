@@ -68,6 +68,7 @@ build = {
     ["mongodb.runtime_guard"] = "src/mongodb/runtime_guard.lua",
     ["mongodb.sdam"] = "src/mongodb/sdam.lua",
     ["mongodb.selection"] = "src/mongodb/selection.lua",
+    ["mongodb.unified.driver"] = "src/mongodb/unified/driver.lua",
     ["mongodb.unified.lifecycle"] = "src/mongodb/unified/lifecycle.lua",
     ["mongodb.unified.schema"] = "src/mongodb/unified/schema.lua",
     ["mongodb.unified.runner"] = "src/mongodb/unified/runner.lua",

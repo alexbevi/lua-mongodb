@@ -9,6 +9,7 @@ import tempfile
 import unittest
 
 from spec.unified import run
+from spec.unified import update_capabilities
 from spec.unified import validate_fixtures
 
 
@@ -53,6 +54,14 @@ def classification(
 
 
 class UnifiedCliTests(unittest.TestCase):
+  def test_first_standalone_insert_one_case_is_runnable(self) -> None:
+    manifest = update_capabilities.generate()
+    identity = "crud/tests/unified/insertOne.json::test[1]"
+
+    self.assertEqual("runnable", manifest["tests"][identity]["status"])
+    self.assertEqual(1, manifest["ratchets"]["runnable"])
+    self.assertEqual(1, manifest["ratchets"]["passed"])
+
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
     classifications = {discovered[0]["id"]: classification("DONE-001", "stale")}
@@ -198,6 +207,23 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertFalse(report["summary"]["conformant"])
     self.assertEqual("a/tests/unified/test.json", report["tests"][0]["fixture"])
     self.assertEqual("deferred_unsupported", report["tests"][0]["status"])
+
+  def test_runnable_executor_failures_are_visible(self) -> None:
+    classified = [{
+      "activity": "A-001",
+      "fixture": "a/tests/unified/test.json",
+      "id": "a/tests/unified/test.json::test[1]",
+      "status": "runnable",
+    }]
+    report = run.build_report(
+      classified,
+      execute=lambda _: ("failed", "adapter rejected operation"),
+    )
+
+    self.assertEqual(1, report["summary"]["executed"])
+    self.assertEqual(1, report["summary"]["failed"])
+    self.assertEqual("failed", report["tests"][0]["status"])
+    self.assertEqual("adapter rejected operation", report["tests"][0]["error"])
 
 
 if __name__ == "__main__":

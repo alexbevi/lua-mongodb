@@ -7,7 +7,9 @@ import argparse
 import fnmatch
 import hashlib
 import json
+import os
 from pathlib import Path
+import subprocess
 import sys
 from typing import Any
 
@@ -17,6 +19,7 @@ DEFAULT_SOURCE = ROOT / "planning" / "specifications" / "source"
 DEFAULT_MANIFEST = ROOT / "spec" / "unified" / "capabilities.json"
 DEFAULT_PLAN = ROOT / "planning" / "plan.json"
 DEFAULT_PROGRESS = ROOT / "planning" / "progress.json"
+DEFAULT_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
 KNOWN_REQUIREMENT_KEYS = {
@@ -464,6 +467,7 @@ def validate_ratchets(
 def build_report(
   classifications: list[dict[str, Any]],
   ratchets: dict[str, Any] | None = None,
+  execute: Any = None,
 ) -> dict[str, Any]:
   """Build an execution report without conflating deferral with execution."""
   tests = []
@@ -486,12 +490,32 @@ def build_report(
       summary["deferred_unsupported"] += 1
     elif item["status"] == "excluded_scope":
       summary["excluded_scope"] += 1
+    elif execute is not None:
+      status, detail = execute(item)
+      item["status"] = status
+      summary["executed"] += 1
+
+      if status == "passed":
+        summary["passed"] += 1
+      elif status == "environment_skipped":
+        summary["environment_skipped"] += 1
+        summary["executed"] -= 1
+      else:
+        item["error"] = detail or "unified executor failed"
+        summary["failed"] += 1
     else:
       item["status"] = "failed"
       item["error"] = "runnable test has no registered executor"
       summary["failed"] += 1
 
     tests.append(item)
+
+  summary["conformant"] = (
+    summary["executed"] > 0
+    and summary["failed"] == 0
+    and summary["deferred_unsupported"] == 0
+    and summary["invalid_or_incompatible"] == 0
+  )
 
   if ratchets is not None:
     validate_ratchets(classifications, ratchets, summary["passed"])
@@ -503,6 +527,29 @@ def build_report(
     "tests": tests,
     "type": "execution",
   }
+
+
+def lua_executor(lua: str, executable: Path):
+  """Return an exact per-test executor backed by the Lua driver bridge."""
+  def execute(classification: dict[str, Any]) -> tuple[str, str | None]:
+    try:
+      process = subprocess.run(
+        [lua, str(executable), classification["id"]],
+        cwd=ROOT,
+        env=os.environ.copy(),
+        text=True,
+        capture_output=True,
+      )
+    except OSError as exc:
+      return "failed", f"could not start unified executor: {exc}"
+
+    if process.returncode == 0:
+      return "passed", None
+
+    detail = (process.stderr or process.stdout).strip()
+    return "failed", detail or f"unified executor exited {process.returncode}"
+
+  return execute
 
 
 def write_report(report: dict[str, Any], destination: str | None) -> None:
@@ -520,6 +567,8 @@ def main(argv: list[str] | None = None) -> int:
   parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
   parser.add_argument("--plan", type=Path, default=DEFAULT_PLAN)
   parser.add_argument("--progress", type=Path, default=DEFAULT_PROGRESS)
+  parser.add_argument("--executor", type=Path, default=DEFAULT_EXECUTOR)
+  parser.add_argument("--lua", default=os.environ.get("LUA", "lua"))
   parser.add_argument("--include", action="append")
   parser.add_argument("--report", metavar="PATH")
   arguments = parser.parse_args(argv)
@@ -533,11 +582,16 @@ def main(argv: list[str] | None = None) -> int:
     manifest = load_manifest(arguments.manifest)
     activity_states = load_activity_states(arguments.plan, arguments.progress)
     classified = classify_tests(discovered, manifest["tests"], activity_states)
-    validate_ratchets(classified, manifest["ratchets"])
+    validate_ratchets(
+      classified,
+      manifest["ratchets"],
+      manifest["ratchets"].get("passed", 0),
+    )
     selected = select_classifications(classified, arguments.include)
     report = build_report(
       selected,
       manifest["ratchets"] if not arguments.include else None,
+      lua_executor(arguments.lua, arguments.executor),
     )
     write_report(report, arguments.report)
   except CapabilityError as exc:

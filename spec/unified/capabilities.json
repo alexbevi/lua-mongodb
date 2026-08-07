@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 0,
-    "runnable": 0
+    "passed": 1,
+    "runnable": 1
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -28460,7 +28460,6 @@
     "crud/tests/unified/insertOne.json::test[1]": {
       "activity": "UTF-010",
       "fingerprint": "19138f0e85148c371a7a9313fc9aa63e32112b2ab1907abb6311a14ef2f0539f",
-      "reason": "this is the pinned first standalone insertOne case selected for end-to-end execution",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28482,7 +28481,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-collation.json::test[1]": {
       "activity": "UTF-012",

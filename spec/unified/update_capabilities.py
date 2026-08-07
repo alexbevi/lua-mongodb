@@ -18,7 +18,7 @@ from spec.unified import run  # noqa: E402
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
-RATCHETS = {"classified": 1900, "passed": 0, "runnable": 0}
+RATCHETS = {"classified": 1900, "passed": 1, "runnable": 1}
 
 OWNER_REASONS = {
   "ADV-001": "change streams are a post-v1 capability",
@@ -97,7 +97,7 @@ MANAGEMENT_OPERATIONS = {
 TEST_OVERRIDES = {
   "crud/tests/unified/insertOne.json::test[1]": (
     "UTF-010",
-    "this is the pinned first standalone insertOne case selected for end-to-end execution",
+    None,
   ),
 }
 
@@ -149,7 +149,7 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   return owner, OWNER_REASONS[owner]
 
 
-def classify_test(test: dict[str, Any]) -> tuple[str, str]:
+def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
   override = TEST_OVERRIDES.get(test["id"])
 
   if override:
@@ -185,14 +185,16 @@ def generate() -> dict[str, object]:
     tests[test["id"]] = {
       "activity": activity,
       "fingerprint": test["fingerprint"],
-      "reason": reason,
       "requirements": test["requirements"],
-      "status": "deferred_unsupported",
+      "status": "runnable" if reason is None else "deferred_unsupported",
     }
+
+    if reason is not None:
+      tests[test["id"]]["reason"] = reason
 
   states = run.load_activity_states(PLAN, PROGRESS)
   classified = run.classify_tests(discovered, tests, states)
-  run.validate_ratchets(classified, RATCHETS)
+  run.validate_ratchets(classified, RATCHETS, RATCHETS["passed"])
   return {
     "ratchets": RATCHETS,
     "schema_version": 2,

@@ -833,6 +833,28 @@
       "notes": [],
       "started_at": "2026-08-07T00:21:35+00:00",
       "completed_at": "2026-08-07T00:29:21+00:00"
+    },
+    "UTF-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_first_standalone_insert_one_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "The selected pinned insertOne case remained deferred-unsupported with zero runnable/passing ratchets, so it could not execute through the unified lifecycle.",
+          "recorded_at": "2026-08-07T00:31:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "130 unit and 16 integration tests passed; unified execution ran 1 pinned CRUD test with 1 passed, 0 failed, 0 environment-skipped, and 1899 deferred-unsupported; 11 CLI tests, 12 runner tests, 320 meta-fixtures, the 1757-passing/3767-deferred conformance ledger, and lint all passed.",
+          "recorded_at": "2026-08-07T00:39:04+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T00:29:52+00:00",
+      "completed_at": "2026-08-07T00:40:51+00:00"
     }
   },
   "verified_references": {
