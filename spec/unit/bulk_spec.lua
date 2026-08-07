@@ -369,4 +369,51 @@ describe("collection bulk writes", function()
     assert.are.equal(1, err.details.processed_count)
     assert.are.equal(1, err.details.unprocessed_count)
   end)
+
+  it("preserves command errors through the bulk error boundary", function()
+    local response = bson.document({
+      { "ok", 0 },
+      { "code", 8 },
+      { "codeName", "UnknownError" },
+      { "errmsg", "failpoint error" },
+    })
+    local command_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 8,
+      code_name = "UnknownError",
+      details = { response = response },
+      labels = { "RetryableWriteError" },
+      message = "failpoint error",
+    })
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 1024,
+          max_message_size = 4096,
+          max_wire_version = 27,
+          max_write_batch_size = 1000,
+        }
+      end,
+      command = function()
+        return nil, command_error
+      end,
+    }
+    local collection = assert(api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {}))
+    ):database("app"):collection("events"))
+    local written, err = collection:bulk_write({
+      bulk.insert_one(bson.document({ { "_id", 1 } })),
+    })
+
+    assert.is_nil(written)
+    assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+    assert.are.equal(8, err.code)
+    assert.are.equal("UnknownError", err.code_name)
+    assert.are.equal(response, err.details.response)
+    assert.is_true(err:has_label("RetryableWriteError"))
+  end)
 end)

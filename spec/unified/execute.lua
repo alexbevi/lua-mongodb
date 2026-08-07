@@ -264,6 +264,12 @@ local function run(identity)
   local entry, fixture, index = registered_test(identity)
   local environment = entry:get("environment")
 
+  if entry:get("testCommands") == true
+    and os.getenv("MONGODB_UNIFIED_TEST_COMMANDS") ~= "1"
+  then
+    return "environment_skipped"
+  end
+
   if environment == "deterministic-loopback" then
     return run_loopback(identity, fixture, index)
   elseif environment == "live-standalone" then
@@ -278,4 +284,9 @@ local ok, err = pcall(run, arg[1])
 if not ok then
   io.stderr:write("unified executor: " .. tostring(err) .. "\n")
   os.exit(1)
+end
+
+if err == "environment_skipped" then
+  io.stderr:write("unified executor: test commands are unavailable\n")
+  os.exit(75)
 end

@@ -5,8 +5,10 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import subprocess
 import tempfile
 import unittest
+from unittest import mock
 
 from spec.unified import run
 from spec.unified import update_capabilities
@@ -59,32 +61,40 @@ class UnifiedCliTests(unittest.TestCase):
     identity = "crud/tests/unified/insertOne.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(307, manifest["ratchets"]["runnable"])
-    self.assertEqual(307, manifest["ratchets"]["passed"])
+    self.assertEqual(313, manifest["ratchets"]["runnable"])
+    self.assertEqual(313, manifest["ratchets"]["passed"])
 
   def test_first_standalone_find_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/find.json::test[2]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(307, manifest["ratchets"]["runnable"])
-    self.assertEqual(307, manifest["ratchets"]["passed"])
+    self.assertEqual(313, manifest["ratchets"]["runnable"])
+    self.assertEqual(313, manifest["ratchets"]["passed"])
 
   def test_first_standalone_insert_many_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/insertMany.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(307, manifest["ratchets"]["runnable"])
-    self.assertEqual(307, manifest["ratchets"]["passed"])
+    self.assertEqual(313, manifest["ratchets"]["runnable"])
+    self.assertEqual(313, manifest["ratchets"]["passed"])
 
   def test_first_standalone_command_event_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/find.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(307, manifest["ratchets"]["runnable"])
-    self.assertEqual(307, manifest["ratchets"]["passed"])
+    self.assertEqual(313, manifest["ratchets"]["runnable"])
+    self.assertEqual(313, manifest["ratchets"]["passed"])
+
+  def test_first_standalone_failpoint_case_is_runnable(self) -> None:
+    manifest = update_capabilities.generate()
+    identity = "crud/tests/unified/insertOne-errorResponse.json::test[1]"
+
+    self.assertEqual("runnable", manifest["tests"][identity]["status"])
+    self.assertEqual(313, manifest["ratchets"]["runnable"])
+    self.assertEqual(313, manifest["ratchets"]["passed"])
 
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
@@ -248,6 +258,33 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1, report["summary"]["failed"])
     self.assertEqual("failed", report["tests"][0]["status"])
     self.assertEqual("adapter rejected operation", report["tests"][0]["error"])
+
+  def test_unavailable_test_commands_are_environment_skipped(self) -> None:
+    classified = [{
+      "activity": "UTF-014",
+      "fixture": "crud/tests/unified/failpoint.json",
+      "id": "crud/tests/unified/failpoint.json::test[1]",
+      "status": "runnable",
+    }]
+    completed = subprocess.CompletedProcess(
+      args=[],
+      returncode=75,
+      stdout="",
+      stderr="unified executor: test commands are unavailable",
+    )
+
+    with mock.patch("spec.unified.run.subprocess.run", return_value=completed):
+      executor = run.lua_executor("lua", Path("execute.lua"), {})
+      report = run.build_report(
+        classified,
+        {"classified": 1, "passed": 1, "runnable": 1},
+        executor,
+      )
+
+    self.assertEqual(0, report["summary"]["executed"])
+    self.assertEqual(0, report["summary"]["failed"])
+    self.assertEqual(1, report["summary"]["environment_skipped"])
+    self.assertEqual("environment_skipped", report["tests"][0]["status"])
 
 
 if __name__ == "__main__":

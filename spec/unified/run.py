@@ -525,7 +525,11 @@ def build_report(
   )
 
   if ratchets is not None:
-    validate_ratchets(classifications, ratchets, summary["passed"])
+    validate_ratchets(
+      classifications,
+      ratchets,
+      summary["passed"] + summary["environment_skipped"],
+    )
 
   return {
     "ratchets": ratchets or {"classified": 0, "passed": 0, "runnable": 0},
@@ -554,6 +558,9 @@ def lua_executor(lua: str, executable: Path, environment: dict[str, str] | None 
       return "passed", None
 
     detail = (process.stderr or process.stdout).strip()
+    if process.returncode == 75:
+      return "environment_skipped", detail or "test commands are unavailable"
+
     return "failed", detail or f"unified executor exited {process.returncode}"
 
   return execute
@@ -645,6 +652,7 @@ def standalone_environment(
         "--nounixsocket",
         "--port", str(port),
         "--quiet",
+        "--setParameter", "enableTestCommands=1",
       ],
       stdout=subprocess.DEVNULL,
       stderr=subprocess.DEVNULL,
@@ -671,6 +679,7 @@ def standalone_environment(
 
       environment["MONGODB_UNIFIED_URI"] = f"mongodb://127.0.0.1:{port}"
       environment["MONGODB_UNIFIED_SERVER_VERSION"] = version
+      environment["MONGODB_UNIFIED_TEST_COMMANDS"] = "1"
       yield environment
     finally:
       if process.poll() is None:

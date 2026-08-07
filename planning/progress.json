@@ -928,6 +928,28 @@
       "notes": [],
       "started_at": "2026-08-07T01:05:49+00:00",
       "completed_at": "2026-08-07T01:30:55+00:00"
+    },
+    "UTF-014": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_first_standalone_failpoint_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "The first pinned standalone failPoint case remained deferred_unsupported instead of runnable, proving the unified driver had no failpoint configuration/cleanup execution path and the runnable/passing ratchets remained 307 rather than 313.",
+          "recorded_at": "2026-08-07T01:33:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "136 unit tests, 16 integration tests, 313 exact unified cases, all 320 schema meta-fixtures, the 5,524-case conformance ledger, and lint passed; unified execution reported 313 passed, 0 failed, 0 environment-skipped, and 1,587 explicit deferrals. All six applicable failPoint cases passed, including command and closeConnection failures with guaranteed disable cleanup.",
+          "recorded_at": "2026-08-07T01:44:11+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T01:31:40+00:00",
+      "completed_at": "2026-08-07T01:44:45+00:00"
     }
   },
   "verified_references": {

@@ -914,22 +914,36 @@ local function bulk_error(full, cause, processed, total)
     return left.index < right.index
   end)
   local first = full.write_errors[1] or full.write_concern_errors[1]
+  local cause_details = cause and cause.details
+  local details = {
+    partial_result = snapshot(full, true),
+    processed_count = processed,
+    response = cause_details and cause_details.response or nil,
+    responses = full.responses,
+    unprocessed_count = total - processed,
+    write_concern_errors = full.write_concern_errors,
+    write_errors = full.write_errors,
+  }
+  local labels = {}
+
+  for _, label in ipairs(full.labels) do
+    labels[#labels + 1] = label
+  end
+
+  if cause then
+    for _, label in ipairs(cause.labels) do
+      labels[#labels + 1] = label
+    end
+  end
 
   return errors.new({
     category = errors.CATEGORY.WRITE,
     cause = cause,
-    code = first and first.code or nil,
-    code_name = first and first.code_name or nil,
-    details = {
-      partial_result = snapshot(full, true),
-      processed_count = processed,
-      responses = full.responses,
-      unprocessed_count = total - processed,
-      write_concern_errors = full.write_concern_errors,
-      write_errors = full.write_errors,
-    },
-    labels = full.labels,
-    message = first and first.message or "bulk write failed",
+    code = first and first.code or cause and cause.code or nil,
+    code_name = first and first.code_name or cause and cause.code_name or nil,
+    details = details,
+    labels = labels,
+    message = first and first.message or cause and cause.message or "bulk write failed",
   })
 end
 

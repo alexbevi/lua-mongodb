@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 307,
-    "runnable": 307
+    "passed": 313,
+    "runnable": 313
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -18580,7 +18580,6 @@
     "crud/tests/unified/bulkWrite-errorResponse.json::test[1]": {
       "activity": "UTF-014",
       "fingerprint": "073fd28b3516a688243e49729d1f5fade1cc3cf4754362d73a549c3bb6059af5",
-      "reason": "unified failpoint configuration and cleanup are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -18608,7 +18607,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
@@ -23467,7 +23466,6 @@
     "crud/tests/unified/deleteOne-errorResponse.json::test[1]": {
       "activity": "UTF-014",
       "fingerprint": "90960eff9ff36e6b569459a0fed3a8e879d70e4f1ca6fb4d6241454e0a00466b",
-      "reason": "unified failpoint configuration and cleanup are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23495,7 +23493,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[1]": {
       "activity": "CMP-001",
@@ -24393,7 +24391,6 @@
     "crud/tests/unified/estimatedDocumentCount.json::test[4]": {
       "activity": "UTF-014",
       "fingerprint": "57409309678a8dc092030f6028d643195c8dc36e62fa0c9e7f2befb440e5e51a",
-      "reason": "unified failpoint configuration and cleanup are not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24422,12 +24419,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[5]": {
       "activity": "UTF-014",
       "fingerprint": "92a8c06972fb46a33f5981c268068be800ebfd214f32f6b0058f3c27a093e303",
-      "reason": "unified failpoint configuration and cleanup are not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24456,7 +24452,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[6]": {
       "activity": "REL-001",
@@ -28130,7 +28126,6 @@
     "crud/tests/unified/insertOne-errorResponse.json::test[1]": {
       "activity": "UTF-014",
       "fingerprint": "bb07bff04ce54e2df79620b0f68d6520f0dde79f00e85572a54e9ceac13db1f1",
-      "reason": "unified failpoint configuration and cleanup are not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -28158,7 +28153,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-rawdata.json::test[1]": {
       "activity": "CMP-001",
@@ -30043,7 +30038,6 @@
     "crud/tests/unified/updateOne-errorResponse.json::test[1]": {
       "activity": "UTF-014",
       "fingerprint": "75f0b1a8f6777795ae94b33c2b234219e7463135edda8c94c6ff8087a2a549c9",
-      "reason": "unified failpoint configuration and cleanup are not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30072,7 +30066,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",

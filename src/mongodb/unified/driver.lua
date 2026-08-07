@@ -3,6 +3,7 @@ local bulk = require("mongodb.bulk")
 local client_module = require("mongodb.client")
 local errors = require("mongodb.error")
 local event_module = require("mongodb.unified.events")
+local failpoints = require("mongodb.unified.failpoints")
 local lifecycle_module = require("mongodb.unified.lifecycle")
 
 local M = {}
@@ -795,6 +796,29 @@ function M.new(options)
     runtime = options.runtime,
     uri = options.uri,
   }
+  local failpoint_handler = failpoints.new({
+    cleanup_database = function()
+      local cleanup_client, cleanup_err = client_module.connect(state.uri, {
+        runtime = state.runtime,
+      })
+
+      if not cleanup_client then
+        return nil, cleanup_err
+      end
+
+      local cleanup_database
+      cleanup_database, cleanup_err = cleanup_client:database("admin")
+
+      if not cleanup_database then
+        cleanup_client:close()
+        return nil, cleanup_err
+      end
+
+      return cleanup_database, function()
+        return cleanup_client:close()
+      end
+    end,
+  })
   local lifecycle = lifecycle_module.new({
     assert_events = function(runner, expected, path)
       return event_module.assert_all(runner, expected, state.collectors, path)
@@ -930,6 +954,9 @@ function M.new(options)
       },
     },
     runtime = options.runtime,
+    test_operations = {
+      failPoint = failpoint_handler,
+    },
   })
 
   return lifecycle
