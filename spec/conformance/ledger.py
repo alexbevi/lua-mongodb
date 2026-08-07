@@ -17,14 +17,16 @@ SOURCE = ROOT / "planning" / "specifications" / "source"
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 CAPABILITIES = ROOT / "spec" / "unified" / "capabilities.json"
+EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 OUTPUT = ROOT / "spec" / "conformance" / "ledger.json"
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "passed"}
 RUNNABLE_CASES = {
-  "crud/tests/unified/insertOne.json::test[1]": {
-    "environment": "deterministic-loopback",
+  identity: {
+    "environment": value["environment"],
     "evidence": "make test-unified",
     "runner": "spec/unified/execute.lua",
-  },
+  }
+  for identity, value in json.loads(EXECUTORS.read_text(encoding="utf-8"))["tests"].items()
 }
 
 DEFAULT_OWNERS = {

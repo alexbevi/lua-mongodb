@@ -18,7 +18,13 @@ from spec.unified import run  # noqa: E402
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
-RATCHETS = {"classified": 1900, "passed": 1, "runnable": 1}
+EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
+EXECUTOR_TESTS = json.loads(EXECUTORS.read_text(encoding="utf-8"))["tests"]
+RATCHETS = {
+  "classified": 1900,
+  "passed": len(EXECUTOR_TESTS),
+  "runnable": len(EXECUTOR_TESTS),
+}
 
 OWNER_REASONS = {
   "ADV-001": "change streams are a post-v1 capability",
@@ -95,11 +101,32 @@ MANAGEMENT_OPERATIONS = {
 }
 
 TEST_OVERRIDES = {
-  "crud/tests/unified/insertOne.json::test[1]": (
-    "UTF-010",
-    None,
-  ),
+  identity: (value["activity"], None)
+  for identity, value in EXECUTOR_TESTS.items()
 }
+TEST_OVERRIDES.update({
+  "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": (
+    "REL-001",
+    "database aggregate is outside the v1 public collection adapter",
+  ),
+  "crud/tests/unified/db-aggregate.json::test[1]": (
+    "REL-001",
+    "database aggregate is outside the v1 public collection adapter",
+  ),
+  "crud/tests/unified/db-aggregate.json::test[2]": (
+    "REL-001",
+    "database aggregate is outside the v1 public collection adapter",
+  ),
+})
+
+for operation in ("Delete", "Replace", "Update"):
+  for index in (1, 2):
+    TEST_OVERRIDES[
+      f"crud/tests/unified/findOneAnd{operation}-hint-unacknowledged.json::test[{index}]"
+    ] = (
+      "REL-001",
+      "the pre-4.4 server requirement is outside the v1 compatibility matrix",
+    )
 
 
 def classify_crud(test: dict[str, Any]) -> tuple[str, str]:

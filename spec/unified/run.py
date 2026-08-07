@@ -4,13 +4,19 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import contextmanager
 import fnmatch
 import hashlib
 import json
 import os
 from pathlib import Path
+import re
+import shutil
+import socket
 import subprocess
 import sys
+import tempfile
+import time
 from typing import Any
 
 
@@ -20,6 +26,7 @@ DEFAULT_MANIFEST = ROOT / "spec" / "unified" / "capabilities.json"
 DEFAULT_PLAN = ROOT / "planning" / "plan.json"
 DEFAULT_PROGRESS = ROOT / "planning" / "progress.json"
 DEFAULT_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
+DEFAULT_EXECUTOR_REGISTRY = ROOT / "spec" / "unified" / "executors.json"
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
 KNOWN_REQUIREMENT_KEYS = {
@@ -529,14 +536,14 @@ def build_report(
   }
 
 
-def lua_executor(lua: str, executable: Path):
+def lua_executor(lua: str, executable: Path, environment: dict[str, str] | None = None):
   """Return an exact per-test executor backed by the Lua driver bridge."""
   def execute(classification: dict[str, Any]) -> tuple[str, str | None]:
     try:
       process = subprocess.run(
         [lua, str(executable), classification["id"]],
         cwd=ROOT,
-        env=os.environ.copy(),
+        env=environment or os.environ.copy(),
         text=True,
         capture_output=True,
       )
@@ -550,6 +557,130 @@ def lua_executor(lua: str, executable: Path):
     return "failed", detail or f"unified executor exited {process.returncode}"
 
   return execute
+
+
+def load_executor_registry(path: Path = DEFAULT_EXECUTOR_REGISTRY) -> dict[str, Any]:
+  try:
+    registry = json.loads(path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as exc:
+    raise CapabilityError(f"could not load unified executor registry: {exc}") from exc
+
+  if registry.get("schema_version") != 1 or not isinstance(registry.get("tests"), dict):
+    raise CapabilityError("unified executor registry is malformed")
+
+  return registry["tests"]
+
+
+def _free_port() -> int:
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+    listener.bind(("127.0.0.1", 0))
+    return int(listener.getsockname()[1])
+
+
+def _mongod_version(executable: str) -> str:
+  try:
+    process = subprocess.run(
+      [executable, "--version"],
+      check=True,
+      capture_output=True,
+      text=True,
+    )
+  except (OSError, subprocess.CalledProcessError) as exc:
+    raise CapabilityError(f"could not inspect mongod: {exc}") from exc
+
+  match = re.search(r"db version v(\d+\.\d+\.\d+)", process.stdout)
+
+  if not match:
+    raise CapabilityError("mongod --version did not report a semantic version")
+
+  return match.group(1)
+
+
+@contextmanager
+def standalone_environment(
+  classifications: list[dict[str, Any]],
+  registry: dict[str, Any],
+):
+  needs_server = any(
+    value["status"] == "runnable"
+    and registry.get(value["id"], {}).get("environment") == "live-standalone"
+    for value in classifications
+  )
+  environment = os.environ.copy()
+
+  if not needs_server:
+    yield environment
+    return
+
+  configured_uri = environment.get("MONGODB_UNIFIED_URI")
+
+  if configured_uri:
+    if not environment.get("MONGODB_UNIFIED_SERVER_VERSION"):
+      raise CapabilityError(
+        "MONGODB_UNIFIED_SERVER_VERSION is required with MONGODB_UNIFIED_URI"
+      )
+
+    yield environment
+    return
+
+  executable = environment.get("MONGOD") or shutil.which("mongod")
+
+  if not executable:
+    raise CapabilityError(
+      "runnable live unified cases require mongod; set MONGOD or MONGODB_UNIFIED_URI"
+    )
+
+  version = _mongod_version(executable)
+  port = _free_port()
+
+  with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-") as directory:
+    root = Path(directory)
+    (root / "db").mkdir()
+    process = subprocess.Popen(
+      [
+        executable,
+        "--bind_ip", "127.0.0.1",
+        "--dbpath", str(root / "db"),
+        "--logpath", str(root / "mongod.log"),
+        "--nounixsocket",
+        "--port", str(port),
+        "--quiet",
+      ],
+      stdout=subprocess.DEVNULL,
+      stderr=subprocess.DEVNULL,
+    )
+
+    try:
+      deadline = time.monotonic() + 15
+
+      while time.monotonic() < deadline:
+        if process.poll() is not None:
+          log = (root / "mongod.log")
+          detail = log.read_text(encoding="utf-8")[-2000:] if log.exists() else ""
+          raise CapabilityError(
+            f"ephemeral mongod exited {process.returncode}: {detail.strip()}"
+          )
+
+        try:
+          with socket.create_connection(("127.0.0.1", port), timeout=0.2):
+            break
+        except OSError:
+          time.sleep(0.05)
+      else:
+        raise CapabilityError("ephemeral mongod did not become ready within 15 seconds")
+
+      environment["MONGODB_UNIFIED_URI"] = f"mongodb://127.0.0.1:{port}"
+      environment["MONGODB_UNIFIED_SERVER_VERSION"] = version
+      yield environment
+    finally:
+      if process.poll() is None:
+        process.terminate()
+
+        try:
+          process.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+          process.kill()
+          process.wait(timeout=5)
 
 
 def write_report(report: dict[str, Any], destination: str | None) -> None:
@@ -588,11 +719,14 @@ def main(argv: list[str] | None = None) -> int:
       manifest["ratchets"].get("passed", 0),
     )
     selected = select_classifications(classified, arguments.include)
-    report = build_report(
-      selected,
-      manifest["ratchets"] if not arguments.include else None,
-      lua_executor(arguments.lua, arguments.executor),
-    )
+    registry = load_executor_registry()
+
+    with standalone_environment(selected, registry) as environment:
+      report = build_report(
+        selected,
+        manifest["ratchets"] if not arguments.include else None,
+        lua_executor(arguments.lua, arguments.executor, environment),
+      )
     write_report(report, arguments.report)
   except CapabilityError as exc:
     print(f"unified capabilities: {exc}", file=sys.stderr)

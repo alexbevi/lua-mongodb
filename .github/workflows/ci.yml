@@ -38,6 +38,22 @@ jobs:
           luarocks install busted 2.3.0-1
           luarocks install luacheck 1.2.0-1
 
+      - name: Install MongoDB 8.0 on Linux
+        if: runner.os == 'Linux'
+        run: |
+          curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-org-server
+
+      - name: Install MongoDB 8.0 on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew tap mongodb/brew
+          brew install mongodb-community@8.0
+
       - name: Run all foundation checks
         run: make check
 

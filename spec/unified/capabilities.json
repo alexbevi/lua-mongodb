@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1,
-    "runnable": 1
+    "passed": 46,
+    "runnable": 46
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -16955,7 +16955,6 @@
     "crud/tests/unified/aggregate-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "d2958a5246349023ad2b106514449a0dfa20ecb8235416d1b41d16e5a5f39ff3",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.collation",
@@ -16976,7 +16975,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[1]": {
       "activity": "UTF-013",
@@ -17093,9 +17092,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "560cf7445d28c0c764ede1801bfc0198d8f944c2e8941b69b1b8f4b702e8e1dd",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17379,7 +17378,6 @@
     "crud/tests/unified/aggregate-out.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "76c702b251c14485449826d90c09ddfce16801eff13e961b94da69bddc0d0a81",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17400,12 +17398,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-out.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "707e3a6321f041fe68097f7f44601be5d108fc540446706308d120c41e3d81f0",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17426,7 +17423,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
       "activity": "UTF-013",
@@ -17794,7 +17791,6 @@
     "crud/tests/unified/aggregate.json::test[7]": {
       "activity": "UTF-011",
       "fingerprint": "377c959adf25384fb0600e615e7195308edcae31577f0682e8af0b628378b2d0",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17815,7 +17811,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-arrayFilters.json::test[1]": {
       "activity": "UTF-013",
@@ -22051,7 +22047,6 @@
     "crud/tests/unified/count-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "f4b407442474a3aef07ac84b769bd234c364010495dd02043b7afde8d8742147",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.collation",
@@ -22072,7 +22067,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count-collation.json::test[2]": {
       "activity": "REL-001",
@@ -22103,7 +22098,6 @@
     "crud/tests/unified/count-empty.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "2deb710bdefab8f8061d01aaa1e2f6c67e5fdde79f4c2adcb7372c4fa8c08b41",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -22121,12 +22115,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count-empty.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "425f0736b1164abaee2ac78f3e61182f582eb3569aba9bc0539b1fcf90a5e84f",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter"
@@ -22146,7 +22139,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count-empty.json::test[3]": {
       "activity": "REL-001",
@@ -22234,7 +22227,6 @@
     "crud/tests/unified/count.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "898e434ebf80b768a3581432826516e0c542dec599cfe8b08f984418f0323003",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -22252,12 +22244,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "e76bc30a2fc9acb9a20b6fb8dd24edb10ec27b42572fc32ad8c2237e273cc953",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter"
@@ -22277,12 +22268,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "f12352590999e092caa531d86bf88d0982a128621740f01f0a6036fa5c2cca96",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter"
@@ -22302,12 +22292,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count.json::test[4]": {
       "activity": "UTF-011",
       "fingerprint": "3f06b493f9e55bd2c5b0bb84e1e17a1b0a3ba0f5ac52fb0b7d661a4ee03f0b77",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22329,7 +22318,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count.json::test[5]": {
       "activity": "REL-001",
@@ -22926,9 +22915,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate.json::test[1]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "91525ebd7cbfcb25204febec9551ac84b5277f4101dce2aa053c55bdcae9f5ed",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -22951,9 +22940,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate.json::test[2]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "0ffb715db6f6622c9e962e41aa252918730cfd99569a82c18f1ec8864c49274c",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.allowDiskUse",
@@ -24037,7 +24026,6 @@
     "crud/tests/unified/distinct-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "0c10bca870fa20751ca7fa8d4796ef59b42f68c9057be2ce84dc184b9a7060fe",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "distinct.collation",
@@ -24059,7 +24047,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -24269,7 +24257,6 @@
     "crud/tests/unified/distinct.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "71f662e62576b8a6ae9f122051ab0269fbb7dfa14bbb2ac15d9ded6c05a0a9bf",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -24290,12 +24277,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "c4353d08d9c238805cc03d3eb0de4fef1acf38b2e56a8a44a6ee62e03d1b8816",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -24316,7 +24302,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -24779,7 +24765,6 @@
     "crud/tests/unified/find-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "698bf7c6367862fc6bd463fce4a0347e46738bb3e07765d2b374f90bf83a954b",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "find.collation",
@@ -24800,7 +24785,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -25096,7 +25081,6 @@
     "crud/tests/unified/find.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "3a78f4e2686d3b063cd5ffb150bdad432d5a1099b35af224423aa7714bc1e196",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "find.filter"
@@ -25116,12 +25100,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "9851253e46e7e547b05788734bec9257ce4ca0d7da7370c60f0e1d87fcbaabe4",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -25144,12 +25127,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find.json::test[4]": {
       "activity": "UTF-011",
       "fingerprint": "cc99046af4d209ed50441e80e9300b7c55b7be705dd74012040c8ddab62033f3",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -25172,7 +25154,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find.json::test[5]": {
       "activity": "UTF-013",
@@ -25267,7 +25249,6 @@
     "crud/tests/unified/findOneAndDelete-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "f57173c279428fbd5f27b27805b6bda63c46b608157b2d4f1a060ff716dec82d",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.collation",
@@ -25290,7 +25271,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -25433,9 +25414,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "b9635a1df3fcec7354071c71d832fb5701f930f70fdf5b6f10d5424bd3721618",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25459,9 +25440,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "caca4036c1082852ce81d8b914e089a7e9d6e6a35e8e1426eec9a527b110bedc",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25719,7 +25700,6 @@
     "crud/tests/unified/findOneAndDelete.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "8d7f71760a3886b5b848a1acdc8674bf26d80905096b24c1ec465ec95f684a61",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25741,12 +25721,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "0a11129b286cd0891f293d3ffce2c810632be96b1c1336c6ea265444ec34ae59",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25768,12 +25747,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "64cdbaba2b7fe1dc134e1a6d6705f089e4ecc2540a6938599ff49f8b61ce6b7d",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25795,12 +25773,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "ea7c0db90b55baae9058bf11ba5eb0b6e3c7e07a4e7acefd659d3fd536a7971b",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.collation",
@@ -25825,7 +25802,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -26093,9 +26070,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "1576f454fe76915105a8795c983c0123b5f1fab8bd229b0c70a71f083c0870e6",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26120,9 +26097,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "8b3d008c6ce70a8272c2d0e928440c91c71bb48d3d5c43893f5a660e32a80633",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26389,7 +26366,6 @@
     "crud/tests/unified/findOneAndReplace-upsert.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "e3488cf4a9fd4fdfe54f14f5842606985c370a8d4d77fb2a4a592ed6171973b3",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26412,12 +26388,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-upsert.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "3e418b03ed999f653bd1b8977d3a964ebe63f153bee49171ffb370c816153bc9",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26442,12 +26417,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-upsert.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "f02fe5fd90acdb92f5faa7cd426671491f7128a86449b8e8d30c84f5c3095a8c",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26470,12 +26444,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-upsert.json::test[4]": {
       "activity": "UTF-011",
       "fingerprint": "aa021049a2777d25053a6392490b9d7260dff40a350e7833b08712c04af571d2",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26500,12 +26473,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "034878415a963ae98a43edd5e0d4e8a05e485e7f9a43bb26153fa5c00f8bfe49",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26528,12 +26500,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "1d658c226762c558d5fd0f301bc96ae485ca632850b6fac991f3bf00e932eef9",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26557,12 +26528,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "0ba9e38cc9e88b84e05351f643c6e69aea4bf19bae5f8e51ba5bf78ccffec541",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26585,12 +26555,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace.json::test[4]": {
       "activity": "UTF-011",
       "fingerprint": "1f156ac7e872eb68256fd7248b86b00f7ce94e3f98a535f6b2848aa4548713b7",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26614,12 +26583,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace.json::test[5]": {
       "activity": "UTF-011",
       "fingerprint": "340327aeba2af5804f2846c277d93140d678aea908083cecb6a38b99c576150c",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26642,12 +26610,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace.json::test[6]": {
       "activity": "UTF-011",
       "fingerprint": "969454e0de6f029f71dca354eb3b5cb852ec9c80d04241bfb7719e8e62300666",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26671,12 +26638,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-arrayFilters.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "b5a1f4311c9000c30612cb8e7e6a7d67a267d7fe1c8ad9ca041932865141d6b7",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.arrayFilters",
@@ -26698,12 +26664,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-arrayFilters.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "5b057440edcfcbc4df1fa98298e2a962c2b70e34eddf2a5681405d36402fc303",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.arrayFilters",
@@ -26725,12 +26690,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-arrayFilters.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "d053ba62b36904a3923966ca26d90f8b191f52962e343be424eb6bb24f35d694",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.arrayFilters",
@@ -26752,12 +26716,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-collation.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "b6637fcb2d9bb26948463cfc7c9b43ad6894dd05cfd85049a365f4907226a782",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.collation",
@@ -26781,7 +26744,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-comment.json::test[1]": {
       "activity": "UTF-013",
@@ -27110,9 +27073,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[1]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "d12e921d97b00789c484b2fa181b2747c7ee2cefd82e18f0b5df95daa4442c7e",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27137,9 +27100,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[2]": {
-      "activity": "UTF-011",
+      "activity": "REL-001",
       "fingerprint": "da37086023f3f77856f1026fc0a3491366e4bed59623f45f6e7d682e1817631a",
-      "reason": "the unified collection-read adapters are not implemented",
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27434,7 +27397,6 @@
     "crud/tests/unified/findOneAndUpdate.json::test[1]": {
       "activity": "UTF-011",
       "fingerprint": "b67286eddb57bedc04b3175858b299f4379a630d325b702f2d55eadae3b50a73",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27457,12 +27419,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[2]": {
       "activity": "UTF-011",
       "fingerprint": "050857dbbedd50571c53bee7c27f2c3b5dc24ed918e8bc4816945da10a684aa4",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27486,12 +27447,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[3]": {
       "activity": "UTF-011",
       "fingerprint": "46e36aa5552639631682860adfdb1f2edae6ecd0999624254f64f9011b6c031e",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27514,12 +27474,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[4]": {
       "activity": "UTF-011",
       "fingerprint": "01457e2c3291bc0a520b1fbe83b36adb5059b0a6bc5138bda560c2656109b836",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27543,12 +27502,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[5]": {
       "activity": "UTF-011",
       "fingerprint": "7f44bd310dfc349e4dde907d837cc93041275f49a48c8c0ef9477ae2e7b72adb",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27571,12 +27529,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[6]": {
       "activity": "UTF-011",
       "fingerprint": "93a3cb813d062b048749ba11211c93d9dbc68a9dfbf88b8fbc37f12c1c6f0f4c",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27599,12 +27556,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[7]": {
       "activity": "UTF-011",
       "fingerprint": "1e4257bb3e9c9b4368033b085af99667f9aeaec52c8a75635b0e83d538608439",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27628,12 +27584,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[8]": {
       "activity": "UTF-011",
       "fingerprint": "97eeff5d116f925667c6992265fb5705568a3ebb3377e14f6402783bfb07a860",
-      "reason": "the unified collection-read adapters are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27658,7 +27613,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-comment.json::test[1]": {
       "activity": "UTF-013",
