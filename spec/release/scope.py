@@ -17,7 +17,9 @@ CAPABILITIES = ROOT / "spec" / "unified" / "capabilities.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "scope.json"
 AMBIGUOUS_OWNERS = {"REL-001", "REL-009"}
-RELEASE_FIXTURE_OWNERS = {"REL-002", "REL-003", "REL-004", "REL-005", "REL-006"}
+RELEASE_FIXTURE_OWNERS = {
+  "REL-002", "REL-003", "REL-004", "REL-005", "REL-006", "REL-010",
+}
 POST_V1_REASONS = {
   "ADV-001": "change streams are outside production-core v1",
   "ADV-002": "GridFS is outside production-core v1",
