@@ -860,6 +860,10 @@ local function drop_index(_, collection, arguments)
   ))
 end
 
+local function drop_indexes(_, collection, arguments)
+  return collection:drop_indexes(operation_options(arguments, {}))
+end
+
 local function list_indexes(_, collection, arguments)
   local cursor, err = collection:list_indexes(operation_options(
     arguments or bson.document({}),
@@ -873,8 +877,8 @@ local function list_indexes(_, collection, arguments)
   return collect_cursor(cursor)
 end
 
-local function list_index_names(_, collection)
-  local documents, err = list_indexes(nil, collection)
+local function list_index_names(_, collection, arguments)
+  local documents, err = list_indexes(nil, collection, arguments)
 
   if not documents then
     return nil, err
@@ -1461,12 +1465,16 @@ function M.new(options)
       },
       collection = {
         createIndex = {
-          arguments = { "keys", "name", "rawData" },
+          arguments = { "keys", "name", "rawData", "timeoutMS" },
           handler = create_index,
         },
         dropIndex = {
-          arguments = { "name", "rawData" },
+          arguments = { "name", "rawData", "timeoutMS" },
           handler = drop_index,
+        },
+        dropIndexes = {
+          arguments = { "timeoutMS" },
+          handler = drop_indexes,
         },
         aggregate = {
           arguments = {
@@ -1564,11 +1572,11 @@ function M.new(options)
           handler = insert_one,
         },
         listIndexNames = {
-          arguments = {},
+          arguments = { "timeoutMS" },
           handler = list_index_names,
         },
         listIndexes = {
-          arguments = { "rawData" },
+          arguments = { "rawData", "timeoutMS" },
           handler = list_indexes,
         },
         replaceOne = {

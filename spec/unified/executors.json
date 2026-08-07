@@ -336,6 +336,18 @@
       "environment": "isolated-replicaset",
       "testCommands": true
     },
+    "client-side-operations-timeout/tests/global-timeoutMS.json::test[61]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/global-timeoutMS.json::test[62]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/global-timeoutMS.json::test[63]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/global-timeoutMS.json::test[64]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[9]": {
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
@@ -569,6 +581,18 @@
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
       "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[45]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[46]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[47]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[48]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[5]": {
       "activity": "QUA-001",
@@ -805,6 +829,18 @@
       "environment": "isolated-replicaset",
       "testCommands": true
     },
+    "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[55]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[56]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[57]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[58]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[5]": {
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
@@ -929,6 +965,12 @@
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
       "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[37]": {
       "activity": "QUA-001",
@@ -1059,6 +1101,18 @@
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
       "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[61]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[62]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[63]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[64]": {
+      "activity": "REL-020", "environment": "isolated-replicaset", "testCommands": true
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[9]": {
       "activity": "QUA-001",

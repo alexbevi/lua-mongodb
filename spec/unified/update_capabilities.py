@@ -153,14 +153,6 @@ TEST_OVERRIDES.update({
     "REL-005",
     "legacy wTimeoutMS requires the release unified write-concern mapping",
   ),
-  "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[33]": (
-    "REL-020",
-    "listIndexNames requires the release unified operation-timeout adapter",
-  ),
-  "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[34]": (
-    "REL-020",
-    "listIndexNames requires the release unified operation-timeout adapter",
-  ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "ADV-011",
     "database aggregate is outside the v1 public collection adapter",

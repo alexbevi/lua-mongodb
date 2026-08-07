@@ -1479,6 +1479,28 @@
       "notes": [],
       "started_at": "2026-08-07T14:32:48+00:00",
       "completed_at": "2026-08-07T14:36:55+00:00"
+    },
+    "REL-020": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_index_timeout_cases_are_runnable -v",
+          "exit_code": 1,
+          "summary": "All eighteen create/list/drop index CSOT cases remain deferred because the unified index adapters omit timeoutMS and dropIndexes",
+          "recorded_at": "2026-08-07T14:38:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit test-integration test-unified-schema test-unified-inventory test-unified-meta lint; run the exact eighteen index timeout identities",
+          "exit_code": 0,
+          "summary": "176 unit and 18 integration tests passed; 534 fixtures/2521 tests schema-valid and inventoried; 320 meta fixtures passed; exact index timeout subset selected 18, executed 18, passed 18, environment-skipped 0, deferred 0, failed 0; lint passed 114 files with zero warnings",
+          "recorded_at": "2026-08-07T14:44:50+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T14:37:43+00:00",
+      "completed_at": "2026-08-07T14:44:51+00:00"
     }
   },
   "verified_references": {
