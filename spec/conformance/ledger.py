@@ -283,6 +283,14 @@ def classify_case(
       "make test-unit",
     )
 
+  if suite == "bson-binary-vector":
+    return _passed(
+      case,
+      "REL-002",
+      "spec/corpus/run_bson_vector.py",
+      "make test-unit",
+    )
+
   if suite == "connection-string":
     return _passed(
       case,

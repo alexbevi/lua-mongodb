@@ -53,6 +53,7 @@ check-python:
 test-unit: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unit
 	@"$(PYTHON)" spec/corpus/run_bson_corpus.py --lua "$(LUA)"
+	@"$(PYTHON)" spec/corpus/run_bson_vector.py --lua "$(LUA)"
 
 test-integration: check-busted
 	@if test -n "$$(find spec/integration -type f -name '*_spec.lua' -print -quit 2>/dev/null)"; then \

@@ -1164,6 +1164,28 @@
       "notes": [],
       "started_at": "2026-08-07T11:23:10+00:00",
       "completed_at": "2026-08-07T11:29:24+00:00"
+    },
+    "REL-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/bson_spec.lua",
+          "exit_code": 1,
+          "summary": "The public BSON module exposed generic subtype-9 binary values but no vector dtype constants or validated numeric vector encode/decode API.",
+          "recorded_at": "2026-08-07T11:31:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make lint && make rockspec && make test-conformance && make test-coverage && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "Unit 173/173 and all 22 pinned BSON vector cases passed; INT8, FLOAT32, and PACKED_BIT canonical round trips plus malformed metadata and ignored-bit prose checks are green; lint 112 files, rockspec, coverage 17711/21102 with no regressions, conformance 3173 passed and 2351 deferred, 0 failed.",
+          "recorded_at": "2026-08-07T11:37:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T11:30:42+00:00",
+      "completed_at": "2026-08-07T11:37:40+00:00"
     }
   },
   "verified_references": {

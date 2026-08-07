@@ -62,6 +62,17 @@ describe("BSON primitive codec", function()
     end
   end)
 
+  it("encodes and decodes an INT8 binary vector", function()
+    local binary = bson.vector({ 127, 7 }, bson.VECTOR_DTYPE.INT8)
+    local vector = binary:as_vector()
+
+    assert.are.equal(bson.BINARY_SUBTYPE.VECTOR, binary.subtype)
+    assert.are.equal("\3\0\127\7", binary.data)
+    assert.are.equal(bson.VECTOR_DTYPE.INT8, vector.dtype)
+    assert.are.equal(0, vector.padding)
+    assert.are.same({ 127, 7 }, vector.data:values())
+  end)
+
   it("copies immutable containers while preserving duplicate field order", function()
     local entries = {
       { "value", 1 },

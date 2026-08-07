@@ -5,6 +5,7 @@ local value = require("mongodb.bson.value")
 
 local M = {
   BINARY_SUBTYPE = value.BINARY_SUBTYPE,
+  VECTOR_DTYPE = value.VECTOR_DTYPE,
   array = value.array,
   binary = value.binary,
   decode = codec.decode,
@@ -34,6 +35,7 @@ local M = {
   json = require("mongodb.bson.json"),
   timestamp = tagged.timestamp,
   undefined = tagged.undefined,
+  vector = value.vector,
 }
 
 return M

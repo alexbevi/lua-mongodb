@@ -1,4 +1,5 @@
 local M = {}
+local vector = require("mongodb.bson.vector")
 
 local BINARY_SUBTYPE_VALUES = {
   COLUMN = 7,
@@ -104,6 +105,11 @@ BINARY_METATABLE.__index = function(value, key)
   return state and state[key] or nil
 end
 
+function BINARY_METHODS:as_vector()
+  local state = BINARY_STATES[self]
+  return vector.decode(state.data, state.subtype, M.array)
+end
+
 local DOCUMENT_METHODS = {}
 local DOCUMENT_METATABLE = {
   __metatable = "mongodb.bson.document",
@@ -192,6 +198,7 @@ M.BINARY_SUBTYPE = setmetatable({}, {
     return next, BINARY_SUBTYPE_VALUES, nil
   end,
 })
+M.VECTOR_DTYPE = vector.DTYPE
 M.null = NULL
 
 function M.array(values)
@@ -232,6 +239,14 @@ function M.binary(data, subtype)
   }
 
   return setmetatable(value, BINARY_METATABLE)
+end
+
+function M.vector(values, dtype, padding)
+  if ARRAY_STATES[values] ~= nil then
+    values = ARRAY_STATES[values]
+  end
+
+  return M.binary(vector.encode(values, dtype, padding), BINARY_SUBTYPE_VALUES.VECTOR)
 end
 
 function M.document(entries)

@@ -33,8 +33,8 @@
       "covered": 237
     },
     "src/mongodb/bson/init.lua": {
-      "active": 36,
-      "covered": 36
+      "active": 38,
+      "covered": 38
     },
     "src/mongodb/bson/json.lua": {
       "active": 706,
@@ -45,8 +45,12 @@
       "covered": 209
     },
     "src/mongodb/bson/value.lua": {
-      "active": 159,
-      "covered": 138
+      "active": 168,
+      "covered": 152
+    },
+    "src/mongodb/bson/vector.lua": {
+      "active": 95,
+      "covered": 65
     },
     "src/mongodb/bulk.lua": {
       "active": 646,
@@ -203,7 +207,7 @@
   },
   "schema_version": 1,
   "total": {
-    "active": 20996,
-    "covered": 17630
+    "active": 21102,
+    "covered": 17711
   }
 }
