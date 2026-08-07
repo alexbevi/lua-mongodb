@@ -58,6 +58,8 @@ copas.loop(function()
 end)
 ```
 
+Set the optional handshake application name with the URI `appName` option or the idiomatic `app_name` client option. Names are limited to 128 bytes. The driver sends that name with its fixed driver identity and runtime OS/platform facts only in the initial handshake on each newly established socket.
+
 ### CRUD Operations
 
 The remaining examples assume they run inside the Copas loop above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.

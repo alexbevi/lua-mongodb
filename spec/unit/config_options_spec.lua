@@ -44,6 +44,16 @@ describe("driver option normalization", function()
     assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
   end)
 
+  it("rejects application names over 128 bytes as configuration errors", function()
+    local config, err = options.normalize(nil, {
+      app_name = string.rep("a", 129),
+    })
+
+    assert.is_nil(config)
+    assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
+    assert.are.equal("app_name", err.details.option)
+  end)
+
   it("applies the same type and range rules to URI strings and Lua values", function()
     local parsed = assert(uri.parse("mongodb://localhost/?maxPoolSize=-1"))
     local from_uri, uri_err, uri_warnings = options.normalize(parsed.options)

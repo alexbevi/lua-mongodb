@@ -1598,6 +1598,28 @@
       "notes": [],
       "started_at": "2026-08-07T19:06:37+00:00",
       "completed_at": "2026-08-07T19:09:22+00:00"
+    },
+    "REL-029": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/handshake_metadata_spec.lua'",
+          "exit_code": 2,
+          "summary": "0 successes, 0 failures, 1 error: mongodb.handshake.metadata was not found",
+          "recorded_at": "2026-08-07T19:37:24+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/unit/config_options_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/retry_spec.lua spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/handshake/metadata.lua src/mongodb/command/executor.lua src/mongodb/client.lua src/mongodb/init.lua src/mongodb/runtime/init.lua src/mongodb/runtime/fake.lua src/mongodb/runtime/copas.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/unit/config_options_spec.lua spec/integration/retry_spec.lua spec/integration/client_api_spec.lua'",
+          "exit_code": 0,
+          "summary": "Focused verification executed 32 unit and 3 integration cases: 35 passed, 0 environment-skipped, 0 deferred, 0 failed; touched-file lint reported 0 warnings and 0 errors across 12 files. Rockspec lint, README compatibility projection, and git diff validation also passed.",
+          "recorded_at": "2026-08-07T19:42:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T19:35:22+00:00",
+      "completed_at": "2026-08-07T19:42:53+00:00"
     }
   },
   "verified_references": {

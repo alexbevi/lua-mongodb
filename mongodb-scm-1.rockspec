@@ -57,6 +57,7 @@ build = {
     ["mongodb.crud"] = "src/mongodb/crud.lua",
     ["mongodb.cursor"] = "src/mongodb/cursor.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
+    ["mongodb.handshake.metadata"] = "src/mongodb/handshake/metadata.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.operation_timeout"] = "src/mongodb/operation_timeout.lua",
     ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",

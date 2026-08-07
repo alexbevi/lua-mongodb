@@ -54,6 +54,10 @@ function M.validate(runtime)
     end
   end
 
+  if runtime.metadata ~= nil and type(runtime.metadata) ~= "table" then
+    error("runtime metadata facts must be a table", 2)
+  end
+
   return runtime
 end
 

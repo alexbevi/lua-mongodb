@@ -1,4 +1,5 @@
 local runtime_guard = require("mongodb.runtime_guard")
+local handshake_metadata = require("mongodb.handshake.metadata")
 
 local ok, message = runtime_guard.check(_VERSION, math.maxinteger)
 
@@ -7,7 +8,7 @@ if not ok then
 end
 
 local M = {
-  _VERSION = "0.1.0-dev",
+  _VERSION = handshake_metadata.driver_version(),
   bson = require("mongodb.bson"),
   bulk = require("mongodb.bulk"),
   client = require("mongodb.client").connect,

@@ -10,6 +10,7 @@ local ALLOWED_OPTIONS = {
   entropy = true,
   gettime = true,
   lock_poll_interval = true,
+  metadata = true,
   socket = true,
   tls = true,
   wall_time = true,
@@ -285,6 +286,10 @@ function M.new(options)
     error("wall_time capability must be a function", 2)
   end
 
+  if options.metadata ~= nil and type(options.metadata) ~= "table" then
+    error("metadata must be a table", 2)
+  end
+
   local poll_interval = options.lock_poll_interval or 0.05
 
   require_positive_number("lock_poll_interval", poll_interval, 2)
@@ -307,6 +312,7 @@ function M.new(options)
   adapter.tls = options.tls or require("mongodb.runtime.luasec").new(adapter)
   adapter.entropy = options.entropy or openssl.entropy
   adapter.crypto = options.crypto or openssl.crypto
+  adapter.metadata = options.metadata
 
   return runtime_contract.validate(adapter)
 end

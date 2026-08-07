@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local handshake_metadata = require("mongodb.handshake.metadata")
 local hello_model = require("mongodb.command.hello")
 local operation_timeout = require("mongodb.operation_timeout")
 local op_msg = require("mongodb.wire.op_msg")
@@ -290,71 +291,6 @@ local function execute(state, database, command, options)
   return response.body
 end
 
-local function metadata_document(options, platform)
-  local entries = {}
-
-  if options.app_name then
-    entries[#entries + 1] = {
-      "application",
-      bson.document({ { "name", options.app_name } }),
-    }
-  end
-
-  entries[#entries + 1] = {
-    "driver",
-    bson.document({
-      { "name", "lua-mongodb" },
-      { "version", options.driver_version or "0.1.0-dev" },
-    }),
-  }
-  entries[#entries + 1] = {
-    "os",
-    bson.document({ { "type", options.os_type or "unknown" } }),
-  }
-
-  if platform ~= "" then
-    entries[#entries + 1] = { "platform", platform }
-  end
-
-  return bson.document(entries)
-end
-
-local function metadata(options)
-  if options.app_name ~= nil
-    and (type(options.app_name) ~= "string" or options.app_name == "" or #options.app_name > 128)
-  then
-    error("app_name must be a non-empty string of at most 128 bytes", 3)
-  end
-
-  local platform = options.platform or _VERSION
-
-  if type(platform) ~= "string" then
-    error("platform metadata must be a string", 3)
-  end
-
-  local document = metadata_document(options, platform)
-  local encoded = assert(bson.encode(document))
-
-  if #encoded <= 512 then
-    return document
-  end
-
-  local keep = math.max(0, #platform - (#encoded - 512))
-
-  while keep > 0 and not utf8.len(platform:sub(1, keep)) do
-    keep = keep - 1
-  end
-
-  document = metadata_document(options, platform:sub(1, keep))
-  encoded = assert(bson.encode(document))
-
-  if #encoded > 512 then
-    error("required client metadata exceeds 512 bytes", 3)
-  end
-
-  return document
-end
-
 function EXECUTOR_METHODS:hello(options)
   local state = EXECUTOR_STATES[self]
   local command_name = (state.server_api ~= nil or state.hello_ok) and "hello" or "ismaster"
@@ -527,6 +463,10 @@ function M.new(connection, options)
     error("command executor requires an exact-I/O connection", 2)
   end
 
+  if options.metadata ~= nil and not bson.is_document(options.metadata) then
+    error("command executor metadata must be a BSON document", 2)
+  end
+
   local value = {}
 
   EXECUTOR_STATES[value] = {
@@ -536,7 +476,7 @@ function M.new(connection, options)
     hello_ok = false,
     max_bson_size = DEFAULT_MAX_BSON_SIZE,
     max_message_size = DEFAULT_MAX_MESSAGE_SIZE,
-    metadata = metadata(options),
+    metadata = options.metadata or handshake_metadata.new(),
     monitoring = options.monitoring,
     request_ids = options.request_ids or op_msg.request_ids(),
     server = options.server,

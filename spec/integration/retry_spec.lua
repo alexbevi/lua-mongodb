@@ -38,6 +38,7 @@ describe("retryable reads over OP_MSG", function()
     local _, port = assert(server:getsockname())
     local connection_count = 0
     local first_lsid
+    local first_metadata
     local outcome
     local server_error
     local events = {}
@@ -59,6 +60,17 @@ describe("retryable reads over OP_MSG", function()
         peer = copas.wrap(peer)
         connection_count = connection_count + 1
         local handshake = receive_frame(peer)
+        local metadata = assert(handshake.body:get("client"))
+
+        assert.are.equal("retry-spec", metadata:get("application"):get("name"))
+        assert.are.equal("test-os", metadata:get("os"):get("type"))
+        assert.are.equal("Lua 5.4 retry-runtime", metadata:get("platform"))
+
+        if first_metadata == nil then
+          first_metadata = assert(bson.encode(metadata))
+        else
+          assert.are.equal(first_metadata, assert(bson.encode(metadata)))
+        end
 
         send_response(peer, handshake, hello_response())
         local find = receive_frame(peer)
@@ -94,10 +106,15 @@ describe("retryable reads over OP_MSG", function()
     copas.loop(function()
       outcome = table.pack(pcall(function()
         local client = assert(mongodb.client(
-          "mongodb://127.0.0.1:" .. port .. "/app",
+          "mongodb://127.0.0.1:" .. port .. "/app?appName=retry-spec",
           {
             command_listeners = { listener },
-            runtime = mongodb.runtime.copas(),
+            runtime = mongodb.runtime.copas({
+              metadata = {
+                os = { type = "test-os" },
+                platform = "Lua 5.4 retry-runtime",
+              },
+            }),
           }
         ))
         local item = assert(client:database():collection("items"):find_one(

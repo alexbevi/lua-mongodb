@@ -3,6 +3,7 @@ local bson = require("mongodb.bson")
 local command_executor = require("mongodb.command.executor")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local handshake_metadata = require("mongodb.handshake.metadata")
 local monitoring = require("mongodb.monitoring")
 local pool = require("mongodb.pool")
 local runtime_contract = require("mongodb.runtime")
@@ -395,6 +396,7 @@ local function open_executor(
   config,
   parsed,
   monitor,
+  metadata,
   server_address,
   fields,
   authenticate
@@ -412,7 +414,7 @@ local function open_executor(
   end
 
   local executor = command_executor.new(connection, {
-    app_name = config.app_name,
+    metadata = metadata,
     monitoring = monitor,
     server = server_address,
     server_api = config.server_api,
@@ -466,7 +468,15 @@ local function open_executor(
   return executor, nil, hello
 end
 
-local function connect_replica_set(parsed, config, special, runtime, monitor, warnings)
+local function connect_replica_set(
+  parsed,
+  config,
+  special,
+  runtime,
+  monitor,
+  metadata,
+  warnings
+)
   local seeds = {}
 
   for index, host in ipairs(parsed.hosts) do
@@ -496,6 +506,7 @@ local function connect_replica_set(parsed, config, special, runtime, monitor, wa
         config,
         parsed,
         monitor,
+        metadata,
         server_address,
         fields,
         false
@@ -522,6 +533,7 @@ local function connect_replica_set(parsed, config, special, runtime, monitor, wa
       config,
       parsed,
       monitor,
+      metadata,
       server_address,
       fields,
       false
@@ -544,6 +556,7 @@ local function connect_replica_set(parsed, config, special, runtime, monitor, wa
           config,
           parsed,
           monitor,
+          metadata,
           server_address,
           fields,
           true
@@ -650,10 +663,24 @@ function M.connect(uri, values)
     listeners = special.command_listeners or {},
     on_listener_error = special.on_listener_error,
   })
+  local metadata_facts = runtime.metadata or {}
+  local metadata = handshake_metadata.new({
+    app_name = config.app_name,
+    os = metadata_facts.os,
+    platform = metadata_facts.platform,
+  })
   local warnings = combine_warnings(parsed, option_warnings)
 
   if config.replica_set ~= nil then
-    return connect_replica_set(parsed, config, special, runtime, monitor, warnings)
+    return connect_replica_set(
+      parsed,
+      config,
+      special,
+      runtime,
+      monitor,
+      metadata,
+      warnings
+    )
   end
 
   if #parsed.hosts ~= 1 then
@@ -680,6 +707,7 @@ function M.connect(uri, values)
     config,
     parsed,
     monitor,
+    metadata,
     server_address,
     fields,
     true
@@ -700,6 +728,7 @@ function M.connect(uri, values)
       config,
       parsed,
       monitor,
+      metadata,
       server_address,
       options,
       true

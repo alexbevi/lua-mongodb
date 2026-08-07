@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local executor = require("mongodb.command.executor")
+local handshake_metadata = require("mongodb.handshake.metadata")
 local op_msg = require("mongodb.wire.op_msg")
 
 local function fake_connection(responses)
@@ -52,10 +53,11 @@ describe("single-connection command executor", function()
       bson.document({ { "ok", 1 }, { "value", "pong" } }),
     })
     local commands = assert(executor.new(connection, {
-      app_name = "command-spec",
-      driver_version = "0.1.0-test",
-      os_type = "test-os",
-      platform = string.rep("p", 1000),
+      metadata = handshake_metadata.new({
+        app_name = "command-spec",
+        os = { type = "test-os" },
+        platform = string.rep("p", 1000),
+      }),
     }))
     local hello = assert(commands:hello())
     local handshake = connection.requests[1].body
@@ -64,7 +66,7 @@ describe("single-connection command executor", function()
     assert.are.equal("2", handshake:get("backpressure"))
     assert.are.equal("command-spec", handshake:get("client"):get("application"):get("name"))
     assert.are.equal("lua-mongodb", handshake:get("client"):get("driver"):get("name"))
-    assert.are.equal("0.1.0-test", handshake:get("client"):get("driver"):get("version"))
+    assert.are.equal("0.1.0-dev", handshake:get("client"):get("driver"):get("version"))
     assert.are.equal("test-os", handshake:get("client"):get("os"):get("type"))
     assert.is_true(#assert(bson.encode(handshake:get("client"))) <= 512)
     assert.is_true(hello.hello_ok)

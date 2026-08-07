@@ -531,6 +531,10 @@ function M.new(options)
     error("entropy must be a string", 2)
   end
 
+  if options.metadata ~= nil and type(options.metadata) ~= "table" then
+    error("metadata must be a table", 2)
+  end
+
   local fake = setmetatable({
     _connect_head = 1,
     _connect_queue = {},
@@ -561,6 +565,7 @@ function M.new(options)
   fake.tls = new_tls_capability(fake)
   fake.entropy = new_entropy_capability(fake)
   fake.crypto = new_crypto_capability(fake)
+  fake.metadata = options.metadata
 
   return runtime_contract.validate(fake)
 end

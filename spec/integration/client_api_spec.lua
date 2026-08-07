@@ -87,10 +87,12 @@ describe("public standalone client API", function()
       b = "127.0.0.1:" .. assert(math.tointeger(port_b)),
     }
     local ping_address
+    local metadata_count = { a = 0, b = 0 }
     local outcome
     local function serve(name)
       return function(peer)
         peer = copas.wrap(peer)
+        local initial_hello = true
 
         while true do
           local received, request = pcall(receive_frame, peer)
@@ -102,6 +104,19 @@ describe("public standalone client API", function()
           local command_name = request.body:keys()[1]
 
           if command_name == "hello" or command_name == "ismaster" then
+            local metadata = request.body:get("client")
+
+            if initial_hello then
+              assert.is_not_nil(metadata)
+              assert.are.equal("replica-spec", metadata:get("application"):get("name"))
+              assert.are.equal("replica-os", metadata:get("os"):get("type"))
+              assert.are.equal("Lua 5.4 replica-runtime", metadata:get("platform"))
+              metadata_count[name] = metadata_count[name] + 1
+              initial_hello = false
+            else
+              assert.is_nil(metadata)
+            end
+
             if request.body:get("maxAwaitTimeMS") ~= nil then
               copas.pause(0.005)
             end
@@ -134,10 +149,17 @@ describe("public standalone client API", function()
     copas.loop(function()
       outcome = table.pack(pcall(function()
         local client = assert(mongodb.client(
-          "mongodb://" .. addresses.a .. "," .. addresses.b .. "/app?replicaSet=rs",
+          "mongodb://" .. addresses.a .. "," .. addresses.b
+            .. "/app?replicaSet=rs&appName=replica-spec",
           {
             heartbeat_frequency_ms = 500,
-            runtime = mongodb.runtime.copas({ lock_poll_interval = 0.001 }),
+            runtime = mongodb.runtime.copas({
+              lock_poll_interval = 0.001,
+              metadata = {
+                os = { type = "replica-os" },
+                platform = "Lua 5.4 replica-runtime",
+              },
+            }),
             server_selection_timeout_ms = 2000,
           }
         ))
@@ -145,6 +167,8 @@ describe("public standalone client API", function()
 
         assert.are.equal(1, reply:get("ok"):to_number())
         assert.are.equal("b", ping_address)
+        assert.is_true(metadata_count.a >= 1)
+        assert.is_true(metadata_count.b >= 2)
         assert(client:close())
       end))
       copas.removeserver(servers.a)
