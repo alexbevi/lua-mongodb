@@ -59,8 +59,8 @@ The activity workflow is:
 6. Enable and execute those cases in the same activity.
 7. Run targeted and broader gates, recording the green result with execution counts.
 8. Update architecture, compatibility, capability records, and the conformance ledger.
-9. Complete the activity and commit its exact subject with a `Plan-Activity` trailer.
-10. Re-run strict validation before selecting another activity.
+9. Complete the activity and commit its exact subject with exactly one `Plan-Activity` trailer.
+10. Push the commit and run `check --strict --pushed` before selecting another activity. The next `start` transition independently refuses to proceed until all completed activity commits are unique and remote-reachable.
 
 Do not use a release activity to construct missing conformance infrastructure or discover broad semantic gaps. Release hardening should verify a matrix that is already green.
 

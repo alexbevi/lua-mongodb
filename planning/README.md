@@ -12,7 +12,7 @@ The reference checkouts are pinned in `plan.json` and registered as Git submodul
 ## Commands
 
 ```sh
-python3 planning/update_plan.py check [--strict]
+python3 planning/update_plan.py check [--strict [--pushed]]
 python3 planning/update_plan.py next [--json]
 python3 planning/update_plan.py start ID
 python3 planning/update_plan.py requeue ID --reason "..."
@@ -26,7 +26,7 @@ python3 planning/update_plan.py reference-report
 python3 planning/update_readme_compatibility.py [--check]
 ```
 
-`check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally verifies completed-activity commit subjects and `Plan-Activity` trailers when the workspace is a Git repository. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
+`check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
 
 `update_readme_compatibility.py` projects the conformance ledger into the README's driver-layer compatibility table. Run it whenever ledger statuses change; CI uses `--check` so the README cannot drift from executable evidence.
 

@@ -19,8 +19,8 @@ Keep commits small. Each commit must be the smallest practical vertical slice th
 5. Run targeted tests and the relevant broader gates until green; record green evidence.
 6. Update `docs/ARCHITECTURE.md`, spec classifications, and compatibility evidence when behavior changes. Keep implementation design, internal behavior, and detailed verification evidence out of `README.md`; that file is limited to the project overview, public API outline, scope, generated specification-compatibility table, development entry points, and license. When the conformance ledger changes, run `python3 planning/update_readme_compatibility.py` and commit the resulting table.
 7. Complete and refresh state through `update_plan.py`.
-8. Commit one self-contained, verifiable unit with the activity's exact Conventional Commit subject and a `Plan-Activity: ID` trailer.
-9. Run strict validation again.
+8. Commit one self-contained, verifiable unit with the activity's exact Conventional Commit subject and exactly one `Plan-Activity: ID` trailer, then push that commit.
+9. Run `python3 planning/update_plan.py check --strict --pushed` before starting another activity.
 
 Never commit a red test state, silently skip an unknown unified operation, edit `current_state.json`, or mix unrelated cleanup into an activity. Every upstream fixture must be run or explicitly classified as deferred with a reason.
 

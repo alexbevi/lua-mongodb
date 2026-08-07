@@ -28,6 +28,9 @@ PROGRESS_PATH = PLANNING_DIR / "progress.json"
 STATE_PATH = PLANNING_DIR / "current_state.json"
 STATUSES = {"pending", "in_progress", "blocked", "completed", "needs_review"}
 COMMIT_RE = re.compile(r"^[a-z]+\([a-z0-9-]+\)!?: .+")
+# Published history before commit-policy enforcement contains CI follow-ups that
+# reused CI-001's trailer. Do not rewrite that history; reject every new reuse.
+COMMIT_POLICY_BASELINE = "057026301066f9d4adcf22d59710a3e5690ec529"
 
 
 class PlanError(Exception):
@@ -327,7 +330,24 @@ def compute_state(
   }
 
 
-def git_commit_issues(plan: dict[str, Any], progress: dict[str, Any], root: Path = ROOT) -> list[str]:
+def remote_refs_containing(root: Path, commit: str) -> list[str]:
+  result = run_git(root, [
+    "for-each-ref", f"--contains={commit}", "--format=%(refname)", "refs/remotes",
+  ])
+  if result.returncode != 0:
+    return []
+  return [line for line in result.stdout.splitlines() if line]
+
+
+def predates_commit_policy(root: Path, commit: str) -> bool:
+  result = run_git(root, ["merge-base", "--is-ancestor", commit, COMMIT_POLICY_BASELINE])
+  return result.returncode == 0
+
+
+def git_commit_issues(
+  plan: dict[str, Any], progress: dict[str, Any], root: Path = ROOT,
+  require_pushed: bool = False,
+) -> list[str]:
   probe = run_git(root, ["rev-parse", "--show-toplevel"])
   if probe.returncode != 0:
     return ["strict commit validation requires a Git repository"]
@@ -348,8 +368,29 @@ def git_commit_issues(plan: dict[str, Any], progress: dict[str, Any], root: Path
     matching = [item for item in commits if trailer in item[2].splitlines()]
     if not matching:
       issues.append(f"completed activity {activity_id} has no commit trailer")
-    elif not any(item[1] == activity["commit"] for item in matching):
+      continue
+    exact = [item for item in matching if item[1] == activity["commit"]]
+    if not exact:
       issues.append(f"completed activity {activity_id} has no exact commit subject")
+      continue
+    if len(exact) != 1:
+      issues.append(f"completed activity {activity_id} must have exactly one commit with its exact subject and trailer")
+      continue
+    commit, _, body = exact[0]
+    policy_era_extras = [
+      item for item in matching
+      if item[0] != commit and not predates_commit_policy(root, item[0])
+    ]
+    if policy_era_extras:
+      issues.append(f"completed activity {activity_id} trailer is reused by another commit")
+      continue
+    activity_trailers = [
+      line for line in body.splitlines() if line.startswith("Plan-Activity:")
+    ]
+    if activity_trailers != [trailer]:
+      issues.append(f"completed activity {activity_id} commit has multiple Plan-Activity trailers")
+    if require_pushed and not remote_refs_containing(root, commit):
+      issues.append(f"completed activity {activity_id} commit {commit[:12]} is not present on a remote-tracking ref")
   return issues
 
 
@@ -397,8 +438,10 @@ def command_check(arguments: argparse.Namespace) -> int:
         issues.append("planning/current_state.json is not the deterministic generated state; run refresh")
     except PlanError as exc:
       issues.append(str(exc))
+    if arguments.pushed and not arguments.strict:
+      issues.append("--pushed requires --strict")
     if arguments.strict:
-      issues.extend(git_commit_issues(plan, progress))
+      issues.extend(git_commit_issues(plan, progress, require_pushed=arguments.pushed))
     if issues:
       for issue in dict.fromkeys(issues):
         print(f"ERROR: {issue}", file=sys.stderr)
@@ -459,6 +502,12 @@ def command_start(arguments: argparse.Namespace) -> int:
   ]
   if incomplete:
     raise PlanError(f"dependencies are not completed: {', '.join(incomplete)}")
+  commit_issues = git_commit_issues(plan, progress, require_pushed=True)
+  if commit_issues:
+    raise PlanError(
+      "cannot start another activity until completed activity commits are unique and pushed:\n"
+      + "\n".join(commit_issues)
+    )
   record["status"] = "in_progress"
   record["started_at"] = utc_now()
   save_progress_and_state(plan, progress)
@@ -588,6 +637,10 @@ def build_parser() -> argparse.ArgumentParser:
 
   check = subparsers.add_parser("check", help="validate all planning state")
   check.add_argument("--strict", action="store_true", help="also validate completed Git commits")
+  check.add_argument(
+    "--pushed", action="store_true",
+    help="with --strict, require completed commits on a remote-tracking ref",
+  )
   check.set_defaults(function=command_check)
 
   next_parser = subparsers.add_parser("next", help="show the next ready activity")

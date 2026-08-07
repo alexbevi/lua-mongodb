@@ -154,6 +154,20 @@ class EvidenceTests(unittest.TestCase):
       with self.assertRaisesRegex(update_plan.PlanError, "already in_progress"):
         update_plan.command_start(argparse.Namespace(activity_id="TST-002"))
 
+  def test_start_requires_completed_activity_commits_to_be_pushed(self) -> None:
+    plan = minimal_plan([
+      activity("TST-001"),
+      activity("TST-002", ["TST-001"]),
+    ])
+    progress = progress_for(plan, {"TST-001": "completed"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)):
+      with mock.patch.object(
+        update_plan, "git_commit_issues", return_value=["TST-001 is not pushed"],
+      ) as commit_check:
+        with self.assertRaisesRegex(update_plan.PlanError, "unique and pushed"):
+          update_plan.command_start(argparse.Namespace(activity_id="TST-002"))
+    commit_check.assert_called_once_with(plan, progress, require_pushed=True)
+
   def test_requeue_returns_only_an_active_activity_to_pending(self) -> None:
     plan = minimal_plan()
     progress = progress_for(plan, {"TST-001": "in_progress"})
@@ -238,6 +252,76 @@ class CommitTests(unittest.TestCase):
       self.assertEqual(update_plan.git_commit_issues(plan, progress, root), [])
       plan["activities"][0]["commit"] = "feat(test): different subject"
       self.assertTrue(any("exact commit subject" in issue for issue in update_plan.git_commit_issues(plan, progress, root)))
+
+  def test_strict_commit_check_requires_unique_activity_commit(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      (root / "file").write_text("first", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
+      (root / "file").write_text("second", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
+      plan = minimal_plan()
+      progress = progress_for(plan, {"TST-001": "completed"})
+      self.assertTrue(any("exactly one commit" in issue for issue in update_plan.git_commit_issues(plan, progress, root)))
+
+  def test_strict_commit_check_rejects_reused_activity_trailer(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      (root / "file").write_text("first", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
+      (root / "file").write_text("follow-up", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "fix(test): follow up", "-m", "Plan-Activity: TST-001")
+      plan = minimal_plan()
+      progress = progress_for(plan, {"TST-001": "completed"})
+      self.assertTrue(any("trailer is reused" in issue for issue in update_plan.git_commit_issues(plan, progress, root)))
+
+  def test_strict_commit_check_rejects_multiple_activity_trailers(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      (root / "file").write_text("ok", encoding="utf-8")
+      git(root, "add", "file")
+      git(
+        root, "commit", "-m", "feat(test): implement TST-001", "-m",
+        "Plan-Activity: TST-001\nPlan-Activity: TST-002",
+      )
+      plan = minimal_plan()
+      progress = progress_for(plan, {"TST-001": "completed"})
+      self.assertTrue(any("multiple Plan-Activity trailers" in issue for issue in update_plan.git_commit_issues(plan, progress, root)))
+
+  def test_pushed_commit_check_requires_remote_reachability(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary) / "checkout"
+      remote = Path(temporary) / "remote.git"
+      root.mkdir()
+      remote.mkdir()
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      git(remote, "init", "--bare")
+      git(root, "remote", "add", "origin", str(remote))
+      (root / "file").write_text("ok", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
+      plan = minimal_plan()
+      progress = progress_for(plan, {"TST-001": "completed"})
+      self.assertTrue(any("not present on a remote" in issue for issue in update_plan.git_commit_issues(
+        plan, progress, root, require_pushed=True,
+      )))
+      git(root, "push", "-u", "origin", "main")
+      self.assertEqual(update_plan.git_commit_issues(plan, progress, root, require_pushed=True), [])
 
 
 if __name__ == "__main__":
