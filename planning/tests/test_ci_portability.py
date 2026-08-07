@@ -45,11 +45,14 @@ class CiPortabilityTests(unittest.TestCase):
       workflow,
     )
 
-  def test_portable_jobs_do_not_install_an_unused_mongodb_server(self) -> None:
+  def test_portable_jobs_provision_unified_execution_tools(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
+    checks = workflow.index("Run all portable and loopback checks")
 
-    self.assertNotIn("Install MongoDB 8.0 on Linux", workflow)
-    self.assertNotIn("Install MongoDB 8.0 on macOS", workflow)
+    self.assertLess(workflow.index("Install MongoDB test tools on Linux"), checks)
+    self.assertLess(workflow.index("Install MongoDB test tools on macOS"), checks)
+    self.assertIn("mongodb-org-server mongodb-mongosh", workflow)
+    self.assertIn("mongodb-community@8.0", workflow)
 
   def test_missing_compatibility_report_does_not_mask_primary_failure(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")

@@ -61,6 +61,16 @@ class CompatibilityMatrixTests(unittest.TestCase):
       report["summary"],
     )
 
+  def test_tls_profile_uses_one_way_server_authentication(self):
+    arguments = run.mongod_arguments(
+      27017,
+      "standalone",
+      run.PROFILE_OPTIONS["tls"],
+    )
+
+    self.assertIn("--tlsMode", arguments)
+    self.assertIn("--tlsAllowConnectionsWithoutCertificates", arguments)
+
 
 if __name__ == "__main__":
   unittest.main()

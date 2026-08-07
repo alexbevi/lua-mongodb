@@ -216,6 +216,42 @@ def configure_server(
     ))
 
 
+def mongod_arguments(
+  port: int,
+  topology: str,
+  profile: dict[str, bool],
+) -> list[str]:
+  arguments = [
+    "mongod",
+    "--bind_ip_all",
+    "--nounixsocket",
+    "--port", str(port),
+    "--quiet",
+  ]
+
+  if topology == "replicaset":
+    arguments.extend(["--replSet", REPLICA_SET])
+
+  if profile["test_commands"]:
+    arguments.extend(["--setParameter", "enableTestCommands=1"])
+
+  if profile["auth"]:
+    arguments.append("--auth")
+
+    if topology == "replicaset":
+      arguments.extend(["--keyFile", "/tmp/lua-mongodb-keyfile"])
+
+  if profile["tls"]:
+    arguments.extend([
+      "--tlsMode", "requireTLS",
+      "--tlsCertificateKeyFile", "/compat/server-combined.pem",
+      "--tlsCAFile", "/compat/ca.pem",
+      "--tlsAllowConnectionsWithoutCertificates",
+    ])
+
+  return arguments
+
+
 @contextmanager
 def live_server(
   server: dict[str, Any],
@@ -229,32 +265,7 @@ def live_server(
   with tempfile.TemporaryDirectory(prefix="lua-mongodb-compat-") as temporary:
     directory = Path(temporary)
     ca_file = prepare_tls(directory)
-    mongod = [
-      "mongod",
-      "--bind_ip_all",
-      "--nounixsocket",
-      "--port", str(port),
-      "--quiet",
-    ]
-
-    if server["topology"] == "replicaset":
-      mongod.extend(["--replSet", REPLICA_SET])
-
-    if profile["test_commands"]:
-      mongod.extend(["--setParameter", "enableTestCommands=1"])
-
-    if profile["auth"]:
-      mongod.extend(["--auth"])
-
-      if server["topology"] == "replicaset":
-        mongod.extend(["--keyFile", "/tmp/lua-mongodb-keyfile"])
-
-    if profile["tls"]:
-      mongod.extend([
-        "--tlsMode", "requireTLS",
-        "--tlsCertificateKeyFile", "/compat/server-combined.pem",
-        "--tlsCAFile", "/compat/ca.pem",
-      ])
+    mongod = mongod_arguments(port, server["topology"], profile)
 
     shell = (
       "umask 077; "
