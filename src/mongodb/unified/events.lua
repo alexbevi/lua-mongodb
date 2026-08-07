@@ -149,6 +149,29 @@ function COLLECTOR_METHODS:count(event_name, command_name)
   return count
 end
 
+function COLLECTOR_METHODS:pools_populated(min_pool_size)
+  local found = false
+
+  for _, pool in pairs(self.pools) do
+    found = true
+    local count = 0
+
+    for _ in pairs(pool.connections) do
+      count = count + 1
+    end
+
+    if count < min_pool_size then
+      return false
+    end
+  end
+
+  return found
+end
+
+function COLLECTOR_METHODS:reset()
+  self.events = {}
+end
+
 function M.new(specification)
   local observed, err = string_set(
     specification:get("observeEvents"),
@@ -185,6 +208,7 @@ function M.new(specification)
     ignored = ignored,
     observed = observed,
     observe_sensitive = observe_sensitive == true,
+    pools = {},
   }, COLLECTOR_METATABLE)
 
   collector.listener = {
@@ -199,11 +223,32 @@ function M.new(specification)
     end,
   }
   collector.pool_listener = {
+    ConnectionClosed = function(_, event)
+      local pool = collector.pools[event.address]
+
+      if pool then
+        pool.connections[event.connection_id] = nil
+      end
+    end,
+    ConnectionPoolClosed = function(_, event)
+      collector.pools[event.address] = nil
+    end,
     ConnectionPoolCleared = function(_, event)
       record(collector, {
         address = event.address,
         type = "pool_cleared",
       })
+    end,
+    ConnectionPoolReady = function(_, event)
+      collector.pools[event.address] = collector.pools[event.address]
+        or { connections = {} }
+    end,
+    ConnectionReady = function(_, event)
+      local pool = collector.pools[event.address]
+        or { connections = {} }
+
+      collector.pools[event.address] = pool
+      pool.connections[event.connection_id] = true
     end,
   }
   return collector

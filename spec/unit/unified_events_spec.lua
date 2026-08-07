@@ -59,6 +59,42 @@ local function setup()
 end
 
 describe("unified command events", function()
+  it("tracks live pool population and resets warm-up events", function()
+    local _, collector = setup()
+    local address = "127.0.0.1:27017"
+    local second_address = "127.0.0.1:27018"
+
+    collector.pool_listener:ConnectionPoolReady({ address = address })
+    collector.pool_listener:ConnectionPoolReady({ address = second_address })
+    assert.is_false(collector:pools_populated(1))
+
+    collector.pool_listener:ConnectionReady({
+      address = address,
+      connection_id = 1,
+    })
+    assert.is_false(collector:pools_populated(1))
+
+    collector.pool_listener:ConnectionReady({
+      address = second_address,
+      connection_id = 2,
+    })
+    assert.is_true(collector:pools_populated(1))
+
+    collector.listener:started(actual_event("command_started", "find"))
+    assert.are.equal(1, collector:count("commandStartedEvent", "find"))
+    collector:reset()
+    assert.are.equal(0, collector:count("commandStartedEvent", "find"))
+
+    collector.pool_listener:ConnectionClosed({
+      address = address,
+      connection_id = 1,
+    })
+    assert.is_false(collector:pools_populated(1))
+
+    collector.pool_listener:ConnectionPoolClosed({ address = address })
+    assert.is_true(collector:pools_populated(1))
+  end)
+
   it("matches event order and permits only trailing events when requested", function()
     local runner, collector, collectors = setup()
 

@@ -189,17 +189,43 @@ local function client_factory(state)
       await_min_pool_size_ms = await_min_pool_size_ms:to_number()
     end
 
-    if type(await_min_pool_size_ms) == "number" and await_min_pool_size_ms > 0 then
-      local slept
-
-      slept, err = state.runtime.clock:sleep(
-        math.min(await_min_pool_size_ms, 1000) / 1000
+    if await_min_pool_size_ms ~= nil
+        and (math.type(await_min_pool_size_ms) ~= "integer"
+          or await_min_pool_size_ms < 0)
+    then
+      client:close()
+      return configuration_error(
+        "awaitMinPoolSizeMS must be a non-negative integer",
+        "$.client.awaitMinPoolSizeMS"
       )
+    end
 
-      if not slept then
-        client:close()
-        return nil, err
+    local min_pool_size = options.min_pool_size or 0
+
+    if await_min_pool_size_ms ~= nil and min_pool_size > 0 then
+      local deadline = state.runtime.clock:now() + await_min_pool_size_ms / 1000
+
+      while not collector:pools_populated(min_pool_size) do
+        local remaining = deadline - state.runtime.clock:now()
+
+        if remaining <= 0 then
+          client:close()
+          return configuration_error(
+            "connection pools did not reach minPoolSize before awaitMinPoolSizeMS",
+            "$.client.awaitMinPoolSizeMS"
+          )
+        end
+
+        local slept
+        slept, err = state.runtime.clock:sleep(math.min(remaining, 0.01))
+
+        if not slept then
+          client:close()
+          return nil, err
+        end
       end
+
+      collector:reset()
     end
 
     state.collectors[client] = collector
