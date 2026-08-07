@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import re
 import subprocess
 import tempfile
 import unittest
@@ -504,6 +505,25 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1, report["summary"]["failed"])
     self.assertEqual("failed", report["tests"][0]["status"])
     self.assertEqual("adapter rejected operation", report["tests"][0]["error"])
+
+  def test_ratchet_failures_identify_the_failed_cases(self) -> None:
+    identity = "a/tests/unified/test.json::test[1]"
+    classified = [{
+      "activity": "A-001",
+      "fixture": "a/tests/unified/test.json",
+      "id": identity,
+      "status": "runnable",
+    }]
+
+    with self.assertRaisesRegex(
+      run.CapabilityError,
+      rf"capability passed regressed from 1 to 0; {re.escape(identity)}: timed out",
+    ):
+      run.build_report(
+        classified,
+        {"classified": 1, "passed": 1, "runnable": 1},
+        execute=lambda _: ("failed", "timed out"),
+      )
 
   def test_unavailable_test_commands_are_environment_skipped(self) -> None:
     classified = [{

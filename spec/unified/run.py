@@ -559,11 +559,23 @@ def build_report(
   )
 
   if ratchets is not None:
-    validate_ratchets(
-      classifications,
-      ratchets,
-      summary["passed"] + summary["environment_skipped"],
-    )
+    try:
+      validate_ratchets(
+        classifications,
+        ratchets,
+        summary["passed"] + summary["environment_skipped"],
+      )
+    except CapabilityError as exc:
+      failures = [
+        f"{item['id']}: {item['error']}"
+        for item in tests
+        if item["status"] == "failed"
+      ]
+
+      if failures:
+        raise CapabilityError(f"{exc}; {'; '.join(failures)}") from exc
+
+      raise
 
   return {
     "ratchets": ratchets or {"classified": 0, "passed": 0, "runnable": 0},
