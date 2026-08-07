@@ -79,6 +79,11 @@
       "verification": ["make check"], "acceptance": ["Lua 5.4 smoke test passes", "All standard gates exist and fail on missing prerequisites clearly"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "build(core): add Lua 5.4 project skeleton"
     },
     {
+      "id": "CI-001", "title": "Repair portable CI verification", "milestone": "foundation", "depends_on": ["FND-001"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify shell-portable Lua preflight commands, macOS OpenSSL discovery before LuaRocks dependency installation, and non-masking compatibility artifact behavior.", "implementation": "Make the Lua integer guard portable across supported Make and shell versions, configure Homebrew OpenSSL for native dependencies, and remove unused server installation from portable jobs.",
+      "verification": ["python3 -m unittest discover -s planning/tests -v", "make check", "GitHub Actions CI matrix"], "acceptance": ["Portable Ubuntu and macOS jobs reach and pass the repository gates", "All six pinned live compatibility jobs produce their primary result without setup failures being masked by artifact upload errors"], "docs": ["README.md"], "commit": "fix(ci): repair portable verification"
+    },
+    {
       "id": "ERR-001", "title": "Define structured error contract", "milestone": "foundation", "depends_on": ["FND-001"], "references": ["pymongo:errors"], "test_policy": "red_green",
       "test_first": "Specify categories, labels, causes, string conversion, and programmer-error boundaries.", "implementation": "Implement immutable structured operational errors and helper predicates.",
       "verification": ["make test-unit", "make lint"], "acceptance": ["Operational errors are returned as nil, err", "Labels and causes remain inspectable"], "docs": ["docs/ARCHITECTURE.md"], "commit": "feat(error): add structured operational errors"
