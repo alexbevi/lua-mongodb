@@ -414,12 +414,57 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable command, cursor, session, and CSOT fixtures pass", "Tailable cursors and database aggregation remain explicitly outside v1"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): close v1 command cursor conformance"
     },
     {
-      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-005"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Enable residual retryable read/write, handshake, transaction, monitoring, and legacy-timeout fixtures applicable to standalone and replica sets.", "implementation": "Close per-attempt deadline, handshake retry, error-label, and topology-observation gaps without expanding deployment scope.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retry and handshake fixtures pass", "Timeouts, labels, and cleanup remain deterministic under retained stress seeds"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): harden release edge cases"
+      "id": "REL-006", "title": "Harden command cursor attempt deadlines", "milestone": "production-core-v1", "depends_on": ["REL-005"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the remaining runCursorCommand iteration timeout case.", "implementation": "Apply the inherited operation deadline independently to command-cursor getMore attempts while preserving deterministic cleanup.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Command-cursor iteration uses the inherited per-attempt deadline", "A timed-out cursor remains deterministically closable"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(retry): harden release edge cases"
     },
     {
-      "id": "REL-007", "title": "Add package install and public API smoke gates", "milestone": "production-core-v1", "depends_on": ["REL-006"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-022", "title": "Run legacy retry timeout conformance", "milestone": "production-core-v1", "depends_on": ["REL-006"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the forty applicable legacy socket-timeout retry cases.", "implementation": "Preserve legacy socket timeout semantics across retry attempts without weakening client-side operation deadlines.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable legacy retry timeout fixtures pass", "Retry attempts and cleanup remain deterministic under retained stress seeds"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(timeout): run legacy retry conformance"
+    },
+    {
+      "id": "REL-023", "title": "Run retryable read handshake conformance", "milestone": "production-core-v1", "depends_on": ["REL-022"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the thirty-two retryable-read handshake error cases.", "implementation": "Retry eligible reads after connection handshake errors while preserving topology updates and labels.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retryable-read handshake fixtures pass", "Handshake failures update topology and error labels deterministically"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(retry): handle read handshake failures"
+    },
+    {
+      "id": "REL-024", "title": "Run retryable write handshake conformance", "milestone": "production-core-v1", "depends_on": ["REL-023"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the twenty retryable-write handshake error cases.", "implementation": "Retry eligible writes after connection handshake errors while preserving transaction numbers, topology updates, and labels.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retryable-write handshake fixtures pass", "Handshake retries preserve transaction numbering and deterministic cleanup"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(retry): handle write handshake failures"
+    },
+    {
+      "id": "REL-025", "title": "Run transaction abort handshake conformance", "milestone": "production-core-v1", "depends_on": ["REL-024"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the retryable transaction-abort handshake case.", "implementation": "Retry abortTransaction after an eligible connection handshake failure without leaking session or connection state.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["The abort handshake fixture passes", "Abort cleanup remains deterministic under retained stress seeds"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(transaction): retry abort handshake failures"
+    },
+    {
+      "id": "REL-026", "title": "Run transaction commit handshake conformance", "milestone": "production-core-v1", "depends_on": ["REL-025"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the retryable transaction-commit handshake case.", "implementation": "Retry commitTransaction after an eligible connection handshake failure while preserving commit concern and labels.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["The commit handshake fixture passes", "Commit concern and error labels remain deterministic"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(transaction): retry commit handshake failures"
+    },
+    {
+      "id": "REL-027", "title": "Prevent handshake metadata propagation", "milestone": "production-core-v1", "depends_on": ["REL-026"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the handshake metadata-not-propagated case.", "implementation": "Keep handshake-only client metadata out of application commands after connection establishment.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Handshake metadata is sent only during connection establishment", "Application command monitoring remains exact"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(handshake): isolate client metadata"
+    },
+    {
+      "id": "REL-028", "title": "Harden minimum pool size errors", "milestone": "production-core-v1", "depends_on": ["REL-027"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the three minimum-pool-size error and pool-clear cases.", "implementation": "Keep background minimum-pool-size maintenance and pool clearing deterministic after connection errors.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Minimum-pool-size error fixtures pass", "Pool clear and refill do not leak connections or background tasks"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(pool): harden minimum size errors"
+    },
+    {
+      "id": "REL-029", "title": "Rediscover promptly after stepdown", "milestone": "production-core-v1", "depends_on": ["REL-028"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the rediscover-quickly-after-step-down case.", "implementation": "Wake topology monitoring promptly after a stepdown error without broadening deployment support.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Replica-set rediscovery meets the fixture deadline", "Monitoring cleanup remains deterministic"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(sdam): rediscover promptly after stepdown"
+    },
+    {
+      "id": "REL-030", "title": "Order topology close observation", "milestone": "production-core-v1", "depends_on": ["REL-029"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the standalone and replica-set topology-changed-before-close cases.", "implementation": "Emit the final topology description change before topology closure for supported deployments.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Topology-changed events precede topology-closed events", "Standalone and replica-set close observation remains deterministic"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(sdam): order topology close events"
+    },
+    {
+      "id": "REL-007", "title": "Add package install and public API smoke gates", "milestone": "production-core-v1", "depends_on": ["REL-030"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Install the rock in an isolated tree and exercise the documented public client, BSON, runtime, and model constructors from the installed package.", "implementation": "Add reproducible source-rock and install smoke gates, validate packaged module coverage, and finalize public API packaging metadata.",
       "verification": ["make rockspec", "make test-package", "make lint"], "acceptance": ["The package installs without workspace module leakage", "The documented target API loads from the installed tree"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "build(package): add install and API smoke gates"
     },

@@ -381,6 +381,48 @@ class UnifiedCliTests(unittest.TestCase):
       {identity: manifest["tests"][identity]["activity"] for identity in expected},
     )
 
+  def test_release_retry_cases_keep_vertical_slice_owners(self) -> None:
+    manifest = update_capabilities.generate()
+    fixture_owners = {
+      "client-side-operations-timeout/tests/retryability-legacy-timeouts.json": (
+        40,
+        "REL-022",
+      ),
+      "retryable-reads/tests/unified/handshakeError.json": (32, "REL-023"),
+      "retryable-writes/tests/unified/handshakeError.json": (20, "REL-024"),
+      "transactions/tests/unified/retryable-abort-handshake.json": (1, "REL-025"),
+      "transactions/tests/unified/retryable-commit-handshake.json": (1, "REL-026"),
+      "mongodb-handshake/tests/unified/metadata-not-propagated.json": (1, "REL-027"),
+      "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json": (
+        1,
+        "REL-028",
+      ),
+      "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json": (
+        2,
+        "REL-028",
+      ),
+      "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json": (
+        1,
+        "REL-029",
+      ),
+      "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json": (
+        1,
+        "REL-030",
+      ),
+      "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json": (
+        1,
+        "REL-030",
+      ),
+    }
+
+    for fixture, (count, owner) in fixture_owners.items():
+      matching = [
+        case
+        for identity, case in manifest["tests"].items()
+        if identity.startswith(fixture + "::") and case["activity"] == owner
+      ]
+      self.assertEqual(count, len(matching), fixture)
+
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
     classifications = {discovered[0]["id"]: classification("DONE-001", "stale")}

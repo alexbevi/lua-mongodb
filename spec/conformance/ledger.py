@@ -45,7 +45,7 @@ DEFAULT_OWNERS = {
   "index-management": "REL-018",
   "initial-dns-seedlist-discovery": "ADV-003",
   "load-balancers": "ADV-006",
-  "mongodb-handshake": "REL-006",
+  "mongodb-handshake": "REL-027",
   "open-telemetry": "ADV-009",
   "read-write-concern": "REL-003",
   "retryable-reads": "RETRY-001",

@@ -12,7 +12,16 @@
     "ADV-010": 777,
     "ADV-011": 198,
     "ADV-012": 15,
-    "REL-006": 102
+    "REL-006": 1,
+    "REL-022": 40,
+    "REL-023": 32,
+    "REL-024": 20,
+    "REL-025": 1,
+    "REL-026": 1,
+    "REL-027": 1,
+    "REL-028": 3,
+    "REL-029": 1,
+    "REL-030": 2
   },
   "deferred_by_scope": {
     "applicable-release-gap": 102,
