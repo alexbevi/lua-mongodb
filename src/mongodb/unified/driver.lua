@@ -2,6 +2,7 @@ local bson = require("mongodb.bson")
 local bulk = require("mongodb.bulk")
 local client_module = require("mongodb.client")
 local errors = require("mongodb.error")
+local event_module = require("mongodb.unified.events")
 local lifecycle_module = require("mongodb.unified.lifecycle")
 
 local M = {}
@@ -31,7 +32,10 @@ local function client_factory(state)
   return function(_, specification)
     local valid, err = validate_fields(specification, {
       id = true,
+      ignoreCommandMonitoringEvents = true,
       observeEvents = true,
+      observeSensitiveCommands = true,
+      uriOptions = true,
       useMultipleMongoses = true,
     }, "$.client")
 
@@ -39,7 +43,61 @@ local function client_factory(state)
       return nil, err
     end
 
-    return client_module.connect(state.uri, { runtime = state.runtime })
+    local collector
+    collector, err = event_module.new(specification)
+
+    if not collector then
+      return nil, err
+    end
+
+    local options = {
+      command_listeners = { collector.listener },
+      runtime = state.runtime,
+    }
+    local uri_options = specification:get("uriOptions")
+
+    if uri_options then
+      local options_valid
+      options_valid, err = validate_fields(uri_options, {
+        readConcernLevel = true,
+        retryReads = true,
+        w = true,
+      }, "$.client.uriOptions")
+
+      if not options_valid then
+        return nil, err
+      end
+
+      local read_concern = uri_options:get("readConcernLevel")
+      local retry_reads = uri_options:get("retryReads")
+      local w = uri_options:get("w")
+
+      if read_concern ~= nil then
+        options.read_concern = { level = read_concern }
+      end
+
+      if retry_reads ~= nil then
+        options.retry_reads = retry_reads
+      end
+
+      if bson.is_exact(w) then
+        w = w:to_number()
+      end
+
+      if w ~= nil then
+        options.write_concern = { w = w }
+      end
+    end
+
+    local client
+    client, err = client_module.connect(state.uri, options)
+
+    if not client then
+      return nil, err
+    end
+
+    state.collectors[client] = collector
+    return client
   end
 end
 
@@ -98,7 +156,7 @@ local function collection_factory(runner, specification)
     local options_valid
     options_valid, err = validate_fields(
       collection_options,
-      { writeConcern = true },
+      { readConcern = true, readPreference = true, writeConcern = true },
       "$.collection.collectionOptions"
     )
 
@@ -107,6 +165,25 @@ local function collection_factory(runner, specification)
     end
 
     local write_concern = collection_options:get("writeConcern")
+    local read_concern = collection_options:get("readConcern")
+    local read_preference = collection_options:get("readPreference")
+
+    if read_concern then
+      options.read_concern = { level = read_concern:get("level") }
+    end
+
+    if read_preference then
+      local max_staleness = read_preference:get("maxStalenessSeconds")
+
+      if bson.is_exact(max_staleness) then
+        max_staleness = max_staleness:to_number()
+      end
+
+      options.read_preference = {
+        max_staleness_seconds = max_staleness,
+        mode = read_preference:get("mode"),
+      }
+    end
 
     if write_concern then
       local concern_valid
@@ -133,8 +210,20 @@ local function collection_factory(runner, specification)
   return database:collection(specification:get("collectionName"), options)
 end
 
+local call_driver
+local operation_options
+
 local function insert_one(_, collection, arguments)
-  local result, err = collection:insert_one(arguments:get("document"))
+  local result, err = call_driver(function()
+    return collection:insert_one(arguments:get("document"), operation_options(
+      arguments,
+      {
+        bypassDocumentValidation = "bypass_document_validation",
+        comment = "comment",
+        rawData = "raw_data",
+      }
+    ))
+  end)
 
   if not result then
     return nil, err
@@ -143,7 +232,7 @@ local function insert_one(_, collection, arguments)
   return bson.document({ { "insertedId", result.inserted_id } })
 end
 
-local function operation_options(arguments, fields)
+operation_options = function(arguments, fields)
   local options = {}
 
   for unified_name, lua_name in pairs(fields) do
@@ -193,7 +282,13 @@ local function aggregate(_, collection, arguments)
     {
       allowDiskUse = "allow_disk_use",
       batchSize = "batch_size",
+      bypassDocumentValidation = "bypass_document_validation",
       collation = "collation",
+      comment = "comment",
+      hint = "hint",
+      let = "let",
+      maxTimeMS = "max_time_ms",
+      rawData = "raw_data",
     }
   ))
 
@@ -208,9 +303,16 @@ local function find(_, collection, arguments)
   local cursor, err = collection:find(arguments:get("filter"), operation_options(
     arguments,
     {
+      allowDiskUse = "allow_disk_use",
       batchSize = "batch_size",
       collation = "collation",
+      comment = "comment",
+      hint = "hint",
+      let = "let",
       limit = "limit",
+      maxTimeMS = "max_time_ms",
+      projection = "projection",
+      rawData = "raw_data",
       skip = "skip",
       sort = "sort",
     }
@@ -228,29 +330,48 @@ local function count_documents(_, collection, arguments)
     arguments,
     {
       collation = "collation",
+      comment = "comment",
+      hint = "hint",
       limit = "limit",
+      maxTimeMS = "max_time_ms",
+      rawData = "raw_data",
       skip = "skip",
     }
   ))
 end
 
 local function estimated_document_count(_, collection, arguments)
-  return collection:estimated_document_count(operation_options(arguments, {}))
+  return collection:estimated_document_count(operation_options(arguments, {
+    comment = "comment",
+    maxTimeMS = "max_time_ms",
+    rawData = "raw_data",
+  }))
 end
 
 local function distinct(_, collection, arguments)
   return collection:distinct(
     arguments:get("fieldName"),
     arguments:get("filter"),
-    operation_options(arguments, { collation = "collation" })
+    operation_options(arguments, {
+      collation = "collation",
+      comment = "comment",
+      hint = "hint",
+      maxTimeMS = "max_time_ms",
+      rawData = "raw_data",
+    })
   )
 end
 
 local FIND_ONE_OPTIONS = {
   arrayFilters = "array_filters",
+  bypassDocumentValidation = "bypass_document_validation",
   collation = "collation",
+  comment = "comment",
   hint = "hint",
+  let = "let",
+  maxTimeMS = "max_time_ms",
   projection = "projection",
+  rawData = "raw_data",
   returnDocument = "return_document",
   sort = "sort",
   upsert = "upsert",
@@ -279,11 +400,28 @@ local function find_one_and_update(_, collection, arguments)
   )
 end
 
+local function find_one(_, collection, arguments)
+  return collection:find_one(
+    arguments:get("filter"),
+    operation_options(arguments, {
+      collation = "collation",
+      comment = "comment",
+      hint = "hint",
+      let = "let",
+      maxTimeMS = "max_time_ms",
+      projection = "projection",
+      rawData = "raw_data",
+      skip = "skip",
+      sort = "sort",
+    })
+  )
+end
+
 local function null_result(value)
   return value == nil and bson.null or value
 end
 
-local function call_driver(callback)
+call_driver = function(callback)
   local outcome = table.pack(pcall(callback))
 
   if not outcome[1] then
@@ -305,9 +443,14 @@ end
 
 local WRITE_OPTIONS = {
   arrayFilters = "array_filters",
+  bypassDocumentValidation = "bypass_document_validation",
   collation = "collation",
+  comment = "comment",
   hint = "hint",
+  let = "let",
   ordered = "ordered",
+  rawData = "raw_data",
+  sort = "sort",
   upsert = "upsert",
 }
 
@@ -428,7 +571,13 @@ local function bulk_write(_, collection, arguments)
 
     return collection:bulk_write(
       models,
-      operation_options(arguments, { ordered = "ordered" })
+      operation_options(arguments, {
+        bypassDocumentValidation = "bypass_document_validation",
+        comment = "comment",
+        let = "let",
+        ordered = "ordered",
+        rawData = "raw_data",
+      })
     )
   end)
 end
@@ -642,10 +791,14 @@ function M.new(options)
   end
 
   local state = {
+    collectors = setmetatable({}, { __mode = "k" }),
     runtime = options.runtime,
     uri = options.uri,
   }
   local lifecycle = lifecycle_module.new({
+    assert_events = function(runner, expected, path)
+      return event_module.assert_all(runner, expected, state.collectors, path)
+    end,
     environment = options.environment,
     entity_factories = {
       client = client_factory(state),
@@ -656,33 +809,57 @@ function M.new(options)
     operations = {
       collection = {
         aggregate = {
-          arguments = { "allowDiskUse", "batchSize", "collation", "pipeline" },
+          arguments = {
+            "allowDiskUse", "batchSize", "bypassDocumentValidation", "collation",
+            "comment", "hint", "let", "maxTimeMS", "pipeline", "rawData",
+          },
           handler = aggregate,
         },
         countDocuments = {
-          arguments = { "collation", "filter", "limit", "skip" },
+          arguments = {
+            "collation", "comment", "filter", "hint", "limit", "maxTimeMS",
+            "rawData", "skip",
+          },
           handler = count_documents,
         },
         distinct = {
-          arguments = { "collation", "fieldName", "filter" },
+          arguments = {
+            "collation", "comment", "fieldName", "filter", "hint", "maxTimeMS",
+            "rawData",
+          },
           handler = distinct,
         },
         estimatedDocumentCount = {
-          arguments = {},
+          arguments = { "comment", "maxTimeMS", "rawData" },
           handler = estimated_document_count,
         },
         find = {
-          arguments = { "batchSize", "collation", "filter", "limit", "skip", "sort" },
+          arguments = {
+            "allowDiskUse", "batchSize", "collation", "comment", "filter", "hint",
+            "let", "limit", "maxTimeMS", "projection", "rawData", "skip", "sort",
+          },
           handler = find,
         },
+        findOne = {
+          arguments = {
+            "collation", "comment", "filter", "hint", "let", "maxTimeMS",
+            "projection", "rawData", "skip", "sort",
+          },
+          coerce_result = null_result,
+          handler = find_one,
+        },
         findOneAndDelete = {
-          arguments = { "collation", "filter", "hint", "projection", "sort" },
+          arguments = {
+            "collation", "comment", "filter", "hint", "let", "maxTimeMS",
+            "projection", "rawData", "sort",
+          },
           coerce_result = null_result,
           handler = find_one_and_delete,
         },
         findOneAndReplace = {
           arguments = {
-            "collation", "filter", "hint", "projection", "replacement",
+            "bypassDocumentValidation", "collation", "comment", "filter", "hint",
+            "let", "maxTimeMS", "projection", "rawData", "replacement",
             "returnDocument", "sort", "upsert",
           },
           coerce_result = null_result,
@@ -690,48 +867,63 @@ function M.new(options)
         },
         findOneAndUpdate = {
           arguments = {
-            "arrayFilters", "collation", "filter", "hint", "projection",
+            "arrayFilters", "bypassDocumentValidation", "collation", "comment",
+            "filter", "hint", "let", "maxTimeMS", "projection", "rawData",
             "returnDocument", "sort", "update", "upsert",
           },
           coerce_result = null_result,
           handler = find_one_and_update,
         },
         bulkWrite = {
-          arguments = { "ordered", "requests" },
+          arguments = {
+            "bypassDocumentValidation", "comment", "let", "ordered", "rawData",
+            "requests",
+          },
           coerce_result = bulk_result,
           handler = bulk_write,
         },
         deleteMany = {
-          arguments = { "collation", "filter", "hint" },
+          arguments = { "collation", "comment", "filter", "hint", "let", "rawData" },
           coerce_result = delete_result,
           handler = delete_many,
         },
         deleteOne = {
-          arguments = { "collation", "filter", "hint" },
+          arguments = { "collation", "comment", "filter", "hint", "let", "rawData" },
           coerce_result = delete_result,
           handler = delete_one,
         },
         insertMany = {
-          arguments = { "documents", "ordered" },
+          arguments = {
+            "bypassDocumentValidation", "comment", "documents", "ordered", "rawData",
+          },
           coerce_result = insert_many_result,
           handler = insert_many,
         },
         insertOne = {
-          arguments = { "document" },
+          arguments = { "bypassDocumentValidation", "comment", "document", "rawData" },
           handler = insert_one,
         },
         replaceOne = {
-          arguments = { "collation", "filter", "replacement", "upsert" },
+          arguments = {
+            "bypassDocumentValidation", "collation", "comment", "filter", "hint",
+            "let", "rawData", "replacement", "sort", "upsert",
+          },
           coerce_result = update_result,
           handler = replace_one,
         },
         updateMany = {
-          arguments = { "arrayFilters", "collation", "filter", "update", "upsert" },
+          arguments = {
+            "arrayFilters", "bypassDocumentValidation", "collation", "comment",
+            "filter", "hint", "let", "rawData", "update", "upsert",
+          },
           coerce_result = update_result,
           handler = update_many,
         },
         updateOne = {
-          arguments = { "arrayFilters", "collation", "filter", "update", "upsert" },
+          arguments = {
+            "arrayFilters", "bypassDocumentValidation", "collation", "comment",
+            "filter", "hint", "let", "rawData", "sort", "update", "upsert",
+          },
           coerce_result = update_result,
           handler = update_one,
         },

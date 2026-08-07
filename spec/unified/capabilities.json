@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 99,
-    "runnable": 99
+    "passed": 307,
+    "runnable": 307
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -16870,7 +16870,6 @@
     "crud/tests/unified/aggregate-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "e43c8ca4f096598892c762cb5665b2128b4a1e80e7a13bef063d2e1cae2aaf1b",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -16894,12 +16893,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "65d29b9ed5087e40e35d827bf5712e3b6e06721f2cf0791eaa410a91a0a6d758",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.allowDiskUse",
@@ -16922,12 +16920,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "fbfbee2df49066bed9ff56063588e5d8cc10ad8a61cae87745dd627741591789",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.allowDiskUse",
@@ -16950,7 +16947,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-collation.json::test[1]": {
       "activity": "UTF-011",
@@ -16980,7 +16977,6 @@
     "crud/tests/unified/aggregate-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "8559edda3107249a94e5a5157c0401381451f53768aaa4888651dbbc212ce8c5",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -17005,12 +17001,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "0457cbe0817d4850dd2ac63211944bcd36277109e279d38c61ea00679b2d7c34",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -17038,7 +17034,6 @@
     "crud/tests/unified/aggregate-let.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "d36474ffde9fe650d34b3078d5d4734e7ce74fe6fdc1991bca7243eb9e9fb5b4",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -17061,12 +17056,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-let.json::test[4]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "48d54183a4dd6e81c24a3fd0d48f0031f7776cffb53cb42326760feecc92aa54",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -17122,7 +17117,6 @@
     "crud/tests/unified/aggregate-merge.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "900f854e4d68d66ec8a5e66c50d773bf4ad49c415db22c72d11b20408825ecc6",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17144,12 +17138,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-merge.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "c89a0aeb25ff4ac47db7ec2092f0fea3522129d8676edf00961a3a7ad1910ea8",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17172,12 +17165,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-merge.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "20764489af57bb6c7fc95bf71d1a0da26c484d1272f1a2460a5eee01366cdf1c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17199,12 +17191,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-merge.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "0980951888ff3d0bc5b5b85809df25644554ab11bd795096c1a6d678d0d5b130",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17226,12 +17217,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-merge.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "ce30143ed497fd46401bec22d1103347a0e88ceaf5f09c01cafa352e6131111c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17253,12 +17243,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "b8c85dc47bdf96a82805e662045037a5ee495b348883bea08bef724f748da367",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17286,9 +17276,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "2e27df7f9814cb567481d92d76be4e79a51c36c9a8fb8a25bbec2a213fa19678",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17316,9 +17306,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "dc933c8f7f9bf8c409d04c9cc7188902db4bd08cf32d87b056f244698ddb1ac6",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17346,9 +17336,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-out-readConcern.json::test[4]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "c966daaa3aac629fc4ecad92c6cb14993431464e8c88a09c36c20ba897912494",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17426,9 +17416,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "ceb73a6ebabe0632572c37018e860f1875671d8b9e015151e55b82989af46ab0",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -17456,7 +17446,6 @@
     "crud/tests/unified/aggregate-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "e998db243c5af5e089b9f2223961a73a2073f94d9e43247b7a9025d8495cc7c5",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -17481,12 +17470,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "3a7d581911b6310d8352774399c99547d11f5c0ce84d1eee0c97486c64d16f6b",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17515,9 +17504,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "45bf64d7c844c65654b8ba96bbe7a13879b455c776aa097c6eea133bf4c2ce15",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17548,9 +17537,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "5b9dcd05958a9d3a5e79a2deb3e0a7d100a4e022062e635617ba33090e8488f6",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17579,9 +17568,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "d192be5813a37909789134e0122f624f3a3f5406a1a2d705eda68850d2e11adb",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -17614,7 +17603,6 @@
     "crud/tests/unified/aggregate.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "9419d30ee2ee4d107ac4d42dd5567376fd310bdd55f35a71b1bcf54b2dfedd75",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17639,12 +17627,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "1b99ffbdfa12f09fed08990ae95e011fce46c021c42e3d154892990e4f494d66",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.comment",
@@ -17667,12 +17654,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "33cbb9d1ff98136ee45fea2eebe8c342ee8265785dac45aa51de9ea8281f3a94",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.comment",
@@ -17695,12 +17681,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[4]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "3b0a5676a78ad33f857fc3a7be0777fa3abcb7c1954dae7396e37aabd242d151",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.comment",
@@ -17728,7 +17714,6 @@
     "crud/tests/unified/aggregate.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "0f3eb49da687f3d26b3800feaa8d2599afd9a81dd589968f3766096438739322",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17754,12 +17739,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate.json::test[6]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "f5483fb6ef4821ef644275f774cc132c3f5db64589c7198268db3b36fe13e57a",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "aggregate.batchSize",
@@ -17816,7 +17801,6 @@
     "crud/tests/unified/bulkWrite-arrayFilters.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "6361c0bfee18afba21b26c5301ae439fb4092bdfaa5c408b0354d6d31fc13257",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -17841,12 +17825,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-arrayFilters.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "bf57dea468c569b7e43cd2d0ed7db91362f09fa42fbb8f63b26ea5cef70ab793",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -17871,7 +17854,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-arrayFilters.json::test[3]": {
       "activity": "UTF-012",
@@ -17957,7 +17940,6 @@
     "crud/tests/unified/bulkWrite-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "63e8469c9d5377faf7aafe6f10312abb1cb0b82d562ea2c065be9bea73e3f2d1",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.comment",
@@ -17982,12 +17964,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "4009bd91d34c42161a09f945b5dd74ef604101667152bad71dbed8bbeda459c9",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.comment",
@@ -18012,12 +17993,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "2f8a6133f680791dadcaa03ca97d30ff10ecabeb210ef8ef7bec4ca6d07fb40d",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.comment",
@@ -18043,9 +18024,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "cd04a66f6cdd808c49a83897af906c5c5b054c37953c398c83f1f3d9823ca6bb",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -18071,9 +18052,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "17764c7a78fea7f97d345ce791f0a97d54a56fe2e838b0de7ac83b0db017f39d",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -18101,7 +18082,6 @@
     "crud/tests/unified/bulkWrite-delete-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "711672a64b01499b4f20ab1a344cf10e1f620fa61ac91e3292203b7f95a0557c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -18126,12 +18106,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-delete-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "caf76c2c62bfd93e551921e3aa4f663c8133d5400435766400558717416452c9",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -18156,7 +18135,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[1]": {
       "activity": "REL-001",
@@ -18211,7 +18190,6 @@
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "6c5860a2046d9c966cf56dbd7ee9a38b81b8edf070a68c1fef57cea0b0007847",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18236,12 +18214,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "0f721d27d4d3006f880229b9b37122f9f17e649d1a480d0cf8abd1ff941f72e8",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18266,12 +18243,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "860ba455a6a7992680cb5f16240e90df88b45c3955cf35df6b1eaebc394bd9aa",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -18294,12 +18270,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteMany-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "3d8e62d51ee2a2d55897b12daf68090818efdae832f21e6c8f4bc82e53091f7e",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -18325,9 +18301,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "05b1f145766696a7d4c2b1a3dae74b1fb924d1606c8cdc01a0fc8cb3c7276220",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -18355,7 +18331,6 @@
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "ab8584ec597f2612463e2fe422b074bb933b9af09fa708c9a59eaf7d3e931878",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -18380,7 +18355,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[1]": {
       "activity": "REL-001",
@@ -18435,7 +18410,6 @@
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "e20ec9066312a553a62308e4eec52d53e1fb35c3c24fcf15e48a1c9df4130f2f",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18460,12 +18434,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "34bf4e43aac9692baf7d50053bc2a210b21b5de32c56e637e68c5970351c3b54",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18490,12 +18463,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "d0cbd99b51abf1565cf5b84ed51ef61688a84c73a2def46c66a489876cbfb73a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -18518,12 +18490,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-deleteOne-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "571a1366d06370e85c7093ed7622624b6f21bf1a83aca4afad63cc5431cabdf3",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -18549,9 +18521,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "bc832ba1b00247c5e1f362610b5d7d0995d1f9055cecb08de641e2b4e98313b0",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -18579,7 +18551,6 @@
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "8f1272439edc3bc4a38dead5e270a34635148c1190f504392c4caf759bb4ff79",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -18604,7 +18575,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-errorResponse.json::test[1]": {
       "activity": "UTF-014",
@@ -18642,7 +18613,6 @@
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "c251e078ca2d417e26578794af32fd64b62caa37cb02a62659b07d7bc06e393e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18666,12 +18636,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "0bf7ec17e191debf465842d786e29fc3f493a86082044913e9e48c2c0fd0f3ac",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18698,7 +18668,6 @@
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "5c15732a2410a5955d16f89e512e720a947eaa1c4dfe6ecbe61c27f35786620f",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18722,12 +18691,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "9f315ad5c3ce7a02172506bfcd45fc37ec33457e7fb2882235eb47765333342a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18751,12 +18719,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "b89ca369ea277514ddf17dee8a37df25a288aad114e3e4a7b3b07594691b1434",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18780,12 +18747,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "67a226009f11c44be96badb99912ffb680845c2b6b4026ab8ff723e66b35926b",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18809,12 +18775,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "e892aae818722c3f27dba87c02ab23ddacfdc3001a6f3501474617f98e534236",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18838,12 +18803,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "123ce0af925cbc6c86794037a91cd5b25eb62675c60882188677365208984bce",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18872,7 +18837,6 @@
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "c0548bb22d1cd4a70d8787858584bd6868b3c927611c594f25675bc0517e880d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18896,12 +18860,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "62b732a32286035d96c268e72dbbbad8deffe4577b4654bdae2042e4e484eb51",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18926,12 +18889,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-hint-unacknowledged.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "7c3a08339d68f67d9cb3e7f5b58a44c786d4109cb24222f1da6285122b9a2329",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -18956,12 +18918,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "0dc25bb6d3c01ab5d5716b7822ea09f2c3ddd94e51a58bf9ec0787bc0eb155b3",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -18986,12 +18947,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "d45da63d00461b168fb22dae1027886f40d7d7d389e6a9d3cb21c6768fbe8f0c",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -19019,9 +18980,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "ed931108dc8beec8b6c6e714438b0c4da47053cab86ada07ca54c10297c6ad3b",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -19051,7 +19012,6 @@
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "68ef9876696e51335771e7b43becfe15d55e2da85dfa2a3f0730582e2e941e93",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -19077,12 +19037,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-sort.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "4a34f5e311b4481dfd715328ab3f9c696981cefe6ba7c51a3e9b42d9cbf3d193",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19107,12 +19066,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-replaceOne-sort.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "a97bc6111f844448c31725f7773fa5e35f933aaff6bd9468103c6612dd205d1a",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19141,7 +19100,6 @@
     "crud/tests/unified/bulkWrite-update-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "d3525bcbd0a0c25ac41fa7f7bfb006bac7133805c3e47d91bfae05293527fcb1",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -19166,12 +19124,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-update-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "f54a055b768aa74647ddafea15a4fea727b4780afe8236b469a884061b6058bf",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -19196,12 +19153,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-update-hint.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "1744902729fa87c35c7ed29e13850e31fd5418d3bbf6549e0702a8151e025a35",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.ordered",
@@ -19226,12 +19182,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-update-validation.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "62c4f290838894f95e6599743310aa694b4baf11aeeb0dc63aeecdfbc29e138e",
-      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19251,12 +19206,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-update-validation.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "80c407ef93a6eb13fdc3e6697989fa63aa2f1be91a5c80267c6270c6a03c728e",
-      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19276,12 +19230,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-update-validation.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "f8619df2416352a3c65dfda23e35392512715ec80d067224fd1911f3d8852906",
-      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19301,12 +19254,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "1323920f8edf1bcb3cd0345403740e2282ca8e7e581d9c9acd88835c6781154c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19330,12 +19282,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "c42951ca94a6a0613698bce039187dbd8ce568b769e21fdb5265d18bfdb0c12b",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19359,12 +19310,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "6bee77d6a15bf13ed179d8c232a1f9f714bbe934ae083fcfd0b04b4751c1240d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19388,12 +19338,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "599c2a0f446ff16e0a3309970a4c48ab21e3a4118d6c9b2a2c1cb917ca23eaea",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19417,12 +19366,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "7e6b7aa925596f6dc609e9bdf7a2afa1640318c3cdeff8ea80f07908de09a7c5",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19447,12 +19395,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-hint-unacknowledged.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "d1dc83f9758c71fb133becc48dd7c9213f2153176640a6feeecdf14157dd6466",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19477,12 +19424,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "50c1ae71bc304c08e90db415f844c55796b4f1ed3ddac8b3f51bbcf3e9737415",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -19507,12 +19453,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "5631df326566b7d9ef56e96f62efa1a6cf91fd6f22b1d41714cd916115a5ff0b",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -19542,7 +19488,6 @@
     "crud/tests/unified/bulkWrite-updateMany-pipeline.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "7e3cca87ce493f46e55269855e250fe8e20236beec8a234f601c85ba5724de4c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19566,12 +19511,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateMany-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "a9d583cd56dcd3eeaf7ed1431d44c08867428554b8e2895fee929d348c078a96",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -19601,7 +19546,6 @@
     "crud/tests/unified/bulkWrite-updateMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "b741ad3805bf8b6fe9019ff0ca17f229805a3d59be9acef8805e375fe79d3121",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -19627,12 +19571,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "8a4510b4b1ac81a6318b4273a816cc65158768d0c3826c9e5720f29baf6005dd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19656,12 +19599,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "e9982a7e727f6ded76903b17380304a931f4735eeeb25b3944a18d6ec6a3b58f",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19685,12 +19627,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "d57c2b9f6debbbd39bc1fe8e43517998afe48c310f0c8726ec7fba13b0cc9f95",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19714,12 +19655,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "26977333bd057b95d2d64b127fff74e6d0894a72eed3fc046dbb412943504006",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19743,12 +19683,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "6c0a7b3c0faa106447f6ad9b42216ad8c47af7537c43159b2f282da65ec7151a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19773,12 +19712,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-hint-unacknowledged.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "5b807e9ec7464205ee701a7ce02a7655a1b3d3a9ab514644c73538c9eddac397",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19803,12 +19741,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "83eea545d7820c5996ff862dd095e0d5fb986a56c9365ac85e81372d66858900",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -19833,12 +19770,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "90a3fc998e5cfad1c368d6779f0ce662b024085b1d917da603589351bd091261",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -19868,7 +19805,6 @@
     "crud/tests/unified/bulkWrite-updateOne-pipeline.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "7f5d9a7556fa328aafae874bb4d14e6fd02d57989fefaedd10243299d8c8f7a0",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19892,12 +19828,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "d704d91c0c3fe7959c6a24ea8f3945cb3466e2c66d8204d3af12f7b4458b0409",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -19927,7 +19863,6 @@
     "crud/tests/unified/bulkWrite-updateOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "0c46873ca383dc2b131c328779a58db7e6755f28c0e2d6554cbfbc4724e2060f",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.rawData",
@@ -19953,12 +19888,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-sort.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "33f57eae6b72dce2ea968a4060abb6b2833ca01e85de60a262b77af920ebcb95",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -19983,12 +19917,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bulkWrite-updateOne-sort.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "23878d8e881ea56259f70c796efc9363e6a290b91db69bd2666d603c544643ca",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "bulkWrite.requests"
@@ -20283,7 +20217,6 @@
     "crud/tests/unified/bypassDocumentValidation.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "3273f8d476c1b8fdb92cccdc41ce69c4a3fd482d98e82b8d0c085ff9293b38e0",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "aggregate.bypassDocumentValidation",
@@ -20306,12 +20239,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "1c171919dba45de5a39e7cfcec8aecc207264ec1509888e6980c5f83ac085408",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "bulkWrite.bypassDocumentValidation",
@@ -20334,12 +20266,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "3058541120d82293d347f6a4ea44a92560915bb0d3a0603c9eb2a191188d2851",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.bypassDocumentValidation",
@@ -20363,12 +20294,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "2eedd2b31588d28a85c292818fe7647fddbcb4adf2d1fe1b406f103f2322ec72",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.bypassDocumentValidation",
@@ -20392,12 +20322,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "be13c996836f931ddb1f3c2d9cc663a0f7596df7aec38e17bb306ab52417da40",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.bypassDocumentValidation",
@@ -20420,12 +20349,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[6]": {
       "activity": "UTF-013",
       "fingerprint": "c5a060b1a2f97cb234767a346052f27b671ce767bca1c603b7af1b0b6b245aed",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.bypassDocumentValidation",
@@ -20448,12 +20376,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[7]": {
       "activity": "UTF-013",
       "fingerprint": "73a7c9bef8f02c6e8f18888a65b9bc2854887e5e0172eebecd2fbb9bcfbd0292",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.bypassDocumentValidation",
@@ -20479,12 +20406,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[8]": {
       "activity": "UTF-013",
       "fingerprint": "f080d16e6023b26ecca21420aa95e4a9219e156fdf0aa6fdfc74ebe579cd77b3",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.bypassDocumentValidation",
@@ -20510,12 +20436,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/bypassDocumentValidation.json::test[9]": {
       "activity": "UTF-013",
       "fingerprint": "2ea4c00043025ef7479f000a46a374babe3b7af898998fd62bf93a570ea9fb2d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.bypassDocumentValidation",
@@ -20541,7 +20466,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-delete-options.json::test[1]": {
       "activity": "ADV-007",
@@ -22154,9 +22079,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/count-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "0d57c1679c697d5756011be750b4460a2601cb34bdeb2a54a6b908ec04d4992c",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -22182,9 +22107,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/count-rawdata.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "c7836bd92e3e9e908112b93a18e34f3012c39944b1f84d7fc885ba8deebbc04f",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -22387,7 +22312,6 @@
     "crud/tests/unified/countDocuments-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "ce057c67c00370e8a0361a003f524da51629f2a2a119fc3b99227cc26a3dba99",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.comment",
@@ -22410,12 +22334,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/countDocuments-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "2fc057b7c507ef5d06932ac82a3fa149a6fa3a20c29b64e20cee9213995388d2",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.comment",
@@ -22438,12 +22361,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/countDocuments-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "6f7365efa5023f245f7263455bb6451307d7af248e8256ac19b4fdd7e98d3cb4",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "countDocuments.comment",
@@ -22469,9 +22392,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/countDocuments-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "7831612b14be4c52cb5b2f15d3de1b78a89ea5a907ec3d91c464397627f05e46",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22499,7 +22422,6 @@
     "crud/tests/unified/countDocuments-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "57dc9639a236d1df93144849a9cea49b672e22bb51999d7d4e9e271d7cf207eb",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -22524,7 +22446,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/create-null-ids.json::test[1]": {
       "activity": "UTF-012",
@@ -22716,9 +22638,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "14c778737de6f76cf689faad36aa3fd0df02b61ee637b6e3b223b69938d9e68b",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -22746,9 +22668,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-rawdata.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "b2e66c11922408dd234b8cbc536208f1cedcc3c49690e6d2f18ed59192d096e7",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -22776,9 +22698,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "d06f901672a91cc611c1765eec1e82b6aa926c42341a838cba666e87e772a2af",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -22805,9 +22727,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "700021ca77b32d344d52224c693f5dc4e05ca893365fb03965787b31c247f847",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -22836,9 +22758,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "f6f0cc696a634e6759aaab56cc72d3641248bf8d62d756dea6dfd71bf8e862b6",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -22865,9 +22787,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[4]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "39a3c6225754193a2280f522b7b4993af1b288e4ae4bc59341f77889b0e62e4d",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -22974,7 +22896,6 @@
     "crud/tests/unified/deleteMany-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "d55e2a21a26d143447340da06396f07020dccaa3a43abeb555428f8ddff0001b",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.comment",
@@ -22997,12 +22918,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "9c61ca7e4633e009c3ad592fba6f77b3de1c90c30a787dde71240b3a1070ee68",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.comment",
@@ -23025,12 +22945,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "96cb9d59acee870205ceef6eabab438089ff4b1faf8662ba097fe52db5a29c9a",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteMany.comment",
@@ -23056,9 +22976,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "3ff633561c60e67a9fa3dcc7ac8d56bd20b002a291d8674237a349437d206839",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23084,9 +23004,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "3d23b5f4dff4f3e4ddb12140b7a18ae5852a844612f0e8e95c79d65a1097db4b",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23166,7 +23086,6 @@
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "6703b1c63124ff3107510da35b7305a6666892950075f7cd12e81c5382bef417",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23192,12 +23111,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "4c7374e50ce201e2d71ddc1e5572b2554a2fa5926e447047ccaf7e2a103feb57",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23223,12 +23141,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "5ff76a20677e589b2166de97c2d78ceb46137457412930c9d5299d5423662339",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23251,12 +23168,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "7fe2d1acf44dfc51cff529fd17a8144653e91ef2011eb6c9d218f67373fe2555",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23279,12 +23195,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "eeeadd6a820593fb6ed3f55bfdeb52d95e7819a4c354350185f90fe1a7f7bef6",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23307,12 +23222,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "6df0ef48fecd3d14d7c14c9bf1ddcbc66724f2ad1c0aa75b2df3ee4076ebecf3",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23338,9 +23253,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteMany-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "e32f1277ae910ee226e378f5e5501e489ae14a4221efd5299bfb9117624a8763",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23368,7 +23283,6 @@
     "crud/tests/unified/deleteMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "a41ccea8a20b3681f05963f590252a56598f624d1bd1c08034aa6fdf74a3d465",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -23393,7 +23307,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany.json::test[1]": {
       "activity": "UTF-012",
@@ -23471,7 +23385,6 @@
     "crud/tests/unified/deleteOne-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "a12ed3e5e0a194f8582fef4d4f9ae465d1522025c3467f0fcff5cc7aea7e93f5",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.comment",
@@ -23494,12 +23407,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "b79c885bf94770fc9a2aef8d014df9d235970152624b00aafb0d620e5b0bf4fd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.comment",
@@ -23522,12 +23434,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "08f6ec7c642544af2e157559666f9229adac452903d1e55989499058792b8748",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteOne.comment",
@@ -23586,9 +23498,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "3e0d975d1ef8ab550c63e8e97fcdcc554b1e78712dc5a65d478ed99896181ffe",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23614,9 +23526,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "d7e06d162f71c6fa3dc5b0c63d1fb895bf3174bea44effd5bae72c20c7b9754f",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23696,7 +23608,6 @@
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "10c4d68884a307044c23643d5e352de98c0c2b144ce0e54bd88578ef29ec1f4b",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23722,12 +23633,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "46215b9ac7b04142be2ed7064a0a16aadd5e953517619dd924ca413fdc30f0eb",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23753,12 +23663,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "48d7abb6270e8c261c792a2cd80dabf94fb2fc0302cf752f5a46a2162fa013c5",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23781,12 +23690,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "79bbee3cfae6352b4c7668ceaa01fa9d8d3a7502f8fed9c1b361ba6e44bde424",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23809,12 +23717,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "c231e7169684811e75e524da0ae467e5a7ed7830a0682fe31982c78a4b16ce45",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23837,12 +23744,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "a0156b16bb1b7b6bc89b101a77ee1e501393d806069e4d21d50649c01a23c06c",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23868,9 +23775,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/deleteOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "90e6125df06558846fe4da089687b38e29d1f57675e843d422dedc2a6e11e3c8",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23898,7 +23805,6 @@
     "crud/tests/unified/deleteOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "33b85dd263f0363211c77611de16a8cdfcc248f7e8d72e52712d05520ec4d1dd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -23923,7 +23829,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteOne.json::test[1]": {
       "activity": "UTF-012",
@@ -24026,7 +23932,6 @@
     "crud/tests/unified/distinct-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "a5360ffebd7ddfce0c71b937b66df4531ea2903151198c338df3d314fe53f558",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "distinct.comment",
@@ -24050,12 +23955,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "e009cb8e8d674c65fef59f513f476dbf0bc28bddce8493859ef871eb2f8ea0bc",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "distinct.comment",
@@ -24079,12 +23983,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "5cefd159a8c330bd06fdc6d214705ac67fc1ac8ff966c0a776a3a77040cd1537",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "distinct.comment",
@@ -24113,7 +24017,6 @@
     "crud/tests/unified/distinct-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "e791b62681b622c54a62805c7ddcae639d1055215b63a88bdef9523ec8ea7fff",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -24137,12 +24040,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "7f563f9f3d124dbbce8b5b3304fd7f708d0611a986435604077afd273b0cd506",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -24166,12 +24068,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "eb7eb21837cebac4bce4624fb317ef5b4589e4ec8a4cfb20ff6473e9d77a88be",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -24200,7 +24102,6 @@
     "crud/tests/unified/distinct-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "ab7467169e159d67dbc19dbe83b6503002e72be3ebc5edb9d730edfd66728b88",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -24226,7 +24127,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/distinct.json::test[1]": {
       "activity": "UTF-011",
@@ -24281,7 +24182,6 @@
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "632ac92e2e2390ba27ade39ec9b43edc3efb20abbb43a960fbae265386ea0c5c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.comment"
@@ -24303,12 +24203,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "8b493435ca9cc8e7020cc97fb6c084af5808848a9ade9b415c63d63d69a29072",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.comment"
@@ -24330,12 +24229,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "44e25169104337597fd7cd9dba07535de40e349dd71518bd675eb71a40083408",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.comment"
@@ -24363,9 +24262,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "c001f1f13bed9ba542576114c02b03152e427b4f13b9cf2df4d32075a2258744",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.rawData"
@@ -24392,7 +24291,6 @@
     "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "b8ee1d3421ad1be09952d995e0f8464cd3541409db56565b6eadaa5d77b16098",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.rawData"
@@ -24416,12 +24314,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "3c40caf43e3cc72ee67fcb2b0383bfbe68b55515f737fad76cc9f265823edf36",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -24441,12 +24338,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "542b5bf7a73e0bb9063726d1c0eded0ddd1adb4f86bf61ea7ef19824642c18f7",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.maxTimeMS"
@@ -24468,12 +24364,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "88c15ffc9743dfcbd854bd30d171f0788d7507b294d30dde8e6acdfcc1250969",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -24493,7 +24388,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[4]": {
       "activity": "UTF-014",
@@ -24564,9 +24459,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/estimatedDocumentCount.json::test[6]": {
-      "activity": "UTF-013",
+      "activity": "REL-001",
       "fingerprint": "73f6eaa656821f110301f517238b60cf7fab18f06d4155073813eaabbadedc7e",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the operation is outside the v1 unified adapters and awaits release conformance closure",
       "requirements": {
         "arguments": [
           "createCollection.collection",
@@ -24596,9 +24491,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "c169f04febf57156a5589155d0d3538d8b0ec2cf1afc2ffdcc84f06c780f6b3c",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -24624,9 +24519,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "e1cc82ff58c6fd1eb68bcb9a993161791b874808182fbe6d8978609e7dc1ce94",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -24654,7 +24549,6 @@
     "crud/tests/unified/find-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "9b08d93168dd7a89d42e47461535b518f8833557789558081c0f8d8e357841d3",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.filter"
@@ -24678,12 +24572,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-allowdiskuse.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "b4fdc3670a575c7146ecdea92f5b7649874dc87673cbe1d1a5865d144b426601",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -24706,12 +24599,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-allowdiskuse.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "59106aa5a2d5864520b349695a48ad01bac8692388a1c6f3f0a4797e1fa2c4b9",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.allowDiskUse",
@@ -24734,7 +24626,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-collation.json::test[1]": {
       "activity": "UTF-011",
@@ -24764,7 +24656,6 @@
     "crud/tests/unified/find-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "8a18915a18a0d40f62573d42df936c34b0301161525fb2848e7a61da42d8cd1c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.comment",
@@ -24787,12 +24678,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "6a99119e63d1d7bc72a44453bd3b84983370633b5254787abfc1cfd3f36cf6b3",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.comment",
@@ -24815,12 +24705,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "1249432587925f6597ead1f1b5b7345a8e8134def4e44fe3366a1fcaa037b7a0",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "find.comment",
@@ -24848,7 +24738,6 @@
     "crud/tests/unified/find-comment.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "c7b99548a05d6601366b77fd3af9ffcfccbbdd892d727ae09e48d810b79cc831",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -24874,12 +24763,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-comment.json::test[5]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "9e303a066beaba142e3b635999cb23b465432319740dd831eab4153d06355110",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -24911,7 +24800,6 @@
     "crud/tests/unified/find-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "e0ce20655e093589cc28b42b0bcadc7e5af07cb875688f1a3d02dfdc78c472a4",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -24934,12 +24822,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "8c59d670fa4306359ddac92bb1918e387292061cb868ffc37eff21d340f5c1a5",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -24965,9 +24853,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/find-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "a45b7d6eb6049832d94579030925a000c39c339076f1667bec78d81c21f84365",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -24995,7 +24883,6 @@
     "crud/tests/unified/find-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "b9c1c842674808c9b11f7414462af86132b6eed6d3ee145fb6d98cd543ec73cb",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -25020,12 +24907,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "10fc2eb2fc668e6ae0f94b9e1df0665050abe8ee2d30b68fa6164fa07a7969e9",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -25050,7 +24936,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/find.json::test[2]": {
       "activity": "UTF-011",
@@ -25133,7 +25019,6 @@
     "crud/tests/unified/find.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "7ffa9253d2fc67a19134617bf8ed34f60a8a2ef8af6a08fe7e94523bd3520324",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -25158,12 +25043,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOne.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "5171da6f895eba72b59894041220aeec54b3b10e06d530f8aeb670bb6a9346f0",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOne.filter"
@@ -25187,12 +25071,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOne.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "82645f8f167032e7b58c4e38c2b4b45045cac8923ba8a0196499f6a9e293e8f6",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOne.filter",
@@ -25218,7 +25101,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-collation.json::test[1]": {
       "activity": "UTF-011",
@@ -25250,7 +25133,6 @@
     "crud/tests/unified/findOneAndDelete-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "05935869dda860231224ed2b0cc1f91a26fcf421a765a228fdf52989c3956d1e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.comment",
@@ -25273,12 +25155,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "61c36ee8a195c590c80a3197cd0f07c037dd754befbc840a16fba67c2fba918d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.comment",
@@ -25301,12 +25182,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "4b841c5bb8cdd99ba0b5314e96c71c35511138ff0063fbb17b7c481eca428552",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndDelete.comment",
@@ -25332,9 +25213,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "84feeba5823b6f816d79e582603eb2cb5f63930ed13913f855769342e829cd44",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25360,9 +25241,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "55f16d0896c5c50bc41b36c53541a5ab1937b0c0ec59ce1ec9be8dc585be46b4",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25442,7 +25323,6 @@
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "fe97e57669d35832d3d0bec36be79739225614797ba00ad2d4b39a24a695ab3b",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25468,12 +25348,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "3523d464506c053fbca8a470df8b4f19ab64cb0cb903f29e0c69e7e73671fd19",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25499,12 +25378,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "bdccb1abb73786dde06fde9d35f675e5ce0d6ad78d6e6ef1025196909ffa35ff",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25527,12 +25405,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "f52b555e5cb119f8cad4c4cfe6adc4a78445426932f643c58cef400be47fd100",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25555,12 +25432,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "747098b32246f136f625fed2d2770cd65a21aa25215b5f63d5e33f93e288890d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25583,12 +25459,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "85db8b7c2fc3ea06cb2b2d8e21f971858aa472dbc921adff5801e8a84368407f",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25614,9 +25490,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndDelete-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "1c4a77da07aee9f1f04ba924945d871656dccda369b61928622821d095b980a4",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25644,7 +25520,6 @@
     "crud/tests/unified/findOneAndDelete-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "40fe017d70099f1c8772641ae54f4c6471a76ad7cf2402bebe1ba440840271fe",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -25669,7 +25544,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndDelete.json::test[1]": {
       "activity": "UTF-011",
@@ -25781,7 +25656,6 @@
     "crud/tests/unified/findOneAndReplace-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "d37f65f14e7338b8853a70015d608573fbf8277521428249a8ff5f436076eb33",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.comment",
@@ -25805,12 +25679,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "a4bfc071a220c7edeeea7c67ad614e9482f9ae764a2c71520980c970e0d5bf61",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.comment",
@@ -25834,12 +25707,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "e91cfcd5f1a7325944d8de8716f18b11e21ab6c35006bae4972f24bec90e3c0b",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndReplace.comment",
@@ -25868,7 +25741,6 @@
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "c32fde81faeae0ef11e5c0c52286ea02d0dbb20d9f2e260976673427b1f51976",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -25893,12 +25765,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "11224bea8ab13c1b7766cacd89faa390ff2cb2ffa620f0320dd1866e4289786e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -25923,12 +25794,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "4b9ce95b5963734ae0f61cb7415ac5af33c6d40af2e4582ca7caccf7283eb382",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -25958,7 +25829,6 @@
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "9bf6716f5ac751c4088a4d358129ce5bfef05491b1b835e028fa9dae9942223c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -25983,12 +25853,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "dbda23b132f67363389c87eee9d0f69768358d96cd815c0e149622cd15f6683a",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26015,9 +25885,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "4beed59c7077ad1eafe1fcf33d5ef10e70c5a4cb44a7921551e1bd9188fdfe15",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26100,7 +25970,6 @@
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "0382d6e90a6cbbd8eb3c38903e8bb67684a79eb4033f00667883894d8110509f",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26127,12 +25996,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "6737d2d877065fd8bdc4a0093853cf5949ba89a8c8006d57e8dac81f271e008e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26159,12 +26027,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "013963cadf8ef76c87a7a1c267b4e407dc35757cf57a5c4092571a59365ce1f1",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26188,12 +26055,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "314569c5f3b78a31267c39d3846aeed62d97f574cf39a327928f645b94d5f929",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26217,12 +26083,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "e25edfca4d7f17c374d2dc36025629211f299721ef582a32afd9c6ab2f346357",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26246,12 +26111,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "b5522dabc8e9686fda3c4a27da4d7b2f2ac5caed76aa843ec41e42781bd1f488",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26278,9 +26143,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndReplace-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "2417a5b0e60b9be89fb499f599afa67a31a23393e191c1f7abfe07d10afdfb93",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26309,7 +26174,6 @@
     "crud/tests/unified/findOneAndReplace-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "4d557c568e051ba68f9409c3514ba7ed1c95bfd4ad7fb60dd0da351a840ce564",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -26335,7 +26199,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndReplace-upsert.json::test[1]": {
       "activity": "UTF-011",
@@ -26723,7 +26587,6 @@
     "crud/tests/unified/findOneAndUpdate-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "3799b641cec290e69d0049feac06031e40f886a77a23795796c22e83e64a70ed",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.comment",
@@ -26747,12 +26610,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "81333e23c13a80b4869fa7c69ff64a4312720937ba4579ce060fdf6fa5d6e87d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.comment",
@@ -26776,12 +26638,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "c4049e17316d1efe3eea53417f82ea0727e47fd124337f49519c77d7cbfd4058",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.comment",
@@ -26810,7 +26672,6 @@
     "crud/tests/unified/findOneAndUpdate-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "628ba4a05e6a3d2eb143f822fef9585dcdb939a148434a289797a1b5e08e1b0d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -26835,12 +26696,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "281d285d650e265cc6d86c3ff9bc6d18e423e5fb0065e0e7d678deccc6abf223",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -26865,12 +26725,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "d81bcdb824e805427943dd5f8ee4a27b4ed46a05d8b317d0a5141078c9c3a484",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -26895,12 +26754,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "4baec3a0b7aab613879b540316a042ef6a36df4c9d4a5412f90df50ea16bbf6e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -26925,7 +26783,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[1]": {
       "activity": "REL-001",
@@ -26989,9 +26847,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "23ab4debae3c3cc882a579129d0eaa8bde90b997ad5f7bc5015ad0a52d1ef837",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27018,9 +26876,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "49037b863510469508c03175974013f867731a45e391bb94113a26568174fb2e",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27103,7 +26961,6 @@
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "295451d47d8faa8a02b0893389218d45d8c051c6d3a0ef88228ca88cbe629986",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27130,12 +26987,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "608dc8290b3bfaf5704ac1532f96df6d3d81f1bba640be893e759ea81ba37ba0",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27162,12 +27018,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "edcd84e4ed1bc924a44017fc87d8b91108c63374cfe5e7e71d2407be0fc897af",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27191,12 +27046,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "fcf76e211d3b63a8967ead3492e9a5c0c493aea77c6ba902f815317685cb30c2",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27220,12 +27074,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "24ad2287d87e74334e696b8e209bfadffa2faf1998d31482fd7d549031967f44",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27249,12 +27102,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "5d72c368543f16e0931763c2fe0223fa5269717ec9a6296cc24649fbc66dec51",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27283,7 +27136,6 @@
     "crud/tests/unified/findOneAndUpdate-pipeline.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "a9538272f5e9557cbcc6612e5669c0326acba6fc90cee775b168497723816b63",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27306,12 +27158,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "7d7e764b86be9567a770080177d569777c4a1080e0f3ec3d41587a1512cb53c1",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27340,7 +27192,6 @@
     "crud/tests/unified/findOneAndUpdate-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "075971ef7899767b8034a50e5b55022de43626d8a2500cfce950505e787c4202",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -27366,7 +27217,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/findOneAndUpdate.json::test[1]": {
       "activity": "UTF-011",
@@ -27592,7 +27443,6 @@
     "crud/tests/unified/insertMany-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "863a96db249279e72fe2a93ddd1b02e0416521f4498367d9e06789b2d75c2d8a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.comment",
@@ -27615,12 +27465,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "8af89ef1cbc492152e84dc0bfaed5937da409ba97a9e475d6827aeb56b28483a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.comment",
@@ -27643,12 +27492,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "cf76abe49fd491de942b4e71d8443bc866e85be44a94e678c6752136b8520625",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertMany.comment",
@@ -27676,7 +27525,6 @@
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "69e716fe1b9eb4a8565b636ee5324a8b7c2ff165bb59a289a685d78149b81e50",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -27700,12 +27548,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "4a38ef3889f95893be2191d8949d0cfbf3068cb006547316a00e7f32bd5f903f",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -27732,7 +27580,6 @@
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "e4ef31e4c2381d256870030c8ff3892257624d980c6896e67620879c09490d57",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -27756,12 +27603,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "9a28edf269101484e954c9a71653fa5c5dbda12c07e29d76c80842d36e2e2de0",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -27785,12 +27631,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "497789bebd4fa281946736b8d1320f38292342b4df486a476e40eec1c6926cd3",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents"
@@ -27814,12 +27659,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "60d64223eb603fefcc1637a13d03128ab3d06b1583b6f9d61bd39e693ab379ac",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -27847,7 +27692,6 @@
     "crud/tests/unified/insertMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "8d9bf613ea1b3814b6c460346ab494996340f75fc3b68d1fe229e86037f68227",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -27872,7 +27716,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertMany.json::test[1]": {
       "activity": "UTF-012",
@@ -27954,7 +27798,6 @@
     "crud/tests/unified/insertOne-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "48d1ef0433b70123d2bd398166becebfe63ec7ca8fd4f258685ad6b0af0a6a6a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.comment",
@@ -27977,12 +27820,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "281570e55fc2c25e60c3b982c887db18ba5a88ce4a19e5f912adfb94b517d3bd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.comment",
@@ -28005,12 +27847,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "efbf28fc98ac928e4e0429921ef7c13f63ccb5b48e1898c3d4b4b340b5159be1",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertOne.comment",
@@ -28038,7 +27880,6 @@
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "b010a6ca44da232b22ae32f16dc456d20857b8945dd5b11375b22d1df4147b87",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28062,12 +27903,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "6fdf0bcb01588c986948fb9873c8e45ae745d577a0bef4ba7484c275b98ff926",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28094,7 +27935,6 @@
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "9c20a81137805d1de3a527266d4d465f2f1139e2f78f47bc2ac9765438fb3274",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28118,12 +27958,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "5e94e50e54354204cd951ce61702a0f3cc538cdfd24b22db151c138b1d090945",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28147,12 +27986,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[5]": {
       "activity": "UTF-013",
       "fingerprint": "ede3f410a91776c1713f12d795e0a4425432e3fb19ce8d63f88b80b8659e7a99",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28176,12 +28014,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[6]": {
       "activity": "UTF-013",
       "fingerprint": "724e3fdfb93f052d2a6d3b58307c09b931b35055c9f00582b8b55bc54946b41a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28203,12 +28040,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[7]": {
       "activity": "UTF-013",
       "fingerprint": "87a30230c4498923f264cd23ede6895a3274adc9c8fe1084f45ea9b1a703aff2",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28232,12 +28068,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[8]": {
       "activity": "UTF-013",
       "fingerprint": "cd1f464c469e48aa2fc30ae76a2ea8a5dde085a2d41b457362b6be9019ab4b8c",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28261,12 +28096,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[9]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "1b8584badbfcc2e1e87c7e1cf71cef23071302f9406bbd8126fda453cd68a649",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -28326,9 +28161,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/insertOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "a221c53cef2b79ba326705f92702517fa8b1a5ac955bfec5fe245f906309c9a0",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -28356,7 +28191,6 @@
     "crud/tests/unified/insertOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "a98f8672a22f9f593c8ae5a07a8efdf56f8c43f57166badb28433f7cacf412f1",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -28381,7 +28215,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/insertOne.json::test[1]": {
       "activity": "UTF-010",
@@ -28438,7 +28272,6 @@
     "crud/tests/unified/replaceOne-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "52ad1bc9fc5082688f407a4eec00c8a6978638369953957354c8e5c2f028df24",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.comment",
@@ -28464,12 +28297,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "4f084a56a2f41b05e9a0f874ac521e3faaa15b8a3cfc726b3689cec68944c955",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.comment",
@@ -28495,12 +28327,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "7a82ea66446f4e5888461fee9a407cc60edc017464f00e33eebf9681aa183d8a",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "replaceOne.comment",
@@ -28531,7 +28363,6 @@
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "f6513d2093d4656eafb7deab03c6bf1714bff764b5800b87fc95061a8e08582a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28556,12 +28387,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "8d9377f58cf95585911245d66bd740c54f881ec4dd1b4640b150e4018e4a1141",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28586,12 +28416,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "d7a0ff52c81a15d3925ecb5cc3fd4ff31ba74a7bb12c097dc119187395110d29",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28621,7 +28451,6 @@
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "73100ceb9c97ab72781162148041e3019729cf40733781cbb3b2d3ffecf6c786",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28646,12 +28475,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[5]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "4a90f7d371a38193ccfe95f06cd9b90190fb1e41bfda3a4a46dd4c3a22f4cde9",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28681,7 +28510,6 @@
     "crud/tests/unified/replaceOne-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "e43285529c633d727ce1d1709ca17d0b55caf6e0c844ecbc584ee9fe129771fc",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28708,12 +28536,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-hint-unacknowledged.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "52ebd8dc36b5ef7bb98a4f4502bff273aa528a7c828a297454c3c6a8dcb8e591",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28740,12 +28567,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "bc2d3af27f3438c3bbeb9e5c5b05c461b284df6660d5c4b40f17eeaeae58e568",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28771,12 +28597,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "c491a79f99eeba4a09fe6618e9f3cc093ccb9fbc774099065917f3edeff69c14",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28802,12 +28627,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "3d490c45abd80ab82c4e373e34513f5be1f6808ef0502d49aa83c2dd3403ca44",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28833,12 +28657,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "11339127051c1e062baa3f6a26b7ec9ef82aca216bd6b7c22a7f0d25d3d740f2",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28867,9 +28691,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/replaceOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "b5fe507f8f8ba27721433ccc50d53677e2487ebc3e2794c3f621591141433fa9",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28900,7 +28724,6 @@
     "crud/tests/unified/replaceOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "f66472ab82999e9dcbc7b3de55cfade881d7bb35417a6e9c4abc68fb0b6617fd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28927,12 +28750,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-sort.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "31ad9d829f7c815be4738ce4eec5a28b4e5bf5faf06b13e142dabbb336ad8a00",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28959,12 +28781,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne-sort.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "418b9b6a938ac6a8639b94e026be26e6fe22caea2e4d44f862ff5b196b78b294",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -28995,7 +28817,6 @@
     "crud/tests/unified/replaceOne-validation.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "652b70c23276ce41866657840108b3a3345bb49afe2e6735cbd669e1daac0ba5",
-      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -29016,7 +28837,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/replaceOne.json::test[1]": {
       "activity": "UTF-012",
@@ -29252,7 +29073,6 @@
     "crud/tests/unified/updateMany-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "052e3a4205fdc8d8a0f6803d41f0416ad4a855e65171537c75c707ca3220c0ee",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.comment",
@@ -29278,12 +29098,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "b9849004902763e6a812ccff3bfaf104aa02f558da9b49d3ef3403a66fc00d05",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.comment",
@@ -29309,12 +29128,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "192de775889260307df0a96a222f44900e2b71cf1935889e40902f9b939d775a",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateMany.comment",
@@ -29345,7 +29164,6 @@
     "crud/tests/unified/updateMany-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "dcdc03ef57a5b0364a1d920a4e36bd7fd1100641c79c1dac09f22e43bae96d3e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29370,12 +29188,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "11f95dbdc29329c7548a195ea5ce9ffa17d8ea1709a8f98f9d54232fbcf690ff",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29400,12 +29217,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "4b344cd814f730e59c59594bf7826809644c9ee61539e494f7b66a1147394a3a",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29430,12 +29246,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "4c3210633be597d11a7496a45ed4c89f8007b8834505416ee4c984e038f9079e",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29460,12 +29275,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "193f7f6652b61d7c33a920b55b05facca953bf5d20a68801d9bfb14947548e5d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29492,12 +29306,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-hint-unacknowledged.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "8284dfb812e2dc8d8bb343cde8eefb68b2e9b4c9fc7841f6cb593241fc83eef6",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29524,12 +29337,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "0220e993ddc0fd2eeab881358eda84afdc9cd2f7515f901e92282f41445d100f",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29555,12 +29367,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "76f68a87ba2db1054559cd2a8d9344ae75dde6c5ac69c120da02550eeb63b7a6",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29586,12 +29397,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "bee490fac4ae476c42412a5022464530face69723281e17c63d5536c30475075",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29617,12 +29427,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "38fff32be51a1c145011220bdc26c618bf2b8800980eb11a4e533ddb1589614c",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29653,7 +29463,6 @@
     "crud/tests/unified/updateMany-pipeline.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "954d440427f773badf48c060f22a518cd24739c623e1231d5489610d190466f1",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29678,12 +29487,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "616975640995bded9e55a5c522c4c9af6fe2cac8cf170abacd227568b6ee26b1",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29714,7 +29523,6 @@
     "crud/tests/unified/updateMany-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "7687d29e54bf6d503a2462421e7f075ac75ca2b7af09279ebbcebb10a4a04079",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29741,12 +29549,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany-validation.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "bf036d3f742fe3900f40d1b7cb00cc1070534610470353a6baf8bfc045c88b07",
-      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -29767,7 +29574,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateMany.json::test[1]": {
       "activity": "UTF-012",
@@ -30029,7 +29836,6 @@
     "crud/tests/unified/updateOne-comment.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "79bda7c314326bffa5bc272d972bdccb8aad40419dc7f250bf736f8fcf7e493d",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.comment",
@@ -30055,12 +29861,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-comment.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "5910145db7ad6b4d1952e639ae73c8e31a02e60aa5324b3fe42bf97cd3dc9b06",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.comment",
@@ -30086,12 +29891,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-comment.json::test[3]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "2a0e42cf94b657787f47a25ae276db21ddd456d0d084da9211e3bf7978b1b82d",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateOne.comment",
@@ -30122,7 +29927,6 @@
     "crud/tests/unified/updateOne-dots_and_dollars.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "464b974f842eea39b67ef7923808be44e4095e5ab19a25af41b92b1b73c16ebe",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30147,12 +29951,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-dots_and_dollars.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "00a6e7aa196cbce7bec7183cf4681562bb4f67a27dbc0a3f05684b77082339bf",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30177,12 +29980,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-dots_and_dollars.json::test[3]": {
       "activity": "UTF-013",
       "fingerprint": "62c6b633b3a1e7cd1b7d4f7926bddd10d507fdd9c675a45f14118e896ce3a831",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30207,12 +30009,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-dots_and_dollars.json::test[4]": {
       "activity": "UTF-013",
       "fingerprint": "5340059203fa116537a0cabe7954ff1274a75fb8e8605a3511851145b522e108",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30237,7 +30038,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-errorResponse.json::test[1]": {
       "activity": "UTF-014",
@@ -30276,7 +30077,6 @@
     "crud/tests/unified/updateOne-hint-unacknowledged.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "d986a2727c491e68d7d51d03843524e54ded0c31b4233666d2a6729ea1d8cafa",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30303,12 +30103,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-hint-unacknowledged.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "a3edd5480ccf54a122591264a3288e225ec2e39af62b155e629a4630ee1999cd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30335,12 +30134,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-hint.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "942fbb1a0b74df0ef6b4713e8ded59375e1c557ac7ef2403ac5c25e216328b05",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30366,12 +30164,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-hint.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "a118482698d96e8f7630b2fed36ccd4904cd26590907ee0062d77e94e53ee053",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30397,12 +30194,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-let.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "f03564585c60162f847e3804f09e04c58653c02b446e75dfea189015149f07cd",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30428,12 +30224,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-let.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "764546d7010e132169ed9329440c11fc09b336c86ce47405ba3c9a3d2f4906ec",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30464,7 +30260,6 @@
     "crud/tests/unified/updateOne-pipeline.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "0c64ebd27ec7946888f659f2d5aec7e48738ab1f7b612b8180ce2a857350bed5",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30489,12 +30284,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-rawdata.json::test[1]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "eebbad712c3469bb0e106960bb0f5912c8095ac71769d67ceb750e1a8cd6852d",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30525,7 +30320,6 @@
     "crud/tests/unified/updateOne-rawdata.json::test[2]": {
       "activity": "UTF-013",
       "fingerprint": "193b2daf6a576fad81f027ec2f44e8cd06011c000daa50727d8528cc3de92ceb",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30552,12 +30346,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-sort.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "604604bd6485eb8c5b0f6fc30505188390e63671981c563874a223918e9bb7f1",
-      "reason": "unified command-event collection and matching are not implemented",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30584,12 +30377,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne-sort.json::test[2]": {
-      "activity": "UTF-013",
+      "activity": "CMP-001",
       "fingerprint": "f9f27891b0b4b6151e18d9f86e5689146932c169604205927f4bdfbced5e8df9",
-      "reason": "unified command-event collection and matching are not implemented",
+      "reason": "the case requires a MongoDB server version outside the current 8.0 unified gate",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30620,7 +30413,6 @@
     "crud/tests/unified/updateOne-validation.json::test[1]": {
       "activity": "UTF-013",
       "fingerprint": "a88a82b6a289d936aed553349d2b816590bac6bbec6e7b5fe1be1ae806dfee2d",
-      "reason": "the test asserts that client validation emits no command event",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -30641,7 +30433,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/updateOne.json::test[1]": {
       "activity": "UTF-012",

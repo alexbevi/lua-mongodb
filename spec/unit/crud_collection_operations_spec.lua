@@ -168,13 +168,13 @@ describe("core collection read and modify operations", function()
         bson.document({ { "$out", "archive" } }),
       }), {
         batch_size = 2,
-        bypass_document_validation = true,
+        bypass_document_validation = false,
         raw_data = true,
       }))
 
     assert.is_true(output:is_closed())
     assert.is_nil(sent.command:get("cursor"):get("batchSize"))
-    assert.is_true(sent.command:get("bypassDocumentValidation"))
+    assert.is_false(sent.command:get("bypassDocumentValidation"))
     assert.is_true(sent.command:get("rawData"))
     assert.are.equal(0, sent.command:get("writeConcern"):get("w"))
     assert.is_true(sent.options.no_response)

@@ -899,6 +899,35 @@
       "notes": [],
       "started_at": "2026-08-07T00:56:48+00:00",
       "completed_at": "2026-08-07T01:05:15+00:00"
+    },
+    "UTF-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_first_standalone_command_event_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "First standalone find command-event sequence remained deferred_unsupported instead of runnable; runnable and passing ratchets stayed at 99.",
+          "recorded_at": "2026-08-07T01:08:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "134 unit tests, 16 integration tests, 307 exact unified command/read/write cases, all 320 schema meta-fixtures, the 5,524-case conformance ledger, and lint passed; unified execution reported 307 passed, 0 failed, 0 environment-skipped, and 1,593 explicitly deferred cases.",
+          "recorded_at": "2026-08-07T01:27:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-integration && make test-unified && make lint",
+          "exit_code": 0,
+          "summary": "Final classified gate passed: 134 unit tests, 16 integration tests, 307 exact unified cases, all 320 schema meta-fixtures, the 5,524-case conformance ledger, and lint; unified execution reported 307 passed, 0 failed, 0 environment-skipped, and 1,593 explicit deferrals, with remaining CRUD event cases classified 88 to compatibility and 9 to release closure.",
+          "recorded_at": "2026-08-07T01:30:53+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T01:05:49+00:00",
+      "completed_at": "2026-08-07T01:30:55+00:00"
     }
   },
   "verified_references": {

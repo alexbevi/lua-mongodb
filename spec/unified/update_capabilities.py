@@ -34,6 +34,7 @@ OWNER_REASONS = {
   "ADV-008": "the test requires a post-v1 authentication mechanism",
   "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
+  "CMP-001": "the case requires a MongoDB server version outside the current 8.0 unified gate",
   "REL-001": "the operation is outside the v1 unified adapters and awaits release conformance closure",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
@@ -119,6 +120,16 @@ TEST_OVERRIDES.update({
   ),
 })
 
+for fixture, count in (
+  ("db-aggregate-rawdata", 2),
+  ("db-aggregate-write-readPreference", 4),
+):
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
+      "REL-001",
+      "database aggregate is outside the v1 public collection adapter",
+    )
+
 for operation in ("Delete", "Replace", "Update"):
   for index in (1, 2):
     TEST_OVERRIDES[
@@ -140,20 +151,6 @@ for fixture in (
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
-for identity in (
-  "crud/tests/unified/bulkWrite-update-validation.json::test[1]",
-  "crud/tests/unified/bulkWrite-update-validation.json::test[2]",
-  "crud/tests/unified/bulkWrite-update-validation.json::test[3]",
-  "crud/tests/unified/replaceOne-validation.json::test[1]",
-  "crud/tests/unified/updateMany-validation.json::test[1]",
-  "crud/tests/unified/updateOne-validation.json::test[1]",
-):
-  TEST_OVERRIDES[identity] = (
-    "UTF-013",
-    "the test asserts that client validation emits no command event",
-  )
-
-
 def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   requirements = test["requirements"]
   operations = set(requirements["operations"])
@@ -167,7 +164,7 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   elif "failPoint" in special or "targetedFailPoint" in special:
     owner = "UTF-014"
   elif requirements["events"]:
-    owner = "UTF-013"
+    owner = "REL-001" if operations & MANAGEMENT_OPERATIONS else "CMP-001"
   elif operations & MANAGEMENT_OPERATIONS:
     owner = "REL-001"
   elif operations & WRITE_OPERATIONS:

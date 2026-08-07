@@ -765,8 +765,11 @@ local function aggregate_entries(state, pipeline, options, writes)
     end
   end
 
-  if writes and options.bypass_document_validation == true then
-    entries[#entries + 1] = { "bypassDocumentValidation", true }
+  if writes and options.bypass_document_validation ~= nil then
+    entries[#entries + 1] = {
+      "bypassDocumentValidation",
+      options.bypass_document_validation,
+    }
   end
 
   append_raw_data(entries, state, options)

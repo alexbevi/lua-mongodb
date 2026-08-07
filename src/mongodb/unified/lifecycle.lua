@@ -88,7 +88,7 @@ local function run_assertions(state, runner, test, path)
       return nil, configuration_error("no event assertion adapter is configured", path)
     end
 
-    local ok, err = state.assert_events(runner, expected_events)
+    local ok, err = state.assert_events(runner, expected_events, path .. ".expectEvents")
 
     if ok == false or ok == nil and err ~= nil then
       return nil, err or configuration_error("event assertion failed", path)
