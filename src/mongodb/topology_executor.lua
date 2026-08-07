@@ -82,6 +82,7 @@ local function select_connection(state, operation, options)
     {
       cancellation = options and options.cancellation,
       deadline = options and options.deadline,
+      deprioritized_servers = options and options.deprioritized_servers,
       local_threshold_ms = state.local_threshold_ms,
       timeout_ms = state.server_selection_timeout_ms,
     }

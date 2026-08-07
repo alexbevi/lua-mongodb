@@ -11,7 +11,7 @@ local METATABLE = {
   end,
 }
 
-local function command_options(options)
+local function command_options(options, on_attempt_error)
   local result = {}
 
   for key, value in pairs(options or {}) do
@@ -21,7 +21,23 @@ local function command_options(options)
       result[key] = value
     end
   end
+
+  result.on_attempt_error = on_attempt_error
   return result
+end
+
+local function apply_error(state, session, err)
+  local error_response = err.details and err.details.response
+
+  if state.manager and error_response then
+    state.manager:advance(error_response, session)
+  end
+
+  if errors.is(err, errors.CATEGORY.NETWORK)
+      or errors.is(err, errors.CATEGORY.PROTOCOL)
+  then
+    session:mark_dirty()
+  end
 end
 
 local function command_session(state, options)
@@ -96,26 +112,24 @@ function METHODS:command(database, command, options)
   end
 
   local response
+  local on_attempt_error
+
+  if session then
+    on_attempt_error = function(attempt_err)
+      apply_error(state, session, attempt_err)
+    end
+  end
+
   response, err = state.executor:command(
     database,
     decorated,
-    command_options(options)
+    command_options(options, on_attempt_error)
   )
 
   if response and state.manager then
     state.manager:advance(response, session)
   elseif err and session then
-    local error_response = err.details and err.details.response
-
-    if state.manager and error_response then
-      state.manager:advance(error_response, session)
-    end
-
-    if errors.is(err, errors.CATEGORY.NETWORK)
-        or errors.is(err, errors.CATEGORY.PROTOCOL)
-    then
-      session:mark_dirty()
-    end
+    apply_error(state, session, err)
   end
 
   if owned then

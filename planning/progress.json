@@ -988,6 +988,28 @@
       "notes": [],
       "started_at": "2026-08-07T01:53:41+00:00",
       "completed_at": "2026-08-07T02:22:07+00:00"
+    },
+    "RETRY-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted '--lpath=src/?.lua' '--lpath=src/?/init.lua' spec/unit/retry_executor_spec.lua",
+          "exit_code": 1,
+          "summary": "The retryable-read executor contract could not load because mongodb.retry_executor did not exist, so retryable server errors could not trigger one equivalent attempt with a stable operation id.",
+          "recorded_at": "2026-08-07T02:24:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check",
+          "exit_code": 0,
+          "summary": "153 unit tests and all BSON/Extended JSON corpora passed; 18 integration tests passed; 556 unified cases executed and passed with 0 failures, 0 environment skips, and 1,344 explicitly deferred cases; schema, inventory, 320 meta-fixtures, conformance ledger (2,556 passed/2,968 deferred), lint, rockspec packaging, and planning validation passed.",
+          "recorded_at": "2026-08-07T02:52:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T02:23:03+00:00",
+      "completed_at": "2026-08-07T02:52:20+00:00"
     }
   },
   "verified_references": {

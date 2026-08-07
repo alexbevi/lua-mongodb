@@ -28,6 +28,7 @@ RATCHETS = {
 
 OWNER_REASONS = {
   "ADV-001": "change streams are a post-v1 capability",
+  "ADV-002": "GridFS is a post-v1 capability",
   "ADV-005": "sharded execution is a post-v1 capability",
   "ADV-006": "load-balanced execution is a post-v1 capability",
   "ADV-007": "client bulkWrite is a post-v1 capability",
@@ -119,6 +120,35 @@ TEST_OVERRIDES.update({
     "database aggregate is outside the v1 public collection adapter",
   ),
 })
+
+for fixture, count, owner, reason in (
+  ("count", 17, "REL-001", "legacy count is outside the v1 public API"),
+  ("changeStreams-client.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
+  ("changeStreams-db.coll.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
+  ("changeStreams-db.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
+  ("gridfs-download", 17, "ADV-002", OWNER_REASONS["ADV-002"]),
+  ("gridfs-downloadByName", 17, "ADV-002", OWNER_REASONS["ADV-002"]),
+):
+  base_count = min(count, 4)
+
+  for index in range(1, base_count + 1):
+    TEST_OVERRIDES[
+      f"retryable-reads/tests/unified/{fixture}.json::test[{index}]"
+    ] = (owner, reason)
+
+  for index in range(1, count - base_count + 1):
+    TEST_OVERRIDES[
+      f"retryable-reads/tests/unified/{fixture}-serverErrors.json::test[{index}]"
+    ] = (owner, reason)
+
+for fixture, count, owner, reason in (
+  ("handshakeError", 32, "REL-001", "handshake retry requires the release command adapter"),
+  ("mapReduce", 3, "REL-001", "legacy mapReduce is outside the v1 public API"),
+):
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[
+      f"retryable-reads/tests/unified/{fixture}.json::test[{index}]"
+    ] = (owner, reason)
 
 for fixture, count in (
   ("db-aggregate-rawdata", 2),

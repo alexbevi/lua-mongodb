@@ -832,6 +832,7 @@ local function aggregate_response(state, pipeline, options, writes)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      retryable_read = not writes,
       session = options.session,
       session_context = options.session_context,
     }
@@ -1091,6 +1092,7 @@ function M.estimated_document_count(state, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      retryable_read = true,
       session = options.session,
     }
   )
@@ -1143,6 +1145,7 @@ function M.distinct(state, key, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      retryable_read = true,
       session = options.session,
     }
   )
@@ -1341,6 +1344,7 @@ function M.find(state, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      retryable_read = true,
       session = options.session,
       session_context = session_context,
     }
@@ -1398,6 +1402,7 @@ function M.find_one(state, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      retryable_read = true,
       session = options.session,
     }
   )

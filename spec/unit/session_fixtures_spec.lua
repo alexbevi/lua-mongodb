@@ -11,5 +11,8 @@ describe("pinned session fixtures", function()
     assert.are.equal(17, session_runner.run(
       "causal-consistency/tests/causal-consistency-write-commands.json"
     ))
+    assert.are.equal(3, session_runner.run(
+      "sessions/tests/implicit-sessions-default-causal-consistency.json"
+    ))
   end)
 end)

@@ -232,7 +232,7 @@ function CLIENT_METHODS:close()
     if #identifiers > 0 then
       state.executor:command("admin", bson.document({
         { "endSessions", identifiers },
-      }), { monitoring = false, no_session = true })
+      }), { monitor = false, no_session = true })
     end
   end
 

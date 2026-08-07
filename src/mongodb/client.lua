@@ -7,8 +7,10 @@ local monitoring = require("mongodb.monitoring")
 local pool = require("mongodb.pool")
 local runtime_contract = require("mongodb.runtime")
 local scram = require("mongodb.auth.scram")
+local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
+local standalone_executor = require("mongodb.standalone_executor")
 local topology = require("mongodb.topology")
 local topology_executor = require("mongodb.topology_executor")
 local transport = require("mongodb.network.transport")
@@ -158,7 +160,9 @@ local function public_client(executor, config, parsed, warnings, runtime)
   end
 
   return api.new_client(
-    session_executor.new(executor, sessions),
+    session_executor.new(retry_executor.new(executor, {
+      enabled = config.retry_reads,
+    }), sessions),
     config,
     parsed.database,
     warnings,
@@ -497,38 +501,24 @@ function M.connect(uri, values)
     return configuration_error("Unix domain sockets are not supported by the current runtime")
   end
 
-  local connection
-  connection, err = transport.connect(runtime, host.host, host.port or 27017, {
-    cancellation = special.cancellation,
-    deadline = deadline,
-    tls = tls_options(config, host),
-  })
-
-  if not connection then
-    return nil, err
-  end
-
-  local executor = command_executor.new(connection, {
-    app_name = config.app_name,
-    monitoring = monitor,
-    server = address(host),
-    server_api = config.server_api,
-  })
-  local auth_source = config.auth_source or parsed.database or "admin"
-  local hello_options = {
+  local server_address = address(host)
+  local fields = {
     cancellation = special.cancellation,
     deadline = deadline,
   }
+  local executor, hello
 
-  if parsed.username ~= nil then
-    hello_options.sasl_supported_mechs = auth_source .. "." .. parsed.username
-  end
+  executor, err, hello = open_executor(
+    runtime,
+    config,
+    parsed,
+    monitor,
+    server_address,
+    fields,
+    true
+  )
 
-  local hello
-  hello, err = executor:hello(hello_options)
-
-  if not hello then
-    executor:close()
+  if not executor then
     return nil, err
   end
 
@@ -537,33 +527,26 @@ function M.connect(uri, values)
     return configuration_error("the standalone client cannot use this server topology")
   end
 
-  if parsed.username ~= nil then
-    local mechanism
-    mechanism, err = mechanism_from(hello, config.auth_mechanism)
+  local reconnecting = standalone_executor.new(executor, function(options)
+    local replacement, replacement_err, replacement_hello = open_executor(
+      runtime,
+      config,
+      parsed,
+      monitor,
+      server_address,
+      options,
+      true
+    )
 
-    if not mechanism then
-      executor:close()
-      return nil, err
+    if replacement and replacement_hello.server_type ~= "standalone" then
+      replacement:close()
+      return configuration_error("the standalone client cannot use this server topology")
     end
 
-    local authenticated
-    authenticated, err = scram.authenticate(executor, runtime, {
-      mechanism = mechanism,
-      password = parsed.password or "",
-      source = auth_source,
-      username = parsed.username,
-    }, {
-      cancellation = special.cancellation,
-      deadline = deadline,
-    })
+    return replacement, replacement_err
+  end, hello)
 
-    if not authenticated then
-      executor:close()
-      return nil, err
-    end
-  end
-
-  return public_client(executor, config, parsed, warnings, runtime)
+  return public_client(reconnecting, config, parsed, warnings, runtime)
 end
 
 return M

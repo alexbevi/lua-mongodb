@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 313,
-    "runnable": 313
+    "passed": 556,
+    "runnable": 556
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -30563,7 +30563,6 @@
     "retryable-reads/tests/unified/aggregate-merge.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "f7cc594563d20d73395f460fd11e29d2abce37556b8a52d52b0b8c88e89a37da",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30589,12 +30588,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "83a3b6616ebf11d598e615dfb6ee848b8b69e1fbee05e6472f28dcf76a717e6f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30625,12 +30623,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "1e0acf7e9dc8c9740f55b83153d58c325dcd754d36a604fd1994d5b83f981fc7",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30661,12 +30658,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "7d0cf449e4d16a5334a850554ae3e8f89fa5bb8393b92f5cceee4b2fbcf9b761",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30697,12 +30693,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "ee174a6b517f1b93a8cf140e58bf27fee9828a2cda8671be77485bc2b361b07b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30735,12 +30730,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "3108b01e86197823fbf78047e6ab56d5ecce3e63e9c92554147995aeda489ae0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30771,12 +30765,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "6f428cfe342e1902b652febab198344e24cebd4cf7cc49e840dba6b1d380f25a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30807,12 +30800,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "400758b43fd3dfd3745cb0a2ddc0a8c9d37572df688cb984baa39807a1f0346a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30843,12 +30835,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "8fb22af00e763377789b038718dbda1ae334797631dc548caddc0494226dc531",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30879,12 +30870,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "cf615cb5db8c2b34dda6a44ed5855e583e7a321ba0d27c43e1fbf4672102f23a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30915,12 +30905,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "789af5b708c44ee9e1bba91eedbaf8bef4cf3f7c5601daeddcadf94d1e8c4ac0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30951,12 +30940,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "bef24d21ad544dd1aed5aa2a9537a6a404a757f6e93f1db4c0432a81db9e2d8f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30987,12 +30975,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "1265e3dcea45443709d25ef54531265e7751cc1ca66dc53aa2532b55bffcb4a3",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31023,12 +31010,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "340e5e456951765e6ed91204675b2d6d2cdfe764c173714003d9e8baa2e8d808",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31059,12 +31045,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "442c39a07cde21da206ce4a5638c0bb8a433e984705e68b693295bd073ff5caa",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -31091,12 +31076,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "ad7cc7fd562722a2f1750cb4c01f72c8afbd6dee69996feaf1d294f98aaf09f2",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31127,12 +31111,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "bef3b4e0f3c3a9aa1fe1c386ecbf2fed166a88390ef0e820f8fa2c5db379221a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31165,12 +31148,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "145a7cce5e68a22d7ae7aa31b8f7c268a50ce3f38c0024d092a01217d7ff634c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31201,12 +31183,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/aggregate.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "18e3e229dc194e652af361f0866f184afef97ea264c1a9f2efc5c83e0f9e60ac",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31237,12 +31218,12 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "8129971c11e7c641f1d67b32602abb85fc4cbe6df7459c0bad5442f4157be20d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31273,9 +31254,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "926387c51e78545fe44001e9a673f098548f2f1b894ff6bc5483b14dde820216",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31306,9 +31287,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "a061672db2c5843a919b07d11589c1e1ca165fa23727c0d30ba0901617637cfb",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31339,9 +31320,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "fd87ded50d6089012a476d17d5ac415d4757a38774127024cd5bc4335c7d839d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31374,9 +31355,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "9d93f2e3ca7cc6210ce1b437aca6ceb02c9f946a83c3b5a0f55e0769ac527ae5",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31407,9 +31388,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "a6416d188a6a9a9acf863a51ae05e7253c708deba80b6e88796fe916c84186c5",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31440,9 +31421,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "6a9b9e78848ad946a34900398b58093c6cb6653b3101b4622fb70e16f05276bd",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31473,9 +31454,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "9bd4de280f8ad89f2d49baf6fb8ee0e3c6e96eb92bcc73ae237dcfa254361492",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31506,9 +31487,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "9279703a3c57ad9d804ee0daea5e04a0d980f2c4203c226ec0b66e32ddd93a41",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31539,9 +31520,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "f99148acde946c7a8458f883546bbd72e1875e5697607057180718ca12909544",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31572,9 +31553,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "315a2164cf05c55e552a550191b853327f7707e15a6b0808e8260ef440fda93c",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31605,9 +31586,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "4f21976b54249d3c02efc0cc2762e10346516a0e9526afcba60a1f8ecb4414f9",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31638,9 +31619,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "995c25fd663b09ea8346ae756b777076eb26b8e65a3389b48b25666ce5603c7e",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31671,9 +31652,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "e8aa8aee4701cab125a799d0cc05395f93fef71122ecffcf591e5e7bee4cff6d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -31700,9 +31681,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "dc0ed16fdd5f1f1ab4c861668019214f0395fe24b01748acfcae5c0dc1348829",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31733,9 +31714,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "9dac33e42203207aafa74bcfdda739c81a3710d3ccbec7fd6f494a5beafc5ae8",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31768,9 +31749,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "ca6970e723c9e784c4a992079a6f9ebf8ce60e33336d17d0bccb942f7e0ecfb8",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31801,9 +31782,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "2494540445817e7735ca9ee2628889468dc4c6f138afd355ce4b2f8c2a85be08",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31836,9 +31817,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "1e9b490c4c6e1a377cd5a214788f671dd6e4740b0268c9e0264f0cc79f0d2d4f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31871,9 +31852,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "a55c6ce87fff128c2d899f27f863648b9b180370f02d00445811c1b7ac46cf1d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31906,9 +31887,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "7cbee3266c96867a9b8e3c1a803963ced882da2e22b28588a3635d4f272d136d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31943,9 +31924,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "7d8ec36a6e18c635e97628fa420c3aa5f5263145fab529afc5f99f37d965046a",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31978,9 +31959,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "fad2298eeefd84deea01800d4886dc3b5b1f8d8ad4bb666251dc0668a52045a1",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32013,9 +31994,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "3283033acc58a388137ed3a823dee9da48fd4924c18b2cd89b34d26949c60862",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32048,9 +32029,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "269ece2c0d015e4175b310126a0e45da050fe9178aa53f2ab5f1f5e2ea067838",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32083,9 +32064,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "aa33321c6770e2329237625fddd035d736eec3179dc3490132822e7d56352c9f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32118,9 +32099,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "55a2348556178c6f6a7550f0165bb09abccd4f83ae83cbd83b135f3adf0662ac",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32153,9 +32134,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "72c01fc8633f7d973c4b524d092d922edf942f0a1bd99ca11755147b0ccd6ad3",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32188,9 +32169,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "8f17ea39127626721b55a107a12e34573a60cb86ec0f22b69e903e8c985063f7",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32223,9 +32204,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "feeba2514972e2b178d63814db3b5b9b3073619bc83ea713d5906d95092ca591",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32258,9 +32239,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "3d898453f20ba29435a77d76506862e582b021446112a1fd6d72639ff5f15edc",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -32289,9 +32270,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "1e7dd8e633bc2b0ee46d3560316a822156d31458bf9968af10009c5b81b6c8c1",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32324,9 +32305,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "4abcb050bbbd1fbf4c327f386265e66ab9e163f75cc1c9224a1d448c6eb9868c",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32361,9 +32342,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "5072449c1cf3c09b57004c624ea11990aa033cbdee9b30e1e573d85d0a800df1",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32396,9 +32377,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "00ffb8705ee9866b90b984db0d2769c1b94b11e4dd72eb0d8ed0e120b953c052",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32430,9 +32411,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "85e3481e11a817e82e4d5c7cd0cd41142e8fee34e4941bc6c67cf416048855a8",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32464,9 +32445,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "8cbfa1fe068f96ab6d5dcbd5e7ca3e387173638b08d9e04c031c2aafe0d2813f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32498,9 +32479,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "7b13c92ef8609370424e0ded9a4b5e3a5cdee380d2ed16e96326dd80669e7fdc",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32534,9 +32515,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "bfc331bc7a23e4bd43df3805952acb020a4518d8a0e97e5920e6cf0e5df75222",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32568,9 +32549,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "622d73a88142f43816b1d7eeb22181eb8777f2bd62346138b692c09c834c8dc7",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32602,9 +32583,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "ac24e30022d6bdeb4848bb023e2772048e957ce67a4794cbcab0776ac95e5b7d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32636,9 +32617,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "231025754583ec82855bdd3a2aa28b82838021cb0e13e7162bd549d5f84e7284",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32670,9 +32651,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "eb588adf3fc57cc214592fd6112beac8bdef4c9bfc1c2b83db4ed2f06caefe05",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32704,9 +32685,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "5419da0bf02e588eea69484550844ff2305e9b0328492aca24a19c6171e92422",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32738,9 +32719,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "f49ff4f9ad51c3afe6009279ab8122b4542c6b3b7b3691166e3d48aa80c3c10e",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32772,9 +32753,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "b220d82e2e03a4539f6241b463b95eb63b4dc8dc357a55126b28e0c130947638",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32806,9 +32787,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "b43a52b429da775e80bc0e71d386ba05ffbd66659576edd451ed7151df1353c0",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32840,9 +32821,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "cc5a6d8ac4d48fac1da81c4429aba293bd2d0b5157f21e033764570e1de84376",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -32870,9 +32851,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "bdd3f9cb35f7ce4c17f46f1535c9783be27a83346b71879faad0c975f4d2db14",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32904,9 +32885,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "e1487a4bf06b2b505a434570fa7484d75e45ba9d2553618ac5615e5c3b9acf34",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32940,9 +32921,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-001",
       "fingerprint": "447bdfc07f0c47c29d1e9d999bc05b133cdb38ef2932ef04f611a799e14cc3cf",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32974,9 +32955,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "01d7b807f94a793f6c95addce065553dd76efbd734482b0df327342cd6c09260",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33010,9 +32991,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "d36b48a62ec78d8dddd2b2e224decd01edd78648723f449603cf6904a6a90df4",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33046,9 +33027,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "8a1d35a29182cb4a0b1f438366e1fe0bfe91e0220cd1d873ff53236ee248ace4",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33082,9 +33063,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "7de249ba01cc1968c7ddb839bab3a0c56b762f8043ad095918dc904370acec85",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33120,9 +33101,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "6f71900f5093ee747e423bef9ebeaf6e9d08f2d5dbffbaff2acb975bb6450888",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33156,9 +33137,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "3c17cdec11e7fa4ccda3bc88e7c84af0eb7ab88f25afd27745886d1d22606ece",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33192,9 +33173,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "5365772b36735e1c4e32580ad58f3d540684c1f0571f2cd2d8046ce0c3feaae5",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33228,9 +33209,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "a5c4bdc79a0f05c48f521215b07d2960b66e094590d80c5e77c819f9821e5506",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33264,9 +33245,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "8bcea1fd3dcee6d5e617a619186138da05d8990bb7c96aef81738d7da4ef7a39",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33300,9 +33281,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "bfdc5cb038923fab7c94ddd91289153da872d70766ae56de9acfbc5e40d192be",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33336,9 +33317,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "3c823cbc5c516c501b504a25039486cb8105420ca84f3905a8fe5a9de5f1c7dd",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33372,9 +33353,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "f0849ebfd56fa1b88612a3f674a1fc081a450ad414ba76b6ffa2f046221fab8f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33408,9 +33389,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "f0a187f5732d6c0fbce942a4752e30c516278a753245a3a5007ad0206b058d54",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33444,9 +33425,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "19b5a93f761ce8d9817e485d878d50a8a2b730805799ae4680c7bd3235fbce59",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter"
@@ -33476,9 +33457,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "4abdf7b89aeeae656b883d55dc59660aef92ea3dc792905fc36b913a33280b7d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33512,9 +33493,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "4978d4987b2937d80169570e15b1ced5eb26b7f75cb40cfca6920a852cf843d2",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33550,9 +33531,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/count.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "7a1892dadcd9497ce02752b1369f4157175d7edc77fe25514c19f7453f00e0ab",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy count is outside the v1 public API",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -33588,7 +33569,6 @@
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "ed74411ab3c175a4bb0b3c04996be806ef98277f10cedac7076b6aba90b01058",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33619,12 +33599,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "e13cc76c7b1180f2f5f5124c55c1fe961466d4e4abee7854911824be486dc303",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33655,12 +33634,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "a4ea6921137086a7bcd0cc67adb3a84bdd19a9ec306ab21238a84ad274afe939",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33691,12 +33669,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "6737488a713716d137a8afb994b586c013a6184a95d4ead53988d50c87a277e5",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33729,12 +33706,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "cd032612ca7778b97d7014fdd05c27809a4478dd8cae07eae8bd9c6a79cf0608",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33765,12 +33741,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "68bf6a949ae5482b3e33f05abde594551cca4ba51430f4c47845bb189e4496dd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33801,12 +33776,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "afea49d2e2294dab8e3975598883d91ca1ca81f8f1e807ed63f32ed4d129d068",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33837,12 +33811,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "32af15b8bf0197ee5e973d40904cebd116acc77e788cac35361bdf58ff2b4b31",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33873,12 +33846,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "75343c7a43539cd7fb560d202d4e5b94fb3083f678f6b8c1eca7d80eec7f9c8f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33909,12 +33881,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "0bc662f3113ca491dba9ea03b60415b2af07b7901390e5aa464f8c7577536de0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33945,12 +33916,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "276917699c6dc149c4f4057487a4e56956c31c15002e62309b0aa3f0c948d201",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -33981,12 +33951,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "61ddf23813071dc13a106332f915b72cecb8c2cb2333bb59d9a8e5085348e623",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -34017,12 +33986,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "7469a1a5cf849241ab0fcae943eda6746425a69af7145eb96cbf474d5c73dbcd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -34053,12 +34021,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "f381844ae421f6c1084887bd6b5dc07ccbb187371de3f7b2e49af000bbed8603",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter"
@@ -34085,12 +34052,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "e37657b71d5fc09b37ea23c3a68b81f51d4f6c1d5ae3d7f548ecde801f7c05e8",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -34121,12 +34087,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "eee1a4fde8a8c70b80b5732389e2f420e86ea62d6eb3684d6aaf8b94a8ecd54a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -34159,12 +34124,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/countDocuments.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "343350927918964583886e62a11d2187a5581e6db7693677504ce6133e8dfa41",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -34195,12 +34159,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "81ecbbf6bc553e998ca30e73f4e563a4f1c4764d787ff11bd3c8a208253b36d5",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34232,12 +34195,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "6590a05be7bf8b7b15b91b3f495a1958a3b265511c72d21b0d1f79e3676c6fe3",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34269,12 +34231,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "f09664d75bbd5110620636d2849fc8ae46c41d27e428e07e65c901e12e85e707",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34306,12 +34267,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "6f70dcafcf17d970cd3b44ea85f32e3920bc1aa25ba2095b0ae0d54a547d7774",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -34345,12 +34305,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "a442877f42d72a56479eda54105605fb9c43e8537039a92ed02b45d62e488711",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34382,12 +34341,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "9037d50ad2b1941a0351bb91f25cb53c19e7760b9bac7bca5057930720f496bd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34419,12 +34377,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "f37085b999f1d61f0c60561597b078243c48e83aae0d33157202c4e32f25b0e0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34456,12 +34413,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "011ee6e94728c48d496a8d6833756ca8c6dc0ab70b3f6fafe5b51367226fdc1e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34493,12 +34449,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "de60286cbd228d7138c3540aa460bfe051517fd9ac5d58209abe63cf6bf47e73",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34530,12 +34485,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "613c375ca0283ab66b3f5d780f5e766e68c13101332ea64932a33255618ac1e7",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34567,12 +34521,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "a695e87f9386a06af8e983dc0c4829d00e3f0d7491bbec41a34c0785e1a47450",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34604,12 +34557,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "a36fa430bea877a98446471db77165ecc1b41af02b456c1788388c8b39d266dd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34641,12 +34593,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "7dad84c4df83ef356e3b6062a6344bde0e51857d3cc257ec9cc993076b426857",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34678,12 +34629,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "9503068067a55ec6e3afda83bd4a00968e2f58b0be5b3a577827462c384339a2",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34711,12 +34661,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "ea3e33a81dc7d492ce706dd0adbb896f3d6eac6b14886f5f5a06970a187a551e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34748,12 +34697,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "49b9bc61e9df593f90499b50631ebcda0ca2b519e2ff75e220519f3b23a54a41",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -34787,12 +34735,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/distinct.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "b629cf5e8d1a8cfcda9bbb722541b8605b7b4f6f1f6169a7b37b56906ec60892",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -34824,12 +34771,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "de4f5cdce1efe2450a6a498c43c368f41501443b6bd165683291cd3938d4d993",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -34858,12 +34804,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "081c463288f9acf35f42631624496682c0e99dd035cb4104537c60f7b7b6b702",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -34892,12 +34837,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "d3deae6b7942c796fe5e87914e076955721d276cf875817ce701dde2d0446344",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -34926,12 +34870,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "b74deaf1bf736e242745b27d6a24fca80dfc458d5eca804573661d9f34f7a1fb",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -34962,12 +34905,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "dc37f021ca06c227912d9771e4ee276eead27a63af01750f9e29ccadf755872e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -34996,12 +34938,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "b5081f6759fd96f59dc831e9a6081a8723f98c58671022703b512124844f623c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35030,12 +34971,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "fa15fd5a266830e2f38b1c82f10a9f95c592ec001135f75b6f7fe9fd7cbe7e53",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35064,12 +35004,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "4fec12fcd9779e8e8895a3eec876c70c1fee4e9c21b9cf0cdf634ad84d2f2024",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35098,12 +35037,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "fc2daa396751ce29725c63e96b61d32796f367ddd1da42eaa9deb810a7dc5715",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35132,12 +35070,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "f4db209d94c51f964825a0da7ead60d446134d3e8c821a7ed666de7674ac7afd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35166,12 +35103,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "5c39b81f5fefc1332c955174a8f89f5785f0c5b2e226d65ad12bcab1e95ce864",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35200,12 +35136,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "3a4df3c4ab495fd852f22f335d9bfb3a75437866423dfef3f24327b1d68b4b78",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35234,12 +35169,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "6fd63b12502592e05b7df31858332201f156622cfdc74da9b3a60bff9a35c504",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35268,12 +35202,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "d99309d01908944c63c7c193e1afc859cbeea77f20b93c8a2404d9dc876db253",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -35297,12 +35230,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "2c5eeb494e419cba5fd91cbff7545509d695e38d3312beccbe5d400b984805ee",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35331,12 +35263,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "e16f5dfc20bb8a9803c07a8e9ecca5fb28589e5ae159edb145ec84f474071b5b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -35367,12 +35298,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/estimatedDocumentCount.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "9b3675d4fd5255907ffcf71f999efa3fe1175f74b6f719ca6c4c627c4e94cd32",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35401,12 +35331,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/exceededTimeLimit.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "b2ed7d265ada92038582fec874ff7c9e1fb681e27f499e6c9de2f5bacbaecf68",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35437,12 +35366,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "09159a4ac1899e75c4637e7c5766fbb4fd7aefb69e695542d593fbe797faa887",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35475,12 +35403,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "3d22af56b07439664beedf1628bcee6333c12bd6dfa7fa0af2157e01311a2f71",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35513,12 +35440,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "d654cc37a4d730215baa2a322bd010eb6e43eab27c083f1a73925ef3e3f6c5dc",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35551,12 +35477,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "05910bffbb649907a3a6a80f1e23b03fecd173a870375c6829b8c1418d675c3f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -35591,12 +35516,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "1fb93ded7b49cc8d430b131a4ddaf69cb1b5c921c1cc4e9fa0ff6e5750d96f2d",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35629,12 +35553,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "93c7e80d4f71e18f7412d1585138924c9e48394712279a0e8c0752f78b15dd52",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35667,12 +35590,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "1a072f505d066c1232b5210c6732a9e0c145d53c44854fcdf47d272214ce57b4",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35705,12 +35627,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "e79a197548fb0bd71c2e5584c734d8a58cfc648e7bbd2c11b4cc155d108c62ce",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35743,12 +35664,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "9ba64194f956a0fe0de3f5aae65ca62eb5f5f33c1a10004310aa3d82e6dfd1c9",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35781,12 +35701,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "68067a1eb8915d96d1c624f189af24f9b0746f87f7182c232a210c41f1f1116b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35819,12 +35738,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "d613e85a93dec961673982f82fa8456b57fc27fda8260ffeae081f4fc423f293",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35857,12 +35775,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "7e8f0b1143801ea0eac048045055edd5a28765abd3c7cb5effca4ea5100ed738",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35895,12 +35812,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "1f413f251daa8efab85dafa561808eacacbc093b39124a76aa07be6a7cced9c2",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35933,12 +35849,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "51d5642d58e4dad819ca34edaff5d72fd34d07e9bbff1dd3f420052895c07762",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -35967,12 +35882,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "5d7ff025599adf59d5a5de5ddcc2ae2df059568cac049986c68f87b1eab3263b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -36007,12 +35921,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "3113cc827751c2807bf0056a75aa39d426b8d712cc83ac4f0c0ae46eaebd743d",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36045,12 +35958,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "b031804a2eb3233fae231acf9f2050711e13b8a75b06b5a7491535152ca545cf",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -36085,12 +35997,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/find.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "e97a5c96178257baf3d051eb05212cd5b179e9db97d51445c00e976253c9ad68",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36123,12 +36034,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "80b8f6ee4cf5a1707b6b09b7dc52327fde3f383b00d69d7fb6bfa68349e3a92b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36159,12 +36069,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "e8b80dd5f4f57c74ccc9aa3dacf6450775e107a836a4591e5c617ce1757917fe",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36195,12 +36104,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "5390b60b8999adf0b0befd27d10e6191f55e939c6ab8e606d838787d919e0fbd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36231,12 +36139,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "a38c429d09a30c61048374672b28f318fca2b7043e9e5d0477dcb44015d6d920",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -36269,12 +36176,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "8696b2dabab3d684a4dfdf07a15df32966684f85a8bfe4e9f8d807cd8da8aebe",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36305,12 +36211,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "9370837826845e9a7772442fe34ac1a22d0afa170381607fea595829f7ef874e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36341,12 +36246,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "cd0c8a0c4f1964345f12d3f9ef4900219a6ccbe3ec897909c26ada2dca0095d9",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36377,12 +36281,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "4115adbe8b1f78413ca42e2249db3f49f627143ff11e310a69f2f2e4af667743",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36413,12 +36316,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "2692d57f7bf1ded7c728ef194d65b25578f1a2422c87914b89c31ac7d7c01a1f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36449,12 +36351,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "a5962103e9134c88265e278a1abb7b4768a0900fae9f5413480c8f6333a6e5af",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36485,12 +36386,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "beebed2c0ae615847b4ae7d6579fc7aea77e4dd6ff5080a2adc1b0543fc51849",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36521,12 +36421,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "2879b968973f3ae91b872f4da62dd831c7e44cf42b8d6f0d201e04ab248003f0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36557,12 +36456,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "3aa9e7784398cb8c50507688fda3899388a76657072487af91561b314bdf49d5",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36593,12 +36491,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "c77989d2ba2aaecb3c6400cc0222955d03e50f154d8679e29042de1149aa552e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "findOne.filter"
@@ -36625,12 +36522,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "067aa0e6b1cf5f4857e54914b28280a54536496e0375826dba0e8e0e8125b4fa",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36661,12 +36557,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "3d833583114f88cec5e9083df8e5846095af72b52ada0ae595906bf3d1a15fc9",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -36699,12 +36594,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/findOne.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "b846a2aa4eeb7bc8fe5276a1491079e84426080f74172c73cb0f53e3fca63f71",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36735,12 +36629,12 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "8f09c741c5bf748b9b07ff86f3268af3ca44f8d144e9828fc4f514ed33c57704",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -36776,9 +36670,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "7e8ceec5a82942004977b6d14e82d32818fcbf6ef2dcdbe46c177c0dc863e2aa",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -36814,9 +36708,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "e9947c48c65345d53f368e9da6c47763ce409dba19c5d2da5cf03b7fe2a6ba82",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -36850,9 +36744,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "4ca47b4caf62bc7e44ddb10eeeed6608045892541d09871787a5198f5b060e86",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -36888,9 +36782,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "55ac40481a09cd3a22c164b9d8af732170c72dc032cf32de2ac6481cfc8b4f5a",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -36926,9 +36820,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "6ec51560c9f5827502d80dc3a55636ba3445f72454906bdae00900f313c7cde0",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -36964,9 +36858,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "179ac5b580abdf86547176be283b139bf5ab0d3c93d5e1f09d4116096a5f777f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37002,9 +36896,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "dec464080a251bb3a1e411a2eee1690c366afb235208e753a6048c4b17365b88",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37040,9 +36934,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "c774da5b72a1673782bd41d35ff9bcb202208703264f4b2f49054085d8b1f5f3",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37078,9 +36972,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "fa18e77b2cf7c3769acb4e04d04edbb7ae369428b7029b63481d5d1a66d874c1",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37116,9 +37010,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "93e5cc2fded2456c100b576cceac19aa473e77e764d700ddc5b2c0880e0f38ce",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37154,9 +37048,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "247e0b8612f30aefcf94c5af90f416be474dc73add5ac9ef8c6ad02bd6503301",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37192,9 +37086,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "33f71ae2dae7edc5db2a03c05c2e3f6885e4d4a4b808f045f1b0d1e9716ff979",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37230,9 +37124,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "de326b9c7987ddd394ea190e50426f5fff19b8ea87b52f7ed910d66c04b15035",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id"
@@ -37264,9 +37158,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "633de3f2c2f56984c05295af30a2f3c0e50eb84994cdc55fbcff3ea435e209af",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37302,9 +37196,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "cc402340a612c9fe44904fe132298f45f79bb29307bcdd1056b45be39d92892e",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -37340,9 +37234,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "9c6372d16e7ad763723c181967634ccf6fc8c04765730002846e10b144f7277c",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "download.id",
@@ -37376,9 +37270,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "505871821a27897174eae9389e2617caac64b918772704b45e9bfabcffb9724f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37414,9 +37308,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "2ca7cdc71c49d554024fc3cfe548e3fa99023812d53faab23a6204edee24351b",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37452,9 +37346,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "c4e40f55e0b5bf5c560fa337fb40a703abaa01d6fc23687028261f93cc5d6502",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37488,9 +37382,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "ac3885685d4a6d69714835ed3c26c57fcee6736c0c7601d9f494169533628dff",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -37526,9 +37420,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "b54de47e42754541f6e6a6465cd9c5e1ea45d37b58dab3fb1fad701b18b7e2d6",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37564,9 +37458,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "ba7cbd305e39704d5d05c5beac5dad532d219038f25ffacee49a478c695c561c",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37602,9 +37496,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "ccd014370977eb5cced0457ba1be680587b04afb91febe18eeb1f4baf9623373",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37640,9 +37534,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "b94d05a49e07709bfc425ef974c1db4025f0f6d85d4e6dad358f75773b1088b7",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37678,9 +37572,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "046a4a4a2efe8618791827136c3e7902e48527b72862eae07846dbf9e5464d30",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37716,9 +37610,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "a5630b014ab60052f6470b67818a035c29af7581681b721ee37e8a8147d2389d",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37754,9 +37648,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "5e18b371a920347f78764b465573081628c0ba606ab3f72792b54ae754da09b3",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37792,9 +37686,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "6f06e04ef1570a7752e18a4ae95000e704b00e653343e99493f924e300441e39",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37830,9 +37724,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "3ff026815b33099d37bd5fd441911e3e465b665902ec27b86d3b8f910b52c3da",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37868,9 +37762,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "c32e66ced483965d921fb4c6cac27ca174dbcf7bfd636d169aebf7f3ad47eabc",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename"
@@ -37902,9 +37796,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "076a752d85b71f447d9d19cc645b52ccc6720b786fec4a3ea2c497d5886081f8",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -37940,9 +37834,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "6ad57eccf244a3dd46eff07302b49a74ff4c54d85001a95e69117977d5f4628a",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -37978,9 +37872,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "ADV-002",
       "fingerprint": "cdee59be076a4674cfd6b32722c11649997d91f522d19bb609dc9a85534a3314",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "GridFS is a post-v1 capability",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -38014,9 +37908,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[10]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "ab6c55d37a2a441112f8527c56f6c213e1db2ce5033be1d5a21916ffbf7738c0",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38055,9 +37949,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[11]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "654e40996f92e487f7219f58a5d50d8441e504cf28f7b4f1a50a3359e35e6e1b",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38096,9 +37990,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[12]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "bb6c189126dfb5e1b4d8a93f19eb85d8b790788043cb32eaf23c8d25c10398b3",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38137,9 +38031,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[13]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "cb9230a011a541a179775d1d28fe116572394b669b424d57d187fb30e5969db7",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -38178,9 +38072,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[14]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "dce2630761bd7f3c1d0f3cda86d1c896149c2ba6846d216e6a403387aa080d2c",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -38219,9 +38113,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[15]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "f4c3c72c3a7ff242724dc6842cc834692b4641e6ee2285ec1706e06a2216882b",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -38260,9 +38154,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[16]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "a64bb500cf998244b62aacf5d82698998629a71dfa8a7c395a7367bcb73f9ee1",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -38301,9 +38195,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[17]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "752c47f97e696a73bc924dffab22c285c50790df842e38ad139c95e4f1b0b4b1",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -38342,9 +38236,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[18]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "7541ac5cad14a6b591f4c0751fb8265b757233727b2fbd78d825ffbb2d81fca9",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -38383,9 +38277,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[19]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "2d3f0b5f483e66ff1f962e1a5401c2d4c536295e838b0cad23cac84392f12b3e",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38423,9 +38317,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "d786c0dd7dcc36a5d42fb390594b4c672c3eafe575a6bbf4a759aaaf74490d49",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38464,9 +38358,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[20]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "643a7320115776552da2d24ba93d51c7ae95eb4304997803e05ba5fd579619fd",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38504,9 +38398,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[21]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "f19f16b580c0c221b118cffd225cbd891d48911f65fa455230f144cbcb64eae0",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -38546,9 +38440,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[22]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "3cb5f12f9b5e3382c284843e59b13584c02a6bc0ca4c735d04e3693b2f2d5c09",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -38588,9 +38482,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[23]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "8f43e3da7c9bf774cc054e8c51e3b7bb417d767ee0d52fa51a4c336e05026827",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38629,9 +38523,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[24]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "0d53241a6f3c694663692621d67e1a698f9b259be5f8c8a46ea65dc01dfe02d4",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38670,9 +38564,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[25]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "99f8108f21856f87e88695af90e37ab87161859e67fc88657054b2f7483a1dd3",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38711,9 +38605,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[26]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "a0bdf9ccc4194d5c53e98358172017251ff36a867533171bdff424750a254986",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38752,9 +38646,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[27]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "af1e8fde0f493929093f354206aef35023f941e1d05e1c67ae752a0fef26f489",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38792,9 +38686,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[28]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "21497457347750d79f3c74deb84f6edbd6a60995822d2fadeba56479319cfee3",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38832,9 +38726,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[29]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "ebf52db991b2cec6302c0686b6d1adf906b124946eadea66d842f7a99d51b945",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38872,9 +38766,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "dc06b14f5a1936dd20923cc2b836fbc74ff5553fe9d24dd122fd55b687ce2ced",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38913,9 +38807,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[30]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "473b3ede1f87d109bc94bab1bcbb05aec6ae3d95765847e2957fae0097ab2d7b",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -38953,9 +38847,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[31]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "7478c16d7657d27cc386cc4f5b400a24b57912b183026e7e4fc5c815ecdb35c0",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -38994,9 +38888,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[32]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "af60d15dae6aa74d4953c247c40cc95729e0f715e9a2e97fffb5b0599a0b8a9a",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -39035,9 +38929,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "9cec0afa6d1c5ca2a203d8a6293412d2c577b1548d86224e7604b416652fe6dc",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39075,9 +38969,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[4]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "ce379ddc8ecc003c2b1a81495e735dfa0a9fb33f4b322f14a4a71200822faeb0",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39115,9 +39009,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[5]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "5acc09ec867ecc969899431b5481e85068cc5beb7b52d96afd62f2040ca026dc",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -39156,9 +39050,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[6]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "e129026e2352436603bc9439c8f8e6f5986e062de3f886b1fa10d9b4b0311bab",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -39197,9 +39091,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[7]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "8817e5482e27c0f03107b32e13e0e890d3b276e0862b2c09a8d08b04597f5f6b",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -39238,9 +39132,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[8]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "f9536efd2b6c0246e6049a0bd5ef369899e7a8d5574443f0195133edb344aea6",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -39279,9 +39173,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[9]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "dd4d76b7ac5ca7cbcc98d35ce63db92d5f089371897b431a4cead7ca496eca5f",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "handshake retry requires the release command adapter",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39322,7 +39216,6 @@
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "b865a1887302d73837d46e18236ad6d6118dc0ab18e9f22f4327704ff8a8282f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39351,12 +39244,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "5270ce25f882afc4460b0df354bf5f6f04e99dfe53e3ade6590359f8c4fb6d08",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39385,12 +39277,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "86a3de6aeedf688da92472b6ce970067fd668558251e457b81db271619e602d9",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39419,12 +39310,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "e919bb682fc42e101ec8e865044c3c13016e5cc983e36bc1db0a599d0a08c097",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -39455,12 +39345,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "cd29f3ae76196b83bf197a82c3f392d1cc3a2e1f6a340b2ccab95bf270844e3b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39489,12 +39378,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "eb2dd5ed5a1b2da939cbf73d0c609525190ae851ff6d80d6ad90d25b861398ca",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39523,12 +39411,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "46effb3680a3348c2f44cf476066277adac2e44542ed33c9dbf51d067cb3755a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39557,12 +39444,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "b97513eee875572406b6adf0e82cdf2b0b5ecf57fa337d2d92be495fc5ada1ad",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39591,12 +39477,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "4977ba722372aac0d5536d8f1a2a6188ffaf3e7d119835f74881ffc67faaa608",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39625,12 +39510,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "039765d27b740005b78654c8d75e7fee19331bd939ae6217772cb45bb2bf3017",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39659,12 +39543,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "0e3915c583d9a7dcb499537e03ab6fd74f9253b249daa580a524b26211c4c8b8",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39693,12 +39576,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "aa75c5a8cd5dc411539a1d443dca5e87a9e2813b522460f93434a4ca651bcb44",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39727,12 +39609,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "db3e01484b143ddf16348d0510840fe28a7845befae8be0997a75d0c6685d7bb",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39761,12 +39642,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "9293ed34d920cdbf4b241e1b8f95095a608984fe502f747ff5c2ec367952b974",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -39790,12 +39670,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "32f5dfed623674c21f970bd9775a772496ede7851f3c9c8b1fdbbbee67ceb248",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39824,12 +39703,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "1139bb8b07474cf1e997d4c251f3c06d194190ae2bd56ddfa2a4a96c8241568c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -39860,12 +39738,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "7c855ad53bf3b5f0e1cd8a981fbbaac822d44fd2de8b7d603ec3c52d52bed722",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39894,12 +39771,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "5b960f20272cba7b434b10c593fd452e5b82a395fa15220affef6fd604dfbc62",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39928,12 +39804,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "b39a90873492d369f1e0104572b07e28fbf97507d5884ac7c0e133e5abe098e0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39962,12 +39837,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "0b80fe54a50d5af42535d49ee27e52d66302bed857f2d807486a2afcd611ec75",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -39996,12 +39870,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "bf49fb77b6ed921334c0e0286432720c835a60e647b245569bb3434609ea52d8",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -40032,12 +39905,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "adac633081aca6dbb217e9de923fbbca38792cc0ebfc97f4ae86d4145876e0b8",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40066,12 +39938,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "0ffa13fad59cb43ee335313ad10795e173b823958bd6186ee354681079a24d11",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40100,12 +39971,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "13248807caaaf89f562124fcbf872d63e5d957dba32f9e58bcf1af727a214698",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40134,12 +40004,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "af350c09d15438b26e9156154c3dca8b666703c21ee45ede2fbf5f53fa2a0b0b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40168,12 +40037,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "11b2a71ede914ad9a58b97fca22e5300fa7d9432b676f816c77253b224717cc1",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40202,12 +40070,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "2e9ec0bee1e7c7e3d58c4c523607b00abc7988bf115356fb258146eac5a5cdf0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40236,12 +40103,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "5608c930b3ce5efad282536edf1ec94d99bdbac1f277045294fc220d4bdbcbcc",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40270,12 +40136,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "9cdb980606f65a2b8964b6e4f9114261904f9e8e2e2d401669dbaf2e7429b909",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40304,12 +40169,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "c5bb89de50ef001dff7670d95b33d85208763f821f06777f55c8db843553ed86",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40338,12 +40202,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "aa1736a8f4659b90af9987b6cf4af90beaf13fd3990361c6d785387fa0277926",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -40367,12 +40230,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "2fa216330df588f417ce25c5d98f08458aff16585e974c214e09150472546954",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40401,12 +40263,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "94571952fc75a20a66560ab95a2e1f1e9c11e081edf0441129715e41f68d41a0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -40437,12 +40298,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionObjects.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "0cb75790619979686d8a3e2e123fd3aae79e0cb170b96b412980e4f84d22a8a0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40471,12 +40331,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "bbbbbb0a9afc36a4065df0f98911ede3cf01b45e33a6d01e43451aca5bd3e571",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40505,12 +40364,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "909b6f5f44ffd084d305e8ed5c7ebcd5fb830e10c222b95d7ab70e40516a2400",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40539,12 +40397,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "2dfd664dbcba0ac8e6cb641768ce30b70f9712a7eaca3f42b21833626189033c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40573,12 +40430,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "745f267ace53f5c3f968557993bc25bf12d70f13435813ec49cff259827b42b2",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -40609,12 +40465,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "20e1683e3ad767a0a2c14b02c8c6d8a72e6d7d3d685764fc5ba1265fefd17123",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40643,12 +40498,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "1025481112a91f061506466231e3db95138a16a68863e9763b934bd418c615d0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40677,12 +40531,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "a70ce157fd9d472b2b4c45e40909ca91efb42d06f2d8335cea884e2ab15575c1",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40711,12 +40564,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "9480599b5b3a998caf022412de22512c688df1cf99b36083fae1b33776a74dc4",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40745,12 +40597,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "d94a9d524d4bc8dcf7ac59e44ff88a05e13230d959ba22afb549116f58df8770",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40779,12 +40630,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "fcb266ae049a974e2b33545f42cbfbe1b62eff0415cd154f05869c40ff813bc6",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40813,12 +40663,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "8ef13287b6902dc21db2203f7eee561bd73fad867dfada7215bd186f9ea2b4e7",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40847,12 +40696,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "99ed7bbe9c50c504a41303d774a71e705e4aff29e6ca36d2a0a91aa295c4019e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40881,12 +40729,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "a0c0eb497947ae811eb9cc5f73e969dcfc1013c6bef1b612525e90399ba6dc4a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40915,12 +40762,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "5fafa5ca24e5c3ebdb0553f5b0c5c12a984e5aee614da3a2d4c8bef2f13fa482",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -40944,12 +40790,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "7f063dfa8776f7bcc80e01706f949f7380917d0c04202cacf1cfcb05c2d268de",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -40978,12 +40823,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "0a804177c060d8f07a0f3b3ecb00a442d7f5345afaa7a9298058d3c74738bb70",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -41014,12 +40858,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollections.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "05d3f5b84915efc9fc37bc72687e0c46050cacdf3c8ea6fcccc602cbe3e71bd3",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41048,12 +40891,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "1a217ede99fc0865dab9ab12d965e7714744410dcb9e65032c3a3d6e3fe8bc97",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41081,12 +40923,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "96245ccc36a1023f295c194c02b9605a9044e29eb33c5f3d21cb8af71d9bfc5d",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41114,12 +40955,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "5403f30b525f81b1806e688f31af51eecd02717238dc96eb0544f81e7285d457",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41147,12 +40987,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "29401b9bda2a8d7e7146bf090a4889c586da8dddea16d2be9b1aee8ea20f0ad5",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -41182,12 +41021,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "d5ae6271326a857b5618faa48c3d1a290100d87d63db1ed2f1bd4e238dc8410b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41215,12 +41053,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "b89c0c2754e4ef42915b41995312822d6364d1a51379dc026629ab35f236e126",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41248,12 +41085,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "d43455bc8d7ff53f9462c090e144d497d1835db80fed1564c7c0102aa5f9e8c4",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41281,12 +41117,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "f751aa66ddf3430a929782fc7d9f3747590ef9979a80e4975525cec61c781a82",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41314,12 +41149,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "2eaeddc4ac4b074844e87b62010979c0ea2d436206fa857b75089cdc6a8de356",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41347,12 +41181,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "526882167cbde10c6513a55b7980d75dd3d03ef5f4734b3504ca16cf7b25e32d",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41380,12 +41213,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "6a0e4dc0591062f0c8087a81a573875ef811380aae7677b25d04c5a84fb44b01",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41413,12 +41245,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "e43ec9b03fede4c8f14f25ec52ea57f57d63e6add83e4d9937c92f26dbec6ec3",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41446,12 +41277,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "f4df5e8f3e20de34bc2e173e7defddd26b1d92f426c5ab2c3300569be22e5791",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41479,12 +41309,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "d2a0c7c54ee4801c4535858003855e027d3dca0e693e4a5c7d537195314e36df",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -41507,12 +41336,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "b3cb4954fb7e1f64c7d78433ceb094aa9f27fd04bc20504b6f18095dea40336c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41540,12 +41368,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "727a6b5612236e2346d19127ed509c4b66af736e9f8e09bd9aa9fd3bbfe038bf",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -41575,12 +41402,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseNames.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "c0073410b90f367a7af6de32a96a1a2da05675a7fc629638fd03ed5623761b7c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41608,12 +41434,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "d2e5ee7ecd6c899d73154e5fc94c17dcf566f19cc840c0bb59f79f85859a66da",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41641,12 +41466,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "5042368e8262f2c04d3efa37d60a3e5493f22b24734028684c66c9d1e708af26",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41674,12 +41498,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "6a7ed5f7b589d4a66f0a791fabd987d5a842f7e781ea9de85c141f6517ba7a2c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41707,12 +41530,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "ee96f6b3eec403376da829b0cc33ae43b6428c1b877ed2977858986bf2d765d8",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -41742,12 +41564,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "682bd5ba641f8d033857e02deea39ea3d7ff1d2120df7ac375bd38e4a972bda8",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41775,12 +41596,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "1d5354e7cda06331ac9157ea579a9ae53c6ac2916f0dcb26b40488317e0bce09",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41808,12 +41628,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "7e512442a29699572f81ee398e5a9e97968f10912c28db6fe77f7998c759d636",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41841,12 +41660,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "a4aa33b34037df157d52447aaa8c27cf6316a3dedbec3576d5c13bc06c882ffa",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41874,12 +41692,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "ee1b894365002eee6486d2eefe8d7e2f4d8781959a733e3554410a2ba2260246",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41907,12 +41724,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "cf85ea6e757a299a902d5a76c4e5a4c0d27a900643212ac61bec3bc09dad3ac6",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41940,12 +41756,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "f7bf40eb84ba8ea7cccab7aa87f6b1a7b109ed2f585f5e3510822b9b532c22d0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -41973,12 +41788,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "084b0413a99c3201b5263f73ec51f7ab9a332774a3efbd438c55e41f37243a41",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42006,12 +41820,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "eebf12d654afcd6a97eac33b7b007be100fb9b33be61a876e53a9e0f35525cde",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42039,12 +41852,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "24b1bc4be318a3d6a2976a99caefefe1ffe32904c4bfe74d4a3b8db012495e66",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -42067,12 +41879,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "1123ec4d9527778fae45352c0959664eba4a735c26ac35349cb5766525f5f00e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42100,12 +41911,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "99c8e70de6a824217d968db2f2eb77bef9ad31c11f8e6a588b3c2b4199a4aa77",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -42135,12 +41945,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabaseObjects.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "4b1f6a52d2ab6b30e58e5a96c66d2c69c048e5043048a0678635f962850290e6",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42168,12 +41977,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "6995e84a23702d4ade89a62bb629290a5a70f3e4e675e4d9ec46735f9ed88726",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42201,12 +42009,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "1b0ff0100af78f04d4b328d3458928bb07cd8840d9e361db4854084c9177e4d0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42234,12 +42041,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "445a8ec297c4836a014a5adb62a98d103abceaa63e70d2e19fe7b247efc82bff",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42267,12 +42073,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "90e75f767bd3be6f61481989337618935a2ade00f76a6676fa8b1a6ce01d3672",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -42302,12 +42107,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "349cdf839dfe2116dce0318801bf6ad616c6584f53f1413a7ba08693b2c43508",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42335,12 +42139,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "074a226a9e7aeac970d8180c9081ae4286387380ff75153afe4f8a5a01e3ace9",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42368,12 +42171,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "ca548233e75f1d4dd326679a8c48ead4b380034b51a613476cf812034aee982c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42401,12 +42203,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "1473b15c41372c2a4a53b2a0454610e09acc3d6d34b07032dbb081a93d14885a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42434,12 +42235,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "c0c167915a45cc5342a85ff5f3bbfbfa1196a371e564fe227c9ec759eed7c9f0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42467,12 +42267,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "77ca9752dd7d8e5d3a547ef876d3408e505952f07a65781ec38e09d0815720a0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42500,12 +42299,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "75595c94d4de1fd60e25139b3f9c8f694458518ad5fe056639630be9af6cfd67",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42533,12 +42331,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "f2c54f80c4bbc9aba1ae378a2b44351ad78b7e67f1dc1cba5e5ca57bcbaf15e2",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42566,12 +42363,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "8fb0a751ed1b7130e05e6893a7135416d1e272f1b8a9abc33dcf9633ff11f9bf",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42599,12 +42395,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "07417b6aa9a15fd3917e7af7917b269a8b279f4f3153ac5b639206d34ba56c90",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -42627,12 +42422,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "51f344dc909d0b1b6a881e1904cd8e1c04766c56264a4df23bc885ceb56bd9e5",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42660,12 +42454,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "b060642a90c26d37d3614b8aae6aeaaa5d1d8e172161721e16bcd79303bf9fbf",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -42695,12 +42488,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listDatabases.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "20e1de18419b9bf319689046c48195742ea848d3efc7fd3e98e4cf06336c9e46",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42728,12 +42520,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "48ed5fdfc467b2bab14c360def9a3911a198d1706c2105a56ab3666790298297",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42763,12 +42554,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "50f5255c5e170c05b0e586cad5991e4469861a0d66c182d91e79d9a972c02ba5",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42798,12 +42588,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "7f64cfdcaf17b8bf4d4d2bcf593a5de336fbbfdd366476f1976353732c94a21f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42833,12 +42622,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "830832952c6f1b034fb6e4855a93f2bad505a1295a33889de9c9d952ccf81b6c",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -42870,12 +42658,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "adc7a628f96ed5b7192055c7720a7849c7a95e050e36e570b26c7e59e0c303c1",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42905,12 +42692,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "cc7749f5893ea61c59b7d94952ae9aea54f77b79fb9b11314b8098b581b07d6a",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42940,12 +42726,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "214b16023617e59100fe95647fce85ef1150228f4710a6e48052cac3ef76765d",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -42975,12 +42760,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "ee36348e16690e31c8ed7808d5ae24bc679854476029b59e1a83a56a0763bba6",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43010,12 +42794,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "4c3a89c1032581014b569fc69be91297f22a7beaa4978854af8aca506d675346",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43045,12 +42828,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "3f1a4b974856c41317608b7061ee3e26921b7e6145753b70c1d383eb1fabd102",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43080,12 +42862,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "510629d50eda6c9b3fef6e6c4636d0aace2594643e4d54410c61fbf2139088f7",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43115,12 +42896,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "25e627507f0fb6a88f85cc85e0077e9f51dd973ebcaa58cfd1be151b24c6b8aa",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43150,12 +42930,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "56a3c1e2909094c332978c6a8dee307b9f3d0b893d1029d1999b789537e030fd",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43185,12 +42964,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "4ed8b463af9becce582156b850c3caf6205d2324fc67abdadfc3b6b708b6c33b",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -43215,12 +42993,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "e44851e3476754fe524aea2f93f04d4d23bcb46039c3ddba72adae7f9a9bec05",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43250,12 +43027,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "ed76f18a24bd8664a64352b04917c2faad1c1dbdabb10451ffe8c86b51bc5752",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -43287,12 +43063,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexNames.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "8f80ad0ee5ce1d265d2285e5b24d83973d0dad628e480007e9e75bbc79c8a271",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43322,12 +43097,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "fingerprint": "227ddd2379db00a9e716e41ef252073aa93ad45604168838ec644bb03caf55df",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43357,12 +43131,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[11]": {
       "activity": "RETRY-001",
       "fingerprint": "2837e613f8c0e3aeaf4aba821487d187e3af795b2161cbec74923f63bfc94c01",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43392,12 +43165,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[12]": {
       "activity": "RETRY-001",
       "fingerprint": "df136529fad65f3d6f838c45cf8142eeb8419697ace46fd622a7baec6940bcb2",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43427,12 +43199,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[13]": {
       "activity": "RETRY-001",
       "fingerprint": "10d4eff6178480f3760733bea414462310173d0d88e3704ab4430e05d5cf8c87",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -43464,12 +43235,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "89c96961896797c7bc51f86b9e3ce19988286f86b67dbecbad9e89408fc4558e",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43499,12 +43269,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "afb32938676d0263814ac66d63d019fa6cd22433d5fbf569504ce1b0be895742",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43534,12 +43303,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "1e4ba47baf9ba3947f73ac810f0de9df31edeb17879003f0dcf1135e6a3d3b78",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43569,12 +43337,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "46e3d12422060f851d7d16b1efe46bb5685f5f2382edeb4e5de5bbed900d2e01",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43604,12 +43371,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[5]": {
       "activity": "RETRY-001",
       "fingerprint": "fc11e6efde80257181336c854bdf75b7e9b94a50841aedbacb6116c7e5374c1f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43639,12 +43405,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[6]": {
       "activity": "RETRY-001",
       "fingerprint": "09876d4dce3f18b488a88265d0719cab9266f14da9c133f1a6f35a663c688458",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43674,12 +43439,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[7]": {
       "activity": "RETRY-001",
       "fingerprint": "2dba15c8024e7f5128a0043dd1e02ff6a7c7215f8f3904263a2ac50ae6152e5d",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43709,12 +43473,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[8]": {
       "activity": "RETRY-001",
       "fingerprint": "55a6fd9545e11d4f35f66dd9c0c0879ef96f41cdd9c6fb29c302a77403ca164f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43744,12 +43507,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes-serverErrors.json::test[9]": {
       "activity": "RETRY-001",
       "fingerprint": "85d103f6ee23702dff791536a885015a266fd4017a35079fd9ea72e6d965ec67",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43779,12 +43541,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "801891052dea3bae9196ccd46fca1569814bad3c4945b65a3b7ff968d3eeecca",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -43809,12 +43570,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes.json::test[2]": {
       "activity": "RETRY-001",
       "fingerprint": "09e8e804c760b5749b86a72f895809f1f9c267da2748d9c23bf04cd07ace6e25",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43844,12 +43604,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes.json::test[3]": {
       "activity": "RETRY-001",
       "fingerprint": "5053e111e27eba2a8d7e4211cdc43b4a651e766aeb0e48fcd2f9b859f25ed7bc",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -43881,12 +43640,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listIndexes.json::test[4]": {
       "activity": "RETRY-001",
       "fingerprint": "ce1a2875645aaa0490f26090c35c1c1bb34c3192b239c74265c38bf39b7b69d0",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43916,12 +43674,12 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[1]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "bc2b7b4726700cfee35e2a98f79a943f6a4a7e663835bb99a8547cb19eb5187a",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
         "arguments": [
           "mapReduce.map",
@@ -43953,9 +43711,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[2]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "e1e9d4262af1ef18069322e05fe0dc1184a5c7bfc62c5c2dfb9f37fba2bdf86e",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -43991,9 +43749,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[3]": {
-      "activity": "RETRY-001",
+      "activity": "REL-001",
       "fingerprint": "dc32ebbe932286f3122afeb1927c5b90be5ea19cf8fb9399f990c07e7eddabeb",
-      "reason": "retryable-read orchestration is not implemented",
+      "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -44033,7 +43791,6 @@
     "retryable-reads/tests/unified/readConcernMajorityNotAvailableYet.json::test[1]": {
       "activity": "RETRY-001",
       "fingerprint": "f2d18ae073f5d92a5dc5e807908d280929e67ee976c21e29adf2bf49e9892f4f",
-      "reason": "retryable-read orchestration is not implemented",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -44064,7 +43821,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/aggregate-out-merge.json::test[1]": {
       "activity": "RETRY-002",

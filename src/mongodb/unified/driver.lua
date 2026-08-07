@@ -393,6 +393,68 @@ local function collect_cursor(cursor)
   end
 end
 
+local function list_databases(_, client, arguments)
+  local cursor, err = client:list_databases(operation_options(arguments, {
+    filter = "filter",
+  }))
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
+local function list_database_names(_, client, arguments)
+  return client:list_database_names(operation_options(arguments, {
+    filter = "filter",
+  }))
+end
+
+local function list_collections(_, database, arguments)
+  local cursor, err = database:list_collections(operation_options(arguments, {
+    filter = "filter",
+  }))
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
+local function list_collection_names(_, database, arguments)
+  return database:list_collection_names(operation_options(arguments, {
+    filter = "filter",
+  }))
+end
+
+local function list_indexes(_, collection)
+  local cursor, err = collection:list_indexes()
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
+local function list_index_names(_, collection)
+  local documents, err = list_indexes(nil, collection)
+
+  if not documents then
+    return nil, err
+  end
+
+  local names = {}
+
+  for index, document in documents:iter() do
+    names[index] = document:get("name")
+  end
+
+  return bson.array(names)
+end
+
 local function aggregate(_, collection, arguments)
   local cursor, err = collection:aggregate(arguments:get("pipeline"), operation_options(
     arguments,
@@ -948,6 +1010,20 @@ function M.new(options)
     },
     internal_client = internal_client_adapter(internal_client),
     operations = {
+      client = {
+        listDatabaseNames = {
+          arguments = { "filter" },
+          handler = list_database_names,
+        },
+        listDatabaseObjects = {
+          arguments = { "filter" },
+          handler = list_databases,
+        },
+        listDatabases = {
+          arguments = { "filter" },
+          handler = list_databases,
+        },
+      },
       collection = {
         aggregate = {
           arguments = {
@@ -1044,6 +1120,14 @@ function M.new(options)
           arguments = { "bypassDocumentValidation", "comment", "document", "rawData" },
           handler = insert_one,
         },
+        listIndexNames = {
+          arguments = {},
+          handler = list_index_names,
+        },
+        listIndexes = {
+          arguments = {},
+          handler = list_indexes,
+        },
         replaceOne = {
           arguments = {
             "bypassDocumentValidation", "collation", "comment", "filter", "hint",
@@ -1067,6 +1151,20 @@ function M.new(options)
           },
           coerce_result = update_result,
           handler = update_one,
+        },
+      },
+      database = {
+        listCollectionNames = {
+          arguments = { "filter" },
+          handler = list_collection_names,
+        },
+        listCollectionObjects = {
+          arguments = { "filter" },
+          handler = list_collections,
+        },
+        listCollections = {
+          arguments = { "filter" },
+          handler = list_collections,
         },
       },
       session = {

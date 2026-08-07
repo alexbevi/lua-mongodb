@@ -998,6 +998,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
       operation,
       preference,
       {
+        deprioritized_servers = options.deprioritized_servers,
         heartbeat_frequency_ms = state.heartbeat_frequency_ms,
         local_threshold_ms = options.local_threshold_ms,
       }
@@ -1024,6 +1025,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
 
     if not ok then
       return selection.select(state.description, operation, preference, {
+        deprioritized_servers = options.deprioritized_servers,
         heartbeat_frequency_ms = state.heartbeat_frequency_ms,
         local_threshold_ms = options.local_threshold_ms,
         operation_counts = counts,

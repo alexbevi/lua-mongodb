@@ -1,5 +1,8 @@
 local bson = require("mongodb.bson")
+local errors = require("mongodb.error")
+local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
+local session_executor = require("mongodb.session_executor")
 
 local M = {}
 
@@ -120,10 +123,75 @@ local function causal_write(test, sessions)
   assert(session:end_session())
 end
 
+local function implicit_causal_retry(test, sessions, fixture)
+  local read_concerns = {}
+
+  for _, entity in fixture:get("createEntities"):iter() do
+    local collection = entity:get("collection")
+
+    if collection then
+      local options = collection:get("collectionOptions")
+
+      read_concerns[collection:get("id")] = options
+        and options:get("readConcern") or nil
+    end
+  end
+
+  local operation = test:get("operations"):get(2)
+  local commands = {}
+  local base = {}
+
+  function base.command(_, _, command)
+    commands[#commands + 1] = command
+
+    if #commands == 1 then
+      return nil, errors.new({
+        category = errors.CATEGORY.SERVER,
+        code = 11600,
+        message = "interrupted at shutdown",
+      })
+    end
+
+    return bson.document({ { "ok", 1 } })
+  end
+
+  function base.close(_)
+    return true
+  end
+
+  local executor = session_executor.new(
+    retry_executor.new(base),
+    sessions
+  )
+  local read_concern = read_concerns[operation:get("object")]
+  local response = assert(executor:command(
+    "implicit-cc-tests",
+    bson.document({ { "find", "test" } }),
+    { read_concern = read_concern, retryable_read = true }
+  ))
+
+  assert(response:get("ok") == 1)
+  assert(#commands == 2)
+  assert(encoded(commands[1]:get("lsid")) == encoded(commands[2]:get("lsid")))
+
+  for _, command in ipairs(commands) do
+    local actual = command:get("readConcern")
+
+    if read_concern == nil then
+      assert(actual == nil)
+    else
+      assert(actual:get("level") == read_concern:get("level"))
+      assert(actual:get("afterClusterTime") == nil)
+    end
+  end
+end
+
 local RUNNERS = {
   ["sessions/tests/driver-sessions-dirty-session-errors.json"] = dirty_session,
   ["sessions/tests/driver-sessions-server-support.json"] = server_support,
   ["causal-consistency/tests/causal-consistency-write-commands.json"] = causal_write,
+  ["sessions/tests/implicit-sessions-default-causal-consistency.json"] =
+    implicit_causal_retry,
 }
 
 function M.run(relative)
@@ -133,7 +201,7 @@ function M.run(relative)
   local count = 0
 
   for _, test in fixture:get("tests"):iter() do
-    run(test, sessions)
+    run(test, sessions, fixture)
     count = count + 1
   end
 

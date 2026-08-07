@@ -278,10 +278,12 @@ function MANAGER_METHODS:decorate(command, options)
   local entries = {}
   local add_causal_read_concern = session_state.causal_consistency
     and session_state.operation_time ~= nil
+  local replace_read_concern = options.read_concern ~= nil
+    or add_causal_read_concern
 
   for key, value in command:iter() do
     if key ~= "lsid" and key ~= "$clusterTime"
-        and (key ~= "readConcern" or not add_causal_read_concern)
+        and (key ~= "readConcern" or not replace_read_concern)
     then
       entries[#entries + 1] = { key, value }
     end
@@ -297,7 +299,7 @@ function MANAGER_METHODS:decorate(command, options)
     entries[#entries + 1] = { "$clusterTime", cluster_time }
   end
 
-  if add_causal_read_concern then
+  if replace_read_concern then
     local read_concern = options.read_concern or command:get("readConcern")
       or bson.document({})
     local concern_entries = {}
@@ -312,10 +314,12 @@ function MANAGER_METHODS:decorate(command, options)
       end
     end
 
-    concern_entries[#concern_entries + 1] = {
-      "afterClusterTime",
-      session_state.operation_time,
-    }
+    if add_causal_read_concern then
+      concern_entries[#concern_entries + 1] = {
+        "afterClusterTime",
+        session_state.operation_time,
+      }
+    end
     entries[#entries + 1] = { "readConcern", bson.document(concern_entries) }
   end
 

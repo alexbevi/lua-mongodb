@@ -345,7 +345,13 @@ def classify_case(
       return _deferred(case, "REL-001", activities)
 
     if "implicit-sessions-default-causal-consistency" in path:
-      return _deferred(case, "RETRY-001", activities)
+      return _passed(
+        case,
+        "RETRY-001",
+        "spec/support/session_runner.lua",
+        "make test-unit",
+        "deterministic-runtime",
+      )
 
     return _passed(
       case,
