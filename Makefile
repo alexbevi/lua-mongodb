@@ -9,7 +9,7 @@ BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 
 .PHONY: check check-tools check-lua check-busted check-luacheck check-luarocks check-python \
 	test-unit test-integration test-unified test-unified-schema test-unified-inventory \
-	test-unified-meta test-unified-execution lint rockspec planning-check
+	test-unified-meta test-unified-execution test-conformance lint rockspec planning-check
 
 check: test-unit test-integration test-unified lint rockspec planning-check
 
@@ -65,6 +65,11 @@ test-unified-inventory: check-python check-lua
 	@"$(PYTHON)" spec/unified/validate_fixtures.py --lua "$(LUA)"
 	@"$(PYTHON)" -m unittest spec.unified.test_cli -v
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
+	@$(MAKE) --no-print-directory test-conformance
+
+test-conformance: check-python
+	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
+	@"$(PYTHON)" spec/conformance/ledger.py --check
 
 test-unified-meta: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/matcher_spec.lua \

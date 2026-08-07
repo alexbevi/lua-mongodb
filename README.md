@@ -105,6 +105,7 @@ make test-unit
 make test-integration
 make test-unified
 make test-unified-schema test-unified-inventory test-unified-meta test-unified-execution
+make test-conformance
 make lint
 make check
 ```
@@ -122,6 +123,8 @@ python3 spec/unified/update_capabilities.py --check
 ```
 
 Schema, inventory, meta-runner, and execution reports have distinct types and counters. Per-test identities use the stable form `fixture/path.json::test[N]`; each of the 1,900 checked-in classifications carries a content fingerprint, extracted capability requirements, a concrete reason, and a pending roadmap owner. Execution reports distinguish passes, failures, environment skips, unsupported deferrals, scope exclusions, and invalid or incompatible inputs. Missing or stale tests, unknown capabilities, completed deferral owners, empty reasons, or regressions below the classified, runnable, and passing ratchets fail the command. A runnable test without an executor is reported as a failure.
+
+`make test-conformance` checks the generated normative coverage ledger at `spec/conformance/ledger.json`. The ledger pins 2,966 JSON/YAML source files and 5,524 stable cases across 31 specification suites, including unified and legacy BSON, URI, SDAM, selection, CMAP, sessions, and timeout formats. Each case records its fingerprint, format, runner, environment, milestone scope, status, last execution command, and roadmap owner. JSON is the canonical executable form where upstream also supplies equivalent YAML; both source files remain fingerprinted. Regenerate deliberately with `python3 spec/conformance/ledger.py`, while the normal gate uses `--check` so additions, removals, edits, missing owners, and stale coverage fail.
 
 ## Scope
 

@@ -789,6 +789,28 @@
       "notes": [],
       "started_at": "2026-08-07T00:03:07+00:00",
       "completed_at": "2026-08-07T00:12:00+00:00"
+    },
+    "CON-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.conformance.test_ledger.ConformanceLedgerTests.test_validation_rejects_added_and_changed_cases -v",
+          "exit_code": 1,
+          "summary": "The conformance ledger module did not exist, so changed fingerprints and newly added normative cases could not be rejected.",
+          "recorded_at": "2026-08-07T00:15:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unit && make test-unified && python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "127 unit tests, BSON corpus gates, 12 unified runner tests, 320 meta-fixtures, and validation of 483 unified files / 1900 tests passed; the ledger classified 2966 source files and 5524 cases (1756 passed with evidence, 3768 deferred-unsupported, 0 unowned), and strict roadmap validation passed.",
+          "recorded_at": "2026-08-07T00:20:14+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-07T00:12:35+00:00",
+      "completed_at": "2026-08-07T00:21:07+00:00"
     }
   },
   "verified_references": {

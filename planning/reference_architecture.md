@@ -28,7 +28,9 @@ PyMongo exceptions help identify error categories and server-label propagation. 
 
 The pinned specification checkout contains schema versions through 1.28 and the valid/invalid meta-tests under `source/unified-test-format/tests`. The Lua runner will first prove parsing and schema-subset behavior against those meta-tests, then build entities, execute operations, match events/results/errors, inspect outcomes, and support threads, loops, fail points, and fake KMS/OIDC services as slices require them.
 
-A machine-readable capability map classifies every discovered `*/tests/unified/*.json` fixture as runnable or deferred with a concrete reason. Discovery failure, unknown operations, and unclassified fixtures fail the run. This keeps the runner useful before the entire driver surface exists without creating invisible skips.
+A machine-readable capability map classifies every discovered `*/tests/unified/*.json::test[N]` case with extracted requirements, a content fingerprint, status, and concrete roadmap owner. Discovery failure, unknown operations, stale content, completed deferral owners, and unclassified tests fail the run. This keeps the runner useful before the entire driver surface exists without creating invisible skips.
+
+The generated cross-format ledger in `spec/conformance/ledger.json` accounts for every JSON/YAML file and canonical JSON case under the pinned specification test trees, including BSON corpus categories and legacy URI, SDAM phase, selection, CMAP, sessions, and timeout formats. It links each stable case to the pinned specifications commit, runner, environment, milestone scope, status, evidence command, and owning activity. The checked generator rejects upstream additions, removals, edits, unknown suite owners, missing runners, and deferrals left behind after their owner completes.
 
 ## Intentional Lua adaptations
 
