@@ -20,6 +20,7 @@ AMBIGUOUS_OWNERS = {"REL-001", "REL-009"}
 RELEASE_FIXTURE_OWNERS = {
   "REL-002", "REL-003", "REL-004", "REL-005", "REL-006", "REL-010", "REL-011",
   "REL-012", "REL-013", "REL-014", "REL-015", "REL-016", "REL-017",
+  "REL-018", "REL-019", "REL-020", "REL-021",
 }
 POST_V1_REASONS = {
   "ADV-001": "change streams are outside production-core v1",

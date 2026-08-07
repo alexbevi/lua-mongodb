@@ -384,12 +384,32 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact aggregate fixture subset", "make lint"], "acceptance": ["Write-stage aggregate concern and preference fixtures pass", "Aggregate command events remain exact"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run aggregate write conformance"
     },
     {
-      "id": "REL-017", "title": "Close remaining v1 CRUD and administration conformance", "milestone": "production-core-v1", "depends_on": ["REL-016"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Split and enable the next minimal residual CRUD or administration behavior group.", "implementation": "Complete only the next public v1 CRUD or administration adapter group, splitting again before implementation when more than one vertical behavior remains.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact affected unified fixture subset", "make lint"], "acceptance": ["Every implemented behavior group has exact fixture evidence", "Residual cases retain concrete owners"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): close remaining CRUD conformance"
+      "id": "REL-017", "title": "Classify advanced management exclusions", "milestone": "production-core-v1", "depends_on": ["REL-016"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Assert search-index and change-stream pre/post-image management cases are explicit post-v1 exclusions.", "implementation": "Assign only the exact Atlas Search management cases to ADV-011 and pre/post-image cases to ADV-001 with concrete reasons.",
+      "verification": ["python3 -m unittest spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope -v", "make test-unified-schema test-unified-inventory test-unified-meta", "make lint"], "acceptance": ["All advanced management cases have named post-v1 owners", "No core collection or index operation is excluded"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(release): classify advanced management exclusions"
     },
     {
-      "id": "REL-005", "title": "Close v1 command and cursor conformance", "milestone": "production-core-v1", "depends_on": ["REL-017"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-018", "title": "Run management rawData conformance", "milestone": "production-core-v1", "depends_on": ["REL-017"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the four listCollections and index-management rawData cases.", "implementation": "Map the unified rawData argument through existing public collection and index administration options.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact management rawData fixture subset", "make lint"], "acceptance": ["MongoDB 8.2 management commands include rawData", "Earlier supported servers omit rawData"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run management rawData conformance"
+    },
+    {
+      "id": "REL-019", "title": "Run collection option conformance", "milestone": "production-core-v1", "depends_on": ["REL-018"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the six clustered-index and time-series collection cases.", "implementation": "Map only the normative createCollection clusteredIndex, timeseries, and expiration arguments through the public administration adapter.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact collection option fixture subset", "make lint"], "acceptance": ["Clustered and time-series collections are created through the public API", "List and insert outcomes match exact fixtures"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run collection option conformance"
+    },
+    {
+      "id": "REL-020", "title": "Run index timeout conformance", "milestone": "production-core-v1", "depends_on": ["REL-019"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the eighteen CSOT create, list, dropIndex, and dropIndexes cases.", "implementation": "Map unified operation timeoutMS through the existing public index administration deadline and add the missing dropIndexes adapter.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact index timeout fixture subset", "make lint"], "acceptance": ["Index operations honor inherited and operation timeouts", "Timeout command events remain exact"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(unified): run index timeout conformance"
+    },
+    {
+      "id": "REL-021", "title": "Run modify collection error conformance", "milestone": "production-core-v1", "depends_on": ["REL-020"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the three modifyCollection and findOneAndUpdate error-response cases.", "implementation": "Add the smallest public modifyCollection adapter and preserve structured server error details through exact unified matching.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified-schema test-unified-inventory test-unified-meta", "Run the exact modifyCollection fixture subset", "make lint"], "acceptance": ["prepareUnique violations remain accessible", "findOneAndUpdate error details match exact fixtures"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(admin): support modify collection conformance"
+    },
+    {
+      "id": "REL-005", "title": "Close v1 command and cursor conformance", "milestone": "production-core-v1", "depends_on": ["REL-021"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable applicable database command, command-cursor, explicit cursor-lifecycle, session, and CSOT unified fixtures.", "implementation": "Add the remaining public database command and cursor adapters with the existing session and operation-deadline boundaries.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable command, cursor, session, and CSOT fixtures pass", "Tailable cursors and database aggregation remain explicitly outside v1"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(command): close v1 command cursor conformance"
     },
