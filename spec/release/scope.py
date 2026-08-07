@@ -19,6 +19,7 @@ OUTPUT = ROOT / "spec" / "release" / "scope.json"
 AMBIGUOUS_OWNERS = {"REL-001", "REL-009"}
 RELEASE_FIXTURE_OWNERS = {
   "REL-002", "REL-003", "REL-004", "REL-005", "REL-006", "REL-010", "REL-011",
+  "REL-012",
 }
 POST_V1_REASONS = {
   "ADV-001": "change streams are outside production-core v1",
