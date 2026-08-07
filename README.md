@@ -4,7 +4,34 @@ A pure-Lua MongoDB driver built directly from the MongoDB driver specifications,
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
-## API outline
+## Dependencies
+
+- Lua 5.4 with a 64-bit `lua_Integer`.
+- [Copas](https://lunarmodules.github.io/copas/) 4.11.x.
+- [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
+- [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
+- [luaossl](https://github.com/wahern/luaossl) 20220711 or later.
+- OpenSSL libraries and development headers required by the TLS and cryptography dependencies.
+
+LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency; the supported server versions and deployment types are listed under [Scope](#scope).
+
+## Building and Installing
+
+From a source checkout, build and install the development rock with:
+
+```sh
+luarocks make mongodb-scm-1.rockspec
+```
+
+The planned public LuaRocks rock name is `mongodb`. After the first release is published, users will be able to install it with:
+
+```sh
+luarocks install mongodb
+```
+
+The project is currently pre-alpha, and no release has been published under that name yet.
+
+## Getting Started
 
 ```lua
 local copas = require("copas")
@@ -89,7 +116,7 @@ After cloning, initialize the pinned normative and reference repositories:
 
 ```sh
 git submodule update --init --recursive
-python3 planning/update_plan.py check --strict
+python3 planning/update_plan.py check --strict --pushed
 python3 planning/update_plan.py next
 ```
 
