@@ -68,7 +68,7 @@ jobs:
           brew trust mongodb/brew
           brew install mongodb-community@8.0
 
-      - name: Run all portable and loopback checks
+      - name: Run authoritative full portable and loopback checks
         run: make check
 
       - name: Verify executable roadmap and commit evidence

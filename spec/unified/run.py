@@ -942,6 +942,10 @@ def main(argv: list[str] | None = None) -> int:
       manifest["ratchets"].get("passed", 0),
     )
     selected = select_classifications(classified, arguments.include)
+
+    if arguments.include and not selected:
+      raise CapabilityError("unified --include selector matched no tests")
+
     registry = apply_environment_overrides(load_executor_registry())
 
     def execute_selected(classification: dict[str, Any], environment: dict[str, str]):

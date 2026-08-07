@@ -47,7 +47,7 @@ class CiPortabilityTests(unittest.TestCase):
 
   def test_portable_jobs_provision_unified_execution_tools(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
-    checks = workflow.index("Run all portable and loopback checks")
+    checks = workflow.index("Run authoritative full portable and loopback checks")
 
     self.assertLess(workflow.index("Install MongoDB test tools on Linux"), checks)
     self.assertLess(workflow.index("Install MongoDB test tools on macOS"), checks)

@@ -7,15 +7,46 @@ PYTHON ?= python3
 
 ROCKSPEC := mongodb-scm-1.rockspec
 BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
+FOCUS_UNIT ?=
+FOCUS_INTEGRATION ?=
+FOCUS_UNIFIED ?=
+FOCUS_PYTHON ?=
+FOCUS_LINT ?=
 
 .PHONY: check check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
-	test-unit test-integration test-unified test-unified-schema test-unified-inventory \
+	test-focus test-unit test-integration test-unified test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
 	test-stress test-compatibility test-compatibility-live test-release-scope lint rockspec planning-check
 
 check: test-unit test-integration test-unified test-quality test-compatibility lint rockspec planning-check
 
 check-tools: check-lua check-busted check-luacheck check-luacov check-luarocks check-python
+
+test-focus:
+	@test -n "$(strip $(FOCUS_UNIT) $(FOCUS_INTEGRATION) $(FOCUS_UNIFIED) $(FOCUS_PYTHON) $(FOCUS_LINT))" || { \
+		echo "Set at least one FOCUS_ selector: UNIT, INTEGRATION, UNIFIED, PYTHON, or LINT" >&2; \
+		exit 2; \
+	}
+	@if test -n "$(strip $(FOCUS_UNIT))"; then \
+		$(MAKE) --no-print-directory check-busted; \
+		"$(BUSTED)" --lua="$(LUA)" $(BUSTED_PATHS) $(FOCUS_UNIT); \
+	fi
+	@if test -n "$(strip $(FOCUS_INTEGRATION))"; then \
+		$(MAKE) --no-print-directory check-busted; \
+		"$(BUSTED)" --lua="$(LUA)" $(BUSTED_PATHS) $(FOCUS_INTEGRATION); \
+	fi
+	@if test -n "$(strip $(FOCUS_UNIFIED))"; then \
+		$(MAKE) --no-print-directory check-python check-lua; \
+		"$(PYTHON)" spec/unified/run.py --lua "$(LUA)" --include "$(FOCUS_UNIFIED)"; \
+	fi
+	@if test -n "$(strip $(FOCUS_PYTHON))"; then \
+		$(MAKE) --no-print-directory check-python; \
+		"$(PYTHON)" -m unittest $(FOCUS_PYTHON) -v; \
+	fi
+	@if test -n "$(strip $(FOCUS_LINT))"; then \
+		$(MAKE) --no-print-directory check-luacheck; \
+		"$(LUACHECK)" $(FOCUS_LINT); \
+	fi
 
 check-lua:
 	@command -v "$(LUA)" >/dev/null 2>&1 || { \
