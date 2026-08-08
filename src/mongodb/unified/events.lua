@@ -7,13 +7,22 @@ local EVENT_NAMES = {
   command_failed = "commandFailedEvent",
   command_started = "commandStartedEvent",
   command_succeeded = "commandSucceededEvent",
+  connection_closed = "connectionClosedEvent",
+  connection_created = "connectionCreatedEvent",
   pool_cleared = "poolClearedEvent",
 }
 local EVENT_TYPES = {
   commandFailedEvent = "command_failed",
   commandStartedEvent = "command_started",
   commandSucceededEvent = "command_succeeded",
+  connectionClosedEvent = "connection_closed",
+  connectionCreatedEvent = "connection_created",
   poolClearedEvent = "pool_cleared",
+}
+local CMAP_EVENT_TYPES = {
+  connection_closed = true,
+  connection_created = true,
+  pool_cleared = true,
 }
 local SENSITIVE_COMMANDS = {
   authenticate = true,
@@ -108,7 +117,7 @@ local function record(collector, event)
     return
   end
 
-  if event.type == "pool_cleared" then
+  if CMAP_EVENT_TYPES[event.type] then
     collector.events[#collector.events + 1] = event
     return
   end
@@ -229,6 +238,19 @@ function M.new(specification)
       if pool then
         pool.connections[event.connection_id] = nil
       end
+
+      record(collector, {
+        address = event.address,
+        connection_id = event.connection_id,
+        type = "connection_closed",
+      })
+    end,
+    ConnectionCreated = function(_, event)
+      record(collector, {
+        address = event.address,
+        connection_id = event.connection_id,
+        type = "connection_created",
+      })
     end,
     ConnectionPoolClosed = function(_, event)
       collector.pools[event.address] = nil
@@ -413,7 +435,7 @@ function M.assert_all(runner, expected_groups, collectors, path)
     local actual_events = {}
 
     for _, event in ipairs(collector.events) do
-      local is_command = event.type ~= "pool_cleared"
+      local is_command = not CMAP_EVENT_TYPES[event.type]
 
       if event_type == "command" and is_command
           or event_type == "cmap" and not is_command

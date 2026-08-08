@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1273,
-    "runnable": 1273
+    "passed": 1274,
+    "runnable": 1274
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50953,7 +50953,6 @@
     "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]": {
       "activity": "REL-031",
       "fingerprint": "bccaeb73717e28c477514884a6f70c5ca2e9d2a30a812d2c684987411b45f81f",
-      "reason": "the case awaits wrapper handshake metadata conformance",
       "requirements": {
         "arguments": [
           "appendMetadata.driverInfoOptions",
@@ -50978,7 +50977,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "read-write-concern/tests/operation/default-write-concern-2.6.json::test[1]": {
       "activity": "REL-003",

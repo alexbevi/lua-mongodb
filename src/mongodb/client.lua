@@ -24,6 +24,7 @@ local SPECIAL_OPTIONS = {
   cancellation = true,
   command_listeners = true,
   deadline = true,
+  driver_info = true,
   heartbeat_listeners = true,
   on_listener_error = true,
   pool_listeners = true,
@@ -96,6 +97,20 @@ local function combine_warnings(parsed, normalized)
     for index = 1, #source do
       result[#result + 1] = source[index]
     end
+  end
+
+  return result
+end
+
+local function shallow_copy(value)
+  if type(value) ~= "table" then
+    return value
+  end
+
+  local result = {}
+
+  for key, item in pairs(value) do
+    result[key] = item
   end
 
   return result
@@ -213,7 +228,14 @@ local function transaction_write_concern(value, retry)
   return bson.document(entries)
 end
 
-local function public_client(executor, config, parsed, warnings, runtime)
+local function public_client(
+  executor,
+  config,
+  parsed,
+  warnings,
+  runtime,
+  append_metadata
+)
   local capabilities, err = executor:capabilities()
 
   if not capabilities then
@@ -329,7 +351,8 @@ local function public_client(executor, config, parsed, warnings, runtime)
     warnings,
     lazy_object_ids(runtime),
     sessions,
-    runtime
+    runtime,
+    append_metadata
   )
 end
 
@@ -474,8 +497,9 @@ local function connect_replica_set(
   special,
   runtime,
   monitor,
-  metadata,
-  warnings
+  metadata_state,
+  warnings,
+  append_metadata
 )
   local seeds = {}
 
@@ -506,7 +530,7 @@ local function connect_replica_set(
         config,
         parsed,
         monitor,
-        metadata,
+        metadata_state.value,
         server_address,
         fields,
         false
@@ -533,7 +557,7 @@ local function connect_replica_set(
       config,
       parsed,
       monitor,
-      metadata,
+      metadata_state.value,
       server_address,
       fields,
       false
@@ -556,7 +580,7 @@ local function connect_replica_set(
           config,
           parsed,
           monitor,
-          metadata,
+          metadata_state.value,
           server_address,
           fields,
           true
@@ -623,7 +647,14 @@ local function connect_replica_set(
     return nil, err
   end
 
-  return public_client(executor, config, parsed, warnings, runtime)
+  return public_client(
+    executor,
+    config,
+    parsed,
+    warnings,
+    runtime,
+    append_metadata
+  )
 end
 
 function M.connect(uri, values)
@@ -664,13 +695,38 @@ function M.connect(uri, values)
     on_listener_error = special.on_listener_error,
   })
   local metadata_facts = runtime.metadata or {}
-  local metadata = handshake_metadata.new({
+  local driver_infos = {}
+
+  if special.driver_info ~= nil then
+    driver_infos[1] = handshake_metadata.normalize_driver_info(special.driver_info)
+  end
+
+  local metadata_options = {
     app_name = config.app_name,
-    environment = metadata_facts.environment,
-    files = metadata_facts.files,
-    os = metadata_facts.os,
+    driver_infos = driver_infos,
+    environment = shallow_copy(metadata_facts.environment),
+    files = shallow_copy(metadata_facts.files),
+    os = shallow_copy(metadata_facts.os),
     platform = metadata_facts.platform,
-  })
+  }
+  local metadata_state = { value = handshake_metadata.new(metadata_options) }
+  local function append_metadata(driver_info)
+    local updated_infos, added = handshake_metadata.append_driver_info(
+      driver_infos,
+      driver_info
+    )
+
+    if not added then
+      return false
+    end
+
+    metadata_options.driver_infos = updated_infos
+    local updated_metadata = handshake_metadata.new(metadata_options)
+
+    driver_infos = updated_infos
+    metadata_state.value = updated_metadata
+    return true
+  end
   local warnings = combine_warnings(parsed, option_warnings)
 
   if config.replica_set ~= nil then
@@ -680,8 +736,9 @@ function M.connect(uri, values)
       special,
       runtime,
       monitor,
-      metadata,
-      warnings
+      metadata_state,
+      warnings,
+      append_metadata
     )
   end
 
@@ -709,7 +766,7 @@ function M.connect(uri, values)
     config,
     parsed,
     monitor,
-    metadata,
+    metadata_state.value,
     server_address,
     fields,
     true
@@ -730,7 +787,7 @@ function M.connect(uri, values)
       config,
       parsed,
       monitor,
-      metadata,
+      metadata_state.value,
       server_address,
       options,
       true
@@ -744,7 +801,14 @@ function M.connect(uri, values)
     return replacement, replacement_err
   end, hello)
 
-  return public_client(reconnecting, config, parsed, warnings, runtime)
+  return public_client(
+    reconnecting,
+    config,
+    parsed,
+    warnings,
+    runtime,
+    append_metadata
+  )
 end
 
 return M

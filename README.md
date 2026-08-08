@@ -57,6 +57,8 @@ end)
 
 Set the optional handshake application name with the URI `appName` option or the idiomatic `app_name` client option. Names are limited to 128 bytes. The driver sends that name with its fixed driver identity and runtime OS/platform facts only in the initial handshake on each newly established socket.
 
+A library wrapping this driver may supply `driver_info = { name = "library", version = "1.2", platform = "Library Platform" }` when creating a client. It may later call `client:append_metadata()` with the same fields; each distinct tuple is appended to handshakes for new connections, while exact duplicates are ignored and established connections are unchanged.
+
 ### CRUD Operations
 
 The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
@@ -167,7 +169,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Serialization | BSON binary vector | 🟢 |
 | Communication | Connection string | 🟢 |
 | Communication | URI options | 🟡 |
-| Communication | Handshake metadata propagation | 🔴 |
+| Communication | Handshake metadata propagation | 🟢 |
 | Communication | Initial DNS seedlist discovery | 🔴 |
 | Communication | Command execution | 🟡 |
 | Connectivity | Server discovery and monitoring | 🟡 |

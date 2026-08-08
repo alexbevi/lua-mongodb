@@ -5389,6 +5389,7 @@
       "activity": "TXN-001",
       "environment": "live-replicaset"
     },
+    "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]": {"activity": "REL-031", "environment": "live-replicaset"},
     "read-write-concern/tests/operation/default-write-concern-2.6.json::test[1]": {"activity": "REL-003", "environment": "live-standalone"},
     "read-write-concern/tests/operation/default-write-concern-2.6.json::test[2]": {"activity": "REL-003", "environment": "live-standalone"},
     "read-write-concern/tests/operation/default-write-concern-2.6.json::test[3]": {"activity": "REL-003", "environment": "live-standalone"},

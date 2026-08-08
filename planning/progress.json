@@ -1686,6 +1686,28 @@
       "notes": [],
       "started_at": "2026-08-08T07:51:39+00:00",
       "completed_at": "2026-08-08T07:54:40+00:00"
+    },
+    "REL-031": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_INTEGRATION='spec/integration/client_api_spec.lua --filter=appended.wrapper.metadata'",
+          "exit_code": 2,
+          "summary": "0 successes, 1 failure: initialization-time driver_info was rejected as an unsupported programmatic driver option before any wrapper metadata could reach a handshake",
+          "recorded_at": "2026-08-08T09:04:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/handshake_metadata_spec.lua spec/unit/api_handles_spec.lua spec/unit/unified_events_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_UNIFIED='mongodb-handshake/tests/unified/metadata-not-propagated.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/api.lua src/mongodb/client.lua src/mongodb/handshake/metadata.lua src/mongodb/unified/driver.lua src/mongodb/unified/events.lua spec/unit/handshake_metadata_spec.lua spec/integration/client_api_spec.lua'; python3 spec/unified/update_capabilities.py --check; python3 spec/conformance/ledger.py --check; python3 spec/release/scope.py --check; python3 planning/update_readme_compatibility.py --check; git diff --check",
+          "exit_code": 0,
+          "summary": "21 Lua tests passed (17 unit, 3 integration, 1 unified); the exact pinned handshake lifecycle case executed and passed with 0 environment skips, 0 deferrals, and 0 failures; 43 capability, ledger, and release-scope Python tests passed; 7 touched Lua files linted cleanly; all generated artifact and diff validators passed",
+          "recorded_at": "2026-08-08T09:14:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T09:03:56+00:00",
+      "completed_at": "2026-08-08T09:16:55+00:00"
     }
   },
   "verified_references": {

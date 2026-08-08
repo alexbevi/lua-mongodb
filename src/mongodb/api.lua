@@ -277,6 +277,21 @@ function CLIENT_METHODS:start_session(options)
   return state.sessions:start(options)
 end
 
+function CLIENT_METHODS:append_metadata(driver_info)
+  local state = CLIENT_STATES[self]
+  local open, err = ensure_open(state)
+
+  if not open then
+    return nil, err
+  end
+
+  if state.append_metadata == nil then
+    return client_error("client metadata updates are unavailable")
+  end
+
+  return state.append_metadata(driver_info)
+end
+
 function CLIENT_METHODS:close()
   local state = CLIENT_STATES[self]
 
@@ -688,7 +703,8 @@ function M.new_client(
   warnings,
   object_ids,
   sessions,
-  runtime
+  runtime,
+  append_metadata
 )
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
@@ -700,6 +716,10 @@ function M.new_client(
     error("client handles require normalized options", 2)
   end
 
+  if append_metadata ~= nil and type(append_metadata) ~= "function" then
+    error("client metadata updater must be a function", 2)
+  end
+
   if default_database_name ~= nil then
     validate_database_name(default_database_name)
   end
@@ -708,6 +728,7 @@ function M.new_client(
   local capabilities = type(executor.capabilities) == "function" and executor:capabilities()
 
   local state = {
+    append_metadata = append_metadata,
     closed = false,
     cursors = setmetatable({}, { __mode = "k" }),
     default_database_name = default_database_name,

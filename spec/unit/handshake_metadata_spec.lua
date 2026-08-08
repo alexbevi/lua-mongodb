@@ -247,4 +247,184 @@ describe("handshake client metadata", function()
     assert.are.equal("0.1.0-dev", platform_truncated:get("driver"):get("version"))
     assert.are.equal("test-os", platform_truncated:get("os"):get("type"))
   end)
+
+  it("appends validated wrapper identities and deduplicates exact tuples", function()
+    local initial = {
+      name = "library",
+      platform = "Library Platform",
+      version = "1.2",
+    }
+    local cases = {
+      {
+        expected_platform = "Lua 5.4|Library Platform|Framework Platform",
+        expected_version = "0.1.0-dev|1.2|2.0",
+        update = {
+          name = "framework",
+          platform = "Framework Platform",
+          version = "2.0",
+        },
+      },
+      {
+        expected_platform = "Lua 5.4|Library Platform",
+        expected_version = "0.1.0-dev|1.2|2.0",
+        update = { name = "framework", version = "2.0" },
+      },
+      {
+        expected_platform = "Lua 5.4|Library Platform|Framework Platform",
+        expected_version = "0.1.0-dev|1.2",
+        update = { name = "framework", platform = "Framework Platform" },
+      },
+      {
+        expected_platform = "Lua 5.4|Library Platform",
+        expected_version = "0.1.0-dev|1.2",
+        update = { name = "framework" },
+      },
+    }
+
+    for _, test_case in ipairs(cases) do
+      local value = metadata.new({
+        driver_infos = { initial, test_case.update },
+        platform = "Lua 5.4",
+      })
+
+      assert.are.equal(
+        "lua-mongodb|library|framework",
+        value:get("driver"):get("name")
+      )
+      assert.are.equal(
+        test_case.expected_version,
+        value:get("driver"):get("version")
+      )
+      assert.are.equal(test_case.expected_platform, value:get("platform"))
+    end
+
+    local infos = {}
+    local added
+
+    infos, added = metadata.append_driver_info(infos, {
+      name = "library",
+      platform = "Library Platform",
+    })
+    assert.is_true(added)
+    infos, added = metadata.append_driver_info(infos, {
+      name = "framework",
+      platform = "Framework Platform",
+      version = "2.0",
+    })
+    assert.is_true(added)
+    infos, added = metadata.append_driver_info(infos, {
+      name = "library",
+      platform = "Library Platform",
+      version = "",
+    })
+    assert.is_false(added)
+    infos, added = metadata.append_driver_info(infos, {
+      name = "Framework",
+      platform = "Framework Platform",
+      version = "2.0",
+    })
+    assert.is_true(added)
+    assert.are.equal(3, #infos)
+
+    local duplicate_cases = {
+      {
+        duplicate = initial,
+        expected_added = false,
+        original = initial,
+      },
+      {
+        duplicate = {
+          name = "library",
+          platform = "Library Platform",
+          version = "2.0",
+        },
+        expected_added = true,
+        original = initial,
+      },
+      {
+        duplicate = {
+          name = "library",
+          platform = "Framework Platform",
+          version = "1.2",
+        },
+        expected_added = true,
+        original = initial,
+      },
+      {
+        duplicate = {
+          name = "framework",
+          platform = "Library Platform",
+          version = "1.2",
+        },
+        expected_added = true,
+        original = initial,
+      },
+      {
+        duplicate = {
+          name = "library",
+          platform = "Library Platform",
+          version = "",
+        },
+        expected_added = false,
+        original = { name = "library", platform = "Library Platform" },
+      },
+      {
+        duplicate = {
+          name = "library",
+          platform = "",
+          version = "1.2",
+        },
+        expected_added = false,
+        original = { name = "library", version = "1.2" },
+      },
+    }
+
+    for index, test_case in ipairs(duplicate_cases) do
+      local _, was_added = metadata.append_driver_info(
+        { test_case.original },
+        test_case.duplicate
+      )
+
+      assert.are.equal(test_case.expected_added, was_added, "case " .. index)
+    end
+
+    for _, field in ipairs({ "name", "platform", "version" }) do
+      assert.has_error(function()
+        metadata.normalize_driver_info({
+          name = field == "name" and "bad|value" or "library",
+          platform = field == "platform" and "bad|value" or nil,
+          version = field == "version" and "bad|value" or nil,
+        })
+      end, "driver_info fields cannot contain '|'")
+    end
+
+    assert.has_error(function()
+      metadata.normalize_driver_info({ name = "" })
+    end, "driver_info.name must be a non-empty string")
+
+    local bounded = metadata.new({
+      app_name = string.rep("a", 128),
+      driver_infos = {
+        {
+          name = string.rep("n", 512),
+          platform = string.rep("p", 512),
+          version = string.rep("v", 512),
+        },
+      },
+      os = { type = "test-os" },
+      platform = "Lua 5.4",
+    })
+
+    assert.is_true(encoded_size(bounded) <= 512)
+    assert.are.equal(
+      "lua-mongodb",
+      bounded:get("driver"):get("name"):sub(1, #"lua-mongodb")
+    )
+    assert.are.equal(
+      "0.1.0-dev",
+      bounded:get("driver"):get("version"):sub(1, #"0.1.0-dev")
+    )
+    assert.are.equal(string.rep("a", 128), bounded:get("application"):get("name"))
+    assert.are.equal("test-os", bounded:get("os"):get("type"))
+  end)
 end)

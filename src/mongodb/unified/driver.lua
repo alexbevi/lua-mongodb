@@ -861,6 +861,33 @@ local function list_database_names(_, client, arguments)
   }))
 end
 
+local function append_metadata(_, client, arguments)
+  local driver_info = arguments:get("driverInfoOptions")
+
+  if not bson.is_document(driver_info) then
+    return configuration_error(
+      "appendMetadata driverInfoOptions must be a document",
+      "$.arguments.driverInfoOptions"
+    )
+  end
+
+  local valid, err = validate_fields(driver_info, {
+    name = true,
+    platform = true,
+    version = true,
+  }, "$.arguments.driverInfoOptions")
+
+  if not valid then
+    return nil, err
+  end
+
+  return client:append_metadata({
+    name = driver_info:get("name"),
+    platform = driver_info:get("platform"),
+    version = driver_info:get("version"),
+  })
+end
+
 local function list_collections(_, database, arguments)
   local cursor, err = database:list_collections(operation_options(arguments, {
     filter = "filter",
@@ -1543,6 +1570,10 @@ function M.new(options)
     internal_client = internal_client_adapter(internal_client),
     operations = {
       client = {
+        appendMetadata = {
+          arguments = { "driverInfoOptions" },
+          handler = append_metadata,
+        },
         listDatabaseNames = {
           arguments = { "filter" },
           handler = list_database_names,

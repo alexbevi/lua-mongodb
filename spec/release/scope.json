@@ -17,11 +17,10 @@
     "REL-023": 2,
     "REL-024": 1,
     "REL-025": 2,
-    "REL-026": 1,
-    "REL-031": 1
+    "REL-026": 1
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 113,
+    "applicable-release-gap": 112,
     "post-v1-exclusion": 1964
   },
   "post_v1_reasons": {
@@ -40,8 +39,8 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 2077,
-    "passed": 3447
+    "deferred_unsupported": 2076,
+    "passed": 3448
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

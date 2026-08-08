@@ -75,6 +75,134 @@ describe("public standalone client API", function()
     end
   end)
 
+  it("applies appended wrapper metadata only to new connections", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local connection_count = 0
+    local outcome
+    local server_error
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      local ok, err = pcall(function()
+        peer = copas.wrap(peer)
+        connection_count = connection_count + 1
+        local handshake = receive_frame(peer)
+        local client_metadata = assert(handshake.body:get("client"))
+        local driver = client_metadata:get("driver")
+
+        if connection_count == 1 then
+          assert.are.equal("lua-mongodb|library", driver:get("name"))
+          assert.are.equal("0.1.0-dev|1.2", driver:get("version"))
+          assert.are.equal(
+            "Lua 5.4 wrapper-runtime|Library Platform",
+            client_metadata:get("platform")
+          )
+        else
+          assert.are.equal("lua-mongodb|library|framework", driver:get("name"))
+          assert.are.equal("0.1.0-dev|1.2|2.0", driver:get("version"))
+          assert.are.equal(
+            "Lua 5.4 wrapper-runtime|Library Platform|Framework Platform",
+            client_metadata:get("platform")
+          )
+        end
+
+        send_response(peer, handshake, bson.document({
+          { "ok", 1 },
+          { "helloOk", true },
+          { "isWritablePrimary", true },
+          { "maxWireVersion", 25 },
+        }))
+
+        if connection_count == 1 then
+          for _ = 1, 2 do
+            local ping = receive_frame(peer)
+
+            assert.are.equal("ping", ping.body:keys()[1])
+            send_response(peer, ping, bson.document({ { "ok", 1 } }))
+          end
+        else
+          local find = receive_frame(peer)
+
+          assert.are.equal("find", find.body:keys()[1])
+          send_response(peer, find, bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "app.items" },
+              { "firstBatch", bson.array({
+                bson.document({ { "_id", 1 }, { "value", "reconnected" } }),
+              }) },
+            }) },
+          }))
+        end
+
+        peer:close()
+      end)
+
+      if not ok then
+        server_error = err
+        pcall(peer.close, peer)
+      end
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/app",
+          {
+            driver_info = {
+              name = "library",
+              platform = "Library Platform",
+              version = "1.2",
+            },
+            runtime = mongodb.runtime.copas({
+              metadata = { platform = "Lua 5.4 wrapper-runtime" },
+            }),
+          }
+        ))
+        local database = assert(client:database())
+
+        assert(database:run_command("ping"))
+        assert.are.equal(1, connection_count)
+        assert.is_false(client:append_metadata({
+          name = "library",
+          platform = "Library Platform",
+          version = "1.2",
+        }))
+        assert.is_true(client:append_metadata({
+          name = "framework",
+          platform = "Framework Platform",
+          version = "2.0",
+        }))
+        assert.are.equal(1, connection_count)
+        assert(database:run_command("ping"))
+        assert.are.equal(1, connection_count)
+        assert.is_false(client:append_metadata({
+          name = "framework",
+          platform = "Framework Platform",
+          version = "2.0",
+        }))
+        local item = assert(database:collection("items"):find_one(
+          bson.document({ { "_id", 1 } })
+        ))
+
+        assert.are.equal("reconnected", item:get("value"))
+        assert.are.equal(2, connection_count)
+        assert(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+
+    if server_error then
+      error(server_error, 0)
+    end
+  end)
+
   it("discovers a replica set and executes through the primary pool", function()
     local servers = {
       a = assert(socket.bind("127.0.0.1", 0)),
