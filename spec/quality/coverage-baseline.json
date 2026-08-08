@@ -5,8 +5,8 @@
       "covered": 585
     },
     "src/mongodb/api.lua": {
-      "active": 422,
-      "covered": 363
+      "active": 509,
+      "covered": 434
     },
     "src/mongodb/auth/saslprep.lua": {
       "active": 124,
@@ -58,11 +58,11 @@
     },
     "src/mongodb/client.lua": {
       "active": 446,
-      "covered": 334
+      "covered": 338
     },
     "src/mongodb/command/executor.lua": {
       "active": 275,
-      "covered": 235
+      "covered": 236
     },
     "src/mongodb/command/hello.lua": {
       "active": 112,
@@ -81,8 +81,8 @@
       "covered": 809
     },
     "src/mongodb/cursor.lua": {
-      "active": 207,
-      "covered": 172
+      "active": 215,
+      "covered": 180
     },
     "src/mongodb/error.lua": {
       "active": 206,
@@ -102,7 +102,7 @@
     },
     "src/mongodb/network/transport.lua": {
       "active": 116,
-      "covered": 102
+      "covered": 103
     },
     "src/mongodb/operation_timeout.lua": {
       "active": 146,
@@ -173,20 +173,20 @@
       "covered": 55
     },
     "src/mongodb/topology.lua": {
-      "active": 682,
-      "covered": 588
+      "active": 695,
+      "covered": 594
     },
     "src/mongodb/topology_executor.lua": {
-      "active": 201,
-      "covered": 145
+      "active": 211,
+      "covered": 154
     },
     "src/mongodb/unified/driver.lua": {
-      "active": 679,
+      "active": 705,
       "covered": 0
     },
     "src/mongodb/unified/events.lua": {
-      "active": 260,
-      "covered": 217
+      "active": 269,
+      "covered": 226
     },
     "src/mongodb/unified/failpoints.lua": {
       "active": 70,
@@ -225,7 +225,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 21740,
-    "covered": 18274
+    "active": 21893,
+    "covered": 18383
   }
 }
