@@ -44,6 +44,69 @@ describe("find cursor lifecycle", function()
     assert.near(2.06, deadlines[2], 0.000001)
   end)
 
+  it("keeps a timed-out cursor closable with a refreshed deadline", function()
+    local runtime = fake_runtime.new({ now = 2 })
+    local commands = {}
+    local release_count = 0
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = {
+          deadline = options.deadline,
+          name = name,
+        }
+
+        if name == "find" then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(41) },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif name == "getMore" then
+          runtime:advance(0.250)
+          return nil, errors.new({
+            category = errors.CATEGORY.TIMEOUT,
+            message = "getMore timed out",
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursorsKilled", bson.array({ bson.int64(41) }) },
+        })
+      end,
+      release_session_context = function()
+        release_count = release_count + 1
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 200 }))
+    local client = api.new_client(executor, config, nil, nil, nil, nil, runtime)
+    local cursor = assert(client:database("db"):collection("items"):find())
+    local document, err = cursor:next()
+
+    assert.is_nil(document)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+    assert.is_false(cursor:is_closed())
+    assert.are.equal(0, release_count)
+    assert.is_true(cursor:close())
+    assert.is_true(cursor:is_closed())
+    assert.are.equal(1, release_count)
+    assert.are.same({ "find", "getMore", "killCursors" }, {
+      commands[1].name,
+      commands[2].name,
+      commands[3].name,
+    })
+    assert.near(2.2, commands[1].deadline, 0.000001)
+    assert.near(2.2, commands[2].deadline, 0.000001)
+    assert.near(2.45, commands[3].deadline, 0.000001)
+  end)
+
   it("iterates firstBatch/getMore and kills a live cursor on close", function()
     local commands = {}
     local responses = {

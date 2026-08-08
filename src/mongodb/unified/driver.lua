@@ -997,6 +997,21 @@ local function finalize_cursor(_, cursor)
   return true
 end
 
+local CURSOR_OPERATIONS = {
+  close = {
+    arguments = { "timeoutMS" },
+    handler = close_cursor,
+  },
+  iterateOnce = {
+    arguments = {},
+    handler = iterate_cursor,
+  },
+  iterateUntilDocumentOrError = {
+    arguments = {},
+    handler = iterate_cursor,
+  },
+}
+
 local function create_collection(_, database, arguments)
   return database:create_collection(arguments:get("collection"), operation_options(
     arguments,
@@ -1883,34 +1898,8 @@ function M.new(options)
           handler = run_cursor_command,
         },
       },
-      commandCursor = {
-        close = {
-          arguments = { "timeoutMS" },
-          handler = close_cursor,
-        },
-        iterateOnce = {
-          arguments = {},
-          handler = iterate_cursor,
-        },
-        iterateUntilDocumentOrError = {
-          arguments = {},
-          handler = iterate_cursor,
-        },
-      },
-      findCursor = {
-        close = {
-          arguments = { "timeoutMS" },
-          handler = close_cursor,
-        },
-        iterateOnce = {
-          arguments = {},
-          handler = iterate_cursor,
-        },
-        iterateUntilDocumentOrError = {
-          arguments = {},
-          handler = iterate_cursor,
-        },
-      },
+      commandCursor = CURSOR_OPERATIONS,
+      findCursor = CURSOR_OPERATIONS,
       session = {
         abortTransaction = {
           arguments = {},
