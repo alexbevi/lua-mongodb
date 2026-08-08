@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1283,
-    "runnable": 1283
+    "passed": 1285,
+    "runnable": 1285
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -17199,7 +17199,6 @@
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
       "activity": "REL-025",
       "fingerprint": "21e9b9c35379c7ecfa55a383b16aacc5eb6c6040decc4f7e36375f70e34b8bb3",
-      "reason": "the case awaits cursor timeout cleanup hardening",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -17233,12 +17232,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/close-cursors.json::test[2]": {
       "activity": "REL-025",
       "fingerprint": "05bd88ecd604920f6ccdce00a9cecca960ef5a865c0df820b86380da0df79e25",
-      "reason": "the case awaits cursor timeout cleanup hardening",
       "requirements": {
         "arguments": [
           "close.timeoutMS",
@@ -17271,7 +17269,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/command-execution.json::test[1]": {
       "activity": "TIME-001",

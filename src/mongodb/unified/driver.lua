@@ -979,12 +979,21 @@ local function run_cursor_command(runner, database, arguments)
   return collect_cursor(cursor)
 end
 
-local function iterate_command_cursor(_, cursor)
+local function iterate_cursor(_, cursor)
   return cursor:next()
 end
 
-local function close_command_cursor(_, cursor)
-  cursor:close()
+local function close_cursor(_, cursor, arguments)
+  return cursor:close(operation_options(arguments, {}))
+end
+
+local function finalize_cursor(_, cursor)
+  local closed, close_err = cursor:close()
+
+  if closed == nil then
+    return nil, close_err
+  end
+
   return true
 end
 
@@ -1088,6 +1097,35 @@ local function aggregate(_, collection, arguments)
   end
 
   return collect_cursor(cursor)
+end
+
+local function create_find_cursor(_, collection, arguments, _, path)
+  local filter = arguments:get("filter")
+
+  if filter == nil then
+    return configuration_error(
+      "createFindCursor requires a filter argument",
+      path .. ".arguments.filter"
+    )
+  end
+
+  return collection:find(filter, operation_options(
+    arguments,
+    {
+      allowDiskUse = "allow_disk_use",
+      batchSize = "batch_size",
+      collation = "collation",
+      comment = "comment",
+      hint = "hint",
+      let = "let",
+      limit = "limit",
+      maxTimeMS = "max_time_ms",
+      projection = "projection",
+      rawData = "raw_data",
+      skip = "skip",
+      sort = "sort",
+    }
+  ))
 end
 
 local function find(_, collection, arguments)
@@ -1615,6 +1653,10 @@ function M.new(options)
       return event_module.assert_all(runner, expected, state.collectors, path)
     end,
     environment = options.environment,
+    entity_finalizers = {
+      commandCursor = finalize_cursor,
+      findCursor = finalize_cursor,
+    },
     entity_factories = {
       client = client_factory(state),
       collection = collection_factory,
@@ -1642,6 +1684,15 @@ function M.new(options)
         },
       },
       collection = {
+        createFindCursor = {
+          arguments = {
+            "allowDiskUse", "batchSize", "collation", "comment", "filter",
+            "hint", "let", "limit", "maxTimeMS", "projection", "rawData",
+            "skip", "sort", "timeoutMode", "timeoutMS",
+          },
+          handler = create_find_cursor,
+          result_kind = "findCursor",
+        },
         createIndex = {
           arguments = { "keys", "name", "rawData", "timeoutMS", "unique" },
           handler = create_index,
@@ -1834,16 +1885,30 @@ function M.new(options)
       },
       commandCursor = {
         close = {
-          arguments = {},
-          handler = close_command_cursor,
+          arguments = { "timeoutMS" },
+          handler = close_cursor,
         },
         iterateOnce = {
           arguments = {},
-          handler = iterate_command_cursor,
+          handler = iterate_cursor,
         },
         iterateUntilDocumentOrError = {
           arguments = {},
-          handler = iterate_command_cursor,
+          handler = iterate_cursor,
+        },
+      },
+      findCursor = {
+        close = {
+          arguments = { "timeoutMS" },
+          handler = close_cursor,
+        },
+        iterateOnce = {
+          arguments = {},
+          handler = iterate_cursor,
+        },
+        iterateUntilDocumentOrError = {
+          arguments = {},
+          handler = iterate_cursor,
         },
       },
       session = {

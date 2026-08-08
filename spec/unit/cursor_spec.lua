@@ -206,6 +206,7 @@ describe("find cursor lifecycle", function()
 
   it("closes locally when a zero-id nextBatch is exhausted", function()
     local command_count = 0
+    local release_count = 0
     local responses = {
       bson.document({
         { "ok", 1 },
@@ -230,12 +231,17 @@ describe("find cursor lifecycle", function()
         command_count = command_count + 1
         return table.remove(responses, 1)
       end,
+      release_session_context = function()
+        release_count = release_count + 1
+      end,
     }
     local client = api.new_client(executor, assert(driver_options.normalize()))
     local cursor = assert(client:database("app"):collection("items"):find())
 
     assert.are.equal(1, assert(cursor:next()):get("n"))
+    assert.are.equal(0, release_count)
     assert.are.equal(2, assert(cursor:next()):get("n"))
+    assert.are.equal(1, release_count)
     assert.is_true(cursor:is_closed())
     assert.is_nil(cursor:next())
     assert.are.equal(2, command_count)

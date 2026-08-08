@@ -175,7 +175,10 @@ local function get_more(value, state)
   )
 
   if not response then
-    mark_closed(value, state)
+    if not errors.is(err, errors.CATEGORY.TIMEOUT) then
+      mark_closed(value, state)
+    end
+
     return nil, err
   end
 

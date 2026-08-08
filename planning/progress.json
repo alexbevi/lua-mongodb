@@ -1774,6 +1774,28 @@
       "notes": [],
       "started_at": "2026-08-08T17:32:02+00:00",
       "completed_at": "2026-08-08T17:37:22+00:00"
+    },
+    "REL-025": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/close-cursors.json::*'",
+          "exit_code": 2,
+          "summary": "Both enabled upstream close-cursors cases failed before production execution because createFindCursor was unsupported; the slice must expose the cursor entity operation before exercising timeout cleanup.",
+          "recorded_at": "2026-08-08T19:51:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua' FOCUS_UNIFIED='client-side-operations-timeout/tests/close-cursors.json::*' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/cursor.lua src/mongodb/unified/driver.lua spec/unit/cursor_spec.lua'",
+          "exit_code": 0,
+          "summary": "Passed 5 cursor unit cases, both exact close-cursors CSOT cases, 38 unified CLI tests, and three-file Lua lint; capability, ledger, release-scope, README projection, and generated-artifact unit validators also passed.",
+          "recorded_at": "2026-08-08T19:59:46+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T19:49:29+00:00",
+      "completed_at": "2026-08-08T19:59:47+00:00"
     }
   },
   "verified_references": {

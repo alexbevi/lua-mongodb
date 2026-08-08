@@ -29,6 +29,8 @@ DEFAULT_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
 DEFAULT_EXECUTOR_REGISTRY = ROOT / "spec" / "unified" / "executors.json"
 CSOT_FIXTURE_PREFIX = "client-side-operations-timeout/"
 MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
+  "client-side-operations-timeout/tests/close-cursors.json::test[1]",
+  "client-side-operations-timeout/tests/close-cursors.json::test[2]",
   "client-side-operations-timeout/tests/command-execution.json::test[1]",
   "client-side-operations-timeout/tests/command-execution.json::test[2]",
   "client-side-operations-timeout/tests/command-execution.json::test[3]",
