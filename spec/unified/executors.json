@@ -371,6 +371,10 @@
       "activity": "QUA-001",
       "environment": "isolated-replicaset"
     },
+    "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": {
+      "activity": "REL-026",
+      "environment": "isolated-replicaset"
+    },
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[4]": {
       "activity": "QUA-001",
       "environment": "isolated-replicaset"

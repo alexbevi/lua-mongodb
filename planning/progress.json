@@ -1796,6 +1796,28 @@
       "notes": [],
       "started_at": "2026-08-08T19:49:29+00:00",
       "completed_at": "2026-08-08T19:59:47+00:00"
+    },
+    "REL-026": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/legacy-timeouts.json::test[[]3]'",
+          "exit_code": 1,
+          "summary": "Unified execution ran 1 case with 0 passed and 1 failed: expected writeConcern was missing from the observed insert command.",
+          "recorded_at": "2026-08-08T22:10:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/crud_spec.lua spec/unit/operation_timeout_spec.lua' FOCUS_UNIFIED='client-side-operations-timeout/tests/legacy-timeouts.json::test[[]3]' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/crud.lua src/mongodb/unified/driver.lua spec/unit/crud_spec.lua'; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: 5 Lua unit cases; unified 1 executed, 1 passed, 0 failed, 0 environment-skipped, 0 deferred; 48 Python capability/ledger/release tests; 3 touched Lua files linted clean; capability, ledger, release-scope, README, and plan validators current.",
+          "recorded_at": "2026-08-08T22:15:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T22:08:15+00:00",
+      "completed_at": "2026-08-08T22:15:51+00:00"
     }
   },
   "verified_references": {

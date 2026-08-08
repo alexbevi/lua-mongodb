@@ -17,17 +17,17 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 79,
+    "completed": 80,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 18
+    "pending": 17
   },
   "active": [],
   "ready": [
-    "REL-026"
+    "REL-027"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "REL-026"
+  "next_ready": "REL-027"
 }

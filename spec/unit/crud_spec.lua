@@ -28,7 +28,7 @@ describe("single-document CRUD", function()
     }
     local config = assert(driver_options.normalize(nil, {
       read_concern = { level = "majority" },
-      write_concern = { w = "majority" },
+      write_concern = { w = "majority", w_timeout_ms = 500 },
     }))
     local client = api.new_client(executor, config, nil, nil, object_ids)
     local collection = assert(client:database("app"):collection("users"))
@@ -44,6 +44,8 @@ describe("single-document CRUD", function()
     assert.are.equal("users", commands[1].command:get("insert"))
     assert.are.equal("unit", commands[1].command:get("comment"))
     assert.are.equal("majority", commands[1].command:get("writeConcern"):get("w"))
+    assert.are.equal(500, commands[1].command:get("writeConcern"):get("wtimeout"))
+    assert.is_nil(commands[1].command:get("writeConcern"):get("wtimeoutMS"))
     local encoded_document = commands[1].command:get("documents"):get(1)
 
     assert.are.equal("_id", encoded_document:keys()[1])

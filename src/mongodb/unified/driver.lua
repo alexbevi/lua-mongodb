@@ -109,6 +109,7 @@ local function client_factory(state)
       local w = uri_options:get("w")
       local socket_timeout_ms = uri_options:get("socketTimeoutMS")
       local timeout_ms = uri_options:get("timeoutMS")
+      local w_timeout_ms = uri_options:get("wTimeoutMS")
 
       if read_concern ~= nil then
         options.read_concern = { level = read_concern }
@@ -165,13 +166,11 @@ local function client_factory(state)
         w = w:to_number()
       end
 
-      if w ~= nil then
-        local w_timeout_ms = uri_options:get("wTimeoutMS")
+      if bson.is_exact(w_timeout_ms) then
+        w_timeout_ms = w_timeout_ms:to_number()
+      end
 
-        if bson.is_exact(w_timeout_ms) then
-          w_timeout_ms = w_timeout_ms:to_number()
-        end
-
+      if w ~= nil or w_timeout_ms ~= nil then
         options.write_concern = { w = w, w_timeout_ms = w_timeout_ms }
       end
     end

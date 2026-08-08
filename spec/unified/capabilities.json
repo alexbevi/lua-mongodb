@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1285,
-    "runnable": 1285
+    "passed": 1286,
+    "runnable": 1286
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -24236,7 +24236,6 @@
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": {
       "activity": "REL-026",
       "fingerprint": "a983bab143b7885cc748c77ca7223090bd19d0e938bae90fefc36bed0efd64ea",
-      "reason": "legacy wTimeoutMS requires the release unified write-concern mapping",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -24263,7 +24262,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[4]": {
       "activity": "QUA-001",

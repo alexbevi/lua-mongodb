@@ -157,10 +157,6 @@ TEST_OVERRIDES = {
   for identity, value in EXECUTOR_TESTS.items()
 }
 TEST_OVERRIDES.update({
-  "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": (
-    "REL-026",
-    "legacy wTimeoutMS requires the release unified write-concern mapping",
-  ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "ADV-011",
     "database aggregate is outside the v1 public collection adapter",
