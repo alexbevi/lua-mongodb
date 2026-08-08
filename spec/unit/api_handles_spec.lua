@@ -106,4 +106,70 @@ describe("core MongoDB handles", function()
     assert.is_true(received.read_operation)
     assert.are.equal("primary", received.read_preference.mode)
   end)
+
+  it("executes a generic command cursor on its selected server", function()
+    local calls = {}
+    local released_sessions = 0
+    local executor = {
+      close = function() return true end,
+      command = function(_, database, command, options)
+        calls[#calls + 1] = {
+          command = command,
+          database = database,
+          options = options,
+        }
+
+        if command:get("getMore") == nil then
+          options.on_server_selected("server:27017")
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(42) },
+              { "ns", "db.items" },
+              { "firstBatch", bson.array({
+                bson.document({ { "_id", 1 } }),
+              }) },
+            }) },
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "db.items" },
+            { "nextBatch", bson.array({
+              bson.document({ { "_id", 2 } }),
+            }) },
+          }) },
+        })
+      end,
+      release_session_context = function(_, context)
+        assert.is_table(context)
+        released_sessions = released_sessions + 1
+      end,
+    }
+    local config = assert(driver_options.normalize())
+    local client = api.new_client(executor, config)
+    local comment = bson.document({ { "source", "test" } })
+    local cursor = assert(client:database("db"):run_cursor_command(
+      bson.document({ { "find", "items" }, { "batchSize", 1 } }),
+      {
+        batch_size = 5,
+        comment = comment,
+        max_await_time_ms = 300,
+      }
+    ))
+
+    assert.are.equal(1, assert(cursor:next()):get("_id"))
+    assert.are.equal(2, assert(cursor:next()):get("_id"))
+    assert.are.equal(1, released_sessions)
+    assert.is_nil(cursor:next())
+    assert.are.equal("db", calls[1].database)
+    assert.are.equal("find", calls[1].command:keys()[1])
+    assert.are.equal("server:27017", calls[2].options.server_address)
+    assert.are.equal(5, calls[2].command:get("batchSize"))
+    assert.are.equal(300, calls[2].command:get("maxTimeMS"))
+    assert.are.equal(comment, calls[2].command:get("comment"))
+  end)
 end)

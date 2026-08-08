@@ -4,6 +4,7 @@ local bulk = require("mongodb.bulk")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
+local cursor_model = require("mongodb.cursor")
 local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
@@ -75,6 +76,13 @@ local COLLECTION_METATABLE = handle_metatable(
 local function client_error(message)
   return nil, errors.new({
     category = errors.CATEGORY.CLIENT,
+    message = message,
+  })
+end
+
+local function protocol_error(message)
+  return nil, errors.new({
+    category = errors.CATEGORY.PROTOCOL,
     message = message,
   })
 end
@@ -219,6 +227,66 @@ local function command_options(options)
 
   result.read_operation = true
   return result
+end
+
+local COMMAND_CURSOR_OPTIONS = {
+  batch_size = true,
+  cancellation = true,
+  comment = true,
+  deadline = true,
+  max_await_time_ms = true,
+  read_preference = true,
+  session = true,
+  timeout_mode = true,
+  timeout_ms = true,
+}
+
+local function command_cursor_options(options)
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("command cursor options must be a table", 3)
+  end
+
+  for key in pairs(options) do
+    if not COMMAND_CURSOR_OPTIONS[key] then
+      error("unknown command cursor option: " .. tostring(key), 3)
+    end
+  end
+
+  if options.batch_size ~= nil
+      and (math.type(options.batch_size) ~= "integer" or options.batch_size <= 0)
+  then
+    error("batch_size must be a positive integer", 3)
+  end
+
+  if options.max_await_time_ms ~= nil
+      and (math.type(options.max_await_time_ms) ~= "integer"
+        or options.max_await_time_ms < 0)
+  then
+    error("max_await_time_ms must be a non-negative integer", 3)
+  end
+
+  return options
+end
+
+local function command_cursor_collection(response, database_name)
+  local cursor = response:get("cursor")
+
+  if not bson.is_document(cursor) then
+    return nil
+  end
+
+  local namespace = cursor:get("ns")
+  local prefix = database_name .. "."
+
+  if type(namespace) ~= "string" or namespace:sub(1, #prefix) ~= prefix
+      or #namespace == #prefix
+  then
+    return protocol_error("command cursor contains an invalid namespace")
+  end
+
+  return namespace:sub(#prefix + 1)
 end
 
 local function new_database(client, name, options)
@@ -536,6 +604,90 @@ function DATABASE_METHODS:run_command(command, options)
 
     return client_state.executor:command(state.name, command, execution_options)
   end)
+end
+
+function DATABASE_METHODS:run_cursor_command(command, options)
+  local state = DATABASE_STATES[self]
+  local client_state = CLIENT_STATES[state.client]
+  local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  command = command_document(command)
+  options = command_cursor_options(options)
+  local cursor
+
+  cursor, err = run_operation(state, options, function(prepared)
+    local execution_options, option_err = command_options(prepared)
+
+    if not execution_options then
+      return nil, option_err
+    end
+
+    local session_context = prepared.session == nil
+      and type(state.executor.release_session_context) == "function" and {} or nil
+    local server_address
+
+    execution_options.batch_size = nil
+    execution_options.comment = nil
+    execution_options.max_await_time_ms = nil
+    execution_options.on_server_selected = function(address)
+      server_address = address
+    end
+    execution_options.retryable_read = true
+    execution_options.session_context = session_context
+    local response
+    response, option_err = state.executor:command(
+      state.name,
+      command,
+      execution_options
+    )
+
+    if not response then
+      if session_context then
+        state.executor:release_session_context(session_context)
+      end
+
+      return nil, option_err
+    end
+
+    local collection_name
+    collection_name, option_err = command_cursor_collection(response, state.name)
+
+    if option_err then
+      if session_context then
+        state.executor:release_session_context(session_context)
+      end
+
+      return nil, option_err
+    end
+
+    return cursor_model.new(response, {
+      batch_size = prepared.batch_size or 0,
+      cancellation = prepared.cancellation,
+      client_state = client_state,
+      collection_name = collection_name,
+      comment = prepared.comment,
+      database_name = state.name,
+      deadline = prepared.deadline,
+      executor = state.executor,
+      max_await_time_ms = prepared.max_await_time_ms,
+      on_close = state.on_cursor_close,
+      server_address = server_address,
+      session = prepared.session,
+      session_context = session_context,
+      timeout_context = operation_timeout.capture(),
+      timeout_mode = prepared.timeout_mode,
+    })
+  end)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(state.client, cursor)
 end
 
 local function collection_operation(collection, operation, ...)

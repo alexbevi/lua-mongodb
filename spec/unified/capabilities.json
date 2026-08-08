@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1274,
-    "runnable": 1274
+    "passed": 1280,
+    "runnable": 1280
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -69908,7 +69908,6 @@
     "run-command/tests/unified/runCursorCommand.json::test[2]": {
       "activity": "REL-022",
       "fingerprint": "fb2b45b72c26dd6dedaf6c963c4c7614c65d08e5d867526388265bf54d823298",
-      "reason": "the case awaits generic command cursor execution",
       "requirements": {
         "arguments": [
           "createCommandCursor.command",
@@ -69930,12 +69929,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[3]": {
       "activity": "REL-022",
       "fingerprint": "7d3cf30ec37e1bc9c3593999f73bf963a6aeb342c135bc351c20e47e4c9742ed",
-      "reason": "the case awaits generic command cursor execution",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -69965,12 +69963,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[4]": {
       "activity": "REL-022",
       "fingerprint": "e2cc52e11b7ce81dd2f997f8be9c582a4460f51af8bddca02b236173f9b99041",
-      "reason": "the case awaits generic command cursor execution",
       "requirements": {
         "arguments": [
           "assertSameLsidOnLastTwoCommands.client",
@@ -70001,7 +69998,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[5]": {
       "activity": "ADV-006",
@@ -70084,7 +70081,6 @@
     "run-command/tests/unified/runCursorCommand.json::test[7]": {
       "activity": "REL-022",
       "fingerprint": "7956033f5e75e5757f822931a122725e548c512552448996e7c9baa11fc4e9ae",
-      "reason": "the case awaits generic command cursor execution",
       "requirements": {
         "arguments": [
           "runCursorCommand.batchSize",
@@ -70112,12 +70108,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[8]": {
       "activity": "REL-022",
       "fingerprint": "6baa16bd52fb4adde5c86d56917c358b2f566699f5ae5c39412d5fe7c70192b0",
-      "reason": "the case awaits generic command cursor execution",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -70145,12 +70140,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[9]": {
       "activity": "REL-022",
       "fingerprint": "39b4ee59a764894d9405cfcab6cb20a3a07801b289da8cb44aad0c955d5de347",
-      "reason": "the case awaits generic command cursor execution",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -70178,7 +70172,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/auth-error.json::test[1]": {
       "activity": "ADV-005",

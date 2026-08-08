@@ -4617,6 +4617,30 @@
       "activity": "REL-005",
       "environment": "live-standalone"
     },
+    "run-command/tests/unified/runCursorCommand.json::test[2]": {
+      "activity": "REL-022",
+      "environment": "live-standalone"
+    },
+    "run-command/tests/unified/runCursorCommand.json::test[3]": {
+      "activity": "REL-022",
+      "environment": "live-standalone"
+    },
+    "run-command/tests/unified/runCursorCommand.json::test[4]": {
+      "activity": "REL-022",
+      "environment": "live-standalone"
+    },
+    "run-command/tests/unified/runCursorCommand.json::test[7]": {
+      "activity": "REL-022",
+      "environment": "live-standalone"
+    },
+    "run-command/tests/unified/runCursorCommand.json::test[8]": {
+      "activity": "REL-022",
+      "environment": "live-standalone"
+    },
+    "run-command/tests/unified/runCursorCommand.json::test[9]": {
+      "activity": "REL-022",
+      "environment": "live-standalone"
+    },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",
       "environment": "live-replicaset"

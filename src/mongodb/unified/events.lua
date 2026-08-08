@@ -7,21 +7,30 @@ local EVENT_NAMES = {
   command_failed = "commandFailedEvent",
   command_started = "commandStartedEvent",
   command_succeeded = "commandSucceededEvent",
+  connection_checked_in = "connectionCheckedInEvent",
+  connection_checked_out = "connectionCheckedOutEvent",
   connection_closed = "connectionClosedEvent",
   connection_created = "connectionCreatedEvent",
+  connection_ready = "connectionReadyEvent",
   pool_cleared = "poolClearedEvent",
 }
 local EVENT_TYPES = {
   commandFailedEvent = "command_failed",
   commandStartedEvent = "command_started",
   commandSucceededEvent = "command_succeeded",
+  connectionCheckedInEvent = "connection_checked_in",
+  connectionCheckedOutEvent = "connection_checked_out",
   connectionClosedEvent = "connection_closed",
   connectionCreatedEvent = "connection_created",
+  connectionReadyEvent = "connection_ready",
   poolClearedEvent = "pool_cleared",
 }
 local CMAP_EVENT_TYPES = {
+  connection_checked_in = true,
+  connection_checked_out = true,
   connection_closed = true,
   connection_created = true,
+  connection_ready = true,
   pool_cleared = true,
 }
 local SENSITIVE_COMMANDS = {

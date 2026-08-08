@@ -907,14 +907,17 @@ local function list_collection_names(_, database, arguments)
   }))
 end
 
-local function run_command(_, database, arguments)
+local function ordered_command(arguments, operation_name)
   local command = arguments:get("command")
   local command_name = arguments:get("commandName")
 
   if not bson.is_document(command) or type(command_name) ~= "string"
       or command_name == ""
   then
-    return configuration_error("invalid runCommand arguments", "$.arguments")
+    return configuration_error(
+      "invalid " .. operation_name .. " arguments",
+      "$.arguments"
+    )
   end
 
   local entries = { { command_name, command:get(command_name) or 1 } }
@@ -925,13 +928,60 @@ local function run_command(_, database, arguments)
     end
   end
 
+  return bson.document(entries)
+end
+
+local function run_command(_, database, arguments)
+  local command, err = ordered_command(arguments, "runCommand")
+
+  if not command then
+    return nil, err
+  end
+
   local options = operation_options(
     arguments,
     { readPreference = "read_preference" }
   )
 
   options.read_preference = convert_read_preference(options.read_preference)
-  return database:run_command(bson.document(entries), options)
+  return database:run_command(command, options)
+end
+
+local function create_command_cursor(_, database, arguments)
+  local command, err = ordered_command(arguments, "createCommandCursor")
+
+  if not command then
+    return nil, err
+  end
+
+  local options = operation_options(arguments, {
+    batchSize = "batch_size",
+    comment = "comment",
+    maxTimeMS = "max_await_time_ms",
+    readPreference = "read_preference",
+  })
+
+  options.read_preference = convert_read_preference(options.read_preference)
+  return database:run_cursor_command(command, options)
+end
+
+local function run_cursor_command(runner, database, arguments)
+  local cursor, err = create_command_cursor(runner, database, arguments)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
+local function iterate_command_cursor(_, cursor)
+  return cursor:next()
+end
+
+local function close_command_cursor(_, cursor)
+  cursor:close()
+  return true
 end
 
 local function create_collection(_, database, arguments)
@@ -1729,6 +1779,14 @@ function M.new(options)
         },
       },
       database = {
+        createCommandCursor = {
+          arguments = {
+            "batchSize", "command", "commandName", "comment", "maxTimeMS",
+            "readPreference",
+          },
+          handler = create_command_cursor,
+          result_kind = "commandCursor",
+        },
         createCollection = {
           arguments = {
             "clusteredIndex", "collection", "expireAfterSeconds", "pipeline",
@@ -1761,6 +1819,27 @@ function M.new(options)
         runCommand = {
           arguments = { "command", "commandName", "readPreference" },
           handler = run_command,
+        },
+        runCursorCommand = {
+          arguments = {
+            "batchSize", "command", "commandName", "comment", "maxTimeMS",
+            "readPreference",
+          },
+          handler = run_cursor_command,
+        },
+      },
+      commandCursor = {
+        close = {
+          arguments = {},
+          handler = close_command_cursor,
+        },
+        iterateOnce = {
+          arguments = {},
+          handler = iterate_command_cursor,
+        },
+        iterateUntilDocumentOrError = {
+          arguments = {},
+          handler = iterate_command_cursor,
         },
       },
       session = {

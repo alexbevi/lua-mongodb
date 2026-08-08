@@ -1104,6 +1104,26 @@ function MANAGER_METHODS:select_server(operation, preference, options)
     error("topology selection options must be a table", 2)
   end
 
+  if options.server_address ~= nil and type(options.server_address) ~= "string" then
+    error("server_address must be a string", 2)
+  end
+
+  local pinned_selector
+
+  if options.server_address then
+    pinned_selector = function(servers)
+      local result = {}
+
+      for _, server in ipairs(servers) do
+        if server.address == options.server_address then
+          result[#result + 1] = server
+        end
+      end
+
+      return result
+    end
+  end
+
   local deadline = options.deadline
 
   if deadline == nil then
@@ -1120,27 +1140,37 @@ function MANAGER_METHODS:select_server(operation, preference, options)
       counts[address] = server.pool.operation_count or 0
     end
 
-    local candidates, candidate_err = selection.candidates(
-      state.description,
-      operation,
-      preference,
-      {
-        deprioritized_servers = options.deprioritized_servers,
-        heartbeat_frequency_ms = state.heartbeat_frequency_ms,
-        local_threshold_ms = options.local_threshold_ms,
-      }
-    )
+    local selected
 
-    if not candidates then
-      return nil, candidate_err
+    if options.server_address then
+      selected = state.description:server(options.server_address)
+
+      if selected and selected.type == "Unknown" then
+        selected = nil
+      end
+    else
+      local candidates, candidate_err = selection.candidates(
+        state.description,
+        operation,
+        preference,
+        {
+          deprioritized_servers = options.deprioritized_servers,
+          heartbeat_frequency_ms = state.heartbeat_frequency_ms,
+          local_threshold_ms = options.local_threshold_ms,
+        }
+      )
+
+      if not candidates then
+        return nil, candidate_err
+      end
+
+      selected = selection.choose(candidates, {
+        operation_counts = counts,
+        random = options.random,
+      })
     end
 
-    local selected = selection.choose(candidates, {
-      operation_counts = counts,
-      random = options.random,
-    })
-
-    if selected then
+    if selected and state.servers[selected.address] then
       return selected, state.servers[selected.address].pool
     end
 
@@ -1156,6 +1186,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
         heartbeat_frequency_ms = state.heartbeat_frequency_ms,
         local_threshold_ms = options.local_threshold_ms,
         operation_counts = counts,
+        selector = pinned_selector,
         timeout_ms = math.max(0, (deadline - state.runtime.clock:now()) * 1000),
       })
     end

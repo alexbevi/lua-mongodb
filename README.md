@@ -118,6 +118,22 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
+### Generic Commands
+
+`database:run_command` returns one command reply. For a command whose reply owns a server cursor, use `database:run_cursor_command`; it executes the initial command eagerly and returns the same cursor type used by collection reads. Its `batch_size`, `max_await_time_ms`, and `comment` options apply to subsequent `getMore` commands.
+
+```lua
+local db = client:database("app")
+local cursor = assert(db:run_cursor_command(
+  mongodb.bson.document({ { "find", "users" }, { "batchSize", 1 } }),
+  { batch_size = 5 }
+))
+
+for user in cursor:iter() do
+  print(user:get("name"))
+end
+```
+
 ### Transactions
 
 Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. `with_transaction` starts, commits, and applies the specification retry rules for transient failures. Pass the active session to every operation in the transaction, and keep the callback safe to run more than once.

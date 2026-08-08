@@ -99,6 +99,15 @@ local function response_batch(response, name)
   }
 end
 
+local function release_session_context(state)
+  if state.session_context
+      and type(state.executor.release_session_context) == "function"
+  then
+    state.executor:release_session_context(state.session_context)
+    state.session_context = nil
+  end
+end
+
 local function mark_closed(value, state)
   if state.closed then
     return
@@ -109,13 +118,7 @@ local function mark_closed(value, state)
   state.numeric_id = 0
   state.documents = {}
   state.position = 1
-
-  if state.session_context
-      and type(state.executor.release_session_context) == "function"
-  then
-    state.executor:release_session_context(state.session_context)
-    state.session_context = nil
-  end
+  release_session_context(state)
 
   if state.on_close then
     state.on_close(value)
@@ -163,6 +166,7 @@ local function get_more(value, state)
         {
           cancellation = state.cancellation,
           deadline = timeout_options.deadline or state.deadline,
+          server_address = state.server_address,
           session = state.session,
           session_context = state.session_context,
         }
@@ -187,6 +191,11 @@ local function get_more(value, state)
   state.id = batch.id
   state.numeric_id = batch.numeric_id
   state.position = 1
+
+  if state.numeric_id == 0 then
+    release_session_context(state)
+  end
+
   return true
 end
 
@@ -290,6 +299,7 @@ function CURSOR_METHODS:close(options)
           {
             cancellation = options.cancellation,
             deadline = timeout_options.deadline,
+            server_address = state.server_address,
             session = state.session,
             session_context = state.session_context,
           }
@@ -306,6 +316,7 @@ function CURSOR_METHODS:close(options)
       {
         cancellation = options.cancellation,
         deadline = options.deadline,
+        server_address = state.server_address,
         session = state.session,
         session_context = state.session_context,
       }
@@ -362,12 +373,17 @@ function M.new(response, options)
     on_close = options.on_close,
     position = 1,
     retrieved = 0,
+    server_address = options.server_address,
     session = options.session,
     session_context = options.session_context,
     timeout_context = options.timeout_context,
     timeout_mode = options.timeout_mode or "cursor_lifetime",
   }
   local result = setmetatable(value, CURSOR_METATABLE)
+
+  if batch.numeric_id == 0 then
+    release_session_context(CURSOR_STATES[result])
+  end
 
   if batch.numeric_id == 0 and #batch.documents == 0 then
     mark_closed(result, CURSOR_STATES[result])

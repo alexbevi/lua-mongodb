@@ -157,6 +157,7 @@ local function select_connection(state, operation, options)
       deadline = deadline,
       deprioritized_servers = options and options.deprioritized_servers,
       local_threshold_ms = state.local_threshold_ms,
+      server_address = options and options.server_address,
       timeout_ms = state.server_selection_timeout_ms,
     }
   )
@@ -225,6 +226,19 @@ function METHODS:command(database, command, options)
   end
 
   local state = EXECUTOR_STATES[self]
+
+  if options and options.on_server_selected ~= nil
+      and type(options.on_server_selected) ~= "function"
+  then
+    error("on_server_selected must be a function", 2)
+  end
+
+  if options and options.server_address ~= nil
+      and type(options.server_address) ~= "string"
+  then
+    error("server_address must be a string", 2)
+  end
+
   local selected, err = select_connection(state, operation_for(command, options), options)
 
   if not selected then
@@ -234,12 +248,19 @@ function METHODS:command(database, command, options)
   local command_options = {}
 
   for key, value in pairs(options or {}) do
-    command_options[key] = value
+    if key ~= "on_server_selected" and key ~= "server_address" then
+      command_options[key] = value
+    end
   end
 
   command_options.minimum_round_trip_time_ms =
     selected.minimum_round_trip_time_ms
   local response
+
+  if options and options.on_server_selected then
+    options.on_server_selected(selected.address)
+  end
+
   command = decorate_read_preference(selected, command)
   response, err = selected.executor:command(database, command, command_options)
   finish_connection(state, selected, err)

@@ -1708,6 +1708,28 @@
       "notes": [],
       "started_at": "2026-08-08T09:03:56+00:00",
       "completed_at": "2026-08-08T09:16:55+00:00"
+    },
+    "REL-022": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua --filter=executes.a.generic.command.cursor'",
+          "exit_code": 2,
+          "summary": "The defining API test errored because database:run_cursor_command was absent.",
+          "recorded_at": "2026-08-08T11:34:01+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unit/cursor_spec.lua spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua spec/unified/operation_spec.lua' FOCUS_UNIFIED='run-command/tests/unified/runCursorCommand.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/api.lua src/mongodb/cursor.lua src/mongodb/topology.lua src/mongodb/topology_executor.lua src/mongodb/unified/driver.lua src/mongodb/unified/events.lua spec/unit/api_handles_spec.lua spec/unit/topology_spec.lua'; python3 spec/unified/update_capabilities.py --check; python3 spec/conformance/ledger.py --check; python3 spec/release/scope.py --check; python3 planning/update_readme_compatibility.py --check; git diff --check",
+          "exit_code": 0,
+          "summary": "32 focused Lua tests passed; all 6 applicable runCursorCommand cases executed and passed with 0 failures or environment skips; 44 capability, ledger, and release-scope Python tests passed; 8 touched Lua files linted cleanly; all generated artifact and diff validators passed.",
+          "recorded_at": "2026-08-08T11:45:07+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T11:33:19+00:00",
+      "completed_at": "2026-08-08T11:45:13+00:00"
     }
   },
   "verified_references": {
