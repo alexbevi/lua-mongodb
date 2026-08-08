@@ -1120,6 +1120,35 @@ function TOPOLOGY_METHODS:with_generation(address, generation)
   return new_topology(state)
 end
 
+function TOPOLOGY_METHODS:with_round_trip_times(address, average, minimum)
+  for name, value in pairs({ average = average, minimum = minimum }) do
+    if type(value) ~= "number" or value ~= value or value < 0
+        or value == math.huge
+    then
+      error(name .. " round trip time must be a finite non-negative number", 2)
+    end
+  end
+
+  local normalized, address_err = normalize_address(address)
+
+  if not normalized then
+    error(address_err, 2)
+  end
+
+  local state = copy_topology(self)
+  local server = state.servers[normalized]
+
+  if not server then
+    error("round trip time address is not in the topology", 2)
+  end
+
+  state.servers[normalized] = clone_server(server, {
+    minimum_round_trip_time = minimum,
+    round_trip_time = average,
+  })
+  return new_topology(state)
+end
+
 function M.server_description(address, response, options)
   local normalized, address_err = normalize_address(address)
 

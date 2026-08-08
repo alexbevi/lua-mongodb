@@ -153,6 +153,8 @@ describe("monitored topology", function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
       local checks = 0
       local awaited_fields
+      local awaited_pending = false
+      local rtt_while_awaited = false
       local process_id = assert(bson.object_id("000000000000000000000001"))
       local version = bson.document({
         { "processId", process_id },
@@ -172,7 +174,9 @@ describe("monitored topology", function()
 
           if fields.awaited then
             awaited_fields = fields
-            assert(runtime.clock:sleep(0.01))
+            awaited_pending = true
+            assert(runtime.clock:sleep(0.03))
+            awaited_pending = false
           end
 
           return response
@@ -181,6 +185,10 @@ describe("monitored topology", function()
         min_heartbeat_frequency_ms = 5,
         pool_factory = new_pool,
         rtt_check = function()
+          if awaited_pending then
+            rtt_while_awaited = true
+          end
+
           return 25
         end,
         runtime = runtime,
@@ -197,7 +205,41 @@ describe("monitored topology", function()
       assert.is_true(awaited_fields.awaited)
       assert.are.equal(version, awaited_fields.topology_version)
       assert.are.equal(10, awaited_fields.max_await_time_ms)
+      assert.is_true(rtt_while_awaited)
       assert.is_true(manager.description:server("a:27017").round_trip_time > 0)
+    end)
+  end)
+
+  it("does not schedule RTT checks in polling mode", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local rtt_checks = 0
+      local version = bson.document({
+        { "processId", assert(bson.object_id("000000000000000000000001")) },
+        { "counter", bson.int64(1) },
+      })
+      local manager = topology.new({
+        check = function()
+          return hello(true, version)
+        end,
+        heartbeat_frequency_ms = 10,
+        min_heartbeat_frequency_ms = 5,
+        pool_factory = new_pool,
+        rtt_check = function()
+          rtt_checks = rtt_checks + 1
+          return 25
+        end,
+        runtime = runtime,
+        seeds = { "a:27017" },
+        server_monitoring_mode = "poll",
+        set_name = "rs",
+        type = "ReplicaSetNoPrimary",
+      })
+
+      assert(manager:open())
+      assert(runtime.clock:sleep(0.025))
+      assert(manager:close())
+      assert.are.equal(0, rtt_checks)
     end)
   end)
 

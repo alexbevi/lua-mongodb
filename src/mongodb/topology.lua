@@ -10,6 +10,7 @@ local MANAGER_STATES = setmetatable({}, { __mode = "k" })
 local EVENT_STATES = setmetatable({}, { __mode = "k" })
 local MANAGER_METHODS = {}
 local start_monitor
+local start_rtt_monitor
 
 local DATA_BEARING_TYPES = {
   [sdam.SERVER_TYPE.LOAD_BALANCER] = true,
@@ -225,6 +226,9 @@ local function add_server(state, address)
     check_requested = false,
     last_check_at = nil,
     pool = created,
+    rtt_cancellation = nil,
+    rtt_sleep_cancellation = nil,
+    rtt_task = nil,
     sleep_cancellation = nil,
     task = nil,
   }
@@ -246,8 +250,20 @@ local function remove_server(state, address)
     server.sleep_cancellation:cancel("server monitor removed")
   end
 
+  if server.rtt_cancellation then
+    server.rtt_cancellation:cancel("server RTT monitor removed")
+  end
+
+  if server.rtt_sleep_cancellation then
+    server.rtt_sleep_cancellation:cancel("server RTT monitor removed")
+  end
+
   if server.task and server.task:status() == "pending" then
     state.runtime.task:cancel(server.task, "server monitor removed")
+  end
+
+  if server.rtt_task and server.rtt_task:status() == "pending" then
+    state.runtime.task:cancel(server.rtt_task, "server RTT monitor removed")
   end
 
   server.pool:close()
@@ -334,6 +350,26 @@ local function process_description(state, address, response, options)
   return true
 end
 
+local function record_rtt_sample(state, address, sample)
+  local samples = state.rtt_samples[address] or {}
+
+  samples[#samples + 1] = sample
+
+  if #samples > 10 then
+    table.remove(samples, 1)
+  end
+
+  state.rtt_samples[address] = samples
+  local current = state.description:server(address)
+  local average = selection.average_rtt(
+    current and current.round_trip_time or nil,
+    sample
+  )
+  local minimum = #samples >= 2 and math.min(table.unpack(samples)) or 0
+
+  return average, minimum
+end
+
 local function process_check_result(state, address, response, err, fields)
   local server = state.servers[address]
 
@@ -344,37 +380,12 @@ local function process_check_result(state, address, response, err, fields)
   fields = fields or {}
   local duration = fields.duration or 0
   local awaited = fields.awaited == true
-  local current = state.description:server(address)
-  local round_trip_time = fields.round_trip_time
   local rtt_sample = fields.rtt_sample
-
-  if awaited and round_trip_time == nil and current then
-    round_trip_time = current.round_trip_time
-  end
+  local succeeded = response ~= nil
 
   if response then
-    if round_trip_time == nil and not awaited then
-      rtt_sample = duration * 1000
-      round_trip_time = selection.average_rtt(
-        current and current.round_trip_time or nil,
-        duration * 1000
-      )
-    end
-
     if rtt_sample == nil and not awaited then
-      rtt_sample = round_trip_time
-    end
-
-    if type(rtt_sample) == "number" and rtt_sample >= 0 then
-      local samples = state.rtt_samples[address] or {}
-
-      samples[#samples + 1] = rtt_sample
-
-      if #samples > 10 then
-        table.remove(samples, 1)
-      end
-
-      state.rtt_samples[address] = samples
+      rtt_sample = fields.round_trip_time or duration * 1000
     end
 
     publish_heartbeat(state, "ServerHeartbeatSucceeded", {
@@ -398,11 +409,21 @@ local function process_check_result(state, address, response, err, fields)
   end
 
   assert(state.lock:acquire())
-  local minimum_round_trip_time
-  local samples = state.rtt_samples[address]
+  local current = state.description:server(address)
+  local round_trip_time = current and current.round_trip_time or nil
+  local minimum_round_trip_time = current
+    and current.minimum_round_trip_time or nil
 
-  if samples and #samples >= 2 then
-    minimum_round_trip_time = math.min(table.unpack(samples))
+  if succeeded and type(rtt_sample) == "number" and rtt_sample >= 0 then
+    round_trip_time, minimum_round_trip_time = record_rtt_sample(
+      state,
+      address,
+      rtt_sample
+    )
+  elseif not succeeded then
+    state.rtt_samples[address] = nil
+    round_trip_time = nil
+    minimum_round_trip_time = nil
   end
 
   local processed = process_description(state, address, response, {
@@ -450,31 +471,24 @@ local function monitor_once(state, address)
     topology_version = awaited and current.topology_version or nil,
   })
   local duration = state.runtime.clock:now() - started_at
-  local rtt_sample
-
-  if response and awaited and state.rtt_check then
-    rtt_sample = state.rtt_check(address, {
-      cancellation = state.cancellation,
-    })
-
-    if type(rtt_sample) == "number" and rtt_sample >= 0 then
-      round_trip_time = selection.average_rtt(
-        current.round_trip_time,
-        rtt_sample
-      )
-    end
-  end
 
   server.last_check_at = state.runtime.clock:now()
   server.last_awaited = awaited and response ~= nil
-  return process_check_result(state, address, response, check_err, {
+  local processed = process_check_result(state, address, response, check_err, {
     awaited = awaited,
     duration = duration,
     round_trip_time = round_trip_time,
-    rtt_sample = rtt_sample,
     success = response ~= nil,
     timeout = errors.is(check_err, errors.CATEGORY.TIMEOUT),
   })
+
+  current = state.description:server(address)
+
+  if processed and response and current and current.topology_version ~= nil then
+    start_rtt_monitor(state, state.manager, address)
+  end
+
+  return processed
 end
 
 local function monitor_loop(manager, address)
@@ -517,11 +531,71 @@ local function monitor_loop(manager, address)
   return true
 end
 
+local function rtt_loop(manager, address)
+  local state = MANAGER_STATES[manager]
+
+  while state.state == "open" and state.servers[address] do
+    local server = state.servers[address]
+    server.rtt_sleep_cancellation = state.runtime.cancellation:new()
+    local slept = state.runtime.clock:sleep(
+      state.heartbeat_frequency_ms / 1000,
+      server.rtt_sleep_cancellation
+    )
+
+    server.rtt_sleep_cancellation = nil
+
+    if not slept then
+      break
+    end
+
+    server = state.servers[address]
+
+    if state.state ~= "open" or not server then
+      break
+    end
+
+    local sample = state.rtt_check(address, {
+      cancellation = server.rtt_cancellation,
+    })
+
+    if type(sample) == "number" and sample >= 0 then
+      assert(state.lock:acquire())
+
+      if state.state == "open" and state.servers[address]
+          and state.description:server(address)
+      then
+        local average, minimum = record_rtt_sample(state, address, sample)
+
+        state.description = state.description:with_round_trip_times(
+          address,
+          average,
+          minimum
+        )
+      end
+
+      state.lock:release()
+    end
+  end
+
+  return true
+end
+
 start_monitor = function(state, manager, address)
   local server = state.servers[address]
 
   if state.background and server and server.task == nil then
     server.task = state.runtime.task:spawn(monitor_loop, manager, address)
+  end
+end
+
+start_rtt_monitor = function(state, manager, address)
+  local server = state.servers[address]
+
+  if state.background and state.server_monitoring_mode ~= "poll"
+      and state.rtt_check and server and server.rtt_task == nil
+  then
+    server.rtt_cancellation = state.runtime.cancellation:new()
+    server.rtt_task = state.runtime.task:spawn(rtt_loop, manager, address)
   end
 end
 

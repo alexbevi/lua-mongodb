@@ -191,6 +191,21 @@ describe("SDAM description transitions", function()
     end, "server descriptions are immutable")
   end)
 
+  it("replaces RTT fields without mutating the prior description", function()
+    local topology = sdam.new({ seeds = { "a:27017" } })
+    local updated = topology:with_round_trip_times("A:27017", 12.5, 4.25)
+
+    assert.is_nil(topology:server("a:27017").round_trip_time)
+    assert.are.equal(12.5, updated:server("a:27017").round_trip_time)
+    assert.are.equal(4.25, updated:server("a:27017").minimum_round_trip_time)
+    assert.has_error(function()
+      updated:with_round_trip_times("a:27017", -1, 0)
+    end, "average round trip time must be a finite non-negative number")
+    assert.has_error(function()
+      updated:with_round_trip_times("b:27017", 1, 1)
+    end, "round trip time address is not in the topology")
+  end)
+
   it("compares server descriptions by their SDAM fields", function()
     local first = sdam.server_description("A", bson.document({
       { "ok", 1 },
