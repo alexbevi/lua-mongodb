@@ -27,6 +27,16 @@ local function expected_events(values, extra)
   })
 end
 
+local function expected_cmap_events(values)
+  return array({
+    document({
+      { "client", "client0" },
+      { "eventType", "cmap" },
+      { "events", array(values) },
+    }),
+  })
+end
+
 local function expected_event(name, command_name)
   return document({
     { name, document({ { "commandName", command_name } }) },
@@ -163,6 +173,63 @@ describe("unified command events", function()
     }), collectors, "$.expectEvents")
 
     assert.is_nil(ok)
+    assert.are.equal("$.expectEvents[1].events[1]", err.details.path)
+  end)
+
+  it("matches ready, checked-out, and checked-in connection events exactly", function()
+    local runner = runner_module.new({ runtime = fake_runtime.new() })
+    local client = {}
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({
+        "connectionReadyEvent",
+        "connectionCheckedOutEvent",
+        "connectionCheckedInEvent",
+      }) },
+    })))
+
+    assert(runner:add_entity("client0", "client", client))
+    collector.pool_listener:ConnectionReady({
+      address = "127.0.0.1:27017",
+      connection_id = 1,
+      duration_ms = 2,
+    })
+    collector.pool_listener:ConnectionCheckedOut({
+      address = "127.0.0.1:27017",
+      connection_id = 1,
+      duration_ms = 3,
+    })
+    collector.pool_listener:ConnectionCheckedIn({
+      address = "127.0.0.1:27017",
+      connection_id = 1,
+    })
+
+    assert(event_module.assert_all(runner, expected_cmap_events({
+      document({ { "connectionReadyEvent", document({}) } }),
+      document({ { "connectionCheckedOutEvent", document({}) } }),
+      document({ { "connectionCheckedInEvent", document({}) } }),
+    }), { [client] = collector }, "$.expectEvents"))
+  end)
+
+  it("rejects unknown expected connection events", function()
+    local runner = runner_module.new({ runtime = fake_runtime.new() })
+    local client = {}
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({ "connectionReadyEvent" }) },
+    })))
+
+    assert(runner:add_entity("client0", "client", client))
+    collector.pool_listener:ConnectionReady({
+      address = "127.0.0.1:27017",
+      connection_id = 1,
+      duration_ms = 2,
+    })
+
+    local ok, err = event_module.assert_all(runner, expected_cmap_events({
+      document({ { "futureConnectionEvent", document({}) } }),
+    }), { [client] = collector }, "$.expectEvents")
+
+    assert.is_nil(ok)
+    assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
     assert.are.equal("$.expectEvents[1].events[1]", err.details.path)
   end)
 end)

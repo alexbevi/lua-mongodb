@@ -359,10 +359,6 @@ TEST_OVERRIDES.update({
     "ADV-011",
     "tailable command cursors are outside the v1 public cursor surface",
   ),
-  "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": (
-    "REL-024",
-    OWNER_REASONS["REL-024"],
-  ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": (
     "ADV-011",
     "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",

@@ -1752,6 +1752,28 @@
       "notes": [],
       "started_at": "2026-08-08T15:02:53+00:00",
       "completed_at": "2026-08-08T15:16:30+00:00"
+    },
+    "REL-024": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='<lua-5.4-path>' LUA_CPATH='<lua-5.4-cpath>' make test-focus FOCUS_UNIT='spec/unit/unified_events_spec.lua'",
+          "exit_code": 2,
+          "summary": "The focused unified-events unit file ran 6 tests; 5 passed and the defining CMAP sequence test errored because the collector has no ConnectionCheckedOut callback.",
+          "recorded_at": "2026-08-08T17:33:28+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_events_spec.lua' FOCUS_UNIFIED='client-side-operations-timeout/tests/runCursorCommand.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/unified/events.lua spec/unit/unified_events_spec.lua'; capability, ledger, release-scope, README, JSON, diff, and strict validators",
+          "exit_code": 0,
+          "summary": "7 focused Lua tests passed; all 3 applicable runCursorCommand CSOT cases executed and passed with 0 failures or environment skips and 3 unrelated deferrals; 46 Python tests passed; 2 touched Lua files linted with 0 warnings; capabilities, conformance 3457/2067, release scope 103/1964, README projection, executor JSON, diff, and strict plan validators passed.",
+          "recorded_at": "2026-08-08T17:37:22+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T17:32:02+00:00",
+      "completed_at": "2026-08-08T17:37:22+00:00"
     }
   },
   "verified_references": {

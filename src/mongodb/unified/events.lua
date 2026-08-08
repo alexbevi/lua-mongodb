@@ -274,12 +274,33 @@ function M.new(specification)
       collector.pools[event.address] = collector.pools[event.address]
         or { connections = {} }
     end,
+    ConnectionCheckedIn = function(_, event)
+      record(collector, {
+        address = event.address,
+        connection_id = event.connection_id,
+        type = "connection_checked_in",
+      })
+    end,
+    ConnectionCheckedOut = function(_, event)
+      record(collector, {
+        address = event.address,
+        connection_id = event.connection_id,
+        duration_ms = event.duration_ms,
+        type = "connection_checked_out",
+      })
+    end,
     ConnectionReady = function(_, event)
       local pool = collector.pools[event.address]
         or { connections = {} }
 
       collector.pools[event.address] = pool
       pool.connections[event.connection_id] = true
+      record(collector, {
+        address = event.address,
+        connection_id = event.connection_id,
+        duration_ms = event.duration_ms,
+        type = "connection_ready",
+      })
     end,
   }
   return collector

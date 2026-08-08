@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1282,
-    "runnable": 1282
+    "passed": 1283,
+    "runnable": 1283
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -35238,7 +35238,6 @@
     "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": {
       "activity": "REL-024",
       "fingerprint": "befdeb4cd840258c4c84a6b70761f4c27c0956f09d491b11f1ca1fcf85a4543a",
-      "reason": "the case awaits command cursor pool event observation",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35269,7 +35268,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": {
       "activity": "ADV-011",
