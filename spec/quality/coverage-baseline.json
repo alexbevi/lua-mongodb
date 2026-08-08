@@ -5,8 +5,8 @@
       "covered": 585
     },
     "src/mongodb/api.lua": {
-      "active": 509,
-      "covered": 434
+      "active": 520,
+      "covered": 444
     },
     "src/mongodb/auth/saslprep.lua": {
       "active": 124,
@@ -105,8 +105,8 @@
       "covered": 102
     },
     "src/mongodb/operation_timeout.lua": {
-      "active": 146,
-      "covered": 122
+      "active": 149,
+      "covered": 126
     },
     "src/mongodb/pool.lua": {
       "active": 644,
@@ -181,7 +181,7 @@
       "covered": 154
     },
     "src/mongodb/unified/driver.lua": {
-      "active": 705,
+      "active": 708,
       "covered": 0
     },
     "src/mongodb/unified/events.lua": {
@@ -225,7 +225,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 21893,
-    "covered": 18377
+    "active": 21910,
+    "covered": 18391
   }
 }
