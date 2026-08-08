@@ -223,6 +223,7 @@ local function add_server(state, address)
 
   local server = {
     address = address,
+    check_cancellation = nil,
     check_requested = false,
     last_check_at = nil,
     pool = created,
@@ -248,6 +249,10 @@ local function remove_server(state, address)
 
   if server.sleep_cancellation then
     server.sleep_cancellation:cancel("server monitor removed")
+  end
+
+  if server.check_cancellation then
+    server.check_cancellation:cancel("server monitor removed")
   end
 
   if server.rtt_cancellation then
@@ -464,16 +469,27 @@ local function monitor_once(state, address)
     address = address,
     awaited = awaited,
   })
+  local check_cancellation = state.runtime.cancellation:new()
+
+  server.check_cancellation = check_cancellation
   local response, check_err, round_trip_time = state.check(address, {
     awaited = awaited,
-    cancellation = state.cancellation,
+    cancellation = check_cancellation,
     max_await_time_ms = awaited and state.heartbeat_frequency_ms or nil,
     topology_version = awaited and current.topology_version or nil,
   })
+  server.check_cancellation = nil
   local duration = state.runtime.clock:now() - started_at
 
   server.last_check_at = state.runtime.clock:now()
   server.last_awaited = awaited and response ~= nil
+
+  if not response and check_cancellation:is_cancelled()
+      and server.check_requested
+  then
+    return true
+  end
+
   local processed = process_check_result(state, address, response, check_err, {
     awaited = awaited,
     duration = duration,
@@ -1012,7 +1028,6 @@ function MANAGER_METHODS:handle_application_error(address, fields)
   end
 
   local clear_pool
-  local request_check = false
   local err = fields.error
 
   if kind == "network" or kind == "handshake" then
@@ -1034,7 +1049,6 @@ function MANAGER_METHODS:handle_application_error(address, fields)
     end
 
     clear_pool = SHUTDOWN_CODES[code] == true or before_handshake
-    request_check = true
     err = err or command_error(response, normalized)
   end
 
@@ -1059,11 +1073,14 @@ function MANAGER_METHODS:handle_application_error(address, fields)
     )
   end
 
-  state.lock:release()
+  self:request_check(normalized)
+  server = state.servers[normalized]
 
-  if request_check then
-    self:request_check(normalized)
+  if server and server.check_cancellation then
+    server.check_cancellation:cancel("application error requested a server check")
   end
+
+  state.lock:release()
 
   return true
 end
