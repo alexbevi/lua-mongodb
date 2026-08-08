@@ -46,6 +46,22 @@ local LOCK_METATABLE = {
   __metatable = "mongodb.copas_lock",
 }
 
+local METADATA_ENVIRONMENT_VARIABLES = {
+  "AWS_EXECUTION_ENV",
+  "AWS_LAMBDA_FUNCTION_MEMORY_SIZE",
+  "AWS_LAMBDA_RUNTIME_API",
+  "AWS_REGION",
+  "FUNCTION_MEMORY_MB",
+  "FUNCTION_NAME",
+  "FUNCTION_REGION",
+  "FUNCTION_TIMEOUT_SEC",
+  "FUNCTIONS_WORKER_RUNTIME",
+  "K_SERVICE",
+  "KUBERNETES_SERVICE_HOST",
+  "VERCEL",
+  "VERCEL_REGION",
+}
+
 function LOCK_METHODS:is_locked()
   return self._lock.owner ~= nil
 end
@@ -118,6 +134,34 @@ local function validate_options(options)
       error("unknown Copas runtime option: " .. tostring(key), 3)
     end
   end
+end
+
+local function file_exists(path)
+  local file = io.open(path, "rb")
+
+  if file == nil then
+    return false
+  end
+
+  file:close()
+  return true
+end
+
+local function default_metadata()
+  local environment = {}
+
+  for _, name in ipairs(METADATA_ENVIRONMENT_VARIABLES) do
+    local value = os.getenv(name)
+
+    if value ~= nil then
+      environment[name] = value
+    end
+  end
+
+  return {
+    environment = environment,
+    files = { ["/.dockerenv"] = file_exists("/.dockerenv") },
+  }
 end
 
 local function require_copas(provided)
@@ -318,7 +362,7 @@ function M.new(options)
   adapter.tls = options.tls or require("mongodb.runtime.luasec").new(adapter)
   adapter.entropy = options.entropy or openssl.entropy
   adapter.crypto = options.crypto or openssl.crypto
-  adapter.metadata = options.metadata
+  adapter.metadata = options.metadata or default_metadata()
 
   return runtime_contract.validate(adapter)
 end

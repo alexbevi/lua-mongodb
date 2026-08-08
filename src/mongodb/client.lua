@@ -666,6 +666,8 @@ function M.connect(uri, values)
   local metadata_facts = runtime.metadata or {}
   local metadata = handshake_metadata.new({
     app_name = config.app_name,
+    environment = metadata_facts.environment,
+    files = metadata_facts.files,
     os = metadata_facts.os,
     platform = metadata_facts.platform,
   })

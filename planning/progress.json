@@ -1642,6 +1642,28 @@
       "notes": [],
       "started_at": "2026-08-07T20:01:05+00:00",
       "completed_at": "2026-08-07T20:03:02+00:00"
+    },
+    "REL-030": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/handshake_metadata_spec.lua --filter=captures.FaaS'",
+          "exit_code": 2,
+          "summary": "0 successes, 1 failure: valid injected AWS Lambda facts produced no client.env metadata document",
+          "recorded_at": "2026-08-08T06:39:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/client.lua src/mongodb/handshake/metadata.lua src/mongodb/runtime/copas.lua spec/unit/handshake_metadata_spec.lua spec/unit/copas_runtime_spec.lua spec/integration/client_api_spec.lua'; git diff --check",
+          "exit_code": 0,
+          "summary": "17 unit and 2 integration tests passed; the 13-case AWS, Azure, GCP, Vercel, Docker, Kubernetes, precedence, malformed-value, alternate-signal, and coexistence matrix is green; touched-file lint reported 0 warnings/errors across 6 files; diff validation passed",
+          "recorded_at": "2026-08-08T06:43:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T06:36:17+00:00",
+      "completed_at": "2026-08-08T06:45:13+00:00"
     }
   },
   "verified_references": {

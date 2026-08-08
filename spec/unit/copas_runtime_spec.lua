@@ -25,6 +25,13 @@ describe("Copas runtime adapter", function()
 
     assert.are.equal(adapter, runtime.validate(adapter))
     assert.is_function(adapter.socket.connect)
+    assert.is_table(adapter.metadata.environment)
+    assert.is_boolean(adapter.metadata.files["/.dockerenv"])
+
+    local facts = { environment = { VERCEL = "1" }, files = {} }
+    local injected = runtime.copas({ metadata = facts })
+
+    assert.are.equal(facts, injected.metadata)
   end)
 
   it("rejects unsupported Copas versions", function()

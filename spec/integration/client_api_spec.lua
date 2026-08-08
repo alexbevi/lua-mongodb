@@ -111,6 +111,11 @@ describe("public standalone client API", function()
               assert.are.equal("replica-spec", metadata:get("application"):get("name"))
               assert.are.equal("replica-os", metadata:get("os"):get("type"))
               assert.are.equal("Lua 5.4 replica-runtime", metadata:get("platform"))
+              assert.are.equal("aws.lambda", metadata:get("env"):get("name"))
+              assert.are.equal(
+                "kubernetes",
+                metadata:get("env"):get("container"):get("orchestrator")
+              )
               metadata_count[name] = metadata_count[name] + 1
               initial_hello = false
             else
@@ -156,6 +161,11 @@ describe("public standalone client API", function()
             runtime = mongodb.runtime.copas({
               lock_poll_interval = 0.001,
               metadata = {
+                environment = {
+                  AWS_EXECUTION_ENV = "AWS_Lambda_java8",
+                  KUBERNETES_SERVICE_HOST = "1",
+                },
+                files = {},
                 os = { type = "replica-os" },
                 platform = "Lua 5.4 replica-runtime",
               },
