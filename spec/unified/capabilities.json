@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1280,
-    "runnable": 1280
+    "passed": 1282,
+    "runnable": 1282
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -35185,7 +35185,6 @@
     "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": {
       "activity": "REL-023",
       "fingerprint": "c4875a029f2a90d4b204b9b47017e3511b3033c7fdddc451ae80210f64a14c02",
-      "reason": "the case awaits command cursor timeout option validation",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -35207,12 +35206,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": {
       "activity": "REL-023",
       "fingerprint": "22e8d87e90d2467712b0baf617cfcd5972c725c54eae17198e20a200f4a2bf79",
-      "reason": "the case awaits command cursor timeout option validation",
       "requirements": {
         "arguments": [
           "runCursorCommand.command",
@@ -35235,7 +35233,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": {
       "activity": "REL-024",

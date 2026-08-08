@@ -1730,6 +1730,28 @@
       "notes": [],
       "started_at": "2026-08-08T11:33:19+00:00",
       "completed_at": "2026-08-08T11:45:13+00:00"
+    },
+    "REL-023": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "MONGODB_UNIFIED_URI=<local-replica-set> make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/runCursorCommand.json'",
+          "exit_code": 2,
+          "summary": "Two exact CSOT runCursorCommand cases executed; timeoutMode-without-timeoutMS passed through the shared validator, while cursorLifetime plus tailableAwait failed at unsupported cursorType before reaching public validation; 4 unrelated cases remained deferred.",
+          "recorded_at": "2026-08-08T15:08:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unified/operation_spec.lua' FOCUS_UNIFIED='client-side-operations-timeout/tests/runCursorCommand.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/api.lua src/mongodb/unified/driver.lua spec/unit/api_handles_spec.lua'; artifact --check validators; git diff --check",
+          "exit_code": 0,
+          "summary": "12 Lua tests passed; 2 exact unified cases executed and passed with 0 environment skips, 4 unrelated deferrals, and 0 failures; 45 Python tests passed; 3 touched Lua files linted with 0 warnings; capabilities, conformance 3456/2068, release scope 104/1964, README projection, and diff validators passed.",
+          "recorded_at": "2026-08-08T15:15:45+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-08T15:02:53+00:00",
+      "completed_at": "2026-08-08T15:16:30+00:00"
     }
   },
   "verified_references": {

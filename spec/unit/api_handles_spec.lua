@@ -172,4 +172,38 @@ describe("core MongoDB handles", function()
     assert.are.equal(300, calls[2].command:get("maxTimeMS"))
     assert.are.equal(comment, calls[2].command:get("comment"))
   end)
+
+  it("rejects incompatible generic command cursor timeout options", function()
+    local calls = 0
+    local executor = {
+      close = function() return true end,
+      command = function()
+        calls = calls + 1
+        error("command execution must not be reached")
+      end,
+    }
+    local config = assert(driver_options.normalize())
+    local database = api.new_client(executor, config):database("db")
+    local command = bson.document({ { "find", "items" } })
+    local cursor, err = database:run_cursor_command(command, {
+      timeout_mode = "cursor_lifetime",
+    })
+
+    assert.is_nil(cursor)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal("timeout_mode requires timeout_ms", err.message)
+
+    cursor, err = database:run_cursor_command(command, {
+      cursor_type = "tailable_await",
+      timeout_mode = "cursor_lifetime",
+    })
+
+    assert.is_nil(cursor)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "cursor_lifetime timeout mode is not supported for tailable command cursors",
+      err.message
+    )
+    assert.are.equal(0, calls)
+  end)
 end)

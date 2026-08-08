@@ -33427,26 +33427,26 @@
       "activity": "REL-023",
       "fingerprint": "c4875a029f2a90d4b204b9b47017e3511b3033c7fdddc451ae80210f64a14c02",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/runCursorCommand.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": {
       "activity": "REL-023",
       "fingerprint": "22e8d87e90d2467712b0baf617cfcd5972c725c54eae17198e20a200f4a2bf79",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/runCursorCommand.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": {
@@ -86651,8 +86651,8 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 2070,
-      "passed": 3454
+      "deferred_unsupported": 2068,
+      "passed": 3456
     },
     "suites": {
       "auth": 73,

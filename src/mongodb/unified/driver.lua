@@ -533,6 +533,9 @@ operation_options = function(arguments, fields)
       elseif unified_name == "timeoutMode" then
         value = value == "cursorLifetime" and "cursor_lifetime"
           or value == "iteration" and "iteration" or value
+      elseif unified_name == "cursorType" then
+        value = value == "nonTailable" and "non_tailable"
+          or value == "tailableAwait" and "tailable_await" or value
       end
 
       options[lua_name] = value
@@ -957,6 +960,7 @@ local function create_command_cursor(_, database, arguments)
   local options = operation_options(arguments, {
     batchSize = "batch_size",
     comment = "comment",
+    cursorType = "cursor_type",
     maxTimeMS = "max_await_time_ms",
     readPreference = "read_preference",
   })
@@ -1781,8 +1785,8 @@ function M.new(options)
       database = {
         createCommandCursor = {
           arguments = {
-            "batchSize", "command", "commandName", "comment", "maxTimeMS",
-            "readPreference",
+            "batchSize", "command", "commandName", "comment", "cursorType",
+            "maxTimeMS", "readPreference", "timeoutMode", "timeoutMS",
           },
           handler = create_command_cursor,
           result_kind = "commandCursor",
@@ -1822,8 +1826,8 @@ function M.new(options)
         },
         runCursorCommand = {
           arguments = {
-            "batchSize", "command", "commandName", "comment", "maxTimeMS",
-            "readPreference",
+            "batchSize", "command", "commandName", "comment", "cursorType",
+            "maxTimeMS", "readPreference", "timeoutMode", "timeoutMS",
           },
           handler = run_cursor_command,
         },

@@ -1419,6 +1419,14 @@
       "environment": "isolated-replicaset",
       "testCommands": true
     },
+    "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": {
+      "activity": "REL-023",
+      "environment": "isolated-replicaset"
+    },
+    "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": {
+      "activity": "REL-023",
+      "environment": "isolated-replicaset"
+    },
     "client-side-operations-timeout/tests/sessions-inherit-timeoutMS.json::test[1]": {
       "activity": "TIME-001",
       "environment": "isolated-replicaset",

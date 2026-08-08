@@ -359,14 +359,6 @@ TEST_OVERRIDES.update({
     "ADV-011",
     "tailable command cursors are outside the v1 public cursor surface",
   ),
-  "client-side-operations-timeout/tests/runCursorCommand.json::test[1]": (
-    "REL-023",
-    OWNER_REASONS["REL-023"],
-  ),
-  "client-side-operations-timeout/tests/runCursorCommand.json::test[2]": (
-    "REL-023",
-    OWNER_REASONS["REL-023"],
-  ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[3]": (
     "REL-024",
     OWNER_REASONS["REL-024"],

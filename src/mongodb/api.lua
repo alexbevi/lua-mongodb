@@ -233,6 +233,7 @@ local COMMAND_CURSOR_OPTIONS = {
   batch_size = true,
   cancellation = true,
   comment = true,
+  cursor_type = true,
   deadline = true,
   max_await_time_ms = true,
   read_preference = true,
@@ -265,6 +266,14 @@ local function command_cursor_options(options)
         or options.max_await_time_ms < 0)
   then
     error("max_await_time_ms must be a non-negative integer", 3)
+  end
+
+  if options.cursor_type ~= nil
+      and options.cursor_type ~= "non_tailable"
+      and options.cursor_type ~= "tailable"
+      and options.cursor_type ~= "tailable_await"
+  then
+    error("cursor_type must be non_tailable, tailable, or tailable_await", 3)
   end
 
   return options
@@ -617,6 +626,17 @@ function DATABASE_METHODS:run_cursor_command(command, options)
 
   command = command_document(command)
   options = command_cursor_options(options)
+
+  if options.cursor_type ~= nil and options.cursor_type ~= "non_tailable" then
+    if options.timeout_mode == "cursor_lifetime" then
+      return client_error(
+        "cursor_lifetime timeout mode is not supported for tailable command cursors"
+      )
+    end
+
+    return client_error("tailable command cursors are outside production-core v1")
+  end
+
   local cursor
 
   cursor, err = run_operation(state, options, function(prepared)
