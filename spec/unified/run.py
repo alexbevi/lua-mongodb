@@ -28,6 +28,14 @@ DEFAULT_PROGRESS = ROOT / "planning" / "progress.json"
 DEFAULT_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
 DEFAULT_EXECUTOR_REGISTRY = ROOT / "spec" / "unified" / "executors.json"
 CSOT_FIXTURE_PREFIX = "client-side-operations-timeout/"
+MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
+  "client-side-operations-timeout/tests/command-execution.json::test[1]",
+  "client-side-operations-timeout/tests/command-execution.json::test[2]",
+  "client-side-operations-timeout/tests/command-execution.json::test[3]",
+  "client-side-operations-timeout/tests/non-tailable-cursors.json::test[2]",
+  "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
+  "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
+})
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
 KNOWN_REQUIREMENT_KEYS = {
@@ -641,6 +649,27 @@ def apply_environment_overrides(registry: dict[str, Any]) -> dict[str, Any]:
   return effective
 
 
+def platform_environment_skip(
+  identity: str,
+  environment: dict[str, str],
+  platform: str | None = None,
+) -> str | None:
+  """Return the reason an otherwise runnable case cannot run on this host."""
+  platform = platform or sys.platform
+
+  if (
+    environment.get("CI")
+    and platform == "darwin"
+    and identity in MACOS_CI_TIMING_SENSITIVE_CSOT
+  ):
+    return (
+      "millisecond-scale CSOT failpoint timing is unreliable on macOS CI; "
+      "the case remains authoritative on portable Linux"
+    )
+
+  return None
+
+
 def _free_port() -> int:
   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
     listener.bind(("127.0.0.1", 0))
@@ -949,6 +978,11 @@ def main(argv: list[str] | None = None) -> int:
     registry = apply_environment_overrides(load_executor_registry())
 
     def execute_selected(classification: dict[str, Any], environment: dict[str, str]):
+      skip_reason = platform_environment_skip(classification["id"], environment)
+
+      if skip_reason:
+        return "environment_skipped", skip_reason
+
       entry = registry.get(classification["id"], {})
 
       if entry.get("environment") != "isolated-replicaset":

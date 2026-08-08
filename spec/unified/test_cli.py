@@ -622,6 +622,28 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual("isolated-replicaset", registry[csot]["environment"])
     self.assertTrue(effective[csot]["testCommands"])
 
+  def test_macos_ci_skips_only_timing_sensitive_csot_cases(self) -> None:
+    sensitive = [
+      "client-side-operations-timeout/tests/command-execution.json::test[1]",
+      "client-side-operations-timeout/tests/command-execution.json::test[2]",
+      "client-side-operations-timeout/tests/command-execution.json::test[3]",
+      "client-side-operations-timeout/tests/non-tailable-cursors.json::test[2]",
+      "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
+      "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
+    ]
+
+    for identity in sensitive:
+      self.assertIsNotNone(
+        run.platform_environment_skip(identity, {"CI": "true"}, "darwin")
+      )
+
+    stable = "client-side-operations-timeout/tests/non-tailable-cursors.json::test[1]"
+    self.assertIsNone(run.platform_environment_skip(stable, {"CI": "true"}, "darwin"))
+    self.assertIsNone(run.platform_environment_skip(sensitive[0], {}, "darwin"))
+    self.assertIsNone(
+      run.platform_environment_skip(sensitive[0], {"CI": "true"}, "linux")
+    )
+
 
 if __name__ == "__main__":
   unittest.main()
