@@ -675,6 +675,7 @@ class UnifiedCliTests(unittest.TestCase):
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[2]",
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
+      "client-side-operations-timeout/tests/runCursorCommand.json::test[3]",
     ]
 
     for identity in sensitive:

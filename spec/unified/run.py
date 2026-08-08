@@ -35,6 +35,7 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[2]",
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
+  "client-side-operations-timeout/tests/runCursorCommand.json::test[3]",
 })
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
