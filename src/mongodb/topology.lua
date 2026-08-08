@@ -240,13 +240,7 @@ local function add_server(state, address)
 end
 
 
-local function remove_server(state, address)
-  local server = state.servers[address]
-
-  if not server then
-    return false
-  end
-
+local function cancel_server_monitors(server)
   if server.sleep_cancellation then
     server.sleep_cancellation:cancel("server monitor removed")
   end
@@ -262,14 +256,26 @@ local function remove_server(state, address)
   if server.rtt_sleep_cancellation then
     server.rtt_sleep_cancellation:cancel("server RTT monitor removed")
   end
+end
 
+local function await_server_monitors(state, server)
   if server.task and server.task:status() == "pending" then
-    state.runtime.task:cancel(server.task, "server monitor removed")
+    state.runtime.task:await(server.task)
   end
 
   if server.rtt_task and server.rtt_task:status() == "pending" then
-    state.runtime.task:cancel(server.rtt_task, "server RTT monitor removed")
+    state.runtime.task:await(server.rtt_task)
   end
+end
+
+local function remove_server(state, address)
+  local server = state.servers[address]
+
+  if not server then
+    return false
+  end
+
+  cancel_server_monitors(server)
 
   server.pool:close()
 
@@ -1197,6 +1203,14 @@ function MANAGER_METHODS:close()
   end
 
   table.sort(addresses)
+
+  for _, address in ipairs(addresses) do
+    cancel_server_monitors(state.servers[address])
+  end
+
+  for _, address in ipairs(addresses) do
+    await_server_monitors(state, state.servers[address])
+  end
 
   for _, address in ipairs(addresses) do
     remove_server(state, address)

@@ -243,6 +243,88 @@ describe("monitored topology", function()
     end)
   end)
 
+  it("shuts monitor tasks down cooperatively", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local hard_cancel = runtime.task.cancel
+      local hard_cancel_count = 0
+      local first_check = true
+      local awaited_started = false
+      local awaited_stopped = false
+      local executor_resources_closed_after_stopped
+      local monitor_resources_closed_after_stopped
+      local rtt_started = false
+      local rtt_stopped = false
+      local version = bson.document({
+        { "processId", assert(bson.object_id("000000000000000000000001")) },
+        { "counter", bson.int64(1) },
+      })
+      local response = bson.document({
+        { "ok", 1 },
+        { "isWritablePrimary", true },
+        { "setName", "rs" },
+        { "hosts", bson.array({ "a:27017" }) },
+        { "maxWireVersion", 21 },
+        { "topologyVersion", version },
+      })
+
+      runtime.task.cancel = function(...)
+        hard_cancel_count = hard_cancel_count + 1
+        return hard_cancel(...)
+      end
+
+      local manager = topology.new({
+        check = function(_, fields)
+          if first_check then
+            first_check = false
+            return response, nil, 10
+          end
+
+          awaited_started = true
+          local slept, err = runtime.clock:sleep(1, fields.cancellation)
+
+          awaited_stopped = not slept
+          return nil, err
+        end,
+        heartbeat_frequency_ms = 5,
+        min_heartbeat_frequency_ms = 1,
+        on_server_close = function()
+          monitor_resources_closed_after_stopped = awaited_stopped and rtt_stopped
+        end,
+        pool_factory = new_pool,
+        rtt_check = function(_, fields)
+          rtt_started = true
+          local slept = runtime.clock:sleep(1, fields.cancellation)
+
+          rtt_stopped = not slept
+        end,
+        runtime = runtime,
+        seeds = { "a:27017" },
+        set_name = "rs",
+        type = "ReplicaSetNoPrimary",
+      })
+      local commands = topology_executor.new(manager, {
+        on_close = function()
+          executor_resources_closed_after_stopped = awaited_stopped and rtt_stopped
+        end,
+      })
+
+      assert(manager:open())
+
+      while not awaited_started or not rtt_started do
+        assert(runtime.clock:sleep(0.001))
+      end
+
+      assert(commands:close())
+      assert.are.equal(0, hard_cancel_count)
+      assert(runtime.clock:sleep(0.01))
+      assert.is_true(awaited_stopped)
+      assert.is_true(rtt_stopped)
+      assert.is_true(monitor_resources_closed_after_stopped)
+      assert.is_true(executor_resources_closed_after_stopped)
+    end)
+  end)
+
   it("cancels an awaited check before recovering from an application error", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

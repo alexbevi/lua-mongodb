@@ -299,12 +299,13 @@ function METHODS:close()
   end
 
   state.closed = true
+  local closed = state.topology:close()
 
   if state.on_close then
     state.on_close()
   end
 
-  return state.topology:close()
+  return closed
 end
 
 function M.new(topology, options)
