@@ -58,11 +58,11 @@
     },
     "src/mongodb/client.lua": {
       "active": 446,
-      "covered": 338
+      "covered": 334
     },
     "src/mongodb/command/executor.lua": {
       "active": 275,
-      "covered": 236
+      "covered": 235
     },
     "src/mongodb/command/hello.lua": {
       "active": 112,
@@ -102,7 +102,7 @@
     },
     "src/mongodb/network/transport.lua": {
       "active": 116,
-      "covered": 103
+      "covered": 102
     },
     "src/mongodb/operation_timeout.lua": {
       "active": 146,
@@ -226,6 +226,6 @@
   "schema_version": 2,
   "total": {
     "active": 21893,
-    "covered": 18383
+    "covered": 18377
   }
 }
