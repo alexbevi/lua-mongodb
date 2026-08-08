@@ -44,6 +44,10 @@ local function without_wtimeout(value)
     end
   end
 
+  if #entries == 0 then
+    return nil
+  end
+
   return bson.document(entries)
 end
 
@@ -92,7 +96,9 @@ function M.prepare_command(command, minimum_round_trip_time_ms)
         value = without_wtimeout(value)
       end
 
-      entries[#entries + 1] = { key, value }
+      if value ~= nil then
+        entries[#entries + 1] = { key, value }
+      end
     end
   end
 

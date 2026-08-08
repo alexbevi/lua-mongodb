@@ -51,6 +51,22 @@ describe("client-side operation timeout", function()
     assert.matches("execution time limit exceeded", tostring(err), nil, true)
   end)
 
+  it("omits a write concern emptied by legacy timeout removal", function()
+    local runtime = fake_runtime.new({ now = 1 })
+
+    operation_timeout.run(runtime, 100, {}, function()
+      local command = assert(operation_timeout.prepare_command(
+        bson.document({
+          { "insert", "items" },
+          { "writeConcern", bson.document({ { "wtimeout", 25 } }) },
+        }),
+        0
+      ))
+
+      assert.is_nil(command:get("writeConcern"))
+    end)
+  end)
+
   it("does not derive maxTimeMS for getMore", function()
     local runtime = fake_runtime.new({ now = 1 })
 
