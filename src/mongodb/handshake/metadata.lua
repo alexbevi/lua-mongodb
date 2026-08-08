@@ -169,7 +169,7 @@ local function environment_document(environment, files)
   return #entries > 0 and bson.document(entries) or nil
 end
 
-local function document(options, platform, environment)
+local function document(options, operating_system, platform, environment)
   local entries = {}
 
   if options.app_name ~= nil then
@@ -186,7 +186,7 @@ local function document(options, platform, environment)
       { "version", DRIVER_VERSION },
     }),
   }
-  entries[#entries + 1] = { "os", os_document(options.os) }
+  entries[#entries + 1] = { "os", operating_system }
 
   if platform ~= nil then
     entries[#entries + 1] = { "platform", platform }
@@ -197,6 +197,24 @@ local function document(options, platform, environment)
   end
 
   return bson.document(entries)
+end
+
+local function required_environment_document(environment)
+  if environment == nil then
+    return nil
+  end
+
+  local name = environment:get("name")
+
+  if name == nil then
+    return nil
+  end
+
+  return bson.document({ { "name", name } })
+end
+
+local function required_os_document(operating_system)
+  return bson.document({ { "type", operating_system:get("type") } })
 end
 
 local function encoded(document_value)
@@ -236,9 +254,34 @@ function M.new(options)
     platform = optional_string("platform metadata", platform)
   end
 
+  local operating_system = os_document(options.os)
   local environment = environment_document(options.environment, options.files)
-  local value = document(options, platform, environment)
+  local value = document(options, operating_system, platform, environment)
   local bytes = encoded(value)
+
+  if #bytes <= MAX_METADATA_SIZE then
+    return value
+  end
+
+  environment = required_environment_document(environment)
+  value = document(options, operating_system, platform, environment)
+  bytes = encoded(value)
+
+  if #bytes <= MAX_METADATA_SIZE then
+    return value
+  end
+
+  operating_system = required_os_document(operating_system)
+  value = document(options, operating_system, platform, environment)
+  bytes = encoded(value)
+
+  if #bytes <= MAX_METADATA_SIZE then
+    return value
+  end
+
+  environment = nil
+  value = document(options, operating_system, platform, environment)
+  bytes = encoded(value)
 
   if #bytes <= MAX_METADATA_SIZE then
     return value
@@ -250,7 +293,9 @@ function M.new(options)
     keep = keep - 1
   end
 
-  value = document(options, platform and platform:sub(1, keep) or nil, environment)
+  local truncated_platform = keep > 0 and platform:sub(1, keep) or nil
+
+  value = document(options, operating_system, truncated_platform, environment)
 
   if #encoded(value) > MAX_METADATA_SIZE then
     error("required client metadata exceeds 512 bytes", 2)

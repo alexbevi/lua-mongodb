@@ -1,6 +1,10 @@
 local bson = require("mongodb.bson")
 local metadata = require("mongodb.handshake.metadata")
 
+local function encoded_size(value)
+  return #assert(bson.encode(value))
+end
+
 local function environment_snapshot(value)
   local environment = value:get("env")
 
@@ -167,5 +171,80 @@ describe("handshake client metadata", function()
 
       assert.are.same(test_case.expected, environment_snapshot(value))
     end
+  end)
+
+  it("bounds oversized metadata in the normative reduction order", function()
+    local env_reduced = metadata.new({
+      environment = {
+        AWS_EXECUTION_ENV = "AWS_Lambda_java8",
+        AWS_LAMBDA_FUNCTION_MEMORY_SIZE = "1024",
+        AWS_REGION = string.rep("r", 512),
+        KUBERNETES_SERVICE_HOST = "1",
+      },
+      files = { ["/.dockerenv"] = true },
+      os = {
+        architecture = "test-arch",
+        name = "Test OS",
+        type = "test-os",
+        version = "1.0",
+      },
+      platform = "test-platform",
+    })
+
+    assert.are.same({ name = "aws.lambda" }, environment_snapshot(env_reduced))
+    assert.are.same(
+      { "type", "name", "architecture", "version" },
+      env_reduced:get("os"):keys()
+    )
+
+    local os_reduced = metadata.new({
+      environment = {
+        AWS_EXECUTION_ENV = "AWS_Lambda_java8",
+        AWS_REGION = string.rep("r", 512),
+      },
+      os = {
+        architecture = "test-arch",
+        name = string.rep("o", 512),
+        type = "test-os",
+        version = "1.0",
+      },
+      platform = "test-platform",
+    })
+
+    assert.are.same({ name = "aws.lambda" }, environment_snapshot(os_reduced))
+    assert.are.same({ "type" }, os_reduced:get("os"):keys())
+
+    local exact_options = {
+      app_name = string.rep("a", 128),
+      os = { type = "test-os" },
+      platform = string.rep("p", 250),
+    }
+    local exact = metadata.new(exact_options)
+
+    assert.are.equal(512, encoded_size(exact))
+    assert.are.equal(exact_options.platform, exact:get("platform"))
+
+    exact_options.environment = {
+      AWS_EXECUTION_ENV = "AWS_Lambda_java8",
+      AWS_REGION = string.rep("r", 512),
+    }
+
+    local env_omitted = metadata.new(exact_options)
+
+    assert.are.equal(512, encoded_size(env_omitted))
+    assert.is_nil(env_omitted:get("env"))
+    assert.are.equal(exact_options.platform, env_omitted:get("platform"))
+
+    exact_options.environment = nil
+    exact_options.platform = string.rep("p", 249) .. "é"
+
+    local platform_truncated = metadata.new(exact_options)
+
+    assert.is_true(encoded_size(platform_truncated) <= 512)
+    assert.are.equal(string.rep("p", 249), platform_truncated:get("platform"))
+    assert.are.equal(string.rep("a", 128), platform_truncated:get("application"):get("name"))
+    assert.are.equal("lua-mongodb", platform_truncated:get("driver"):get("name"))
+    assert.are.equal("0.1.0-dev", platform_truncated:get("driver"):get("version"))
+    assert.are.equal("test-os", platform_truncated:get("os"):get("type"))
   end)
 end)
