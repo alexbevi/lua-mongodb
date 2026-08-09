@@ -46,6 +46,29 @@ describe("database and collection management", function()
     assert.are.equal(4096, sent.command:get("size"))
   end)
 
+  it("emits the server write concern timeout field", function()
+    local command
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, value)
+        command = value
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local database = assert(api.new_client(executor, config({
+      write_concern = { w = "majority", w_timeout_ms = 500 },
+    })):database("app"))
+
+    assert.is_true(database:drop_collection("events"))
+
+    local write_concern = command:get("writeConcern")
+
+    assert.are.equal(500, write_concern:get("wtimeout"))
+    assert.is_nil(write_concern:get("wtimeoutMS"))
+  end)
+
   it("modifies collection validation and index constraints", function()
     local sent
     local executor = {
