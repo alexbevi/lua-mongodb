@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "83bcdad808897493c24e7ad532f35a895c9e7c399c1f0ab3ddab865e79e173a1",
+  "plan_digest": "1f6fa715bb794f7f03ceb9e96ce9bb7221f31e0f3789473cc0739c28c3fe84b6",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -2132,6 +2132,28 @@
       "notes": [],
       "started_at": "2026-08-09T21:37:37+00:00",
       "completed_at": "2026-08-09T21:47:54+00:00"
+    },
+    "CI-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_local_testing.LocalTestingTests.test_makefile_separates_fast_and_full_verification -v",
+          "exit_code": 1,
+          "summary": "Makefile has only one monolithic check target and validates all unified fixtures twice",
+          "recorded_at": "2026-08-09T22:54:17+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m unittest planning.tests.test_local_testing -v; make -n check-fast; make -n check-full; python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "5 focused planning tests passed; fast and full Make compositions resolve; unified fixture validation occurs once; strict plan validation passed",
+          "recorded_at": "2026-08-09T22:55:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T22:53:49+00:00",
+      "completed_at": "2026-08-09T22:55:01+00:00"
     }
   },
   "verified_references": {

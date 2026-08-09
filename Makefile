@@ -13,12 +13,16 @@ FOCUS_UNIFIED ?=
 FOCUS_PYTHON ?=
 FOCUS_LINT ?=
 
-.PHONY: check check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
-	test-focus test-unit test-integration test-unified test-unified-schema test-unified-inventory \
+.PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
+	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
 	test-stress test-compatibility test-compatibility-live test-release-scope lint rockspec planning-check
 
-check: test-unit test-integration test-unified test-quality test-compatibility lint rockspec planning-check
+check: check-full
+
+check-fast: test-unit test-integration test-unified-static test-stress test-compatibility lint rockspec planning-check
+
+check-full: check-fast test-unified-execution test-coverage
 
 check-tools: check-lua check-busted check-luacheck check-luacov check-luarocks check-python
 
@@ -92,15 +96,15 @@ test-integration: check-busted
 		echo "test-integration: no integration slices yet (first added by CMD-001)"; \
 	fi
 
-test-unified: test-unified-schema test-unified-inventory test-unified-meta \
-	test-unified-execution
+test-unified: test-unified-static test-unified-execution
+
+test-unified-static: test-unified-schema test-unified-inventory test-unified-meta
 
 test-unified-schema: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/schema_spec.lua
 	@"$(PYTHON)" spec/unified/validate_fixtures.py --lua "$(LUA)"
 
 test-unified-inventory: check-python check-lua
-	@"$(PYTHON)" spec/unified/validate_fixtures.py --lua "$(LUA)"
 	@"$(PYTHON)" -m unittest spec.unified.test_cli -v
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
 	@$(MAKE) --no-print-directory test-conformance

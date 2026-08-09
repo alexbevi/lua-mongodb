@@ -76,6 +76,8 @@ Local testing provides rapid, deterministic evidence for the behavior being chan
 
 Broaden local testing only when the change affects a shared primitive, targeted evidence exposes adjacent risk, or the slice changes test infrastructure. Coverage, stress, the full unit/integration/unified corpora, complete conformance reconciliation, platform differences, and the supported live server matrix belong to GitHub Actions. A slice is locally verified when its focused evidence is green; it is fully integrated only after the pushed GitHub Actions run is green.
 
+The repository exposes the same distinction as explicit compositions. `make check-fast` contains deterministic per-change verification without complete live unified execution or coverage instrumentation. `make check-full` adds those authoritative broad gates, and `make check` remains its release-oriented alias. Static fixture validation is shared by both compositions and runs exactly once.
+
 ## Test and conformance layers
 
 No single test layer establishes driver correctness. Use complementary layers with explicit responsibilities.

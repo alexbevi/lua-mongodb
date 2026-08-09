@@ -4,6 +4,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
+MAKEFILE = ROOT / "Makefile"
 
 
 class LocalTestingTests(unittest.TestCase):
@@ -45,6 +46,24 @@ class LocalTestingTests(unittest.TestCase):
     workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 
     self.assertIn("run: make check", workflow)
+
+  def test_makefile_separates_fast_and_full_verification(self) -> None:
+    makefile = MAKEFILE.read_text(encoding="utf-8")
+
+    self.assertIn("check: check-full", makefile)
+    self.assertIn(
+      "check-fast: test-unit test-integration test-unified-static",
+      makefile,
+    )
+    self.assertIn(
+      "check-full: check-fast test-unified-execution test-coverage",
+      makefile,
+    )
+    self.assertEqual(
+      makefile.count("spec/unified/validate_fixtures.py --lua"),
+      1,
+      "the composed unified gates must not validate every fixture twice",
+    )
 
 
 if __name__ == "__main__":

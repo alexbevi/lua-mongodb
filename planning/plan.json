@@ -524,7 +524,32 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Standalone and replica-set shutdown emit the final topology change before close", "Existing server-close and topology-close ordering remains unchanged"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(sdam): publish topology changes before close"
     },
     {
-      "id": "REL-007", "title": "Add package install and public API smoke gates", "milestone": "production-core-v1", "depends_on": ["REL-041"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "CI-002", "title": "Split fast and full verification gates", "milestone": "production-core-v1", "depends_on": ["REL-041"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify Make target composition so the fast gate excludes complete unified execution and coverage while the full gate retains every authoritative check.", "implementation": "Add explicit fast and full verification targets, retain make check as the full release alias, and eliminate duplicate fixture validation from the composed gates.",
+      "verification": ["python3 -m unittest planning.tests.test_local_testing -v", "make -n check-fast", "make -n check-full"], "acceptance": ["The required fast gate omits complete unified execution and coverage", "The full gate retains unified execution, coverage, stress, compatibility, rockspec, lint, and planning validation"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "build(ci): split fast and full verification gates"
+    },
+    {
+      "id": "CI-003", "title": "Separate required and scheduled Actions workflows", "milestone": "production-core-v1", "depends_on": ["CI-002"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify a cancelable fast push and pull-request workflow plus a manual and scheduled full-conformance workflow with retained reports.", "implementation": "Make fast cross-platform verification the per-commit gate, move complete unified, coverage, and compatibility execution to scheduled or manual Actions, and teach the goal runner to wait only for required fast CI.",
+      "verification": ["python3 -m unittest planning.tests.test_ci_portability planning.tests.test_local_testing -v", "python3 planning/update_plan.py check --strict"], "acceptance": ["Superseded per-commit runs are canceled", "Full conformance remains available nightly, manually, and for release verification", "Ordinary goal activities wait only for the required fast workflow"], "docs": ["AGENTS.md", "skills/execute-driver-slice/SKILL.md", "planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "build(ci): schedule full conformance separately"
+    },
+    {
+      "id": "UTF-015", "title": "Batch unified execution by fixture", "milestone": "production-core-v1", "depends_on": ["CI-003"], "references": ["pymongo:unified-runner", "pymongo:unified-shared", "specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Specify that selected runnable identities sharing a fixture and deployment execute through one Lua process while retaining one result row and isolated lifecycle per test.", "implementation": "Group selected unified identities by fixture and environment, execute each compatible group in one Lua bridge invocation, and translate the batch report back to exact capability identities.",
+      "verification": ["make test-focus FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='spec/unified/execute.lua'", "make test-focus FOCUS_UNIFIED='crud/tests/unified/insertOne.json'"], "acceptance": ["A fixture group launches one Lua executor instead of one executor per test", "Per-test selection, isolation, skips, failures, and report identities remain exact"], "docs": ["docs/ARCHITECTURE.md"], "commit": "perf(test-runner): batch unified fixture execution"
+    },
+    {
+      "id": "UTF-016", "title": "Shard and aggregate unified conformance", "milestone": "production-core-v1", "depends_on": ["UTF-015"], "references": ["specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Specify deterministic non-overlapping shard membership and an aggregate report that rejects missing, duplicate, or regressed result rows.", "implementation": "Add stable fixture-level shard selection, emit shard reports in parallel full-conformance jobs, and merge them before enforcing global capability ratchets.",
+      "verification": ["make test-focus FOCUS_PYTHON='spec.unified.test_cli'", "python3 planning/update_plan.py check --strict"], "acceptance": ["Every selected test belongs to exactly one stable shard", "The aggregate enforces the same global ratchets as an unsharded run", "Full Linux conformance runs in parallel isolated deployments"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "perf(test-runner): shard unified conformance"
+    },
+    {
+      "id": "CI-004", "title": "Report unified execution timings", "milestone": "production-core-v1", "depends_on": ["UTF-016"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify machine-readable setup, fixture-group, environment, and total durations without making timing values part of conformance identity.", "implementation": "Add timing observations to full-conformance artifacts and a slowest-group summary so runner performance remains reproducible and measurable.",
+      "verification": ["make test-focus FOCUS_PYTHON='spec.unified.test_cli'", "python3 planning/update_plan.py check --strict"], "acceptance": ["Full reports identify their slowest fixture groups and environment costs", "Timing metadata does not affect deterministic conformance results or ratchets"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "perf(test-runner): report unified execution timings"
+    },
+    {
+      "id": "REL-007", "title": "Add package install and public API smoke gates", "milestone": "production-core-v1", "depends_on": ["CI-004"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Install the rock in an isolated tree and exercise the documented public client, BSON, runtime, and model constructors from the installed package.", "implementation": "Add reproducible source-rock and install smoke gates, validate packaged module coverage, and finalize public API packaging metadata.",
       "verification": ["make rockspec", "make test-package", "make lint"], "acceptance": ["The package installs without workspace module leakage", "The documented target API loads from the installed tree"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "build(package): add install and API smoke gates"
     },
