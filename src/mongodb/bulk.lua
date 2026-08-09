@@ -81,6 +81,7 @@ local COMMANDS = {
   insert = { command = "insert", identifier = "documents" },
   update = { command = "update", identifier = "updates" },
 }
+local OP_MSG_OVERHEAD = 1000
 
 local function readonly_table(values, kind)
   local data = {}
@@ -554,7 +555,7 @@ local function runs_for(operations, ordered)
   return runs
 end
 
-local function fallback_measure(state, command, identifier, operations)
+local function measure_batch(state, command, identifier, operations)
   local body, err = bson.encode(command, {
     max_binary_size = state.max_message_size,
     max_document_size = state.max_message_size,
@@ -565,7 +566,8 @@ local function fallback_measure(state, command, identifier, operations)
     return nil, err
   end
 
-  local size = 16 + 4 + 1 + #body + 1 + 4 + #identifier + 1
+  local size = OP_MSG_OVERHEAD + 16 + 4 + 1 + #body
+    + 1 + 4 + #identifier + 1
 
   for _, operation in ipairs(operations) do
     local encoded
@@ -590,25 +592,6 @@ local function fallback_measure(state, command, identifier, operations)
   end
 
   return { message_size = size }
-end
-
-local function measure_batch(state, command, identifier, operations, options)
-  local documents = {}
-
-  for index, operation in ipairs(operations) do
-    documents[index] = operation.wire
-  end
-
-  if type(state.executor.measure) == "function" then
-    return state.executor:measure(state.database_name, command, {
-      max_sequence_document_size = state.max_message_size,
-      session = options and options.session,
-      session_context = options and options.session_context,
-      sequences = { { identifier = identifier, documents = documents } },
-    })
-  end
-
-  return fallback_measure(state, command, identifier, operations)
 end
 
 local function create_batches(state, operations, options)
@@ -636,8 +619,7 @@ local function create_batches(state, operations, options)
           state,
           command,
           metadata.identifier,
-          candidate,
-          options
+          candidate
         )
 
         if not measured then

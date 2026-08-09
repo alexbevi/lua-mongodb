@@ -179,6 +179,54 @@ describe("retryable read executor", function()
 end)
 
 describe("retryable write executor", function()
+  it("retries sanitized network and shutdown handshake failures", function()
+    for _, first in ipairs({
+      errors.new({
+        category = errors.CATEGORY.AUTHENTICATION,
+        message = "SCRAM network failure",
+        retryable = true,
+      }),
+      errors.new({
+        category = errors.CATEGORY.AUTHENTICATION,
+        code = 91,
+        message = "SCRAM shutdown failure",
+      }),
+    }) do
+      local calls = 0
+      local attempted_error
+      local underlying = {}
+
+      function underlying.command()
+        calls = calls + 1
+
+        if calls == 1 then
+          return nil, first
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end
+
+      function underlying.close()
+        return true
+      end
+
+      local executor = retry_executor.new(underlying, { enabled_writes = true })
+
+      assert(executor:command(
+        "db",
+        bson.document({ { "insert", "items" } }),
+        {
+          on_attempt_error = function(err)
+            attempted_error = err
+          end,
+          retryable_write = true,
+        }
+      ))
+      assert.are.equal(2, calls)
+      assert.is_true(attempted_error:has_label("RetryableWriteError"))
+    end
+  end)
+
   it("retries once with one stable transaction number", function()
     local commands = {}
     local underlying = {}

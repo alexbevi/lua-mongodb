@@ -55,6 +55,15 @@ local function auth_hello_response()
   return bson.document(entries)
 end
 
+local function auth_replica_set_hello_response(address)
+  local entries = auth_hello_response():entries()
+
+  entries[#entries + 1] = { "setName", "rs" }
+  entries[#entries + 1] = { "hosts", bson.array({ address }) }
+  entries[#entries + 1] = { "primary", address }
+  return bson.document(entries)
+end
+
 local function complete_authentication(peer, connection_count, failure)
   local start = receive_frame(peer)
 
@@ -205,6 +214,140 @@ local function exercise_authenticated_handshake_retry(failure)
   end
 end
 
+local function exercise_authenticated_write_handshake_retry(failure)
+  local server = assert(socket.bind("127.0.0.1", 0))
+  local _, port = assert(server:getsockname())
+  local connection_count = 0
+  local events = {}
+  local outcome
+  local server_error
+  local listener = {}
+
+  local function record(_, event)
+    if event.command_name == "ping" or event.command_name == "insert" then
+      events[#events + 1] = event
+    end
+  end
+
+  listener.failed = record
+  listener.started = record
+  listener.succeeded = record
+  port = assert(math.tointeger(port))
+  local address = "127.0.0.1:" .. port
+
+  copas.addserver(server, function(peer)
+    local ok, err = pcall(function()
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+      local application = handshake.body:get("saslSupportedMechs") ~= nil
+
+      send_response(
+        peer,
+        handshake,
+        auth_replica_set_hello_response(address)
+      )
+
+      if not application then
+        while true do
+          local received, request = pcall(receive_frame, peer)
+
+          if not received then
+            break
+          end
+
+          assert.is_true(
+            request.body:keys()[1] == "hello"
+              or request.body:keys()[1] == "ismaster"
+          )
+          send_response(
+            peer,
+            request,
+            auth_replica_set_hello_response(address)
+          )
+        end
+
+        return
+      end
+
+      connection_count = connection_count + 1
+      assert.are.equal("admin.user", handshake.body:get("saslSupportedMechs"))
+
+      if not complete_authentication(peer, connection_count, failure) then
+        return
+      end
+
+      local command = receive_frame(peer)
+
+      if connection_count == 1 then
+        assert.are.equal("ping", command.body:keys()[1])
+        peer:close()
+        return
+      end
+
+      assert.are.equal(3, connection_count)
+      assert.are.equal("insert", command.body:keys()[1])
+      assert.are.equal(bson.int64(1), command.body:get("txnNumber"))
+      assert.is_true(bson.is_document(command.body:get("lsid")))
+      send_response(peer, command, bson.document({
+        { "ok", 1 },
+        { "n", 1 },
+      }))
+      peer:close()
+    end)
+
+    if not ok then
+      server_error = err
+      pcall(peer.close, peer)
+    end
+  end)
+
+  copas.loop(function()
+    outcome = table.pack(pcall(function()
+      local client = assert(mongodb.client(
+        "mongodb://user:pencil@" .. address .. "/admin?replicaSet=rs",
+        {
+          command_listeners = { listener },
+          heartbeat_frequency_ms = 500,
+          runtime = mongodb.runtime.copas({
+            entropy = {
+              bytes = function(_, count)
+                assert.is_true(count == 16 or count == 32)
+                return ENTROPY:sub(1, count)
+              end,
+            },
+          }),
+        }
+      ))
+      local ping, ping_err = client:database():run_command("ping")
+
+      assert.is_nil(ping)
+      assert.is_not_nil(ping_err)
+      local result = assert(client:database():collection("items"):insert_many({
+        bson.document({ { "_id", failure } }),
+      }))
+
+      assert.are.equal(failure, result.inserted_ids[1])
+      assert.are.equal(3, connection_count)
+      assert.are.same(
+        { "command_started", "command_failed", "command_started", "command_succeeded" },
+        { events[1].type, events[2].type, events[3].type, events[4].type }
+      )
+      assert.are.equal("ping", events[1].command_name)
+      assert.are.equal("insert", events[3].command_name)
+      assert(client:close())
+    end))
+    copas.removeserver(server)
+  end)
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  if server_error then
+    error(server_error, 0)
+  end
+end
+
 describe("retryable reads over OP_MSG", function()
   it("recovers from network and shutdown errors during authentication", function()
     for _, failure in ipairs({ "network", "shutdown" }) do
@@ -319,6 +462,14 @@ describe("retryable reads over OP_MSG", function()
 
     if server_error then
       error(server_error, 0)
+    end
+  end)
+end)
+
+describe("retryable writes over OP_MSG", function()
+  it("recovers from network and shutdown errors during authentication", function()
+    for _, failure in ipairs({ "network", "shutdown" }) do
+      exercise_authenticated_write_handshake_retry(failure)
     end
   end)
 end)

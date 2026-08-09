@@ -361,6 +361,11 @@ for index in range(1, 21):
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
   ] = ("REL-035", OWNER_REASONS["REL-035"])
 
+for index in range(3, 21):
+  TEST_OVERRIDES[
+    f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("REL-035", None)
+
 for index in (1, 2):
   TEST_OVERRIDES[
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"

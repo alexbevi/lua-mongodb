@@ -74,6 +74,11 @@ local function retryable_write(err)
       and err:has_label("SystemOverloadedError"))
 end
 
+local function retryable_handshake_write(err)
+  return errors.is(err, errors.CATEGORY.AUTHENTICATION)
+    and (err:is_retryable() or RETRYABLE_CODES[err.code] == true)
+end
+
 local function labels_from(value)
   local labels = {}
 
@@ -120,7 +125,8 @@ end
 
 local function labelled_write_error(err, context)
   if (errors.is(err, errors.CATEGORY.NETWORK)
-      or legacy_socket_timeout(context, err))
+      or legacy_socket_timeout(context, err)
+      or retryable_handshake_write(err))
       and not err:has_label("RetryableWriteError")
   then
     return errors.with_label(err, "RetryableWriteError")

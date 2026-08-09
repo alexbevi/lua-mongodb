@@ -1906,6 +1906,28 @@
       "notes": [],
       "started_at": "2026-08-09T07:31:17+00:00",
       "completed_at": "2026-08-09T07:55:01+00:00"
+    },
+    "REL-035": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_retryable_write_handshake_error_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "Defining capability test expected 18 applicable retryable-write handshakeError cases to be runnable, but all remained deferred_unsupported.",
+          "recorded_at": "2026-08-09T10:08:35+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='retryable-writes/tests/unified/handshakeError.json' against an isolated authenticated replica set; make test-focus FOCUS_UNIT='spec/unit/retry_executor_spec.lua spec/unit/session_spec.lua spec/unit/bulk_spec.lua' FOCUS_INTEGRATION='spec/integration/retry_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/bulk.lua src/mongodb/retry_executor.lua spec/unit/retry_executor_spec.lua spec/integration/retry_spec.lua'; generated artifact validators",
+          "exit_code": 0,
+          "summary": "All 18 applicable authenticated retryable-write handshakeError cases executed and passed with 0 failures or environment skips; 2 client-bulk cases remained explicit ADV-007 deferrals. Focused verification also passed 29 Lua unit tests, 3 TCP integration tests covering network and ShutdownInProgress authentication failures with stable txnNumber, 51 Python capability/conformance/scope tests, four-file Lua lint, and capability, ledger, release-scope, README, executor JSON, plan, and diff validators.",
+          "recorded_at": "2026-08-09T10:28:42+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T10:07:57+00:00",
+      "completed_at": "2026-08-09T10:28:42+00:00"
     }
   },
   "verified_references": {
