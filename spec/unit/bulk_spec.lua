@@ -71,6 +71,39 @@ describe("collection bulk writes", function()
     end, "bulk result values are immutable")
   end)
 
+  it("emits the server write concern timeout field", function()
+    local command
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 1024,
+          max_message_size = 4096,
+          max_wire_version = 27,
+          max_write_batch_size = 1000,
+        }
+      end,
+      command = function(_, _, value)
+        command = value
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {
+      write_concern = { w = "majority", w_timeout_ms = 500 },
+    }))
+    local collection = assert(api.new_client(executor, config)
+      :database("app"):collection("events"))
+
+    assert(collection:insert_many({ bson.document({ { "_id", 1 } }) }))
+
+    local write_concern = command:get("writeConcern")
+
+    assert.are.equal(500, write_concern:get("wtimeout"))
+    assert.is_nil(write_concern:get("wtimeoutMS"))
+  end)
+
   it("preserves ordered runs and merges counts and upsert indexes", function()
     local commands = {}
     local responses = {

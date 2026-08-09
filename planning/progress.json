@@ -1818,6 +1818,28 @@
       "notes": [],
       "started_at": "2026-08-08T22:08:15+00:00",
       "completed_at": "2026-08-08T22:15:51+00:00"
+    },
+    "REL-027": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua '--lpath=src/?.lua' '--lpath=src/?/init.lua' '--filter=emits.*server.*write.*concern.*timeout.*field' spec/unit/bulk_spec.lua",
+          "exit_code": 1,
+          "summary": "Executed 1 defining bulk timeout-field example: 0 passed, 1 failed, 0 errors; writeConcern.wtimeout was absent before implementation.",
+          "recorded_at": "2026-08-09T02:36:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/bulk_spec.lua FOCUS_INTEGRATION=spec/integration/bulk_spec.lua FOCUS_LINT='src/mongodb/bulk.lua spec/unit/bulk_spec.lua'",
+          "exit_code": 0,
+          "summary": "Executed 8 unit and 1 directly coupled loopback integration examples: 9 passed, 0 environment-skipped, 0 deferred, 0 failed; luacheck reported 0 warnings/errors in 2 touched Lua files. No unified case is owned or newly applicable for REL-027.",
+          "recorded_at": "2026-08-09T02:37:02+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T02:34:24+00:00",
+      "completed_at": "2026-08-09T02:37:17+00:00"
     }
   },
   "verified_references": {
