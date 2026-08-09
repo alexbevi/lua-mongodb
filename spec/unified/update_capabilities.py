@@ -40,7 +40,7 @@ OWNER_REASONS = {
   "REL-003": "the case awaits the v1 configuration conformance slice",
   "REL-004": "the case awaits the v1 CRUD and administration conformance slice",
   "REL-005": "the case awaits generic database command execution",
-  "REL-006": "the case awaits release retry and handshake hardening",
+  "REL-006": "legacy retry attempts await per-attempt socket deadline enforcement",
   "REL-010": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "REL-011": "the case awaits the remaining v1 CRUD and administration conformance slices",
   "REL-012": "the case awaits the remaining v1 CRUD and administration conformance slices",
@@ -61,6 +61,14 @@ OWNER_REASONS = {
   "REL-027": "the case awaits deprecated write concern timeout removal",
   "REL-028": "the case awaits transaction read preference enforcement",
   "REL-031": "the case awaits wrapper handshake metadata conformance",
+  "REL-034": "retryable reads await application-handshake recovery",
+  "REL-035": "retryable writes await application-handshake recovery",
+  "REL-036": "transaction abort awaits application-handshake recovery",
+  "REL-037": "transaction commit awaits application-handshake recovery",
+  "REL-038": "minimum pools await replenishment after connection errors",
+  "REL-039": "minimum pools await replenishment after pool clears",
+  "REL-040": "replica sets await prompt rediscovery after step-down",
+  "REL-041": "topology shutdown awaits final description-change publication",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -316,13 +324,23 @@ for fixture, count, owner, reason in (
     ] = (owner, reason)
 
 for fixture, count, owner, reason in (
-  ("handshakeError", 32, "REL-006", "handshake retry awaits release hardening"),
+  ("handshakeError", 32, "REL-034", OWNER_REASONS["REL-034"]),
   ("mapReduce", 3, "ADV-011", "legacy mapReduce is outside the v1 public API"),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"retryable-reads/tests/unified/{fixture}.json::test[{index}]"
     ] = (owner, reason)
+
+for index in (5, 6, 13, 14, 31, 32):
+  TEST_OVERRIDES[
+    f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("ADV-001", OWNER_REASONS["ADV-001"])
+
+for index in (7, 8):
+  TEST_OVERRIDES[
+    f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("ADV-011", "database aggregate is outside the v1 public API")
 
 for fixture, count in (
   ("client-bulkWrite-clientErrors", 2),
@@ -336,7 +354,12 @@ for fixture, count in (
 for index in range(1, 21):
   TEST_OVERRIDES[
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("REL-006", "handshake retry awaits release hardening")
+  ] = ("REL-035", OWNER_REASONS["REL-035"])
+
+for index in (1, 2):
+  TEST_OVERRIDES[
+    f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("ADV-007", OWNER_REASONS["ADV-007"])
 
 TEST_OVERRIDES.update({
   "run-command/tests/unified/runCursorCommand.json::test[1]": (
@@ -402,10 +425,40 @@ for fixture, count in (
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
     ] = ("ADV-005", OWNER_REASONS["ADV-005"])
 
-for fixture in ("retryable-abort-handshake", "retryable-commit-handshake"):
-  TEST_OVERRIDES[
-    f"transactions/tests/unified/{fixture}.json::test[1]"
-  ] = ("REL-006", "handshake retry awaits release hardening")
+TEST_OVERRIDES.update({
+  "transactions/tests/unified/retryable-abort-handshake.json::test[1]": (
+    "REL-036",
+    OWNER_REASONS["REL-036"],
+  ),
+  "transactions/tests/unified/retryable-commit-handshake.json::test[1]": (
+    "REL-037",
+    OWNER_REASONS["REL-037"],
+  ),
+  "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": (
+    "REL-038",
+    OWNER_REASONS["REL-038"],
+  ),
+  "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": (
+    "REL-039",
+    OWNER_REASONS["REL-039"],
+  ),
+  "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": (
+    "REL-039",
+    OWNER_REASONS["REL-039"],
+  ),
+  "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": (
+    "REL-040",
+    OWNER_REASONS["REL-040"],
+  ),
+  "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": (
+    "REL-041",
+    OWNER_REASONS["REL-041"],
+  ),
+  "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": (
+    "REL-041",
+    OWNER_REASONS["REL-041"],
+  ),
+})
 
 for fixture, count in (
   ("db-aggregate-rawdata", 2),
@@ -532,7 +585,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   if fixture == "retryability-legacy-timeouts.json":
     return (
       "REL-006",
-      "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      OWNER_REASONS["REL-006"],
     )
 
   if fixture in {

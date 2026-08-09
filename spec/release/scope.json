@@ -1,22 +1,30 @@
 {
   "deferred_by_activity": {
-    "ADV-001": 191,
+    "ADV-001": 197,
     "ADV-002": 169,
     "ADV-003": 64,
     "ADV-004": 5,
     "ADV-005": 112,
     "ADV-006": 52,
-    "ADV-007": 66,
+    "ADV-007": 68,
     "ADV-008": 74,
     "ADV-009": 240,
     "ADV-010": 777,
-    "ADV-011": 199,
+    "ADV-011": 201,
     "ADV-012": 15,
-    "REL-006": 100
+    "REL-006": 40,
+    "REL-034": 24,
+    "REL-035": 18,
+    "REL-036": 1,
+    "REL-037": 1,
+    "REL-038": 1,
+    "REL-039": 2,
+    "REL-040": 1,
+    "REL-041": 2
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 100,
-    "post-v1-exclusion": 1964
+    "applicable-release-gap": 90,
+    "post-v1-exclusion": 1974
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",

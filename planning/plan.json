@@ -479,12 +479,52 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Transactions reject every non-primary read preference source", "Existing transaction and command fixtures remain green"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(transaction): enforce primary read preference"
     },
     {
-      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-033"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Enable residual retryable read/write, handshake, transaction, monitoring, and legacy-timeout fixtures applicable to standalone and replica sets.", "implementation": "Close per-attempt deadline, handshake retry, error-label, and topology-observation gaps without expanding deployment scope.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retry and handshake fixtures pass", "Timeouts, labels, and cleanup remain deterministic under retained stress seeds"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): harden release edge cases"
+      "id": "REL-006", "title": "Bound legacy retry attempt deadlines", "milestone": "production-core-v1", "depends_on": ["REL-033"], "references": ["pymongo:client", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the forty applicable retryability-legacy-timeouts cases for one and two consecutive socket timeouts.", "implementation": "Give each eligible read or write retry attempt a fresh transport deadline bounded by the configured socketTimeoutMS without introducing a CSOT budget.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["All forty applicable legacy retryability timeout cases pass", "A timed-out first attempt neither consumes nor extends the next attempt's socket timeout"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(timeout): bound legacy retry attempts"
     },
     {
-      "id": "REL-007", "title": "Add package install and public API smoke gates", "milestone": "production-core-v1", "depends_on": ["REL-006"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-034", "title": "Retry reads after handshake failures", "milestone": "production-core-v1", "depends_on": ["REL-006"], "references": ["pymongo:client", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the twenty-four applicable retryable-read handshakeError cases and classify change-stream and database-aggregation cases to their post-v1 owners.", "implementation": "Retry eligible reads after retryable network or ShutdownInProgress failures while establishing an application connection and preserve command and checkout event ordering.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable retryable reads recover from both handshake failure forms", "Change-stream and database-aggregation handshake cases remain explicit post-v1 exclusions"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): recover reads from handshake errors"
+    },
+    {
+      "id": "REL-035", "title": "Retry writes after handshake failures", "milestone": "production-core-v1", "depends_on": ["REL-034"], "references": ["pymongo:client", "pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the eighteen applicable retryable-write handshakeError cases and classify the two client-bulk cases to ADV-007.", "implementation": "Retry eligible writes after retryable network or ShutdownInProgress failures while establishing an application connection without allocating a second transaction number.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Applicable retryable writes recover from both handshake failure forms", "Client bulk-write handshake cases remain explicit post-v1 exclusions"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): recover writes from handshake errors"
+    },
+    {
+      "id": "REL-036", "title": "Retry transaction abort handshake failures", "milestone": "production-core-v1", "depends_on": ["REL-035"], "references": ["pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable transactions/tests/unified/retryable-abort-handshake.json.", "implementation": "Retry abortTransaction once after a retryable application-connection handshake network failure while preserving transaction cleanup semantics.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["AbortTransaction succeeds after the pinned handshake network failure", "The session exits the transaction and releases resources exactly once"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(transaction): retry abort handshake failures"
+    },
+    {
+      "id": "REL-037", "title": "Retry transaction commit handshake failures", "milestone": "production-core-v1", "depends_on": ["REL-036"], "references": ["pymongo:sessions", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable transactions/tests/unified/retryable-commit-handshake.json.", "implementation": "Retry commitTransaction after a retryable application-connection handshake network failure while preserving transaction identity and commit write concern.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["CommitTransaction succeeds after the pinned handshake network failure", "The retry keeps the same session, transaction number, and commit semantics"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(transaction): retry commit handshake failures"
+    },
+    {
+      "id": "REL-038", "title": "Replenish minimum pools after connection errors", "milestone": "production-core-v1", "depends_on": ["REL-037"], "references": ["pymongo:pool", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable server-discovery-and-monitoring/tests/unified/minPoolSize-error.json.", "implementation": "Keep background minPoolSize population alive after a server error while creating a connection.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["The pool reaches minPoolSize after a transient background creation error", "Failed connection attempts do not leak capacity or resources"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(cmap): replenish pools after connection errors"
+    },
+    {
+      "id": "REL-039", "title": "Replenish minimum pools after clears", "milestone": "production-core-v1", "depends_on": ["REL-038"], "references": ["pymongo:pool", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the two server-discovery-and-monitoring pool-clear-min-pool-size-error cases.", "implementation": "Apply the specified pool-clear decision to authentication and handshake errors during minPoolSize population and resume maintenance afterward.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Authentication errors clear the pool and handshake errors do not", "Both branches resume deterministic minPoolSize population without leaks"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(cmap): replenish pools after clears"
+    },
+    {
+      "id": "REL-040", "title": "Rediscover stepped-down primaries promptly", "milestone": "production-core-v1", "depends_on": ["REL-039"], "references": ["pymongo:topology", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json.", "implementation": "Request and complete prompt replica-set rediscovery after a step-down error without waiting for the normal heartbeat interval.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["The stepped-down primary is rediscovered within the fixture deadline", "The retry observes the new writable topology without busy polling"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(sdam): rediscover stepped-down primaries"
+    },
+    {
+      "id": "REL-041", "title": "Publish final topology changes before close", "milestone": "production-core-v1", "depends_on": ["REL-040"], "references": ["pymongo:topology", "pymongo:monitoring", "specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable the standalone and replica-set emit-topology-changed-before-close fixtures.", "implementation": "Publish the final Unknown or replica-set topology description transition before topologyClosedEvent during client shutdown.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Standalone and replica-set shutdown emit the final topology change before close", "Existing server-close and topology-close ordering remains unchanged"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(sdam): publish topology changes before close"
+    },
+    {
+      "id": "REL-007", "title": "Add package install and public API smoke gates", "milestone": "production-core-v1", "depends_on": ["REL-041"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Install the rock in an isolated tree and exercise the documented public client, BSON, runtime, and model constructors from the installed package.", "implementation": "Add reproducible source-rock and install smoke gates, validate packaged module coverage, and finalize public API packaging metadata.",
       "verification": ["make rockspec", "make test-package", "make lint"], "acceptance": ["The package installs without workspace module leakage", "The documented target API loads from the installed tree"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "build(package): add install and API smoke gates"
     },

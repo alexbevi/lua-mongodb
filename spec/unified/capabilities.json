@@ -30882,7 +30882,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[10]": {
       "activity": "REL-006",
       "fingerprint": "897d12b4488b27b15c572cf66d6eff4c77392dc751c321f8f9846238f9d3f095",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30917,7 +30917,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[11]": {
       "activity": "REL-006",
       "fingerprint": "6a73b345803ef958b55ff0810cb4fb3d1da8dfd301d17b0e3eb7d61efadd3d76",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30951,7 +30951,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[12]": {
       "activity": "REL-006",
       "fingerprint": "450eec1d95c0e08c32d394db5a1e958ab64e6a3e5a24ff408fa3677b3100782c",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30985,7 +30985,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[13]": {
       "activity": "REL-006",
       "fingerprint": "41c49607241b66885ff87acb6b70d63b22259bebabcc056151b3653e0fa07af0",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31020,7 +31020,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[14]": {
       "activity": "REL-006",
       "fingerprint": "d4127af5cbe8c2160d8ab8ee39dc03d57dd38490dcff2e3c530dbb02304cede3",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31055,7 +31055,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[15]": {
       "activity": "REL-006",
       "fingerprint": "074e782165675a7f60e1aed306e2d7e5da5c9c16a7f6dfcd198d5b2ba8658e08",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31090,7 +31090,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[16]": {
       "activity": "REL-006",
       "fingerprint": "03e3deb196b9763fa1b4b4dec80e9de8218e0ae408b7f2bfda0979654079f219",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31125,7 +31125,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[17]": {
       "activity": "REL-006",
       "fingerprint": "92a31c4f23fed2d0088c34ca7ec340bf8ee604d67197ae6aa5355ac356ebf6c6",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -31159,7 +31159,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[18]": {
       "activity": "REL-006",
       "fingerprint": "35db2a2c3f8462298b7d8653260f18656265d0d574f15820e81c4ee195c5a406",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -31193,7 +31193,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[19]": {
       "activity": "REL-006",
       "fingerprint": "c8f4fe755cdc24ce8cd81958059c47b24486572e4554de9e3638eff73bc5a09e",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31227,7 +31227,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[1]": {
       "activity": "REL-006",
       "fingerprint": "cfcf4cee89758152e6f87e6bf754bdaf307e9c7d950182cf90a8dea357301410",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31261,7 +31261,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[20]": {
       "activity": "REL-006",
       "fingerprint": "15abdeff207fa1e6549cfd5c62ce46b59739e1b6a1431623e45f46e66ebaef4f",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31295,7 +31295,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[21]": {
       "activity": "REL-006",
       "fingerprint": "9e58a4d18a747b08d4f9dc6a3a6c51d952127bf896b045bd8101b40bf733b9b1",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31328,7 +31328,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[22]": {
       "activity": "REL-006",
       "fingerprint": "a03677023ba2461d616f216c9a2743cfe2c4db97811b1d36db71c89e26d1a85a",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31497,7 +31497,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[27]": {
       "activity": "REL-006",
       "fingerprint": "4850d6d33e41c8e0169b32c3077a96de1c4ff56a2d0617094108c44ceca1ab60",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31531,7 +31531,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[28]": {
       "activity": "REL-006",
       "fingerprint": "ab9dfc8954980a5e2c5eacaaf04361ed39167958ce47887aa808a037fa852484",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31565,7 +31565,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[29]": {
       "activity": "REL-006",
       "fingerprint": "db853aeae10af14cec0725b706fc35516700ff9209ba168b4ed744a6d1fb77b3",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31599,7 +31599,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[2]": {
       "activity": "REL-006",
       "fingerprint": "246e1d63187a5efa46191ff777b114d1063ebfe81d803887f246a57dbb298de0",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31633,7 +31633,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[30]": {
       "activity": "REL-006",
       "fingerprint": "5fd1ee1a183816a2b8e803b9cc79613dc40609fff50a5cfe1f411050648b9bc7",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31735,7 +31735,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[33]": {
       "activity": "REL-006",
       "fingerprint": "1ac18dd8c3d50f0e0bfb785d9c9b9f14102617a0ec8df7ccc6325205b519dd7a",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31769,7 +31769,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[34]": {
       "activity": "REL-006",
       "fingerprint": "ffca21ff8605cbee1a10c58a1566742c1fe45c644bf744c83f4cbff79f3d8ea0",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31871,7 +31871,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[37]": {
       "activity": "REL-006",
       "fingerprint": "21f421b7749aca3523732ce182f6ec17c630161d54d66f5eeef8b12607d658fd",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -31905,7 +31905,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[38]": {
       "activity": "REL-006",
       "fingerprint": "3f4dca694b403b3bddacd359f12bc7a1f26b73cfeac3de78c8e198497a91274b",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -31939,7 +31939,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[39]": {
       "activity": "REL-006",
       "fingerprint": "5f0915666fac7187e255b3e5d0c913f2e675485658fb05d2184b336e719c2db3",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31972,7 +31972,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[3]": {
       "activity": "REL-006",
       "fingerprint": "323f24c911cd4bcd33599e2166a6bf5bc48e97ada9f772e89ca772c60af1932f",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32006,7 +32006,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[40]": {
       "activity": "REL-006",
       "fingerprint": "431a47bcd938a89633613b2b5854bf9eb89b7387f58e78f1f2cbfbbe4ed10f93",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32039,7 +32039,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[41]": {
       "activity": "REL-006",
       "fingerprint": "22743d68374d52bd02fc23b4ea1ae1e729064edb6be771f84518e692f147e8c9",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -32074,7 +32074,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[42]": {
       "activity": "REL-006",
       "fingerprint": "22c0471a753ff0d573c6db97c8b8b0d78ad10e8f7e0de6b0cc544f077cd15b1d",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -32109,7 +32109,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[43]": {
       "activity": "REL-006",
       "fingerprint": "267785c69831d68c3ae45ded5b46dad571022d28dd3fb7f9d0edc98fc6c72326",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32143,7 +32143,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[44]": {
       "activity": "REL-006",
       "fingerprint": "ac316a2dfd24b8e41e2619df3f39037a3cfa40afff41be2e613a47378a68d409",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32177,7 +32177,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[45]": {
       "activity": "REL-006",
       "fingerprint": "ec927fa5ff73722d2f093cb37be762ace0e9498fc6e5dd926e5ad979a727dae9",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32211,7 +32211,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[46]": {
       "activity": "REL-006",
       "fingerprint": "d9ce8098899fc1c88753af509db27a441f3a3ad9ead958dc37dffda82366b97c",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32245,7 +32245,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[47]": {
       "activity": "REL-006",
       "fingerprint": "6a0ec636811813f261370e7e03667de7e3c866974f2626d16b94148ed573df65",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32278,7 +32278,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[48]": {
       "activity": "REL-006",
       "fingerprint": "cc54250357af67e3cce7ccb44c654ab09fc11b35ad2cde7ee3a5a06d0f06271d",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32345,7 +32345,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[4]": {
       "activity": "REL-006",
       "fingerprint": "d0584c01ffe222a7782bc24b9b330c0ec8c76ce38a46880a0346ff08e78b3d2b",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32413,7 +32413,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[5]": {
       "activity": "REL-006",
       "fingerprint": "d1495e18833b0ab795d9e0dfc268ac6e056b8e0c23bff74bfbd7018dcb68a5a0",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -32447,7 +32447,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[6]": {
       "activity": "REL-006",
       "fingerprint": "83f3a742e242d7d5651ca210769181d1f6a30c49b8f6b3946183269eb5e9b3b1",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -32481,7 +32481,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[7]": {
       "activity": "REL-006",
       "fingerprint": "4fee2a9bbbaa9fc82d2b9a3e53e5628721314e89f6fbb5570ad6bd80090a5843",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32516,7 +32516,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[8]": {
       "activity": "REL-006",
       "fingerprint": "81aeb612ace6de1314f7cd6d91f17f2a47a67ee5e97cdf868f4d682756566605",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32551,7 +32551,7 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[9]": {
       "activity": "REL-006",
       "fingerprint": "735038924f33d6beb7dbf97d07acad3d5827d00cda7becdd8146972abe812ba8",
-      "reason": "legacy socket-timeout retry cases require release hardening of per-attempt transport deadlines",
+      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58653,9 +58653,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[10]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "ab6c55d37a2a441112f8527c56f6c213e1db2ce5033be1d5a21916ffbf7738c0",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58694,9 +58694,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[11]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "654e40996f92e487f7219f58a5d50d8441e504cf28f7b4f1a50a3359e35e6e1b",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58735,9 +58735,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[12]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "bb6c189126dfb5e1b4d8a93f19eb85d8b790788043cb32eaf23c8d25c10398b3",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58776,9 +58776,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[13]": {
-      "activity": "REL-006",
+      "activity": "ADV-001",
       "fingerprint": "cb9230a011a541a179775d1d28fe116572394b669b424d57d187fb30e5969db7",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58817,9 +58817,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[14]": {
-      "activity": "REL-006",
+      "activity": "ADV-001",
       "fingerprint": "dce2630761bd7f3c1d0f3cda86d1c896149c2ba6846d216e6a403387aa080d2c",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58858,9 +58858,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[15]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "f4c3c72c3a7ff242724dc6842cc834692b4641e6ee2285ec1706e06a2216882b",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -58899,9 +58899,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[16]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "a64bb500cf998244b62aacf5d82698998629a71dfa8a7c395a7367bcb73f9ee1",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -58940,9 +58940,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[17]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "752c47f97e696a73bc924dffab22c285c50790df842e38ad139c95e4f1b0b4b1",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -58981,9 +58981,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[18]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "7541ac5cad14a6b591f4c0751fb8265b757233727b2fbd78d825ffbb2d81fca9",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -59022,9 +59022,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[19]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "2d3f0b5f483e66ff1f962e1a5401c2d4c536295e838b0cad23cac84392f12b3e",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59062,9 +59062,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "d786c0dd7dcc36a5d42fb390594b4c672c3eafe575a6bbf4a759aaaf74490d49",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59103,9 +59103,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[20]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "643a7320115776552da2d24ba93d51c7ae95eb4304997803e05ba5fd579619fd",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59143,9 +59143,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[21]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "f19f16b580c0c221b118cffd225cbd891d48911f65fa455230f144cbcb64eae0",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -59185,9 +59185,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[22]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "3cb5f12f9b5e3382c284843e59b13584c02a6bc0ca4c735d04e3693b2f2d5c09",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -59227,9 +59227,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[23]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "8f43e3da7c9bf774cc054e8c51e3b7bb417d767ee0d52fa51a4c336e05026827",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59268,9 +59268,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[24]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "0d53241a6f3c694663692621d67e1a698f9b259be5f8c8a46ea65dc01dfe02d4",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59309,9 +59309,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[25]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "99f8108f21856f87e88695af90e37ab87161859e67fc88657054b2f7483a1dd3",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59350,9 +59350,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[26]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "a0bdf9ccc4194d5c53e98358172017251ff36a867533171bdff424750a254986",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59391,9 +59391,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[27]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "af1e8fde0f493929093f354206aef35023f941e1d05e1c67ae752a0fef26f489",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59431,9 +59431,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[28]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "21497457347750d79f3c74deb84f6edbd6a60995822d2fadeba56479319cfee3",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59471,9 +59471,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[29]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "ebf52db991b2cec6302c0686b6d1adf906b124946eadea66d842f7a99d51b945",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59511,9 +59511,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[2]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "dc06b14f5a1936dd20923cc2b836fbc74ff5553fe9d24dd122fd55b687ce2ced",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59552,9 +59552,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[30]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "473b3ede1f87d109bc94bab1bcbb05aec6ae3d95765847e2957fae0097ab2d7b",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59592,9 +59592,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[31]": {
-      "activity": "REL-006",
+      "activity": "ADV-001",
       "fingerprint": "7478c16d7657d27cc386cc4f5b400a24b57912b183026e7e4fc5c815ecdb35c0",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59633,9 +59633,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[32]": {
-      "activity": "REL-006",
+      "activity": "ADV-001",
       "fingerprint": "af60d15dae6aa74d4953c247c40cc95729e0f715e9a2e97fffb5b0599a0b8a9a",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59674,9 +59674,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[3]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "9cec0afa6d1c5ca2a203d8a6293412d2c577b1548d86224e7604b416652fe6dc",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59714,9 +59714,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[4]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "ce379ddc8ecc003c2b1a81495e735dfa0a9fb33f4b322f14a4a71200822faeb0",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59754,9 +59754,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[5]": {
-      "activity": "REL-006",
+      "activity": "ADV-001",
       "fingerprint": "5acc09ec867ecc969899431b5481e85068cc5beb7b52d96afd62f2040ca026dc",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59795,9 +59795,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[6]": {
-      "activity": "REL-006",
+      "activity": "ADV-001",
       "fingerprint": "e129026e2352436603bc9439c8f8e6f5986e062de3f886b1fa10d9b4b0311bab",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59836,9 +59836,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[7]": {
-      "activity": "REL-006",
+      "activity": "ADV-011",
       "fingerprint": "8817e5482e27c0f03107b32e13e0e890d3b276e0862b2c09a8d08b04597f5f6b",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -59877,9 +59877,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[8]": {
-      "activity": "REL-006",
+      "activity": "ADV-011",
       "fingerprint": "f9536efd2b6c0246e6049a0bd5ef369899e7a8d5574443f0195133edb344aea6",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -59918,9 +59918,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[9]": {
-      "activity": "REL-006",
+      "activity": "REL-034",
       "fingerprint": "dd4d76b7ac5ca7cbcc98d35ce63db92d5f089371897b431a4cead7ca496eca5f",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66586,9 +66586,9 @@
       "status": "runnable"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[10]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "ff94da30c7d36355b825a90eef9027a7e013aef8f9c22ae8db0211a75d231bbb",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66628,9 +66628,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[11]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "dafe02b27e4a1a51a757bc5745f738a1e1bb1e2c64a34e85acb8c2481893161e",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66670,9 +66670,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[12]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "75bf9a11177eee578b6c691caded44d3c54f076ad7dd62d0b6ab004896e95ab0",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66712,9 +66712,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[13]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "d8951587e5534d1d91876d76899043eab84870e450e06077702eb15adc762363",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66753,9 +66753,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[14]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "8a15aa72f7407c8a74b9c857bc5ad690b6bb72c9c08ec32a5a8bf59c992e3e2e",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66794,9 +66794,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[15]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "d8211bed6c7d7d853fac9ed415b6cf99bf3da91588c6c087b9a56157fbcef15d",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66836,9 +66836,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[16]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "19b742bc8cb1d8917508acd4b7ed1a2ec7dd0f9f9f14face50c919480515ef21",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66878,9 +66878,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[17]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "c898dc999d9e562579d994e77454da85d20e9da0929803fd30fc37745ade6533",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66920,9 +66920,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[18]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "ab3cf6b7957fb2d54ce039f38436bee801009975265a2aa73b9e13f60fe5c2ab",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -66962,9 +66962,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[19]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "e89bd84ba6605b76ee98376e1490c1f9d70468f48e0d2f45151840f59f7d92cb",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -67003,9 +67003,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "ADV-007",
       "fingerprint": "1eaca69b9cc03d0796bb53a7ad8dd5f67bcf4a7c86a173f5bc735e708ba2eebc",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "client bulkWrite is a post-v1 capability",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -67044,9 +67044,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[20]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "6b200363ebc628ad0632ca0405c8cbe86feb0a306e70739670579a0fddfb2135",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -67085,9 +67085,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[2]": {
-      "activity": "REL-006",
+      "activity": "ADV-007",
       "fingerprint": "be45d476aeb013c712947effa4bcfcaee93914ea22055e398b6747c968899d9a",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "client bulkWrite is a post-v1 capability",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -67126,9 +67126,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[3]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "b66666cc52cd4e0042dc3ae59721961a802d65f70dafc3135731191fd0dea87f",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -67167,9 +67167,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[4]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "1d49004cef143d70287be918e3e02e5983c57cca5b44e3cb8ed05065c03a1b5f",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -67208,9 +67208,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[5]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "a481f5eca1e0af9e76b039deaa5adb2ebb80c504bc62a1d9319a539d151960bc",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -67249,9 +67249,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[6]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "0d70f4ce90364bddf50792fbac90a9966b35f7c510e0ab5fa283096e06d8a39f",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -67290,9 +67290,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[7]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "ceb5f51a542bce3f2124b1a0d356b5ec82ecb955c2979c4545966ab27670e5a1",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -67331,9 +67331,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[8]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "6169377bba602afe8d6b031634a357a709308f92fc8006817e644afda37dae9a",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -67372,9 +67372,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[9]": {
-      "activity": "REL-006",
+      "activity": "REL-035",
       "fingerprint": "55bd8b95b42b78b79cd06cdf389781a4b100df11247ad539de5e215f5964bbbe",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "retryable writes await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -71708,9 +71708,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-038",
       "fingerprint": "f7bca7692652c185c78613bd9b7b2e8f5f31748dd342239c9d7c54b7794c32e4",
-      "reason": "the case awaits release retry and handshake hardening",
+      "reason": "minimum pools await replenishment after connection errors",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71835,9 +71835,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-039",
       "fingerprint": "02266813bddbc447a2afcc74d84bed3d266b202e0c72d7274b0cc27c7cf35623",
-      "reason": "the case awaits release retry and handshake hardening",
+      "reason": "minimum pools await replenishment after pool clears",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71867,9 +71867,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": {
-      "activity": "REL-006",
+      "activity": "REL-039",
       "fingerprint": "0fd50565b295a218cb06fc64b38ff524aa1abdd3c964e9617f2f0b245e78353a",
-      "reason": "the case awaits release retry and handshake hardening",
+      "reason": "minimum pools await replenishment after pool clears",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71951,9 +71951,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-040",
       "fingerprint": "732bfdf3dc8e535a1acc6ff132b477383e024d5c0cc8946963762aaebee5c8ce",
-      "reason": "the case awaits release retry and handshake hardening",
+      "reason": "replica sets await prompt rediscovery after step-down",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -72001,9 +72001,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-041",
       "fingerprint": "3406d589e98a2f141dc5504cf0a57123b8cb1cc012a7a5b5bbe81c319c4c3aa4",
-      "reason": "the case awaits release retry and handshake hardening",
+      "reason": "topology shutdown awaits final description-change publication",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72304,9 +72304,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-041",
       "fingerprint": "f7bc175f6916ac580ae60c2f48e061ab732c11efc678d5e61be4c06d05fc1952",
-      "reason": "the case awaits release retry and handshake hardening",
+      "reason": "topology shutdown awaits final description-change publication",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -81306,9 +81306,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/retryable-abort-handshake.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-036",
       "fingerprint": "539193072ddfb546e23178c1d2b23674a79f6ab89107f871b80f22a8bd5536de",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "transaction abort awaits application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -82240,9 +82240,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/retryable-commit-handshake.json::test[1]": {
-      "activity": "REL-006",
+      "activity": "REL-037",
       "fingerprint": "70c7b73ebcf5296c0ac2c37f77522c9b10a8cf17a12db481d38c6898ca05ced5",
-      "reason": "handshake retry awaits release hardening",
+      "reason": "transaction commit awaits application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
