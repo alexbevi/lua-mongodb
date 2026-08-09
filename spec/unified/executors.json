@@ -5522,6 +5522,12 @@
       "activity": "TXN-001",
       "environment": "live-replicaset"
     },
+    "transactions/tests/unified/retryable-abort-handshake.json::test[1]": {
+      "activity": "REL-036",
+      "environment": "live-replicaset",
+      "runSkipped": true,
+      "testCommands": true
+    },
     "transactions/tests/unified/retryable-abort.json::test[1]": {
       "activity": "TXN-001",
       "environment": "live-replicaset"

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1368,
-    "runnable": 1368
+    "passed": 1369,
+    "runnable": 1369
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -81226,7 +81226,6 @@
     "transactions/tests/unified/retryable-abort-handshake.json::test[1]": {
       "activity": "REL-036",
       "fingerprint": "539193072ddfb546e23178c1d2b23674a79f6ab89107f871b80f22a8bd5536de",
-      "reason": "transaction abort awaits application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -81268,7 +81267,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/retryable-abort.json::test[1]": {
       "activity": "TXN-001",

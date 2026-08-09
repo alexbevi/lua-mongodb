@@ -3,11 +3,17 @@ local errors = require("mongodb.error")
 
 local M = {}
 
-local function command_options()
-  return {
+local function command_options(session)
+  local options = {
     monitor = false,
     read_preference = { mode = "primary" },
   }
+
+  if session then
+    options.session = session
+  end
+
+  return options
 end
 
 local function configuration_error(message, path)
@@ -24,13 +30,14 @@ local function validate_arguments(arguments, path)
   end
 
   for key in arguments:iter() do
-    if key ~= "client" and key ~= "failPoint" then
+    if key ~= "client" and key ~= "failPoint" and key ~= "session" then
       return configuration_error("unsupported failPoint argument: " .. key, path .. "." .. key)
     end
   end
 
   local client = arguments:get("client")
   local command = arguments:get("failPoint")
+  local session = arguments:get("session")
 
   if type(client) ~= "string" or client == "" then
     return configuration_error("failPoint client must be an entity id", path .. ".client")
@@ -38,6 +45,13 @@ local function validate_arguments(arguments, path)
 
   if not bson.is_document(command) then
     return configuration_error("failPoint command must be a document", path .. ".failPoint")
+  end
+
+  if session ~= nil and (type(session) ~= "string" or session == "") then
+    return configuration_error(
+      "failPoint session must be an entity id",
+      path .. ".session"
+    )
   end
 
   local name = command:get("configureFailPoint")
@@ -49,7 +63,7 @@ local function validate_arguments(arguments, path)
     )
   end
 
-  return client, command, name
+  return client, command, name, session
 end
 
 local function close_cleanup(close)
@@ -68,7 +82,10 @@ end
 
 local function execute(options, runner, arguments, path)
   local arguments_path = (path or "$.operation") .. ".arguments"
-  local client_id, command, name = validate_arguments(arguments, arguments_path)
+  local client_id, command, name, session_id = validate_arguments(
+    arguments,
+    arguments_path
+  )
 
   if not client_id then
     return nil, command
@@ -80,6 +97,20 @@ local function execute(options, runner, arguments, path)
     return nil, err
   end
 
+  local session
+
+  if session_id then
+    session, err = runner:get_entity(
+      session_id,
+      "session",
+      arguments_path .. ".session"
+    )
+
+    if not session then
+      return nil, err
+    end
+  end
+
   local database
   database, err = client:database("admin")
 
@@ -88,7 +119,7 @@ local function execute(options, runner, arguments, path)
   end
 
   local response
-  response, err = database:run_command(command, command_options())
+  response, err = database:run_command(command, command_options(session))
 
   if not response then
     return nil, err

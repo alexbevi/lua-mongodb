@@ -129,12 +129,33 @@ local function serve_connection(peer, store)
   peer:close()
 end
 
-local function selected_document(document, wanted_index)
+local function selected_test(tests, wanted_index, run_skipped)
+  local test = tests:get(wanted_index)
+
+  if not run_skipped then
+    return test
+  end
+
+  local entries = {}
+
+  for key, value in test:iter() do
+    if key ~= "skipReason" then
+      entries[#entries + 1] = { key, value }
+    end
+  end
+
+  return bson.document(entries)
+end
+
+local function selected_document(document, wanted_index, run_skipped)
   local entries = {}
 
   for key, value in document:iter() do
     if key == "tests" then
-      entries[#entries + 1] = { key, bson.array({ value:get(wanted_index) }) }
+      entries[#entries + 1] = {
+        key,
+        bson.array({ selected_test(value, wanted_index, run_skipped) }),
+      }
     else
       entries[#entries + 1] = { key, value }
     end
@@ -287,7 +308,11 @@ local function run_live(identity, fixture, index, topology, entry)
   copas.loop(function()
     outcome = table.pack(pcall(function()
       local runtime = runtime_module.copas()
-      local selected = selected_document(document, index)
+      local selected = selected_document(
+        document,
+        index,
+        entry:get("runSkipped") == true
+      )
 
       reset_databases(runtime, uri, selected)
       local lifecycle = assert(unified_driver.new({

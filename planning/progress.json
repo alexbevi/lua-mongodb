@@ -1928,6 +1928,63 @@
       "notes": [],
       "started_at": "2026-08-09T10:07:57+00:00",
       "completed_at": "2026-08-09T10:28:42+00:00"
+    },
+    "REL-036": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_transaction_abort_handshake_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "1 exact capability test executed and failed because transactions/tests/unified/retryable-abort-handshake.json::test[1] remained deferred_unsupported instead of runnable",
+          "recorded_at": "2026-08-09T12:52:19+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' busted --filter='retries abort after a retryable authentication handshake failure' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "1 exact session unit test executed and failed: abortTransaction made one attempt instead of retrying the sanitized retryable authentication handshake failure once",
+          "recorded_at": "2026-08-09T12:53:11+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "MONGODB_UNIFIED_REPLICA_SET_URI=<authenticated-local-rs> MONGODB_UNIFIED_TEST_COMMANDS=1 make test-focus FOCUS_UNIFIED='transactions/tests/unified/retryable-abort-handshake.json'",
+          "exit_code": 1,
+          "summary": "unified failPoint adapter rejected the fixture session argument before abort execution",
+          "recorded_at": "2026-08-09T13:01:36+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_failpoints_spec.lua'",
+          "exit_code": 2,
+          "summary": "failpoint lifecycle failed because session is not an accepted or forwarded argument",
+          "recorded_at": "2026-08-09T13:02:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check && python3 -m json.tool spec/unified/executors.json && git diff --check",
+          "exit_code": 0,
+          "summary": "unified capabilities, conformance ledger, release scope, README projection, executor JSON, and patch whitespace are current and valid",
+          "recorded_at": "2026-08-09T13:05:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_UNIFIED_REPLICA_SET_URI=<authenticated-local-rs> MONGODB_UNIFIED_TEST_COMMANDS=1 make test-focus FOCUS_UNIFIED='transactions/tests/unified/retryable-abort-handshake.json'",
+          "exit_code": 0,
+          "summary": "1 exact upstream transaction abort fixture executed and passed; 0 environment-skipped",
+          "recorded_at": "2026-08-09T13:05:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/unified_failpoints_spec.lua' FOCUS_INTEGRATION='spec/integration/retry_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='<six touched Lua files>'",
+          "exit_code": 0,
+          "summary": "16 unit and 4 integration tests passed; 48 Python tests passed; 6 touched Lua files linted cleanly",
+          "recorded_at": "2026-08-09T13:05:45+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T12:51:41+00:00",
+      "completed_at": "2026-08-09T13:06:03+00:00"
     }
   },
   "verified_references": {

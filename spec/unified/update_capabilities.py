@@ -436,10 +436,6 @@ for fixture, count in (
     ] = ("ADV-005", OWNER_REASONS["ADV-005"])
 
 TEST_OVERRIDES.update({
-  "transactions/tests/unified/retryable-abort-handshake.json::test[1]": (
-    "REL-036",
-    OWNER_REASONS["REL-036"],
-  ),
   "transactions/tests/unified/retryable-commit-handshake.json::test[1]": (
     "REL-037",
     OWNER_REASONS["REL-037"],

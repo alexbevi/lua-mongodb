@@ -214,6 +214,15 @@ local function transaction_active(transaction)
   return transaction.state == "starting" or transaction.state == "in_progress"
 end
 
+local function retryable_transaction_command(name, err)
+  return errors.is(err, errors.CATEGORY.NETWORK)
+    or errors.is(err, errors.CATEGORY.TIMEOUT)
+    or err:has_label("RetryableWriteError")
+    or name == "abortTransaction"
+      and errors.is(err, errors.CATEGORY.AUTHENTICATION)
+      and err:is_retryable()
+end
+
 local function read_preference_mode(value)
   if bson.is_document(value) then
     return value:get("mode")
@@ -375,10 +384,7 @@ local function finish_transaction(session, name, options)
     retrying_commit
   )
 
-  if err and (errors.is(err, errors.CATEGORY.NETWORK)
-      or errors.is(err, errors.CATEGORY.TIMEOUT)
-      or err:has_label("RetryableWriteError"))
-  then
+  if err and retryable_transaction_command(name, err) then
     response, err = manager.transaction_command(
       session,
       name,
