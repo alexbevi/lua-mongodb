@@ -1,6 +1,41 @@
 local bson = require("mongodb.bson")
+local errors = require("mongodb.error")
+local retry_executor = require("mongodb.retry_executor")
+local fake_runtime = require("mongodb.runtime.fake")
 local socket_timeout_executor = require("mongodb.socket_timeout_executor")
 local operation_timeout = require("mongodb.operation_timeout")
+
+local function assert_refreshed_retry_deadline(retry_options, command_options)
+  local runtime = fake_runtime.new({ now = 10 })
+  local deadlines = {}
+  local underlying = {
+    close = function() return true end,
+    command = function(_, _, _, options)
+      deadlines[#deadlines + 1] = options.socket_deadline
+
+      if #deadlines == 1 then
+        runtime:advance(0.2)
+        return nil, errors.new({
+          category = errors.CATEGORY.TIMEOUT,
+          message = "operation deadline expired",
+        })
+      end
+
+      return bson.document({ { "ok", 1 } })
+    end,
+  }
+  local timed = socket_timeout_executor.new(underlying, runtime, 250)
+  local executor = retry_executor.new(timed, retry_options)
+  local response = assert(executor:command(
+    "db",
+    bson.document({ { "find", "items" } }),
+    command_options
+  ))
+
+  assert.are.equal(1, response:get("ok"))
+  assert.near(10.25, deadlines[1], 0.000001)
+  assert.near(10.45, deadlines[2], 0.000001)
+end
 
 describe("socket timeout executor", function()
   it("limits connection I/O without replacing the operation deadline", function()
@@ -48,5 +83,16 @@ describe("socket timeout executor", function()
 
     assert.near(10.25, received.deadline, 0.000001)
     assert.is_nil(received.socket_deadline)
+  end)
+
+  it("refreshes the legacy socket deadline for a read retry", function()
+    assert_refreshed_retry_deadline({}, { retryable_read = true })
+  end)
+
+  it("refreshes the legacy socket deadline for a write retry", function()
+    assert_refreshed_retry_deadline(
+      { enabled_writes = true },
+      { retryable_write = true }
+    )
   end)
 end)

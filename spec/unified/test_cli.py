@@ -169,6 +169,31 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1286, manifest["ratchets"]["runnable"])
     self.assertEqual(1286, manifest["ratchets"]["passed"])
 
+  def test_legacy_retry_timeout_cases_are_runnable(self) -> None:
+    manifest = update_capabilities.generate()
+    indices = (
+      *range(1, 23),
+      *range(27, 31),
+      *range(33, 35),
+      *range(37, 49),
+    )
+    identities = [
+      "client-side-operations-timeout/tests/"
+      f"retryability-legacy-timeouts.json::test[{index}]"
+      for index in indices
+    ]
+
+    self.assertEqual(
+      {"runnable"},
+      {manifest["tests"][identity]["status"] for identity in identities},
+    )
+    self.assertEqual(
+      {"REL-006"},
+      {manifest["tests"][identity]["activity"] for identity in identities},
+    )
+    self.assertEqual(1326, manifest["ratchets"]["runnable"])
+    self.assertEqual(1326, manifest["ratchets"]["passed"])
+
   def test_mongodb_8_2_raw_data_read_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identities = [

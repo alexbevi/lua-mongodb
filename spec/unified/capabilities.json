@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1286,
-    "runnable": 1286
+    "passed": 1326,
+    "runnable": 1326
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -30882,7 +30882,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[10]": {
       "activity": "REL-006",
       "fingerprint": "897d12b4488b27b15c572cf66d6eff4c77392dc751c321f8f9846238f9d3f095",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30912,12 +30911,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[11]": {
       "activity": "REL-006",
       "fingerprint": "6a73b345803ef958b55ff0810cb4fb3d1da8dfd301d17b0e3eb7d61efadd3d76",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30946,12 +30944,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[12]": {
       "activity": "REL-006",
       "fingerprint": "450eec1d95c0e08c32d394db5a1e958ab64e6a3e5a24ff408fa3677b3100782c",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -30980,12 +30977,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[13]": {
       "activity": "REL-006",
       "fingerprint": "41c49607241b66885ff87acb6b70d63b22259bebabcc056151b3653e0fa07af0",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31015,12 +31011,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[14]": {
       "activity": "REL-006",
       "fingerprint": "d4127af5cbe8c2160d8ab8ee39dc03d57dd38490dcff2e3c530dbb02304cede3",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31050,12 +31045,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[15]": {
       "activity": "REL-006",
       "fingerprint": "074e782165675a7f60e1aed306e2d7e5da5c9c16a7f6dfcd198d5b2ba8658e08",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31085,12 +31079,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[16]": {
       "activity": "REL-006",
       "fingerprint": "03e3deb196b9763fa1b4b4dec80e9de8218e0ae408b7f2bfda0979654079f219",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31120,12 +31113,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[17]": {
       "activity": "REL-006",
       "fingerprint": "92a31c4f23fed2d0088c34ca7ec340bf8ee604d67197ae6aa5355ac356ebf6c6",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -31154,12 +31146,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[18]": {
       "activity": "REL-006",
       "fingerprint": "35db2a2c3f8462298b7d8653260f18656265d0d574f15820e81c4ee195c5a406",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -31188,12 +31179,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[19]": {
       "activity": "REL-006",
       "fingerprint": "c8f4fe755cdc24ce8cd81958059c47b24486572e4554de9e3638eff73bc5a09e",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31222,12 +31212,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[1]": {
       "activity": "REL-006",
       "fingerprint": "cfcf4cee89758152e6f87e6bf754bdaf307e9c7d950182cf90a8dea357301410",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31256,12 +31245,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[20]": {
       "activity": "REL-006",
       "fingerprint": "15abdeff207fa1e6549cfd5c62ce46b59739e1b6a1431623e45f46e66ebaef4f",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31290,12 +31278,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[21]": {
       "activity": "REL-006",
       "fingerprint": "9e58a4d18a747b08d4f9dc6a3a6c51d952127bf896b045bd8101b40bf733b9b1",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31323,12 +31310,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[22]": {
       "activity": "REL-006",
       "fingerprint": "a03677023ba2461d616f216c9a2743cfe2c4db97811b1d36db71c89e26d1a85a",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31356,7 +31342,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[23]": {
       "activity": "ADV-001",
@@ -31497,7 +31483,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[27]": {
       "activity": "REL-006",
       "fingerprint": "4850d6d33e41c8e0169b32c3077a96de1c4ff56a2d0617094108c44ceca1ab60",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31526,12 +31511,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[28]": {
       "activity": "REL-006",
       "fingerprint": "ab9dfc8954980a5e2c5eacaaf04361ed39167958ce47887aa808a037fa852484",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31560,12 +31544,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[29]": {
       "activity": "REL-006",
       "fingerprint": "db853aeae10af14cec0725b706fc35516700ff9209ba168b4ed744a6d1fb77b3",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31594,12 +31577,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[2]": {
       "activity": "REL-006",
       "fingerprint": "246e1d63187a5efa46191ff777b114d1063ebfe81d803887f246a57dbb298de0",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31628,12 +31610,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[30]": {
       "activity": "REL-006",
       "fingerprint": "5fd1ee1a183816a2b8e803b9cc79613dc40609fff50a5cfe1f411050648b9bc7",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31662,7 +31643,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[31]": {
       "activity": "ADV-001",
@@ -31735,7 +31716,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[33]": {
       "activity": "REL-006",
       "fingerprint": "1ac18dd8c3d50f0e0bfb785d9c9b9f14102617a0ec8df7ccc6325205b519dd7a",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31764,12 +31744,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[34]": {
       "activity": "REL-006",
       "fingerprint": "ffca21ff8605cbee1a10c58a1566742c1fe45c644bf744c83f4cbff79f3d8ea0",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31798,7 +31777,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[35]": {
       "activity": "ADV-011",
@@ -31871,7 +31850,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[37]": {
       "activity": "REL-006",
       "fingerprint": "21f421b7749aca3523732ce182f6ec17c630161d54d66f5eeef8b12607d658fd",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -31900,12 +31878,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[38]": {
       "activity": "REL-006",
       "fingerprint": "3f4dca694b403b3bddacd359f12bc7a1f26b73cfeac3de78c8e198497a91274b",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -31934,12 +31911,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[39]": {
       "activity": "REL-006",
       "fingerprint": "5f0915666fac7187e255b3e5d0c913f2e675485658fb05d2184b336e719c2db3",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -31967,12 +31943,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[3]": {
       "activity": "REL-006",
       "fingerprint": "323f24c911cd4bcd33599e2166a6bf5bc48e97ada9f772e89ca772c60af1932f",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32001,12 +31976,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[40]": {
       "activity": "REL-006",
       "fingerprint": "431a47bcd938a89633613b2b5854bf9eb89b7387f58e78f1f2cbfbbe4ed10f93",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32034,12 +32008,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[41]": {
       "activity": "REL-006",
       "fingerprint": "22743d68374d52bd02fc23b4ea1ae1e729064edb6be771f84518e692f147e8c9",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -32069,12 +32042,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[42]": {
       "activity": "REL-006",
       "fingerprint": "22c0471a753ff0d573c6db97c8b8b0d78ad10e8f7e0de6b0cc544f077cd15b1d",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -32104,12 +32076,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[43]": {
       "activity": "REL-006",
       "fingerprint": "267785c69831d68c3ae45ded5b46dad571022d28dd3fb7f9d0edc98fc6c72326",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32138,12 +32109,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[44]": {
       "activity": "REL-006",
       "fingerprint": "ac316a2dfd24b8e41e2619df3f39037a3cfa40afff41be2e613a47378a68d409",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32172,12 +32142,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[45]": {
       "activity": "REL-006",
       "fingerprint": "ec927fa5ff73722d2f093cb37be762ace0e9498fc6e5dd926e5ad979a727dae9",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32206,12 +32175,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[46]": {
       "activity": "REL-006",
       "fingerprint": "d9ce8098899fc1c88753af509db27a441f3a3ad9ead958dc37dffda82366b97c",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32240,12 +32208,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[47]": {
       "activity": "REL-006",
       "fingerprint": "6a0ec636811813f261370e7e03667de7e3c866974f2626d16b94148ed573df65",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32273,12 +32240,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[48]": {
       "activity": "REL-006",
       "fingerprint": "cc54250357af67e3cce7ccb44c654ab09fc11b35ad2cde7ee3a5a06d0f06271d",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32306,7 +32272,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[49]": {
       "activity": "ADV-001",
@@ -32345,7 +32311,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[4]": {
       "activity": "REL-006",
       "fingerprint": "d0584c01ffe222a7782bc24b9b330c0ec8c76ce38a46880a0346ff08e78b3d2b",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32374,7 +32339,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[50]": {
       "activity": "ADV-001",
@@ -32413,7 +32378,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[5]": {
       "activity": "REL-006",
       "fingerprint": "d1495e18833b0ab795d9e0dfc268ac6e056b8e0c23bff74bfbd7018dcb68a5a0",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -32442,12 +32406,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[6]": {
       "activity": "REL-006",
       "fingerprint": "83f3a742e242d7d5651ca210769181d1f6a30c49b8f6b3946183269eb5e9b3b1",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -32476,12 +32439,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[7]": {
       "activity": "REL-006",
       "fingerprint": "4fee2a9bbbaa9fc82d2b9a3e53e5628721314e89f6fbb5570ad6bd80090a5843",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32511,12 +32473,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[8]": {
       "activity": "REL-006",
       "fingerprint": "81aeb612ace6de1314f7cd6d91f17f2a47a67ee5e97cdf868f4d682756566605",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32546,12 +32507,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[9]": {
       "activity": "REL-006",
       "fingerprint": "735038924f33d6beb7dbf97d07acad3d5827d00cda7becdd8146972abe812ba8",
-      "reason": "legacy retry attempts await per-attempt socket deadline enforcement",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -32581,7 +32541,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[10]": {
       "activity": "QUA-001",

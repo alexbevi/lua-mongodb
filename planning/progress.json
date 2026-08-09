@@ -1862,6 +1862,28 @@
       "notes": [],
       "started_at": "2026-08-09T03:43:25+00:00",
       "completed_at": "2026-08-09T03:44:45+00:00"
+    },
+    "REL-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.unified.test_cli.UnifiedCliTests.test_legacy_retry_timeout_cases_are_runnable",
+          "exit_code": 2,
+          "summary": "Executed 1 defining capability test: 0 passed, 1 failed because all 40 exact legacy retry-timeout cases remained deferred_unsupported instead of runnable under REL-006.",
+          "recorded_at": "2026-08-09T06:03:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/retryability-legacy-timeouts.json'; make test-focus FOCUS_UNIT='spec/unit/socket_timeout_executor_spec.lua spec/unit/retry_executor_spec.lua' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_legacy_retry_timeout_cases_are_runnable spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/retry_executor.lua spec/unit/socket_timeout_executor_spec.lua'; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: all 40 applicable legacy retry-timeout cases executed and passed with 0 failures and 0 environment skips while 10 post-v1 cases remained explicit deferrals; 11 Lua unit and 10 Python capability/conformance/scope tests passed; luacheck reported 0 warnings/errors in 2 touched Lua files; capabilities (1326 runnable/passed), conformance ledger (3500/2024), release scope (50/1974), README projection, executor JSON, and diff validators passed.",
+          "recorded_at": "2026-08-09T06:15:55+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T06:01:54+00:00",
+      "completed_at": "2026-08-09T06:17:01+00:00"
     }
   },
   "verified_references": {

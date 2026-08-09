@@ -56,8 +56,13 @@ local function attempt_options(options, id, deprioritized)
   return result
 end
 
-local function retryable_read(err)
+local function legacy_socket_timeout(context, err)
+  return context == nil and errors.is(err, errors.CATEGORY.TIMEOUT)
+end
+
+local function retryable_read(err, context)
   return errors.is(err, errors.CATEGORY.NETWORK)
+    or legacy_socket_timeout(context, err)
     or err:is_retryable()
     or RETRYABLE_CODES[err.code] == true
 end
@@ -113,8 +118,9 @@ local function write_concern_error(response)
   return err
 end
 
-local function labelled_write_error(err)
-  if errors.is(err, errors.CATEGORY.NETWORK)
+local function labelled_write_error(err, context)
+  if (errors.is(err, errors.CATEGORY.NETWORK)
+      or legacy_socket_timeout(context, err))
       and not err:has_label("RetryableWriteError")
   then
     return errors.with_label(err, "RetryableWriteError")
@@ -182,7 +188,7 @@ function METHODS:command(database, command, options)
     end
 
     if write and err then
-      err = labelled_write_error(err)
+      err = labelled_write_error(err, context)
     end
 
     if response or not err then
@@ -203,7 +209,9 @@ function METHODS:command(database, command, options)
       return nil, no_attempt(err) and first_err or err
     end
 
-    if not (read and retryable_read(err) or write and retryable_write(err)) then
+    if not (read and retryable_read(err, context)
+        or write and retryable_write(err))
+    then
       return nil, err
     end
 

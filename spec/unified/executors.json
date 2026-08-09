@@ -1133,6 +1133,126 @@
       "environment": "isolated-replicaset",
       "testCommands": true
     },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[1]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[2]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[3]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[4]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[5]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[6]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[7]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[8]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[9]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[10]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[11]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[12]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[13]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[14]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[15]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[16]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[17]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[18]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[19]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[20]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[21]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[22]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[27]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[28]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[29]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[30]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[33]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[34]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[37]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[38]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[39]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[40]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[41]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[42]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[43]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[44]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[45]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[46]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[47]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[48]": {
+      "activity": "REL-006", "environment": "isolated-replicaset", "testCommands": true
+    },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[10]": {
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
