@@ -566,7 +566,11 @@ local function measure_batch(state, command, identifier, operations)
     return nil, err
   end
 
-  local size = OP_MSG_OVERHEAD + 16 + 4 + 1 + #body
+  local overhead = math.min(
+    OP_MSG_OVERHEAD,
+    math.max(0, state.max_message_size - state.max_bson_size)
+  )
+  local size = overhead + 16 + 4 + 1 + #body
     + 1 + 4 + #identifier + 1
 
   for _, operation in ipairs(operations) do
