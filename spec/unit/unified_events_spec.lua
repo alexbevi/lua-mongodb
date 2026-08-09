@@ -105,6 +105,37 @@ describe("unified command events", function()
     assert.is_true(collector:pools_populated(1))
   end)
 
+  it("counts pool-ready events and matching unknown server transitions", function()
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({
+        "poolReadyEvent",
+        "serverDescriptionChangedEvent",
+      }) },
+    })))
+
+    collector.pool_listener:ConnectionPoolReady({
+      address = "127.0.0.1:27017",
+    })
+    collector.sdam_listener:ServerDescriptionChanged({
+      address = "127.0.0.1:27017",
+      new_description = { type = "Unknown" },
+    })
+
+    assert.are.equal(1, collector:count("poolReadyEvent", document({})))
+    assert.are.equal(1, collector:count(
+      "serverDescriptionChangedEvent",
+      document({
+        { "newDescription", document({ { "type", "Unknown" } }) },
+      })
+    ))
+    assert.are.equal(0, collector:count(
+      "serverDescriptionChangedEvent",
+      document({
+        { "newDescription", document({ { "type", "Standalone" } }) },
+      })
+    ))
+  end)
+
   it("matches event order and permits only trailing events when requested", function()
     local runner, collector, collectors = setup()
 

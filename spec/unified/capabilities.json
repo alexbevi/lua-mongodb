@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1370,
-    "runnable": 1370
+    "passed": 1371,
+    "runnable": 1371
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -71628,7 +71628,6 @@
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {
       "activity": "REL-038",
       "fingerprint": "f7bca7692652c185c78613bd9b7b2e8f5f31748dd342239c9d7c54b7794c32e4",
-      "reason": "minimum pools await replenishment after connection errors",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71665,7 +71664,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-application-error.json::test[1]": {
       "activity": "ADV-005",

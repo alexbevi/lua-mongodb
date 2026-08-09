@@ -234,9 +234,14 @@ local function public_client(
   parsed,
   warnings,
   runtime,
-  append_metadata
+  append_metadata,
+  capabilities
 )
-  local capabilities, err = executor:capabilities()
+  local err
+
+  if capabilities == nil then
+    capabilities, err = executor:capabilities()
+  end
 
   if not capabilities then
     executor:close()
@@ -491,7 +496,7 @@ local function open_executor(
   return executor, nil, hello
 end
 
-local function connect_replica_set(
+local function connect_topology(
   parsed,
   config,
   special,
@@ -512,6 +517,7 @@ local function connect_replica_set(
   end
 
   local monitor_connections = {}
+  local monitor_capabilities
   local manager
   local function monitor_check(server_address, fields)
     local executor = monitor_connections[server_address]
@@ -547,6 +553,7 @@ local function connect_replica_set(
       return nil, err
     end
 
+    monitor_capabilities = hello
     return hello.document
   end
 
@@ -626,7 +633,8 @@ local function connect_replica_set(
     seeds = seeds,
     server_monitoring_mode = config.server_monitoring_mode,
     set_name = config.replica_set,
-    type = config.direct_connection and "Single" or "ReplicaSetNoPrimary",
+    type = (config.replica_set == nil or config.direct_connection)
+      and "Single" or "ReplicaSetNoPrimary",
   })
   assert(manager:open())
   local executor = topology_executor.new(manager, {
@@ -640,7 +648,42 @@ local function connect_replica_set(
     read_preference = config.read_preference,
     server_selection_timeout_ms = config.server_selection_timeout_ms,
   })
-  local capabilities, err = executor:capabilities()
+  local capabilities, err
+
+  if config.replica_set == nil then
+    local capabilities_deadline = runtime_contract.deadline_after(
+      runtime,
+      config.server_selection_timeout_ms / 1000
+    )
+
+    while monitor_capabilities == nil do
+      local ok
+      ok, err = runtime_contract.check(runtime, capabilities_deadline)
+
+      if not ok then
+        break
+      end
+
+      local remaining = runtime_contract.remaining(runtime, capabilities_deadline)
+
+      assert(runtime.clock:sleep(math.min(0.01, remaining or math.huge)))
+    end
+
+    capabilities = monitor_capabilities
+
+    if capabilities == nil then
+      local selected, selection_err = manager:select_server(
+        "write",
+        nil,
+        { timeout_ms = 0 }
+      )
+
+      assert(selected == nil)
+      err = selection_err
+    end
+  else
+    capabilities, err = executor:capabilities()
+  end
 
   if not capabilities then
     executor:close()
@@ -653,7 +696,8 @@ local function connect_replica_set(
     parsed,
     warnings,
     runtime,
-    append_metadata
+    append_metadata,
+    capabilities
   )
 end
 
@@ -729,8 +773,8 @@ function M.connect(uri, values)
   end
   local warnings = combine_warnings(parsed, option_warnings)
 
-  if config.replica_set ~= nil then
-    return connect_replica_set(
+  if config.replica_set ~= nil or config.min_pool_size > 0 then
+    return connect_topology(
       parsed,
       config,
       special,

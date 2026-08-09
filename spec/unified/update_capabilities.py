@@ -436,10 +436,6 @@ for fixture, count in (
     ] = ("ADV-005", OWNER_REASONS["ADV-005"])
 
 TEST_OVERRIDES.update({
-  "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": (
-    "REL-038",
-    OWNER_REASONS["REL-038"],
-  ),
   "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": (
     "REL-039",
     OWNER_REASONS["REL-039"],

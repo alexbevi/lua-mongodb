@@ -57,6 +57,7 @@ local function client_factory(state)
       command_listeners = { collector.listener },
       pool_listeners = { collector.pool_listener },
       runtime = state.runtime,
+      sdam_listeners = { collector.sdam_listener },
     }
     local server_api = specification:get("serverApi")
 
@@ -92,6 +93,8 @@ local function client_factory(state)
         minPoolSize = true,
         retryReads = true,
         retryWrites = true,
+        serverMonitoringMode = true,
+        serverSelectionTimeoutMS = true,
         socketTimeoutMS = true,
         timeoutMS = true,
         w = true,
@@ -147,6 +150,8 @@ local function client_factory(state)
         heartbeatFrequencyMS = "heartbeat_frequency_ms",
         maxPoolSize = "max_pool_size",
         minPoolSize = "min_pool_size",
+        serverMonitoringMode = "server_monitoring_mode",
+        serverSelectionTimeoutMS = "server_selection_timeout_ms",
         waitQueueTimeoutMS = "wait_queue_timeout_ms",
       }) do
         local value = uri_options:get(unified_name)
@@ -769,53 +774,88 @@ local function assert_last_lsids(state, expected_same)
   end
 end
 
+local function event_count_arguments(state, runner, arguments, path, minimum)
+  local client, err = runner:get_entity(
+    arguments:get("client"),
+    "client",
+    path .. ".arguments.client"
+  )
+
+  if not client then
+    return nil, err
+  end
+
+  local expected = arguments:get("event")
+  local count = arguments:get("count")
+
+  if bson.is_exact(count) then
+    count = count:to_number()
+  end
+
+  if not bson.is_document(expected) or #expected ~= 1
+      or math.type(count) ~= "integer" or count < minimum
+  then
+    return configuration_error("invalid event count arguments", path)
+  end
+
+  local event_name, specification = expected:get_at(1)
+  local collector = state.collectors[client]
+
+  if not collector or collector:count(event_name, specification) == nil then
+    return configuration_error("unsupported event count event", path)
+  end
+
+  return collector, event_name, specification, count
+end
+
 local function wait_for_event(state)
   return function(runner, arguments, path)
-    local client, err = runner:get_entity(
-      arguments:get("client"),
-      "client",
-      path .. ".arguments.client"
+    local collector, event_name, specification, count = event_count_arguments(
+      state,
+      runner,
+      arguments,
+      path,
+      1
     )
 
-    if not client then
-      return nil, err
-    end
-
-    local expected = arguments:get("event")
-    local count = arguments:get("count")
-
-    if bson.is_exact(count) then
-      count = count:to_number()
-    end
-
-    if not bson.is_document(expected) or #expected ~= 1
-        or math.type(count) ~= "integer" or count < 1
-    then
-      return configuration_error("invalid waitForEvent arguments", path)
-    end
-
-    local event_name, specification = expected:get_at(1)
-    local command_name = bson.is_document(specification)
-      and specification:get("commandName") or nil
-    local collector = state.collectors[client]
-
-    if not collector or collector:count(event_name, command_name) == nil then
-      return configuration_error("unsupported waitForEvent event", path)
+    if not collector then
+      return nil, event_name
     end
 
     local deadline = state.runtime.clock:now() + 10
 
-    while collector:count(event_name, command_name) < count do
+    while collector:count(event_name, specification) < count do
       if state.runtime.clock:now() >= deadline then
         return configuration_error("waitForEvent timed out", path)
       end
 
-      local slept
-      slept, err = state.runtime.clock:sleep(0.01)
+      local slept, sleep_err = state.runtime.clock:sleep(0.01)
 
       if not slept then
-        return nil, err
+        return nil, sleep_err
       end
+    end
+
+    return true
+  end
+end
+
+local function assert_event_count(state)
+  return function(runner, arguments, path)
+    local collector, event_name, specification, count = event_count_arguments(
+      state,
+      runner,
+      arguments,
+      path,
+      0
+    )
+
+    if not collector then
+      return nil, event_name
+    end
+
+    if collector:count(event_name, specification) ~= count then
+      return configuration_error("observed event count does not match", path)
     end
 
     return true
@@ -1932,6 +1972,7 @@ function M.new(options)
     test_operations = {
       assertCollectionExists = assert_collection_exists(state, true),
       assertCollectionNotExists = assert_collection_exists(state, false),
+      assertEventCount = assert_event_count(state),
       assertDifferentLsidOnLastTwoCommands = assert_last_lsids(state, false),
       assertIndexExists = assert_index_exists(state, true),
       assertIndexNotExists = assert_index_exists(state, false),

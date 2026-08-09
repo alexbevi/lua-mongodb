@@ -97,6 +97,55 @@ describe("CMAP connection pools", function()
     }, event_types)
   end)
 
+  it("replenishes minPoolSize after a background connection error", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local attempts = 0
+      local connection_pool
+
+      connection_pool = pool.new({
+        address = "a:27017",
+        connect = function()
+          attempts = attempts + 1
+
+          if attempts == 1 then
+            return nil, errors.new({
+              category = errors.CATEGORY.SERVER,
+              code = 91,
+              message = "transient background handshake failure",
+            })
+          end
+
+          return { close = function() end }
+        end,
+        min_pool_size = 2,
+        on_connection_error = function()
+          runtime.task:spawn(function()
+            assert(runtime.clock:sleep(0.005))
+            assert(connection_pool:ready())
+          end)
+        end,
+        poll_interval_ms = 1,
+        runtime = runtime,
+      })
+
+      assert(connection_pool:ready())
+      local deadline = runtime.clock:now() + 1
+
+      while connection_pool.total_connection_count < 2 do
+        assert.is_true(runtime.clock:now() < deadline)
+        assert(runtime.clock:sleep(0.001))
+      end
+
+      assert.are.equal("ready", connection_pool.state)
+      assert.are.equal(0, connection_pool.pending_connection_count)
+      assert.are.equal(2, connection_pool.available_connection_count)
+      assert.are.equal(3, attempts)
+      assert(connection_pool:close())
+      assert.are.equal(0, connection_pool.total_connection_count)
+    end)
+  end)
+
   it("removes cancelled waiters and interrupted checkouts without leaks", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

@@ -108,6 +108,7 @@ KNOWN_EVENTS = {
   "connectionCheckOutStartedEvent", "connectionCheckedInEvent",
   "connectionCheckedOutEvent", "connectionClosedEvent", "connectionCreatedEvent",
   "connectionReadyEvent", "poolClearedEvent", "serverDescriptionChangedEvent",
+  "poolReadyEvent",
   "serverHeartbeatStartedEvent", "serverHeartbeatSucceededEvent",
   "topologyClosedEvent", "topologyDescriptionChangedEvent", "topologyOpeningEvent",
 }

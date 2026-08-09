@@ -2028,6 +2028,28 @@
       "notes": [],
       "started_at": "2026-08-09T14:17:02+00:00",
       "completed_at": "2026-08-09T14:25:23+00:00"
+    },
+    "REL-038": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/minPoolSize-error.json'",
+          "exit_code": 1,
+          "summary": "1 exact test executed and failed: unified collector rejected serverDescriptionChangedEvent before minPoolSize recovery could run",
+          "recorded_at": "2026-08-09T15:42:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/unified_events_spec.lua' FOCUS_INTEGRATION='spec/integration/pool_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/minPoolSize-error.json' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/client.lua src/mongodb/unified/driver.lua src/mongodb/unified/events.lua spec/unit/pool_spec.lua spec/unit/unified_events_spec.lua'",
+          "exit_code": 0,
+          "summary": "14 unit and 1 directly coupled integration tests passed; exact unified fixture executed 1, passed 1, environment-skipped 0, deferred 0, failed 0; 45 capability tests and touched-file lint passed; capability, conformance, release-scope, README projection, and plan validators passed",
+          "recorded_at": "2026-08-09T15:56:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T15:39:03+00:00",
+      "completed_at": "2026-08-09T15:57:34+00:00"
     }
   },
   "verified_references": {

@@ -14,6 +14,8 @@ local EVENT_NAMES = {
   connection_created = "connectionCreatedEvent",
   connection_ready = "connectionReadyEvent",
   pool_cleared = "poolClearedEvent",
+  pool_ready = "poolReadyEvent",
+  server_description_changed = "serverDescriptionChangedEvent",
 }
 local EVENT_TYPES = {
   commandFailedEvent = "command_failed",
@@ -26,6 +28,8 @@ local EVENT_TYPES = {
   connectionCreatedEvent = "connection_created",
   connectionReadyEvent = "connection_ready",
   poolClearedEvent = "pool_cleared",
+  poolReadyEvent = "pool_ready",
+  serverDescriptionChangedEvent = "server_description_changed",
 }
 local CMAP_EVENT_TYPES = {
   connection_checkout_started = true,
@@ -35,6 +39,10 @@ local CMAP_EVENT_TYPES = {
   connection_created = true,
   connection_ready = true,
   pool_cleared = true,
+  pool_ready = true,
+}
+local SDAM_EVENT_TYPES = {
+  server_description_changed = true,
 }
 local SENSITIVE_COMMANDS = {
   authenticate = true,
@@ -129,7 +137,7 @@ local function record(collector, event)
     return
   end
 
-  if CMAP_EVENT_TYPES[event.type] then
+  if CMAP_EVENT_TYPES[event.type] or SDAM_EVENT_TYPES[event.type] then
     collector.events[#collector.events + 1] = event
     return
   end
@@ -150,7 +158,29 @@ function COLLECTOR_METHODS:disable()
   self.active = false
 end
 
-function COLLECTOR_METHODS:count(event_name, command_name)
+local function count_matches(event, specification)
+  if type(specification) == "string" then
+    return event.command_name == specification
+  elseif not bson.is_document(specification) then
+    return specification == nil
+  end
+
+  if #specification == 0 then
+    return true
+  elseif event.type == "server_description_changed" then
+    local new_description = specification:get("newDescription")
+
+    return #specification == 1
+      and bson.is_document(new_description)
+      and #new_description == 1
+      and new_description:get("type") == event.new_description.type
+  end
+
+  return #specification == 1
+    and specification:get("commandName") == event.command_name
+end
+
+function COLLECTOR_METHODS:count(event_name, specification)
   local event_type = EVENT_TYPES[event_name]
 
   if not event_type then
@@ -160,8 +190,7 @@ function COLLECTOR_METHODS:count(event_name, command_name)
   local count = 0
 
   for _, event in ipairs(self.events) do
-    if event.type == event_type
-        and (command_name == nil or event.command_name == command_name)
+    if event.type == event_type and count_matches(event, specification)
     then
       count = count + 1
     end
@@ -294,6 +323,10 @@ function M.new(specification)
     ConnectionPoolReady = function(_, event)
       collector.pools[event.address] = collector.pools[event.address]
         or { connections = {} }
+      record(collector, {
+        address = event.address,
+        type = "pool_ready",
+      })
     end,
     ConnectionCheckedIn = function(_, event)
       record(collector, {
@@ -321,6 +354,17 @@ function M.new(specification)
         connection_id = event.connection_id,
         duration_ms = event.duration_ms,
         type = "connection_ready",
+      })
+    end,
+  }
+  collector.sdam_listener = {
+    ServerDescriptionChanged = function(_, event)
+      record(collector, {
+        address = event.address,
+        new_description = {
+          type = event.new_description.type,
+        },
+        type = "server_description_changed",
       })
     end,
   }
