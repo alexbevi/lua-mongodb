@@ -1,11 +1,15 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local api = require("mongodb.api")
+local command_executor = require("mongodb.command.executor")
 local driver_options = require("mongodb.config.options")
+local op_msg = require("mongodb.wire.op_msg")
 local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
 local fake_runtime = require("mongodb.runtime.fake")
+local socket_timeout_executor = require("mongodb.socket_timeout_executor")
+local standalone_executor = require("mongodb.standalone_executor")
 
 local function identifiers()
   local next_id = 0
@@ -22,6 +26,93 @@ local function identifiers()
 end
 
 describe("client sessions", function()
+  it("measures through executor decorators without consuming transaction state", function()
+    local pending_response
+    local requests = {}
+    local connection = {}
+
+    function connection.write_all(_, bytes)
+      local request = assert(op_msg.decode(bytes, { direction = "request" }))
+
+      requests[#requests + 1] = request
+      local response = #requests == 1 and bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }) or bson.document({ { "ok", 1 } })
+      pending_response = assert(op_msg.encode({
+        body = response,
+        direction = "response",
+        request_id = 700 + request.request_id,
+        response_to = request.request_id,
+      }))
+      return true
+    end
+
+    function connection.read_frame()
+      return pending_response
+    end
+
+    function connection.close()
+      return true
+    end
+
+    local commands = command_executor.new(connection)
+
+    assert(commands:hello())
+    local reconnecting = standalone_executor.new(
+      commands,
+      function()
+        return commands
+      end,
+      commands:capabilities()
+    )
+    local runtime = fake_runtime.new()
+    local timed = socket_timeout_executor.new(reconnecting, runtime, 100)
+    local retrying = retry_executor.new(timed, { enabled_writes = true })
+    local sessions = session_module.new({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local executor = session_executor.new(retrying, sessions, {
+      retryable_writes = true,
+    })
+    local session = assert(sessions:start())
+    local command = bson.document({ { "insert", "items" } })
+    local sequences = {
+      {
+        documents = { bson.document({ { "value", 1 } }) },
+        identifier = "documents",
+      },
+    }
+
+    assert(session:start_transaction())
+    local measured = assert(executor:measure("db", command, {
+      sequences = sequences,
+      session = session,
+    }))
+
+    assert.is_true(measured.message_size > 0)
+    assert.are.equal(1, #requests)
+
+    local oversized, err = executor:measure("db", command, {
+      max_sequence_document_size = 5,
+      sequences = sequences,
+      session = session,
+    })
+
+    assert.is_nil(oversized)
+    assert.is_true(errors.is(err, errors.CATEGORY.PROTOCOL))
+    assert.are.equal(1, #requests)
+    assert(executor:command("db", command, {
+      sequences = sequences,
+      session = session,
+    }))
+    assert.is_true(requests[2].body:get("startTransaction"))
+    assert.is_true(executor:close())
+  end)
+
   it("inherits and overrides the client operation timeout", function()
     local runtime = fake_runtime.new({ now = 3 })
     local deadlines = {}
