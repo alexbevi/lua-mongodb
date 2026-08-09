@@ -913,6 +913,121 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1, report["summary"]["environment_skipped"])
     self.assertEqual("environment_skipped", report["tests"][0]["status"])
 
+  def test_fixture_batch_launches_one_lua_executor_for_multiple_tests(self) -> None:
+    first = {
+      "fixture": "crud/tests/unified/insertOne.json",
+      "id": "crud/tests/unified/insertOne.json::test[1]",
+      "status": "runnable",
+    }
+    second = {
+      "fixture": "crud/tests/unified/insertOne.json",
+      "id": "crud/tests/unified/insertOne.json::test[2]",
+      "status": "runnable",
+    }
+    completed = subprocess.CompletedProcess(
+      args=[],
+      returncode=0,
+      stdout=json.dumps({
+        "results": [
+          {"id": first["id"], "status": "passed"},
+          {
+            "error": "runOnRequirements not satisfied",
+            "id": second["id"],
+            "status": "environment_skipped",
+          },
+        ],
+      }),
+      stderr="",
+    )
+
+    with mock.patch(
+      "spec.unified.run.subprocess.run", return_value=completed,
+    ) as execute:
+      results = run.lua_batch_executor(
+        "lua", Path("execute.lua"), {},
+      )([first, second])
+
+    execute.assert_called_once()
+    self.assertEqual(
+      ["lua", "execute.lua", first["id"], second["id"]],
+      execute.call_args.args[0],
+    )
+    self.assertEqual(("passed", None), results[first["id"]])
+    self.assertEqual(
+      ("environment_skipped", "runOnRequirements not satisfied"),
+      results[second["id"]],
+    )
+
+  def test_execution_batches_are_stable_per_fixture_and_environment(self) -> None:
+    classifications = [
+      {
+        "fixture": "crud/tests/unified/insertOne.json",
+        "id": "crud/tests/unified/insertOne.json::test[1]",
+        "status": "runnable",
+      },
+      {
+        "fixture": "crud/tests/unified/insertOne.json",
+        "id": "crud/tests/unified/insertOne.json::test[2]",
+        "status": "runnable",
+      },
+      {
+        "fixture": "crud/tests/unified/insertOne.json",
+        "id": "crud/tests/unified/insertOne.json::test[3]",
+        "status": "deferred_unsupported",
+      },
+      {
+        "fixture": "crud/tests/unified/find.json",
+        "id": "crud/tests/unified/find.json::test[1]",
+        "status": "runnable",
+      },
+    ]
+    registry = {
+      classifications[0]["id"]: {"environment": "live-standalone"},
+      classifications[1]["id"]: {"environment": "live-standalone"},
+      classifications[3]["id"]: {"environment": "live-replicaset"},
+    }
+
+    batches = run.execution_batches(classifications, registry)
+
+    self.assertEqual(
+      [[classifications[0], classifications[1]], [classifications[3]]],
+      batches,
+    )
+
+  def test_batch_report_omission_fails_every_selected_identity(self) -> None:
+    classifications = [
+      {
+        "id": "crud/tests/unified/insertMany.json::test[1]",
+        "status": "runnable",
+      },
+      {
+        "id": "crud/tests/unified/insertMany.json::test[2]",
+        "status": "runnable",
+      },
+    ]
+    completed = subprocess.CompletedProcess(
+      args=[],
+      returncode=0,
+      stdout=json.dumps({
+        "results": [{"id": classifications[0]["id"], "status": "passed"}],
+      }),
+      stderr="",
+    )
+
+    with mock.patch("spec.unified.run.subprocess.run", return_value=completed):
+      results = run.lua_batch_executor(
+        "lua", Path("execute.lua"), {},
+      )(classifications)
+
+    self.assertEqual(
+      {"failed"},
+      {status for status, _ in results.values()},
+    )
+    self.assertTrue(all(
+      detail == "unified executor omitted a selected test identity"
+      for _, detail in results.values()
+    ))
+
   def test_csot_reuses_the_shared_replica_set(self) -> None:
     csot = "client-side-operations-timeout/tests/command-execution.json::test[1]"
     transaction = "transactions/tests/unified/commit.json::test[1]"

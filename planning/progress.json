@@ -2176,6 +2176,28 @@
       "notes": [],
       "started_at": "2026-08-09T22:55:24+00:00",
       "completed_at": "2026-08-09T22:59:55+00:00"
+    },
+    "UTF-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_fixture_batch_launches_one_lua_executor_for_multiple_tests spec.unified.test_cli.UnifiedCliTests.test_execution_batches_are_stable_per_fixture_and_environment -v",
+          "exit_code": 1,
+          "summary": "Batch grouping and one-process multi-test executor APIs do not exist; the runner can only launch one Lua process per identity",
+          "recorded_at": "2026-08-09T23:03:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON=spec.unified.test_cli FOCUS_UNIFIED=crud/tests/unified/insertMany.json FOCUS_LINT=spec/unified/execute.lua; make test-unified-execution UNIFIED_REPORT=<temp>; py_compile; check --strict",
+          "exit_code": 0,
+          "summary": "51 CLI tests passed; one live fixture batch executed 3/3 in one Lua process; full unified gate executed and passed 1300 with 76 environment skips, 1145 explicit deferrals, and 0 failures in about 37 minutes; Lua lint, Python compile, and strict plan validation passed",
+          "recorded_at": "2026-08-09T23:49:38+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T23:02:05+00:00",
+      "completed_at": "2026-08-09T23:49:39+00:00"
     }
   },
   "verified_references": {

@@ -147,14 +147,24 @@ local function selected_test(tests, wanted_index, run_skipped)
   return bson.document(entries)
 end
 
-local function selected_document(document, wanted_index, run_skipped)
+local function selected_document(document, selections)
   local entries = {}
 
   for key, value in document:iter() do
     if key == "tests" then
+      local tests = {}
+
+      for index, selection in ipairs(selections) do
+        tests[index] = selected_test(
+          value,
+          selection.index,
+          selection.entry:get("runSkipped") == true
+        )
+      end
+
       entries[#entries + 1] = {
         key,
-        bson.array({ selected_test(value, wanted_index, run_skipped) }),
+        bson.array(tests),
       }
     else
       entries[#entries + 1] = { key, value }
@@ -212,8 +222,7 @@ local function load_json(path)
   return document
 end
 
-local function registered_test(identity)
-  local registry = load_json(ROOT .. "/spec/unified/executors.json")
+local function registered_test(registry, identity)
   local tests = registry:get("tests")
   local entry = tests and tests:get(identity)
 
@@ -227,12 +236,19 @@ local function registered_test(identity)
     error("registered unified identity is malformed: " .. tostring(identity), 0)
   end
 
-  return entry, fixture, assert(math.tointeger(tonumber(index)))
+  return {
+    entry = entry,
+    fixture = fixture,
+    identity = identity,
+    index = assert(math.tointeger(tonumber(index))),
+  }
 end
 
-local function run_loopback(identity, fixture, index)
-  equal(INSERT_ONE_ID, identity)
-  local document = load_json(ROOT .. "/planning/specifications/source/" .. fixture)
+local function run_loopback(selection)
+  equal(INSERT_ONE_ID, selection.identity)
+  local document = load_json(
+    ROOT .. "/planning/specifications/source/" .. selection.fixture
+  )
 
   local server = assert(socket.bind("127.0.0.1", 0))
   local _, port = assert(server:getsockname())
@@ -260,7 +276,10 @@ local function run_loopback(identity, fixture, index)
         runtime = runtime_module.copas(),
         uri = "mongodb://127.0.0.1:" .. port,
       }))
-      local report = assert(lifecycle:run_file(selected_document(document, index), identity))
+      local report = assert(lifecycle:run_file(
+        selected_document(document, { selection }),
+        selection.identity
+      ))
 
       if report.summary.failed > 0 then
         error(report_error(report.tests[1].error), 0)
@@ -282,10 +301,15 @@ local function run_loopback(identity, fixture, index)
     error(server_error, 0)
   end
 
-  print("unified executor: 1 executed, 1 passed, 0 failed")
+  return {
+    {
+      id = selection.identity,
+      status = "passed",
+    },
+  }
 end
 
-local function run_live(identity, fixture, index, topology, entry)
+local function run_live(selections, topology)
   local replica_set = topology == "replicaset"
   local uri = os.getenv(replica_set
     and "MONGODB_UNIFIED_REPLICA_SET_URI" or "MONGODB_UNIFIED_URI")
@@ -302,24 +326,46 @@ local function run_live(identity, fixture, index, topology, entry)
   end
 
   local parsed = assert(config_uri.parse(uri))
+  local fixture = selections[1].fixture
   local document = load_json(ROOT .. "/planning/specifications/source/" .. fixture)
   local outcome
 
   copas.loop(function()
     outcome = table.pack(pcall(function()
       local runtime = runtime_module.copas()
-      local selected = selected_document(
-        document,
-        index,
-        entry:get("runSkipped") == true
-      )
+      local active = {}
+      local results = {}
+      local accepts_api_version_2 = false
+
+      for _, selection in ipairs(selections) do
+        local entry = selection.entry
+
+        if entry:get("testCommands") == true
+            and os.getenv("MONGODB_UNIFIED_TEST_COMMANDS") ~= "1" then
+          results[selection.identity] = {
+            error = "test commands are unavailable",
+            id = selection.identity,
+            status = "environment_skipped",
+          }
+        else
+          active[#active + 1] = selection
+          accepts_api_version_2 = accepts_api_version_2
+            or entry:get("acceptApiVersion2") == true
+        end
+      end
+
+      if #active == 0 then
+        return results
+      end
+
+      local selected = selected_document(document, active)
 
       reset_databases(runtime, uri, selected)
       local lifecycle = assert(unified_driver.new({
         environment = {
           auth = parsed.username ~= nil,
           server_parameters = bson.document({
-            { "acceptApiVersion2", entry:get("acceptApiVersion2") == true },
+            { "acceptApiVersion2", accepts_api_version_2 },
             { "enableTestCommands", os.getenv("MONGODB_UNIFIED_TEST_COMMANDS") == "1" },
             { "requireApiVersion", false },
           }),
@@ -332,22 +378,29 @@ local function run_live(identity, fixture, index, topology, entry)
       local executed = table.pack(pcall(function()
         local report = assert(lifecycle:run_file(
           selected,
-          identity
+          fixture
         ))
 
-        if report.summary.failed > 0 then
-          error(report_error(report.tests[1].error), 0)
+        equal(#active, report.summary.selected)
+
+        for index, selection in ipairs(active) do
+          local item = report.tests[index]
+          local result = {
+            id = selection.identity,
+            status = item.status == "skipped"
+              and "environment_skipped" or item.status,
+          }
+
+          if item.status == "failed" then
+            result.error = tostring(report_error(item.error))
+          elseif item.status == "skipped" then
+            result.error = tostring(item.reason or "test requirements are unavailable")
+          end
+
+          results[selection.identity] = result
         end
 
-        if report.summary.skipped > 0 then
-          return "environment_skipped"
-        end
-
-        equal(1, report.summary.executed)
-        equal(1, report.summary.passed)
-        equal(0, report.summary.failed)
-        equal(0, report.summary.skipped)
-        return "passed"
+        return results
       end))
 
       assert(lifecycle:close())
@@ -364,44 +417,82 @@ local function run_live(identity, fixture, index, topology, entry)
     error(outcome[2], 0)
   end
 
-  if outcome[2] == "environment_skipped" then
-    return "environment_skipped"
+  local ordered = {}
+
+  for index, selection in ipairs(selections) do
+    ordered[index] = assert(
+      outcome[2][selection.identity],
+      "unified batch omitted " .. selection.identity
+    )
   end
 
-  print("unified executor: 1 executed, 1 passed, 0 failed")
+  return ordered
 end
 
-local function run(identity)
-  local entry, fixture, index = registered_test(identity)
-  local environment = entry:get("environment")
+local function run(identities)
+  if #identities == 0 then
+    error("unified executor requires at least one test identity", 0)
+  end
 
-  if entry:get("testCommands") == true
-    and os.getenv("MONGODB_UNIFIED_TEST_COMMANDS") ~= "1"
-  then
-    return "environment_skipped"
+  local registry = load_json(ROOT .. "/spec/unified/executors.json")
+  local selections = {}
+
+  for index, identity in ipairs(identities) do
+    selections[index] = registered_test(registry, identity)
+  end
+
+  local fixture = selections[1].fixture
+  local environment = selections[1].entry:get("environment")
+
+  for _, selection in ipairs(selections) do
+    local selected_environment = selection.entry:get("environment")
+
+    if selection.fixture ~= fixture then
+      error("unified executor batch must select exactly one fixture", 0)
+    end
+
+    if selected_environment ~= environment then
+      error("unified executor batch must select exactly one environment", 0)
+    end
   end
 
   if environment == "deterministic-loopback" then
-    return run_loopback(identity, fixture, index)
+    equal(1, #selections, "loopback executor only supports its exact test")
+    return run_loopback(selections[1])
   elseif environment == "live-standalone" then
-    return run_live(identity, fixture, index, "single", entry)
+    return run_live(selections, "single")
   elseif environment == "live-replicaset" then
-    return run_live(identity, fixture, index, "replicaset", entry)
+    return run_live(selections, "replicaset")
   elseif environment == "isolated-replicaset" then
-    return run_live(identity, fixture, index, "replicaset", entry)
+    return run_live(selections, "replicaset")
   end
 
   error("unknown unified executor environment: " .. tostring(environment), 0)
 end
 
-local ok, err = pcall(run, arg[1])
+local ok, results = pcall(run, arg)
 
 if not ok then
-  io.stderr:write("unified executor: " .. tostring(err) .. "\n")
+  io.stderr:write("unified executor: " .. tostring(results) .. "\n")
   os.exit(1)
 end
 
-if err == "environment_skipped" then
-  io.stderr:write("unified executor: test commands are unavailable\n")
-  os.exit(75)
+local encoded = {}
+
+for index, result in ipairs(results) do
+  local entries = {
+    { "id", result.id },
+    { "status", result.status },
+  }
+
+  if result.error ~= nil then
+    entries[#entries + 1] = { "error", result.error }
+  end
+
+  encoded[index] = bson.document(entries)
 end
+
+io.write(assert(bson.json.encode(bson.document({
+  { "results", bson.array(encoded) },
+}))))
+io.write("\n")

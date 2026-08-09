@@ -598,30 +598,145 @@ def build_report(
   }
 
 
-def lua_executor(lua: str, executable: Path, environment: dict[str, str] | None = None):
-  """Return an exact per-test executor backed by the Lua driver bridge."""
-  def execute(classification: dict[str, Any]) -> tuple[str, str | None]:
+def lua_batch_executor(
+  lua: str,
+  executable: Path,
+  environment: dict[str, str] | None = None,
+):
+  """Return a fixture-batch executor backed by one Lua driver bridge process."""
+  def failed_results(
+    classifications: list[dict[str, Any]],
+    detail: str,
+  ) -> dict[str, tuple[str, str | None]]:
+    return {
+      classification["id"]: ("failed", detail)
+      for classification in classifications
+    }
+
+  def execute(
+    classifications: list[dict[str, Any]],
+  ) -> dict[str, tuple[str, str | None]]:
+    identities = [classification["id"] for classification in classifications]
+
+    if not identities:
+      return {}
+
     try:
       process = subprocess.run(
-        [lua, str(executable), classification["id"]],
+        [lua, str(executable), *identities],
         cwd=ROOT,
         env=environment or os.environ.copy(),
         text=True,
         capture_output=True,
       )
     except OSError as exc:
-      return "failed", f"could not start unified executor: {exc}"
-
-    if process.returncode == 0:
-      return "passed", None
+      return failed_results(
+        classifications,
+        f"could not start unified executor: {exc}",
+      )
 
     detail = (process.stderr or process.stdout).strip()
-    if process.returncode == 75:
-      return "environment_skipped", detail or "test commands are unavailable"
 
-    return "failed", detail or f"unified executor exited {process.returncode}"
+    if process.returncode == 75:
+      return {
+        identity: (
+          "environment_skipped",
+          detail or "test commands are unavailable",
+        )
+        for identity in identities
+      }
+
+    if process.returncode != 0:
+      return failed_results(
+        classifications,
+        detail or f"unified executor exited {process.returncode}",
+      )
+
+    try:
+      report = json.loads(process.stdout)
+      rows = report["results"]
+    except (json.JSONDecodeError, KeyError, TypeError) as exc:
+      return failed_results(
+        classifications,
+        f"unified executor returned a malformed batch report: {exc}",
+      )
+
+    if not isinstance(rows, list):
+      return failed_results(
+        classifications,
+        "unified executor returned a malformed batch result list",
+      )
+
+    results: dict[str, tuple[str, str | None]] = {}
+
+    for row in rows:
+      if not isinstance(row, dict):
+        return failed_results(
+          classifications,
+          "unified executor returned a non-object batch result",
+        )
+
+      identity = row.get("id")
+      status = row.get("status")
+      error = row.get("error")
+
+      if identity not in identities or identity in results:
+        return failed_results(
+          classifications,
+          "unified executor returned an unknown or duplicate test identity",
+        )
+
+      if status not in {"environment_skipped", "failed", "passed"}:
+        return failed_results(
+          classifications,
+          f"unified executor returned an unknown status for {identity}",
+        )
+
+      if error is not None and not isinstance(error, str):
+        return failed_results(
+          classifications,
+          f"unified executor returned a non-string error for {identity}",
+        )
+
+      results[identity] = (status, error)
+
+    if set(results) != set(identities):
+      return failed_results(
+        classifications,
+        "unified executor omitted a selected test identity",
+      )
+
+    return results
 
   return execute
+
+
+def lua_executor(lua: str, executable: Path, environment: dict[str, str] | None = None):
+  """Return an exact per-test adapter over the fixture-batch Lua bridge."""
+  execute_batch = lua_batch_executor(lua, executable, environment)
+
+  def execute(classification: dict[str, Any]) -> tuple[str, str | None]:
+    return execute_batch([classification])[classification["id"]]
+
+  return execute
+
+
+def execution_batches(
+  classifications: list[dict[str, Any]],
+  registry: dict[str, Any],
+) -> list[list[dict[str, Any]]]:
+  """Group runnable identities stably by fixture and deployment environment."""
+  grouped: dict[tuple[str, Any], list[dict[str, Any]]] = {}
+
+  for classification in classifications:
+    if classification["status"] != "runnable":
+      continue
+
+    entry = registry.get(classification["id"], {})
+    key = (classification["fixture"], entry.get("environment"))
+    grouped.setdefault(key, []).append(classification)
+
+  return list(grouped.values())
 
 
 def load_executor_registry(path: Path = DEFAULT_EXECUTOR_REGISTRY) -> dict[str, Any]:
@@ -1021,26 +1136,58 @@ def main(argv: list[str] | None = None) -> int:
 
     registry = apply_environment_overrides(load_executor_registry())
 
-    def execute_selected(classification: dict[str, Any], environment: dict[str, str]):
-      skip_reason = platform_environment_skip(classification["id"], environment)
+    def execute_batch(
+      batch: list[dict[str, Any]],
+      environment: dict[str, str],
+    ) -> dict[str, tuple[str, str | None]]:
+      runnable = []
+      results: dict[str, tuple[str, str | None]] = {}
 
-      if skip_reason:
-        return "environment_skipped", skip_reason
+      for classification in batch:
+        skip_reason = platform_environment_skip(classification["id"], environment)
 
-      entry = registry.get(classification["id"], {})
+        if skip_reason:
+          results[classification["id"]] = (
+            "environment_skipped",
+            skip_reason,
+          )
+        else:
+          runnable.append(classification)
+
+      if runnable:
+        results.update(lua_batch_executor(
+          arguments.lua,
+          arguments.executor,
+          environment,
+        )(runnable))
+
+      return results
+
+    batches = execution_batches(selected, registry)
+    execution_results: dict[str, tuple[str, str | None]] = {}
+
+    for batch in batches:
+      entry = registry.get(batch[0]["id"], {})
 
       if entry.get("environment") != "isolated-replicaset":
-        return lua_executor(arguments.lua, arguments.executor, environment)(classification)
+        continue
 
       isolated_registry = {
         classification["id"]: {
           "environment": "live-replicaset",
-          "replicaSetMembers": entry.get("replicaSetMembers", 1),
-        },
+          "replicaSetMembers": registry.get(
+            classification["id"], {},
+          ).get("replicaSetMembers", 1),
+        }
+        for classification in batch
       }
+      member_count = max(
+        entry["replicaSetMembers"]
+        for entry in isolated_registry.values()
+      )
 
-      with standalone_environment([classification], isolated_registry) as isolated_standalone:
-        if entry.get("replicaSetMembers", 1) > 1:
+      with standalone_environment(batch, isolated_registry) as isolated_standalone:
+        if member_count > 1:
           isolated_standalone.pop("MONGODB_UNIFIED_REPLICA_SET_URI", None)
           isolated_standalone.pop(
             "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION",
@@ -1048,30 +1195,27 @@ def main(argv: list[str] | None = None) -> int:
           )
 
         with replica_set_environment(
-          [classification],
+          batch,
           isolated_registry,
           isolated_standalone,
         ) as isolated_environment:
-          return lua_executor(
-            arguments.lua,
-            arguments.executor,
-            isolated_environment,
-          )(classification)
-
-    isolated_results = {
-      classification["id"]: execute_selected(classification, os.environ.copy())
-      for classification in selected
-      if registry.get(classification["id"], {}).get("environment")
-        == "isolated-replicaset"
-    }
+          execution_results.update(execute_batch(batch, isolated_environment))
 
     with standalone_environment(selected, registry) as standalone:
       with replica_set_environment(selected, registry, standalone) as environment:
+        for batch in batches:
+          entry = registry.get(batch[0]["id"], {})
+
+          if entry.get("environment") != "isolated-replicaset":
+            execution_results.update(execute_batch(batch, environment))
+
         report = build_report(
           selected,
           manifest["ratchets"] if not arguments.include else None,
-          lambda classification: isolated_results.get(classification["id"])
-            or execute_selected(classification, environment),
+          lambda classification: execution_results.get(
+            classification["id"],
+            ("failed", "unified batch omitted a runnable test identity"),
+          ),
         )
     write_report(report, arguments.report)
   except CapabilityError as exc:
