@@ -223,9 +223,11 @@ local function client_factory(state)
           return nil, err
         end
       end
+
+      collector:reset()
     end
 
-    collector:reset()
+    collector:discard_type("connection_checkout_started")
     state.collectors[client] = collector
     return client
   end

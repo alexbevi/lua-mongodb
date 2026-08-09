@@ -170,6 +170,18 @@ function COLLECTOR_METHODS:count(event_name, command_name)
   return count
 end
 
+function COLLECTOR_METHODS:discard_type(event_type)
+  local retained = {}
+
+  for _, event in ipairs(self.events) do
+    if event.type ~= event_type then
+      retained[#retained + 1] = event
+    end
+  end
+
+  self.events = retained
+end
+
 function COLLECTOR_METHODS:pools_populated(min_pool_size)
   local found = false
 
