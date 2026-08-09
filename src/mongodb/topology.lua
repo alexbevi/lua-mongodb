@@ -521,9 +521,14 @@ local function monitor_loop(manager, address)
     local now = state.runtime.clock:now()
     local earliest = server.last_check_at
       and server.last_check_at + state.min_heartbeat_frequency_ms / 1000 or now
+    local current = state.description:server(address)
+    local streaming = state.server_monitoring_mode ~= "poll"
+      and current ~= nil
+      and current.type ~= sdam.SERVER_TYPE.UNKNOWN
+      and current.topology_version ~= nil
     local delay
 
-    if server.last_awaited then
+    if server.last_awaited or streaming then
       delay = 0
     elseif server.check_requested then
       delay = math.max(0, earliest - now)

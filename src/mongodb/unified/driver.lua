@@ -864,6 +864,213 @@ local function assert_event_count(state)
   end
 end
 
+local function validate_topology_arguments(arguments, allowed, path)
+  if not bson.is_document(arguments) then
+    return configuration_error("topology operation arguments must be an object", path)
+  end
+
+  for key in arguments:iter() do
+    if not allowed[key] then
+      return configuration_error(
+        "unsupported topology operation argument: " .. key,
+        path .. ".arguments." .. key
+      )
+    end
+  end
+
+  return true
+end
+
+local function primary_address(description)
+  if description == nil then
+    return nil
+  end
+
+  for _, address in ipairs(description:addresses()) do
+    local server = description:server(address)
+
+    if server and server.type == "RSPrimary" then
+      return address
+    end
+  end
+end
+
+local function record_topology_description(state)
+  return function(runner, arguments, path)
+    local valid, err = validate_topology_arguments(arguments, {
+      client = true,
+      id = true,
+    }, path)
+
+    if not valid then
+      return nil, err
+    end
+
+    local client_name = arguments:get("client")
+    local id = arguments:get("id")
+
+    if type(client_name) ~= "string" or client_name == ""
+        or type(id) ~= "string" or id == ""
+    then
+      return configuration_error(
+        "recordTopologyDescription requires non-empty client and id strings",
+        path
+      )
+    end
+
+    local client
+    client, err = runner:get_entity(
+      client_name,
+      "client",
+      path .. ".arguments.client"
+    )
+
+    if not client then
+      return nil, err
+    end
+
+    local collector = state.collectors[client]
+    local description = collector and collector:topology_description()
+
+    if description == nil then
+      return configuration_error("client has no topology description", path)
+    end
+
+    return runner:add_entity(id, "topologyDescription", description)
+  end
+end
+
+local function assert_topology_type(runner, arguments, path)
+  local valid, err = validate_topology_arguments(arguments, {
+    topologyDescription = true,
+    topologyType = true,
+  }, path)
+
+  if not valid then
+    return nil, err
+  end
+
+  local name = arguments:get("topologyDescription")
+  local expected = arguments:get("topologyType")
+
+  if type(name) ~= "string" or name == ""
+      or type(expected) ~= "string" or expected == ""
+  then
+    return configuration_error(
+      "assertTopologyType requires non-empty topologyDescription and topologyType strings",
+      path
+    )
+  end
+
+  local description
+  description, err = runner:get_entity(
+    name,
+    "topologyDescription",
+    path .. ".arguments.topologyDescription"
+  )
+
+  if not description then
+    return nil, err
+  end
+
+  if description.type ~= expected then
+    return configuration_error("topology type does not match", path)
+  end
+
+  return true
+end
+
+local function wait_for_primary_change(state)
+  return function(runner, arguments, path)
+    local valid, err = validate_topology_arguments(arguments, {
+      client = true,
+      priorTopologyDescription = true,
+      timeoutMS = true,
+    }, path)
+
+    if not valid then
+      return nil, err
+    end
+
+    local client_name = arguments:get("client")
+    local prior_name = arguments:get("priorTopologyDescription")
+    local timeout_ms = arguments:get("timeoutMS")
+
+    if bson.is_exact(timeout_ms) then
+      timeout_ms = timeout_ms:to_number()
+    end
+
+    if timeout_ms == nil then
+      timeout_ms = 10000
+    end
+
+    if type(client_name) ~= "string" or client_name == ""
+        or type(prior_name) ~= "string" or prior_name == ""
+        or math.type(timeout_ms) ~= "integer" or timeout_ms < 0
+    then
+      return configuration_error("invalid waitForPrimaryChange arguments", path)
+    end
+
+    local client
+    client, err = runner:get_entity(
+      client_name,
+      "client",
+      path .. ".arguments.client"
+    )
+
+    if not client then
+      return nil, err
+    end
+
+    local prior
+    prior, err = runner:get_entity(
+      prior_name,
+      "topologyDescription",
+      path .. ".arguments.priorTopologyDescription"
+    )
+
+    if not prior then
+      return nil, err
+    end
+
+    local collector = state.collectors[client]
+
+    if not collector then
+      return configuration_error("client has no topology collector", path)
+    end
+
+    local old_primary = primary_address(prior)
+    local deadline = state.runtime.clock:now() + timeout_ms / 1000
+
+    while true do
+      local new_primary = primary_address(collector:topology_description())
+
+      if new_primary ~= nil and new_primary ~= old_primary then
+        return true
+      end
+
+      local remaining = deadline - state.runtime.clock:now()
+
+      if remaining <= 0 then
+        local current = collector:topology_description()
+        return configuration_error(
+          "waitForPrimaryChange timed out; prior primary="
+            .. tostring(old_primary) .. ", current primary="
+            .. tostring(primary_address(current)) .. ", topology="
+            .. tostring(current and current.type),
+          path
+        )
+      end
+
+      local slept, sleep_err = state.runtime.clock:sleep(math.min(remaining, 0.01))
+
+      if not slept then
+        return nil, sleep_err
+      end
+    end
+  end
+end
+
 local function collect_cursor(cursor)
   local documents = {}
 
@@ -1975,6 +2182,7 @@ function M.new(options)
       assertCollectionExists = assert_collection_exists(state, true),
       assertCollectionNotExists = assert_collection_exists(state, false),
       assertEventCount = assert_event_count(state),
+      assertTopologyType = assert_topology_type,
       assertDifferentLsidOnLastTwoCommands = assert_last_lsids(state, false),
       assertIndexExists = assert_index_exists(state, true),
       assertIndexNotExists = assert_index_exists(state, false),
@@ -1983,7 +2191,9 @@ function M.new(options)
       assertSessionNotDirty = assert_session_dirty(false),
       assertSessionTransactionState = assert_session_transaction_state,
       failPoint = failpoint_handler,
+      recordTopologyDescription = record_topology_description(state),
       waitForEvent = wait_for_event(state),
+      waitForPrimaryChange = wait_for_primary_change(state),
     },
   })
 

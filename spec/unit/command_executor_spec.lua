@@ -2,6 +2,7 @@ local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local executor = require("mongodb.command.executor")
 local handshake_metadata = require("mongodb.handshake.metadata")
+local monitoring = require("mongodb.monitoring")
 local op_msg = require("mongodb.wire.op_msg")
 
 local function fake_connection(responses)
@@ -18,13 +19,15 @@ local function fake_connection(responses)
 
   function connection:read_frame()
     local request = self.requests[#self.requests]
-    local body = table.remove(self.responses, 1)
+    local scripted = table.remove(self.responses, 1)
+    local body = scripted.body or scripted
 
     return assert(op_msg.encode({
       body = body,
       direction = "response",
-      request_id = 900 + #self.requests,
-      response_to = request.request_id,
+      flags = scripted.flags,
+      request_id = scripted.request_id or 900 + #self.requests,
+      response_to = scripted.response_to or request.request_id,
     }))
   end
 
@@ -49,7 +52,20 @@ describe("single-connection command executor", function()
         { "maxWriteBatchSize", 100 },
         { "logicalSessionTimeoutMinutes", 30 },
       }),
-      bson.document({ { "ok", 1 }, { "helloOk", true }, { "maxWireVersion", 25 } }),
+      {
+        body = bson.document({
+          { "ok", 1 }, { "helloOk", true }, { "maxWireVersion", 25 },
+        }),
+        flags = op_msg.FLAG.MORE_TO_COME,
+        request_id = 902,
+      },
+      {
+        body = bson.document({
+          { "ok", 1 }, { "helloOk", true }, { "maxWireVersion", 25 },
+        }),
+        request_id = 903,
+        response_to = 902,
+      },
       bson.document({ { "ok", 1 }, { "value", "pong" } }),
     })
     local commands = assert(executor.new(connection, {
@@ -96,6 +112,15 @@ describe("single-connection command executor", function()
       10000,
       connection.requests[2].body:get("maxAwaitTimeMS"):to_number()
     )
+    assert.is_true(
+      connection.requests[2].flags & op_msg.FLAG.EXHAUST_ALLOWED ~= 0
+    )
+
+    assert(commands:hello({
+      max_await_time_ms = 10000,
+      topology_version = topology_version,
+    }))
+    assert.are.equal(2, #connection.requests)
 
     local command = bson.document({ { "ping", 1 }, { "comment", "unchanged" } })
     local response = assert(commands:command("admin", command))
@@ -134,6 +159,66 @@ describe("single-connection command executor", function()
     )
     assert.is_true(sent:get("apiStrict"))
     assert.is_false(sent:get("apiDeprecationErrors"))
+  end)
+
+  it("validates awaitable hello arguments before writing", function()
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+    })
+    local commands = assert(executor.new(connection))
+    local topology_version = bson.document({
+      { "processId", bson.object_id("000000000000000000000001") },
+      { "counter", bson.int64(1) },
+    })
+
+    assert(commands:hello())
+    assert.has_error(function()
+      commands:hello("invalid")
+    end, "hello options must be a table")
+    assert.has_error(function()
+      commands:hello({ unsupported = true })
+    end, "unknown hello option: unsupported")
+    assert.has_error(function()
+      commands:hello({
+        max_await_time_ms = -1,
+        topology_version = topology_version,
+      })
+    end, "max_await_time_ms must be a non-negative integer")
+    assert.has_error(function()
+      commands:hello({
+        max_await_time_ms = 1,
+        topology_version = "invalid",
+      })
+    end, "topology_version must be a BSON document")
+    assert.has_error(function()
+      commands:hello({ max_await_time_ms = 1 })
+    end, "awaitable hello requires topology_version and max_await_time_ms")
+    assert.are.equal(1, #connection.requests)
+  end)
+
+  it("rejects commands while a streamed hello response is pending", function()
+    local topology_version = bson.document({
+      { "processId", bson.object_id("000000000000000000000001") },
+      { "counter", bson.int64(1) },
+    })
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      {
+        body = bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+        flags = op_msg.FLAG.MORE_TO_COME,
+      },
+    })
+    local commands = assert(executor.new(connection))
+
+    assert(commands:hello())
+    assert(commands:hello({
+      max_await_time_ms = 10000,
+      topology_version = topology_version,
+    }))
+    assert.has_error(function()
+      commands:command("admin", bson.document({ { "ping", 1 } }))
+    end, "cannot send a command while an exhaust response is pending")
+    assert.are.equal(2, #connection.requests)
   end)
 
   it("returns server codes, names, labels, and response details", function()
@@ -189,5 +274,39 @@ describe("single-connection command executor", function()
     }))
     assert.is_true(connection.requests[2].more_to_come)
     assert.are.equal(0, #connection.responses)
+  end)
+
+  it("rejects an unexpected streamed reply for an ordinary command", function()
+    local failed_event
+    local events = monitoring.new({
+      clock = { now = function() return 0 end },
+      listeners = {
+        {
+          failed = function(_, event)
+            failed_event = event
+          end,
+        },
+      },
+    })
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      {
+        body = bson.document({ { "ok", 1 } }),
+        flags = op_msg.FLAG.MORE_TO_COME,
+      },
+    })
+    local commands = assert(executor.new(connection, { monitoring = events }))
+
+    assert(commands:hello())
+    local response, err = commands:command(
+      "admin",
+      bson.document({ { "ping", 1 } })
+    )
+
+    assert.is_nil(response)
+    assert.is_true(errors.is(err, errors.CATEGORY.PROTOCOL))
+    assert.is_true(connection.closed)
+    assert.are.equal("command_failed", failed_event.type)
+    assert.are.equal(err, failed_event.failure)
   end)
 end)

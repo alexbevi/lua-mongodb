@@ -234,6 +234,10 @@ function COLLECTOR_METHODS:reset()
   self.events = {}
 end
 
+function COLLECTOR_METHODS:topology_description()
+  return self.current_topology_description
+end
+
 function M.new(specification)
   local observed, err = string_set(
     specification:get("observeEvents"),
@@ -266,6 +270,7 @@ function M.new(specification)
 
   local collector = setmetatable({
     active = true,
+    current_topology_description = nil,
     events = {},
     ignored = ignored,
     observed = observed,
@@ -366,6 +371,9 @@ function M.new(specification)
         },
         type = "server_description_changed",
       })
+    end,
+    TopologyDescriptionChanged = function(_, event)
+      collector.current_topology_description = event.new_description
     end,
   }
   return collector

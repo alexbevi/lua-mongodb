@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1373,
-    "runnable": 1373
+    "passed": 1374,
+    "runnable": 1374
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -71868,7 +71868,6 @@
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {
       "activity": "REL-040",
       "fingerprint": "732bfdf3dc8e535a1acc6ff132b477383e024d5c0cc8946963762aaebee5c8ce",
-      "reason": "replica sets await prompt rediscovery after step-down",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71913,7 +71912,7 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {
       "activity": "REL-041",

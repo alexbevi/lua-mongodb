@@ -142,6 +142,82 @@ local function close_with(state, err)
   return nil, err
 end
 
+local function receive_response(state, expected_response_to, options, span)
+  local io_deadline = options.socket_deadline or options.deadline
+  local response_bytes, err = state.connection:read_frame(
+    state.max_message_size,
+    io_deadline,
+    options.cancellation
+  )
+
+  if not response_bytes then
+    if span then
+      span:failed(err)
+    end
+
+    return close_with(state, err)
+  end
+
+  local response
+  response, err = op_msg.decode(response_bytes, {
+    direction = "response",
+    expected_response_to = expected_response_to,
+    max_bson_size = state.max_bson_size,
+    max_message_size = state.max_message_size,
+  })
+
+  if not response then
+    if span then
+      span:failed(err)
+    end
+
+    return close_with(state, err)
+  end
+
+  if response.more_to_come and not options.exhaust_allowed then
+    err = protocol_error("command response unexpectedly has moreToCome set")
+
+    if span then
+      span:failed(err)
+    end
+
+    return close_with(state, err)
+  end
+
+  local ok = number_value(response.body:get("ok"))
+
+  if ok == nil then
+    err = protocol_error("command response is missing a numeric ok field")
+
+    if span then
+      span:failed(err)
+    end
+
+    return close_with(state, err)
+  end
+
+  if ok == 0 then
+    err = server_error(state, response.body)
+
+    if span then
+      span:failed(err)
+    end
+
+    return nil, err
+  end
+
+  if options.exhaust_allowed then
+    state.more_to_come = response.more_to_come
+    state.next_response_to = response.request_id
+  end
+
+  if span then
+    span:succeeded(response.body)
+  end
+
+  return response.body
+end
+
 local function execute(state, database, command, options)
   options = options or {}
 
@@ -174,13 +250,27 @@ local function execute(state, database, command, options)
     end
   end
 
+  if state.more_to_come then
+    error("cannot send a command while an exhaust response is pending", 3)
+  end
+
   local request_id = state.request_ids:next()
   local io_deadline = options.socket_deadline or options.deadline
   local body = envelope(command, database, state.server_api)
+  local flags = 0
+
+  if options.no_response then
+    flags = flags | op_msg.FLAG.MORE_TO_COME
+  end
+
+  if options.exhaust_allowed then
+    flags = flags | op_msg.FLAG.EXHAUST_ALLOWED
+  end
+
   local bytes
   bytes, err = op_msg.encode({
     body = body,
-    flags = options.no_response and op_msg.FLAG.MORE_TO_COME or nil,
+    flags = flags,
     max_bson_size = state.max_bson_size,
     max_message_size = state.max_message_size,
     max_sequence_document_size = options.max_sequence_document_size,
@@ -221,74 +311,7 @@ local function execute(state, database, command, options)
     return bson.document({ { "ok", 1 } })
   end
 
-  local response_bytes
-  response_bytes, err = state.connection:read_frame(
-    state.max_message_size,
-    io_deadline,
-    options.cancellation
-  )
-
-  if not response_bytes then
-    if span then
-      span:failed(err)
-    end
-
-    return close_with(state, err)
-  end
-
-  local response
-  response, err = op_msg.decode(response_bytes, {
-    direction = "response",
-    expected_response_to = request_id,
-    max_bson_size = state.max_bson_size,
-    max_message_size = state.max_message_size,
-  })
-
-  if not response then
-    if span then
-      span:failed(err)
-    end
-
-    return close_with(state, err)
-  end
-
-  if response.more_to_come then
-    err = protocol_error("command response unexpectedly has moreToCome set")
-
-    if span then
-      span:failed(err)
-    end
-
-    return close_with(state, err)
-  end
-
-  local ok = number_value(response.body:get("ok"))
-
-  if ok == nil then
-    err = protocol_error("command response is missing a numeric ok field")
-
-    if span then
-      span:failed(err)
-    end
-
-    return close_with(state, err)
-  end
-
-  if ok == 0 then
-    err = server_error(state, response.body)
-
-    if span then
-      span:failed(err)
-    end
-
-    return nil, err
-  end
-
-  if span then
-    span:succeeded(response.body)
-  end
-
-  return response.body
+  return receive_response(state, request_id, options, span)
 end
 
 function EXECUTOR_METHODS:hello(options)
@@ -356,12 +379,24 @@ function EXECUTOR_METHODS:hello(options)
     }
   end
 
-  local response, err = execute(state, "admin", bson.document(entries), {
-    apply_operation_timeout = false,
-    cancellation = options.cancellation,
-    deadline = options.deadline,
-    monitor = false,
-  })
+  local response
+  local err
+
+  if state.more_to_come then
+    response, err = receive_response(state, state.next_response_to, {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      exhaust_allowed = true,
+    })
+  else
+    response, err = execute(state, "admin", bson.document(entries), {
+      apply_operation_timeout = false,
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      exhaust_allowed = options.topology_version ~= nil,
+      monitor = false,
+    })
+  end
 
   if not response then
     return nil, err
@@ -478,6 +513,8 @@ function M.new(connection, options)
     max_message_size = DEFAULT_MAX_MESSAGE_SIZE,
     metadata = options.metadata or handshake_metadata.new(),
     monitoring = options.monitoring,
+    more_to_come = false,
+    next_response_to = nil,
     request_ids = options.request_ids or op_msg.request_ids(),
     server = options.server,
     server_connection_id = nil,

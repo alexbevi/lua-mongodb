@@ -436,10 +436,6 @@ for fixture, count in (
     ] = ("ADV-005", OWNER_REASONS["ADV-005"])
 
 TEST_OVERRIDES.update({
-  "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": (
-    "REL-040",
-    OWNER_REASONS["REL-040"],
-  ),
   "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": (
     "REL-041",
     OWNER_REASONS["REL-041"],

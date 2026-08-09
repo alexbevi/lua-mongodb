@@ -25,6 +25,20 @@
       "evidence": [
         {
           "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH=<lua54-path> LUA_CPATH=<lua54-cpath> make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json'",
+          "exit_code": 2,
+          "summary": "1 exact unified test executed and failed: unsupported recordTopologyDescription exposed the missing prompt-rediscovery observation boundary before the stepped-down primary could be rediscovered",
+          "recorded_at": "2026-08-09T18:36:39+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH=<lua54-path> LUA_CPATH=<lua54-cpath> make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua spec/unit/unified_runner_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua spec/integration/command_ping_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='<8 touched Lua files>'; capability, conformance, release-scope, README projection, executor JSON, Python compile, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "31 unit and 4 directly coupled integration tests passed; exact three-member step-down fixture executed 1, passed 1, environment-skipped 0, deferred 0, failed 0; 56 capability/conformance tests and touched-file lint passed; capability, ledger, release-scope, README projection, executor JSON, Python compile, plan, and diff validators passed",
+          "recorded_at": "2026-08-09T19:00:16+00:00"
+        },
+        {
+          "phase": "red",
           "command": "/tmp/lua-mongodb-tools.VEJKxC/rocks/bin/busted --lpath='src/?.lua' --lpath='src/?/init.lua' spec/unit",
           "exit_code": 1,
           "summary": "Four bootstrap tests error because mongodb and mongodb.runtime_guard do not exist",
@@ -2072,6 +2086,30 @@
       "notes": [],
       "started_at": "2026-08-09T17:14:03+00:00",
       "completed_at": "2026-08-09T17:22:31+00:00"
+    },
+    "REL-040": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "GitHub Actions run 31330534887 portable (macos-latest): make check",
+          "exit_code": 2,
+          "summary": "All 1289 runnable unified cases and 235 integration tests passed, but the macOS coverage gate failed because total line coverage regressed from 18391/21910 to 18632/22199; two additional deterministic covered lines were required.",
+          "recorded_at": "2026-08-09T20:19:23+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH=<lua54-path> LUA_CPATH=<lua54-cpath> make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/unified_events_spec.lua' FOCUS_LINT='spec/unit/command_executor_spec.lua spec/unit/unified_events_spec.lua'; make test-coverage",
+          "exit_code": 0,
+          "summary": "18 focused unit tests passed with touched-test lint clean; the CI-diagnostic coverage target passed 239 tests and the ratchet at 18644/22199 lines (83.99%) after deterministic coverage for retained topology descriptions, awaitable hello validation, pending-stream command rejection, and unexpected streamed replies.",
+          "recorded_at": "2026-08-09T20:19:24+00:00"
+        }
+      ],
+      "notes": [
+        "CI remediation: macOS authoritative CI failed the total source-coverage ratchet after all behavioral suites passed; deterministic unit coverage was added for the REL-040 streaming and topology-description boundaries."
+      ],
+      "started_at": "2026-08-09T18:34:56+00:00",
+      "completed_at": "2026-08-09T20:19:35+00:00"
     }
   },
   "verified_references": {

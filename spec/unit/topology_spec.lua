@@ -210,6 +210,42 @@ describe("monitored topology", function()
     end)
   end)
 
+  it("starts streaming without waiting for the heartbeat interval", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local awaited_fields
+      local version = bson.document({
+        { "processId", assert(bson.object_id("000000000000000000000001")) },
+        { "counter", bson.int64(1) },
+      })
+      local response = hello(true, version)
+      local manager = topology.new({
+        check = function(_, fields)
+          if fields.awaited then
+            awaited_fields = fields
+            return nil, select(2, runtime.clock:sleep(1, fields.cancellation))
+          end
+
+          return response
+        end,
+        heartbeat_frequency_ms = 60000,
+        min_heartbeat_frequency_ms = 500,
+        pool_factory = new_pool,
+        runtime = runtime,
+        seeds = { "a:27017" },
+        set_name = "rs",
+        type = "ReplicaSetNoPrimary",
+      })
+
+      assert(manager:open())
+      assert(runtime.clock:sleep(0.03))
+      assert.is_not_nil(awaited_fields)
+      assert.are.equal(version, awaited_fields.topology_version)
+      assert.are.equal(60000, awaited_fields.max_await_time_ms)
+      assert(manager:close())
+    end)
+  end)
+
   it("does not schedule RTT checks in polling mode", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

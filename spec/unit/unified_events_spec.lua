@@ -136,6 +136,17 @@ describe("unified command events", function()
     ))
   end)
 
+  it("retains the latest topology description without observing topology events", function()
+    local collector = assert(event_module.new(document({})))
+    local description = { type = "ReplicaSetWithPrimary" }
+
+    assert.is_nil(collector:topology_description())
+    collector.sdam_listener:TopologyDescriptionChanged({
+      new_description = description,
+    })
+    assert.are.equal(description, collector:topology_description())
+  end)
+
   it("matches event order and permits only trailing events when requested", function()
     local runner, collector, collectors = setup()
 

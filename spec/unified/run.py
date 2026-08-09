@@ -817,6 +817,19 @@ def replica_set_environment(
     yield environment
     return
 
+  member_count = max(
+    (
+      registry.get(value["id"], {}).get("replicaSetMembers", 1)
+      for value in classifications
+      if value["status"] == "runnable"
+      and registry.get(value["id"], {}).get("environment") == "live-replicaset"
+    ),
+    default=1,
+  )
+
+  if type(member_count) is not int or member_count < 1 or member_count > 3:
+    raise CapabilityError("replicaSetMembers must be an integer from 1 through 3")
+
   configured_uri = environment.get("MONGODB_UNIFIED_REPLICA_SET_URI")
 
   if configured_uri:
@@ -838,47 +851,73 @@ def replica_set_environment(
     )
 
   version = _mongod_version(executable)
-  port = _free_port()
+  ports: list[int] = []
+
+  while len(ports) < member_count:
+    port = _free_port()
+
+    if port not in ports:
+      ports.append(port)
+
   set_name = "lua-mongodb-unified"
-  direct_uri = f"mongodb://127.0.0.1:{port}"
+  direct_uri = f"mongodb://127.0.0.1:{ports[0]}"
 
   with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-rs-") as directory:
     root = Path(directory)
-    (root / "db").mkdir()
-    process = subprocess.Popen(
-      [
-        executable,
-        "--bind_ip", "127.0.0.1",
-        "--dbpath", str(root / "db"),
-        "--logpath", str(root / "mongod.log"),
-        "--nounixsocket",
-        "--port", str(port),
-        "--quiet",
-        "--replSet", set_name,
-        "--setParameter", "enableTestCommands=1",
-      ],
-      stdout=subprocess.DEVNULL,
-      stderr=subprocess.DEVNULL,
-    )
+    processes: list[subprocess.Popen[bytes]] = []
+
+    for index, port in enumerate(ports):
+      database_path = root / f"db-{index}"
+      database_path.mkdir()
+      processes.append(subprocess.Popen(
+        [
+          executable,
+          "--bind_ip", "127.0.0.1",
+          "--dbpath", str(database_path),
+          "--logpath", str(root / f"mongod-{index}.log"),
+          "--nounixsocket",
+          "--port", str(port),
+          "--quiet",
+          "--replSet", set_name,
+          "--setParameter", "enableTestCommands=1",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+      ))
 
     try:
-      deadline = time.monotonic() + 20
+      deadline = time.monotonic() + 60
 
-      while time.monotonic() < deadline:
-        if process.poll() is not None:
-          log = root / "mongod.log"
-          detail = log.read_text(encoding="utf-8")[-2000:] if log.exists() else ""
+      for index, (port, process) in enumerate(zip(ports, processes)):
+        while time.monotonic() < deadline:
+          if process.poll() is not None:
+            log = root / f"mongod-{index}.log"
+            detail = log.read_text(encoding="utf-8")[-2000:] if log.exists() else ""
+            raise CapabilityError(
+              f"ephemeral replica-set member exited {process.returncode}: "
+              f"{detail.strip()}"
+            )
+
+          try:
+            with socket.create_connection(("127.0.0.1", port), timeout=0.2):
+              break
+          except OSError:
+            time.sleep(0.05)
+        else:
           raise CapabilityError(
-            f"ephemeral replica set exited {process.returncode}: {detail.strip()}"
+            "ephemeral replica-set members did not start within 60 seconds"
           )
 
-        try:
-          with socket.create_connection(("127.0.0.1", port), timeout=0.2):
-            break
-        except OSError:
-          time.sleep(0.05)
-      else:
-        raise CapabilityError("ephemeral replica set did not start within 20 seconds")
+      members = ",".join(
+        f'{{_id:{index},host:"127.0.0.1:{port}"}}'
+        for index, port in enumerate(ports)
+      )
+      configuration = f'{{_id:"{set_name}",members:[{members}]'
+
+      if member_count > 1:
+        configuration += ",settings:{electionTimeoutMillis:1000}"
+
+      configuration += "}"
 
       initiate = subprocess.run(
         [
@@ -886,10 +925,7 @@ def replica_set_environment(
           direct_uri,
           "--quiet",
           "--eval",
-          (
-            f'rs.initiate({{_id:"{set_name}",members:['
-            f'{{_id:0,host:"127.0.0.1:{port}"}}]}})'
-          ),
+          f"rs.initiate({configuration})",
         ],
         capture_output=True,
         text=True,
@@ -921,22 +957,26 @@ def replica_set_environment(
       else:
         raise CapabilityError("ephemeral replica set did not elect a primary")
 
+      seed_list = ",".join(f"127.0.0.1:{port}" for port in ports)
       environment["MONGODB_UNIFIED_REPLICA_SET_URI"] = (
-        f"{direct_uri}/?replicaSet={set_name}"
+        f"mongodb://{seed_list}/?replicaSet={set_name}"
         "&serverSelectionTimeoutMS=5000&heartbeatFrequencyMS=500"
       )
       environment["MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"] = version
       environment["MONGODB_UNIFIED_TEST_COMMANDS"] = "1"
       yield environment
     finally:
-      if process.poll() is None:
-        process.terminate()
+      for process in processes:
+        if process.poll() is None:
+          process.terminate()
 
-        try:
-          process.wait(timeout=10)
-        except subprocess.TimeoutExpired:
-          process.kill()
-          process.wait(timeout=5)
+      for process in processes:
+        if process.poll() is None:
+          try:
+            process.wait(timeout=10)
+          except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait(timeout=5)
 
 
 def write_report(report: dict[str, Any], destination: str | None) -> None:
@@ -993,10 +1033,20 @@ def main(argv: list[str] | None = None) -> int:
         return lua_executor(arguments.lua, arguments.executor, environment)(classification)
 
       isolated_registry = {
-        classification["id"]: {"environment": "live-replicaset"},
+        classification["id"]: {
+          "environment": "live-replicaset",
+          "replicaSetMembers": entry.get("replicaSetMembers", 1),
+        },
       }
 
       with standalone_environment([classification], isolated_registry) as isolated_standalone:
+        if entry.get("replicaSetMembers", 1) > 1:
+          isolated_standalone.pop("MONGODB_UNIFIED_REPLICA_SET_URI", None)
+          isolated_standalone.pop(
+            "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION",
+            None,
+          )
+
         with replica_set_environment(
           [classification],
           isolated_registry,
