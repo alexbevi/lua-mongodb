@@ -464,9 +464,14 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Legacy wTimeoutMS reaches acknowledged writes", "The option remains subordinate to timeoutMS under CSOT"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(config): normalize legacy write timeouts"
     },
     {
-      "id": "REL-027", "title": "Remove deprecated write concern timeouts", "milestone": "production-core-v1", "depends_on": ["REL-026"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Specify CSOT command shaping when writeConcern contains only a deprecated timeout.", "implementation": "Normalize wire write-concern timeout keys and omit an empty writeConcern after CSOT removes the deprecated field.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["CSOT removes deprecated write concern timeouts", "Commands never send an empty writeConcern document"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(timeout): remove deprecated write concern timeouts"
+      "id": "REL-027", "title": "Normalize bulk write timeout fields", "milestone": "production-core-v1", "depends_on": ["REL-026"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify the server write-concern timeout field emitted by an acknowledged collection bulk write.", "implementation": "Translate the public wTimeoutMS value to the normative wtimeout field in collection bulk-write commands.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Collection bulk writes send wtimeout and never wtimeoutMS", "Existing acknowledged and unacknowledged bulk behavior remains unchanged"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(bulk): normalize write timeout fields"
+    },
+    {
+      "id": "REL-033", "title": "Normalize administration write timeout fields", "milestone": "production-core-v1", "depends_on": ["REL-027"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Specify the server write-concern timeout field emitted by an acknowledged administration command.", "implementation": "Translate the public wTimeoutMS value to the normative wtimeout field in database, collection, and index administration commands.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Administration writes send wtimeout and never wtimeoutMS", "Existing administration result and error behavior remains unchanged"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(admin): normalize write timeout fields"
     },
     {
       "id": "REL-028", "title": "Enforce transaction read preferences", "milestone": "production-core-v1", "depends_on": ["REL-021"], "references": ["specifications:source"], "test_policy": "red_green",
@@ -474,7 +479,7 @@
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Transactions reject every non-primary read preference source", "Existing transaction and command fixtures remain green"], "docs": ["docs/ARCHITECTURE.md"], "commit": "fix(transaction): enforce primary read preference"
     },
     {
-      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-027"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-006", "title": "Harden release retry and handshake edges", "milestone": "production-core-v1", "depends_on": ["REL-033"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Enable residual retryable read/write, handshake, transaction, monitoring, and legacy-timeout fixtures applicable to standalone and replica sets.", "implementation": "Close per-attempt deadline, handshake retry, error-label, and topology-observation gaps without expanding deployment scope.",
       "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Applicable retry and handshake fixtures pass", "Timeouts, labels, and cleanup remain deterministic under retained stress seeds"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "fix(retry): harden release edge cases"
     },
