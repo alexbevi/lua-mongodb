@@ -37,6 +37,16 @@ local function expected_cmap_events(values)
   })
 end
 
+local function expected_sdam_events(values)
+  return array({
+    document({
+      { "client", "client0" },
+      { "eventType", "sdam" },
+      { "events", array(values) },
+    }),
+  })
+end
+
 local function expected_event(name, command_name)
   return document({
     { name, document({ { "commandName", command_name } }) },
@@ -140,11 +150,52 @@ describe("unified command events", function()
     local collector = assert(event_module.new(document({})))
     local description = { type = "ReplicaSetWithPrimary" }
 
+    assert.is_false(collector:observes_sdam())
     assert.is_nil(collector:topology_description())
     collector.sdam_listener:TopologyDescriptionChanged({
       new_description = description,
     })
     assert.are.equal(description, collector:topology_description())
+  end)
+
+  it("matches topology lifecycle descriptions in publication order", function()
+    local runner = runner_module.new({ runtime = fake_runtime.new() })
+    local client = {}
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({
+        "topologyOpeningEvent",
+        "topologyDescriptionChangedEvent",
+        "topologyClosedEvent",
+      }) },
+    })))
+
+    assert.is_true(collector:observes_sdam())
+    assert(runner:add_entity("client0", "client", client))
+    collector.sdam_listener:TopologyOpening({})
+    collector.sdam_listener:TopologyDescriptionChanged({
+      new_description = { type = "ReplicaSetWithPrimary" },
+      previous_description = { type = "ReplicaSetNoPrimary" },
+    })
+    collector.sdam_listener:TopologyClosed({})
+
+    assert.are.equal(1, collector:count(
+      "topologyDescriptionChangedEvent",
+      document({})
+    ))
+    assert(event_module.assert_all(runner, expected_sdam_events({
+      document({ { "topologyOpeningEvent", document({}) } }),
+      document({
+        { "topologyDescriptionChangedEvent", document({
+          { "previousDescription", document({
+            { "type", "ReplicaSetNoPrimary" },
+          }) },
+          { "newDescription", document({
+            { "type", "ReplicaSetWithPrimary" },
+          }) },
+        }) },
+      }),
+      document({ { "topologyClosedEvent", document({}) } }),
+    }), { [client] = collector }, "$.expectEvents"))
   end)
 
   it("matches event order and permits only trailing events when requested", function()

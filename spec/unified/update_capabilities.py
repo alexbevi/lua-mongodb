@@ -435,17 +435,6 @@ for fixture, count in (
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
     ] = ("ADV-005", OWNER_REASONS["ADV-005"])
 
-TEST_OVERRIDES.update({
-  "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": (
-    "REL-041",
-    OWNER_REASONS["REL-041"],
-  ),
-  "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": (
-    "REL-041",
-    OWNER_REASONS["REL-041"],
-  ),
-})
-
 for fixture, count in (
   ("db-aggregate-rawdata", 2),
   ("db-aggregate-write-readPreference", 4),

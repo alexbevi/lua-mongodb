@@ -199,6 +199,7 @@ describe("monitored topology", function()
 
       assert(manager:open())
       assert(runtime.clock:sleep(0.035))
+      assert.is_true(manager.description:server("a:27017").round_trip_time > 0)
       assert(manager:close())
 
       assert.is_true(checks >= 2)
@@ -206,7 +207,6 @@ describe("monitored topology", function()
       assert.are.equal(version, awaited_fields.topology_version)
       assert.are.equal(10, awaited_fields.max_await_time_ms)
       assert.is_true(rtt_while_awaited)
-      assert.is_true(manager.description:server("a:27017").round_trip_time > 0)
     end)
   end)
 
@@ -557,10 +557,15 @@ describe("monitored topology", function()
   it("orders shutdown events and ignores late monitor results", function()
     local runtime = fake_runtime.new()
     local events = {}
+    local topology_changes = {}
     local manager = topology.new({
       listeners = {
         function(event)
           events[#events + 1] = event.type
+
+          if event.type == "TopologyDescriptionChanged" then
+            topology_changes[#topology_changes + 1] = event
+          end
         end,
       },
       pool_factory = new_pool,
@@ -573,6 +578,12 @@ describe("monitored topology", function()
     assert(manager:close())
     local count = #events
 
+    assert.are.equal("Unknown", topology_changes[1].previous_description.type)
+    assert.are.equal("Single", topology_changes[1].new_description.type)
+    assert.are.equal("Single", topology_changes[2].previous_description.type)
+    assert.are.equal("Unknown", topology_changes[2].new_description.type)
+    assert.are.equal(0, #topology_changes[2].new_description:addresses())
+    assert.are.equal(topology_changes[2].new_description, manager.description)
     assert.is_false(manager:process_hello("a:27017", bson.document({ { "ok", 1 } })))
     assert.are.equal(count, #events)
     assert.same({

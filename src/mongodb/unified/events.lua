@@ -16,6 +16,9 @@ local EVENT_NAMES = {
   pool_cleared = "poolClearedEvent",
   pool_ready = "poolReadyEvent",
   server_description_changed = "serverDescriptionChangedEvent",
+  topology_closed = "topologyClosedEvent",
+  topology_description_changed = "topologyDescriptionChangedEvent",
+  topology_opening = "topologyOpeningEvent",
 }
 local EVENT_TYPES = {
   commandFailedEvent = "command_failed",
@@ -30,6 +33,9 @@ local EVENT_TYPES = {
   poolClearedEvent = "pool_cleared",
   poolReadyEvent = "pool_ready",
   serverDescriptionChangedEvent = "server_description_changed",
+  topologyClosedEvent = "topology_closed",
+  topologyDescriptionChangedEvent = "topology_description_changed",
+  topologyOpeningEvent = "topology_opening",
 }
 local CMAP_EVENT_TYPES = {
   connection_checkout_started = true,
@@ -43,6 +49,9 @@ local CMAP_EVENT_TYPES = {
 }
 local SDAM_EVENT_TYPES = {
   server_description_changed = true,
+  topology_closed = true,
+  topology_description_changed = true,
+  topology_opening = true,
 }
 local SENSITIVE_COMMANDS = {
   authenticate = true,
@@ -154,8 +163,26 @@ local function record(collector, event)
   collector.events[#collector.events + 1] = event
 end
 
+local function topology_description(description)
+  if description == nil then
+    return nil
+  end
+
+  return bson.document({ { "type", description.type } })
+end
+
 function COLLECTOR_METHODS:disable()
   self.active = false
+end
+
+function COLLECTOR_METHODS:observes_sdam()
+  for event_type in pairs(self.observed) do
+    if SDAM_EVENT_TYPES[event_type] then
+      return true
+    end
+  end
+
+  return false
 end
 
 local function count_matches(event, specification)
@@ -372,8 +399,19 @@ function M.new(specification)
         type = "server_description_changed",
       })
     end,
+    TopologyClosed = function()
+      record(collector, { type = "topology_closed" })
+    end,
     TopologyDescriptionChanged = function(_, event)
       collector.current_topology_description = event.new_description
+      record(collector, {
+        new_description = topology_description(event.new_description),
+        previous_description = topology_description(event.previous_description),
+        type = "topology_description_changed",
+      })
+    end,
+    TopologyOpening = function()
+      record(collector, { type = "topology_opening" })
     end,
   }
   return collector
@@ -418,7 +456,14 @@ local function match_event(runner, expected, actual, path)
     hasServiceId = true,
   }
 
-  if name == "commandStartedEvent" then
+  if name == "topologyDescriptionChangedEvent" then
+    allowed = {
+      newDescription = true,
+      previousDescription = true,
+    }
+  elseif SDAM_EVENT_TYPES[wanted_type] then
+    allowed = {}
+  elseif name == "commandStartedEvent" then
     allowed.command = true
   elseif name == "commandSucceededEvent" then
     allowed.reply = true
@@ -467,6 +512,16 @@ local function match_event(runner, expected, actual, path)
       then
         return configuration_error("event service id presence does not match", field_path)
       end
+    elseif field == "newDescription" or field == "previousDescription" then
+      local actual_description = field == "newDescription"
+        and actual.new_description or actual.previous_description
+      local matched
+
+      matched, err = runner:match(expected_value, actual_description, field_path)
+
+      if not matched then
+        return nil, err
+      end
     end
   end
 
@@ -500,7 +555,7 @@ function M.assert_all(runner, expected_groups, collectors, path)
 
     local event_type = group:get("eventType") or "command"
 
-    if event_type ~= "command" and event_type ~= "cmap" then
+    if event_type ~= "command" and event_type ~= "cmap" and event_type ~= "sdam" then
       return configuration_error(
         "unsupported unified event category: " .. tostring(event_type),
         group_path .. ".eventType"
@@ -538,11 +593,11 @@ function M.assert_all(runner, expected_groups, collectors, path)
     local actual_events = {}
 
     for _, event in ipairs(collector.events) do
-      local is_command = not CMAP_EVENT_TYPES[event.type]
+      local category = CMAP_EVENT_TYPES[event.type] and "cmap"
+        or SDAM_EVENT_TYPES[event.type] and "sdam"
+        or "command"
 
-      if event_type == "command" and is_command
-          or event_type == "cmap" and not is_command
-      then
+      if event_type == category then
         actual_events[#actual_events + 1] = event
       end
     end

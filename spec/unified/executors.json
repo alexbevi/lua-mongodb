@@ -5834,6 +5834,8 @@
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {"activity": "REL-038", "environment": "live-standalone", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {"activity": "REL-039", "environment": "live-standalone", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": {"activity": "REL-039", "environment": "live-standalone", "testCommands": true},
-    "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {"activity": "REL-040", "environment": "isolated-replicaset", "replicaSetMembers": 3}
+    "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {"activity": "REL-040", "environment": "isolated-replicaset", "replicaSetMembers": 3},
+    "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {"activity": "REL-041", "environment": "live-replicaset"},
+    "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": {"activity": "REL-041", "environment": "live-standalone"}
   }
 }

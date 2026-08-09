@@ -1036,6 +1036,14 @@ function TOPOLOGY_METHODS:addresses()
   return list_from_set(addresses)
 end
 
+function TOPOLOGY_METHODS:closed()
+  local state = copy_topology(self)
+
+  state.servers = {}
+  state.type = TOPOLOGY_TYPE.UNKNOWN
+  return new_topology(state)
+end
+
 function TOPOLOGY_METHODS:update(address, response, options)
   local state = TOPOLOGY_STATES[self]
   local normalized, address_err = normalize_address(address)

@@ -11,11 +11,9 @@
     "ADV-009": 240,
     "ADV-010": 777,
     "ADV-011": 201,
-    "ADV-012": 15,
-    "REL-041": 2
+    "ADV-012": 15
   },
   "deferred_by_scope": {
-    "applicable-release-gap": 2,
     "post-v1-exclusion": 1974
   },
   "post_v1_reasons": {
@@ -34,8 +32,8 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1976,
-    "passed": 3548
+    "deferred_unsupported": 1974,
+    "passed": 3550
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

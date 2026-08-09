@@ -57,8 +57,12 @@ local function client_factory(state)
       command_listeners = { collector.listener },
       pool_listeners = { collector.pool_listener },
       runtime = state.runtime,
-      sdam_listeners = { collector.sdam_listener },
     }
+
+    if collector:observes_sdam() or state.environment_topology == "replicaset" then
+      options.sdam_listeners = { collector.sdam_listener }
+    end
+
     local server_api = specification:get("serverApi")
 
     if server_api then
@@ -1140,6 +1144,18 @@ local function append_metadata(_, client, arguments)
   })
 end
 
+local function close_client(_, client)
+  return client:close()
+end
+
+local function finalize_client(_, client)
+  if client:is_closed() then
+    return true
+  end
+
+  return client:close()
+end
+
 local function list_collections(_, database, arguments)
   local cursor, err = database:list_collections(operation_options(arguments, {
     filter = "filter",
@@ -1885,6 +1901,7 @@ function M.new(options)
 
   local state = {
     collectors = setmetatable({}, { __mode = "k" }),
+    environment_topology = options.environment and options.environment.topology,
     internal_client = internal_client,
     runtime = options.runtime,
     uri = options.uri,
@@ -1918,6 +1935,7 @@ function M.new(options)
     end,
     environment = options.environment,
     entity_finalizers = {
+      client = finalize_client,
       commandCursor = finalize_cursor,
       findCursor = finalize_cursor,
     },
@@ -1933,6 +1951,10 @@ function M.new(options)
         appendMetadata = {
           arguments = { "driverInfoOptions" },
           handler = append_metadata,
+        },
+        close = {
+          arguments = {},
+          handler = close_client,
         },
         listDatabaseNames = {
           arguments = { "filter" },

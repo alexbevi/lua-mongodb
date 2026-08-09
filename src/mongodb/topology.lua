@@ -842,7 +842,7 @@ function MANAGER_METHODS:open(options)
   publish(state, "TopologyOpening")
   publish(state, "TopologyDescriptionChanged", {
     new_description = state.description,
-    previous_description = nil,
+    previous_description = state.description:closed(),
   })
 
   for _, address in ipairs(state.description:addresses()) do
@@ -1226,9 +1226,12 @@ function MANAGER_METHODS:close()
   state.state = "closed_permanently"
   state.cancellation:cancel("topology closed")
   local old_description = state.description
+  local new_description = old_description:closed()
+
+  state.description = new_description
 
   publish(state, "TopologyDescriptionChanged", {
-    new_description = nil,
+    new_description = new_description,
     previous_description = old_description,
   })
 

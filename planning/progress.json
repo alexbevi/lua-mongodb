@@ -2110,6 +2110,28 @@
       ],
       "started_at": "2026-08-09T18:34:56+00:00",
       "completed_at": "2026-08-09T20:19:35+00:00"
+    },
+    "REL-041": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json'",
+          "exit_code": 1,
+          "summary": "1 executed, 0 passed, 1 failed; unified collector rejected topologyDescriptionChangedEvent at $.client.observeEvents[1]",
+          "recorded_at": "2026-08-09T21:39:20+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/sdam_spec.lua spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua' FOCUS_LINT='src/mongodb/client.lua src/mongodb/sdam.lua src/mongodb/topology.lua src/mongodb/unified/driver.lua src/mongodb/unified/events.lua spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua' && make test-focus FOCUS_UNIFIED='standalone-emit-topology-changed-before-close' && make test-focus FOCUS_UNIFIED='replicaset-emit-topology-changed-before-close' && generated --check validators",
+          "exit_code": 0,
+          "summary": "28 unit successes; 7 Lua files linted with 0 warnings/errors; standalone and replica-set unified fixtures each executed 1, passed 1, skipped/deferred/failed 0; capability, conformance-ledger, and README compatibility validators current",
+          "recorded_at": "2026-08-09T21:47:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T21:37:37+00:00",
+      "completed_at": "2026-08-09T21:47:54+00:00"
     }
   },
   "verified_references": {

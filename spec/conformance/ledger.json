@@ -59219,13 +59219,13 @@
       "activity": "REL-041",
       "fingerprint": "3406d589e98a2f141dc5504cf0a57123b8cb1cc012a7a5b5bbe81c319c4c3aa4",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "server-discovery-and-monitoring"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[1]": {
@@ -59323,13 +59323,13 @@
       "activity": "REL-041",
       "fingerprint": "f7bc175f6916ac580ae60c2f48e061ab732c11efc678d5e61be4c06d05fc1952",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
+      "last_execution": "make test-unified",
+      "required_environment": "live-standalone",
+      "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "server-discovery-and-monitoring"
     },
     "server-selection/tests/in_window/equilibrium.json::case": {
@@ -86651,8 +86651,8 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1976,
-      "passed": 3548
+      "deferred_unsupported": 1974,
+      "passed": 3550
     },
     "suites": {
       "auth": 73,

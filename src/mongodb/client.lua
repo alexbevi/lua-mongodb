@@ -633,8 +633,9 @@ local function connect_topology(
     seeds = seeds,
     server_monitoring_mode = config.server_monitoring_mode,
     set_name = config.replica_set,
-    type = (config.replica_set == nil or config.direct_connection)
-      and "Single" or "ReplicaSetNoPrimary",
+    type = config.direct_connection and "Single"
+      or config.replica_set ~= nil and "ReplicaSetNoPrimary"
+      or "Unknown",
   })
   assert(manager:open())
   local executor = topology_executor.new(manager, {
@@ -773,7 +774,9 @@ function M.connect(uri, values)
   end
   local warnings = combine_warnings(parsed, option_warnings)
 
-  if config.replica_set ~= nil or config.min_pool_size > 0 then
+  if config.replica_set ~= nil or config.min_pool_size > 0
+      or special.sdam_listeners ~= nil
+  then
     return connect_topology(
       parsed,
       config,
