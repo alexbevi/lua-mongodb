@@ -600,7 +600,7 @@ local function connect_topology(
       min_pool_size = config.min_pool_size,
       on_connection_error = function(connection_err)
         if manager then
-          manager:handle_application_error(server_address, {
+          return manager:handle_application_error(server_address, {
             error = connection_err,
             type = "handshake",
             when = "beforeHandshakeCompletes",

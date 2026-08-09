@@ -5831,6 +5831,8 @@
     "versioned-api/tests/test-commands-strict-mode.json::test[1]": {"activity": "REL-003", "environment": "live-standalone", "testCommands": true},
     "versioned-api/tests/transaction-handling.json::test[1]": {"activity": "REL-003", "environment": "live-replicaset"},
     "versioned-api/tests/transaction-handling.json::test[2]": {"activity": "REL-003", "environment": "live-replicaset"},
-    "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {"activity": "REL-038", "environment": "live-standalone", "testCommands": true}
+    "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {"activity": "REL-038", "environment": "live-standalone", "testCommands": true},
+    "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {"activity": "REL-039", "environment": "live-standalone", "testCommands": true},
+    "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": {"activity": "REL-039", "environment": "live-standalone", "testCommands": true}
   }
 }

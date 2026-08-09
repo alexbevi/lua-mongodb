@@ -2050,6 +2050,28 @@
       "notes": [],
       "started_at": "2026-08-09T15:39:03+00:00",
       "completed_at": "2026-08-09T15:57:34+00:00"
+    },
+    "REL-039": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH=<lua54-path> LUA_CPATH=<lua54-cpath> make test-focus FOCUS_UNIT='--filter=without.clearing.after.a.handshake.error spec/unit/pool_spec.lua'",
+          "exit_code": 2,
+          "summary": "1 exact unit test executed and failed: background handshake failure paused the pool instead of preserving readiness and replenishing minPoolSize",
+          "recorded_at": "2026-08-09T17:14:58+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_UNIFIED_URI=<authenticated-local-standalone> MONGODB_UNIFIED_TEST_COMMANDS=1 make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/pool_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/client.lua src/mongodb/pool.lua src/mongodb/unified/driver.lua spec/unit/pool_spec.lua'; capability, conformance, release-scope, README projection, executor JSON, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "17 unit and 1 directly coupled integration tests passed; exact unified fixture executed 2, passed 2, environment-skipped 0, deferred 0, failed 0; 55 capability/conformance tests and touched-file lint passed; capability, ledger, release-scope, README projection, executor JSON, plan, and diff validators passed",
+          "recorded_at": "2026-08-09T17:22:20+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T17:14:03+00:00",
+      "completed_at": "2026-08-09T17:22:31+00:00"
     }
   },
   "verified_references": {

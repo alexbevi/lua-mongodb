@@ -59167,26 +59167,26 @@
       "activity": "REL-039",
       "fingerprint": "02266813bddbc447a2afcc74d84bed3d266b202e0c72d7274b0cc27c7cf35623",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
+      "last_execution": "make test-unified",
+      "required_environment": "live-standalone",
+      "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "server-discovery-and-monitoring"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": {
       "activity": "REL-039",
       "fingerprint": "0fd50565b295a218cb06fc64b38ff524aa1abdd3c964e9617f2f0b245e78353a",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
+      "last_execution": "make test-unified",
+      "required_environment": "live-standalone",
+      "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "server-discovery-and-monitoring"
     },
     "server-discovery-and-monitoring/tests/unified/pool-cleared-error.json::test[1]": {
@@ -86651,8 +86651,8 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1979,
-      "passed": 3545
+      "deferred_unsupported": 1977,
+      "passed": 3547
     },
     "suites": {
       "auth": 73,

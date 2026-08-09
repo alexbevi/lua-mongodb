@@ -382,7 +382,7 @@ local function establish(
   return connection
 end
 
-local function schedule_maintenance(pool)
+local function schedule_maintenance(pool, delayed)
   local state = POOL_STATES[pool]
 
   if state.maintenance_scheduled or state.state == "closed" then
@@ -391,6 +391,15 @@ local function schedule_maintenance(pool)
 
   state.maintenance_scheduled = true
   state.maintenance_task = state.runtime.task:spawn(function()
+    if delayed then
+      local slept, sleep_err = state.runtime.clock:sleep(state.poll_interval)
+
+      if not slept then
+        state.maintenance_scheduled = false
+        return nil, sleep_err
+      end
+    end
+
     state.maintenance_scheduled = false
     return pool:maintain()
   end)
@@ -1064,16 +1073,26 @@ function POOL_METHODS:maintain()
     )
 
     if not established then
+      local decision_made = false
+
       if state.on_connection_error then
-        pcall(state.on_connection_error, establish_err)
+        local callback_ok, decision = pcall(
+          state.on_connection_error,
+          establish_err
+        )
+
+        decision_made = callback_ok and type(decision) == "boolean"
       end
 
-      self:clear(false)
+      if not decision_made then
+        self:clear(false)
+      end
 
       if detached then
         finish_close(state, connection, "error")
       end
 
+      schedule_maintenance(self, true)
       return nil, establish_err
     end
   end

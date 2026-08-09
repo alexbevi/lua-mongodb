@@ -89,6 +89,7 @@ local function client_factory(state)
         appName = true,
         appname = true,
         heartbeatFrequencyMS = true,
+        maxConnecting = true,
         maxPoolSize = true,
         minPoolSize = true,
         retryReads = true,
@@ -148,6 +149,7 @@ local function client_factory(state)
 
       for unified_name, lua_name in pairs({
         heartbeatFrequencyMS = "heartbeat_frequency_ms",
+        maxConnecting = "max_connecting",
         maxPoolSize = "max_pool_size",
         minPoolSize = "min_pool_size",
         serverMonitoringMode = "server_monitoring_mode",
