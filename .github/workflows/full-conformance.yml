@@ -1,0 +1,173 @@
+name: Full Conformance
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_macos:
+        description: Run the complete macOS conformance gate
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "0 4 * * 1-6"
+    - cron: "0 4 * * 0"
+
+concurrency:
+  group: full-conformance-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install development dependencies
+        run: |
+          luarocks install --only-deps mongodb-scm-1.rockspec
+          luarocks install busted 2.3.0-1
+          luarocks install luacheck 1.2.0-1
+          luarocks install luacov 0.17.0-1
+
+      - name: Install MongoDB test tools on Linux
+        run: |
+          curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-org-server mongodb-mongosh
+
+      - name: Run authoritative full portable and loopback checks
+        run: make check-full UNIFIED_REPORT=build/conformance/unified.json
+
+      - name: Verify executable roadmap and commit evidence
+        run: python3 planning/update_plan.py check --strict
+
+      - name: Upload full Linux evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: full-conformance-linux-${{ github.sha }}
+          path: |
+            build/conformance/unified.json
+            build/quality/luacov.report.out
+          if-no-files-found: warn
+
+  macos:
+    if: >-
+      github.event.schedule == '0 4 * * 0' ||
+      (github.event_name == 'workflow_dispatch' && inputs.run_macos)
+    runs-on: macos-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Configure OpenSSL on macOS
+        run: |
+          brew install openssl@3
+          openssl_dir="$(brew --prefix openssl@3)"
+          echo "OPENSSL_DIR=$openssl_dir" >> "$GITHUB_ENV"
+          echo "CRYPTO_DIR=$openssl_dir" >> "$GITHUB_ENV"
+
+      - name: Install development dependencies
+        run: |
+          luarocks install --only-deps mongodb-scm-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
+          luarocks install busted 2.3.0-1
+          luarocks install luacheck 1.2.0-1
+          luarocks install luacov 0.17.0-1
+
+      - name: Install MongoDB test tools on macOS
+        run: |
+          brew tap mongodb/brew
+          brew trust mongodb/brew
+          brew install mongodb-community@8.0
+
+      - name: Run authoritative full portable and loopback checks
+        run: make check-full UNIFIED_REPORT=build/conformance/unified.json
+
+      - name: Verify executable roadmap and commit evidence
+        run: python3 planning/update_plan.py check --strict
+
+      - name: Upload full macOS evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: full-conformance-macos-${{ github.sha }}
+          path: |
+            build/conformance/unified.json
+            build/quality/luacov.report.out
+          if-no-files-found: warn
+
+  compatibility:
+    strategy:
+      fail-fast: false
+      matrix:
+        series: ["7.0", "8.0", "8.2"]
+        topology: [standalone, replicaset]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install driver dependencies
+        run: luarocks install --only-deps mongodb-scm-1.rockspec
+
+      - name: Run pinned live compatibility row
+        run: >-
+          make test-compatibility-live
+          COMPATIBILITY_ENTRY=mongodb-${{ matrix.series }}-${{ matrix.topology }}
+
+      - name: Upload machine-readable environment facts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: compatibility-${{ matrix.series }}-${{ matrix.topology }}-${{ github.sha }}
+          path: build/compatibility/*.json
+          if-no-files-found: warn

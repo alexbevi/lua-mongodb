@@ -1,8 +1,12 @@
-name: CI
+name: CI Fast
 
 on:
   push:
   pull_request:
+
+concurrency:
+  group: ci-fast-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -49,37 +53,18 @@ jobs:
           fi
           luarocks install busted 2.3.0-1
           luarocks install luacheck 1.2.0-1
-          luarocks install luacov 0.17.0-1
 
-      - name: Install MongoDB test tools on Linux
-        if: runner.os == 'Linux'
-        run: |
-          curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
-            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
-          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
-            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
-          sudo apt-get update
-          sudo apt-get install -y mongodb-org-server mongodb-mongosh
-
-      - name: Install MongoDB test tools on macOS
-        if: runner.os == 'macOS'
-        run: |
-          brew tap mongodb/brew
-          brew trust mongodb/brew
-          brew install mongodb-community@8.0
-
-      - name: Run authoritative full portable and loopback checks
-        run: make check
+      - name: Run required fast verification
+        run: make check-fast
 
       - name: Verify executable roadmap and commit evidence
         run: python3 planning/update_plan.py check --strict
 
-  compatibility:
+  compatibility-smoke:
     strategy:
       fail-fast: false
       matrix:
-        series: ["7.0", "8.0", "8.2"]
-        topology: [standalone, replicaset]
+        entry: [mongodb-7.0-standalone, mongodb-8.2-replicaset]
     runs-on: ubuntu-latest
 
     steps:
@@ -102,15 +87,13 @@ jobs:
       - name: Install driver dependencies
         run: luarocks install --only-deps mongodb-scm-1.rockspec
 
-      - name: Run pinned live compatibility row
-        run: >-
-          make test-compatibility-live
-          COMPATIBILITY_ENTRY=mongodb-${{ matrix.series }}-${{ matrix.topology }}
+      - name: Run live compatibility boundary row
+        run: make test-compatibility-live COMPATIBILITY_ENTRY=${{ matrix.entry }}
 
       - name: Upload machine-readable environment facts
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: compatibility-${{ matrix.series }}-${{ matrix.topology }}
+          name: compatibility-smoke-${{ matrix.entry }}
           path: build/compatibility/*.json
           if-no-files-found: warn

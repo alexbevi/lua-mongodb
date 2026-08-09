@@ -2154,6 +2154,28 @@
       "notes": [],
       "started_at": "2026-08-09T22:53:49+00:00",
       "completed_at": "2026-08-09T22:55:01+00:00"
+    },
+    "CI-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_ci_portability planning.tests.test_local_testing -v",
+          "exit_code": 1,
+          "summary": "8 workflow assertions fail because per-commit CI is monolithic and no scheduled/manual full-conformance workflow exists",
+          "recorded_at": "2026-08-09T22:56:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m unittest planning.tests.test_ci_portability planning.tests.test_local_testing -v; PATH=<lua54-tools> make check-fast; quick_validate execute-driver-slice; workflow YAML parse; check --strict",
+          "exit_code": 0,
+          "summary": "14 workflow/local tests passed; 219 unit and 23 integration tests plus static unified, conformance, stress, compatibility matrix, lint, rockspec, and planning gates passed; updated skill and both workflows validated",
+          "recorded_at": "2026-08-09T22:59:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T22:55:24+00:00",
+      "completed_at": "2026-08-09T22:59:55+00:00"
     }
   },
   "verified_references": {

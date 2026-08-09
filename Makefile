@@ -12,6 +12,7 @@ FOCUS_INTEGRATION ?=
 FOCUS_UNIFIED ?=
 FOCUS_PYTHON ?=
 FOCUS_LINT ?=
+UNIFIED_REPORT ?=
 
 .PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
@@ -157,7 +158,12 @@ test-unified-meta: check-busted check-python
 	@"$(PYTHON)" spec/unified/run_schema_meta.py --lua "$(LUA)"
 
 test-unified-execution: check-python
-	@"$(PYTHON)" spec/unified/run.py
+	@if test -n "$(UNIFIED_REPORT)"; then \
+		mkdir -p "$$(dirname "$(UNIFIED_REPORT)")"; \
+		"$(PYTHON)" spec/unified/run.py --report "$(UNIFIED_REPORT)"; \
+	else \
+		"$(PYTHON)" spec/unified/run.py; \
+	fi
 
 lint: check-luacheck
 	@"$(LUACHECK)" src spec

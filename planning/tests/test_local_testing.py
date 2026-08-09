@@ -43,9 +43,11 @@ class LocalTestingTests(unittest.TestCase):
     self.assertIn("matched no tests", result.stdout)
 
   def test_github_actions_retains_the_authoritative_full_gate(self) -> None:
-    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    workflow = (
+      ROOT / ".github" / "workflows" / "full-conformance.yml"
+    ).read_text(encoding="utf-8")
 
-    self.assertIn("run: make check", workflow)
+    self.assertIn("make check-full", workflow)
 
   def test_makefile_separates_fast_and_full_verification(self) -> None:
     makefile = MAKEFILE.read_text(encoding="utf-8")

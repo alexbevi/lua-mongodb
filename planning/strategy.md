@@ -60,7 +60,7 @@ The activity workflow is:
 7. Run the narrowest effective local tests and validators, recording the green result with execution counts.
 8. Update architecture, compatibility, capability records, and the conformance ledger.
 9. Complete the activity and commit its exact subject with exactly one `Plan-Activity` trailer.
-10. Push the commit, run `check --strict --pushed`, and require the authoritative GitHub Actions run to pass before selecting another activity. The next `start` transition independently refuses to proceed until all completed activity commits are unique and remote-reachable.
+10. Push the commit, run `check --strict --pushed`, and require the per-commit `CI Fast` GitHub Actions run to pass before selecting another activity. The next `start` transition independently refuses to proceed until all completed activity commits are unique and remote-reachable. Scheduled full-conformance status is release evidence and does not pause an otherwise green ordinary slice.
 
 Do not use a release activity to construct missing conformance infrastructure or discover broad semantic gaps. Release hardening should verify a matrix that is already green.
 
@@ -74,7 +74,7 @@ Local testing provides rapid, deterministic evidence for the behavior being chan
 - Lint the touched Lua production and test files with `FOCUS_LINT`.
 - Run a format-specific validator when changing a generated ledger, capability map, compatibility projection, rockspec, workflow, or planning document.
 
-Broaden local testing only when the change affects a shared primitive, targeted evidence exposes adjacent risk, or the slice changes test infrastructure. Coverage, stress, the full unit/integration/unified corpora, complete conformance reconciliation, platform differences, and the supported live server matrix belong to GitHub Actions. A slice is locally verified when its focused evidence is green; it is fully integrated only after the pushed GitHub Actions run is green.
+Broaden local testing only when the change affects a shared primitive, targeted evidence exposes adjacent risk, or the slice changes test infrastructure. A slice is locally verified when its focused evidence is green and integrated after required fast CI passes. Complete live unified execution, coverage, and the supported live server matrix run in `Full Conformance`: nightly on Linux, weekly on macOS, on demand for any selected commit, and before release. Full-conformance failures remain visible, attributable to their exact commit, and release-blocking without forcing every vertical slice to wait for the complete matrix.
 
 The repository exposes the same distinction as explicit compositions. `make check-fast` contains deterministic per-change verification without complete live unified execution or coverage instrumentation. `make check-full` adds those authoritative broad gates, and `make check` remains its release-oriented alias. Static fixture validation is shared by both compositions and runs exactly once.
 
