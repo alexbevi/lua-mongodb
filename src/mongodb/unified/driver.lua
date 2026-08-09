@@ -223,10 +223,9 @@ local function client_factory(state)
           return nil, err
         end
       end
-
-      collector:reset()
     end
 
+    collector:reset()
     state.collectors[client] = collector
     return client
   end

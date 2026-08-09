@@ -7,6 +7,7 @@ local EVENT_NAMES = {
   command_failed = "commandFailedEvent",
   command_started = "commandStartedEvent",
   command_succeeded = "commandSucceededEvent",
+  connection_checkout_started = "connectionCheckOutStartedEvent",
   connection_checked_in = "connectionCheckedInEvent",
   connection_checked_out = "connectionCheckedOutEvent",
   connection_closed = "connectionClosedEvent",
@@ -18,6 +19,7 @@ local EVENT_TYPES = {
   commandFailedEvent = "command_failed",
   commandStartedEvent = "command_started",
   commandSucceededEvent = "command_succeeded",
+  connectionCheckOutStartedEvent = "connection_checkout_started",
   connectionCheckedInEvent = "connection_checked_in",
   connectionCheckedOutEvent = "connection_checked_out",
   connectionClosedEvent = "connection_closed",
@@ -26,6 +28,7 @@ local EVENT_TYPES = {
   poolClearedEvent = "pool_cleared",
 }
 local CMAP_EVENT_TYPES = {
+  connection_checkout_started = true,
   connection_checked_in = true,
   connection_checked_out = true,
   connection_closed = true,
@@ -241,6 +244,12 @@ function M.new(specification)
     end,
   }
   collector.pool_listener = {
+    ConnectionCheckOutStarted = function(_, event)
+      record(collector, {
+        address = event.address,
+        type = "connection_checkout_started",
+      })
+    end,
     ConnectionClosed = function(_, event)
       local pool = collector.pools[event.address]
 

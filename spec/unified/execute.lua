@@ -4,6 +4,7 @@ package.path = ROOT .. "/src/?.lua;" .. ROOT .. "/src/?/init.lua;" .. package.pa
 
 local bson = require("mongodb.bson")
 local client_module = require("mongodb.client")
+local config_uri = require("mongodb.config.uri")
 local copas = require("copas")
 local op_msg = require("mongodb.wire.op_msg")
 local runtime_module = require("mongodb.runtime")
@@ -279,6 +280,7 @@ local function run_live(identity, fixture, index, topology, entry)
     error("live unified executor requires MONGODB_UNIFIED_SERVER_VERSION", 0)
   end
 
+  local parsed = assert(config_uri.parse(uri))
   local document = load_json(ROOT .. "/planning/specifications/source/" .. fixture)
   local outcome
 
@@ -290,6 +292,7 @@ local function run_live(identity, fixture, index, topology, entry)
       reset_databases(runtime, uri, selected)
       local lifecycle = assert(unified_driver.new({
         environment = {
+          auth = parsed.username ~= nil,
           server_parameters = bson.document({
             { "acceptApiVersion2", entry:get("acceptApiVersion2") == true },
             { "enableTestCommands", os.getenv("MONGODB_UNIFIED_TEST_COMMANDS") == "1" },

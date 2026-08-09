@@ -4,6 +4,19 @@ local mongodb = require("mongodb")
 local op_msg = require("mongodb.wire.op_msg")
 local socket = require("socket")
 
+local ENTROPY = string.pack(
+  ">I4I4I4I4I4I4I4I4",
+  0x00010203,
+  0x04050607,
+  0x08090a0b,
+  0x0c0d0e0f,
+  0x10111213,
+  0x14151617,
+  0x18191a1b,
+  0x1c1d1e1f
+)
+local NONCE = "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8="
+
 local function receive_frame(peer)
   local header = assert(peer:receive(4))
   local size = string.unpack("<i4", header)
@@ -32,7 +45,173 @@ local function hello_response()
   })
 end
 
+local function auth_hello_response()
+  local entries = hello_response():entries()
+
+  entries[#entries + 1] = {
+    "saslSupportedMechs",
+    bson.array({ "SCRAM-SHA-256", "SCRAM-SHA-1" }),
+  }
+  return bson.document(entries)
+end
+
+local function complete_authentication(peer, connection_count, failure)
+  local start = receive_frame(peer)
+
+  assert.are.equal("saslStart", start.body:keys()[1])
+  send_response(peer, start, bson.document({
+    { "conversationId", 1 },
+    { "payload", bson.binary(
+      "r=" .. NONCE .. "server-suffix,s=W22ZaJ0SNY7soEsUEjb6gQ==,i=4096"
+    ) },
+    { "done", false },
+    { "ok", 1 },
+  }))
+  local continue = receive_frame(peer)
+
+  assert.are.equal("saslContinue", continue.body:keys()[1])
+
+  if connection_count == 2 then
+    if failure == "network" then
+      peer:close()
+    else
+      send_response(peer, continue, bson.document({
+        { "ok", 0 },
+        { "code", 91 },
+        { "codeName", "ShutdownInProgress" },
+        { "errmsg", "shutdown in progress" },
+      }))
+      peer:close()
+    end
+
+    return false
+  end
+
+  send_response(peer, continue, bson.document({
+    { "conversationId", 1 },
+    { "payload", bson.binary(
+      "v=ULVJCzOWFs0L7wP6UkjMKgjZGBcBDyOfKFh3lKC0cXk="
+    ) },
+    { "done", true },
+    { "ok", 1 },
+  }))
+  return true
+end
+
+local function exercise_authenticated_handshake_retry(failure)
+  local server = assert(socket.bind("127.0.0.1", 0))
+  local _, port = assert(server:getsockname())
+  local connection_count = 0
+  local events = {}
+  local outcome
+  local server_error
+  local listener = {}
+
+  local function record(_, event)
+    if event.command_name == "ping" or event.command_name == "find" then
+      events[#events + 1] = event
+    end
+  end
+
+  listener.failed = record
+  listener.started = record
+  listener.succeeded = record
+  port = assert(math.tointeger(port))
+  copas.addserver(server, function(peer)
+    local ok, err = pcall(function()
+      peer = copas.wrap(peer)
+      connection_count = connection_count + 1
+      local handshake = receive_frame(peer)
+
+      assert.are.equal("admin.user", handshake.body:get("saslSupportedMechs"))
+      send_response(peer, handshake, auth_hello_response())
+
+      if not complete_authentication(peer, connection_count, failure) then
+        return
+      end
+
+      local command = receive_frame(peer)
+
+      if connection_count == 1 then
+        assert.are.equal("ping", command.body:keys()[1])
+        peer:close()
+        return
+      end
+
+      assert.are.equal(3, connection_count)
+      assert.are.equal("find", command.body:keys()[1])
+      send_response(peer, command, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.items" },
+          { "firstBatch", bson.array({
+            bson.document({ { "_id", 1 }, { "value", failure } }),
+          }) },
+        }) },
+      }))
+      peer:close()
+    end)
+
+    if not ok then
+      server_error = err
+      pcall(peer.close, peer)
+    end
+  end)
+
+  copas.loop(function()
+    outcome = table.pack(pcall(function()
+      local client = assert(mongodb.client(
+        "mongodb://user:pencil@127.0.0.1:" .. port .. "/admin",
+        {
+          command_listeners = { listener },
+          runtime = mongodb.runtime.copas({
+            entropy = {
+              bytes = function(_, count)
+                assert.is_true(count == 16 or count == 32)
+                return ENTROPY:sub(1, count)
+              end,
+            },
+          }),
+        }
+      ))
+      local ping, ping_err = client:database():run_command("ping")
+
+      assert.is_nil(ping)
+      assert.is_not_nil(ping_err)
+      local item = assert(client:database():collection("items"):find_one(
+        bson.document({ { "_id", 1 } })
+      ))
+
+      assert.are.equal(failure, item:get("value"))
+      assert.are.equal(3, connection_count)
+      assert.are.same(
+        { "command_started", "command_failed", "command_started", "command_succeeded" },
+        { events[1].type, events[2].type, events[3].type, events[4].type }
+      )
+      assert.are.equal("ping", events[1].command_name)
+      assert.are.equal("find", events[3].command_name)
+      assert(client:close())
+    end))
+    copas.removeserver(server)
+  end)
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  if server_error then
+    error(server_error, 0)
+  end
+end
+
 describe("retryable reads over OP_MSG", function()
+  it("recovers from network and shutdown errors during authentication", function()
+    for _, failure in ipairs({ "network", "shutdown" }) do
+      exercise_authenticated_handshake_retry(failure)
+    end
+  end)
+
   it("reconnects once while preserving the session and monitoring operation", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())

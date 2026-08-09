@@ -176,11 +176,12 @@ describe("unified command events", function()
     assert.are.equal("$.expectEvents[1].events[1]", err.details.path)
   end)
 
-  it("matches ready, checked-out, and checked-in connection events exactly", function()
+  it("matches checkout-started, ready, checked-out, and checked-in events", function()
     local runner = runner_module.new({ runtime = fake_runtime.new() })
     local client = {}
     local collector = assert(event_module.new(document({
       { "observeEvents", array({
+        "connectionCheckOutStartedEvent",
         "connectionReadyEvent",
         "connectionCheckedOutEvent",
         "connectionCheckedInEvent",
@@ -188,6 +189,9 @@ describe("unified command events", function()
     })))
 
     assert(runner:add_entity("client0", "client", client))
+    collector.pool_listener:ConnectionCheckOutStarted({
+      address = "127.0.0.1:27017",
+    })
     collector.pool_listener:ConnectionReady({
       address = "127.0.0.1:27017",
       connection_id = 1,
@@ -204,6 +208,7 @@ describe("unified command events", function()
     })
 
     assert(event_module.assert_all(runner, expected_cmap_events({
+      document({ { "connectionCheckOutStartedEvent", document({}) } }),
       document({ { "connectionReadyEvent", document({}) } }),
       document({ { "connectionCheckedOutEvent", document({}) } }),
       document({ { "connectionCheckedInEvent", document({}) } }),

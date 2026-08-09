@@ -342,6 +342,11 @@ for index in (7, 8):
     f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
   ] = ("ADV-011", "database aggregate is outside the v1 public API")
 
+for index in (*range(1, 5), *range(9, 13), *range(15, 31)):
+  TEST_OVERRIDES[
+    f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("REL-034", None)
+
 for fixture, count in (
   ("client-bulkWrite-clientErrors", 2),
   ("client-bulkWrite-serverErrors", 5),

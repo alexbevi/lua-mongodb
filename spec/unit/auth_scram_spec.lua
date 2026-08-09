@@ -205,6 +205,47 @@ describe("SCRAM authentication", function()
     assert.is_nil(tostring(err):find("pencil", 1, true))
   end)
 
+  it("preserves retryable authentication handshake failures", function()
+    local cases = {
+      {
+        error = errors.new({
+          category = errors.CATEGORY.NETWORK,
+          message = "connection closed",
+        }),
+        retryable = true,
+      },
+      {
+        code = 91,
+        error = errors.new({
+          category = errors.CATEGORY.SERVER,
+          code = 91,
+          code_name = "ShutdownInProgress",
+          message = "shutdown in progress",
+        }),
+      },
+    }
+
+    for _, case in ipairs(cases) do
+      local commands = {}
+
+      function commands.command()
+        return nil, case.error
+      end
+
+      local value, err = scram.authenticate(
+        commands,
+        test_runtime(),
+        credentials("SCRAM-SHA-256")
+      )
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+      assert.are.equal(case.retryable == true, err:is_retryable())
+      assert.are.equal(case.code, err.code)
+      assert.are.equal("SCRAM authentication command failed", err.message)
+    end
+  end)
+
   it("finishes the legacy third empty exchange", function()
     local server_first = "r=" .. NONCE .. "server-suffix,s=" .. SALT .. ",i=4096"
     local commands = scripted_commands({

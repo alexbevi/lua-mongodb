@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1326,
-    "runnable": 1326
+    "passed": 1350,
+    "runnable": 1350
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -58615,7 +58615,6 @@
     "retryable-reads/tests/unified/handshakeError.json::test[10]": {
       "activity": "REL-034",
       "fingerprint": "ab6c55d37a2a441112f8527c56f6c213e1db2ce5033be1d5a21916ffbf7738c0",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58651,12 +58650,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[11]": {
       "activity": "REL-034",
       "fingerprint": "654e40996f92e487f7219f58a5d50d8441e504cf28f7b4f1a50a3359e35e6e1b",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58692,12 +58690,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[12]": {
       "activity": "REL-034",
       "fingerprint": "bb6c189126dfb5e1b4d8a93f19eb85d8b790788043cb32eaf23c8d25c10398b3",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -58733,7 +58730,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[13]": {
       "activity": "ADV-001",
@@ -58820,7 +58817,6 @@
     "retryable-reads/tests/unified/handshakeError.json::test[15]": {
       "activity": "REL-034",
       "fingerprint": "f4c3c72c3a7ff242724dc6842cc834692b4641e6ee2285ec1706e06a2216882b",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -58856,12 +58852,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[16]": {
       "activity": "REL-034",
       "fingerprint": "a64bb500cf998244b62aacf5d82698998629a71dfa8a7c395a7367bcb73f9ee1",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -58897,12 +58892,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[17]": {
       "activity": "REL-034",
       "fingerprint": "752c47f97e696a73bc924dffab22c285c50790df842e38ad139c95e4f1b0b4b1",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -58938,12 +58932,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[18]": {
       "activity": "REL-034",
       "fingerprint": "7541ac5cad14a6b591f4c0751fb8265b757233727b2fbd78d825ffbb2d81fca9",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -58979,12 +58972,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[19]": {
       "activity": "REL-034",
       "fingerprint": "2d3f0b5f483e66ff1f962e1a5401c2d4c536295e838b0cad23cac84392f12b3e",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59019,12 +59011,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[1]": {
       "activity": "REL-034",
       "fingerprint": "d786c0dd7dcc36a5d42fb390594b4c672c3eafe575a6bbf4a759aaaf74490d49",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59060,12 +59051,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[20]": {
       "activity": "REL-034",
       "fingerprint": "643a7320115776552da2d24ba93d51c7ae95eb4304997803e05ba5fd579619fd",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59100,12 +59090,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[21]": {
       "activity": "REL-034",
       "fingerprint": "f19f16b580c0c221b118cffd225cbd891d48911f65fa455230f144cbcb64eae0",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -59142,12 +59131,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[22]": {
       "activity": "REL-034",
       "fingerprint": "3cb5f12f9b5e3382c284843e59b13584c02a6bc0ca4c735d04e3693b2f2d5c09",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -59184,12 +59172,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[23]": {
       "activity": "REL-034",
       "fingerprint": "8f43e3da7c9bf774cc054e8c51e3b7bb417d767ee0d52fa51a4c336e05026827",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59225,12 +59212,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[24]": {
       "activity": "REL-034",
       "fingerprint": "0d53241a6f3c694663692621d67e1a698f9b259be5f8c8a46ea65dc01dfe02d4",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59266,12 +59252,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[25]": {
       "activity": "REL-034",
       "fingerprint": "99f8108f21856f87e88695af90e37ab87161859e67fc88657054b2f7483a1dd3",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59307,12 +59292,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[26]": {
       "activity": "REL-034",
       "fingerprint": "a0bdf9ccc4194d5c53e98358172017251ff36a867533171bdff424750a254986",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59348,12 +59332,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[27]": {
       "activity": "REL-034",
       "fingerprint": "af1e8fde0f493929093f354206aef35023f941e1d05e1c67ae752a0fef26f489",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59388,12 +59371,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[28]": {
       "activity": "REL-034",
       "fingerprint": "21497457347750d79f3c74deb84f6edbd6a60995822d2fadeba56479319cfee3",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59428,12 +59410,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[29]": {
       "activity": "REL-034",
       "fingerprint": "ebf52db991b2cec6302c0686b6d1adf906b124946eadea66d842f7a99d51b945",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59468,12 +59449,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[2]": {
       "activity": "REL-034",
       "fingerprint": "dc06b14f5a1936dd20923cc2b836fbc74ff5553fe9d24dd122fd55b687ce2ced",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59509,12 +59489,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[30]": {
       "activity": "REL-034",
       "fingerprint": "473b3ede1f87d109bc94bab1bcbb05aec6ae3d95765847e2957fae0097ab2d7b",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59549,7 +59528,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[31]": {
       "activity": "ADV-001",
@@ -59636,7 +59615,6 @@
     "retryable-reads/tests/unified/handshakeError.json::test[3]": {
       "activity": "REL-034",
       "fingerprint": "9cec0afa6d1c5ca2a203d8a6293412d2c577b1548d86224e7604b416652fe6dc",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59671,12 +59649,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[4]": {
       "activity": "REL-034",
       "fingerprint": "ce379ddc8ecc003c2b1a81495e735dfa0a9fb33f4b322f14a4a71200822faeb0",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59711,7 +59688,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[5]": {
       "activity": "ADV-001",
@@ -59880,7 +59857,6 @@
     "retryable-reads/tests/unified/handshakeError.json::test[9]": {
       "activity": "REL-034",
       "fingerprint": "dd4d76b7ac5ca7cbcc98d35ce63db92d5f089371897b431a4cead7ca496eca5f",
-      "reason": "retryable reads await application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -59916,7 +59892,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[10]": {
       "activity": "RETRY-001",

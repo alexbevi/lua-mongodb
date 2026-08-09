@@ -3474,6 +3474,126 @@
       "environment": "live-standalone",
       "testCommands": true
     },
+    "retryable-reads/tests/unified/handshakeError.json::test[10]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[11]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[12]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[15]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[16]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[17]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[18]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[19]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[1]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[20]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[21]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[22]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[23]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[24]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[25]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[26]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[27]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[28]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[29]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[2]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[30]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[3]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[4]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[9]": {
+      "activity": "REL-034",
+      "environment": "live-replicaset",
+      "testCommands": true
+    },
     "retryable-reads/tests/unified/listCollectionNames-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "environment": "live-standalone",

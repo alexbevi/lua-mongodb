@@ -32,6 +32,7 @@ local function auth_error(message, original)
     options.code = original.code
     options.code_name = original.code_name
     options.retryable = original.retryable
+      or errors.is(original, errors.CATEGORY.NETWORK)
     options.server = original.server
     options.timeout = original.timeout
     options.labels = {}
