@@ -218,7 +218,7 @@ local function retryable_transaction_command(name, err)
   return errors.is(err, errors.CATEGORY.NETWORK)
     or errors.is(err, errors.CATEGORY.TIMEOUT)
     or err:has_label("RetryableWriteError")
-    or name == "abortTransaction"
+    or (name == "commitTransaction" or name == "abortTransaction")
       and errors.is(err, errors.CATEGORY.AUTHENTICATION)
       and err:is_retryable()
 end

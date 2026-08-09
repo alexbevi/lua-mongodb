@@ -5612,6 +5612,12 @@
       "activity": "TXN-001",
       "environment": "live-replicaset"
     },
+    "transactions/tests/unified/retryable-commit-handshake.json::test[1]": {
+      "activity": "REL-037",
+      "environment": "live-replicaset",
+      "runSkipped": true,
+      "testCommands": true
+    },
     "transactions/tests/unified/retryable-commit.json::test[1]": {
       "activity": "TXN-001",
       "environment": "live-replicaset"

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1369,
-    "runnable": 1369
+    "passed": 1370,
+    "runnable": 1370
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -82159,7 +82159,6 @@
     "transactions/tests/unified/retryable-commit-handshake.json::test[1]": {
       "activity": "REL-037",
       "fingerprint": "70c7b73ebcf5296c0ac2c37f77522c9b10a8cf17a12db481d38c6898ca05ced5",
-      "reason": "transaction commit awaits application-handshake recovery",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -82201,7 +82200,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/retryable-commit.json::test[1]": {
       "activity": "TXN-001",

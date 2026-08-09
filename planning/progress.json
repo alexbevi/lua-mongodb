@@ -1985,6 +1985,49 @@
       "notes": [],
       "started_at": "2026-08-09T12:51:41+00:00",
       "completed_at": "2026-08-09T13:06:03+00:00"
+    },
+    "REL-037": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_transaction_commit_handshake_case_is_runnable -v",
+          "exit_code": 1,
+          "summary": "exact commit-handshake capability test failed because the fixture remained deferred_unsupported",
+          "recorded_at": "2026-08-09T14:18:28+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "busted --filter='commit.*handshake' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "exact session test failed because commitTransaction returned the retryable authentication handshake error without a second attempt",
+          "recorded_at": "2026-08-09T14:18:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_UNIFIED_REPLICA_SET_URI=<authenticated-local-rs> MONGODB_UNIFIED_TEST_COMMANDS=1 make test-focus FOCUS_UNIFIED='transactions/tests/unified/retryable-commit-handshake.json'",
+          "exit_code": 0,
+          "summary": "1 exact upstream commit-handshake fixture executed and passed; 0 environment-skipped",
+          "recorded_at": "2026-08-09T14:25:10+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua' FOCUS_INTEGRATION='spec/integration/retry_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='<three touched Lua files>'",
+          "exit_code": 0,
+          "summary": "16 unit and 5 integration tests passed; 49 Python tests passed; 3 touched Lua files linted cleanly",
+          "recorded_at": "2026-08-09T14:25:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check && python3 -m json.tool spec/unified/executors.json && git diff --check",
+          "exit_code": 0,
+          "summary": "unified capabilities, conformance ledger, release scope, README projection, executor JSON, and patch whitespace are current and valid",
+          "recorded_at": "2026-08-09T14:25:11+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T14:17:02+00:00",
+      "completed_at": "2026-08-09T14:25:23+00:00"
     }
   },
   "verified_references": {

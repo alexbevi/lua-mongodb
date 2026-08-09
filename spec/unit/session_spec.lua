@@ -440,6 +440,39 @@ describe("client sessions", function()
     assert.are.equal(2, abort_attempts)
   end)
 
+  it("retries commit after a retryable authentication handshake failure", function()
+    local commit_attempts = {}
+    local sessions = session_module.new({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function(_, name, _, retrying_commit)
+        assert.are.equal("commitTransaction", name)
+        commit_attempts[#commit_attempts + 1] = retrying_commit
+
+        if #commit_attempts == 1 then
+          return nil, errors.new({
+            category = errors.CATEGORY.AUTHENTICATION,
+            message = "SCRAM authentication command failed",
+            retryable = true,
+          })
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+
+    assert(session:commit_transaction())
+    assert.same({ false, true }, commit_attempts)
+    assert.are.equal("committed", session:get_transaction_state())
+  end)
+
   it("does not mask a transaction read preference with an operation preference", function()
     local sessions = session_module.new({
       id_factory = identifiers(),

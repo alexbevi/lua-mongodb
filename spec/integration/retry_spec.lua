@@ -348,19 +348,25 @@ local function exercise_authenticated_write_handshake_retry(failure)
   end
 end
 
-local function exercise_authenticated_abort_handshake_retry()
+local function exercise_authenticated_transaction_handshake_retry(command_name)
+  assert.is_true(
+    command_name == "abortTransaction" or command_name == "commitTransaction"
+  )
   local server = assert(socket.bind("127.0.0.1", 0))
   local _, port = assert(server:getsockname())
   local connection_count = 0
   local events = {}
   local first_lsid
   local first_txn_number
+  local client
   local outcome
   local server_error
   local listener = {}
+  local transaction_state = command_name == "commitTransaction"
+    and "committed" or "aborted"
 
   local function record(_, event)
-    if event.command_name == "abortTransaction"
+    if event.command_name == command_name
         or event.command_name == "insert" or event.command_name == "ping"
     then
       events[#events + 1] = event
@@ -427,10 +433,18 @@ local function exercise_authenticated_abort_handshake_retry()
       end
 
       assert.are.equal(3, connection_count)
-      assert.are.equal("abortTransaction", command.body:keys()[1])
+      assert.are.equal(command_name, command.body:keys()[1])
       assert.are.equal(first_lsid, assert(bson.encode(command.body:get("lsid"))))
       assert.are.equal(first_txn_number, command.body:get("txnNumber"))
       assert.is_false(command.body:get("autocommit"))
+
+      if command_name == "commitTransaction" then
+        local write_concern = command.body:get("writeConcern")
+
+        assert.are.equal("majority", write_concern:get("w"))
+        assert.are.equal(10000, write_concern:get("wtimeout"):to_number())
+      end
+
       send_response(peer, command, bson.document({ { "ok", 1 } }))
       peer:close()
     end)
@@ -443,7 +457,7 @@ local function exercise_authenticated_abort_handshake_retry()
 
   copas.loop(function()
     outcome = table.pack(pcall(function()
-      local client = assert(mongodb.client(
+      client = assert(mongodb.client(
         "mongodb://user:pencil@" .. address
           .. "/admin?replicaSet=rs&retryWrites=false",
         {
@@ -472,8 +486,14 @@ local function exercise_authenticated_abort_handshake_retry()
 
       assert.is_nil(ping)
       assert.is_not_nil(ping_err)
-      assert(session0:abort_transaction())
-      assert.are.equal("aborted", session0:get_transaction_state())
+
+      if command_name == "commitTransaction" then
+        assert(session0:commit_transaction())
+      else
+        assert(session0:abort_transaction())
+      end
+
+      assert.are.equal(transaction_state, session0:get_transaction_state())
       assert.are.equal(3, connection_count)
       assert.are.same(
         {
@@ -495,20 +515,28 @@ local function exercise_authenticated_abort_handshake_retry()
       )
       assert.are.equal("insert", events[1].command_name)
       assert.are.equal("ping", events[3].command_name)
-      assert.are.equal("abortTransaction", events[5].command_name)
+      assert.are.equal(command_name, events[5].command_name)
       assert(session0:end_session())
       assert(session1:end_session())
-      assert(client:close())
     end))
+
+    if client then
+      local closed, close_err = client:close()
+
+      if outcome[1] and not closed then
+        outcome = table.pack(false, close_err)
+      end
+    end
+
     copas.removeserver(server)
   end)
 
-  if not outcome[1] then
-    error(outcome[2], 0)
-  end
-
   if server_error then
     error(server_error, 0)
+  end
+
+  if not outcome[1] then
+    error(outcome[2], 0)
   end
 end
 
@@ -640,6 +668,10 @@ end)
 
 describe("transaction retries over OP_MSG", function()
   it("retries abort after a network failure during authentication", function()
-    exercise_authenticated_abort_handshake_retry()
+    exercise_authenticated_transaction_handshake_retry("abortTransaction")
+  end)
+
+  it("retries commit after a network failure during authentication", function()
+    exercise_authenticated_transaction_handshake_retry("commitTransaction")
   end)
 end)
