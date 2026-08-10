@@ -2315,6 +2315,28 @@
       "notes": [],
       "started_at": "2026-08-10T01:05:41+00:00",
       "completed_at": "2026-08-10T01:11:24+00:00"
+    },
+    "REL-043": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/unified_failpoints_spec.lua",
+          "exit_code": 2,
+          "summary": "0 successes / 1 failure; passing lifecycle reported failed because failpoint cleanup did not retain the server selected during enablement for same-server disablement",
+          "recorded_at": "2026-08-10T01:17:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_failpoints_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_runner_spec.lua spec/unit/unified_driver_spec.lua spec/unit/api_handles_spec.lua spec/unit/topology_spec.lua' FOCUS_LINT='src/mongodb/unified/failpoints.lua spec/unit/unified_failpoints_spec.lua'; make test-focus FOCUS_UNIFIED='retryable-writes/tests/unified/deleteOne-serverErrors.json'; python3 spec/unified/update_capabilities.py --check",
+          "exit_code": 0,
+          "summary": "Same-server failpoint audit passed for passing, operation-failure, and assertion-failure outcomes with zero tracked failpoints remaining and all three fresh cleanup clients closed; 28 coupled unit tests passed; exact live replica-set fixture executed 1, passed 1, environment-skipped 0, deferred 0, failed 0; touched-file lint reported 0 warnings/errors and capability classification remained current with no newly applicable cases",
+          "recorded_at": "2026-08-10T01:21:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-10T01:16:44+00:00",
+      "completed_at": "2026-08-10T01:21:20+00:00"
     }
   },
   "verified_references": {

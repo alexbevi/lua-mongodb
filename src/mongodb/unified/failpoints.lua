@@ -3,7 +3,7 @@ local errors = require("mongodb.error")
 
 local M = {}
 
-local function command_options(session)
+local function command_options(session, server_address, on_server_selected)
   local options = {
     monitor = false,
     read_preference = { mode = "primary" },
@@ -11,6 +11,14 @@ local function command_options(session)
 
   if session then
     options.session = session
+  end
+
+  if server_address then
+    options.server_address = server_address
+  end
+
+  if on_server_selected then
+    options.on_server_selected = on_server_selected
   end
 
   return options
@@ -118,8 +126,15 @@ local function execute(options, runner, arguments, path)
     return nil, err
   end
 
+  local selected_server
   local response
-  response, err = database:run_command(command, command_options(session))
+  response, err = database:run_command(command, command_options(
+    session,
+    nil,
+    function(address)
+      selected_server = address
+    end
+  ))
 
   if not response then
     return nil, err
@@ -135,14 +150,17 @@ local function execute(options, runner, arguments, path)
     local close
 
     if options.cleanup_database then
-      cleanup_database, close = options.cleanup_database()
+      cleanup_database, close = options.cleanup_database(selected_server)
 
       if not cleanup_database then
         return nil, close
       end
     end
 
-    local disabled, disable_err = cleanup_database:run_command(disable, command_options())
+    local disabled, disable_err = cleanup_database:run_command(
+      disable,
+      command_options(nil, selected_server)
+    )
     local closed, close_err = close_cleanup(close)
 
     if not disabled then
