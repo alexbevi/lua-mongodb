@@ -458,6 +458,30 @@ def select_classifications(
   ]
 
 
+def fixture_shard(fixture: str, count: int) -> int:
+  """Return a stable shard index derived only from the fixture identity."""
+  if type(count) is not int or count <= 0:
+    raise CapabilityError("shard count must be a positive integer")
+
+  digest = hashlib.sha256(fixture.encode("utf-8")).digest()
+  return int.from_bytes(digest[:8], "big") % count
+
+
+def select_shard(
+  classifications: list[dict[str, Any]],
+  count: int,
+  index: int,
+) -> list[dict[str, Any]]:
+  """Select whole fixtures for one deterministic, non-overlapping shard."""
+  if type(index) is not int or index < 0 or index >= count:
+    raise CapabilityError("shard index must be between zero and count minus one")
+
+  return [
+    classification for classification in classifications
+    if fixture_shard(classification["fixture"], count) == index
+  ]
+
+
 def build_inventory_report(fixtures: list[dict[str, Any]]) -> dict[str, Any]:
   """Return a deterministic inventory with one stable identity per test."""
   files = []
@@ -596,6 +620,117 @@ def build_report(
     "tests": tests,
     "type": "execution",
   }
+
+
+def aggregate_shard_reports(
+  classifications: list[dict[str, Any]],
+  ratchets: dict[str, Any],
+  reports: list[dict[str, Any]],
+) -> dict[str, Any]:
+  """Merge exact shard rows and enforce the unsharded global ratchets."""
+  if not reports:
+    raise CapabilityError("shard aggregation requires at least one report")
+
+  first_shard = reports[0].get("shard")
+
+  if not isinstance(first_shard, dict):
+    raise CapabilityError("shard report is missing shard metadata")
+
+  count = first_shard.get("count")
+
+  if type(count) is not int or count <= 0:
+    raise CapabilityError("shard report count must be a positive integer")
+
+  if len(reports) != count:
+    raise CapabilityError(
+      f"shard aggregation expected {count} reports, got {len(reports)}"
+    )
+
+  expected = {classification["id"]: classification for classification in classifications}
+  rows: dict[str, dict[str, Any]] = {}
+  indices = set()
+
+  for report in reports:
+    if report.get("report_version") != REPORT_VERSION:
+      raise CapabilityError("shard report version is incompatible")
+
+    if report.get("type") != "execution":
+      raise CapabilityError("shard report is not an execution report")
+
+    shard = report.get("shard")
+
+    if not isinstance(shard, dict) or shard.get("count") != count:
+      raise CapabilityError("shard reports disagree on shard count")
+
+    index = shard.get("index")
+
+    if type(index) is not int or index < 0 or index >= count:
+      raise CapabilityError("shard report index is invalid")
+
+    if index in indices:
+      raise CapabilityError(f"duplicate shard report index: {index}")
+
+    indices.add(index)
+    report_rows = report.get("tests")
+
+    if not isinstance(report_rows, list):
+      raise CapabilityError(f"shard {index} test rows must be an array")
+
+    for row in report_rows:
+      if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+        raise CapabilityError(f"shard {index} contains a malformed test row")
+
+      identity = row["id"]
+      classification = expected.get(identity)
+
+      if classification is None:
+        raise CapabilityError(f"shard {index} contains unknown test identity: {identity}")
+
+      if identity in rows:
+        raise CapabilityError(f"duplicate shard test identity: {identity}")
+
+      if fixture_shard(classification["fixture"], count) != index:
+        raise CapabilityError(f"test identity is assigned to the wrong shard: {identity}")
+
+      for field in (
+        "activity", "description", "fingerprint", "fixture", "id", "index",
+        "requirements",
+      ):
+        if field in classification and row.get(field) != classification[field]:
+          raise CapabilityError(
+            f"shard row changed classification field {field}: {identity}"
+          )
+
+      expected_status = classification["status"]
+      status = row.get("status")
+
+      if expected_status != "runnable" and status != expected_status:
+        raise CapabilityError(f"shard row changed deferred status: {identity}")
+
+      if expected_status == "runnable" and status not in {
+        "environment_skipped", "failed", "passed",
+      }:
+        raise CapabilityError(f"shard row has invalid execution status: {identity}")
+
+      rows[identity] = row
+
+  if indices != set(range(count)):
+    missing_indices = sorted(set(range(count)) - indices)
+    raise CapabilityError(f"missing shard report index: {missing_indices[0]}")
+
+  missing = [identity for identity in expected if identity not in rows]
+
+  if missing:
+    raise CapabilityError(f"missing test identity from shard reports: {missing[0]}")
+
+  def outcome(classification: dict[str, Any]) -> tuple[str, str | None]:
+    row = rows[classification["id"]]
+    error = row.get("error")
+    return row["status"], error if isinstance(error, str) else None
+
+  aggregate = build_report(classifications, ratchets, outcome)
+  aggregate["aggregation"] = {"shards": count}
+  return aggregate
 
 
 def lua_batch_executor(
@@ -1100,7 +1235,23 @@ def write_report(report: dict[str, Any], destination: str | None) -> None:
   if destination == "-":
     print(encoded, end="")
   elif destination:
-    Path(destination).write_text(encoded, encoding="utf-8")
+    path = Path(destination)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(encoded, encoding="utf-8")
+
+
+def finish_report(report: dict[str, Any], destination: str | None) -> int:
+  write_report(report, destination)
+  summary = report["summary"]
+  print(
+    f"unified execution: {summary['executed']} executed, "
+    f"{summary['passed']} passed, {summary['failed']} failed, "
+    f"{summary['environment_skipped']} environment-skipped, "
+    f"{summary['deferred_unsupported']} deferred-unsupported; "
+    f"conformant={str(summary['conformant']).lower()}",
+    file=sys.stderr if destination == "-" else sys.stdout,
+  )
+  return 1 if summary["failed"] else 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1112,6 +1263,9 @@ def main(argv: list[str] | None = None) -> int:
   parser.add_argument("--executor", type=Path, default=DEFAULT_EXECUTOR)
   parser.add_argument("--lua", default=os.environ.get("LUA", "lua"))
   parser.add_argument("--include", action="append")
+  parser.add_argument("--shard-count", type=int)
+  parser.add_argument("--shard-index", type=int)
+  parser.add_argument("--aggregate", nargs="+", type=Path)
   parser.add_argument("--report", metavar="PATH")
   arguments = parser.parse_args(argv)
 
@@ -1133,6 +1287,44 @@ def main(argv: list[str] | None = None) -> int:
 
     if arguments.include and not selected:
       raise CapabilityError("unified --include selector matched no tests")
+
+    if arguments.aggregate:
+      if arguments.include:
+        raise CapabilityError("shard aggregation cannot use --include")
+
+      if arguments.shard_count is not None or arguments.shard_index is not None:
+        raise CapabilityError("shard aggregation cannot select a shard")
+
+      reports = []
+
+      for path in arguments.aggregate:
+        try:
+          reports.append(json.loads(path.read_text(encoding="utf-8")))
+        except (OSError, json.JSONDecodeError) as exc:
+          raise CapabilityError(f"could not load shard report {path}: {exc}") from exc
+
+      report = aggregate_shard_reports(
+        selected,
+        manifest["ratchets"],
+        reports,
+      )
+      return finish_report(report, arguments.report)
+
+    has_shard_count = arguments.shard_count is not None
+    has_shard_index = arguments.shard_index is not None
+
+    if has_shard_count != has_shard_index:
+      raise CapabilityError("--shard-count and --shard-index must be used together")
+
+    if has_shard_count:
+      selected = select_shard(
+        selected,
+        arguments.shard_count,
+        arguments.shard_index,
+      )
+
+      if not selected:
+        raise CapabilityError("unified shard selected no tests")
 
     registry = apply_environment_overrides(load_executor_registry())
 
@@ -1211,27 +1403,24 @@ def main(argv: list[str] | None = None) -> int:
 
         report = build_report(
           selected,
-          manifest["ratchets"] if not arguments.include else None,
+          manifest["ratchets"]
+            if not arguments.include and not has_shard_count else None,
           lambda classification: execution_results.get(
             classification["id"],
             ("failed", "unified batch omitted a runnable test identity"),
           ),
         )
-    write_report(report, arguments.report)
+
+    if has_shard_count:
+      report["shard"] = {
+        "count": arguments.shard_count,
+        "index": arguments.shard_index,
+      }
   except CapabilityError as exc:
     print(f"unified capabilities: {exc}", file=sys.stderr)
     return 2
 
-  summary = report["summary"]
-  print(
-    f"unified execution: {summary['executed']} executed, "
-    f"{summary['passed']} passed, {summary['failed']} failed, "
-    f"{summary['environment_skipped']} environment-skipped, "
-    f"{summary['deferred_unsupported']} deferred-unsupported; "
-    f"conformant={str(summary['conformant']).lower()}",
-    file=sys.stderr if arguments.report == "-" else sys.stdout,
-  )
-  return 1 if summary["failed"] else 0
+  return finish_report(report, arguments.report)
 
 
 if __name__ == "__main__":

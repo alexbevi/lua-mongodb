@@ -1028,6 +1028,106 @@ class UnifiedCliTests(unittest.TestCase):
       for _, detail in results.values()
     ))
 
+  def test_fixture_shards_are_stable_disjoint_and_complete(self) -> None:
+    classifications = [
+      {
+        "fixture": f"suite/tests/unified/fixture-{fixture}.json",
+        "id": f"suite/tests/unified/fixture-{fixture}.json::test[{index}]",
+        "status": "runnable",
+      }
+      for fixture in range(20)
+      for index in range(1, 3)
+    ]
+    shards = [
+      run.select_shard(classifications, 4, index)
+      for index in range(4)
+    ]
+    selected_ids = [
+      classification["id"]
+      for shard in shards
+      for classification in shard
+    ]
+
+    self.assertEqual(
+      {classification["id"] for classification in classifications},
+      set(selected_ids),
+    )
+    self.assertEqual(len(selected_ids), len(set(selected_ids)))
+
+    for fixture in {value["fixture"] for value in classifications}:
+      containing = [
+        index for index, shard in enumerate(shards)
+        if any(value["fixture"] == fixture for value in shard)
+      ]
+      self.assertEqual([run.fixture_shard(fixture, 4)], containing)
+
+    self.assertEqual(
+      [1, 2, 1, 1, 3],
+      [
+        run.fixture_shard(
+          f"suite/tests/unified/fixture-{index}.json",
+          4,
+        )
+        for index in range(5)
+      ],
+    )
+
+  def test_shard_aggregation_enforces_exact_global_ratchets(self) -> None:
+    classifications = [
+      {
+        "activity": "A-001",
+        "fixture": f"suite/tests/unified/fixture-{index}.json",
+        "id": f"suite/tests/unified/fixture-{index}.json::test[1]",
+        "status": "runnable",
+      }
+      for index in range(8)
+    ]
+    ratchets = {"classified": 8, "passed": 8, "runnable": 8}
+    reports = []
+
+    for index in range(4):
+      selected = run.select_shard(classifications, 4, index)
+      report = run.build_report(
+        selected,
+        execute=lambda _: ("passed", None),
+      )
+      report["shard"] = {"count": 4, "index": index}
+      reports.append(report)
+
+    aggregate = run.aggregate_shard_reports(classifications, ratchets, reports)
+
+    self.assertEqual(8, aggregate["summary"]["executed"])
+    self.assertEqual(8, aggregate["summary"]["passed"])
+    self.assertEqual(0, aggregate["summary"]["failed"])
+
+    reports[0]["tests"].pop()
+
+    with self.assertRaisesRegex(run.CapabilityError, "missing test identity"):
+      run.aggregate_shard_reports(classifications, ratchets, reports)
+
+    reports = []
+
+    for index in range(4):
+      selected = run.select_shard(classifications, 4, index)
+      report = run.build_report(
+        selected,
+        execute=lambda _: ("passed", None),
+      )
+      report["shard"] = {"count": 4, "index": index}
+      reports.append(report)
+
+    reports[1]["tests"].append(reports[0]["tests"][0])
+
+    with self.assertRaisesRegex(run.CapabilityError, "duplicate shard test identity"):
+      run.aggregate_shard_reports(classifications, ratchets, reports)
+
+    reports[1]["tests"].pop()
+    reports[0]["tests"][0]["status"] = "failed"
+    reports[0]["tests"][0]["error"] = "shard execution failed"
+
+    with self.assertRaisesRegex(run.CapabilityError, "capability passed regressed"):
+      run.aggregate_shard_reports(classifications, ratchets, reports)
+
   def test_csot_reuses_the_shared_replica_set(self) -> None:
     csot = "client-side-operations-timeout/tests/command-execution.json::test[1]"
     transaction = "transactions/tests/unified/commit.json::test[1]"

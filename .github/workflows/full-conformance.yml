@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 jobs:
-  linux:
+  linux-quality:
     runs-on: ubuntu-latest
 
     steps:
@@ -47,6 +47,47 @@ jobs:
           luarocks install luacheck 1.2.0-1
           luarocks install luacov 0.17.0-1
 
+      - name: Run full static, portable, and coverage checks
+        run: make check-fast test-coverage
+
+      - name: Verify executable roadmap and commit evidence
+        run: python3 planning/update_plan.py check --strict
+
+      - name: Upload Linux quality evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: full-quality-linux-${{ github.sha }}
+          path: build/quality/luacov.report.out
+          if-no-files-found: warn
+
+  linux-unified:
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install driver dependencies
+        run: luarocks install --only-deps mongodb-scm-1.rockspec
+
       - name: Install MongoDB test tools on Linux
         run: |
           curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
@@ -56,21 +97,51 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y mongodb-org-server mongodb-mongosh
 
-      - name: Run authoritative full portable and loopback checks
-        run: make check-full UNIFIED_REPORT=build/conformance/unified.json
+      - name: Run deterministic unified shard
+        run: >-
+          python3 spec/unified/run.py
+          --shard-count 4
+          --shard-index ${{ matrix.shard }}
+          --report build/conformance/unified-shard-${{ matrix.shard }}.json
 
-      - name: Verify executable roadmap and commit evidence
-        run: python3 planning/update_plan.py check --strict
-
-      - name: Upload full Linux evidence
+      - name: Upload unified shard evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: full-conformance-linux-${{ github.sha }}
-          path: |
-            build/conformance/unified.json
-            build/quality/luacov.report.out
+          name: unified-shard-${{ matrix.shard }}-${{ github.sha }}
+          path: build/conformance/unified-shard-${{ matrix.shard }}.json
           if-no-files-found: warn
+
+  linux-aggregate:
+    needs: linux-unified
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Download unified shard evidence
+        uses: actions/download-artifact@v8
+        with:
+          pattern: unified-shard-*-${{ github.sha }}
+          path: build/conformance/shards
+          merge-multiple: true
+
+      - name: Aggregate exact unified evidence and global ratchets
+        run: >-
+          python3 spec/unified/run.py
+          --aggregate build/conformance/shards/*.json
+          --report build/conformance/unified.json
+
+      - name: Upload authoritative Linux conformance evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: full-conformance-linux-${{ github.sha }}
+          path: build/conformance/unified.json
+          if-no-files-found: error
 
   macos:
     if: >-

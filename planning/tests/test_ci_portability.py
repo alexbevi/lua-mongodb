@@ -48,12 +48,14 @@ class CiPortabilityTests(unittest.TestCase):
 
   def test_portable_jobs_provision_unified_execution_tools(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
-    linux = workflow[workflow.index("  linux:"):workflow.index("  macos:")]
+    linux = workflow[
+      workflow.index("  linux-unified:"):workflow.index("  linux-aggregate:")
+    ]
     macos = workflow[workflow.index("  macos:"):workflow.index("  compatibility:")]
 
     self.assertLess(
       linux.index("Install MongoDB test tools on Linux"),
-      linux.index("Run authoritative full portable and loopback checks"),
+      linux.index("Run deterministic unified shard"),
     )
     self.assertLess(
       macos.index("Install MongoDB test tools on macOS"),
@@ -105,6 +107,17 @@ class CiPortabilityTests(unittest.TestCase):
 
     self.assertIn('series: ["7.0", "8.0", "8.2"]', workflow)
     self.assertIn("topology: [standalone, replicaset]", workflow)
+
+  def test_linux_full_conformance_is_sharded_and_aggregated(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+
+    self.assertIn("shard: [0, 1, 2, 3]", workflow)
+    self.assertIn("--shard-count 4", workflow)
+    self.assertIn("--shard-index ${{ matrix.shard }}", workflow)
+    self.assertIn("needs: linux-unified", workflow)
+    self.assertIn("uses: actions/download-artifact@v8", workflow)
+    self.assertIn("--aggregate build/conformance/shards/*.json", workflow)
+    self.assertIn("if-no-files-found: error", workflow)
 
 
 if __name__ == "__main__":

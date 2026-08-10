@@ -2198,6 +2198,28 @@
       "notes": [],
       "started_at": "2026-08-09T23:02:05+00:00",
       "completed_at": "2026-08-09T23:49:39+00:00"
+    },
+    "UTF-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_fixture_shards_are_stable_disjoint_and_complete spec.unified.test_cli.UnifiedCliTests.test_shard_aggregation_enforces_exact_global_ratchets planning.tests.test_ci_portability.CiPortabilityTests.test_linux_full_conformance_is_sharded_and_aggregated -v",
+          "exit_code": 1,
+          "summary": "Shard selection and aggregation APIs do not exist and full Linux conformance has only one serial job",
+          "recorded_at": "2026-08-09T23:53:28+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli planning.tests.test_ci_portability'; py_compile; workflow YAML parse; make -n check-full; check --strict",
+          "exit_code": 0,
+          "summary": "63 focused Python tests passed with 0 failures; deterministic fixture shards were disjoint and complete, synthetic aggregation rebuilt 8/8 passed rows and rejected missing, duplicate, and regressed evidence; workflow YAML, Python compilation, full-gate dry run, and strict planning validation passed; no unified capability classifications changed",
+          "recorded_at": "2026-08-10T00:02:45+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-09T23:52:50+00:00",
+      "completed_at": "2026-08-10T00:04:49+00:00"
     }
   },
   "verified_references": {
