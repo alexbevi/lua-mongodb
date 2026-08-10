@@ -1,19 +1,8 @@
 local bson = require("mongodb.bson")
+local command_security = require("mongodb.command.security")
 local errors = require("mongodb.error")
 
 local M = {}
-
-local SENSITIVE_COMMANDS = {
-  authenticate = true,
-  copydb = true,
-  copydbgetnonce = true,
-  copydbsaslstart = true,
-  createuser = true,
-  getnonce = true,
-  saslcontinue = true,
-  saslstart = true,
-  updateuser = true,
-}
 
 local EVENT_STATES = setmetatable({}, { __mode = "k" })
 local EVENT_METATABLE = {
@@ -104,17 +93,6 @@ local function publish(state, callback_name, event)
   end
 end
 
-local function is_sensitive(command_name, command)
-  local lower_name = command_name:lower()
-
-  if SENSITIVE_COMMANDS[lower_name] then
-    return true
-  end
-
-  return (lower_name == "hello" or lower_name == "ismaster")
-    and command:get("speculativeAuthenticate") ~= nil
-end
-
 local function empty_document()
   return bson.document({})
 end
@@ -126,21 +104,7 @@ local function redacted_failure(failure)
 
   local response = failure.details and failure.details.response
 
-  if not bson.is_document(response) then
-    return empty_document()
-  end
-
-  local entries = {}
-
-  for _, name in ipairs({ "code", "codeName", "errorLabels" }) do
-    local value = response:get(name)
-
-    if value ~= nil then
-      entries[#entries + 1] = { name, value }
-    end
-  end
-
-  return bson.document(entries)
+  return command_security.redact_server_response(response)
 end
 
 local function common_fields(span_state, event_type, duration_ms)
@@ -232,7 +196,7 @@ function MONITOR_METHODS:start(fields)
   end
 
   local monitor_state = MONITOR_STATES[self]
-  local sensitive = is_sensitive(command_name, fields.command)
+  local sensitive = command_security.is_sensitive(command_name, fields.command)
   local operation_id = fields.operation_id or fields.request_id
   local span = {}
 

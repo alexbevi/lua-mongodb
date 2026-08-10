@@ -211,7 +211,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | GridFS | 🔴 |
 | Programmability | Stable API | 🟡 |
 | Programmability | Client-side encryption | 🔴 |
-| Observability | Command logging and monitoring | 🔴 |
+| Observability | Command logging and monitoring | 🟡 |
 | Observability | Client backpressure | 🔴 |
 | Observability | OpenTelemetry | 🔴 |
 | Testability | Unified test format | 🟢 |

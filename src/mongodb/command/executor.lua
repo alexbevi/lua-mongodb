@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local command_security = require("mongodb.command.security")
 local errors = require("mongodb.error")
 local handshake_metadata = require("mongodb.handshake.metadata")
 local hello_model = require("mongodb.command.hello")
@@ -54,8 +55,12 @@ local function labels_from(document)
   return labels
 end
 
-local function server_error(state, response)
-  local message = response:get("errmsg")
+local function server_error(state, response, sensitive)
+  if sensitive then
+    response = command_security.redact_server_response(response)
+  end
+
+  local message = sensitive and "sensitive command failed" or response:get("errmsg")
 
   if type(message) ~= "string" or message == "" then
     message = response:get("$err")
@@ -142,7 +147,7 @@ local function close_with(state, err)
   return nil, err
 end
 
-local function receive_response(state, expected_response_to, options, span)
+local function receive_response(state, expected_response_to, options, span, sensitive)
   local io_deadline = options.socket_deadline or options.deadline
   local response_bytes, err = state.connection:read_frame(
     state.max_message_size,
@@ -197,7 +202,7 @@ local function receive_response(state, expected_response_to, options, span)
   end
 
   if ok == 0 then
-    err = server_error(state, response.body)
+    err = server_error(state, response.body, sensitive)
 
     if span then
       span:failed(err)
@@ -283,6 +288,8 @@ local function execute(state, database, command, options)
   end
 
   local span
+  local command_name = command:get_at(1)
+  local sensitive = command_security.is_sensitive(command_name, command)
 
   if options.monitor ~= false and state.monitoring and state.monitoring:has_listeners() then
     span = state.monitoring:start({
@@ -311,7 +318,7 @@ local function execute(state, database, command, options)
     return bson.document({ { "ok", 1 } })
   end
 
-  return receive_response(state, request_id, options, span)
+  return receive_response(state, request_id, options, span, sensitive)
 end
 
 function EXECUTOR_METHODS:hello(options)

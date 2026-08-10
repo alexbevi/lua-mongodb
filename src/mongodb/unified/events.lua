@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local command_security = require("mongodb.command.security")
 local errors = require("mongodb.error")
 
 local M = {}
@@ -53,18 +54,6 @@ local SDAM_EVENT_TYPES = {
   topology_description_changed = true,
   topology_opening = true,
 }
-local SENSITIVE_COMMANDS = {
-  authenticate = true,
-  copydb = true,
-  copydbgetnonce = true,
-  copydbsaslstart = true,
-  createuser = true,
-  getnonce = true,
-  saslcontinue = true,
-  saslstart = true,
-  updateuser = true,
-}
-
 local function configuration_error(message, path, details)
   details = details or {}
   details.path = path or "$"
@@ -127,7 +116,7 @@ local COLLECTOR_METATABLE = { __index = COLLECTOR_METHODS }
 local function is_sensitive(event)
   local name = event.command_name:lower()
 
-  if SENSITIVE_COMMANDS[name] then
+  if command_security.is_always_sensitive(name) then
     return true
   end
 

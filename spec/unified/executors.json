@@ -1616,6 +1616,42 @@
       "environment": "isolated-replicaset",
       "testCommands": true
     },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[1]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[2]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[3]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[5]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[6]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[7]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[8]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[9]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[10]": {
+      "activity": "REL-008",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",
       "environment": "live-standalone"

@@ -158,6 +158,58 @@ describe("command monitoring", function()
     assert.is_nil(observed[4].failure:get("errmsg"))
   end)
 
+  it("keeps protected values out of sensitive command diagnostics", function()
+    local client_secret = "audit-client-secret-71f44"
+    local server_secret = "audit-server-secret-9c285"
+    local observed = {}
+    local events = monitoring.new({
+      clock = clock({ 1, 2 }),
+      listeners = {
+        {
+          started = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          failed = function(_, event)
+            observed[#observed + 1] = event
+          end,
+        },
+      },
+    })
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      bson.document({
+        { "ok", 0 },
+        { "errmsg", "authentication rejected " .. server_secret },
+        { "code", 18 },
+        { "codeName", "AuthenticationFailed" },
+        { "errorLabels", bson.array({ "HandshakeError" }) },
+        { "payload", server_secret },
+      }),
+    })
+    local commands = command_executor.new(connection, { monitoring = events })
+
+    assert(commands:hello())
+    local reply, err = commands:command("admin", bson.document({
+      { "saslStart", 1 },
+      { "payload", bson.binary(client_secret) },
+    }))
+
+    assert.is_nil(reply)
+    assert.is_true(errors.is(err, errors.CATEGORY.SERVER))
+    assert.are.equal("sensitive command failed", err.message)
+    assert.is_nil(tostring(err):find(client_secret, 1, true))
+    assert.is_nil(tostring(err):find(server_secret, 1, true))
+    assert.are.same(
+      { "code", "codeName", "errorLabels" },
+      err.details.response:keys()
+    )
+    assert.are.equal(0, #observed[1].command)
+    assert.are.same(
+      { "code", "codeName", "errorLabels" },
+      observed[2].failure:keys()
+    )
+  end)
+
   it("redacts the complete normative sensitive-command list", function()
     local observed = {}
     local current_time = 0

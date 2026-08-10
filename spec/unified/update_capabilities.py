@@ -164,6 +164,12 @@ TEST_OVERRIDES = {
   identity: (value["activity"], None)
   for identity, value in EXECUTOR_TESTS.items()
 }
+TEST_OVERRIDES[
+  "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[4]"
+] = (
+  "ADV-011",
+  "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
+)
 TEST_OVERRIDES.update({
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "ADV-011",

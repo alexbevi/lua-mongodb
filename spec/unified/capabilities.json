@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1376,
-    "runnable": 1376
+    "passed": 1385,
+    "runnable": 1385
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36670,6 +36670,292 @@
         "special_operations": [
           "assertCollectionExists"
         ],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[10]": {
+      "activity": "REL-008",
+      "fingerprint": "3301b5e9cb0b54c04aaf0217dcd71124506b6c01e0cbb970f4400f338603ee69",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[1]": {
+      "activity": "REL-008",
+      "fingerprint": "7cdeff25f2d2aa76fe8b7e0e16ea0072d2e78a1f75ce26e91ec8ca07053db1e4",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[2]": {
+      "activity": "REL-008",
+      "fingerprint": "4a31a8c0a0a5140333aaed3c46421273b9946326fe42a87f3ccc1c3fa3226229",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[3]": {
+      "activity": "REL-008",
+      "fingerprint": "b02773eb6796c0a4ff44992828d8265747dac5fe14eef4f721b2c4e4de0a49c4",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[4]": {
+      "activity": "ADV-011",
+      "fingerprint": "1c32b82ec6e387e32cd20b9b4750ae77902f266cfc9920d9703033d780730774",
+      "reason": "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[5]": {
+      "activity": "REL-008",
+      "fingerprint": "6c7d59b91e80b134497af1227851d3f5da9198ea37fd19a63007f64237e025c1",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[6]": {
+      "activity": "REL-008",
+      "fingerprint": "4e52fcb9d77d79e2aeb60fb602fa109d66bbb2c05d9ab9778c4f1af2021db168",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[7]": {
+      "activity": "REL-008",
+      "fingerprint": "7c0b2292759429b94b07cf291ea37ab539dfd51f6689b3d1a6c0fa27ed8cf89e",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[8]": {
+      "activity": "REL-008",
+      "fingerprint": "fb353e5d38d8fb62ca0aac908f82c7706989a0d09e6d65551d9551b9ba54ccc5",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[9]": {
+      "activity": "REL-008",
+      "fingerprint": "40a7112d6d10ff6c2a6d5f41955f13531b203c4fb3733135f533ef41e9868ffb",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
         "topologies": []
       },
       "status": "runnable"

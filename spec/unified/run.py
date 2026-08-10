@@ -262,12 +262,16 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       and parts[0] in {"collection-management", "index-management"}
       and parts[1] == "tests"
     )
+    is_security_monitoring_fixture = relative.as_posix() == (
+      "command-logging-and-monitoring/tests/monitoring/redacted-commands.json"
+    )
 
     if not (
       is_unified_directory
       or is_csot_directory
       or is_release_directory
       or is_management_directory
+      or is_security_monitoring_fixture
     ):
       continue
 

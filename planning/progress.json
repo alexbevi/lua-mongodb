@@ -2264,6 +2264,35 @@
       "notes": [],
       "started_at": "2026-08-10T00:21:19+00:00",
       "completed_at": "2026-08-10T00:26:59+00:00"
+    },
+    "REL-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/command_monitoring_spec.lua",
+          "exit_code": 2,
+          "summary": "3 command-monitoring cases passed and the protected-value audit failed because a sensitive saslStart server errmsg reached the public structured error message",
+          "recorded_at": "2026-08-10T00:46:54+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.unified.test_cli.UnifiedCliTests.test_sensitive_command_redaction_cases_are_runnable",
+          "exit_code": 2,
+          "summary": "The nine production-core sensitive-command monitoring cases were absent from unified discovery, classification, and exact execution; the pre-7.0 getnonce branch also lacked its explicit post-v1 owner",
+          "recorded_at": "2026-08-10T00:51:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua spec/unit/command_executor_spec.lua spec/unit/auth_scram_spec.lua spec/unit/config_uri_spec.lua spec/unit/luasec_runtime_spec.lua spec/unit/unified_events_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/command/security.lua src/mongodb/command/executor.lua src/mongodb/monitoring.lua src/mongodb/unified/events.lua spec/unit/command_monitoring_spec.lua'; make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/redacted-commands.json'; generated validators; make rockspec; make test-package",
+          "exit_code": 0,
+          "summary": "37 coupled Lua tests passed; 64 unified/conformance/scope Python tests passed; exact pinned redaction fixture executed 9 and passed 9 with 0 failures or environment skips and 1 ADV-011 pre-v1 deferral; 535/535 fixtures schema-valid with 2531 tests; conformance ledger 3559 passed/1965 deferred and release scope 0 applicable gaps; touched-file lint 0 warnings/errors; rockspec lint and isolated 53-module package smoke passed; all generated --check validators and git diff check passed",
+          "recorded_at": "2026-08-10T00:59:01+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-10T00:46:19+00:00",
+      "completed_at": "2026-08-10T00:59:02+00:00"
     }
   },
   "verified_references": {
