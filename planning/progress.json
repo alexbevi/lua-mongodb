@@ -2337,6 +2337,28 @@
       "notes": [],
       "started_at": "2026-08-10T01:16:44+00:00",
       "completed_at": "2026-08-10T01:21:20+00:00"
+    },
+    "REL-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.release.test_checklist",
+          "exit_code": 2,
+          "summary": "The release contract failed to import because spec.release.checklist does not exist; the tree has no generated production-core readiness checklist reconciling conformance, compatibility, packaging, security, cleanup, documentation, and version metadata",
+          "recorded_at": "2026-08-10T01:27:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus release/version/API boundaries; package and rockspec validators; generated release/conformance validators; make test-unified-execution (release check subtarget); make check-fast test-coverage",
+          "exit_code": 0,
+          "summary": "Release contract reports version 0.1.0 ready with 5524 classified cases, 3559 passed, 1965 named post-v1 exclusions, 0 applicable gaps, 6 compatibility rows/30 profiles, and completed packaging/security/cleanup audits; focused gates passed 16 version/handshake unit tests, 3 client integration tests, 11 release/workflow tests, and touched lint; isolated source rock installed all 53 modules and LuaRocks lint passed; live unified executed 1309 and passed 1309 with 0 failures, 76 local environment skips, and 1146 explicit deferrals; repaired check-fast passed 223 unit plus corpora, 23 integration, static unified/conformance/stress/compatibility/package/lint/planning gates; coverage passed 246 tests at 19148/22535 lines (84.97%) with command security 33/33 and monitoring 125/141; all generated --check validators and git diff checks passed",
+          "recorded_at": "2026-08-10T02:22:55+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-10T01:26:13+00:00",
+      "completed_at": "2026-08-10T02:23:02+00:00"
     }
   },
   "verified_references": {

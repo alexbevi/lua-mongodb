@@ -5,7 +5,7 @@ LUACHECK ?= luacheck
 LUACOV ?= luacov
 PYTHON ?= python3
 
-ROCKSPEC := mongodb-scm-1.rockspec
+ROCKSPEC := mongodb-0.1.0-1.rockspec
 BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
 FOCUS_UNIT ?=
 FOCUS_INTEGRATION ?=
@@ -17,7 +17,7 @@ UNIFIED_REPORT ?=
 .PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
-	test-stress test-compatibility test-compatibility-live test-package test-release-scope lint rockspec planning-check
+	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-release-checklist lint rockspec planning-check
 
 check: check-full
 
@@ -110,7 +110,7 @@ test-unified-inventory: check-python check-lua
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
 	@$(MAKE) --no-print-directory test-conformance
 
-test-conformance: check-python test-release-scope
+test-conformance: check-python test-release-scope test-release-checklist
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
 	@"$(PYTHON)" spec/conformance/ledger.py --check
 	@"$(PYTHON)" planning/update_readme_compatibility.py --check
@@ -118,6 +118,10 @@ test-conformance: check-python test-release-scope
 test-release-scope: check-python
 	@"$(PYTHON)" -m unittest spec.release.test_scope -v
 	@"$(PYTHON)" spec/release/scope.py --check
+
+test-release-checklist: check-python
+	@"$(PYTHON)" -m unittest spec.release.test_checklist -v
+	@"$(PYTHON)" spec/release/checklist.py --check
 
 test-quality: test-coverage test-stress
 

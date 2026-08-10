@@ -17,17 +17,27 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 100,
+    "completed": 101,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 13
+    "pending": 12
   },
   "active": [],
   "ready": [
-    "REL-009"
+    "ADV-001",
+    "ADV-002",
+    "ADV-003",
+    "ADV-004",
+    "ADV-005",
+    "ADV-007",
+    "ADV-008",
+    "ADV-009",
+    "ADV-010",
+    "ADV-011",
+    "ADV-012"
   ],
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "REL-009"
+  "next_ready": "ADV-001"
 }

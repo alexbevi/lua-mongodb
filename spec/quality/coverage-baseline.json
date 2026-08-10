@@ -68,6 +68,10 @@
       "active": 112,
       "covered": 90
     },
+    "src/mongodb/command/security.lua": {
+      "active": 33,
+      "covered": 33
+    },
     "src/mongodb/config/options.lua": {
       "active": 462,
       "covered": 428
@@ -225,7 +229,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 21910,
-    "covered": 18391
+    "active": 21943,
+    "covered": 18424
   }
 }

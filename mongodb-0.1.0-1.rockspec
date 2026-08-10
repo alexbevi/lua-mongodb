@@ -1,17 +1,18 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "scm-1"
+version = "0.1.0-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
+  tag = "v0.1.0",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. The project is pre-alpha and currently under development.
+    libmongoc. Version 0.1.0 is the production-core v1 release for Lua 5.4.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",

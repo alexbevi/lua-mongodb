@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local command_executor = require("mongodb.command.executor")
+local command_security = require("mongodb.command.security")
 local errors = require("mongodb.error")
 local monitoring = require("mongodb.monitoring")
 local op_msg = require("mongodb.wire.op_msg")
@@ -38,6 +39,32 @@ local function clock(values)
 end
 
 describe("command monitoring", function()
+  it("keeps security helpers closed for invalid command values", function()
+    assert.is_false(command_security.is_sensitive(nil, bson.document({})))
+    assert.are.equal(0, #command_security.redact_server_response("invalid"))
+  end)
+
+  it("keeps monitor and span state immutable", function()
+    local events = monitoring.new({
+      clock = clock({ 1 }),
+      listeners = {},
+    })
+
+    assert.has_error(function()
+      events.listeners = {}
+    end, "command monitors are immutable")
+
+    local span = events:start({
+      command = bson.document({ { "ping", 1 } }),
+      database_name = "admin",
+      request_id = 1,
+    })
+
+    assert.has_error(function()
+      span.finished = true
+    end, "command monitor spans are immutable")
+  end)
+
   it("publishes correlated ordered outcomes and isolates listeners", function()
     local observed = {}
     local listener_errors = {}
