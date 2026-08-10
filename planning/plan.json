@@ -554,12 +554,22 @@
       "verification": ["make rockspec", "make test-package", "make lint"], "acceptance": ["The package installs without workspace module leakage", "The documented target API loads from the installed tree"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "build(package): add install and API smoke gates"
     },
     {
-      "id": "REL-008", "title": "Audit cleanup and security redaction", "milestone": "production-core-v1", "depends_on": ["REL-007"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Specify leak checks for clients, pools, cursors, sessions, monitors, sockets, and failpoints plus audits for credentials and sensitive command payloads.", "implementation": "Add deterministic resource-accounting and redaction gates, closing only defects exposed by those audits.",
-      "verification": ["make test-unit", "make test-integration", "make test-unified", "make test-stress", "make lint"], "acceptance": ["Security diagnostics contain no protected values", "All owned resources and test failpoints are cleaned on success and failure"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "test(security): audit cleanup and redaction"
+      "id": "REL-008", "title": "Audit protected-value redaction", "milestone": "production-core-v1", "depends_on": ["REL-007"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Inject unique credentials and sensitive command payloads into public error and monitoring paths and assert that no protected value reaches their diagnostics.", "implementation": "Add a deterministic protected-value audit gate and close only redaction defects exposed by it.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["Credentials and sensitive command payloads never appear in public errors or monitoring diagnostics"], "docs": ["docs/ARCHITECTURE.md"], "commit": "test(security): audit protected-value redaction"
     },
     {
-      "id": "REL-009", "title": "Finalize production-core v1 release", "milestone": "production-core-v1", "depends_on": ["REL-008"], "references": ["specifications:source"], "test_policy": "red_green",
+      "id": "REL-042", "title": "Audit owned-resource cleanup", "milestone": "production-core-v1", "depends_on": ["REL-008"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Count client-owned pools, cursors, sessions, monitors, connections, and sockets and assert that every successful and failing lifecycle returns each count to its baseline.", "implementation": "Add deterministic resource-accounting gates and close only lifecycle defects exposed by them.",
+      "verification": ["make test-unit", "make test-integration", "make test-stress", "make lint"], "acceptance": ["Every client-owned pool, cursor, session, monitor, connection, and socket returns to baseline on success and failure"], "docs": ["docs/ARCHITECTURE.md"], "commit": "test(lifecycle): audit owned-resource cleanup"
+    },
+    {
+      "id": "REL-043", "title": "Audit unified failpoint cleanup", "milestone": "production-core-v1", "depends_on": ["REL-042"], "references": ["specifications:source"], "test_policy": "red_green",
+      "test_first": "Enable tracked unified failpoints and force passing, operation-failure, and assertion-failure outcomes, proving each failpoint is disabled on the same server afterward.", "implementation": "Add a deterministic unified failpoint-cleanup gate and close only finalizer defects exposed by it.",
+      "verification": ["make test-unit", "make test-integration", "make test-unified", "make lint"], "acceptance": ["No tracked test failpoint survives cleanup after a passing or failing unified test"], "docs": ["docs/ARCHITECTURE.md"], "commit": "test(test-runner): audit failpoint cleanup"
+    },
+    {
+      "id": "REL-009", "title": "Finalize production-core v1 release", "milestone": "production-core-v1", "depends_on": ["REL-043"], "references": ["specifications:source"], "test_policy": "red_green",
       "test_first": "Assert zero applicable production-core deferrals and validate the complete release checklist over compatibility, packaging, security, and conformance reports.", "implementation": "Finalize the rockspec version metadata, API documentation, changelog, and release checklist without beginning post-v1 work.",
       "verification": ["make check", "make test-integration", "make test-unified", "make test-package", "make test-compatibility", "python3 planning/update_plan.py check --strict"], "acceptance": ["All applicable v1 fixtures pass and none are unclassified", "Package install, compatibility, security, cleanup, and documentation gates pass"], "docs": ["README.md", "docs/ARCHITECTURE.md", "CHANGELOG.md"], "commit": "chore(release): prepare production-core v1"
     },
