@@ -2220,6 +2220,28 @@
       "notes": [],
       "started_at": "2026-08-09T23:52:50+00:00",
       "completed_at": "2026-08-10T00:04:49+00:00"
+    },
+    "CI-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_execution_timings_are_observational_and_report_slowest_groups -v",
+          "exit_code": 1,
+          "summary": "The report timing contract failed because spec.unified.run has no ExecutionTimings collector, so setup, environment, fixture-group, total, and slowest-group observations are absent",
+          "recorded_at": "2026-08-10T00:10:58+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'; python3 -m py_compile spec/unified/run.py spec/unified/test_cli.py; timed deferred-only CLI report validator; python3 planning/update_plan.py check --strict; git diff --check",
+          "exit_code": 0,
+          "summary": "54 focused Python tests passed; deterministic timing observations covered setup, environment provisioning, fixture groups, total duration, slowest-group ordering, shard aggregation, and unchanged conformance evidence; a real deferred-only CLI report contained 0 executed, 0 passed, 0 failed, 0 environment skips, and 6 explicit deferrals; Python compilation, strict planning validation, and diff checks passed; no unified capability classifications changed",
+          "recorded_at": "2026-08-10T00:16:01+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-10T00:08:17+00:00",
+      "completed_at": "2026-08-10T00:16:07+00:00"
     }
   },
   "verified_references": {

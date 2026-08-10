@@ -994,6 +994,76 @@ class UnifiedCliTests(unittest.TestCase):
       batches,
     )
 
+  def test_execution_timings_are_observational_and_report_slowest_groups(
+    self,
+  ) -> None:
+    classifications = [
+      {
+        "activity": "A-001",
+        "fixture": "crud/tests/unified/insertOne.json",
+        "id": "crud/tests/unified/insertOne.json::test[1]",
+        "status": "runnable",
+      },
+      {
+        "activity": "A-001",
+        "fixture": "crud/tests/unified/find.json",
+        "id": "crud/tests/unified/find.json::test[1]",
+        "status": "runnable",
+      },
+    ]
+    report = run.build_report(
+      classifications,
+      {"classified": 2, "passed": 2, "runnable": 2},
+      execute=lambda _: ("passed", None),
+    )
+    conformance = json.loads(json.dumps(report))
+    clock = mock.Mock(side_effect=[0, 1, 2, 7, 8, 11, 12, 18, 20])
+    timings = run.ExecutionTimings(clock=clock)
+
+    timings.finish_setup()
+
+    with timings.observe_environment("live-standalone"):
+      pass
+
+    with timings.observe_fixture_group([classifications[0]], "live-standalone"):
+      pass
+
+    with timings.observe_fixture_group([classifications[1]], "live-replicaset"):
+      pass
+
+    timings.attach(report)
+
+    self.assertEqual(
+      conformance,
+      {key: value for key, value in report.items() if key != "timings"},
+    )
+    self.assertEqual(1000.0, report["timings"]["setup_ms"])
+    self.assertEqual(20000.0, report["timings"]["total_ms"])
+    self.assertEqual(
+      [{
+        "duration_ms": 5000.0,
+        "environment": "live-standalone",
+      }],
+      report["timings"]["environments"],
+    )
+    self.assertEqual(
+      [
+        {
+          "duration_ms": 6000.0,
+          "environment": "live-replicaset",
+          "fixture": "crud/tests/unified/find.json",
+          "tests": 1,
+        },
+        {
+          "duration_ms": 3000.0,
+          "environment": "live-standalone",
+          "fixture": "crud/tests/unified/insertOne.json",
+          "tests": 1,
+        },
+      ],
+      report["timings"]["slowest_fixture_groups"],
+    )
+
   def test_batch_report_omission_fails_every_selected_identity(self) -> None:
     classifications = [
       {
@@ -1092,6 +1162,24 @@ class UnifiedCliTests(unittest.TestCase):
         execute=lambda _: ("passed", None),
       )
       report["shard"] = {"count": 4, "index": index}
+      report["timings"] = {
+        "environments": [{
+          "duration_ms": 2.0,
+          "environment": "live-standalone",
+        }],
+        "fixture_groups": [
+          {
+            "duration_ms": float(index + position + 1),
+            "environment": "live-standalone",
+            "fixture": classification["fixture"],
+            "tests": 1,
+          }
+          for position, classification in enumerate(selected)
+        ],
+        "setup_ms": 1.0,
+        "slowest_fixture_groups": [],
+        "total_ms": 10.0,
+      }
       reports.append(report)
 
     aggregate = run.aggregate_shard_reports(classifications, ratchets, reports)
@@ -1099,6 +1187,18 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(8, aggregate["summary"]["executed"])
     self.assertEqual(8, aggregate["summary"]["passed"])
     self.assertEqual(0, aggregate["summary"]["failed"])
+    self.assertEqual(4.0, aggregate["timings"]["setup_ms"])
+    self.assertEqual(40.0, aggregate["timings"]["total_ms"])
+    self.assertEqual(8.0, aggregate["timings"]["environments"][0]["duration_ms"])
+    self.assertEqual(8, len(aggregate["timings"]["fixture_groups"]))
+    self.assertEqual(
+      max(
+        group["duration_ms"]
+        for report in reports
+        for group in report["timings"]["fixture_groups"]
+      ),
+      aggregate["timings"]["slowest_fixture_groups"][0]["duration_ms"],
+    )
 
     reports[0]["tests"].pop()
 

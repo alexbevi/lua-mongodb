@@ -4,10 +4,11 @@
 from __future__ import annotations
 
 import argparse
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 import fnmatch
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -41,6 +42,7 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
 })
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
+SLOWEST_FIXTURE_GROUP_LIMIT = 10
 KNOWN_REQUIREMENT_KEYS = {
   "arguments",
   "entities",
@@ -119,6 +121,115 @@ KNOWN_TOPOLOGIES = {
 
 class CapabilityError(ValueError):
   """Raised when fixture discovery and the capability manifest diverge."""
+
+
+def _duration_ms(value: float, label: str) -> float:
+  duration = round(value * 1000, 3)
+
+  if not math.isfinite(duration) or duration < 0:
+    raise CapabilityError(f"{label} duration must be a non-negative number")
+
+  return duration
+
+
+def _timing_report(
+  setup_ms: float,
+  total_ms: float,
+  environments: dict[str, float],
+  fixture_groups: list[dict[str, Any]],
+) -> dict[str, Any]:
+  groups = sorted(
+    (dict(group) for group in fixture_groups),
+    key=lambda group: (group["fixture"], group["environment"]),
+  )
+  slowest = sorted(
+    (dict(group) for group in groups),
+    key=lambda group: (
+      -group["duration_ms"],
+      group["fixture"],
+      group["environment"],
+    ),
+  )[:SLOWEST_FIXTURE_GROUP_LIMIT]
+  return {
+    "environments": [
+      {
+        "duration_ms": round(duration_ms, 3),
+        "environment": environment,
+      }
+      for environment, duration_ms in sorted(environments.items())
+    ],
+    "fixture_groups": groups,
+    "setup_ms": round(setup_ms, 3),
+    "slowest_fixture_groups": slowest,
+    "total_ms": round(total_ms, 3),
+  }
+
+
+class ExecutionTimings:
+  """Collect observational runner timings without changing conformance rows."""
+
+  def __init__(self, clock: Any = time.perf_counter):
+    self._clock = clock
+    self._started = clock()
+    self._setup_ms: float | None = None
+    self._environments: dict[str, float] = {}
+    self._fixture_groups: list[dict[str, Any]] = []
+
+  def finish_setup(self) -> None:
+    if self._setup_ms is None:
+      self._setup_ms = _duration_ms(
+        self._clock() - self._started,
+        "unified setup",
+      )
+
+  @contextmanager
+  def observe_environment(self, environment: str):
+    started = self._clock()
+
+    try:
+      yield
+    finally:
+      duration_ms = _duration_ms(
+        self._clock() - started,
+        f"unified {environment} environment",
+      )
+      self._environments[environment] = (
+        self._environments.get(environment, 0.0) + duration_ms
+      )
+
+  @contextmanager
+  def observe_fixture_group(
+    self,
+    classifications: list[dict[str, Any]],
+    environment: str,
+  ):
+    if not classifications:
+      raise CapabilityError("cannot time an empty unified fixture group")
+
+    fixture = classifications[0]["fixture"]
+    started = self._clock()
+
+    try:
+      yield
+    finally:
+      self._fixture_groups.append({
+        "duration_ms": _duration_ms(
+          self._clock() - started,
+          f"unified fixture group {fixture}",
+        ),
+        "environment": environment,
+        "fixture": fixture,
+        "tests": len(classifications),
+      })
+
+  def attach(self, report: dict[str, Any]) -> None:
+    self.finish_setup()
+    report["timings"] = _timing_report(
+      self._setup_ms or 0.0,
+      _duration_ms(self._clock() - self._started, "unified total"),
+      self._environments,
+      self._fixture_groups,
+    )
 
 
 def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[str]:
@@ -622,6 +733,84 @@ def build_report(
   }
 
 
+def aggregate_timing_reports(
+  reports: list[dict[str, Any]],
+) -> dict[str, Any] | None:
+  """Combine shard timing observations without using them as test evidence."""
+  timing_reports = [report.get("timings") for report in reports]
+
+  if all(timings is None for timings in timing_reports):
+    return None
+
+  if any(not isinstance(timings, dict) for timings in timing_reports):
+    raise CapabilityError("every shard report must include timing metadata")
+
+  setup_ms = 0.0
+  total_ms = 0.0
+  environments: dict[str, float] = {}
+  fixture_groups: list[dict[str, Any]] = []
+
+  def duration(value: Any, label: str) -> float:
+    if (
+      not isinstance(value, (int, float))
+      or isinstance(value, bool)
+      or not math.isfinite(value)
+      or value < 0
+    ):
+      raise CapabilityError(f"{label} must be a non-negative number")
+
+    return float(value)
+
+  for timings in timing_reports:
+    setup_ms += duration(timings.get("setup_ms"), "shard setup_ms")
+    total_ms += duration(timings.get("total_ms"), "shard total_ms")
+    environment_rows = timings.get("environments")
+    group_rows = timings.get("fixture_groups")
+
+    if not isinstance(environment_rows, list):
+      raise CapabilityError("shard timing environments must be an array")
+
+    if not isinstance(group_rows, list):
+      raise CapabilityError("shard timing fixture_groups must be an array")
+
+    for row in environment_rows:
+      if not isinstance(row, dict) or not isinstance(row.get("environment"), str):
+        raise CapabilityError("shard timing environment row is malformed")
+
+      environment = row["environment"]
+      environments[environment] = environments.get(environment, 0.0) + duration(
+        row.get("duration_ms"),
+        f"shard {environment} environment duration_ms",
+      )
+
+    for row in group_rows:
+      if (
+        not isinstance(row, dict)
+        or not isinstance(row.get("fixture"), str)
+        or not isinstance(row.get("environment"), str)
+        or type(row.get("tests")) is not int
+        or row["tests"] <= 0
+      ):
+        raise CapabilityError("shard timing fixture-group row is malformed")
+
+      fixture_groups.append({
+        "duration_ms": duration(
+          row.get("duration_ms"),
+          f"shard {row['fixture']} fixture-group duration_ms",
+        ),
+        "environment": row["environment"],
+        "fixture": row["fixture"],
+        "tests": row["tests"],
+      })
+
+  return _timing_report(
+    setup_ms,
+    total_ms,
+    environments,
+    fixture_groups,
+  )
+
+
 def aggregate_shard_reports(
   classifications: list[dict[str, Any]],
   ratchets: dict[str, Any],
@@ -730,6 +919,11 @@ def aggregate_shard_reports(
 
   aggregate = build_report(classifications, ratchets, outcome)
   aggregate["aggregation"] = {"shards": count}
+  timings = aggregate_timing_reports(reports)
+
+  if timings is not None:
+    aggregate["timings"] = timings
+
   return aggregate
 
 
@@ -1268,6 +1462,7 @@ def main(argv: list[str] | None = None) -> int:
   parser.add_argument("--aggregate", nargs="+", type=Path)
   parser.add_argument("--report", metavar="PATH")
   arguments = parser.parse_args(argv)
+  timings = ExecutionTimings()
 
   try:
     discovered = discover_tests(arguments.source)
@@ -1332,30 +1527,38 @@ def main(argv: list[str] | None = None) -> int:
       batch: list[dict[str, Any]],
       environment: dict[str, str],
     ) -> dict[str, tuple[str, str | None]]:
-      runnable = []
-      results: dict[str, tuple[str, str | None]] = {}
+      entry = registry.get(batch[0]["id"], {})
+      environment_name = entry.get("environment") or "unregistered"
 
-      for classification in batch:
-        skip_reason = platform_environment_skip(classification["id"], environment)
+      with timings.observe_fixture_group(batch, environment_name):
+        runnable = []
+        results: dict[str, tuple[str, str | None]] = {}
 
-        if skip_reason:
-          results[classification["id"]] = (
-            "environment_skipped",
-            skip_reason,
+        for classification in batch:
+          skip_reason = platform_environment_skip(
+            classification["id"],
+            environment,
           )
-        else:
-          runnable.append(classification)
 
-      if runnable:
-        results.update(lua_batch_executor(
-          arguments.lua,
-          arguments.executor,
-          environment,
-        )(runnable))
+          if skip_reason:
+            results[classification["id"]] = (
+              "environment_skipped",
+              skip_reason,
+            )
+          else:
+            runnable.append(classification)
 
-      return results
+        if runnable:
+          results.update(lua_batch_executor(
+            arguments.lua,
+            arguments.executor,
+            environment,
+          )(runnable))
+
+        return results
 
     batches = execution_batches(selected, registry)
+    timings.finish_setup()
     execution_results: dict[str, tuple[str, str | None]] = {}
 
     for batch in batches:
@@ -1378,7 +1581,11 @@ def main(argv: list[str] | None = None) -> int:
         for entry in isolated_registry.values()
       )
 
-      with standalone_environment(batch, isolated_registry) as isolated_standalone:
+      with ExitStack() as environments:
+        isolated_standalone = environments.enter_context(
+          standalone_environment(batch, isolated_registry)
+        )
+
         if member_count > 1:
           isolated_standalone.pop("MONGODB_UNIFIED_REPLICA_SET_URI", None)
           isolated_standalone.pop(
@@ -1386,36 +1593,68 @@ def main(argv: list[str] | None = None) -> int:
             None,
           )
 
-        with replica_set_environment(
-          batch,
-          isolated_registry,
-          isolated_standalone,
-        ) as isolated_environment:
-          execution_results.update(execute_batch(batch, isolated_environment))
+        with timings.observe_environment("isolated-replicaset"):
+          isolated_environment = environments.enter_context(
+            replica_set_environment(
+              batch,
+              isolated_registry,
+              isolated_standalone,
+            )
+          )
 
-    with standalone_environment(selected, registry) as standalone:
-      with replica_set_environment(selected, registry, standalone) as environment:
-        for batch in batches:
-          entry = registry.get(batch[0]["id"], {})
+        execution_results.update(execute_batch(batch, isolated_environment))
 
-          if entry.get("environment") != "isolated-replicaset":
-            execution_results.update(execute_batch(batch, environment))
+    needed_environments = {
+      registry.get(batch[0]["id"], {}).get("environment")
+      for batch in batches
+      if registry.get(batch[0]["id"], {}).get("environment")
+      != "isolated-replicaset"
+    }
 
-        report = build_report(
-          selected,
-          manifest["ratchets"]
-            if not arguments.include and not has_shard_count else None,
-          lambda classification: execution_results.get(
-            classification["id"],
-            ("failed", "unified batch omitted a runnable test identity"),
-          ),
+    with ExitStack() as environments:
+      standalone_manager = standalone_environment(selected, registry)
+
+      if "live-standalone" in needed_environments:
+        with timings.observe_environment("live-standalone"):
+          standalone = environments.enter_context(standalone_manager)
+      else:
+        standalone = environments.enter_context(standalone_manager)
+
+      replica_set_manager = replica_set_environment(
+        selected,
+        registry,
+        standalone,
+      )
+
+      if "live-replicaset" in needed_environments:
+        with timings.observe_environment("live-replicaset"):
+          environment = environments.enter_context(replica_set_manager)
+      else:
+        environment = environments.enter_context(replica_set_manager)
+
+      for batch in batches:
+        entry = registry.get(batch[0]["id"], {})
+
+        if entry.get("environment") != "isolated-replicaset":
+          execution_results.update(execute_batch(batch, environment))
+
+      report = build_report(
+        selected,
+        manifest["ratchets"]
+          if not arguments.include and not has_shard_count else None,
+        lambda classification: execution_results.get(
+          classification["id"],
+          ("failed", "unified batch omitted a runnable test identity"),
         )
+      )
 
     if has_shard_count:
       report["shard"] = {
         "count": arguments.shard_count,
         "index": arguments.shard_index,
       }
+
+    timings.attach(report)
   except CapabilityError as exc:
     print(f"unified capabilities: {exc}", file=sys.stderr)
     return 2
