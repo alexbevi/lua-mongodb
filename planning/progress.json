@@ -2293,6 +2293,28 @@
       "notes": [],
       "started_at": "2026-08-10T00:46:19+00:00",
       "completed_at": "2026-08-10T00:59:02+00:00"
+    },
+    "REL-042": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/resource_cleanup_spec.lua",
+          "exit_code": 2,
+          "summary": "0 successes; suite load failed because spec.support.resource_audit does not exist, so client-owned pool/cursor/session/monitor/connection/socket baselines cannot yet be audited",
+          "recorded_at": "2026-08-10T01:08:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/resource_cleanup_spec.lua spec/unit/api_handles_spec.lua spec/unit/cursor_spec.lua spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua spec/unit/topology_spec.lua spec/unit/pool_spec.lua spec/unit/network_transport_spec.lua spec/unit/quality_stress_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua spec/integration/cursor_spec.lua spec/integration/pool_spec.lua' FOCUS_LINT='spec/support/resource_audit.lua spec/unit/resource_cleanup_spec.lua'",
+          "exit_code": 0,
+          "summary": "Deterministic audit returned pool/cursor/session/monitor/connection/socket counts from 1 to baseline 0 in both successful cleanup and killCursors/endSessions operational-failure cleanup; 50 directly coupled unit tests plus the defining/session fixture rerun passed, 5 real-socket integration tests passed, pinned CMAP and session fixtures remained green, and touched-file lint reported 0 warnings/errors; no unified cases became newly applicable",
+          "recorded_at": "2026-08-10T01:11:23+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-10T01:05:41+00:00",
+      "completed_at": "2026-08-10T01:11:24+00:00"
     }
   },
   "verified_references": {
