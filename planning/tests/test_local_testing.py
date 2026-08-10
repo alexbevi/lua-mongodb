@@ -51,6 +51,10 @@ class LocalTestingTests(unittest.TestCase):
 
   def test_makefile_separates_fast_and_full_verification(self) -> None:
     makefile = MAKEFILE.read_text(encoding="utf-8")
+    fast_gate = next(
+      line for line in makefile.splitlines()
+      if line.startswith("check-fast:")
+    )
 
     self.assertIn("check: check-full", makefile)
     self.assertIn(
@@ -61,6 +65,7 @@ class LocalTestingTests(unittest.TestCase):
       "check-full: check-fast test-unified-execution test-coverage",
       makefile,
     )
+    self.assertIn("test-package", fast_gate)
     self.assertEqual(
       makefile.count("spec/unified/validate_fixtures.py --lua"),
       1,

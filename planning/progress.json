@@ -2242,6 +2242,28 @@
       "notes": [],
       "started_at": "2026-08-10T00:08:17+00:00",
       "completed_at": "2026-08-10T00:16:07+00:00"
+    },
+    "REL-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.package.test_package.PackageTests.test_source_rock_installs_complete_public_api_without_workspace_paths -v",
+          "exit_code": 1,
+          "summary": "The source rock packed and installed in a temporary Lua 5.4 tree and its public API smoke passed outside the workspace, but the package completeness assertion failed because mongodb.unified.events and mongodb.unified.failpoints are absent from the rockspec module map",
+          "recorded_at": "2026-08-10T00:22:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-package; make rockspec; python3 -m unittest planning.tests.test_local_testing -v; make test-focus FOCUS_LINT='spec/package/smoke.lua'; python3 -m py_compile spec/package/test_package.py planning/tests/test_local_testing.py; make -n check-fast; python3 planning/update_plan.py check --strict; git diff --check",
+          "exit_code": 0,
+          "summary": "The source rock built from the current checkout, installed into an isolated Lua 5.4 tree, loaded the documented client, BSON, runtime, bulk-model, and index-model APIs without workspace paths, and verified all 52 production modules; LuaRocks lint passed; 5 coupled Make tests passed; the smoke file had 0 lint warnings; Python compilation, fast-gate dry run, strict planning validation, and diff checks passed; no unified fixture applicability or capability classifications changed",
+          "recorded_at": "2026-08-10T00:26:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-10T00:21:19+00:00",
+      "completed_at": "2026-08-10T00:26:59+00:00"
     }
   },
   "verified_references": {

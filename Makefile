@@ -17,11 +17,11 @@ UNIFIED_REPORT ?=
 .PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-quality test-coverage \
-	test-stress test-compatibility test-compatibility-live test-release-scope lint rockspec planning-check
+	test-stress test-compatibility test-compatibility-live test-package test-release-scope lint rockspec planning-check
 
 check: check-full
 
-check-fast: test-unit test-integration test-unified-static test-stress test-compatibility lint rockspec planning-check
+check-fast: test-unit test-integration test-unified-static test-stress test-compatibility test-package lint rockspec planning-check
 
 check-full: check-fast test-unified-execution test-coverage
 
@@ -151,6 +151,10 @@ test-compatibility-live: check-python check-lua
 		--entry "$(COMPATIBILITY_ENTRY)" \
 		--lua "$(LUA)" \
 		--report "build/compatibility/$(COMPATIBILITY_ENTRY).json"
+
+test-package: check-luarocks check-lua check-python
+	@LUA="$(LUA)" LUAROCKS="$(LUAROCKS)" \
+		"$(PYTHON)" -m unittest spec.package.test_package -v
 
 test-unified-meta: check-busted check-python
 	@"$(BUSTED)" $(BUSTED_PATHS) spec/unified/matcher_spec.lua \

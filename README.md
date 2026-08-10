@@ -23,6 +23,8 @@ From a source checkout, build and install the development rock with:
 luarocks make mongodb-scm-1.rockspec
 ```
 
+`make test-package` builds a source rock from the current checkout, installs it into an isolated LuaRocks tree, verifies that every production module is packaged, and exercises the documented public API without workspace module paths.
+
 The planned public LuaRocks rock name is `mongodb`. After the first release is published, users will be able to install it with:
 
 ```sh
@@ -245,6 +247,7 @@ make test-unified
 make test-conformance
 make test-quality
 make test-compatibility
+make test-package
 make lint
 make check
 ```
