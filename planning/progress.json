@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "8e21381bdcce5005b78ca76bb464456ca719b294f6c48c0f1941a19c006b40f8",
+  "plan_digest": "90201e5a9775438394c6cb77a59a8f10d02742ac973c45607622ea26a521749b",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -2403,6 +2403,28 @@
       "notes": [],
       "started_at": "2026-08-13T19:26:05+00:00",
       "completed_at": "2026-08-13T19:33:23+00:00"
+    },
+    "REL-046": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.release.test_publish.PublishTests.test_workflow_separates_dry_run_from_guarded_publication -v",
+          "exit_code": 1,
+          "summary": "The workflow has no required release_commit input and remains coupled to the current main SHA, so it cannot safely publish a prepared release after post-release work advances main.",
+          "recorded_at": "2026-08-13T21:02:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_publish planning.tests.test_ci_portability'; actionlint .github/workflows/release.yml; python3 planning/update_plan.py check --strict; git diff --check",
+          "exit_code": 0,
+          "summary": "15 release and CI contracts passed; Actions syntax and embedded shell validation passed; strict planning and diff checks passed. The trusted current-main workflow resolves a required full release SHA, requires it to be an ancestor of main, validates and packages that historical source in a separate checkout, and applies same-SHA conformance, immutable tag, upload, public install, and GitHub release gates without loading historical workflow code with secrets.",
+          "recorded_at": "2026-08-13T21:04:03+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-13T21:01:44+00:00",
+      "completed_at": "2026-08-13T21:04:04+00:00"
     }
   },
   "verified_references": {

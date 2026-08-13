@@ -3,15 +3,18 @@ name: LuaRocks Release
 on:
   workflow_dispatch:
     inputs:
+      release_commit:
+        description: Exact commit SHA containing the prepared release
+        required: true
+        type: string
       publish:
         description: Publish the release after validation
         required: false
         default: false
         type: boolean
       confirm_version:
-        description: Enter the full rockspec version when publishing (for example, 0.1.0-1)
-        required: false
-        default: ""
+        description: Enter the full rockspec version (for example, 0.1.0-1)
+        required: true
         type: string
 
 concurrency:
@@ -46,23 +49,43 @@ jobs:
       tag: ${{ steps.release.outputs.tag }}
       rockspec: ${{ steps.release.outputs.rockspec }}
       source_rock: ${{ steps.release.outputs.source_rock }}
+      release_sha: ${{ steps.commit.outputs.release_sha }}
 
     steps:
-      - name: Check out selected release commit
+      - name: Check out trusted release automation
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Require the current main commit
+      - name: Resolve an immutable release commit reachable from main
+        id: commit
+        env:
+          RELEASE_COMMIT: ${{ inputs.release_commit }}
         run: |
           test "$GITHUB_REF" = "refs/heads/main"
           git fetch --no-tags origin main
           test "$GITHUB_SHA" = "$(git rev-parse origin/main)"
+          release_sha="$(git rev-parse "$RELEASE_COMMIT^{commit}")"
+          git merge-base --is-ancestor "$release_sha" origin/main
+          echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
+
+      - name: Check out selected release commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.commit.outputs.release_sha }}
+          path: release-source
+          fetch-depth: 0
+          submodules: recursive
 
       - name: Read and validate release metadata
         id: release
-        run: python3 spec/release/publish.py metadata --github-output "$GITHUB_OUTPUT"
+        env:
+          RELEASE_ROCKSPEC: release-source/mongodb-${{ inputs.confirm_version }}.rockspec
+        run: >-
+          python3 spec/release/publish.py metadata
+          --rockspec "$RELEASE_ROCKSPEC"
+          --github-output "$GITHUB_OUTPUT"
 
       - name: Install Lua 5.4.8
         uses: leafo/gh-actions-lua@v13
@@ -75,9 +98,11 @@ jobs:
           luaRocksVersion: "3.12.2"
 
       - name: Install package test dependencies
+        working-directory: release-source
         run: luarocks install --only-deps "${{ steps.release.outputs.rockspec }}"
 
       - name: Validate release package without publishing
+        working-directory: release-source
         run: make rockspec test-package test-release-checklist
 
   publish:
@@ -95,12 +120,21 @@ jobs:
       RELEASE_TAG: ${{ needs.validate.outputs.tag }}
       ROCKSPEC: ${{ needs.validate.outputs.rockspec }}
       SOURCE_ROCK: ${{ needs.validate.outputs.source_rock }}
+      RELEASE_SHA: ${{ needs.validate.outputs.release_sha }}
       CONFIRM_VERSION: ${{ inputs.confirm_version }}
 
     steps:
+      - name: Check out trusted release automation
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
       - name: Check out validated release commit
         uses: actions/checkout@v6
         with:
+          ref: ${{ needs.validate.outputs.release_sha }}
+          path: release-source
           fetch-depth: 0
           submodules: recursive
 
@@ -122,7 +156,7 @@ jobs:
         run: |
           gh run list \
             --workflow full-conformance.yml \
-            --commit "$GITHUB_SHA" \
+            --commit "$RELEASE_SHA" \
             --limit 20 \
             --json databaseId \
             --jq '.[].databaseId' > run-ids.txt
@@ -133,26 +167,28 @@ jobs:
           done < run-ids.txt
           jq -s . conformance-runs.jsonl > conformance-runs.json
           python3 spec/release/publish.py check-conformance \
-            --sha "$GITHUB_SHA" \
+            --sha "$RELEASE_SHA" \
             --runs conformance-runs.json
 
       - name: Create or verify immutable release tag
         run: |
           git fetch --tags origin
           if git rev-parse --verify --quiet "refs/tags/$RELEASE_TAG"; then
-            test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$GITHUB_SHA"
+            test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$RELEASE_SHA"
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git tag -a "$RELEASE_TAG" "$GITHUB_SHA" \
+            git tag -a "$RELEASE_TAG" "$RELEASE_SHA" \
               -m "$PACKAGE $VERSION"
             git push origin "refs/tags/$RELEASE_TAG"
           fi
 
       - name: Build source rock from public immutable tag
+        working-directory: release-source
         run: luarocks pack "$ROCKSPEC"
 
       - name: Verify source rock in an isolated tree
+        working-directory: release-source
         run: |
           install_tree="$(mktemp -d)"
           run_directory="$(mktemp -d)"
@@ -162,10 +198,11 @@ jobs:
           (
             cd "$run_directory"
             MONGODB_PACKAGE_TREE="$install_tree" \
-              lua "$GITHUB_WORKSPACE/spec/package/smoke.lua"
+              lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua"
           )
 
       - name: Upload immutable LuaRocks artifacts if absent
+        working-directory: release-source
         env:
           LUAROCKS_API_KEY: ${{ secrets.LUAROCKS_API_KEY }}
         run: |
@@ -188,6 +225,7 @@ jobs:
           fi
 
       - name: Verify installation from LuaRocks
+        working-directory: release-source
         run: |
           public_tree="$(mktemp -d)"
           for attempt in $(seq 1 12); do
@@ -200,7 +238,7 @@ jobs:
           done
           eval "$(luarocks --lua-version=5.4 --tree="$public_tree" path)"
           MONGODB_PACKAGE_TREE="$public_tree" \
-            lua "$GITHUB_WORKSPACE/spec/package/smoke.lua"
+            lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua"
 
       - name: Create GitHub release if absent
         run: |
@@ -209,8 +247,8 @@ jobs:
               = "$RELEASE_TAG"
           else
             gh release create "$RELEASE_TAG" \
-              "$ROCKSPEC" \
-              "$SOURCE_ROCK" \
+              "release-source/$ROCKSPEC" \
+              "release-source/$SOURCE_ROCK" \
               --verify-tag \
               --title "$PACKAGE $VERSION" \
               --generate-notes
