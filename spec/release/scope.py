@@ -38,6 +38,9 @@ POST_V1_REASONS = {
   "ADV-010": "client-side encryption requires a separate post-v1 design",
   "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
   "ADV-012": "proxy transports are outside production-core v1",
+  "ADV-013": "runtime DNS resolution is outside production-core v1",
+  "ADV-014": "initial DNS seedlist discovery is outside production-core v1",
+  "ADV-015": "SRV polling is outside production-core v1",
 }
 
 

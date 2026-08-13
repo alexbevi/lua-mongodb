@@ -43,7 +43,7 @@ DEFAULT_OWNERS = {
   "crud": "REL-021",
   "gridfs": "ADV-002",
   "index-management": "REL-018",
-  "initial-dns-seedlist-discovery": "ADV-003",
+  "initial-dns-seedlist-discovery": "ADV-014",
   "load-balancers": "ADV-006",
   "mongodb-handshake": "REL-006",
   "open-telemetry": "ADV-009",

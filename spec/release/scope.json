@@ -2,7 +2,7 @@
   "deferred_by_activity": {
     "ADV-001": 197,
     "ADV-002": 169,
-    "ADV-003": 64,
+    "ADV-003": 11,
     "ADV-004": 5,
     "ADV-005": 112,
     "ADV-006": 52,
@@ -11,7 +11,8 @@
     "ADV-009": 230,
     "ADV-010": 777,
     "ADV-011": 202,
-    "ADV-012": 15
+    "ADV-012": 15,
+    "ADV-014": 53
   },
   "deferred_by_scope": {
     "post-v1-exclusion": 1965
@@ -28,7 +29,10 @@
     "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
     "ADV-010": "client-side encryption requires a separate post-v1 design",
     "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
-    "ADV-012": "proxy transports are outside production-core v1"
+    "ADV-012": "proxy transports are outside production-core v1",
+    "ADV-013": "runtime DNS resolution is outside production-core v1",
+    "ADV-014": "initial DNS seedlist discovery is outside production-core v1",
+    "ADV-015": "SRV polling is outside production-core v1"
   },
   "schema_version": 1,
   "statuses": {
