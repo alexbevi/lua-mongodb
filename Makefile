@@ -120,7 +120,7 @@ test-release-scope: check-python
 	@"$(PYTHON)" spec/release/scope.py --check
 
 test-release-checklist: check-python
-	@"$(PYTHON)" -m unittest spec.release.test_checklist -v
+	@"$(PYTHON)" -m unittest spec.release.test_checklist spec.release.test_publish -v
 	@"$(PYTHON)" spec/release/checklist.py --check
 
 test-quality: test-coverage test-stress

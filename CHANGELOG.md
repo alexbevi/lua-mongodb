@@ -17,3 +17,7 @@ Initial production-core v1 release.
 
 - The release ledger classifies 5,524 normative cases: 3,559 pass and 1,965 are explicitly assigned to named post-v1 capabilities.
 - Change streams, GridFS, SRV discovery, wire compression, sharded and load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption remain post-v1.
+
+### Release engineering
+
+- Added a guarded GitHub Actions dry run and idempotent LuaRocks publication path with exact-commit full-conformance, immutable-tag, isolated-install, public-install, and GitHub-release verification.
