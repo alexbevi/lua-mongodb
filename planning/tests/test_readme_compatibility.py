@@ -23,6 +23,23 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       readme_compatibility.status_marker({"deferred_unsupported": 3}),
     )
 
+  def test_passing_percentage_includes_every_tracked_case(self) -> None:
+    self.assertEqual(
+      "100.0%",
+      readme_compatibility.passing_percentage({"passed": 3}),
+    )
+    self.assertEqual(
+      "66.7%",
+      readme_compatibility.passing_percentage({
+        "passed": 2,
+        "deferred_unsupported": 1,
+      }),
+    )
+    self.assertEqual(
+      "0.0%",
+      readme_compatibility.passing_percentage({"deferred_unsupported": 3}),
+    )
+
   def test_table_follows_the_onion_and_covers_every_suite(self) -> None:
     suites = {
       suite
@@ -39,12 +56,20 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     ]
 
     self.assertEqual(sorted(positions), positions)
-    self.assertIn("| Serialization | BSON corpus | 🟢 |", table)
     self.assertIn(
-      "| Authentication | Authentication options and additional mechanisms | 🔴 |",
+      "| Driver layer | Specification suite | Status | Tests Passing % |",
       table,
     )
-    self.assertIn("| Resilience | Client-side operations timeout | 🟡 |", table)
+    self.assertIn("| Serialization | BSON corpus | 🟢 | 100.0% |", table)
+    self.assertIn(
+      "| Authentication | Authentication options and additional mechanisms | "
+      "🔴 | 0.0% |",
+      table,
+    )
+    self.assertRegex(
+      table,
+      r"\| Resilience \| Client-side operations timeout \| 🟡 \| \d+\.\d% \|",
+    )
 
 
 if __name__ == "__main__":

@@ -115,6 +115,17 @@ def status_marker(counts: dict[str, int]) -> str:
   return "🔴"
 
 
+def passing_percentage(counts: dict[str, int]) -> str:
+  total = sum(counts.values())
+
+  if total == 0:
+    raise ReadmeCompatibilityError(
+      "cannot calculate a passing percentage without tracked cases"
+    )
+
+  return f"{counts.get('passed', 0) / total * 100:.1f}%"
+
+
 def render_table(path: Path = DEFAULT_LEDGER) -> str:
   counts = suite_counts(path)
   mapped = {
@@ -132,13 +143,16 @@ def render_table(path: Path = DEFAULT_LEDGER) -> str:
     )
 
   lines = [
-    "| Driver layer | Specification suite | Status |",
-    "| --- | --- | :---: |",
+    "| Driver layer | Specification suite | Status | Tests Passing % |",
+    "| --- | --- | :---: | ---: |",
   ]
 
   for layer, entries in DRIVER_LAYERS:
     for suite, label in entries:
-      lines.append(f"| {layer} | {label} | {status_marker(counts[suite])} |")
+      lines.append(
+        f"| {layer} | {label} | {status_marker(counts[suite])} | "
+        f"{passing_percentage(counts[suite])} |"
+      )
 
   return "\n".join(lines)
 
