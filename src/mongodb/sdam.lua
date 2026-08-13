@@ -1157,6 +1157,73 @@ function TOPOLOGY_METHODS:with_round_trip_times(address, average, minimum)
   return new_topology(state)
 end
 
+function TOPOLOGY_METHODS:with_srv_hosts(addresses)
+  if type(addresses) ~= "table" or #addresses == 0 then
+    error("SRV host reconciliation requires a non-empty address array", 2)
+  end
+
+  local source = TOPOLOGY_STATES[self]
+
+  if source.type ~= TOPOLOGY_TYPE.UNKNOWN
+      and source.type ~= TOPOLOGY_TYPE.SHARDED
+  then
+    return self
+  end
+
+  local normalized = {}
+  local wanted = {}
+
+  for index, value in ipairs(addresses) do
+    local address, address_err = normalize_address(value)
+
+    if not address then
+      error(address_err, 2)
+    end
+
+    if not wanted[address] then
+      normalized[#normalized + 1] = address
+      wanted[address] = true
+    end
+
+    if index ~= math.tointeger(index) then
+      error("SRV hosts must be a dense array", 2)
+    end
+  end
+
+  for key in pairs(addresses) do
+    if math.type(key) ~= "integer" or key < 1 or key > #addresses then
+      error("SRV hosts must be a dense array", 2)
+    end
+  end
+
+  local unchanged = #normalized == #self:addresses()
+
+  if unchanged then
+    for _, address in ipairs(normalized) do
+      if source.servers[address] == nil then
+        unchanged = false
+        break
+      end
+    end
+  end
+
+  if unchanged then
+    return self
+  end
+
+  local state = copy_topology(self)
+
+  state.servers = {}
+  state.seeds = readonly_table(normalized, "seeds")
+
+  for _, address in ipairs(normalized) do
+    state.servers[address] = source.servers[address]
+      or error_server(address, "server has not been checked")
+  end
+
+  return new_topology(state)
+end
+
 function M.server_description(address, response, options)
   local normalized, address_err = normalize_address(address)
 

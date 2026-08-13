@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local dns_discovery = require("mongodb.discovery.dns")
 local errors = require("mongodb.error")
 local runtime_contract = require("mongodb.runtime")
 local sdam = require("mongodb.sdam")
@@ -11,6 +12,7 @@ local EVENT_STATES = setmetatable({}, { __mode = "k" })
 local MANAGER_METHODS = {}
 local start_monitor
 local start_rtt_monitor
+local start_srv_polling
 
 local DATA_BEARING_TYPES = {
   [sdam.SERVER_TYPE.LOAD_BALANCER] = true,
@@ -61,7 +63,9 @@ local MANAGER_METATABLE = {
 
     if not state then
       return nil
-    elseif key == "description" or key == "state" or key == "topology_id" then
+    elseif key == "description" or key == "state" or key == "topology_id"
+        or key == "srv_rescan_interval_ms"
+    then
       return state[key]
     end
   end,
@@ -309,6 +313,13 @@ local function sync_servers(state, old_description, new_description)
   end
 end
 
+local function srv_polling_enabled(state)
+  return state.srv ~= nil and (
+    state.description.type == sdam.TOPOLOGY_TYPE.UNKNOWN
+      or state.description.type == sdam.TOPOLOGY_TYPE.SHARDED
+  )
+end
+
 local function ready_pool(state, address, server_description)
   if DATA_BEARING_TYPES[server_description.type]
       or state.description.type == sdam.TOPOLOGY_TYPE.SINGLE
@@ -348,6 +359,10 @@ local function process_description(state, address, response, options)
   end
 
   sync_servers(state, old_topology, updated)
+
+  if not srv_polling_enabled(state) and state.srv_cancellation then
+    state.srv_cancellation:cancel("SRV polling topology type changed")
+  end
 
   if changed or #old_topology:addresses() ~= #updated:addresses()
       or old_topology.type ~= updated.type
@@ -626,6 +641,35 @@ start_rtt_monitor = function(state, manager, address)
   end
 end
 
+local function srv_polling_loop(manager)
+  local state = MANAGER_STATES[manager]
+
+  while state.state == "open" and srv_polling_enabled(state) do
+    local cancellation = state.runtime.cancellation:new()
+
+    state.srv_cancellation = cancellation
+    local slept = state.runtime.clock:sleep(
+      state.srv_rescan_interval_ms / 1000,
+      cancellation
+    )
+
+    if not slept or cancellation:is_cancelled() then
+      break
+    end
+
+    manager:rescan_srv()
+  end
+
+  state.srv_cancellation = nil
+  return true
+end
+
+start_srv_polling = function(state, manager)
+  if state.background and srv_polling_enabled(state) and state.srv_task == nil then
+    state.srv_task = state.runtime.task:spawn(srv_polling_loop, manager)
+  end
+end
+
 local function command_error(response, address)
   local code = response and response:get("code")
 
@@ -718,6 +762,7 @@ function M.new(options)
     seeds = true,
     server_monitoring_mode = true,
     set_name = true,
+    srv = true,
     topology_id = true,
     type = true,
   }
@@ -750,6 +795,48 @@ function M.new(options)
 
   if options.on_server_close ~= nil and type(options.on_server_close) ~= "function" then
     error("on_server_close must be a function", 2)
+  end
+
+  local srv
+
+  if options.srv ~= nil then
+    if type(options.srv) ~= "table"
+        or type(options.srv.hostname) ~= "string" or options.srv.hostname == ""
+        or type(options.srv.service_name) ~= "string"
+        or options.srv.service_name == ""
+        or math.type(options.srv.max_hosts) ~= "integer"
+        or options.srv.max_hosts < 0
+        or math.type(options.srv.minimum_ttl) ~= "integer"
+        or options.srv.minimum_ttl < 0
+    then
+      error("srv must contain valid seedlist discovery metadata", 2)
+    end
+
+    if options.srv.random ~= nil and type(options.srv.random) ~= "function" then
+      error("srv.random must be a function", 2)
+    end
+
+    local allowed_srv = {
+      hostname = true,
+      max_hosts = true,
+      minimum_ttl = true,
+      random = true,
+      service_name = true,
+    }
+
+    for key in pairs(options.srv) do
+      if not allowed_srv[key] then
+        error("unknown srv polling option: " .. tostring(key), 2)
+      end
+    end
+
+    srv = {
+      hostname = options.srv.hostname,
+      max_hosts = options.srv.max_hosts,
+      minimum_ttl = options.srv.minimum_ttl,
+      random = options.srv.random,
+      service_name = options.srv.service_name,
+    }
   end
 
   local heartbeat_frequency_ms = options.heartbeat_frequency_ms or 10000
@@ -804,6 +891,11 @@ function M.new(options)
     rtt_check = options.rtt_check,
     server_monitoring_mode = mode == "auto" and "stream" or mode,
     servers = {},
+    srv = srv,
+    srv_cancellation = nil,
+    srv_rescan_interval_ms = srv
+      and math.max(srv.minimum_ttl * 1000, 60000) or nil,
+    srv_task = nil,
     state = "closed",
     topology_id = options.topology_id or tostring(value),
   }
@@ -853,6 +945,58 @@ function MANAGER_METHODS:open(options)
     start_monitor(state, self, address)
   end
 
+  start_srv_polling(state, self)
+
+  return true
+end
+
+function MANAGER_METHODS:rescan_srv()
+  local state = MANAGER_STATES[self]
+
+  if state.state ~= "open" or not srv_polling_enabled(state) then
+    return false
+  end
+
+  local result = dns_discovery.poll(state.srv, state.runtime, {
+    cancellation = state.srv_cancellation,
+    current_addresses = state.description:addresses(),
+    random = state.srv.random,
+  })
+
+  assert(state.lock:acquire())
+
+  if state.state ~= "open" or not srv_polling_enabled(state) then
+    state.lock:release()
+    return false
+  end
+
+  if result == nil or #result.hosts == 0 then
+    state.srv_rescan_interval_ms = state.heartbeat_frequency_ms
+    state.lock:release()
+    return true
+  end
+
+  local addresses = {}
+
+  for index, host in ipairs(result.hosts) do
+    addresses[index] = host.host .. ":" .. tostring(host.port)
+  end
+
+  local old_description = state.description
+  local new_description = old_description:with_srv_hosts(addresses)
+
+  state.srv_rescan_interval_ms = math.max(result.minimum_ttl * 1000, 60000)
+
+  if new_description ~= old_description then
+    state.description = new_description
+    sync_servers(state, old_description, new_description)
+    publish(state, "TopologyDescriptionChanged", {
+      new_description = new_description,
+      previous_description = old_description,
+    })
+  end
+
+  state.lock:release()
   return true
 end
 
@@ -1225,6 +1369,10 @@ function MANAGER_METHODS:close()
 
   state.state = "closed_permanently"
   state.cancellation:cancel("topology closed")
+
+  if state.srv_cancellation then
+    state.srv_cancellation:cancel("topology closed")
+  end
   local old_description = state.description
   local new_description = old_description:closed()
 
@@ -1249,6 +1397,10 @@ function MANAGER_METHODS:close()
 
   for _, address in ipairs(addresses) do
     await_server_monitors(state, state.servers[address])
+  end
+
+  if state.srv_task and state.srv_task:status() == "pending" then
+    state.runtime.task:await(state.srv_task)
   end
 
   for _, address in ipairs(addresses) do

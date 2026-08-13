@@ -146,6 +146,10 @@ local function select_hosts(hosts, maximum, runtime, random)
   return result
 end
 
+local function host_address(host)
+  return host.host .. ":" .. tostring(host.port)
+end
+
 local function explicit_option_names(parsed, programmatic)
   local names = {}
 
@@ -357,6 +361,106 @@ function M.resolve(parsed, programmatic, runtime, fields)
   end
 
   return resolved, config, warnings
+end
+
+function M.poll(srv, runtime, fields)
+  if type(srv) ~= "table" or type(srv.hostname) ~= "string"
+      or srv.hostname == "" or type(srv.service_name) ~= "string"
+      or srv.service_name == ""
+  then
+    error("SRV polling requires seedlist discovery metadata", 2)
+  end
+
+  if math.type(srv.max_hosts) ~= "integer" or srv.max_hosts < 0 then
+    error("SRV polling max_hosts must be a non-negative integer", 2)
+  end
+
+  fields = fields or {}
+  local query_name = "_" .. srv.service_name .. "._tcp." .. srv.hostname
+  local records, err = runtime.dns:resolve_srv(
+    query_name,
+    fields.deadline,
+    fields.cancellation
+  )
+
+  if records == nil then
+    return nil, err
+  end
+
+  if type(records) ~= "table" then
+    error("runtime DNS SRV result must be an array", 2)
+  end
+
+  local valid = {}
+  local seen = {}
+  local minimum_ttl
+
+  for _, record in ipairs(records) do
+    local host = normalize_target(srv.hostname, record)
+
+    if host ~= nil then
+      local address = host_address(host)
+
+      minimum_ttl = math.min(minimum_ttl or host.ttl, host.ttl)
+
+      if not seen[address] then
+        seen[address] = true
+        valid[#valid + 1] = {
+          host = host.host,
+          port = host.port,
+          type = host.type,
+        }
+      end
+    end
+  end
+
+  if #valid == 0 then
+    return { hosts = {} }
+  end
+
+  if srv.max_hosts == 0 or srv.max_hosts >= #valid then
+    return { hosts = valid, minimum_ttl = minimum_ttl }
+  end
+
+  local current = {}
+
+  for _, address in ipairs(fields.current_addresses or {}) do
+    current[address:lower()] = true
+  end
+
+  local retained = {}
+  local candidates = {}
+
+  for _, host in ipairs(valid) do
+    if current[host_address(host)] then
+      retained[#retained + 1] = host
+    else
+      candidates[#candidates + 1] = host
+    end
+  end
+
+  local capacity = math.max(0, srv.max_hosts - #retained)
+  local selected
+
+  if capacity == 0 then
+    selected = {}
+  else
+    selected, err = select_hosts(candidates, capacity, runtime, fields.random)
+  end
+
+  if selected == nil then
+    return nil, err
+  end
+
+  for _, host in ipairs(selected) do
+    if #retained >= srv.max_hosts then
+      break
+    end
+
+    retained[#retained + 1] = host
+  end
+
+  return { hosts = retained, minimum_ttl = minimum_ttl }
 end
 
 return M

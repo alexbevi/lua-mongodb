@@ -2483,6 +2483,42 @@
       "notes": [],
       "started_at": "2026-08-13T22:02:09+00:00",
       "completed_at": "2026-08-13T23:32:27+00:00"
+    },
+    "ADV-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/dns_polling_spec.lua",
+          "exit_code": 1,
+          "summary": "0 successes and 1 expected error: topology rejects the missing srv polling configuration boundary",
+          "recorded_at": "2026-08-13T23:37:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/dns_polling_spec.lua spec/unit/topology_spec.lua spec/unit/sdam_spec.lua spec/unit/resource_cleanup_spec.lua spec/unit/dns_seedlist_spec.lua' FOCUS_INTEGRATION='spec/integration/dns_polling_spec.lua spec/integration/dns_seedlist_spec.lua' FOCUS_LINT='src/mongodb/client.lua src/mongodb/discovery/dns.lua src/mongodb/sdam.lua src/mongodb/topology.lua spec/unit/dns_polling_spec.lua spec/integration/dns_polling_spec.lua spec/support/dns_polling_runner.lua'",
+          "exit_code": 0,
+          "summary": "33 focused DNS/topology/SDAM/resource-cleanup unit cases, 3 directly coupled integration cases, all 13 normative SRV polling prose cases, and touched-file lint passed",
+          "recorded_at": "2026-08-13T23:51:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-coverage",
+          "exit_code": 0,
+          "summary": "Coverage instrumentation passed and the ratchet validated 19928/23411 lines (85.12%) with improved touched-file ratios and no regressions",
+          "recorded_at": "2026-08-13T23:51:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Conformance ledger, release scope, release checklist, and generated README compatibility validators remained current",
+          "recorded_at": "2026-08-13T23:51:27+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-13T23:35:16+00:00",
+      "completed_at": "2026-08-13T23:51:28+00:00"
     }
   },
   "verified_references": {

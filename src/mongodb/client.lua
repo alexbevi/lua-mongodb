@@ -634,6 +634,12 @@ local function connect_topology(
     seeds = seeds,
     server_monitoring_mode = config.server_monitoring_mode,
     set_name = config.replica_set,
+    srv = parsed.srv and {
+      hostname = parsed.srv.hostname,
+      max_hosts = config.srv_max_hosts or 0,
+      minimum_ttl = parsed.srv.minimum_ttl,
+      service_name = parsed.srv.service_name,
+    } or nil,
     type = config.direct_connection and "Single"
       or config.replica_set ~= nil and "ReplicaSetNoPrimary"
       or "Unknown",

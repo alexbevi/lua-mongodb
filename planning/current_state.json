@@ -17,16 +17,16 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 106,
+    "completed": 107,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 13
+    "pending": 12
   },
   "active": [],
   "ready": [
     "ADV-001",
     "ADV-002",
-    "ADV-015",
+    "REL-045",
     "ADV-004",
     "ADV-005",
     "ADV-007",
