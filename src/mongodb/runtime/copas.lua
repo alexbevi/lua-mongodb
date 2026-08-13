@@ -7,6 +7,9 @@ local M = {}
 local ALLOWED_OPTIONS = {
   copas = true,
   crypto = true,
+  dns = true,
+  dns_nameservers = true,
+  dns_query_timeout = true,
   entropy = true,
   gettime = true,
   lock_poll_interval = true,
@@ -355,6 +358,12 @@ function M.new(options)
   adapter.cancellation = { new = cancellation.new }
   adapter.task = new_task_capability(copas.future)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)
+  adapter.dns = options.dns or require("mongodb.runtime.copas_dns").new(adapter, {
+    copas = copas,
+    nameservers = options.dns_nameservers,
+    poll_interval = poll_interval,
+    query_timeout = options.dns_query_timeout,
+  })
   adapter.socket = options.socket or require("mongodb.runtime.copas_socket").new(adapter, {
     copas = copas,
     poll_interval = poll_interval,

@@ -11,6 +11,8 @@ local REQUIRED_CAPABILITIES = {
   "task.await",
   "task.cancel",
   "lock.new",
+  "dns.resolve_srv",
+  "dns.resolve_txt",
   "socket.connect",
   "tls.wrap",
   "entropy.bytes",

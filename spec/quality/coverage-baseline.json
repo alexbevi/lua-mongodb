@@ -128,6 +128,10 @@
       "active": 213,
       "covered": 189
     },
+    "src/mongodb/runtime/copas_dns.lua": {
+      "active": 352,
+      "covered": 277
+    },
     "src/mongodb/runtime/copas_socket.lua": {
       "active": 229,
       "covered": 140
@@ -229,7 +233,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 21943,
-    "covered": 18424
+    "active": 22994,
+    "covered": 19532
   }
 }

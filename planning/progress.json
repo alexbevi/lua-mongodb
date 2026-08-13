@@ -2425,6 +2425,28 @@
       "notes": [],
       "started_at": "2026-08-13T21:01:44+00:00",
       "completed_at": "2026-08-13T21:04:04+00:00"
+    },
+    "ADV-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/runtime_spec.lua",
+          "exit_code": 1,
+          "summary": "9 successes and 1 expected error: defining DNS test reached missing fake_runtime:queue_dns method",
+          "recorded_at": "2026-08-13T20:47:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "export PATH=/opt/homebrew/opt/lua@5.4/bin:$PATH; eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\"; make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck LUAROCKS=/opt/homebrew/bin/luarocks FOCUS_UNIT=\"spec/unit/runtime_spec.lua spec/unit/runtime_copas_spec.lua spec/unit/copas_runtime_spec.lua\" FOCUS_PYTHON=\"spec.quality.test_coverage_gate spec.package.test_package\" FOCUS_LINT=\"src/mongodb/runtime/init.lua src/mongodb/runtime/fake.lua src/mongodb/runtime/copas.lua src/mongodb/runtime/copas_dns.lua spec/unit/runtime_spec.lua spec/unit/runtime_copas_spec.lua\"; make rockspec LUAROCKS=/opt/homebrew/bin/luarocks; python3 spec/quality/coverage_gate.py --report build/quality/luacov.report.out --baseline spec/quality/coverage-baseline.json; python3 planning/update_plan.py check; python3 planning/update_readme_compatibility.py --check; git diff --check",
+          "exit_code": 0,
+          "summary": "24 focused runtime tests passed; package source-rock smoke and coverage-gate unit tests passed; 6 touched Lua files passed luacheck; rockspec lint passed; coverage artifact passed at 19532/22994 lines (84.94%) after 254 unit/integration tests; plan, README projection, and diff checks passed",
+          "recorded_at": "2026-08-13T21:50:11+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-13T19:49:11+00:00",
+      "completed_at": "2026-08-13T21:50:12+00:00"
     }
   },
   "verified_references": {

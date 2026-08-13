@@ -252,6 +252,20 @@ function FAKE_METHODS:queue_crypto(operation, result)
   queue[#queue + 1] = result
 end
 
+function FAKE_METHODS:queue_dns(record_type, result)
+  local queue = self._dns_queue[record_type]
+
+  if queue == nil then
+    error("unknown fake DNS record type: " .. tostring(record_type), 2)
+  end
+
+  if type(result) ~= "table" and not errors.is(result) then
+    error("DNS results must be record arrays or structured errors", 2)
+  end
+
+  queue[#queue + 1] = result
+end
+
 local function new_clock(owner)
   return {
     now = function()
@@ -408,6 +422,49 @@ local function new_socket_capability(owner)
   }
 end
 
+local function dns_call(owner, record_type, name, deadline, cancellation)
+  if type(name) ~= "string" or name == "" then
+    error("DNS name must be a non-empty string", 3)
+  end
+
+  local ok, err = runtime_contract.check(owner, deadline, cancellation)
+
+  if not ok then
+    return nil, err
+  end
+
+  owner.calls.dns[#owner.calls.dns + 1] = {
+    name = name,
+    type = record_type,
+  }
+
+  local queue = owner._dns_queue[record_type]
+  local result = queue[1]
+
+  if result == nil then
+    error("fake DNS script exhausted for " .. record_type, 3)
+  end
+
+  table.remove(queue, 1)
+
+  if errors.is(result) then
+    return nil, result
+  end
+
+  return result
+end
+
+local function new_dns_capability(owner)
+  return {
+    resolve_srv = function(_, name, deadline, cancellation)
+      return dns_call(owner, "srv", name, deadline, cancellation)
+    end,
+    resolve_txt = function(_, name, deadline, cancellation)
+      return dns_call(owner, "txt", name, deadline, cancellation)
+    end,
+  }
+end
+
 local function new_tls_capability(owner)
   return {
     wrap = function(_, socket, options, deadline, cancellation)
@@ -539,6 +596,7 @@ function M.new(options)
     _connect_head = 1,
     _connect_queue = {},
     _crypto_queue = {},
+    _dns_queue = { srv = {}, txt = {} },
     _entropy = options.entropy or "",
     _now = options.now or 0,
     _wall_time = options.wall_time or 0,
@@ -549,6 +607,7 @@ function M.new(options)
     calls = {
       connect = {},
       crypto = {},
+      dns = {},
       tls = {},
     },
   }, FAKE_METATABLE)
@@ -561,6 +620,7 @@ function M.new(options)
   fake.cancellation = { new = cancellation_factory.new }
   fake.task = new_task_capability(fake)
   fake.lock = new_lock_capability(fake)
+  fake.dns = new_dns_capability(fake)
   fake.socket = new_socket_capability(fake)
   fake.tls = new_tls_capability(fake)
   fake.entropy = new_entropy_capability(fake)

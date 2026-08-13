@@ -155,6 +155,65 @@ describe("runtime interface", function()
     assert.is_true(errors.is(cancelled, errors.CATEGORY.TIMEOUT))
   end)
 
+  it("scripts normalized DNS records with their TTLs", function()
+    local fake = fake_runtime.new({ now = 5 })
+    local expected = {
+      {
+        port = 27017,
+        priority = 0,
+        target = "db.example.com",
+        ttl = 60,
+        weight = 5,
+      },
+    }
+
+    fake:queue_dns("srv", expected)
+
+    local records = assert(fake.dns:resolve_srv("_mongodb._tcp.example.com"))
+
+    assert.are.same(expected, records)
+    assert.are.same({
+      name = "_mongodb._tcp.example.com",
+      type = "srv",
+    }, fake.calls.dns[1])
+
+    fake:queue_dns("txt", {
+      { strings = { "replicaSet=", "rs0" }, ttl = 120 },
+    })
+    fake:queue_dns("txt", {})
+
+    assert.are.same({
+      { strings = { "replicaSet=", "rs0" }, ttl = 120 },
+    }, assert(fake.dns:resolve_txt("example.com")))
+    assert.are.same({}, assert(fake.dns:resolve_txt("missing.example.com")))
+
+    local malformed = errors.new({
+      category = errors.CATEGORY.PROTOCOL,
+      message = "malformed DNS response",
+    })
+
+    fake:queue_dns("srv", malformed)
+
+    local value, err = fake.dns:resolve_srv("_mongodb._tcp.example.com")
+
+    assert.is_nil(value)
+    assert.are.equal(malformed, err)
+
+    local token = fake.cancellation:new()
+
+    token:cancel("stop DNS")
+
+    value, err = fake.dns:resolve_srv("example.com", nil, token)
+
+    assert.is_nil(value)
+    assert.is_true(errors.is(err, errors.CATEGORY.CANCELLED))
+
+    value, err = fake.dns:resolve_srv("example.com", 5)
+
+    assert.is_nil(value)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+  end)
+
   it("isolates TLS, entropy, and crypto capabilities", function()
     local fake = fake_runtime.new({ entropy = "abcdef" })
     local socket = fake.socket:new()
