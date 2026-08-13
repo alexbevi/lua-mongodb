@@ -2,6 +2,7 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local command_executor = require("mongodb.command.executor")
 local driver_options = require("mongodb.config.options")
+local dns_discovery = require("mongodb.discovery.dns")
 local errors = require("mongodb.error")
 local handshake_metadata = require("mongodb.handshake.metadata")
 local monitoring = require("mongodb.monitoring")
@@ -710,6 +711,7 @@ function M.connect(uri, values)
   end
 
   local programmatic, special = split_options(values)
+  local runtime
   local config, config_err, option_warnings = driver_options.normalize(
     parsed.options,
     programmatic,
@@ -720,19 +722,37 @@ function M.connect(uri, values)
     return nil, config_err
   end
 
+  if parsed.is_srv then
+    runtime = special.runtime or runtime_contract.copas()
+    runtime_contract.validate(runtime)
+    parsed, config, option_warnings = dns_discovery.resolve(
+      parsed,
+      programmatic,
+      runtime,
+      {
+        cancellation = special.cancellation,
+        deadline = special.deadline,
+      }
+    )
+
+    if parsed == nil then
+      return nil, config
+    end
+  end
+
   local valid_uri, uri_err = driver_options.validate_uri(parsed, config)
 
   if not valid_uri then
     return nil, uri_err
   end
 
-  if parsed.is_srv then
+  if config.load_balanced then
     return configuration_error(
-      "mongodb+srv client connections require DNS seedlist resolution"
+      "load-balanced deployment execution is not implemented"
     )
   end
 
-  local runtime = special.runtime or runtime_contract.copas()
+  runtime = runtime or special.runtime or runtime_contract.copas()
 
   runtime_contract.validate(runtime)
   local deadline = special.deadline
@@ -781,7 +801,7 @@ function M.connect(uri, values)
   end
   local warnings = combine_warnings(parsed, option_warnings)
 
-  if config.replica_set ~= nil or config.min_pool_size > 0
+  if parsed.is_srv or config.replica_set ~= nil or config.min_pool_size > 0
       or special.sdam_listeners ~= nil
   then
     return connect_topology(

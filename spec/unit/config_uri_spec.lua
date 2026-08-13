@@ -86,13 +86,21 @@ describe("MongoDB connection string parser", function()
     end
   end)
 
-  it("does not open a client connection before SRV resolution is available", function()
+  it("does not open a client connection when SRV resolution fails", function()
+    local runtime = fake_runtime.new()
+
+    runtime:queue_dns("srv", errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "DNS unavailable",
+    }))
+
     local connected, err = client.connect("mongodb+srv://cluster.example.com", {
-      runtime = fake_runtime.new(),
+      runtime = runtime,
     })
 
     assert.is_nil(connected)
     assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
+    assert.are.same({}, runtime.calls.connect)
   end)
 
   it("runs every pinned non-SRV connection-string fixture at the syntax layer", function()

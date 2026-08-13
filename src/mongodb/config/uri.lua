@@ -277,6 +277,14 @@ local function parse_options(value)
   return options, warnings
 end
 
+function M.parse_options(value)
+  if value ~= nil and type(value) ~= "string" then
+    error("MongoDB URI options must be a string", 2)
+  end
+
+  return parse_options(value)
+end
+
 function M.parse(value)
   if type(value) ~= "string" then
     error("MongoDB URI must be a string", 2)

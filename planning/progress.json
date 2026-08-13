@@ -2447,6 +2447,42 @@
       "notes": [],
       "started_at": "2026-08-13T19:49:11+00:00",
       "completed_at": "2026-08-13T21:50:12+00:00"
+    },
+    "ADV-014": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/dns_seedlist_spec.lua",
+          "exit_code": 1,
+          "summary": "0 successes and 1 expected error: defining test cannot load missing mongodb.discovery.dns initial-resolution boundary; no DNS or MongoDB socket implementation exists there yet",
+          "recorded_at": "2026-08-13T22:03:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH luarocks --lua-version=5.4 path)\"; make test-focus FOCUS_UNIT='spec/unit/dns_seedlist_spec.lua spec/unit/config_uri_spec.lua spec/unit/config_options_spec.lua' FOCUS_INTEGRATION='spec/integration/dns_seedlist_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/client.lua src/mongodb/config/options.lua src/mongodb/config/uri.lua src/mongodb/discovery/dns.lua spec/unit/config_uri_spec.lua spec/unit/dns_seedlist_spec.lua spec/integration/dns_seedlist_spec.lua spec/support/dns_seedlist_runner.lua'",
+          "exit_code": 0,
+          "summary": "21 focused unit cases, 2 directly coupled integration cases, 10 conformance/release contracts, all 40 pinned replica-set seedlist fixtures, and touched-file lint passed",
+          "recorded_at": "2026-08-13T23:32:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check && luarocks lint mongodb-0.1.0-1.rockspec && make test-focus FOCUS_PYTHON=spec.package.test_package",
+          "exit_code": 0,
+          "summary": "Generated conformance, release-scope, release-checklist, README compatibility, rockspec, and isolated source-rock package validators passed",
+          "recorded_at": "2026-08-13T23:32:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-coverage",
+          "exit_code": 0,
+          "summary": "Coverage instrumentation passed 200 unit/integration cases; coverage ratchet validated 19724/23214 lines overall and 166/192 lines in the new DNS discovery module with no regressions",
+          "recorded_at": "2026-08-13T23:32:27+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-13T22:02:09+00:00",
+      "completed_at": "2026-08-13T23:32:27+00:00"
     }
   },
   "verified_references": {

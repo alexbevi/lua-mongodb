@@ -61,6 +61,39 @@ Set the optional handshake application name with the URI `appName` option or the
 
 A library wrapping this driver may supply `driver_info = { name = "library", version = "1.2", platform = "Library Platform" }` when creating a client. It may later call `client:append_metadata()` with the same fields; each distinct tuple is appended to handshakes for new connections, while exact duplicates are ignored and established connections are unchanged.
 
+For a DNS seedlist, use a `mongodb+srv` URI. Before opening a MongoDB socket, the driver resolves the URI hostname's SRV records and optional TXT defaults, validates every returned hostname against the URI's parent domain, and enables TLS unless the URI explicitly sets `tls=false` (or its `ssl` alias).
+
+```lua
+local mongodb = require("mongodb")
+
+mongodb.run(function()
+  local client = assert(mongodb.client(
+    "mongodb+srv://cluster.example.com/app?replicaSet=rs0"
+  ))
+  local reply = assert(client:database("admin"):run_command(
+    mongodb.bson.document({ { "ping", 1 } })
+  ))
+
+  print(reply:get("ok"))
+  assert(client:close())
+end)
+```
+
+### URI Options
+
+URI option names use the standard MongoDB spelling and are case-insensitive. When the same setting is supplied in the client options table, the idiomatic `snake_case` client option takes precedence over the URI. The currently accepted URI options are grouped below.
+
+| Area | URI options |
+| --- | --- |
+| DNS seedlist | `srvServiceName`, `srvMaxHosts` |
+| TLS | `tls`/`ssl`, `tlsCAFile`, `tlsCertificateKeyFile`, `tlsCertificateKeyFilePassword`, `tlsInsecure`, `tlsAllowInvalidCertificates`, `tlsAllowInvalidHostnames`, `tlsDisableCertificateRevocationCheck`, `tlsDisableOCSPEndpointCheck` |
+| Authentication and metadata | `appName`, `authSource`, `authMechanism`, `authMechanismProperties` |
+| Connection and selection | `connectTimeoutMS`, `socketTimeoutMS`, `serverSelectionTimeoutMS`, `serverSelectionTryOnce`, `timeoutMS`, `localThresholdMS`, `heartbeatFrequencyMS`, `serverMonitoringMode`, `directConnection`, `replicaSet`, `loadBalanced` |
+| Pooling | `maxPoolSize`, `minPoolSize`, `maxConnecting`, `maxIdleTimeMS`, `waitQueueTimeoutMS` |
+| Reads, writes, and retries | `readPreference`, `readPreferenceTags`, `maxStalenessSeconds`, `readConcernLevel`, `w`, `journal`, `wTimeoutMS`, `retryReads`, `retryWrites` |
+
+For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults. Load-balanced deployment execution remains outside the current scope even though its connection-string option is recognized and validated.
+
 ### CRUD Operations
 
 The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
@@ -216,7 +249,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | Connection string | 🟢 | 100.0% |
 | Communication | URI options | 🟡 | 78.6% |
 | Communication | Handshake metadata propagation | 🟢 | 100.0% |
-| Communication | Initial DNS seedlist discovery | 🔴 | 0.0% |
+| Communication | Initial DNS seedlist discovery | 🟡 | 75.5% |
 | Communication | Command execution | 🟡 | 81.0% |
 | Connectivity | Server discovery and monitoring | 🟡 | 89.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
@@ -254,7 +287,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-Post-v1 scope includes change streams, GridFS, SRV discovery, wire compression, sharded and load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+Post-v1 scope includes change streams, GridFS, SRV polling, wire compression, sharded and load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

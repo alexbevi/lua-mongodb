@@ -291,6 +291,24 @@ def classify_case(
       "make test-unit",
     )
 
+  if suite == "initial-dns-seedlist-discovery":
+    if "/tests/replica-set/" in path:
+      return _passed(
+        case,
+        "ADV-014",
+        "spec/support/dns_seedlist_runner.lua",
+        "make test-unit",
+        "deterministic-runtime",
+      )
+
+    if "/tests/sharded/" in path:
+      return _deferred(case, "ADV-005", activities)
+
+    if "/tests/load-balanced/" in path:
+      return _deferred(case, "ADV-006", activities)
+
+    raise LedgerError(f"unknown initial DNS deployment fixture: {identity}")
+
   if suite == "connection-string":
     return _passed(
       case,

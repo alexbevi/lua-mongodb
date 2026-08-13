@@ -81,9 +81,23 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1954,
-      "passed": 3570,
+      "deferred_unsupported": 1914,
+      "passed": 3610,
     }, generated["summary"]["statuses"])
+
+    dns = [
+      case for case in generated["cases"].values()
+      if case["suite"] == "initial-dns-seedlist-discovery"
+    ]
+    self.assertEqual(40, sum(case["status"] == "passed" for case in dns))
+    self.assertEqual(4, sum(
+      case["activity"] == "ADV-005" and case["status"] == "deferred_unsupported"
+      for case in dns
+    ))
+    self.assertEqual(9, sum(
+      case["activity"] == "ADV-006" and case["status"] == "deferred_unsupported"
+      for case in dns
+    ))
 
   def test_unknown_runnable_unified_case_has_no_implicit_executor(self) -> None:
     identity = "crud/tests/unified/insertOne.json::test[2]"

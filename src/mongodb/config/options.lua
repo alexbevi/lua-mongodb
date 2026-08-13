@@ -815,6 +815,29 @@ function M.validate_uri(parsed, config)
     )
   end
 
+  if config.load_balanced then
+    if #parsed.hosts ~= 1 then
+      return config_error(
+        "load_balanced",
+        "loadBalanced=true requires exactly one seed"
+      )
+    end
+
+    if config.replica_set ~= nil then
+      return config_error(
+        "load_balanced",
+        "loadBalanced=true cannot be combined with replicaSet"
+      )
+    end
+
+    if config.direct_connection then
+      return config_error(
+        "load_balanced",
+        "loadBalanced=true cannot be combined with directConnection=true"
+      )
+    end
+  end
+
   if parsed.is_srv then
     if config.direct_connection then
       return config_error(

@@ -58,6 +58,7 @@ build = {
     ["mongodb.client"] = "src/mongodb/client.lua",
     ["mongodb.crud"] = "src/mongodb/crud.lua",
     ["mongodb.cursor"] = "src/mongodb/cursor.lua",
+    ["mongodb.discovery.dns"] = "src/mongodb/discovery/dns.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.handshake.metadata"] = "src/mongodb/handshake/metadata.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",

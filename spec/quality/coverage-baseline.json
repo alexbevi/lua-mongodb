@@ -88,6 +88,10 @@
       "active": 215,
       "covered": 180
     },
+    "src/mongodb/discovery/dns.lua": {
+      "active": 192,
+      "covered": 166
+    },
     "src/mongodb/error.lua": {
       "active": 206,
       "covered": 190
@@ -233,7 +237,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 22994,
-    "covered": 19532
+    "active": 23214,
+    "covered": 19724
   }
 }
