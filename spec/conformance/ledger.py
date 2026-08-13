@@ -303,11 +303,18 @@ def classify_case(
     if path.endswith("/auth-options.json") and identity.endswith("::test[1]"):
       return _deferred(case, "ADV-008", activities)
 
+    if path.endswith("/srv-options.json"):
+      return _passed(
+        case,
+        "ADV-003",
+        "spec/support/config_runner.lua",
+        "make test-unit",
+      )
+
     owner_by_file = {
       "client-backpressure-options.json": "ADV-009",
       "compression-options.json": "ADV-004",
       "proxy-options.json": "ADV-012",
-      "srv-options.json": "ADV-003",
     }
     owner = owner_by_file.get(Path(path).name, "REL-003")
 

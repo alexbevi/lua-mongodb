@@ -15,8 +15,8 @@ class ReleaseChecklistTests(unittest.TestCase):
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 3559)
-    self.assertLessEqual(conformance["post_v1_exclusions"], 1965)
+    self.assertGreaterEqual(conformance["passed_cases"], 3570)
+    self.assertLessEqual(conformance["post_v1_exclusions"], 1954)
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"] + conformance["post_v1_exclusions"],

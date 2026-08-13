@@ -712,7 +712,8 @@ function M.connect(uri, values)
   local programmatic, special = split_options(values)
   local config, config_err, option_warnings = driver_options.normalize(
     parsed.options,
-    programmatic
+    programmatic,
+    parsed
   )
 
   if not config then
@@ -723,6 +724,12 @@ function M.connect(uri, values)
 
   if not valid_uri then
     return nil, uri_err
+  end
+
+  if parsed.is_srv then
+    return configuration_error(
+      "mongodb+srv client connections require DNS seedlist resolution"
+    )
   end
 
   local runtime = special.runtime or runtime_contract.copas()

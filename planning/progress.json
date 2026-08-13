@@ -2381,6 +2381,28 @@
       "notes": [],
       "started_at": "2026-08-13T18:52:10+00:00",
       "completed_at": "2026-08-13T18:59:00+00:00"
+    },
+    "ADV-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/config_uri_spec.lua",
+          "exit_code": 1,
+          "summary": "The defining SRV envelope test failed because the parser rejects mongodb+srv at the scheme guard; 3 existing URI parser tests passed and no DNS or socket I/O occurred.",
+          "recorded_at": "2026-08-13T19:27:28+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_uri_spec.lua spec/unit/config_options_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/sdam_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<8 touched Lua files>'; conformance, release-scope, release-checklist, README projection, strict plan, and diff validators",
+          "exit_code": 0,
+          "summary": "20 focused unit tests and 3 directly coupled client integration tests passed; the configuration runner executed 125 URI-option cases including all 11 pinned SRV cases; 13 conformance/release/README tests and lint for 8 touched Lua files passed; generated ledger, scope, checklist, README, strict plan, and diff validators passed with 3570 passed and 1954 deferred cases.",
+          "recorded_at": "2026-08-13T19:33:22+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-13T19:26:05+00:00",
+      "completed_at": "2026-08-13T19:33:23+00:00"
     }
   },
   "verified_references": {

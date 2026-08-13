@@ -1,5 +1,7 @@
 local bson = require("mongodb.bson")
+local client = require("mongodb.client")
 local errors = require("mongodb.error")
+local fake_runtime = require("mongodb.runtime.fake")
 local uri = require("mongodb.config.uri")
 
 local FIXTURE_ROOT = (os.getenv("PWD") or ".")
@@ -58,6 +60,39 @@ describe("MongoDB connection string parser", function()
     assert.is_nil(parsed)
     assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
     assert.is_nil(tostring(err):find("top-secret", 1, true))
+  end)
+
+  it("parses exactly one portless SRV hostname without resolving it", function()
+    local parsed = assert(uri.parse(
+      "mongodb+srv://user:pass@Cluster.Example.com/app?srvServiceName=custom"
+    ))
+
+    assert.is_true(parsed.is_srv)
+    assert.are.equal("cluster.example.com", parsed.hosts[1].host)
+    assert.is_nil(parsed.hosts[1].port)
+    assert.are.equal("app", parsed.database)
+    assert.are.same({
+      { key = "srvservicename", value = "custom" },
+    }, parsed.options)
+
+    for _, invalid in ipairs({
+      "mongodb+srv://one.example.com,two.example.com",
+      "mongodb+srv://one.example.com:27017",
+    }) do
+      local result, err = uri.parse(invalid)
+
+      assert.is_nil(result)
+      assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
+    end
+  end)
+
+  it("does not open a client connection before SRV resolution is available", function()
+    local connected, err = client.connect("mongodb+srv://cluster.example.com", {
+      runtime = fake_runtime.new(),
+    })
+
+    assert.is_nil(connected)
+    assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
   end)
 
   it("runs every pinned non-SRV connection-string fixture at the syntax layer", function()

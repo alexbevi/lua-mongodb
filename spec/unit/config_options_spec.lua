@@ -91,6 +91,41 @@ describe("driver option normalization", function()
     assert.is_false(config.server_selection_try_once)
   end)
 
+  it("normalizes SRV-only client options and the implicit TLS default", function()
+    local parsed = assert(uri.parse(
+      "mongodb+srv://cluster.example.com/?srvMaxHosts=2&loadBalanced=false"
+    ))
+    local config = assert(options.normalize(parsed.options, {
+      srv_service_name = "custom-service",
+    }, parsed))
+
+    assert.is_true(config.tls)
+    assert.is_false(config.load_balanced)
+    assert.are.equal(2, config.srv_max_hosts)
+    assert.are.equal("custom-service", config.srv_service_name)
+    assert.is_true(options.validate_uri(parsed, config))
+
+    local direct = assert(options.normalize(nil, { direct_connection = true }, parsed))
+    local valid, direct_err = options.validate_uri(parsed, direct)
+
+    assert.is_nil(valid)
+    assert.is_true(errors.is(direct_err, errors.CATEGORY.CONFIGURATION))
+
+    local standard = assert(uri.parse("mongodb://localhost"))
+    local standard_config = assert(options.normalize(nil, { srv_max_hosts = 0 }, standard))
+    local standard_valid, standard_err = options.validate_uri(standard, standard_config)
+
+    assert.is_nil(standard_valid)
+    assert.is_true(errors.is(standard_err, errors.CATEGORY.CONFIGURATION))
+
+    local invalid, invalid_err = options.normalize(nil, {
+      srv_service_name = "-invalid",
+    }, parsed)
+
+    assert.is_nil(invalid)
+    assert.is_true(errors.is(invalid_err, errors.CATEGORY.CONFIGURATION))
+  end)
+
   it("ignores invalid URI options with warnings while keeping programmatic input strict", function()
     local cases = {
       "foo=bar",

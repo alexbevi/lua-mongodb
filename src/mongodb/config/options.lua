@@ -11,6 +11,7 @@ local URI_NAMES = {
   directconnection = "direct_connection",
   heartbeatfrequencyms = "heartbeat_frequency_ms",
   journal = "journal",
+  loadbalanced = "load_balanced",
   localthresholdms = "local_threshold_ms",
   maxconnecting = "max_connecting",
   maxidletimems = "max_idle_time_ms",
@@ -27,6 +28,8 @@ local URI_NAMES = {
   serverselectiontimeoutms = "server_selection_timeout_ms",
   serverselectiontryonce = "server_selection_try_once",
   sockettimeoutms = "socket_timeout_ms",
+  srvmaxhosts = "srv_max_hosts",
+  srvservicename = "srv_service_name",
   ssl = "tls",
   timeoutms = "timeout_ms",
   tls = "tls",
@@ -53,6 +56,7 @@ local PROGRAMMATIC_NAMES = {
   direct_connection = true,
   heartbeat_frequency_ms = true,
   local_threshold_ms = true,
+  load_balanced = true,
   max_connecting = true,
   max_idle_time_ms = true,
   max_pool_size = true,
@@ -64,6 +68,8 @@ local PROGRAMMATIC_NAMES = {
   server_selection_timeout_ms = true,
   server_selection_try_once = true,
   socket_timeout_ms = true,
+  srv_max_hosts = true,
+  srv_service_name = true,
   timeout_ms = true,
   tls = true,
   tls_allow_invalid_certificates = true,
@@ -80,6 +86,7 @@ local PROGRAMMATIC_NAMES = {
 local BOOLEAN_OPTIONS = {
   direct_connection = true,
   journal = true,
+  load_balanced = true,
   retry_reads = true,
   retry_writes = true,
   server_selection_try_once = true,
@@ -99,6 +106,7 @@ local NON_NEGATIVE_INTEGER_OPTIONS = {
   min_pool_size = true,
   server_selection_timeout_ms = true,
   socket_timeout_ms = true,
+  srv_max_hosts = true,
   timeout_ms = true,
   wait_queue_timeout_ms = true,
   w_timeout_ms = true,
@@ -113,6 +121,7 @@ local STRING_OPTIONS = {
   auth_mechanism = true,
   auth_source = true,
   replica_set = true,
+  srv_service_name = true,
   tls_ca_file = true,
   tls_certificate_key_file = true,
   tls_certificate_key_file_password = true,
@@ -297,6 +306,28 @@ local function validate_string(option, value, allow_empty)
   return value
 end
 
+local function validate_srv_service_name(value)
+  local normalized, err = validate_string("srv_service_name", value, false)
+
+  if not normalized then
+    return nil, err
+  end
+
+  local valid_characters = normalized:match("^[%a%d]$")
+    or normalized:match("^[%a%d][%a%d%-]*[%a%d]$")
+
+  if #normalized > 62
+      or not valid_characters
+      or not normalized:match("%a") then
+    return config_error(
+      "srv_service_name",
+      "srv_service_name must be a valid DNS service name of at most 62 bytes"
+    )
+  end
+
+  return normalized
+end
+
 local function validate_tag_sets(value)
   if type(value) ~= "table" then
     return config_error("read_preference.tag_sets", "read preference tag_sets must be an array")
@@ -369,7 +400,11 @@ local function apply_option(state, option, value, from_uri)
       normalized, normalization_err = validate_integer(option, normalized, 1)
     end
   elseif STRING_OPTIONS[option] then
-    normalized, normalization_err = validate_string(option, value, false)
+    if option == "srv_service_name" then
+      normalized, normalization_err = validate_srv_service_name(value)
+    else
+      normalized, normalization_err = validate_string(option, value, false)
+    end
 
     if option == "app_name" and normalized and #normalized > 128 then
       return config_error(option, "app_name must not exceed 128 bytes")
@@ -737,7 +772,7 @@ local function build_result(values)
   return readonly_copy(result)
 end
 
-function M.normalize(uri_options, programmatic)
+function M.normalize(uri_options, programmatic, uri_context)
   local state = { seen = {}, values = copy_defaults(), warnings = {} }
   local applied, err = apply_uri_options(state, uri_options)
 
@@ -749,6 +784,14 @@ function M.normalize(uri_options, programmatic)
 
   if not applied then
     return nil, err
+  end
+
+  if uri_context ~= nil and type(uri_context) ~= "table" then
+    error("URI context must be a parsed URI table", 2)
+  end
+
+  if uri_context and uri_context.is_srv and not state.seen.tls then
+    state.values.tls = true
   end
 
   applied, err = validate_combinations(state)
@@ -769,6 +812,36 @@ function M.validate_uri(parsed, config)
     return config_error(
       "direct_connection",
       "directConnection=true requires exactly one seed"
+    )
+  end
+
+  if parsed.is_srv then
+    if config.direct_connection then
+      return config_error(
+        "direct_connection",
+        "directConnection=true cannot be used with mongodb+srv"
+      )
+    end
+
+    if config.srv_max_hosts and config.srv_max_hosts > 0 then
+      if config.replica_set ~= nil then
+        return config_error(
+          "srv_max_hosts",
+          "srvMaxHosts cannot be combined with replicaSet"
+        )
+      end
+
+      if config.load_balanced then
+        return config_error(
+          "srv_max_hosts",
+          "srvMaxHosts cannot be combined with loadBalanced=true"
+        )
+      end
+    end
+  elseif config.srv_service_name ~= nil or config.srv_max_hosts ~= nil then
+    return config_error(
+      "srv_service_name",
+      "srvServiceName and srvMaxHosts require a mongodb+srv URI"
     )
   end
 

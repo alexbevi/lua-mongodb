@@ -1249,7 +1249,7 @@ function M.from_uri(connection_string, options)
   end
 
   local config
-  config, err = driver_options.normalize(parsed.options, nil)
+  config, err = driver_options.normalize(parsed.options, nil, parsed)
 
   if not config then
     return nil, err

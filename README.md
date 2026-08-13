@@ -214,7 +214,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Serialization | BSON corpus | 🟢 | 100.0% |
 | Serialization | BSON binary vector | 🟢 | 100.0% |
 | Communication | Connection string | 🟢 | 100.0% |
-| Communication | URI options | 🟡 | 71.7% |
+| Communication | URI options | 🟡 | 78.6% |
 | Communication | Handshake metadata propagation | 🟢 | 100.0% |
 | Communication | Initial DNS seedlist discovery | 🔴 | 0.0% |
 | Communication | Command execution | 🟡 | 81.0% |

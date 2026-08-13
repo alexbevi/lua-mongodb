@@ -16,6 +16,7 @@ local URI_FIXTURES = {
   "read-preference-options.json",
   "sdam-options.json",
   "single-threaded-options.json",
+  "srv-options.json",
   "tls-options.json",
 }
 
@@ -28,6 +29,7 @@ local OPTION_PATHS = {
   directConnection = { "direct_connection" },
   heartbeatFrequencyMS = { "heartbeat_frequency_ms" },
   journal = { "write_concern", "journal" },
+  loadBalanced = { "load_balanced" },
   localThresholdMS = { "local_threshold_ms" },
   maxConnecting = { "max_connecting" },
   maxIdleTimeMS = { "max_idle_time_ms" },
@@ -43,6 +45,8 @@ local OPTION_PATHS = {
   serverSelectionTimeoutMS = { "server_selection_timeout_ms" },
   serverSelectionTryOnce = { "server_selection_try_once" },
   socketTimeoutMS = { "socket_timeout_ms" },
+  srvMaxHosts = { "srv_max_hosts" },
+  srvServiceName = { "srv_service_name" },
   timeoutMS = { "timeout_ms" },
   tls = { "tls" },
   tlsAllowInvalidCertificates = { "tls_allow_invalid_certificates" },
@@ -152,7 +156,7 @@ local function normalize_uri(value)
     return nil, parse_err, {}
   end
 
-  local config, config_err, warnings = options.normalize(parsed.options)
+  local config, config_err, warnings = options.normalize(parsed.options, nil, parsed)
 
   if not config then
     return nil, config_err, combined_warnings(parsed, warnings)

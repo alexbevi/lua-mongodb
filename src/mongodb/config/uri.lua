@@ -282,15 +282,27 @@ function M.parse(value)
     error("MongoDB URI must be a string", 2)
   end
 
-  if value:sub(1, 10) ~= "mongodb://" then
-    return parse_error("MongoDB URI must begin with mongodb://", "scheme")
+  local is_srv
+  local scheme_length
+
+  if value:sub(1, 10) == "mongodb://" then
+    is_srv = false
+    scheme_length = 10
+  elseif value:sub(1, 14) == "mongodb+srv://" then
+    is_srv = true
+    scheme_length = 14
+  else
+    return parse_error(
+      "MongoDB URI must begin with mongodb:// or mongodb+srv://",
+      "scheme"
+    )
   end
 
   if not valid_utf8(value) then
     return parse_error("MongoDB URI must be valid UTF-8", "uri")
   end
 
-  local remainder = value:sub(11)
+  local remainder = value:sub(scheme_length + 1)
   local question = remainder:find("?", 1, true)
   local option_text
 
@@ -320,7 +332,18 @@ function M.parse(value)
     return nil, hosts_err
   end
 
-  local result = { hosts = hosts }
+  if is_srv and (#hosts ~= 1 or hosts[1].type ~= "hostname") then
+    return parse_error(
+      "mongodb+srv URI must contain exactly one hostname",
+      "host"
+    )
+  end
+
+  if is_srv and hosts[1].port ~= nil then
+    return parse_error("mongodb+srv URI hostname must not include a port", "port")
+  end
+
+  local result = { hosts = hosts, is_srv = is_srv }
 
   if credentials then
     local userinfo, userinfo_err = parse_userinfo(credentials)
