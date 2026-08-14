@@ -34,4 +34,6 @@ Target Lua 5.4 and require a 64-bit `lua_Integer`. Treat operational failures as
 
 Local verification is selector-driven. Use `make test-focus` with one or more of `FOCUS_UNIT`, `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, `FOCUS_PYTHON`, and `FOCUS_LINT`. Start with the exact red test and broaden only when a shared boundary changed or a targeted failure gives evidence that adjacent behavior is affected. Run cheap artifact-specific checks such as rockspec lint or generated-file `--check` commands when those artifacts change.
 
+Run `make test-architecture` when production module dependencies or runtime boundaries change. The architecture check rejects require cycles and direct OS, filesystem, socket, scheduling, TLS, native-module, or cryptography access outside `mongodb.runtime`.
+
 GitHub Actions runs `make check-fast` on Ubuntu and macOS plus live boundary compatibility rows on every push. The manual and scheduled `Full Conformance` workflow owns complete live unified execution, coverage, the full compatibility matrix, nightly Linux evidence, and weekly macOS evidence. Run broad suites locally only when changing the test infrastructure itself, preparing a release, diagnosing a CI-only failure, or modifying a cross-cutting primitive for which no narrower trustworthy boundary exists.

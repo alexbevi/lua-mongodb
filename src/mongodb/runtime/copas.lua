@@ -1,6 +1,6 @@
 local cancellation = require("mongodb.runtime.cancellation")
 local errors = require("mongodb.error")
-local runtime_contract = require("mongodb.runtime")
+local runtime_contract = require("mongodb.runtime.contract")
 
 local M = {}
 

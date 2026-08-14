@@ -354,6 +354,8 @@ The unit gate executes all 26 pinned JSON CMAP unit fixtures. The integration ga
 
 Dependencies point downward. API objects do not call Copas, LuaSocket, LuaSec, or OpenSSL directly; they depend on runtime and protocol interfaces. The same boundary supports deterministic unit fakes.
 
+`mongodb.runtime.contract` contains the dependency-free runtime validation, deadline, cancellation, and error helpers used by runtime implementations. The public `mongodb.runtime` façade re-exports that contract and constructs the default Copas adapter, so adapters never depend back on their own façade. `planning/check_architecture.py` scans every production Lua module and literal `require`, rejects dependency cycles, and permits direct OS, filesystem, socket, scheduling, TLS, native-module, and cryptography access only inside `mongodb.runtime`. `make test-architecture` is part of the fast gate, and diagnostics name the exact cycle or source line that crosses the boundary.
+
 ## Command data flow
 
 A public operation validates options, creates an operation context and deadline, selects a server, checks out a connection, applies session/transaction fields, encodes OP_MSG, performs exact deadline-aware I/O, decodes and classifies the response, emits monitoring events, updates session state, and returns a value or structured error. Cleanup is deterministic on every branch.

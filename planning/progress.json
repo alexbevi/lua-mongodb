@@ -3395,6 +3395,28 @@
       "notes": [],
       "started_at": "2026-08-14T18:47:29+00:00",
       "completed_at": "2026-08-14T18:50:17+00:00"
+    },
+    "QUA-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_architecture_boundaries'",
+          "exit_code": 2,
+          "summary": "Focused architecture test discovery failed because planning/check_architecture.py did not exist",
+          "recorded_at": "2026-08-14T18:57:05+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-architecture; make test-focus FOCUS_PYTHON='planning.tests.test_architecture_boundaries'; PATH=<lua54-and-luarocks> make test-focus FOCUS_UNIT='<6 runtime and transport specs>' FOCUS_LINT='<7 runtime boundary modules>'; python3 -m py_compile <checker and test>; make rockspec test-package; git diff --check",
+          "exit_code": 0,
+          "summary": "5 architecture policy tests and the production graph check passed; 36 coupled runtime/transport tests passed; 7 touched Lua files linted cleanly; Python compile, rockspec lint, package install smoke, and diff check passed",
+          "recorded_at": "2026-08-14T19:02:55+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T18:56:20+00:00",
+      "completed_at": "2026-08-14T19:02:56+00:00"
     }
   },
   "verified_references": {
