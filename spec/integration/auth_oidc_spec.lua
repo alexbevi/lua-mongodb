@@ -91,6 +91,85 @@ describe("MONGODB-OIDC command execution", function()
     end
   end)
 
+  it("authenticates the built-in test environment through adapters", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(client)
+      client = copas.wrap(client)
+      local handshake = receive_frame(client)
+
+      send_response(client, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local start = receive_frame(client)
+      local payload = assert(bson.decode(start.body:get("payload").data))
+
+      assert.are.equal("saslStart", start.body:keys()[1])
+      assert.are.equal("MONGODB-OIDC", start.body:get("mechanism"))
+      assert.are.equal("private-test-token", payload:get("jwt"))
+      send_response(client, start, bson.document({
+        { "conversationId", 1 },
+        { "payload", bson.binary("") },
+        { "done", true },
+        { "ok", 1 },
+      }))
+
+      local ping = receive_frame(client)
+
+      assert.are.equal("ping", ping.body:keys()[1])
+      send_response(client, ping, bson.document({ { "ok", 1 } }))
+      client:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local environment_calls = 0
+        local file_calls = 0
+        local runtime = mongodb.runtime.copas({
+          file = {
+            read = function(_, path, options)
+              file_calls = file_calls + 1
+              assert.are.equal("/private/oidc-token", path)
+              assert.are.equal(1024 * 1024, options.max_bytes)
+              return " private-test-token\n"
+            end,
+          },
+          getenv = function(name)
+            environment_calls = environment_calls + 1
+            assert.are.equal("OIDC_TOKEN_FILE", name)
+            return "/private/oidc-token"
+          end,
+          metadata = {},
+        })
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port
+            .. "/admin?authMechanism=MONGODB-OIDC"
+            .. "&authMechanismProperties=ENVIRONMENT:test",
+          { runtime = runtime }
+        ))
+
+        assert(client:database():run_command("ping"))
+        assert.are.equal(1, environment_calls)
+        assert.are.equal(1, file_calls)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    assert.is_table(outcome)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
   it("runs a human callback between principal and JWT SASL steps", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())

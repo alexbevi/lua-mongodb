@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local oidc_providers = require("mongodb.auth.oidc_providers")
 local runtime_contract = require("mongodb.runtime")
 
 local M = {}
@@ -252,6 +253,18 @@ local function validate_auth_inputs(commands, runtime, credentials, options)
   end
 
   local properties = credentials.mechanism_properties
+  local environment = properties.ENVIRONMENT
+
+  if environment ~= nil then
+    local callback, err = oidc_providers.callback(runtime, credentials)
+
+    if not callback then
+      return nil, err
+    end
+
+    return callback, "machine", true
+  end
+
   local callback = properties.OIDC_CALLBACK
 
   if callback == nil and type(properties.OIDC_HUMAN_CALLBACK) == "function" then
@@ -323,10 +336,21 @@ local function machine_callback_context(runtime, credentials, options)
   }, "OIDC callback contexts are immutable")
 end
 
-local function callback_result(callback, context, runtime, options, kind)
+local function callback_result(
+  callback,
+  context,
+  runtime,
+  options,
+  kind,
+  trusted_failure
+)
   local called = table.pack(pcall(callback, context))
 
   if not called[1] then
+    if trusted_failure and errors.is(called[2]) then
+      return nil, called[2]
+    end
+
     return nil, auth_error("MONGODB-OIDC " .. kind .. " callback failed")
   end
 
@@ -529,7 +553,14 @@ local function is_authentication_failure(err)
   return errors.is(err, errors.CATEGORY.SERVER) and err.code == 18
 end
 
-local function fetch_token(callback, runtime, credentials, options, state)
+local function fetch_token(
+  callback,
+  runtime,
+  credentials,
+  options,
+  state,
+  trusted_failure
+)
   local context, err = machine_callback_context(runtime, credentials, options)
 
   if not context then
@@ -542,7 +573,8 @@ local function fetch_token(callback, runtime, credentials, options, state)
     context,
     runtime,
     options,
-    "machine"
+    "machine",
+    trusted_failure
   )
 
   if not result then
@@ -587,7 +619,14 @@ local function wait_for_callback_slot(runtime, options, state)
   )
 end
 
-local function coordinated_token(callback, runtime, credentials, options, state)
+local function coordinated_token(
+  callback,
+  runtime,
+  credentials,
+  options,
+  state,
+  trusted_failure
+)
   local acquired, err = state.callback_lock:acquire(
     options.deadline,
     options.cancellation
@@ -610,7 +649,14 @@ local function coordinated_token(callback, runtime, credentials, options, state)
     end
 
     state.last_callback_time = runtime.clock:now()
-    return fetch_token(callback, runtime, credentials, options, state)
+    return fetch_token(
+      callback,
+      runtime,
+      credentials,
+      options,
+      state,
+      trusted_failure
+    )
   end))
 
   state.callback_lock:release()
@@ -870,7 +916,7 @@ end
 
 function M.authenticate(commands, runtime, credentials, options)
   options = options or {}
-  local callback, callback_kind = validate_auth_inputs(
+  local callback, callback_kind, trusted_failure = validate_auth_inputs(
     commands,
     runtime,
     credentials,
@@ -968,7 +1014,8 @@ function M.authenticate(commands, runtime, credentials, options)
       runtime,
       credentials,
       options,
-      state
+      state,
+      trusted_failure
     )
 
     if not token then
