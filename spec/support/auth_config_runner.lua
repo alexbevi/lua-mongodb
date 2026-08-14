@@ -29,6 +29,12 @@ local AUTH_002_CASES = {
   [38] = true,
   [39] = true,
 }
+local AUTH_003_CASES = {
+  [23] = true,
+  [24] = true,
+  [25] = true,
+  [26] = true,
+}
 
 local function load_fixture()
   local file = assert(io.open(FIXTURE, "rb"))
@@ -65,11 +71,11 @@ local function expected_value(document, name)
   return value
 end
 
-function M.run_auth_002()
+local function run_cases(cases)
   local count = 0
 
   for index, test in load_fixture():get("tests"):iter() do
-    if AUTH_002_CASES[index] then
+    if cases[index] then
       local description = test:get("description")
       local credential, err = normalize(test:get("uri"))
 
@@ -102,6 +108,14 @@ function M.run_auth_002()
   end
 
   return count
+end
+
+function M.run_auth_002()
+  return run_cases(AUTH_002_CASES)
+end
+
+function M.run_auth_003()
+  return run_cases(AUTH_003_CASES)
 end
 
 return M

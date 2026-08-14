@@ -1,4 +1,5 @@
 local api = require("mongodb.api")
+local auth = require("mongodb.auth")
 local bson = require("mongodb.bson")
 local command_executor = require("mongodb.command.executor")
 local credentials = require("mongodb.config.credentials")
@@ -9,7 +10,6 @@ local handshake_metadata = require("mongodb.handshake.metadata")
 local monitoring = require("mongodb.monitoring")
 local pool = require("mongodb.pool")
 local runtime_contract = require("mongodb.runtime")
-local scram = require("mongodb.auth.scram")
 local retry_executor = require("mongodb.retry_executor")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
@@ -365,8 +365,11 @@ end
 
 local function mechanism_from(hello, configured)
   if configured ~= nil then
-    if configured ~= "SCRAM-SHA-1" and configured ~= "SCRAM-SHA-256" then
-      return configuration_error("only SCRAM-SHA-1 and SCRAM-SHA-256 are supported")
+    if configured ~= "PLAIN"
+        and configured ~= "SCRAM-SHA-1"
+        and configured ~= "SCRAM-SHA-256"
+    then
+      return configuration_error("unsupported authentication mechanism")
     end
 
     return configured
@@ -478,14 +481,10 @@ local function open_executor(
     end
 
     local authenticated
-    authenticated, err = scram.authenticate(executor, runtime, {
-      mechanism = mechanism,
-      password = credential.password,
-      source = credential.source,
-      username = credential.username,
-    }, {
+    authenticated, err = auth.authenticate(executor, runtime, credential, {
       cancellation = fields.cancellation,
       deadline = deadline,
+      mechanism = mechanism,
     })
 
     if not authenticated then

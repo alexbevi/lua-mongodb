@@ -55,32 +55,37 @@ function M.build(parsed, config)
       return nil
     end
 
-    if SCRAM_MECHANISMS[mechanism] then
+    if SCRAM_MECHANISMS[mechanism] or mechanism == "PLAIN" then
       return config_error("username", mechanism .. " requires a username")
     end
 
     return config_error("auth_mechanism", "unsupported authentication mechanism")
   end
 
-  if mechanism ~= nil and not SCRAM_MECHANISMS[mechanism] then
+  if mechanism ~= nil and not SCRAM_MECHANISMS[mechanism] and mechanism ~= "PLAIN" then
     return config_error("auth_mechanism", "unsupported authentication mechanism")
   end
 
   if parsed.password == nil then
-    return config_error("password", "SCRAM authentication requires a password")
+    return config_error(
+      "password",
+      (mechanism == "PLAIN" and "PLAIN" or "SCRAM") .. " authentication requires a password"
+    )
   end
 
   if has_properties(config.auth_mechanism_properties) then
     return config_error(
       "auth_mechanism_properties",
-      "SCRAM authentication does not support mechanism properties"
+      (mechanism == "PLAIN" and "PLAIN" or "SCRAM")
+        .. " authentication does not support mechanism properties"
     )
   end
 
   return immutable({
     mechanism = mechanism,
     password = parsed.password,
-    source = config.auth_source or parsed.database or "admin",
+    source = config.auth_source or parsed.database
+      or (mechanism == "PLAIN" and "$external" or "admin"),
     username = parsed.username,
   })
 end

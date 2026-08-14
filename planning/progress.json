@@ -2570,6 +2570,28 @@
       "notes": [],
       "started_at": "2026-08-14T09:47:48+00:00",
       "completed_at": "2026-08-14T09:57:11+00:00"
+    },
+    "AUTH-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_plain_spec.lua'",
+          "exit_code": 2,
+          "summary": "0 successes; defining test errors because mongodb.auth.plain does not exist",
+          "recorded_at": "2026-08-14T10:03:23+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_plain_spec.lua spec/unit/config_credentials_spec.lua spec/unit/auth_scram_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_plain_spec.lua spec/integration/auth_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/auth/init.lua src/mongodb/auth/plain.lua src/mongodb/config/credentials.lua src/mongodb/client.lua spec/support/auth_config_runner.lua spec/unit/auth_plain_spec.lua spec/unit/config_credentials_spec.lua spec/integration/auth_plain_spec.lua'",
+          "exit_code": 0,
+          "summary": "21 Lua examples and 13 Python tests passed; 4 AUTH-003 PLAIN fixtures executed and passed; 0 environment-skipped, 52 auth cases remain deferred to pending AUTH owners, 0 failed; conformance/readme/release/rockspec/package validators passed",
+          "recorded_at": "2026-08-14T10:07:34+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T10:02:55+00:00",
+      "completed_at": "2026-08-14T10:07:34+00:00"
     }
   },
   "verified_references": {

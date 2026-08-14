@@ -79,6 +79,15 @@ mongodb.run(function()
 end)
 ```
 
+For an LDAP-compatible deployment, select SASL PLAIN explicitly. Its authentication source defaults to the URI database, or `$external` when the URI has no database. Because PLAIN sends the password inside the TLS-protected SASL exchange, enable and validate TLS in production:
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb://user:password@directory.example.com/"
+    .. "?authMechanism=PLAIN&tls=true"
+))
+```
+
 ### URI Options
 
 URI option names use the standard MongoDB spelling and are case-insensitive. When the same setting is supplied in the client options table, the idiomatic `snake_case` client option takes precedence over the URI. The currently accepted URI options are grouped below.
@@ -254,7 +263,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Connectivity | Server discovery and monitoring | 🟡 | 89.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
 | Connectivity | Load balancer support | 🔴 | 0.0% |
-| Authentication | Authentication options and additional mechanisms | 🟡 | 24.7% |
+| Authentication | Authentication options and additional mechanisms | 🟡 | 30.1% |
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 70.3% |

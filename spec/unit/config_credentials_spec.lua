@@ -63,4 +63,8 @@ describe("authentication credential normalization", function()
   it("runs every AUTH-002 legacy credential case", function()
     assert.are.equal(18, auth_config_runner.run_auth_002())
   end)
+
+  it("runs every AUTH-003 PLAIN credential case", function()
+    assert.are.equal(4, auth_config_runner.run_auth_003())
+  end)
 end)

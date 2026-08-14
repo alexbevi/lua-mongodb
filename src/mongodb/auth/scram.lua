@@ -264,20 +264,23 @@ local function validate_inputs(commands, runtime, credentials, options)
     error("SCRAM source must be a non-empty string", 3)
   end
 
-  if not MECHANISMS[credentials.mechanism] then
-    error("SCRAM mechanism must be SCRAM-SHA-1 or SCRAM-SHA-256", 3)
-  end
-
   if type(options) ~= "table" then
     error("SCRAM options must be a table", 3)
   end
+
+  local mechanism = options.mechanism or credentials.mechanism
+
+  if not MECHANISMS[mechanism] then
+    error("SCRAM mechanism must be SCRAM-SHA-1 or SCRAM-SHA-256", 3)
+  end
+
+  return mechanism
 end
 
 function M.authenticate(commands, runtime, credentials, options)
   options = options or {}
-  validate_inputs(commands, runtime, credentials, options)
+  local mechanism = validate_inputs(commands, runtime, credentials, options)
 
-  local mechanism = credentials.mechanism
   local properties = MECHANISMS[mechanism]
   local entropy = runtime.entropy:bytes(32)
 
