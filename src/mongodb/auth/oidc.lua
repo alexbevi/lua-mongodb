@@ -461,7 +461,13 @@ local function idp_info(payload)
   }, "OIDC callback contexts are immutable")
 end
 
-local function human_callback_context(runtime, credentials, options, info)
+local function human_callback_context(
+  runtime,
+  credentials,
+  options,
+  info,
+  refresh_token
+)
   local now = runtime.clock:now()
 
   if type(now) ~= "number" or now ~= now or now < 0 or now == math.huge then
@@ -483,6 +489,7 @@ local function human_callback_context(runtime, credentials, options, info)
     cancellation = options.cancellation,
     deadline = deadline,
     idp_info = info,
+    refresh_token = refresh_token,
     timeout_seconds = HUMAN_CALLBACK_TIMEOUT_SECONDS,
     username = credentials.username or "",
     version = 1,
@@ -496,7 +503,9 @@ local function client_state(credentials, runtime)
     state = {
       access_token = nil,
       callback_lock = runtime.lock:new(),
+      idp_info = nil,
       last_callback_time = nil,
+      refresh_token = nil,
     }
     CLIENT_STATES[credentials] = state
   end
@@ -613,6 +622,81 @@ local function coordinated_token(callback, runtime, credentials, options, state)
   return table.unpack(outcome, 2, outcome.n)
 end
 
+local function coordinated_human_token(
+  callback,
+  runtime,
+  credentials,
+  options,
+  state,
+  info,
+  refresh_token
+)
+  local acquired, err = state.callback_lock:acquire(
+    nil,
+    options.cancellation
+  )
+
+  if not acquired then
+    return nil, auth_error("MONGODB-OIDC human callback wait failed", err)
+  end
+
+  local outcome = table.pack(pcall(function()
+    if state.access_token ~= nil then
+      return state.access_token
+    end
+
+    local callback_options = { cancellation = options.cancellation }
+    local waited
+    waited, err = wait_for_callback_slot(runtime, callback_options, state)
+
+    if not waited then
+      return nil, auth_error("MONGODB-OIDC human callback wait failed", err)
+    end
+
+    state.last_callback_time = runtime.clock:now()
+    local context
+    context, err = human_callback_context(
+      runtime,
+      credentials,
+      options,
+      info,
+      refresh_token
+    )
+
+    if not context then
+      return nil, err
+    end
+
+    local result
+    result, err = callback_result(
+      callback,
+      context,
+      runtime,
+      options,
+      "human"
+    )
+
+    if not result then
+      return nil, err
+    end
+
+    local token = { access_token = result.access_token }
+
+    state.access_token = token
+    state.idp_info = info
+    state.refresh_token = result.refresh_token
+    return token
+  end))
+
+  state.callback_lock:release()
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  return table.unpack(outcome, 2, outcome.n)
+end
+
 local function authenticate_token(commands, credentials, options, token)
   local payload, err = bson.encode(bson.document({
     { "jwt", token.access_token },
@@ -718,43 +802,30 @@ local function authenticate_human(
     return nil, err
   end
 
-  local context
-  context, err = human_callback_context(
+  local token
+  token, err = coordinated_human_token(
+    callback,
     runtime,
     credentials,
     options,
-    start.idp_info
+    state,
+    start.idp_info,
+    nil
   )
 
-  if not context then
-    return nil, err
-  end
-
-  local result
-  result, err = callback_result(
-    callback,
-    context,
-    runtime,
-    options,
-    "human"
-  )
-
-  if not result then
+  if not token then
     return nil, err
   end
 
   local payload
   payload, err = bson.encode(bson.document({
-    { "jwt", result.access_token },
+    { "jwt", token.access_token },
   }))
 
   if not payload then
     return nil, auth_error("MONGODB-OIDC client payload encoding failed", err)
   end
 
-  local token = { access_token = result.access_token }
-
-  state.access_token = token
   CONNECTION_STATES[commands] = token
   local response
   response, err = commands:command("$external", bson.document({
@@ -810,13 +881,41 @@ function M.authenticate(commands, runtime, credentials, options)
     return nil, callback_kind
   end
 
+  local err
   local state = client_state(credentials, runtime)
 
   if callback_kind == "human" then
     local token = state.access_token
 
     if token ~= nil then
-      local authenticated, err = authenticate_token(
+      local authenticated
+      authenticated, err = authenticate_token(
+        commands,
+        credentials,
+        options,
+        token
+      )
+
+      return authenticated, err
+    end
+
+    if state.refresh_token ~= nil and state.idp_info ~= nil then
+      token, err = coordinated_human_token(
+        callback,
+        runtime,
+        credentials,
+        options,
+        state,
+        state.idp_info,
+        state.refresh_token
+      )
+
+      if not token then
+        return nil, err
+      end
+
+      local authenticated
+      authenticated, err = authenticate_token(
         commands,
         credentials,
         options,
@@ -836,7 +935,6 @@ function M.authenticate(commands, runtime, credentials, options)
     )
   end
 
-  local err
   local token = state.access_token
 
   if token ~= nil then

@@ -3059,6 +3059,28 @@
       "notes": [],
       "started_at": "2026-08-14T14:08:37+00:00",
       "completed_at": "2026-08-14T14:11:46+00:00"
+    },
+    "AUTH-030": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_refresh_spec.lua'",
+          "exit_code": 2,
+          "summary": "After access-token invalidation the next human authentication sent a new principal payload with no replacement JWT instead of reusing cached refresh-token and IdP callback context (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T14:15:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_refresh_spec.lua spec/unit/auth_oidc_human_access_cache_spec.lua spec/unit/auth_oidc_coordination_spec.lua spec/unit/auth_oidc_human_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua spec/unit/auth_oidc_human_refresh_spec.lua spec/unit/auth_oidc_human_access_cache_spec.lua spec/integration/auth_oidc_spec.lua' && python3 planning/update_plan.py check && git diff --check",
+          "exit_code": 0,
+          "summary": "18 defining and directly coupled unit cases and 3 loopback integration cases passed; touched-file lint reported 0 warnings/errors; planning and whitespace validation passed. No unified case became newly applicable because cached-token recovery and speculative handshake behavior remain AUTH-012/AUTH-017.",
+          "recorded_at": "2026-08-14T14:19:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T14:15:00+00:00",
+      "completed_at": "2026-08-14T14:19:14+00:00"
     }
   },
   "verified_references": {
