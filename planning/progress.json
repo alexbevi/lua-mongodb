@@ -2616,7 +2616,7 @@
       "completed_at": "2026-08-14T10:18:26+00:00"
     },
     "AUTH-005": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -2624,11 +2624,20 @@
           "exit_code": 2,
           "summary": "Deterministic static-credential MONGODB-AWS SASL and SigV4 test failed because mongodb.auth.aws did not exist (0 successes, 1 load error).",
           "recorded_at": "2026-08-14T10:24:17+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_ping_spec.lua spec/integration/auth_plain_spec.lua spec/integration/auth_x509_spec.lua' FOCUS_LINT='src/mongodb/auth/aws.lua src/mongodb/auth/init.lua src/mongodb/client.lua spec/unit/auth_aws_spec.lua'",
+          "exit_code": 0,
+          "summary": "5 defining AWS unit and 3 directly coupled authentication integration examples passed; touched-file lint reported 0 warnings and 0 errors; conformance, release scope/checklist, unified capability, README projection, rockspec, and isolated source-rock installation validators passed",
+          "recorded_at": "2026-08-14T10:46:41+00:00"
         }
       ],
       "notes": [
         "Requeued: Pinned DRIVERS-3131 rules removed explicit AWS URI credentials and conflict with two retained legacy assertions; split configuration classification from the internal SigV4 SASL state machine before implementation."
-      ]
+      ],
+      "started_at": "2026-08-14T10:38:58+00:00",
+      "completed_at": "2026-08-14T10:46:42+00:00"
     },
     "AUTH-020": {
       "status": "completed",

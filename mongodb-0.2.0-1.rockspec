@@ -55,6 +55,7 @@ build = {
     ["mongodb.command.hello"] = "src/mongodb/command/hello.lua",
     ["mongodb.command.security"] = "src/mongodb/command/security.lua",
     ["mongodb.auth"] = "src/mongodb/auth/init.lua",
+    ["mongodb.auth.aws"] = "src/mongodb/auth/aws.lua",
     ["mongodb.auth.plain"] = "src/mongodb/auth/plain.lua",
     ["mongodb.auth.saslprep"] = "src/mongodb/auth/saslprep.lua",
     ["mongodb.auth.scram"] = "src/mongodb/auth/scram.lua",

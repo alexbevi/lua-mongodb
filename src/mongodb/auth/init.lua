@@ -1,3 +1,4 @@
+local aws = require("mongodb.auth.aws")
 local plain = require("mongodb.auth.plain")
 local scram = require("mongodb.auth.scram")
 local x509 = require("mongodb.auth.x509")
@@ -14,6 +15,10 @@ function M.authenticate(commands, runtime, credentials, options)
   end
 
   local mechanism = options and options.mechanism or credentials.mechanism
+
+  if mechanism == "MONGODB-AWS" then
+    return aws.authenticate(commands, runtime, credentials, options)
+  end
 
   if mechanism == "PLAIN" then
     return plain.authenticate(commands, credentials, options)
