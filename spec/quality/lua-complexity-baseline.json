@@ -34,11 +34,6 @@
     },
     {
       "path": "src/mongodb/session.lua",
-      "function": "MANAGER_METHODS.decorate",
-      "complexity": 49
-    },
-    {
-      "path": "src/mongodb/session.lua",
       "function": "finish_transaction",
       "complexity": 41
     },

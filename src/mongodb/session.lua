@@ -723,31 +723,21 @@ function MANAGER_METHODS:start(options)
   return setmetatable(session, SESSION_METATABLE)
 end
 
-function MANAGER_METHODS:decorate(command, options)
-  if not bson.is_document(command) then
-    error("session command must be a BSON document", 2)
-  end
-
-  options = options or {}
-  local session = options.session
+local function decoration_session(manager, session)
   local session_state, err = check_session(session)
 
   if not session_state then
     return nil, err
   end
 
-  if session_state.manager ~= self then
+  if session_state.manager ~= manager then
     return client_error("client session belongs to another client")
   end
 
-  local manager_state = MANAGER_STATES[self]
-  local entries = {}
-  local add_causal_read_concern = session_state.causal_consistency
-    and session_state.operation_time ~= nil
-  local replace_read_concern = options.read_concern ~= nil
-    or add_causal_read_concern
-  local retryable_write = options.retryable_write == true
-  local transaction_control = options.transaction_control == true
+  return session_state
+end
+
+local function active_decoration_transaction(session_state, transaction_control)
   local transaction = session_state.transaction
 
   if not transaction_control and (transaction.state == "aborted"
@@ -758,84 +748,127 @@ function MANAGER_METHODS:decorate(command, options)
     session_state.transaction = transaction
   end
 
-  local in_transaction = transaction_active(transaction)
-  local starting_transaction = transaction.state == "starting"
+  return transaction
+end
 
-  if in_transaction then
+local function decoration_context(command, options, session_state)
+  local transaction_control = options.transaction_control == true
+  local transaction = active_decoration_transaction(
+    session_state,
+    transaction_control
+  )
+  local in_transaction = transaction_active(transaction)
+
+  if in_transaction and READ_COMMANDS[command:keys()[1]] then
     local operation_mode = read_preference_mode(options.read_preference)
     local transaction_mode = read_preference_mode(
       transaction.options.read_preference
     )
 
-    if READ_COMMANDS[command:keys()[1]]
-        and (operation_mode ~= nil and operation_mode ~= "primary"
-          or transaction_mode ~= nil and transaction_mode ~= "primary")
+    if operation_mode ~= nil and operation_mode ~= "primary"
+        or transaction_mode ~= nil and transaction_mode ~= "primary"
     then
       return client_error("read preference in a transaction must be primary")
     end
   end
-  replace_read_concern = replace_read_concern and not in_transaction
+
+  local add_causal_read_concern = session_state.causal_consistency
+    and session_state.operation_time ~= nil
+
+  return {
+    add_causal_read_concern = add_causal_read_concern,
+    in_transaction = in_transaction,
+    replace_read_concern = not in_transaction
+      and (options.read_concern ~= nil or add_causal_read_concern),
+    retryable_write = options.retryable_write == true,
+    starting_transaction = transaction.state == "starting",
+    transaction = transaction,
+    transaction_control = transaction_control,
+  }
+end
+
+local function copy_command_entries(command, context)
+  local entries = {}
 
   for key, value in command:iter() do
     if key ~= "lsid" and key ~= "$clusterTime"
-        and (key ~= "txnNumber" or (not retryable_write and not in_transaction))
-        and (not in_transaction or transaction_control or key ~= "writeConcern")
-        and (not in_transaction or key ~= "readConcern")
-        and (key ~= "readConcern" or not replace_read_concern)
+        and (key ~= "txnNumber" or (not context.retryable_write
+          and not context.in_transaction))
+        and (not context.in_transaction or context.transaction_control
+          or key ~= "writeConcern")
+        and (not context.in_transaction or key ~= "readConcern")
+        and (key ~= "readConcern" or not context.replace_read_concern)
     then
       entries[#entries + 1] = { key, value }
     end
   end
 
-  entries[#entries + 1] = { "lsid", session_state.server_session.id }
+  return entries
+end
 
-  if in_transaction then
-    entries[#entries + 1] = {
-      "txnNumber",
-      bson.int64(session_state.server_session.transaction_number),
-    }
-    entries[#entries + 1] = { "autocommit", false }
+local function read_concern_with_operation_time(read_concern, session_state)
+  local concern_entries = {}
 
-    if starting_transaction then
-      entries[#entries + 1] = { "startTransaction", true }
-
-      local read_concern = transaction.options.read_concern
-
-      if read_concern ~= nil or add_causal_read_concern then
-        local concern_entries = {}
-
-        for key, value in (read_concern or bson.document({})):iter() do
-          if key ~= "afterClusterTime" then
-            concern_entries[#concern_entries + 1] = { key, value }
-          end
-        end
-
-        if add_causal_read_concern then
-          concern_entries[#concern_entries + 1] = {
-            "afterClusterTime",
-            session_state.operation_time,
-          }
-        end
-
-        entries[#entries + 1] = {
-          "readConcern",
-          bson.document(concern_entries),
-        }
-      end
-
-      if not options.measurement then
-        transaction.state = "in_progress"
-      end
+  for key, value in read_concern:iter() do
+    if key ~= "afterClusterTime" then
+      concern_entries[#concern_entries + 1] = { key, value }
     end
-  elseif retryable_write then
-    local server_session = session_state.server_session
+  end
 
-    server_session.transaction_number = server_session.transaction_number + 1
-    entries[#entries + 1] = {
-      "txnNumber",
-      bson.int64(server_session.transaction_number),
+  if session_state.causal_consistency
+      and session_state.operation_time ~= nil
+  then
+    concern_entries[#concern_entries + 1] = {
+      "afterClusterTime",
+      session_state.operation_time,
     }
   end
+
+  return bson.document(concern_entries)
+end
+
+local function append_transaction_fields(entries, context, session_state, measurement)
+  local transaction = context.transaction
+
+  entries[#entries + 1] = {
+    "txnNumber",
+    bson.int64(session_state.server_session.transaction_number),
+  }
+  entries[#entries + 1] = { "autocommit", false }
+
+  if not context.starting_transaction then
+    return
+  end
+
+  entries[#entries + 1] = { "startTransaction", true }
+  local read_concern = transaction.options.read_concern
+
+  if read_concern ~= nil or context.add_causal_read_concern then
+    entries[#entries + 1] = {
+      "readConcern",
+      read_concern_with_operation_time(
+        read_concern or bson.document({}),
+        session_state
+      ),
+    }
+  end
+
+  if not measurement then
+    transaction.state = "in_progress"
+  end
+end
+
+local function append_retryable_write_fields(entries, session_state)
+  local server_session = session_state.server_session
+
+  server_session.transaction_number = server_session.transaction_number + 1
+  entries[#entries + 1] = {
+    "txnNumber",
+    bson.int64(server_session.transaction_number),
+  }
+end
+
+local function append_cluster_time(entries, manager_state, session_state)
   local cluster_time = later_cluster_time(
     manager_state.cluster_time,
     session_state.cluster_time
@@ -844,31 +877,58 @@ function MANAGER_METHODS:decorate(command, options)
   if cluster_time then
     entries[#entries + 1] = { "$clusterTime", cluster_time }
   end
+end
 
-  if replace_read_concern then
-    local read_concern = options.read_concern or command:get("readConcern")
-      or bson.document({})
-    local concern_entries = {}
-
-    if not bson.is_document(read_concern) then
-      error("read_concern must be a BSON document", 2)
-    end
-
-    for key, value in read_concern:iter() do
-      if key ~= "afterClusterTime" then
-        concern_entries[#concern_entries + 1] = { key, value }
-      end
-    end
-
-    if add_causal_read_concern then
-      concern_entries[#concern_entries + 1] = {
-        "afterClusterTime",
-        session_state.operation_time,
-      }
-    end
-    entries[#entries + 1] = { "readConcern", bson.document(concern_entries) }
+local function append_read_concern(entries, command, options, context, session_state)
+  if not context.replace_read_concern then
+    return
   end
 
+  local read_concern = options.read_concern or command:get("readConcern")
+    or bson.document({})
+
+  if not bson.is_document(read_concern) then
+    error("read_concern must be a BSON document", 3)
+  end
+
+  entries[#entries + 1] = {
+    "readConcern",
+    read_concern_with_operation_time(read_concern, session_state),
+  }
+end
+
+function MANAGER_METHODS:decorate(command, options)
+  if not bson.is_document(command) then
+    error("session command must be a BSON document", 2)
+  end
+
+  options = options or {}
+  local session_state, err = decoration_session(self, options.session)
+
+  if not session_state then
+    return nil, err
+  end
+
+  local context
+  context, err = decoration_context(command, options, session_state)
+
+  if not context then
+    return nil, err
+  end
+
+  local manager_state = MANAGER_STATES[self]
+  local entries = copy_command_entries(command, context)
+
+  entries[#entries + 1] = { "lsid", session_state.server_session.id }
+
+  if context.in_transaction then
+    append_transaction_fields(entries, context, session_state, options.measurement)
+  elseif context.retryable_write then
+    append_retryable_write_fields(entries, session_state)
+  end
+
+  append_cluster_time(entries, manager_state, session_state)
+  append_read_concern(entries, command, options, context, session_state)
   session_state.server_session.last_used_at = now(manager_state)
   return bson.document(entries)
 end

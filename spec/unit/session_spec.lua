@@ -178,6 +178,7 @@ describe("client sessions", function()
       { read_concern = bson.document({}), session = session }
     ))
 
+    assert.are.same({ "find", "lsid", "readConcern" }, command:keys())
     assert.are.equal(identifier, command:get("lsid"))
     assert.are.equal(
       operation_time,
@@ -408,6 +409,8 @@ describe("client sessions", function()
     assert.are.equal(bson.int64(1), commands[1]:get("txnNumber"))
     assert.are.equal(bson.int64(1), commands[2]:get("txnNumber"))
     assert.are.equal(bson.int64(2), commands[3]:get("txnNumber"))
+    assert.are.same({ "insert", "lsid", "txnNumber" }, commands[1]:keys())
+    assert.are.same({ "update", "lsid", "txnNumber" }, commands[3]:keys())
   end)
 
   it("decorates and commits one explicit transaction", function()
@@ -435,6 +438,20 @@ describe("client sessions", function()
       { session = session }
     ))
 
+    assert.are.same({
+      "insert",
+      "lsid",
+      "txnNumber",
+      "autocommit",
+      "startTransaction",
+      "readConcern",
+    }, first:keys())
+    assert.are.same({
+      "find",
+      "lsid",
+      "txnNumber",
+      "autocommit",
+    }, second:keys())
     assert.is_true(first:get("startTransaction"))
     assert.is_false(first:get("autocommit"))
     assert.are.equal("majority", first:get("readConcern"):get("level"))
