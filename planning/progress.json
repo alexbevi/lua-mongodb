@@ -2971,6 +2971,28 @@
       "notes": [],
       "started_at": "2026-08-14T13:23:27+00:00",
       "completed_at": "2026-08-14T13:28:47+00:00"
+    },
+    "AUTH-026": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_coordination_spec.lua'",
+          "exit_code": 2,
+          "summary": "Two concurrent authentications entered the machine callback before either cached a token, so the callback ran twice instead of being serialized and reused (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T13:33:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_coordination_spec.lua spec/unit/auth_oidc_cache_spec.lua spec/unit/auth_oidc_machine_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua spec/unit/auth_oidc_coordination_spec.lua spec/unit/auth_oidc_cache_spec.lua'; plan and diff validators",
+          "exit_code": 0,
+          "summary": "16 focused OIDC coordination/cache/machine unit tests passed with 0 failures/errors/pending; touched-file lint reported 0 warnings/errors across 3 Lua files; plan and diff validators passed. This prose-only coordination behavior made 0 unified cases newly applicable, environment-skipped, deferred, or failed.",
+          "recorded_at": "2026-08-14T13:36:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T13:33:05+00:00",
+      "completed_at": "2026-08-14T13:36:14+00:00"
     }
   },
   "verified_references": {

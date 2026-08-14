@@ -28,6 +28,7 @@ local PROPERTIES = {
   TOKEN_RESOURCE = true,
 }
 local CALLBACK_TIMEOUT_SECONDS = 60
+local CALLBACK_INTERVAL_SECONDS = 0.1
 local CLIENT_STATES = setmetatable({}, { __mode = "k" })
 local CONNECTION_STATES = setmetatable({}, { __mode = "k" })
 
@@ -348,11 +349,15 @@ local function response_valid(response)
     and payload.subtype == bson.BINARY_SUBTYPE.GENERIC
 end
 
-local function client_state(credentials)
+local function client_state(credentials, runtime)
   local state = CLIENT_STATES[credentials]
 
   if state == nil then
-    state = { access_token = nil }
+    state = {
+      access_token = nil,
+      callback_lock = runtime.lock:new(),
+      last_callback_time = nil,
+    }
     CLIENT_STATES[credentials] = state
   end
 
@@ -393,6 +398,73 @@ local function fetch_token(callback, runtime, credentials, options, state)
 
   state.access_token = token
   return token
+end
+
+local function wait_for_callback_slot(runtime, options, state)
+  if state.last_callback_time == nil then
+    return true
+  end
+
+  local elapsed = runtime.clock:now() - state.last_callback_time
+  local wait_time = CALLBACK_INTERVAL_SECONDS - elapsed
+
+  if wait_time <= 0 then
+    return true
+  end
+
+  if options.deadline ~= nil then
+    wait_time = math.min(
+      wait_time,
+      runtime_contract.remaining(runtime, options.deadline)
+    )
+  end
+
+  local waited, err = runtime.clock:sleep(wait_time, options.cancellation)
+
+  if not waited then
+    return nil, err
+  end
+
+  return runtime_contract.check(
+    runtime,
+    options.deadline,
+    options.cancellation
+  )
+end
+
+local function coordinated_token(callback, runtime, credentials, options, state)
+  local acquired, err = state.callback_lock:acquire(
+    options.deadline,
+    options.cancellation
+  )
+
+  if not acquired then
+    return nil, auth_error("MONGODB-OIDC machine callback wait failed", err)
+  end
+
+  local outcome = table.pack(pcall(function()
+    if state.access_token ~= nil then
+      return state.access_token
+    end
+
+    local waited
+    waited, err = wait_for_callback_slot(runtime, options, state)
+
+    if not waited then
+      return nil, auth_error("MONGODB-OIDC machine callback wait failed", err)
+    end
+
+    state.last_callback_time = runtime.clock:now()
+    return fetch_token(callback, runtime, credentials, options, state)
+  end))
+
+  state.callback_lock:release()
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  return table.unpack(outcome, 2, outcome.n)
 end
 
 local function authenticate_token(commands, credentials, options, token)
@@ -460,7 +532,7 @@ function M.authenticate(commands, runtime, credentials, options)
     return nil, err
   end
 
-  local state = client_state(credentials)
+  local state = client_state(credentials, runtime)
   local token = state.access_token
 
   if token ~= nil then
@@ -481,7 +553,13 @@ function M.authenticate(commands, runtime, credentials, options)
   token = state.access_token
 
   if token == nil then
-    token, err = fetch_token(callback, runtime, credentials, options, state)
+    token, err = coordinated_token(
+      callback,
+      runtime,
+      credentials,
+      options,
+      state
+    )
 
     if not token then
       return nil, err
