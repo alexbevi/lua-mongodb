@@ -889,14 +889,17 @@ function M.authenticate(commands, runtime, credentials, options)
 
     if token ~= nil then
       local authenticated
-      authenticated, err = authenticate_token(
+      local authentication_failure
+      authenticated, err, authentication_failure = authenticate_token(
         commands,
         credentials,
         options,
         token
       )
 
-      return authenticated, err
+      if authenticated or not authentication_failure then
+        return authenticated, err
+      end
     end
 
     if state.refresh_token ~= nil and state.idp_info ~= nil then
@@ -915,14 +918,19 @@ function M.authenticate(commands, runtime, credentials, options)
       end
 
       local authenticated
-      authenticated, err = authenticate_token(
+      local authentication_failure
+      authenticated, err, authentication_failure = authenticate_token(
         commands,
         credentials,
         options,
         token
       )
 
-      return authenticated, err
+      if authenticated or not authentication_failure then
+        return authenticated, err
+      end
+
+      state.refresh_token = nil
     end
 
     return authenticate_human(

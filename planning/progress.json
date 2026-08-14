@@ -3081,6 +3081,28 @@
       "notes": [],
       "started_at": "2026-08-14T14:15:00+00:00",
       "completed_at": "2026-08-14T14:19:14+00:00"
+    },
+    "AUTH-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_recovery_spec.lua'",
+          "exit_code": 2,
+          "summary": "A cached human access token rejected with error 18 was invalidated but returned immediately instead of restarting through the cached refresh-token tier (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T14:24:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_recovery_spec.lua spec/unit/auth_oidc_human_refresh_spec.lua spec/unit/auth_oidc_human_access_cache_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua spec/unit/auth_oidc_human_recovery_spec.lua spec/unit/auth_oidc_human_refresh_spec.lua spec/integration/auth_oidc_spec.lua'",
+          "exit_code": 0,
+          "summary": "All 12 focused human OIDC unit cases, all 3 directly coupled OIDC integration cases, and touched-file lint passed with zero warnings or errors.",
+          "recorded_at": "2026-08-14T14:27:53+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T14:23:00+00:00",
+      "completed_at": "2026-08-14T14:27:54+00:00"
     }
   },
   "verified_references": {
