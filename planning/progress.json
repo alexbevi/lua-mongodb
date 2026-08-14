@@ -2927,6 +2927,28 @@
       "notes": [],
       "started_at": "2026-08-14T12:43:11+00:00",
       "completed_at": "2026-08-14T12:52:49+00:00"
+    },
+    "AUTH-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_machine_spec.lua'",
+          "exit_code": 2,
+          "summary": "MONGODB-OIDC dispatch fell through to SCRAM instead of invoking the configured machine callback",
+          "recorded_at": "2026-08-14T13:04:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_machine_spec.lua spec/unit/auth_oidc_config_spec.lua spec/unit/config_credentials_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_UNIFIED='auth/tests/unified/mongodb-oidc-no-retry.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<7 touched Lua files>'; update_capabilities, ledger, README compatibility, release scope, release checklist, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "25 focused unit tests, 1 real TCP integration test, and the 2 newly applicable pinned OIDC read/write cases passed; 69 directly coupled Python artifact contracts and touched-file lint across 7 Lua files passed; unified capability, conformance ledger, generated README compatibility, release scope, release checklist, plan, and diff validators passed. The remaining 4 fixture cases stay explicitly deferred to AUTH-017 and AUTH-018.",
+          "recorded_at": "2026-08-14T13:18:46+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T13:00:59+00:00",
+      "completed_at": "2026-08-14T13:18:47+00:00"
     }
   },
   "verified_references": {

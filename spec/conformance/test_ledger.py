@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1857,
+      "deferred_unsupported": 1855,
       "excluded_scope": 2,
-      "passed": 3665,
+      "passed": 3667,
     }, generated["summary"]["statuses"])
 
     superseded_aws = [

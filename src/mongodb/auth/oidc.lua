@@ -1,4 +1,6 @@
+local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local runtime_contract = require("mongodb.runtime")
 
 local M = {}
 
@@ -25,6 +27,7 @@ local PROPERTIES = {
   OIDC_HUMAN_CALLBACK = true,
   TOKEN_RESOURCE = true,
 }
+local CALLBACK_TIMEOUT_SECONDS = 60
 
 local function config_error(option, message)
   return nil, errors.new({
@@ -34,11 +37,30 @@ local function config_error(option, message)
   })
 end
 
-local function immutable_value()
-  error("authentication credentials are immutable", 2)
+local function auth_error(message, original)
+  local options = {
+    category = errors.CATEGORY.AUTHENTICATION,
+    message = message,
+  }
+
+  if errors.is(original) then
+    options.code = original.code
+    options.code_name = original.code_name
+    options.labels = {}
+    options.retryable = original.retryable
+      or errors.is(original, errors.CATEGORY.NETWORK)
+    options.server = original.server
+    options.timeout = original.timeout
+
+    for index, label in ipairs(original.labels) do
+      options.labels[index] = label
+    end
+  end
+
+  return errors.new(options)
 end
 
-local function immutable(values)
+local function immutable(values, message)
   local proxy = {}
 
   setmetatable(proxy, {
@@ -47,7 +69,9 @@ local function immutable(values)
       return #values
     end,
     __metatable = "mongodb.auth.oidc",
-    __newindex = immutable_value,
+    __newindex = function()
+      error(message or "authentication credentials are immutable", 2)
+    end,
     __pairs = function()
       return next, values, nil
     end,
@@ -199,6 +223,182 @@ function M.configure(username, properties)
   end
 
   return immutable(normalized)
+end
+
+local function validate_auth_inputs(commands, runtime, credentials, options)
+  if type(commands) ~= "table" or type(commands.command) ~= "function" then
+    error("MONGODB-OIDC authentication requires a command executor", 3)
+  end
+
+  runtime_contract.validate(runtime)
+
+  if type(credentials) ~= "table"
+      or credentials.mechanism ~= "MONGODB-OIDC"
+      or credentials.source ~= "$external"
+  then
+    error("MONGODB-OIDC credentials must select MONGODB-OIDC on $external", 3)
+  end
+
+  if type(credentials.mechanism_properties) ~= "table" then
+    error("MONGODB-OIDC credentials require mechanism properties", 3)
+  end
+
+  if type(options) ~= "table" then
+    error("MONGODB-OIDC options must be a table", 3)
+  end
+
+  local callback = credentials.mechanism_properties.OIDC_CALLBACK
+
+  if type(callback) ~= "function" then
+    return nil, auth_error("MONGODB-OIDC machine callback is not configured")
+  end
+
+  return callback
+end
+
+local function callback_context(runtime, credentials, options)
+  local now = runtime.clock:now()
+
+  if type(now) ~= "number" or now ~= now or now < 0 or now == math.huge then
+    error("runtime monotonic clock must return a finite non-negative number", 3)
+  end
+
+  local deadline = now + CALLBACK_TIMEOUT_SECONDS
+
+  if options.deadline ~= nil then
+    local remaining = runtime_contract.remaining(runtime, options.deadline)
+    deadline = now + math.min(remaining, CALLBACK_TIMEOUT_SECONDS)
+  end
+
+  local valid, err = runtime_contract.check(
+    runtime,
+    deadline,
+    options.cancellation
+  )
+
+  if not valid then
+    return nil, auth_error("MONGODB-OIDC machine callback cannot start", err)
+  end
+
+  return immutable({
+    cancellation = options.cancellation,
+    deadline = deadline,
+    timeout_seconds = deadline - now,
+    username = credentials.username or "",
+    version = 1,
+  }, "OIDC callback contexts are immutable")
+end
+
+local function callback_result(callback, context, runtime, options)
+  local called = table.pack(pcall(callback, context))
+
+  if not called[1] then
+    return nil, auth_error("MONGODB-OIDC machine callback failed")
+  end
+
+  local result = called[2]
+
+  if type(result) ~= "table"
+      or type(result.access_token) ~= "string"
+      or result.access_token == ""
+  then
+    return nil, auth_error("MONGODB-OIDC machine callback returned an invalid result")
+  end
+
+  local expires_in_seconds = result.expires_in_seconds
+
+  if expires_in_seconds ~= nil
+      and (type(expires_in_seconds) ~= "number"
+        or expires_in_seconds ~= expires_in_seconds
+        or expires_in_seconds < 0
+        or expires_in_seconds == math.huge)
+  then
+    return nil, auth_error("MONGODB-OIDC machine callback returned an invalid result")
+  end
+
+  local valid, err = runtime_contract.check(
+    runtime,
+    context.deadline,
+    options.cancellation
+  )
+
+  if not valid then
+    return nil, auth_error("MONGODB-OIDC machine callback exceeded its deadline", err)
+  end
+
+  return result
+end
+
+local function response_valid(response)
+  if not bson.is_document(response) or response:get("done") ~= true then
+    return false
+  end
+
+  local conversation_id = response:get("conversationId")
+
+  if bson.is_exact(conversation_id) then
+    conversation_id = conversation_id:to_number()
+  end
+
+  local payload = response:get("payload")
+  return math.type(conversation_id) == "integer"
+    and bson.is_binary(payload)
+    and payload.subtype == bson.BINARY_SUBTYPE.GENERIC
+end
+
+function M.authenticate(commands, runtime, credentials, options)
+  options = options or {}
+  local callback, err = validate_auth_inputs(
+    commands,
+    runtime,
+    credentials,
+    options
+  )
+
+  if not callback then
+    return nil, err
+  end
+
+  local context
+  context, err = callback_context(runtime, credentials, options)
+
+  if not context then
+    return nil, err
+  end
+
+  local result
+  result, err = callback_result(callback, context, runtime, options)
+
+  if not result then
+    return nil, err
+  end
+
+  local payload
+  payload, err = bson.encode(bson.document({ { "jwt", result.access_token } }))
+
+  if not payload then
+    return nil, auth_error("MONGODB-OIDC client payload encoding failed", err)
+  end
+
+  local response
+  response, err = commands:command("$external", bson.document({
+    { "saslStart", 1 },
+    { "mechanism", "MONGODB-OIDC" },
+    { "payload", bson.binary(payload) },
+  }), {
+    cancellation = options.cancellation,
+    deadline = options.deadline,
+  })
+
+  if not response then
+    return nil, auth_error("MONGODB-OIDC saslStart failed", err)
+  end
+
+  if not response_valid(response) then
+    return nil, auth_error("MONGODB-OIDC server returned an invalid SASL response")
+  end
+
+  return true
 end
 
 return M

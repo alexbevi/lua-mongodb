@@ -175,11 +175,11 @@ TEST_OVERRIDES[
 TEST_OVERRIDES.update({
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": (
     "AUTH-011",
-    OWNER_REASONS["AUTH-011"],
+    None,
   ),
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]": (
     "AUTH-011",
-    OWNER_REASONS["AUTH-011"],
+    None,
   ),
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[3]": (
     "AUTH-018",

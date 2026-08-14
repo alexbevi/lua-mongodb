@@ -12,6 +12,12 @@ local socket = require("socket")
 local unified_driver = require("mongodb.unified.driver")
 
 local INSERT_ONE_ID = "crud/tests/unified/insertOne.json::test[1]"
+local OIDC_READ_ID = "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]"
+local OIDC_WRITE_ID = "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]"
+local OIDC_IDS = {
+  [OIDC_READ_ID] = true,
+  [OIDC_WRITE_ID] = true,
+}
 
 local function equal(expected, actual, message)
   assert(expected == actual, message or string.format(
@@ -33,6 +39,20 @@ local function receive_frame(peer)
   local header = assert(peer:receive(4))
   local size = string.unpack("<i4", header)
 
+  return assert(op_msg.decode(header .. assert(peer:receive(size - 4)), {
+    direction = "request",
+  }))
+end
+
+local function receive_frame_or_closed(peer)
+  local header, err = peer:receive(4)
+
+  if header == nil and err == "closed" then
+    return nil
+  end
+
+  assert(header, err)
+  local size = string.unpack("<i4", header)
   return assert(op_msg.decode(header .. assert(peer:receive(size - 4)), {
     direction = "request",
   }))
@@ -127,6 +147,67 @@ local function serve_connection(peer, store)
   end
 
   peer:close()
+end
+
+local function serve_oidc_connection(peer, store)
+  peer = copas.wrap(peer)
+  local handshake = assert(receive_frame_or_closed(peer))
+
+  equal("ismaster", command_name(handshake))
+  send_response(peer, handshake, bson.document({
+    { "ok", 1 },
+    { "helloOk", true },
+    { "isWritablePrimary", true },
+    { "maxBsonObjectSize", 16777216 },
+    { "maxMessageSizeBytes", 48000000 },
+    { "maxWriteBatchSize", 100000 },
+    { "maxWireVersion", 25 },
+  }))
+
+  while true do
+    local request = receive_frame_or_closed(peer)
+
+    if request == nil then
+      return
+    end
+
+    local name = command_name(request)
+
+    if name == "saslStart" then
+      equal("MONGODB-OIDC", request.body:get("mechanism"))
+      local payload = assert(bson.decode(request.body:get("payload").data))
+
+      equal("loopback-oidc-token", payload:get("jwt"))
+      send_response(peer, request, bson.document({
+        { "conversationId", 1 },
+        { "payload", bson.binary("") },
+        { "done", true },
+        { "ok", 1 },
+      }))
+    elseif name == "drop" then
+      store.documents = {}
+      send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
+    elseif name == "create" then
+      send_response(peer, request, bson.document({ { "ok", 1 } }))
+    elseif name == "find" then
+      send_response(peer, request, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "test.collName" },
+          { "firstBatch", bson.array(store.documents) },
+        }) },
+      }))
+    elseif name == "insert" then
+      for _, document in request_documents(request):iter() do
+        store.documents[#store.documents + 1] = document
+      end
+
+      send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
+    else
+      error("unsupported OIDC loopback command: " .. tostring(name), 0)
+    end
+  end
 end
 
 local function selected_test(tests, wanted_index, run_skipped)
@@ -309,6 +390,76 @@ local function run_loopback(selection)
   }
 end
 
+local function run_oidc_loopback(selections)
+  local fixture = selections[1].fixture
+  local document = load_json(
+    ROOT .. "/planning/specifications/source/" .. fixture
+  )
+  local server = assert(socket.bind("127.0.0.1", 0))
+  local _, port = assert(server:getsockname())
+  local store = { documents = {} }
+  local server_error
+  local outcome
+
+  port = assert(math.tointeger(port))
+  copas.addserver(server, function(peer)
+    local ok, err = pcall(serve_oidc_connection, peer, store)
+
+    if not ok then
+      server_error = err
+      pcall(peer.close, peer)
+    end
+  end)
+
+  copas.loop(function()
+    outcome = table.pack(pcall(function()
+      local lifecycle = assert(unified_driver.new({
+        environment = {
+          auth = true,
+          auth_mechanism = "MONGODB-OIDC",
+          server_version = "8.2.0",
+          topology = "single",
+        },
+        oidc_callback = function()
+          return { access_token = "loopback-oidc-token" }
+        end,
+        runtime = runtime_module.copas(),
+        uri = "mongodb://127.0.0.1:" .. port,
+      }))
+      local report = assert(lifecycle:run_file(
+        selected_document(document, selections),
+        fixture
+      ))
+
+      if report.summary.failed > 0 then
+        error(report_error(report.tests[1].error), 0)
+      end
+
+      equal(#selections, report.summary.executed)
+      equal(#selections, report.summary.passed)
+      equal(0, report.summary.failed)
+      assert(lifecycle:close())
+    end))
+    copas.removeserver(server)
+  end)
+
+  if server_error then
+    error(server_error, 0)
+  end
+
+  if not outcome[1] then
+    error(outcome[2], 0)
+  end
+
+  local results = {}
+
+  for index, selection in ipairs(selections) do
+    results[index] = { id = selection.identity, status = "passed" }
+  end
+
+  return results
+end
+
 local function run_live(selections, topology)
   local replica_set = topology == "replicaset"
   local uri = os.getenv(replica_set
@@ -457,6 +608,14 @@ local function run(identities)
   end
 
   if environment == "deterministic-loopback" then
+    if OIDC_IDS[selections[1].identity] then
+      for _, selection in ipairs(selections) do
+        assert(OIDC_IDS[selection.identity], "mixed OIDC loopback selection")
+      end
+
+      return run_oidc_loopback(selections)
+    end
+
     equal(1, #selections, "loopback executor only supports its exact test")
     return run_loopback(selections[1])
   elseif environment == "live-standalone" then

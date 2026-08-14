@@ -1,6 +1,14 @@
 {
   "schema_version": 1,
   "tests": {
+    "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": {
+      "activity": "AUTH-011",
+      "environment": "deterministic-loopback"
+    },
+    "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]": {
+      "activity": "AUTH-011",
+      "environment": "deterministic-loopback"
+    },
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
       "activity": "REL-025",
       "environment": "isolated-replicaset",

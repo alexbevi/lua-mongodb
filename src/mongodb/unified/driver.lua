@@ -88,6 +88,8 @@ local function client_factory(state)
     if uri_options then
       local options_valid
       options_valid, err = validate_fields(uri_options, {
+        authMechanism = true,
+        authMechanismProperties = true,
         readConcernLevel = true,
         readPreference = true,
         appName = true,
@@ -172,6 +174,38 @@ local function client_factory(state)
       end
 
       options.app_name = uri_options:get("appName") or uri_options:get("appname")
+
+      local auth_mechanism = uri_options:get("authMechanism")
+      local auth_properties = uri_options:get("authMechanismProperties")
+
+      if auth_mechanism ~= nil then
+        options.auth_mechanism = auth_mechanism
+      end
+
+      if auth_properties ~= nil then
+        local properties_valid
+        properties_valid, err = validate_fields(auth_properties, {
+          ["$$placeholder"] = true,
+        }, "$.client.uriOptions.authMechanismProperties")
+
+        if not properties_valid then
+          return nil, err
+        end
+
+        if auth_mechanism ~= "MONGODB-OIDC"
+            or auth_properties:get("$$placeholder") == nil
+            or type(state.oidc_callback) ~= "function"
+        then
+          return configuration_error(
+            "unsupported unified authentication mechanism properties",
+            "$.client.uriOptions.authMechanismProperties"
+          )
+        end
+
+        options.auth_mechanism_properties = {
+          OIDC_CALLBACK = state.oidc_callback,
+        }
+      end
 
       if bson.is_exact(w) then
         w = w:to_number()
@@ -1891,6 +1925,10 @@ function M.new(options)
     error("unified driver requires a URI", 2)
   end
 
+  if options.oidc_callback ~= nil and type(options.oidc_callback) ~= "function" then
+    error("unified driver OIDC callback must be a function", 2)
+  end
+
   local internal_client, err = client_module.connect(options.uri, {
     runtime = options.runtime,
   })
@@ -1903,6 +1941,7 @@ function M.new(options)
     collectors = setmetatable({}, { __mode = "k" }),
     environment_topology = options.environment and options.environment.topology,
     internal_client = internal_client,
+    oidc_callback = options.oidc_callback,
     runtime = options.runtime,
     uri = options.uri,
   }
