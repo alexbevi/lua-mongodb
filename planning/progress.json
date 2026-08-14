@@ -3171,6 +3171,28 @@
       "notes": [],
       "started_at": "2026-08-14T14:47:25+00:00",
       "completed_at": "2026-08-14T14:49:14+00:00"
+    },
+    "AUTH-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_azure_spec.lua'",
+          "exit_code": 2,
+          "summary": "ENVIRONMENT:azure was rejected by the built-in provider registry before issuing the encoded IMDS request or starting one-step SASL (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T14:53:49+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_azure_spec.lua spec/unit/auth_oidc_kubernetes_spec.lua spec/unit/auth_oidc_providers_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc_providers.lua spec/unit/auth_oidc_azure_spec.lua'",
+          "exit_code": 0,
+          "summary": "All 4 Azure cases and all 6 directly coupled Kubernetes/test provider cases passed; touched-file lint reported zero warnings or errors.",
+          "recorded_at": "2026-08-14T14:55:49+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T14:53:13+00:00",
+      "completed_at": "2026-08-14T14:55:50+00:00"
     }
   },
   "verified_references": {

@@ -1,3 +1,5 @@
+local bson = require("mongodb.bson")
+local json = require("mongodb.bson.json")
 local errors = require("mongodb.error")
 
 local M = {}
@@ -7,17 +9,23 @@ local DEFAULT_KUBERNETES_TOKEN_FILE =
 local MAX_TOKEN_BYTES = 1024 * 1024
 local TEST_TOKEN_FILE = "OIDC_TOKEN_FILE"
 
-local function provider_error(environment, original)
+local function provider_error(environment, original, details)
+  local provider_details = { provider = environment }
+
+  for name, value in pairs(details or {}) do
+    provider_details[name] = value
+  end
+
   local options = {
     category = errors.CATEGORY.AUTHENTICATION,
-    details = { provider = environment },
+    details = provider_details,
     message = "MONGODB-OIDC built-in provider token resolution failed",
   }
 
   if errors.is(original) then
     options.code = original.code
     options.code_name = original.code_name
-    options.details.source_category = original.category
+    provider_details.source_category = original.category
     options.labels = {}
     options.retryable = original.retryable
     options.server = original.server
@@ -29,6 +37,12 @@ local function provider_error(environment, original)
   end
 
   return errors.new(options)
+end
+
+local function percent_encode(value)
+  return (value:gsub("([^A-Za-z0-9_.~-])", function(character)
+    return string.format("%%%02X", character:byte())
+  end))
 end
 
 local function environment_value(runtime, name)
@@ -86,7 +100,80 @@ local function kubernetes_provider(runtime, context)
   return file_token(runtime, context, "k8s", path, false)
 end
 
+local function azure_provider(runtime, context, credentials)
+  local properties = credentials.mechanism_properties
+  local url = "http://169.254.169.254/metadata/identity/oauth2/token"
+    .. "?api-version=2018-02-01"
+    .. "&resource=" .. percent_encode(properties.TOKEN_RESOURCE)
+
+  if context.username ~= "" then
+    url = url .. "&client_id=" .. percent_encode(context.username)
+  end
+
+  local response, err = runtime.http:request({
+    headers = {
+      accept = "application/json",
+      metadata = "true",
+    },
+    max_response_bytes = MAX_TOKEN_BYTES,
+    method = "GET",
+    url = url,
+  }, context.deadline, context.cancellation)
+
+  if response == nil then
+    return nil, provider_error("azure", err)
+  end
+
+  if type(response) ~= "table"
+      or math.type(response.status) ~= "integer"
+      or type(response.body) ~= "string"
+  then
+    return nil, provider_error("azure")
+  end
+
+  if response.status ~= 200 then
+    return nil, provider_error("azure", nil, {
+      response_body = response.body,
+    })
+  end
+
+  local document
+
+  document, err = json.decode(response.body, {
+    max_depth = 8,
+    max_input_size = MAX_TOKEN_BYTES,
+    max_string_size = MAX_TOKEN_BYTES,
+  })
+
+  if not document or not bson.is_document(document) then
+    return nil, provider_error("azure", err)
+  end
+
+  local access_token = document:get("access_token")
+  local expires_in = document:get("expires_in")
+
+  if type(access_token) ~= "string"
+      or access_token == ""
+      or type(expires_in) ~= "string"
+      or not expires_in:match("^%d+$")
+  then
+    return nil, provider_error("azure")
+  end
+
+  expires_in = tonumber(expires_in)
+
+  if expires_in == nil or expires_in <= 0 then
+    return nil, provider_error("azure")
+  end
+
+  return {
+    access_token = access_token,
+    expires_in_seconds = expires_in,
+  }
+end
+
 local PROVIDERS = {
+  azure = azure_provider,
   k8s = kubernetes_provider,
   test = test_provider,
 }
@@ -115,7 +202,7 @@ function M.callback(runtime, credentials)
   end
 
   return function(context)
-    local result, err = provider(runtime, context)
+    local result, err = provider(runtime, context, credentials)
 
     if not result then
       error(err, 0)
