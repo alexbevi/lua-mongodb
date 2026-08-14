@@ -3543,6 +3543,21 @@
       "notes": [],
       "started_at": "2026-08-14T20:03:31+00:00",
       "completed_at": "2026-08-14T20:07:17+00:00"
+    },
+    "BSON-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_spec.lua spec/unit/bson_hardening_spec.lua spec/unit/bson_exact_spec.lua' FOCUS_LINT='src/mongodb/bson/codec.lua spec/unit/bson_spec.lua spec/unit/bson_hardening_spec.lua spec/unit/bson_exact_spec.lua'; make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua' FOCUS_LINT='spec/unit/bson_tagged_spec.lua'; python3 spec/corpus/run_bson_corpus.py --lua lua; make test-complexity",
+          "exit_code": 0,
+          "summary": "Twenty focused primitive, tagged, exact-numeric, limit, and encoder-error cases passed; all 728 canonical BSON vectors remained byte-identical and the complete corpus passed; lint passed; encode_element complexity fell from 54 to 4.",
+          "recorded_at": "2026-08-14T20:14:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T20:11:19+00:00",
+      "completed_at": "2026-08-14T20:14:41+00:00"
     }
   },
   "verified_references": {

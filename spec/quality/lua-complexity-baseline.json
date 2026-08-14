@@ -8,11 +8,6 @@
       "complexity": 67
     },
     {
-      "path": "src/mongodb/bson/codec.lua",
-      "function": "encode_element",
-      "complexity": 54
-    },
-    {
       "path": "src/mongodb/bson/json.lua",
       "function": "encode_extended",
       "complexity": 47

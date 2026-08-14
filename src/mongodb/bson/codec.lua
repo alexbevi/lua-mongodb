@@ -169,13 +169,274 @@ local function encode_container(container, array, context, depth)
   return string.pack("<i4", length) .. body
 end
 
-encode_element = function(key, item, context, depth)
-  local element_type
-  local payload
-  local item_type = type(item)
-  local exact_kind = exact.kind(item)
-  local tagged_kind = tagged.kind(item)
+local function validate_sized_text(
+  text,
+  description,
+  size_error,
+  key,
+  context,
+  signed_length
+)
+  if #text > context.max_string_size
+      or signed_length and #text >= MAX_BSON_SIZE then
+    return encode_error(size_error, {
+      key = key,
+      length = #text,
+      max_string_size = context.max_string_size,
+    })
+  end
 
+  return validate_encode_utf8(text, description, key, context)
+end
+
+local function encode_null_value()
+  return TYPE_NULL, ""
+end
+
+local function encode_document_value(item, _, context, depth)
+  local payload, err = encode_container(item, false, context, depth + 1)
+
+  if not payload then
+    return nil, err
+  end
+
+  return TYPE_DOCUMENT, payload
+end
+
+local function encode_array_value(item, _, context, depth)
+  local payload, err = encode_container(item, true, context, depth + 1)
+
+  if not payload then
+    return nil, err
+  end
+
+  return TYPE_ARRAY, payload
+end
+
+local function encode_binary_value(item, key, context)
+  local length_overhead = item.subtype == 2 and 4 or 0
+
+  if #item.data > context.max_binary_size
+      or #item.data > MAX_BSON_SIZE - length_overhead then
+    return encode_error("BSON binary value exceeds the configured size limit", {
+      key = key,
+      length = #item.data,
+      max_binary_size = context.max_binary_size,
+    })
+  end
+
+  if item.subtype == 2 then
+    return TYPE_BINARY,
+      string.pack("<i4Bi4", #item.data + 4, item.subtype, #item.data) .. item.data
+  end
+
+  return TYPE_BINARY,
+    string.pack("<i4B", #item.data, item.subtype) .. item.data
+end
+
+local function encode_object_id_value(item)
+  return TYPE_OBJECT_ID, item.binary
+end
+
+local function encode_datetime_value(item)
+  return TYPE_DATETIME, string.pack("<i8", item.milliseconds)
+end
+
+local function encode_regex_value(item, key, context)
+  local valid, err = validate_sized_text(
+    item.pattern,
+    "BSON regex pattern",
+    "BSON regex pattern exceeds the configured string size limit",
+    key,
+    context,
+    false
+  )
+
+  if not valid then
+    return nil, err
+  end
+
+  return TYPE_REGEX, item.pattern .. "\0" .. item.options .. "\0"
+end
+
+local function encode_timestamp_value(item)
+  return TYPE_TIMESTAMP, string.pack("<I4I4", item.increment, item.time)
+end
+
+local function encode_code_value(item, key, context, depth)
+  local valid, err = validate_sized_text(
+    item.source,
+    "BSON code",
+    "BSON code exceeds the configured string size limit",
+    key,
+    context,
+    true
+  )
+
+  if not valid then
+    return nil, err
+  elseif item.scope == nil then
+    return TYPE_CODE, encode_string_payload(item.source)
+  end
+
+  local scope
+
+  scope, err = encode_container(item.scope, false, context, depth + 1)
+
+  if not scope then
+    return nil, err
+  end
+
+  local source = encode_string_payload(item.source)
+  local total_length = 4 + #source + #scope
+
+  if total_length > MAX_BSON_SIZE then
+    return encode_error("BSON code-with-scope exceeds the signed 32-bit length limit", {
+      key = key,
+      length = total_length,
+    })
+  end
+
+  return TYPE_CODE_SCOPE, string.pack("<i4", total_length) .. source .. scope
+end
+
+local function encode_min_key_value()
+  return TYPE_MIN_KEY, ""
+end
+
+local function encode_max_key_value()
+  return TYPE_MAX_KEY, ""
+end
+
+local function encode_undefined_value()
+  return TYPE_UNDEFINED, ""
+end
+
+local function encode_symbol_value(item, key, context)
+  local valid, err = validate_sized_text(
+    item.value,
+    "BSON symbol",
+    "BSON symbol exceeds the configured string size limit",
+    key,
+    context,
+    true
+  )
+
+  if not valid then
+    return nil, err
+  end
+
+  return TYPE_SYMBOL, encode_string_payload(item.value)
+end
+
+local function encode_db_pointer_value(item, key, context)
+  local valid, err = validate_sized_text(
+    item.namespace,
+    "BSON DBPointer namespace",
+    "BSON DBPointer namespace exceeds the configured string size limit",
+    key,
+    context,
+    true
+  )
+
+  if not valid then
+    return nil, err
+  end
+
+  return TYPE_DB_POINTER,
+    encode_string_payload(item.namespace) .. item.object_id.binary
+end
+
+local function encode_int32_value(item)
+  return TYPE_INT32, item.bytes
+end
+
+local function encode_int64_value(item)
+  return TYPE_INT64, item.bytes
+end
+
+local function encode_double_value(item)
+  return TYPE_DOUBLE, item.bytes
+end
+
+local function encode_decimal128_value(item)
+  return TYPE_DECIMAL128, item.bid
+end
+
+local function encode_boolean_value(item)
+  return TYPE_BOOLEAN, item and "\1" or "\0"
+end
+
+local function encode_string_value(item, key, context)
+  local valid, err = validate_sized_text(
+    item,
+    "BSON string",
+    "BSON string exceeds the configured size limit",
+    key,
+    context,
+    true
+  )
+
+  if not valid then
+    return nil, err
+  end
+
+  return TYPE_STRING, encode_string_payload(item)
+end
+
+local function encode_number_value(item)
+  if math.type(item) ~= "integer" then
+    return TYPE_DOUBLE, string.pack("<d", item)
+  elseif item >= INT32_MIN and item <= INT32_MAX then
+    return TYPE_INT32, string.pack("<i4", item)
+  end
+
+  return TYPE_INT64, string.pack("<i8", item)
+end
+
+local TAGGED_ENCODERS = {
+  code = encode_code_value,
+  datetime = encode_datetime_value,
+  db_pointer = encode_db_pointer_value,
+  max_key = encode_max_key_value,
+  min_key = encode_min_key_value,
+  object_id = encode_object_id_value,
+  regex = encode_regex_value,
+  symbol = encode_symbol_value,
+  timestamp = encode_timestamp_value,
+  undefined = encode_undefined_value,
+}
+
+local EXACT_ENCODERS = {
+  decimal128 = encode_decimal128_value,
+  double = encode_double_value,
+  int32 = encode_int32_value,
+  int64 = encode_int64_value,
+}
+
+local LUA_ENCODERS = {
+  boolean = encode_boolean_value,
+  number = encode_number_value,
+  string = encode_string_value,
+}
+
+local function encoder_for(item)
+  if value.is_null(item) then
+    return encode_null_value
+  elseif value.is_document(item) then
+    return encode_document_value
+  elseif value.is_array(item) then
+    return encode_array_value
+  elseif value.is_binary(item) then
+    return encode_binary_value
+  end
+
+  return TAGGED_ENCODERS[tagged.kind(item)]
+    or EXACT_ENCODERS[exact.kind(item)]
+    or LUA_ENCODERS[type(item)]
+end
+
+encode_element = function(key, item, context, depth)
   local valid, validation_error = validate_encode_utf8(
     key,
     "BSON document key",
@@ -187,213 +448,19 @@ encode_element = function(key, item, context, depth)
     return nil, validation_error
   end
 
-  if value.is_null(item) then
-    element_type = TYPE_NULL
-    payload = ""
-  elseif value.is_document(item) then
-    element_type = TYPE_DOCUMENT
-    local err
-    payload, err = encode_container(item, false, context, depth + 1)
+  local encoder = encoder_for(item)
 
-    if not payload then
-      return nil, err
-    end
-  elseif value.is_array(item) then
-    element_type = TYPE_ARRAY
-    local err
-    payload, err = encode_container(item, true, context, depth + 1)
-
-    if not payload then
-      return nil, err
-    end
-  elseif value.is_binary(item) then
-    local length_overhead = item.subtype == 2 and 4 or 0
-
-    if #item.data > context.max_binary_size
-        or #item.data > MAX_BSON_SIZE - length_overhead then
-      return encode_error("BSON binary value exceeds the configured size limit", {
-        key = key,
-        length = #item.data,
-        max_binary_size = context.max_binary_size,
-      })
-    end
-
-    element_type = TYPE_BINARY
-
-    if item.subtype == 2 then
-      payload = string.pack("<i4Bi4", #item.data + 4, item.subtype, #item.data) .. item.data
-    else
-      payload = string.pack("<i4B", #item.data, item.subtype) .. item.data
-    end
-  elseif tagged_kind == "object_id" then
-    element_type = TYPE_OBJECT_ID
-    payload = item.binary
-  elseif tagged_kind == "datetime" then
-    element_type = TYPE_DATETIME
-    payload = string.pack("<i8", item.milliseconds)
-  elseif tagged_kind == "regex" then
-    if #item.pattern > context.max_string_size then
-      return encode_error("BSON regex pattern exceeds the configured string size limit", {
-        key = key,
-        length = #item.pattern,
-        max_string_size = context.max_string_size,
-      })
-    end
-
-    valid, validation_error = validate_encode_utf8(
-      item.pattern,
-      "BSON regex pattern",
-      key,
-      context
-    )
-
-    if not valid then
-      return nil, validation_error
-    end
-
-    element_type = TYPE_REGEX
-    payload = item.pattern .. "\0" .. item.options .. "\0"
-  elseif tagged_kind == "timestamp" then
-    element_type = TYPE_TIMESTAMP
-    payload = string.pack("<I4I4", item.increment, item.time)
-  elseif tagged_kind == "code" then
-    if #item.source > context.max_string_size or #item.source >= MAX_BSON_SIZE then
-      return encode_error("BSON code exceeds the configured string size limit", {
-        key = key,
-        length = #item.source,
-        max_string_size = context.max_string_size,
-      })
-    end
-
-    valid, validation_error = validate_encode_utf8(item.source, "BSON code", key, context)
-
-    if not valid then
-      return nil, validation_error
-    end
-
-    if item.scope == nil then
-      element_type = TYPE_CODE
-      payload = encode_string_payload(item.source)
-    else
-      local scope, err = encode_container(item.scope, false, context, depth + 1)
-
-      if not scope then
-        return nil, err
-      end
-
-      local source = encode_string_payload(item.source)
-      local total_length = 4 + #source + #scope
-
-      if total_length > MAX_BSON_SIZE then
-        return encode_error("BSON code-with-scope exceeds the signed 32-bit length limit", {
-          key = key,
-          length = total_length,
-        })
-      end
-
-      element_type = TYPE_CODE_SCOPE
-      payload = string.pack("<i4", total_length) .. source .. scope
-    end
-  elseif tagged_kind == "min_key" then
-    element_type = TYPE_MIN_KEY
-    payload = ""
-  elseif tagged_kind == "max_key" then
-    element_type = TYPE_MAX_KEY
-    payload = ""
-  elseif tagged_kind == "undefined" then
-    element_type = TYPE_UNDEFINED
-    payload = ""
-  elseif tagged_kind == "symbol" then
-    if #item.value > context.max_string_size or #item.value >= MAX_BSON_SIZE then
-      return encode_error("BSON symbol exceeds the configured string size limit", {
-        key = key,
-        length = #item.value,
-        max_string_size = context.max_string_size,
-      })
-    end
-
-    valid, validation_error = validate_encode_utf8(item.value, "BSON symbol", key, context)
-
-    if not valid then
-      return nil, validation_error
-    end
-
-    element_type = TYPE_SYMBOL
-    payload = encode_string_payload(item.value)
-  elseif tagged_kind == "db_pointer" then
-    if #item.namespace > context.max_string_size or #item.namespace >= MAX_BSON_SIZE then
-      return encode_error("BSON DBPointer namespace exceeds the configured string size limit", {
-        key = key,
-        length = #item.namespace,
-        max_string_size = context.max_string_size,
-      })
-    end
-
-    valid, validation_error = validate_encode_utf8(
-      item.namespace,
-      "BSON DBPointer namespace",
-      key,
-      context
-    )
-
-    if not valid then
-      return nil, validation_error
-    end
-
-    element_type = TYPE_DB_POINTER
-    payload = encode_string_payload(item.namespace) .. item.object_id.binary
-  elseif exact_kind == "int32" then
-    element_type = TYPE_INT32
-    payload = item.bytes
-  elseif exact_kind == "int64" then
-    element_type = TYPE_INT64
-    payload = item.bytes
-  elseif exact_kind == "double" then
-    element_type = TYPE_DOUBLE
-    payload = item.bytes
-  elseif exact_kind == "decimal128" then
-    element_type = TYPE_DECIMAL128
-    payload = item.bid
-  elseif item_type == "boolean" then
-    element_type = TYPE_BOOLEAN
-    payload = item and "\1" or "\0"
-  elseif item_type == "string" then
-    if #item > context.max_string_size or #item >= MAX_BSON_SIZE then
-      return encode_error("BSON string exceeds the configured size limit", {
-        key = key,
-        length = #item,
-        max_string_size = context.max_string_size,
-      })
-    end
-
-    valid, validation_error = validate_encode_utf8(item, "BSON string", key, context)
-
-    if not valid then
-      return nil, validation_error
-    end
-
-    element_type = TYPE_STRING
-    payload = encode_string_payload(item)
-  elseif item_type == "number" and math.type(item) == "integer" then
-    if item >= INT32_MIN and item <= INT32_MAX then
-      element_type = TYPE_INT32
-      payload = string.pack("<i4", item)
-    else
-      element_type = TYPE_INT64
-      payload = string.pack("<i8", item)
-    end
-  elseif item_type == "number" then
-    element_type = TYPE_DOUBLE
-    payload = string.pack("<d", item)
-  else
+  if not encoder then
     return encode_error("unsupported Lua value for BSON encoding", {
       key = key,
-      lua_type = item_type,
+      lua_type = type(item),
     })
   end
 
-  if not payload then
-    return nil, element_type
+  local element_type, payload = encoder(item, key, context, depth)
+
+  if not element_type then
+    return nil, payload
   end
 
   return string.char(element_type) .. key .. "\0" .. payload
