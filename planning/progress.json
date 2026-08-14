@@ -3261,6 +3261,28 @@
       "reopened_after_commit": "041ea2f1e87f55a244c0a83f73b29b9df50fad8e",
       "started_at": "2026-08-14T15:23:35+00:00",
       "completed_at": "2026-08-14T15:24:29+00:00"
+    },
+    "AUTH-018": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_reauth_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining code-391 test failed because retry_executor had no reauthenticate hook (0 successes, 1 error), so it could neither refresh the exact connection nor retry an otherwise non-retryable operation.",
+          "recorded_at": "2026-08-14T15:31:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_reauth_spec.lua spec/unit/retry_executor_spec.lua spec/unit/auth_oidc_cache_spec.lua spec/unit/auth_oidc_speculative_spec.lua' FOCUS_UNIFIED='auth/tests/unified/mongodb-oidc-no-retry.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='<6 touched Lua files>'; python3 spec/unified/update_capabilities.py --check; python3 spec/conformance/ledger.py --check; python3 spec/release/scope.py --check; python3 planning/update_readme_compatibility.py --check; python3 spec/release/checklist.py --check; python3 -m json.tool spec/unified/executors.json; python3 -m py_compile <touched Python contracts>; git diff --check",
+          "exit_code": 0,
+          "summary": "19 defining and directly coupled OIDC/retry unit cases, all 6 pinned OIDC no-retry unified cases, and 67 Python artifact contracts passed; touched-file lint reported 0 warnings/errors across 6 Lua files. Capability, ledger, release-scope, generated README, release-checklist, executor JSON, Python compile, plan, and diff validators passed, with 3,671 conformance cases passing and no applicable release gaps.",
+          "recorded_at": "2026-08-14T15:41:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T15:28:42+00:00",
+      "completed_at": "2026-08-14T15:41:22+00:00"
     }
   },
   "verified_references": {

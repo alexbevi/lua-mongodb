@@ -512,6 +512,28 @@ local function open_executor(
       executor:close()
       return nil, err
     end
+
+    if credential.mechanism == "MONGODB-OIDC" then
+      local authenticated_executor = executor
+
+      executor = retry_executor.new(authenticated_executor, {
+        enabled = false,
+        reauthenticate = function(options)
+          assert(auth.invalidate(authenticated_executor, credential))
+          return auth.authenticate(
+            authenticated_executor,
+            runtime,
+            credential,
+            {
+              cancellation = options.cancellation,
+              deadline = options.deadline,
+              mechanism = mechanism,
+              server_host = host.host,
+            }
+          )
+        end,
+      })
+    end
   end
 
   return executor, nil, hello

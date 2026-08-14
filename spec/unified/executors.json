@@ -9,6 +9,14 @@
       "activity": "AUTH-011",
       "environment": "deterministic-loopback"
     },
+    "auth/tests/unified/mongodb-oidc-no-retry.json::test[3]": {
+      "activity": "AUTH-018",
+      "environment": "deterministic-loopback"
+    },
+    "auth/tests/unified/mongodb-oidc-no-retry.json::test[4]": {
+      "activity": "AUTH-018",
+      "environment": "deterministic-loopback"
+    },
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]": {
       "activity": "AUTH-017",
       "environment": "deterministic-loopback"

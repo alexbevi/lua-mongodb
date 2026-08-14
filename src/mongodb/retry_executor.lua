@@ -8,6 +8,7 @@ local M = {}
 local STATES = setmetatable({}, { __mode = "k" })
 local METHODS = {}
 local next_operation_id = 1
+local REAUTHENTICATION_REQUIRED_CODE = 391
 
 local RETRYABLE_CODES = {
   [6] = true,
@@ -147,6 +148,30 @@ local function notify(options, err)
   end
 end
 
+local function command_with_reauthentication(
+  state,
+  database,
+  command,
+  options
+)
+  local response, err = state.executor:command(database, command, options)
+
+  if response or not err or err.code ~= REAUTHENTICATION_REQUIRED_CODE
+      or state.reauthenticate == nil
+  then
+    return response, err
+  end
+
+  local authenticated
+  authenticated, err = state.reauthenticate(options)
+
+  if not authenticated then
+    return nil, err
+  end
+
+  return state.executor:command(database, command, options)
+end
+
 function METHODS:command(database, command, options)
   local state = STATES[self]
   local read = state.enabled_reads and options and options.retryable_read == true
@@ -155,7 +180,8 @@ function METHODS:command(database, command, options)
   local enabled = read or write
 
   if not enabled then
-    return state.executor:command(
+    return command_with_reauthentication(
+      state,
       database,
       command,
       attempt_options(options, options and options.operation_id)
@@ -177,7 +203,8 @@ function METHODS:command(database, command, options)
       deprioritized = { previous_err.server }
     end
 
-    local response, err = state.executor:command(
+    local response, err = command_with_reauthentication(
+      state,
       database,
       command,
       attempt_options(options, id, deprioritized)
@@ -271,7 +298,9 @@ function M.new(executor, options)
   end
 
   for key in pairs(options) do
-    if key ~= "enabled" and key ~= "enabled_reads" and key ~= "enabled_writes" then
+    if key ~= "enabled" and key ~= "enabled_reads" and key ~= "enabled_writes"
+        and key ~= "reauthenticate"
+    then
       error("unknown retry executor option: " .. tostring(key), 2)
     end
   end
@@ -280,6 +309,12 @@ function M.new(executor, options)
     if options[name] ~= nil and type(options[name]) ~= "boolean" then
       error("retry executor " .. name .. " option must be a boolean", 2)
     end
+  end
+
+  if options.reauthenticate ~= nil
+      and type(options.reauthenticate) ~= "function"
+  then
+    error("retry executor reauthenticate option must be a function", 2)
   end
 
   local value = {}
@@ -293,6 +328,7 @@ function M.new(executor, options)
     enabled_reads = enabled_reads,
     enabled_writes = options.enabled_writes == true,
     executor = executor,
+    reauthenticate = options.reauthenticate,
   }
   return setmetatable(value, METATABLE)
 end

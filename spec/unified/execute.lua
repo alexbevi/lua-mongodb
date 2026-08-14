@@ -15,12 +15,18 @@ local unified_driver = require("mongodb.unified.driver")
 local INSERT_ONE_ID = "crud/tests/unified/insertOne.json::test[1]"
 local OIDC_READ_ID = "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]"
 local OIDC_WRITE_ID = "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]"
+local OIDC_REAUTH_READ_ID =
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[3]"
+local OIDC_REAUTH_WRITE_ID =
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[4]"
 local OIDC_SPECULATIVE_CACHED_ID =
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]"
 local OIDC_SPECULATIVE_UNCACHED_ID =
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[6]"
 local OIDC_IDS = {
   [OIDC_READ_ID] = true,
+  [OIDC_REAUTH_READ_ID] = true,
+  [OIDC_REAUTH_WRITE_ID] = true,
   [OIDC_SPECULATIVE_CACHED_ID] = true,
   [OIDC_SPECULATIVE_UNCACHED_ID] = true,
   [OIDC_WRITE_ID] = true,
@@ -224,6 +230,7 @@ local function serve_oidc_connection(peer, store)
 
       if mode == "off" then
         store.close_insert = 0
+        store.fail_commands = {}
         store.fail_sasl_start = 0
       else
         local data = assert(request.body:get("data"))
@@ -235,6 +242,9 @@ local function serve_oidc_connection(peer, store)
           elseif command == "saslStart" then
             equal(18, data:get("errorCode"):to_number())
             store.fail_sasl_start = 1
+          elseif command == "find" or command == "insert" then
+            equal(391, data:get("errorCode"):to_number())
+            store.fail_commands[command] = 1
           end
         end
       end
@@ -246,14 +256,23 @@ local function serve_oidc_connection(peer, store)
     elseif name == "create" then
       send_response(peer, request, bson.document({ { "ok", 1 } }))
     elseif name == "find" then
-      send_response(peer, request, bson.document({
-        { "ok", 1 },
-        { "cursor", bson.document({
-          { "id", bson.int64(0) },
-          { "ns", "test.collName" },
-          { "firstBatch", bson.array(store.documents) },
-        }) },
-      }))
+      if (store.fail_commands.find or 0) > 0 then
+        store.fail_commands.find = store.fail_commands.find - 1
+        send_response(peer, request, bson.document({
+          { "ok", 0 },
+          { "code", 391 },
+          { "errmsg", "reauthentication required" },
+        }))
+      else
+        send_response(peer, request, bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "test.collName" },
+            { "firstBatch", bson.array(store.documents) },
+          }) },
+        }))
+      end
     elseif name == "insert" then
       if (store.close_insert or 0) > 0 then
         store.close_insert = store.close_insert - 1
@@ -261,11 +280,20 @@ local function serve_oidc_connection(peer, store)
         return
       end
 
-      for _, document in request_documents(request):iter() do
-        store.documents[#store.documents + 1] = document
-      end
+      if (store.fail_commands.insert or 0) > 0 then
+        store.fail_commands.insert = store.fail_commands.insert - 1
+        send_response(peer, request, bson.document({
+          { "ok", 0 },
+          { "code", 391 },
+          { "errmsg", "reauthentication required" },
+        }))
+      else
+        for _, document in request_documents(request):iter() do
+          store.documents[#store.documents + 1] = document
+        end
 
-      send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
+        send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
+      end
     else
       error("unsupported OIDC loopback command: " .. tostring(name), 0)
     end
@@ -459,7 +487,7 @@ local function run_oidc_loopback(selections)
   )
   local server = assert(socket.bind("127.0.0.1", 0))
   local _, port = assert(server:getsockname())
-  local store = { documents = {} }
+  local store = { documents = {}, fail_commands = {} }
   local server_error
   local outcome
 

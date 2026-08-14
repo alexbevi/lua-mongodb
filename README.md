@@ -114,7 +114,7 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 | Pooling | `maxPoolSize`, `minPoolSize`, `maxConnecting`, `maxIdleTimeMS`, `waitQueueTimeoutMS` |
 | Reads, writes, and retries | `readPreference`, `readPreferenceTags`, `maxStalenessSeconds`, `readConcernLevel`, `w`, `journal`, `wTimeoutMS`, `retryReads`, `retryWrites` |
 
-For `MONGODB-OIDC`, configure exactly one built-in `ENVIRONMENT`, function-valued `OIDC_CALLBACK`, or function-valued `OIDC_HUMAN_CALLBACK` in the programmatic `auth_mechanism_properties` table. `ALLOWED_HOSTS` is a programmatic list accepted only with a human callback; when omitted, it defaults to the MongoDB service domains and local loopback hosts required by the authentication specification. Callbacks and allowed-host lists are rejected from connection strings. Azure and GCP environments require `TOKEN_RESOURCE`; a resource containing a comma must be supplied programmatically because commas delimit URI mechanism properties.
+For `MONGODB-OIDC`, configure exactly one built-in `ENVIRONMENT`, function-valued `OIDC_CALLBACK`, or function-valued `OIDC_HUMAN_CALLBACK` in the programmatic `auth_mechanism_properties` table. `ALLOWED_HOSTS` is a programmatic list accepted only with a human callback; when omitted, it defaults to the MongoDB service domains and local loopback hosts required by the authentication specification. Callbacks and allowed-host lists are rejected from connection strings. Azure and GCP environments require `TOKEN_RESOURCE`; a resource containing a comma must be supplied programmatically because commas delimit URI mechanism properties. OIDC access tokens are cached across a client's connections, cached connections use speculative authentication, and a server reauthentication request transparently refreshes credentials and retries the affected operation once.
 
 For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults. Load-balanced deployment execution remains outside the current scope even though its connection-string option is recognized and validated.
 
@@ -278,7 +278,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Connectivity | Server discovery and monitoring | 🟡 | 89.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
 | Connectivity | Load balancer support | 🔴 | 0.0% |
-| Authentication | Authentication options and additional mechanisms | 🟡 | 80.8% |
+| Authentication | Authentication options and additional mechanisms | 🟡 | 83.6% |
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 70.3% |
