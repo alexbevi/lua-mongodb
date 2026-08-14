@@ -3109,22 +3109,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_providers_spec.lua'",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_PYTHON='spec.package.test_package'",
           "exit_code": 2,
-          "summary": "ENVIRONMENT:test reached OIDC authentication without an internal provider callback and failed before reading the isolated runtime token file or starting SASL (0 successes, 1 failure).",
-          "recorded_at": "2026-08-14T14:33:22+00:00"
+          "summary": "Both portable CI jobs and the focused source-rock smoke test failed because mongodb.auth.oidc_providers was absent from the rockspec module manifest.",
+          "recorded_at": "2026-08-14T14:41:27+00:00"
         },
         {
           "phase": "green",
-          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_providers_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua src/mongodb/auth/oidc_providers.lua spec/unit/auth_oidc_providers_spec.lua spec/integration/auth_oidc_spec.lua'",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_PYTHON='spec.package.test_package'; env PATH=<lua54-toolchain> make rockspec",
           "exit_code": 0,
-          "summary": "All 3 focused provider unit cases and all 4 directly coupled public-client OIDC integration cases passed; touched-file lint reported zero warnings or errors.",
-          "recorded_at": "2026-08-14T14:36:15+00:00"
+          "summary": "The installed source rock loaded the complete public API and the rockspec artifact validator passed after adding mongodb.auth.oidc_providers to the module manifest.",
+          "recorded_at": "2026-08-14T14:42:36+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-14T14:32:06+00:00",
-      "completed_at": "2026-08-14T14:36:16+00:00"
+      "notes": [
+        "Requeued: CI Fast portable jobs failed because the new OIDC provider module was missing from the source-rock manifest."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-14T14:36:16+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_providers_spec.lua'",
+              "exit_code": 2,
+              "summary": "ENVIRONMENT:test reached OIDC authentication without an internal provider callback and failed before reading the isolated runtime token file or starting SASL (0 successes, 1 failure).",
+              "recorded_at": "2026-08-14T14:33:22+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_providers_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua src/mongodb/auth/oidc_providers.lua spec/unit/auth_oidc_providers_spec.lua spec/integration/auth_oidc_spec.lua'",
+              "exit_code": 0,
+              "summary": "All 3 focused provider unit cases and all 4 directly coupled public-client OIDC integration cases passed; touched-file lint reported zero warnings or errors.",
+              "recorded_at": "2026-08-14T14:36:15+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "53b38787ff39cced2a3fd991c5d1b27d28f723c4",
+      "started_at": "2026-08-14T14:41:26+00:00",
+      "completed_at": "2026-08-14T14:42:36+00:00"
     }
   },
   "verified_references": {
