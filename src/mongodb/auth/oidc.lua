@@ -28,6 +28,8 @@ local PROPERTIES = {
   TOKEN_RESOURCE = true,
 }
 local CALLBACK_TIMEOUT_SECONDS = 60
+local CLIENT_STATES = setmetatable({}, { __mode = "k" })
+local CONNECTION_STATES = setmetatable({}, { __mode = "k" })
 
 local function config_error(option, message)
   return nil, errors.new({
@@ -346,6 +348,105 @@ local function response_valid(response)
     and payload.subtype == bson.BINARY_SUBTYPE.GENERIC
 end
 
+local function client_state(credentials)
+  local state = CLIENT_STATES[credentials]
+
+  if state == nil then
+    state = { access_token = nil }
+    CLIENT_STATES[credentials] = state
+  end
+
+  return state
+end
+
+local function invalidate_token(commands, credentials, token)
+  local state = CLIENT_STATES[credentials]
+
+  if state ~= nil and state.access_token == token then
+    state.access_token = nil
+  end
+
+  if CONNECTION_STATES[commands] == token then
+    CONNECTION_STATES[commands] = nil
+  end
+end
+
+local function is_authentication_failure(err)
+  return errors.is(err, errors.CATEGORY.SERVER) and err.code == 18
+end
+
+local function fetch_token(callback, runtime, credentials, options, state)
+  local context, err = callback_context(runtime, credentials, options)
+
+  if not context then
+    return nil, err
+  end
+
+  local result
+  result, err = callback_result(callback, context, runtime, options)
+
+  if not result then
+    return nil, err
+  end
+
+  local token = { access_token = result.access_token }
+
+  state.access_token = token
+  return token
+end
+
+local function authenticate_token(commands, credentials, options, token)
+  local payload, err = bson.encode(bson.document({
+    { "jwt", token.access_token },
+  }))
+
+  if not payload then
+    return nil, auth_error("MONGODB-OIDC client payload encoding failed", err)
+  end
+
+  CONNECTION_STATES[commands] = token
+  local response
+  response, err = commands:command("$external", bson.document({
+    { "saslStart", 1 },
+    { "mechanism", "MONGODB-OIDC" },
+    { "payload", bson.binary(payload) },
+  }), {
+    cancellation = options.cancellation,
+    deadline = options.deadline,
+  })
+
+  if not response then
+    local authentication_failure = is_authentication_failure(err)
+
+    if authentication_failure then
+      invalidate_token(commands, credentials, token)
+    end
+
+    return nil, auth_error("MONGODB-OIDC saslStart failed", err),
+      authentication_failure
+  end
+
+  if not response_valid(response) then
+    return nil, auth_error("MONGODB-OIDC server returned an invalid SASL response")
+  end
+
+  return true
+end
+
+function M.invalidate(commands, credentials)
+  if type(commands) ~= "table" or type(credentials) ~= "table" then
+    error("MONGODB-OIDC invalidation requires a connection and credentials", 2)
+  end
+
+  local token = CONNECTION_STATES[commands]
+
+  if token ~= nil then
+    invalidate_token(commands, credentials, token)
+  end
+
+  return true
+end
+
 function M.authenticate(commands, runtime, credentials, options)
   options = options or {}
   local callback, err = validate_auth_inputs(
@@ -359,46 +460,35 @@ function M.authenticate(commands, runtime, credentials, options)
     return nil, err
   end
 
-  local context
-  context, err = callback_context(runtime, credentials, options)
+  local state = client_state(credentials)
+  local token = state.access_token
 
-  if not context then
-    return nil, err
+  if token ~= nil then
+    local authenticated
+    local authentication_failure
+    authenticated, err, authentication_failure = authenticate_token(
+      commands,
+      credentials,
+      options,
+      token
+    )
+
+    if authenticated or not authentication_failure then
+      return authenticated, err
+    end
   end
 
-  local result
-  result, err = callback_result(callback, context, runtime, options)
+  token = state.access_token
 
-  if not result then
-    return nil, err
+  if token == nil then
+    token, err = fetch_token(callback, runtime, credentials, options, state)
+
+    if not token then
+      return nil, err
+    end
   end
 
-  local payload
-  payload, err = bson.encode(bson.document({ { "jwt", result.access_token } }))
-
-  if not payload then
-    return nil, auth_error("MONGODB-OIDC client payload encoding failed", err)
-  end
-
-  local response
-  response, err = commands:command("$external", bson.document({
-    { "saslStart", 1 },
-    { "mechanism", "MONGODB-OIDC" },
-    { "payload", bson.binary(payload) },
-  }), {
-    cancellation = options.cancellation,
-    deadline = options.deadline,
-  })
-
-  if not response then
-    return nil, auth_error("MONGODB-OIDC saslStart failed", err)
-  end
-
-  if not response_valid(response) then
-    return nil, auth_error("MONGODB-OIDC server returned an invalid SASL response")
-  end
-
-  return true
+  return authenticate_token(commands, credentials, options, token)
 end
 
 return M

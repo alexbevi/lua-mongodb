@@ -2949,6 +2949,28 @@
       "notes": [],
       "started_at": "2026-08-14T13:00:59+00:00",
       "completed_at": "2026-08-14T13:18:47+00:00"
+    },
+    "AUTH-025": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_cache_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining cross-connection reuse case failed because the configured machine callback ran twice instead of reusing one client-cached token (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T13:24:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_cache_spec.lua spec/unit/auth_oidc_machine_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua spec/unit/auth_oidc_cache_spec.lua spec/unit/auth_oidc_machine_spec.lua'; plan and diff validators",
+          "exit_code": 0,
+          "summary": "11 focused machine/cache unit tests and 1 real TCP OIDC integration test passed with 0 failures/errors/pending; touched-file lint reported 0 warnings/errors across 3 Lua files; plan and diff validators passed. The cache prose behavior made 0 unified cases newly applicable, environment-skipped, deferred, or failed; the four remaining OIDC unified cases retain AUTH-017/AUTH-018 ownership.",
+          "recorded_at": "2026-08-14T13:28:46+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T13:23:27+00:00",
+      "completed_at": "2026-08-14T13:28:47+00:00"
     }
   },
   "verified_references": {
