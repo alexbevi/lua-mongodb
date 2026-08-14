@@ -1,4 +1,5 @@
 local aws = require("mongodb.auth.aws")
+local aws_credentials = require("mongodb.auth.aws_credentials")
 local plain = require("mongodb.auth.plain")
 local scram = require("mongodb.auth.scram")
 local x509 = require("mongodb.auth.x509")
@@ -17,7 +18,18 @@ function M.authenticate(commands, runtime, credentials, options)
   local mechanism = options and options.mechanism or credentials.mechanism
 
   if mechanism == "MONGODB-AWS" then
-    return aws.authenticate(commands, runtime, credentials, options)
+    local resolved = credentials
+    local err
+
+    if credentials.username == nil and credentials.password == nil then
+      resolved, err = aws_credentials.resolve(runtime, credentials)
+
+      if not resolved then
+        return nil, err
+      end
+    end
+
+    return aws.authenticate(commands, runtime, resolved, options)
   end
 
   if mechanism == "PLAIN" then

@@ -5,8 +5,11 @@ local errors = require("mongodb.error")
 local fake_runtime = require("mongodb.runtime.fake")
 local openssl_runtime = require("mongodb.runtime.openssl")
 
-local function runtime_with_nonce(nonce)
-  local runtime = fake_runtime.new({ wall_time = 1440938160 })
+local function runtime_with_nonce(nonce, environment)
+  local runtime = fake_runtime.new({
+    environment = environment,
+    wall_time = 1440938160,
+  })
 
   runtime.crypto = openssl_runtime.new().crypto
   runtime:queue_entropy(nonce)
@@ -122,6 +125,45 @@ describe("MONGODB-AWS authentication", function()
       runtime,
       resolved_credentials("TOKEN")
     ))
+  end)
+
+  it("resolves environment credentials before the SASL conversation", function()
+    local client_nonce = string.rep("0", 32)
+    local runtime = runtime_with_nonce(client_nonce, {
+      AWS_ACCESS_KEY_ID = "AKIDEXAMPLE",
+      AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY",
+    })
+    local step = 0
+    local commands = {
+      command = function(_, _, body)
+        step = step + 1
+
+        if step == 1 then
+          return server_first(client_nonce)
+        end
+
+        local payload = assert(bson.decode(body:get("payload").data))
+
+        assert.is_not_nil(payload:get("a"):find(
+          "Credential=AKIDEXAMPLE/",
+          1,
+          true
+        ))
+        assert.is_nil(body:get("payload").data:find("EXAMPLEKEY", 1, true))
+        return bson.document({
+          { "conversationId", 7 },
+          { "done", true },
+          { "payload", bson.binary("") },
+          { "ok", 1 },
+        })
+      end,
+    }
+
+    assert.is_true(auth.authenticate(commands, runtime, {
+      mechanism = "MONGODB-AWS",
+      source = "$external",
+    }, { mechanism = "MONGODB-AWS" }))
+    assert.are.equal(2, step)
   end)
 
   it("derives regional STS scopes from the server host", function()

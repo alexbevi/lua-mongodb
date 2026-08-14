@@ -2660,6 +2660,28 @@
       "notes": [],
       "started_at": "2026-08-14T10:31:25+00:00",
       "completed_at": "2026-08-14T10:35:42+00:00"
+    },
+    "AUTH-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua'",
+          "exit_code": 2,
+          "summary": "Defining dynamic AWS environment credential test failed because mongodb.auth.aws_credentials did not exist (0 successes, 1 load error).",
+          "recorded_at": "2026-08-14T10:56:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_credentials.lua src/mongodb/auth/init.lua src/mongodb/runtime/init.lua src/mongodb/runtime/fake.lua src/mongodb/runtime/copas.lua spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua'",
+          "exit_code": 0,
+          "summary": "30 focused Lua examples passed for dynamic environment resolution, incomplete-value redaction, runtime adapters, and AWS SASL handoff; 0 upstream fixture cases were newly applicable, 0 environment-skipped, and 0 failed; touched-file lint reported 0 warnings/errors; conformance, release, capability, README projection, rockspec, and isolated source-rock validators passed",
+          "recorded_at": "2026-08-14T11:00:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T10:55:04+00:00",
+      "completed_at": "2026-08-14T11:00:22+00:00"
     }
   },
   "verified_references": {

@@ -11,6 +11,7 @@ local ALLOWED_OPTIONS = {
   dns_nameservers = true,
   dns_query_timeout = true,
   entropy = true,
+  getenv = true,
   gettime = true,
   lock_poll_interval = true,
   metadata = true,
@@ -150,11 +151,11 @@ local function file_exists(path)
   return true
 end
 
-local function default_metadata()
+local function default_metadata(getenv)
   local environment = {}
 
   for _, name in ipairs(METADATA_ENVIRONMENT_VARIABLES) do
-    local value = os.getenv(name)
+    local value = getenv(name)
 
     if value ~= nil then
       environment[name] = value
@@ -164,6 +165,24 @@ local function default_metadata()
   return {
     environment = environment,
     files = { ["/.dockerenv"] = file_exists("/.dockerenv") },
+  }
+end
+
+local function new_environment_capability(getenv)
+  return {
+    get = function(_, name)
+      if type(name) ~= "string" or name == "" then
+        error("environment variable name must be a non-empty string", 2)
+      end
+
+      local value = getenv(name)
+
+      if value ~= nil and type(value) ~= "string" then
+        error("environment provider must return a string or nil", 2)
+      end
+
+      return value
+    end,
   }
 end
 
@@ -328,10 +347,15 @@ function M.new(options)
   local copas = require_copas(options.copas)
 
   local raw_gettime = options.gettime or copas.gettime
+  local raw_getenv = options.getenv or os.getenv
   local raw_wall_time = options.wall_time or os.time
 
   if type(raw_gettime) ~= "function" then
     error("Copas gettime capability must be a function", 2)
+  end
+
+  if type(raw_getenv) ~= "function" then
+    error("getenv capability must be a function", 2)
   end
 
 
@@ -358,6 +382,7 @@ function M.new(options)
   adapter.cancellation = { new = cancellation.new }
   adapter.task = new_task_capability(copas.future)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)
+  adapter.environment = new_environment_capability(raw_getenv)
   adapter.dns = options.dns or require("mongodb.runtime.copas_dns").new(adapter, {
     copas = copas,
     nameservers = options.dns_nameservers,
@@ -371,7 +396,7 @@ function M.new(options)
   adapter.tls = options.tls or require("mongodb.runtime.luasec").new(adapter)
   adapter.entropy = options.entropy or openssl.entropy
   adapter.crypto = options.crypto or openssl.crypto
-  adapter.metadata = options.metadata or default_metadata()
+  adapter.metadata = options.metadata or default_metadata(raw_getenv)
 
   return runtime_contract.validate(adapter)
 end

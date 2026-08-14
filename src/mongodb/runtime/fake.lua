@@ -266,6 +266,18 @@ function FAKE_METHODS:queue_dns(record_type, result)
   queue[#queue + 1] = result
 end
 
+function FAKE_METHODS:set_environment(name, value)
+  if type(name) ~= "string" or name == "" then
+    error("environment variable name must be a non-empty string", 2)
+  end
+
+  if value ~= nil and type(value) ~= "string" then
+    error("environment variable value must be a string or nil", 2)
+  end
+
+  self._environment[name] = value
+end
+
 local function new_clock(owner)
   return {
     now = function()
@@ -465,6 +477,19 @@ local function new_dns_capability(owner)
   }
 end
 
+local function new_environment_capability(owner)
+  return {
+    get = function(_, name)
+      if type(name) ~= "string" or name == "" then
+        error("environment variable name must be a non-empty string", 2)
+      end
+
+      owner.calls.environment[#owner.calls.environment + 1] = name
+      return owner._environment[name]
+    end,
+  }
+end
+
 local function new_tls_capability(owner)
   return {
     wrap = function(_, socket, options, deadline, cancellation)
@@ -592,11 +617,30 @@ function M.new(options)
     error("metadata must be a table", 2)
   end
 
+  if options.environment ~= nil and type(options.environment) ~= "table" then
+    error("environment must be a table", 2)
+  end
+
+  local environment = {}
+
+  for name, value in pairs(options.environment or {}) do
+    if type(name) ~= "string" or name == "" then
+      error("environment variable names must be non-empty strings", 2)
+    end
+
+    if type(value) ~= "string" then
+      error("environment variable values must be strings", 2)
+    end
+
+    environment[name] = value
+  end
+
   local fake = setmetatable({
     _connect_head = 1,
     _connect_queue = {},
     _crypto_queue = {},
     _dns_queue = { srv = {}, txt = {} },
+    _environment = environment,
     _entropy = options.entropy or "",
     _now = options.now or 0,
     _wall_time = options.wall_time or 0,
@@ -608,6 +652,7 @@ function M.new(options)
       connect = {},
       crypto = {},
       dns = {},
+      environment = {},
       tls = {},
     },
   }, FAKE_METATABLE)
@@ -620,6 +665,7 @@ function M.new(options)
   fake.cancellation = { new = cancellation_factory.new }
   fake.task = new_task_capability(fake)
   fake.lock = new_lock_capability(fake)
+  fake.environment = new_environment_capability(fake)
   fake.dns = new_dns_capability(fake)
   fake.socket = new_socket_capability(fake)
   fake.tls = new_tls_capability(fake)

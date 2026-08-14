@@ -12,6 +12,25 @@ describe("runtime interface", function()
     end, "runtime capability clock.now must be a function")
   end)
 
+  it("provides isolated dynamic environment access", function()
+    local fake = fake_runtime.new({
+      environment = { AWS_ACCESS_KEY_ID = "first" },
+    })
+
+    assert.are.equal("first", fake.environment:get("AWS_ACCESS_KEY_ID"))
+    assert.is_nil(fake.environment:get("AWS_SESSION_TOKEN"))
+
+    fake:set_environment("AWS_ACCESS_KEY_ID", "second")
+    fake:set_environment("AWS_SESSION_TOKEN", "token")
+
+    assert.are.equal("second", fake.environment:get("AWS_ACCESS_KEY_ID"))
+    assert.are.equal("token", fake.environment:get("AWS_SESSION_TOKEN"))
+
+    fake:set_environment("AWS_SESSION_TOKEN", nil)
+
+    assert.is_nil(fake.environment:get("AWS_SESSION_TOKEN"))
+  end)
+
   it("uses absolute monotonic deadlines", function()
     local fake = fake_runtime.new({ now = 10, wall_time = 1000 })
     local deadline = runtime.deadline_after(fake, 5)

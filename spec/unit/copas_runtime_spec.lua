@@ -34,6 +34,22 @@ describe("Copas runtime adapter", function()
     assert.are.equal(facts, injected.metadata)
   end)
 
+  it("reads environment values dynamically through an injected provider", function()
+    local values = { AWS_ACCESS_KEY_ID = "first" }
+    local adapter = runtime.copas({
+      getenv = function(name)
+        return values[name]
+      end,
+      metadata = { environment = {}, files = {} },
+    })
+
+    assert.are.equal("first", adapter.environment:get("AWS_ACCESS_KEY_ID"))
+
+    values.AWS_ACCESS_KEY_ID = "second"
+
+    assert.are.equal("second", adapter.environment:get("AWS_ACCESS_KEY_ID"))
+  end)
+
   it("rejects unsupported Copas versions", function()
     assert.has_error(function()
       copas_runtime.new({
