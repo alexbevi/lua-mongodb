@@ -430,12 +430,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[40]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "b4bdae2db1290201397d6d79dff88626ed3c14c240359a470018b9fe4a1fecda",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -443,12 +443,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[41]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "73ec8fbd07b3a67614e779cc4401529d0ea6b23b0b4941752047ae5f385817f6",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -456,12 +456,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[42]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "dccb215ee191cd9fd33cc25ec21c76a25cb83075aef06748cd53776082bf25f8",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -469,12 +469,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[43]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "5b1404a237e9085a4abba9011197527607038d6a23e282642accfc0f38d476a1",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -482,12 +482,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[44]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "de490a966ad022e18ae0009c38ba15f4a9354f4df7d765f04d349097ff638c58",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -495,12 +495,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[45]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "d91d88c116998aadc395c6637ea1ae3134f84a90138358d4a10eff7ec648b743",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -508,12 +508,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[46]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "2c80b2f3b7c6441e5042a79d359be5bbe33d2b2a3bf1ecfd74e807ac128d2589",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -521,12 +521,12 @@
       "suite": "auth"
     },
     "auth/tests/legacy/connection-string.json::test[47]": {
-      "activity": "AUTH-005",
+      "activity": "AUTH-020",
       "fingerprint": "fc5f72f7a05761771219c4fc9359c359fdc0c22f6c15411c7ddec49001fa88d7",
       "format": "legacy-list",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:AUTH-005",
+      "runner": "pending:AUTH-020",
       "scope": "post-v1",
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",

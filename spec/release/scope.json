@@ -10,12 +10,12 @@
     "ADV-010": 777,
     "ADV-011": 202,
     "ADV-012": 15,
-    "AUTH-005": 8,
     "AUTH-010": 20,
     "AUTH-011": 2,
     "AUTH-017": 2,
     "AUTH-018": 2,
-    "AUTH-019": 11
+    "AUTH-019": 11,
+    "AUTH-020": 8
   },
   "deferred_by_scope": {
     "post-v1-exclusion": 1885
@@ -43,7 +43,8 @@
     "AUTH-011": "MONGODB-OIDC machine authentication is outside production-core v1",
     "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
     "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
-    "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design"
+    "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
+    "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1"
   },
   "schema_version": 1,
   "statuses": {

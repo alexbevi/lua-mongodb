@@ -327,7 +327,7 @@ def classify_case(
     elif 23 <= index <= 26:
       owner = "AUTH-003"
     elif 40 <= index <= 47:
-      owner = "AUTH-005"
+      owner = "AUTH-020"
     elif 48 <= index <= 67:
       owner = "AUTH-010"
     else:

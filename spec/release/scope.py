@@ -42,6 +42,7 @@ POST_V1_REASONS = {
   "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
   "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
   "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
+  "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1",
   "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
   "ADV-010": "client-side encryption requires a separate post-v1 design",
   "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
