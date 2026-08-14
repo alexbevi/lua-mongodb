@@ -9,6 +9,14 @@
       "activity": "AUTH-011",
       "environment": "deterministic-loopback"
     },
+    "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]": {
+      "activity": "AUTH-017",
+      "environment": "deterministic-loopback"
+    },
+    "auth/tests/unified/mongodb-oidc-no-retry.json::test[6]": {
+      "activity": "AUTH-017",
+      "environment": "deterministic-loopback"
+    },
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
       "activity": "REL-025",
       "environment": "isolated-replicaset",

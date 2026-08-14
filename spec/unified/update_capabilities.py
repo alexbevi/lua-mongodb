@@ -191,11 +191,11 @@ TEST_OVERRIDES.update({
   ),
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]": (
     "AUTH-017",
-    OWNER_REASONS["AUTH-017"],
+    None,
   ),
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[6]": (
     "AUTH-017",
-    OWNER_REASONS["AUTH-017"],
+    None,
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "ADV-011",

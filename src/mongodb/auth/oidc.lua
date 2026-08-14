@@ -914,6 +914,34 @@ function M.invalidate(commands, credentials)
   return true
 end
 
+function M.speculative_command(commands, credentials)
+  if type(commands) ~= "table" or type(credentials) ~= "table" then
+    error("MONGODB-OIDC speculative authentication requires a connection and credentials", 2)
+  end
+
+  local state = CLIENT_STATES[credentials]
+  local token = state and state.access_token
+
+  if token == nil then
+    return nil
+  end
+
+  local payload, err = bson.encode(bson.document({
+    { "jwt", token.access_token },
+  }))
+
+  if not payload then
+    return nil, auth_error("MONGODB-OIDC client payload encoding failed", err)
+  end
+
+  CONNECTION_STATES[commands] = token
+  return bson.document({
+    { "saslStart", 1 },
+    { "mechanism", "MONGODB-OIDC" },
+    { "payload", bson.binary(payload) },
+  })
+end
+
 function M.authenticate(commands, runtime, credentials, options)
   options = options or {}
   local callback, callback_kind, trusted_failure = validate_auth_inputs(
@@ -929,6 +957,17 @@ function M.authenticate(commands, runtime, credentials, options)
 
   local err
   local state = client_state(credentials, runtime)
+  local speculative_token = CONNECTION_STATES[commands]
+
+  if speculative_token ~= nil then
+    if response_valid(options.speculative_response) then
+      return true
+    end
+
+    if CONNECTION_STATES[commands] == speculative_token then
+      CONNECTION_STATES[commands] = nil
+    end
+  end
 
   if callback_kind == "human" then
     local token = state.access_token

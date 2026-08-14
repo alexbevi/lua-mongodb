@@ -466,6 +466,22 @@ local function open_executor(
     hello_options.sasl_supported_mechs = credential.source .. "." .. credential.username
   end
 
+  if credential ~= nil
+      and credential.mechanism == "MONGODB-OIDC"
+      and authenticate
+  then
+    local speculative_command
+
+    speculative_command, err = auth.speculative_command(executor, credential)
+
+    if err then
+      executor:close()
+      return nil, err
+    end
+
+    hello_options.speculative_authenticate = speculative_command
+  end
+
   local hello
   hello, err = executor:hello(hello_options)
 
@@ -489,6 +505,7 @@ local function open_executor(
       deadline = deadline,
       mechanism = mechanism,
       server_host = host.host,
+      speculative_response = hello.document:get("speculativeAuthenticate"),
     })
 
     if not authenticated then

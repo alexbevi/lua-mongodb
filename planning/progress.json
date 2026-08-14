@@ -3215,6 +3215,28 @@
       "notes": [],
       "started_at": "2026-08-14T14:58:59+00:00",
       "completed_at": "2026-08-14T15:00:53+00:00"
+    },
+    "AUTH-017": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_speculative_spec.lua'",
+          "exit_code": 2,
+          "summary": "The cached-token speculative OIDC handshake API was absent, so no JwtStepRequest could be attached to hello (0 successes, 1 error).",
+          "recorded_at": "2026-08-14T15:07:23+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_speculative_spec.lua spec/unit/handshake_spec.lua' FOCUS_UNIFIED='auth/tests/unified/mongodb-oidc-no-retry.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='<7 touched Lua files>'; python3 spec/unified/update_capabilities.py --check; python3 spec/conformance/ledger.py --check; python3 spec/release/scope.py --check; python3 planning/update_readme_compatibility.py --check; python3 -m json.tool spec/unified/executors.json; python3 -m py_compile spec/unified/update_capabilities.py; git diff --check",
+          "exit_code": 0,
+          "summary": "4 defining unit/handshake cases and all 4 enabled pinned OIDC read/write/speculative cases passed; the remaining 2 fixture cases stay explicitly deferred to AUTH-018. All 65 directly coupled Python contracts passed, touched-file lint reported 0 warnings/errors across 7 Lua files, and capability, ledger, release-scope, generated README, executor JSON, Python compile, debug-output, and diff validators passed.",
+          "recorded_at": "2026-08-14T15:19:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T15:06:51+00:00",
+      "completed_at": "2026-08-14T15:19:44+00:00"
     }
   },
   "verified_references": {

@@ -10,6 +10,18 @@ local x509 = require("mongodb.auth.x509")
 
 local M = {}
 
+function M.speculative_command(commands, credentials)
+  if type(credentials) ~= "table" then
+    error("authentication credentials must be a table", 2)
+  end
+
+  if credentials.mechanism ~= "MONGODB-OIDC" then
+    return nil
+  end
+
+  return oidc.speculative_command(commands, credentials)
+end
+
 function M.authenticate(commands, runtime, credentials, options)
   if type(credentials) ~= "table" then
     error("authentication credentials must be a table", 2)

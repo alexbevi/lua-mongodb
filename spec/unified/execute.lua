@@ -6,6 +6,7 @@ local bson = require("mongodb.bson")
 local client_module = require("mongodb.client")
 local config_uri = require("mongodb.config.uri")
 local copas = require("copas")
+local errors = require("mongodb.error")
 local op_msg = require("mongodb.wire.op_msg")
 local runtime_module = require("mongodb.runtime")
 local socket = require("socket")
@@ -14,8 +15,14 @@ local unified_driver = require("mongodb.unified.driver")
 local INSERT_ONE_ID = "crud/tests/unified/insertOne.json::test[1]"
 local OIDC_READ_ID = "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]"
 local OIDC_WRITE_ID = "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]"
+local OIDC_SPECULATIVE_CACHED_ID =
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]"
+local OIDC_SPECULATIVE_UNCACHED_ID =
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[6]"
 local OIDC_IDS = {
   [OIDC_READ_ID] = true,
+  [OIDC_SPECULATIVE_CACHED_ID] = true,
+  [OIDC_SPECULATIVE_UNCACHED_ID] = true,
   [OIDC_WRITE_ID] = true,
 }
 
@@ -154,7 +161,7 @@ local function serve_oidc_connection(peer, store)
   local handshake = assert(receive_frame_or_closed(peer))
 
   equal("ismaster", command_name(handshake))
-  send_response(peer, handshake, bson.document({
+  local hello_entries = {
     { "ok", 1 },
     { "helloOk", true },
     { "isWritablePrimary", true },
@@ -162,7 +169,26 @@ local function serve_oidc_connection(peer, store)
     { "maxMessageSizeBytes", 48000000 },
     { "maxWriteBatchSize", 100000 },
     { "maxWireVersion", 25 },
-  }))
+  }
+  local speculative = handshake.body:get("speculativeAuthenticate")
+
+  if bson.is_document(speculative) then
+    equal("MONGODB-OIDC", speculative:get("mechanism"))
+    local payload = assert(bson.decode(speculative:get("payload").data))
+
+    equal("loopback-oidc-token", payload:get("jwt"))
+    hello_entries[#hello_entries + 1] = {
+      "speculativeAuthenticate",
+      bson.document({
+        { "conversationId", 1 },
+        { "payload", bson.binary("") },
+        { "done", true },
+        { "ok", 1 },
+      }),
+    }
+  end
+
+  send_response(peer, handshake, bson.document(hello_entries))
 
   while true do
     local request = receive_frame_or_closed(peer)
@@ -178,12 +204,42 @@ local function serve_oidc_connection(peer, store)
       local payload = assert(bson.decode(request.body:get("payload").data))
 
       equal("loopback-oidc-token", payload:get("jwt"))
-      send_response(peer, request, bson.document({
-        { "conversationId", 1 },
-        { "payload", bson.binary("") },
-        { "done", true },
-        { "ok", 1 },
-      }))
+      if (store.fail_sasl_start or 0) > 0 then
+        store.fail_sasl_start = store.fail_sasl_start - 1
+        send_response(peer, request, bson.document({
+          { "ok", 0 },
+          { "code", 18 },
+          { "errmsg", "OIDC authentication failed" },
+        }))
+      else
+        send_response(peer, request, bson.document({
+          { "conversationId", 1 },
+          { "payload", bson.binary("") },
+          { "done", true },
+          { "ok", 1 },
+        }))
+      end
+    elseif name == "configureFailPoint" then
+      local mode = request.body:get("mode")
+
+      if mode == "off" then
+        store.close_insert = 0
+        store.fail_sasl_start = 0
+      else
+        local data = assert(request.body:get("data"))
+        local commands = assert(data:get("failCommands"))
+
+        for _, command in commands:iter() do
+          if command == "insert" and data:get("closeConnection") == true then
+            store.close_insert = 1
+          elseif command == "saslStart" then
+            equal(18, data:get("errorCode"):to_number())
+            store.fail_sasl_start = 1
+          end
+        end
+      end
+
+      send_response(peer, request, bson.document({ { "ok", 1 } }))
     elseif name == "drop" then
       store.documents = {}
       send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
@@ -199,6 +255,12 @@ local function serve_oidc_connection(peer, store)
         }) },
       }))
     elseif name == "insert" then
+      if (store.close_insert or 0) > 0 then
+        store.close_insert = store.close_insert - 1
+        peer:close()
+        return
+      end
+
       for _, document in request_documents(request):iter() do
         store.documents[#store.documents + 1] = document
       end
@@ -413,32 +475,57 @@ local function run_oidc_loopback(selections)
 
   copas.loop(function()
     outcome = table.pack(pcall(function()
-      local lifecycle = assert(unified_driver.new({
-        environment = {
-          auth = true,
-          auth_mechanism = "MONGODB-OIDC",
-          server_version = "8.2.0",
-          topology = "single",
-        },
-        oidc_callback = function()
-          return { access_token = "loopback-oidc-token" }
-        end,
-        runtime = runtime_module.copas(),
-        uri = "mongodb://127.0.0.1:" .. port,
-      }))
-      local report = assert(lifecycle:run_file(
-        selected_document(document, selections),
-        fixture
-      ))
+      local runtime = runtime_module.copas()
+      local uri = "mongodb://127.0.0.1:" .. port
 
-      if report.summary.failed > 0 then
-        error(report_error(report.tests[1].error), 0)
+      for _, selection in ipairs(selections) do
+        if selection.identity == OIDC_SPECULATIVE_UNCACHED_ID then
+          store.fail_sasl_start = 1
+          local client, err = client_module.connect(
+            uri .. "/?authMechanism=MONGODB-OIDC",
+            {
+              app_name = "mongodb-oidc-no-retry",
+              auth_mechanism_properties = {
+                OIDC_CALLBACK = function()
+                  return { access_token = "loopback-oidc-token" }
+                end,
+              },
+              runtime = runtime,
+            }
+          )
+
+          assert(client == nil, "uncached OIDC authentication unexpectedly succeeded")
+          assert(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+          equal(18, err.code)
+        else
+          local lifecycle = assert(unified_driver.new({
+            environment = {
+              auth = true,
+              auth_mechanism = "MONGODB-OIDC",
+              server_version = "8.2.0",
+              topology = "single",
+            },
+            oidc_callback = function()
+              return { access_token = "loopback-oidc-token" }
+            end,
+            runtime = runtime,
+            uri = uri,
+          }))
+          local report = assert(lifecycle:run_file(
+            selected_document(document, { selection }),
+            selection.identity
+          ))
+
+          if report.summary.failed > 0 then
+            error(report_error(report.tests[1].error), 0)
+          end
+
+          equal(1, report.summary.executed)
+          equal(1, report.summary.passed)
+          equal(0, report.summary.failed)
+          assert(lifecycle:close())
+        end
       end
-
-      equal(#selections, report.summary.executed)
-      equal(#selections, report.summary.passed)
-      equal(0, report.summary.failed)
-      assert(lifecycle:close())
     end))
     copas.removeserver(server)
   end)

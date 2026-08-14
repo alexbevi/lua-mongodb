@@ -345,6 +345,7 @@ function EXECUTOR_METHODS:hello(options)
   for key in pairs(options) do
     if key ~= "cancellation" and key ~= "deadline"
         and key ~= "max_await_time_ms" and key ~= "sasl_supported_mechs"
+        and key ~= "speculative_authenticate"
         and key ~= "topology_version"
     then
       error("unknown hello option: " .. tostring(key), 2)
@@ -383,6 +384,17 @@ function EXECUTOR_METHODS:hello(options)
     entries[#entries + 1] = {
       "saslSupportedMechs",
       options.sasl_supported_mechs,
+    }
+  end
+
+  if options.speculative_authenticate ~= nil then
+    if not bson.is_document(options.speculative_authenticate) then
+      error("speculative_authenticate must be a BSON document", 2)
+    end
+
+    entries[#entries + 1] = {
+      "speculativeAuthenticate",
+      options.speculative_authenticate,
     }
   end
 
