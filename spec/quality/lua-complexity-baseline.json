@@ -4,12 +4,12 @@
   "hotspots": [
     {
       "path": "src/mongodb/bson/codec.lua",
-      "function": "M._decode_value",
+      "function": "decode_value",
       "complexity": 67
     },
     {
       "path": "src/mongodb/bson/codec.lua",
-      "function": "M._encode_element",
+      "function": "encode_element",
       "complexity": 54
     },
     {

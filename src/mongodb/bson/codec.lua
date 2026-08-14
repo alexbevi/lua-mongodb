@@ -123,6 +123,8 @@ local function encode_string_payload(string_value)
   return string.pack("<i4", #string_value + 1) .. string_value .. "\0"
 end
 
+local encode_element
+
 local function encode_container(container, array, context, depth)
   if depth > context.max_depth then
     return encode_error("BSON nesting exceeds the configured maximum depth", {
@@ -145,7 +147,7 @@ local function encode_container(container, array, context, depth)
       key, item = container:get_at(index)
     end
 
-    local encoded, err = M._encode_element(key, item, context, depth)
+    local encoded, err = encode_element(key, item, context, depth)
 
     if not encoded then
       return nil, err
@@ -167,7 +169,7 @@ local function encode_container(container, array, context, depth)
   return string.pack("<i4", length) .. body
 end
 
-function M._encode_element(key, item, context, depth)
+encode_element = function(key, item, context, depth)
   local element_type
   local payload
   local item_type = type(item)
@@ -430,6 +432,8 @@ local function read_cstring(data, position, limit, description)
   return data:sub(position, string_end - 1), string_end + 1
 end
 
+local decode_value
+
 local function decode_container(data, position, limit, array, context, depth)
   if depth > context.max_depth then
     return nil, nil, bson_error(
@@ -507,7 +511,7 @@ local function decode_container(data, position, limit, array, context, depth)
     end
 
     local item
-    item, cursor, err = M._decode_value(
+    item, cursor, err = decode_value(
       data,
       cursor,
       document_end - 1,
@@ -535,7 +539,7 @@ local function decode_container(data, position, limit, array, context, depth)
   return decoded, document_end + 1
 end
 
-function M._decode_value(data, position, limit, element_type, context, depth)
+decode_value = function(data, position, limit, element_type, context, depth)
   if element_type == TYPE_NULL then
     return value.null, position
   end
@@ -795,7 +799,7 @@ function M._decode_value(data, position, limit, element_type, context, depth)
   end
 
   if element_type == TYPE_CODE then
-    local source, next_position, err = M._decode_value(
+    local source, next_position, err = decode_value(
       data,
       position,
       limit,
@@ -812,7 +816,7 @@ function M._decode_value(data, position, limit, element_type, context, depth)
   end
 
   if element_type == TYPE_SYMBOL then
-    local symbol_value, next_position, err = M._decode_value(
+    local symbol_value, next_position, err = decode_value(
       data,
       position,
       limit,
@@ -829,7 +833,7 @@ function M._decode_value(data, position, limit, element_type, context, depth)
   end
 
   if element_type == TYPE_DB_POINTER then
-    local namespace, object_id_position, err = M._decode_value(
+    local namespace, object_id_position, err = decode_value(
       data,
       position,
       limit,
@@ -843,7 +847,7 @@ function M._decode_value(data, position, limit, element_type, context, depth)
     end
 
     local object_id, next_position
-    object_id, next_position, err = M._decode_value(
+    object_id, next_position, err = decode_value(
       data,
       object_id_position,
       limit,
@@ -888,7 +892,7 @@ function M._decode_value(data, position, limit, element_type, context, depth)
     end
 
     local source, scope_position
-    source, scope_position, err = M._decode_value(
+    source, scope_position, err = decode_value(
       data,
       source_position,
       code_end - 1,

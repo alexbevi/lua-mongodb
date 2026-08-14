@@ -2,6 +2,18 @@ local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 
 describe("hardened BSON codec", function()
+  it("exports only the supported document codec entry points", function()
+    local codec = require("mongodb.bson.codec")
+    local exports = {}
+
+    for name in pairs(codec) do
+      exports[#exports + 1] = name
+    end
+
+    table.sort(exports)
+    assert.are.same({ "decode", "encode" }, exports)
+  end)
+
   it("round trips the remaining deprecated BSON wire values", function()
     local object_id = bson.object_id("010203041011121314151617")
     local document = bson.document({

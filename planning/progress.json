@@ -3461,6 +3461,28 @@
       "notes": [],
       "started_at": "2026-08-14T19:21:29+00:00",
       "completed_at": "2026-08-14T19:27:15+00:00"
+    },
+    "BSON-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_hardening_spec.lua'",
+          "exit_code": 1,
+          "summary": "Codec surface test exposed exported _encode_element and _decode_value helpers",
+          "recorded_at": "2026-08-14T19:33:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_spec.lua spec/unit/bson_hardening_spec.lua' FOCUS_LINT='src/mongodb/bson/codec.lua spec/unit/bson_spec.lua spec/unit/bson_hardening_spec.lua' && make test-complexity",
+          "exit_code": 0,
+          "summary": "Eleven BSON unit cases passed; touched Lua lint passed; complexity hotspot identities were updated with unchanged scores",
+          "recorded_at": "2026-08-14T19:34:18+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T19:32:25+00:00",
+      "completed_at": "2026-08-14T19:34:19+00:00"
     }
   },
   "verified_references": {
