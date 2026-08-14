@@ -2905,6 +2905,28 @@
       "notes": [],
       "started_at": "2026-08-14T12:30:43+00:00",
       "completed_at": "2026-08-14T12:35:29+00:00"
+    },
+    "AUTH-024": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_config_spec.lua'",
+          "exit_code": 2,
+          "summary": "Machine callback configuration was rejected because mechanism properties accepted string values only",
+          "recorded_at": "2026-08-14T12:44:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_config_spec.lua spec/unit/config_credentials_spec.lua spec/unit/config_options_spec.lua' FOCUS_PYTHON='spec.release.test_scope' FOCUS_LINT='<4 touched Lua files>'; make rockspec test-package; release-scope, README projection, release-checklist, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "28 focused Lua tests, 5 release-scope tests, touched-file lint, package installation, rockspec, and generated artifact validators passed",
+          "recorded_at": "2026-08-14T12:52:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T12:43:11+00:00",
+      "completed_at": "2026-08-14T12:52:49+00:00"
     }
   },
   "verified_references": {

@@ -450,10 +450,18 @@ local function apply_option(state, option, value, from_uri)
       return config_error(option, "auth_mechanism_properties must be a table")
     else
       for key, item in pairs(value) do
-        if type(key) ~= "string" or key == "" or type(item) ~= "string" then
+        local valid_oidc_callback = (key == "OIDC_CALLBACK"
+          or key == "OIDC_HUMAN_CALLBACK") and type(item) == "function"
+        local valid_oidc_allowed_hosts = key == "ALLOWED_HOSTS"
+          and type(item) == "table"
+
+        if type(key) ~= "string" or key == ""
+            or (type(item) ~= "string" and not valid_oidc_callback
+              and not valid_oidc_allowed_hosts)
+        then
           return config_error(
             option,
-            "auth_mechanism_properties must use non-empty string keys and string values"
+            "auth_mechanism_properties contains an unsupported key or value type"
           )
         end
       end

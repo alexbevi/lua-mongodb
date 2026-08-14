@@ -1,4 +1,5 @@
 local errors = require("mongodb.error")
+local oidc = require("mongodb.auth.oidc")
 
 local M = {}
 
@@ -9,16 +10,6 @@ local SCRAM_MECHANISMS = {
 local AWS_MECHANISM = "MONGODB-AWS"
 local OIDC_MECHANISM = "MONGODB-OIDC"
 local X509_MECHANISM = "MONGODB-X509"
-local OIDC_ENVIRONMENTS = {
-  azure = true,
-  gcp = true,
-  k8s = true,
-  test = true,
-}
-local OIDC_PROPERTIES = {
-  ENVIRONMENT = true,
-  TOKEN_RESOURCE = true,
-}
 
 local function config_error(option, message)
   return nil, errors.new({
@@ -154,57 +145,18 @@ function M.build(parsed, config)
       return config_error("auth_source", "MONGODB-OIDC source must be $external")
     end
 
-    local properties = config.auth_mechanism_properties or {}
+    local normalized_properties, properties_err = oidc.configure(
+      parsed.username,
+      config.auth_mechanism_properties or {}
+    )
 
-    for name in pairs(properties) do
-      if not OIDC_PROPERTIES[name] then
-        return config_error(
-          "auth_mechanism_properties",
-          "MONGODB-OIDC URI mechanism property is not supported"
-        )
-      end
-    end
-
-    local environment = properties.ENVIRONMENT
-    local token_resource = properties.TOKEN_RESOURCE
-
-    if not OIDC_ENVIRONMENTS[environment] then
-      return config_error(
-        "auth_mechanism_properties",
-        "MONGODB-OIDC requires a supported ENVIRONMENT"
-      )
-    end
-
-    if environment == "test" and parsed.username ~= nil then
-      return config_error(
-        "username",
-        "MONGODB-OIDC test environment does not support a username"
-      )
-    end
-
-    if environment == "azure" or environment == "gcp" then
-      if type(token_resource) ~= "string" or token_resource == "" then
-        return config_error(
-          "auth_mechanism_properties",
-          "MONGODB-OIDC environment requires TOKEN_RESOURCE"
-        )
-      end
-    elseif token_resource ~= nil then
-      return config_error(
-        "auth_mechanism_properties",
-        "MONGODB-OIDC environment does not support TOKEN_RESOURCE"
-      )
-    end
-
-    local normalized_properties = { ENVIRONMENT = environment }
-
-    if token_resource ~= nil then
-      normalized_properties.TOKEN_RESOURCE = token_resource
+    if not normalized_properties then
+      return nil, properties_err
     end
 
     return immutable({
       mechanism = OIDC_MECHANISM,
-      mechanism_properties = immutable(normalized_properties),
+      mechanism_properties = normalized_properties,
       source = "$external",
       username = parsed.username,
     })

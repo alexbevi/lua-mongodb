@@ -60,6 +60,7 @@ build = {
     ["mongodb.auth.aws_ec2"] = "src/mongodb/auth/aws_ec2.lua",
     ["mongodb.auth.aws_ecs"] = "src/mongodb/auth/aws_ecs.lua",
     ["mongodb.auth.aws_web_identity"] = "src/mongodb/auth/aws_web_identity.lua",
+    ["mongodb.auth.oidc"] = "src/mongodb/auth/oidc.lua",
     ["mongodb.auth.plain"] = "src/mongodb/auth/plain.lua",
     ["mongodb.auth.saslprep"] = "src/mongodb/auth/saslprep.lua",
     ["mongodb.auth.scram"] = "src/mongodb/auth/scram.lua",
