@@ -28,11 +28,6 @@
       "complexity": 43
     },
     {
-      "path": "src/mongodb/config/options.lua",
-      "function": "apply_option",
-      "complexity": 50
-    },
-    {
       "path": "src/mongodb/session.lua",
       "function": "finish_transaction",
       "complexity": 41

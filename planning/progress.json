@@ -3513,6 +3513,21 @@
       "notes": [],
       "started_at": "2026-08-14T19:46:24+00:00",
       "completed_at": "2026-08-14T19:49:54+00:00"
+    },
+    "CFG-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_options_spec.lua spec/unit/config_uri_spec.lua' FOCUS_LINT='src/mongodb/config/options.lua spec/unit/config_options_spec.lua spec/unit/config_uri_spec.lua'; make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua' FOCUS_LINT='spec/unit/config_fixtures_spec.lua'; make test-complexity",
+          "exit_code": 0,
+          "summary": "Thirteen focused option and URI cases plus all 125 applicable URI-option and 38 concern fixtures passed; lint passed; immutable descriptor dispatch preserved behavior and reduced apply_option complexity from 50 to 3.",
+          "recorded_at": "2026-08-14T19:59:24+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T19:55:15+00:00",
+      "completed_at": "2026-08-14T19:59:25+00:00"
     }
   },
   "verified_references": {

@@ -2,6 +2,25 @@ local errors = require("mongodb.error")
 
 local M = {}
 
+local function immutable_descriptor(fields)
+  local descriptor = {}
+
+  return setmetatable(descriptor, {
+    __index = fields,
+    __metatable = "mongodb.config.option_descriptor",
+    __newindex = function()
+      error("option descriptors are immutable", 2)
+    end,
+    __pairs = function()
+      return next, fields, nil
+    end,
+  })
+end
+
+local function option_descriptor(normalize)
+  return immutable_descriptor({ normalize = normalize })
+end
+
 local URI_NAMES = {
   appname = "app_name",
   authmechanism = "auth_mechanism",
@@ -81,50 +100,6 @@ local PROGRAMMATIC_NAMES = {
   tls_disable_ocsp_endpoint_check = true,
   tls_insecure = true,
   wait_queue_timeout_ms = true,
-}
-
-local BOOLEAN_OPTIONS = {
-  direct_connection = true,
-  journal = true,
-  load_balanced = true,
-  retry_reads = true,
-  retry_writes = true,
-  server_selection_try_once = true,
-  tls = true,
-  tls_allow_invalid_certificates = true,
-  tls_allow_invalid_hostnames = true,
-  tls_disable_certificate_revocation_check = true,
-  tls_disable_ocsp_endpoint_check = true,
-  tls_insecure = true,
-}
-
-local NON_NEGATIVE_INTEGER_OPTIONS = {
-  connect_timeout_ms = true,
-  local_threshold_ms = true,
-  max_idle_time_ms = true,
-  max_pool_size = true,
-  min_pool_size = true,
-  server_selection_timeout_ms = true,
-  socket_timeout_ms = true,
-  srv_max_hosts = true,
-  timeout_ms = true,
-  wait_queue_timeout_ms = true,
-  w_timeout_ms = true,
-}
-
-local POSITIVE_INTEGER_OPTIONS = {
-  max_connecting = true,
-}
-
-local STRING_OPTIONS = {
-  app_name = true,
-  auth_mechanism = true,
-  auth_source = true,
-  replica_set = true,
-  srv_service_name = true,
-  tls_ca_file = true,
-  tls_certificate_key_file = true,
-  tls_certificate_key_file_password = true,
 }
 
 local READ_PREFERENCE_MODES = {
@@ -373,112 +348,215 @@ local function validate_tag_sets(value)
   return result
 end
 
-local function apply_option(state, option, value, from_uri)
+local function normalize_boolean(option, value, from_uri)
+  if from_uri then
+    return parse_uri_boolean(option, value)
+  elseif type(value) ~= "boolean" then
+    return config_error(option, option .. " must be a boolean")
+  end
+
+  return value
+end
+
+local function normalize_integer(option, value, from_uri, minimum)
   local normalized = value
-  local normalization_err
+  local err
 
-  if BOOLEAN_OPTIONS[option] then
-    if from_uri then
-      normalized, normalization_err = parse_uri_boolean(option, value)
-    elseif type(value) ~= "boolean" then
-      return config_error(option, option .. " must be a boolean")
-    end
-  elseif NON_NEGATIVE_INTEGER_OPTIONS[option] then
-    if from_uri then
-      normalized, normalization_err = parse_uri_integer(option, value, false)
-    end
+  if from_uri then
+    normalized, err = parse_uri_integer(option, value, false)
+  end
 
-    if normalized ~= nil then
-      normalized, normalization_err = validate_integer(option, normalized, 0)
-    end
-  elseif POSITIVE_INTEGER_OPTIONS[option] then
-    if from_uri then
-      normalized, normalization_err = parse_uri_integer(option, value, false)
-    end
+  if normalized == nil then
+    return nil, err
+  end
 
-    if normalized ~= nil then
-      normalized, normalization_err = validate_integer(option, normalized, 1)
-    end
-  elseif STRING_OPTIONS[option] then
-    if option == "srv_service_name" then
-      normalized, normalization_err = validate_srv_service_name(value)
-    else
-      normalized, normalization_err = validate_string(option, value, false)
-    end
+  return validate_integer(option, normalized, minimum)
+end
 
-    if option == "app_name" and normalized and #normalized > 128 then
-      return config_error(option, "app_name must not exceed 128 bytes")
-    end
-  elseif option == "heartbeat_frequency_ms" then
-    if from_uri then
-      normalized, normalization_err = parse_uri_integer(option, value, false)
-    end
+local function normalize_non_negative_integer(option, value, from_uri)
+  return normalize_integer(option, value, from_uri, 0)
+end
 
-    if normalized ~= nil then
-      normalized, normalization_err = validate_integer(option, normalized, 500)
-    end
-  elseif option == "max_staleness_seconds" then
-    if from_uri then
-      normalized, normalization_err = parse_uri_integer(option, value, true)
-    end
+local function normalize_positive_integer(option, value, from_uri)
+  return normalize_integer(option, value, from_uri, 1)
+end
 
-    if normalized ~= nil and normalized ~= -1 then
-      normalized, normalization_err = validate_integer(option, normalized, 90)
-    end
-  elseif option == "read_concern_level" then
-    normalized, normalization_err = validate_string(option, value, true)
-  elseif option == "read_preference_mode" then
-    normalized = READ_PREFERENCE_MODES[value]
+local function normalize_string(option, value)
+  return validate_string(option, value, false)
+end
 
-    if not normalized then
-      return config_error(option, "unsupported read preference mode")
-    end
-  elseif option == "read_preference_tags" then
-    if from_uri then
-      normalized, normalization_err = parse_pairs(option, value)
-    else
-      normalized, normalization_err = validate_tag_sets(value)
-    end
-  elseif option == "server_monitoring_mode" then
-    if value ~= "auto" and value ~= "poll" and value ~= "stream" then
-      return config_error(option, "server_monitoring_mode must be auto, poll, or stream")
-    end
-  elseif option == "auth_mechanism_properties" then
-    if from_uri then
-      normalized, normalization_err = parse_pairs(option, value)
-    elseif type(value) ~= "table" then
-      return config_error(option, "auth_mechanism_properties must be a table")
-    else
-      for key, item in pairs(value) do
-        local valid_oidc_callback = (key == "OIDC_CALLBACK"
-          or key == "OIDC_HUMAN_CALLBACK") and type(item) == "function"
-        local valid_oidc_allowed_hosts = key == "ALLOWED_HOSTS"
-          and type(item) == "table"
+local function normalize_srv_service_name(_, value)
+  return validate_srv_service_name(value)
+end
 
-        if type(key) ~= "string" or key == ""
-            or (type(item) ~= "string" and not valid_oidc_callback
-              and not valid_oidc_allowed_hosts)
-        then
-          return config_error(
-            option,
-            "auth_mechanism_properties contains an unsupported key or value type"
-          )
-        end
-      end
-    end
-  elseif option == "w" then
-    if from_uri and value:match("^%-?%d+$") then
-      normalized, normalization_err = parse_uri_integer(option, value, false)
-    end
+local function normalize_app_name(option, value)
+  local normalized, err = normalize_string(option, value)
 
-    if math.type(normalized) == "integer" then
-      normalized, normalization_err = validate_integer(option, normalized, 0)
-    elseif type(normalized) ~= "string" or normalized == "" then
-      return config_error(option, "w must be a non-negative integer or non-empty string")
+  if not normalized then
+    return nil, err
+  elseif #normalized > 128 then
+    return config_error(option, "app_name must not exceed 128 bytes")
+  end
+
+  return normalized
+end
+
+local function normalize_heartbeat_frequency(option, value, from_uri)
+  return normalize_integer(option, value, from_uri, 500)
+end
+
+local function normalize_max_staleness(option, value, from_uri)
+  local normalized = value
+  local err
+
+  if from_uri then
+    normalized, err = parse_uri_integer(option, value, true)
+  end
+
+  if normalized == nil then
+    return nil, err
+  elseif normalized == -1 then
+    return normalized
+  end
+
+  return validate_integer(option, normalized, 90)
+end
+
+local function normalize_read_concern_level(option, value)
+  return validate_string(option, value, true)
+end
+
+local function normalize_read_preference_mode(option, value)
+  local normalized = READ_PREFERENCE_MODES[value]
+
+  if not normalized then
+    return config_error(option, "unsupported read preference mode")
+  end
+
+  return normalized
+end
+
+local function normalize_read_preference_tags(option, value, from_uri)
+  if from_uri then
+    return parse_pairs(option, value)
+  end
+
+  return validate_tag_sets(value)
+end
+
+local function normalize_server_monitoring_mode(option, value)
+  if value ~= "auto" and value ~= "poll" and value ~= "stream" then
+    return config_error(option, "server_monitoring_mode must be auto, poll, or stream")
+  end
+
+  return value
+end
+
+local function normalize_auth_mechanism_properties(option, value, from_uri)
+  if from_uri then
+    return parse_pairs(option, value)
+  elseif type(value) ~= "table" then
+    return config_error(option, "auth_mechanism_properties must be a table")
+  end
+
+  for key, item in pairs(value) do
+    local valid_oidc_callback = (key == "OIDC_CALLBACK"
+      or key == "OIDC_HUMAN_CALLBACK") and type(item) == "function"
+    local valid_oidc_allowed_hosts = key == "ALLOWED_HOSTS"
+      and type(item) == "table"
+
+    if type(key) ~= "string" or key == ""
+        or (type(item) ~= "string" and not valid_oidc_callback
+          and not valid_oidc_allowed_hosts)
+    then
+      return config_error(
+        option,
+        "auth_mechanism_properties contains an unsupported key or value type"
+      )
     end
-  else
+  end
+
+  return value
+end
+
+local function normalize_w(option, value, from_uri)
+  local normalized = value
+
+  if from_uri and value:match("^%-?%d+$") then
+    normalized = parse_uri_integer(option, value, false)
+  end
+
+  if math.type(normalized) == "integer" then
+    return validate_integer(option, normalized, 0)
+  elseif type(normalized) ~= "string" or normalized == "" then
+    return config_error(option, "w must be a non-negative integer or non-empty string")
+  end
+
+  return normalized
+end
+
+local BOOLEAN_DESCRIPTOR = option_descriptor(normalize_boolean)
+local NON_NEGATIVE_INTEGER_DESCRIPTOR = option_descriptor(
+  normalize_non_negative_integer
+)
+local POSITIVE_INTEGER_DESCRIPTOR = option_descriptor(normalize_positive_integer)
+local STRING_DESCRIPTOR = option_descriptor(normalize_string)
+
+local OPTION_DESCRIPTORS = immutable_descriptor({
+  app_name = option_descriptor(normalize_app_name),
+  auth_mechanism = STRING_DESCRIPTOR,
+  auth_mechanism_properties = option_descriptor(normalize_auth_mechanism_properties),
+  auth_source = STRING_DESCRIPTOR,
+  connect_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  direct_connection = BOOLEAN_DESCRIPTOR,
+  heartbeat_frequency_ms = option_descriptor(normalize_heartbeat_frequency),
+  journal = BOOLEAN_DESCRIPTOR,
+  load_balanced = BOOLEAN_DESCRIPTOR,
+  local_threshold_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  max_connecting = POSITIVE_INTEGER_DESCRIPTOR,
+  max_idle_time_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  max_pool_size = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  max_staleness_seconds = option_descriptor(normalize_max_staleness),
+  min_pool_size = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  read_concern_level = option_descriptor(normalize_read_concern_level),
+  read_preference_mode = option_descriptor(normalize_read_preference_mode),
+  read_preference_tags = option_descriptor(normalize_read_preference_tags),
+  replica_set = STRING_DESCRIPTOR,
+  retry_reads = BOOLEAN_DESCRIPTOR,
+  retry_writes = BOOLEAN_DESCRIPTOR,
+  server_monitoring_mode = option_descriptor(normalize_server_monitoring_mode),
+  server_selection_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  server_selection_try_once = BOOLEAN_DESCRIPTOR,
+  socket_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  srv_max_hosts = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  srv_service_name = option_descriptor(normalize_srv_service_name),
+  timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  tls = BOOLEAN_DESCRIPTOR,
+  tls_allow_invalid_certificates = BOOLEAN_DESCRIPTOR,
+  tls_allow_invalid_hostnames = BOOLEAN_DESCRIPTOR,
+  tls_ca_file = STRING_DESCRIPTOR,
+  tls_certificate_key_file = STRING_DESCRIPTOR,
+  tls_certificate_key_file_password = STRING_DESCRIPTOR,
+  tls_disable_certificate_revocation_check = BOOLEAN_DESCRIPTOR,
+  tls_disable_ocsp_endpoint_check = BOOLEAN_DESCRIPTOR,
+  tls_insecure = BOOLEAN_DESCRIPTOR,
+  w = option_descriptor(normalize_w),
+  wait_queue_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  w_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+})
+
+local function apply_option(state, option, value, from_uri)
+  local descriptor = OPTION_DESCRIPTORS[option]
+
+  if not descriptor then
     return config_error(option, "unsupported driver option")
   end
+
+  local normalized, normalization_err = descriptor.normalize(
+    option,
+    value,
+    from_uri
+  )
 
   if normalized == nil then
     return nil, normalization_err
