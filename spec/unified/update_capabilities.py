@@ -32,7 +32,9 @@ OWNER_REASONS = {
   "ADV-005": "sharded execution is a post-v1 capability",
   "ADV-006": "load-balanced execution is a post-v1 capability",
   "ADV-007": "client bulkWrite is a post-v1 capability",
-  "ADV-008": "the test requires a post-v1 authentication mechanism",
+  "AUTH-011": "the test requires OIDC machine authentication",
+  "AUTH-017": "the test requires OIDC speculative authentication",
+  "AUTH-018": "the test requires OIDC operation reauthentication",
   "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
   "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
@@ -84,7 +86,7 @@ OWNER_REASONS = {
 }
 
 SPECIFICATION_OWNERS = {
-  "auth": "ADV-008",
+  "auth": "AUTH-018",
   "change-streams": "ADV-001",
   "client-side-encryption": "ADV-010",
   "mongodb-handshake": "REL-031",
@@ -171,6 +173,30 @@ TEST_OVERRIDES[
   "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
 )
 TEST_OVERRIDES.update({
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": (
+    "AUTH-011",
+    OWNER_REASONS["AUTH-011"],
+  ),
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]": (
+    "AUTH-011",
+    OWNER_REASONS["AUTH-011"],
+  ),
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[3]": (
+    "AUTH-018",
+    OWNER_REASONS["AUTH-018"],
+  ),
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[4]": (
+    "AUTH-018",
+    OWNER_REASONS["AUTH-018"],
+  ),
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]": (
+    "AUTH-017",
+    OWNER_REASONS["AUTH-017"],
+  ),
+  "auth/tests/unified/mongodb-oidc-no-retry.json::test[6]": (
+    "AUTH-017",
+    OWNER_REASONS["AUTH-017"],
+  ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "ADV-011",
     "database aggregate is outside the v1 public collection adapter",

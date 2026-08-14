@@ -8,9 +8,9 @@
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "tests": {
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": {
-      "activity": "ADV-008",
+      "activity": "AUTH-011",
       "fingerprint": "08ff0916dca80e63e1ddb17303792a1aafa4f5d248ae9274a1bdc9c51decfc00",
-      "reason": "the test requires a post-v1 authentication mechanism",
+      "reason": "the test requires OIDC machine authentication",
       "requirements": {
         "arguments": [
           "find.filter"
@@ -36,9 +36,9 @@
       "status": "deferred_unsupported"
     },
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[2]": {
-      "activity": "ADV-008",
+      "activity": "AUTH-011",
       "fingerprint": "8ddd2f12c7468195af015ff2942e3fa4d7a02ab80d30a0bf314f146f51712a20",
-      "reason": "the test requires a post-v1 authentication mechanism",
+      "reason": "the test requires OIDC machine authentication",
       "requirements": {
         "arguments": [
           "insertOne.document"
@@ -64,9 +64,9 @@
       "status": "deferred_unsupported"
     },
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[3]": {
-      "activity": "ADV-008",
+      "activity": "AUTH-018",
       "fingerprint": "c4acba4ecd39c24602f0aa047e9094a1e61359b33304e29c3420ef30cec734a7",
-      "reason": "the test requires a post-v1 authentication mechanism",
+      "reason": "the test requires OIDC operation reauthentication",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -97,9 +97,9 @@
       "status": "deferred_unsupported"
     },
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[4]": {
-      "activity": "ADV-008",
+      "activity": "AUTH-018",
       "fingerprint": "d2066d620c9c3e56bba3680d8b0fa5ec556e0a469408c310a42beecce47509f6",
-      "reason": "the test requires a post-v1 authentication mechanism",
+      "reason": "the test requires OIDC operation reauthentication",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -130,9 +130,9 @@
       "status": "deferred_unsupported"
     },
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[5]": {
-      "activity": "ADV-008",
+      "activity": "AUTH-017",
       "fingerprint": "abdca2e64a9cf65b892cac06b981b7519e46e8291f209226c06086194d7d9ce9",
-      "reason": "the test requires a post-v1 authentication mechanism",
+      "reason": "the test requires OIDC speculative authentication",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -163,9 +163,9 @@
       "status": "deferred_unsupported"
     },
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[6]": {
-      "activity": "ADV-008",
+      "activity": "AUTH-017",
       "fingerprint": "04745d315e5c11ebfba0b71cb02e36becda8793c58fbb40a0d20fd5c54bcf5aa",
-      "reason": "the test requires a post-v1 authentication mechanism",
+      "reason": "the test requires OIDC speculative authentication",
       "requirements": {
         "arguments": [
           "failPoint.client",

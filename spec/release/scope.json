@@ -6,11 +6,19 @@
     "ADV-005": 116,
     "ADV-006": 61,
     "ADV-007": 68,
-    "ADV-008": 74,
     "ADV-009": 230,
     "ADV-010": 777,
     "ADV-011": 202,
-    "ADV-012": 15
+    "ADV-012": 15,
+    "AUTH-002": 18,
+    "AUTH-003": 4,
+    "AUTH-004": 7,
+    "AUTH-005": 8,
+    "AUTH-010": 20,
+    "AUTH-011": 2,
+    "AUTH-017": 2,
+    "AUTH-018": 2,
+    "AUTH-019": 11
   },
   "deferred_by_scope": {
     "post-v1-exclusion": 1914
@@ -23,14 +31,22 @@
     "ADV-005": "sharded deployment behavior is outside production-core v1",
     "ADV-006": "load-balanced deployment behavior is outside production-core v1",
     "ADV-007": "client bulk write is outside production-core v1",
-    "ADV-008": "advanced authentication mechanisms are outside production-core v1",
     "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
     "ADV-010": "client-side encryption requires a separate post-v1 design",
     "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
     "ADV-012": "proxy transports are outside production-core v1",
     "ADV-013": "runtime DNS resolution is outside production-core v1",
     "ADV-014": "initial DNS seedlist discovery is outside production-core v1",
-    "ADV-015": "SRV polling is outside production-core v1"
+    "ADV-015": "SRV polling is outside production-core v1",
+    "AUTH-002": "authentication credential normalization beyond SCRAM is outside production-core v1",
+    "AUTH-003": "PLAIN authentication is outside production-core v1",
+    "AUTH-004": "X.509 authentication is outside production-core v1",
+    "AUTH-005": "MONGODB-AWS authentication is outside production-core v1",
+    "AUTH-010": "MONGODB-OIDC credential configuration is outside production-core v1",
+    "AUTH-011": "MONGODB-OIDC machine authentication is outside production-core v1",
+    "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
+    "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
+    "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design"
   },
   "schema_version": 1,
   "statuses": {

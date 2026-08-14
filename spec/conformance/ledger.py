@@ -30,7 +30,7 @@ RUNNABLE_CASES = {
 }
 
 DEFAULT_OWNERS = {
-  "auth": "ADV-008",
+  "auth": "AUTH-018",
   "bson-binary-vector": "REL-002",
   "causal-consistency": "SES-001",
   "change-streams": "ADV-001",
@@ -317,9 +317,27 @@ def classify_case(
       "make test-unit",
     )
 
+  if suite == "auth" and path.endswith("/legacy/connection-string.json"):
+    index = int(identity.rsplit("[", 1)[1][:-1])
+
+    if index in {*range(4, 12), 14, 15}:
+      owner = "AUTH-019"
+    elif 16 <= index <= 22:
+      owner = "AUTH-004"
+    elif 23 <= index <= 26:
+      owner = "AUTH-003"
+    elif 40 <= index <= 47:
+      owner = "AUTH-005"
+    elif 48 <= index <= 67:
+      owner = "AUTH-010"
+    else:
+      owner = "AUTH-002"
+
+    return _deferred(case, owner, activities)
+
   if suite == "uri-options":
     if path.endswith("/auth-options.json") and identity.endswith("::test[1]"):
-      return _deferred(case, "ADV-008", activities)
+      return _deferred(case, "AUTH-019", activities)
 
     if path.endswith("/srv-options.json"):
       return _passed(
