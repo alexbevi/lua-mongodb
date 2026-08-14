@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 139,
+    "completed": 140,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 23
+    "pending": 22
   },
   "active": [],
   "ready": [
-    "RUN-004",
+    "QUA-002",
     "ADV-001",
     "ADV-002",
     "ADV-004",
@@ -38,11 +38,11 @@
   ],
   "ready_by_track": {
     "lua-hardening": [
-      "RUN-004"
+      "QUA-002"
     ]
   },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "RUN-004"
+  "next_ready": "QUA-002"
 }

@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local retry_executor = require("mongodb.retry_executor")
+local fake_runtime = require("mongodb.runtime.fake")
 local session_module = require("mongodb.session")
 local session_executor = require("mongodb.session_executor")
 
@@ -21,8 +22,10 @@ end
 
 local function manager()
   local next_id = 0
+  local runtime = fake_runtime.new()
 
   return session_module.new({
+    clock = runtime.clock,
     id_factory = function()
       next_id = next_id + 1
       return bson.document({
@@ -32,6 +35,7 @@ local function manager()
         ) },
       })
     end,
+    runtime = runtime,
     timeout_minutes = 30,
   })
 end

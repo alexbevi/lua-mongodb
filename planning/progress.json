@@ -3373,6 +3373,28 @@
       "notes": [],
       "started_at": "2026-08-14T18:40:58+00:00",
       "completed_at": "2026-08-14T18:42:39+00:00"
+    },
+    "RUN-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=<lua54-and-luarocks> LUA_PATH=<lua54-path> LUA_CPATH=<lua54-cpath> make test-focus FOCUS_UNIT='spec/unit/session_spec.lua'",
+          "exit_code": 2,
+          "summary": "16 session tests passed and the defining monotonic-clock case errored because session bookkeeping called clock:wall_time",
+          "recorded_at": "2026-08-14T18:48:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=<lua54-and-luarocks> LUA_PATH=<lua54-path> LUA_CPATH=<lua54-cpath> make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/resource_cleanup_spec.lua' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua spec/support/session_runner.lua'; reject os.time and wall_time in src/mongodb/session.lua; git diff --check",
+          "exit_code": 0,
+          "summary": "19 focused session and resource-cleanup tests passed; 3 touched Lua files linted with zero warnings; core session bookkeeping contains no os.time or wall_time access; diff check passed",
+          "recorded_at": "2026-08-14T18:50:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T18:47:29+00:00",
+      "completed_at": "2026-08-14T18:50:17+00:00"
     }
   },
   "verified_references": {

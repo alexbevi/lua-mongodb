@@ -67,7 +67,7 @@ local function validate_lsid(value)
 end
 
 local function now(state)
-  return state.clock and state.clock:wall_time() or os.time()
+  return state.clock:now()
 end
 
 local function expired(state, server_session)
@@ -935,6 +935,12 @@ function M.new(options)
 
   if type(options.id_factory) ~= "function" then
     error("session manager requires an id_factory", 2)
+  end
+
+  if type(options.clock) ~= "table"
+      or type(options.clock.now) ~= "function"
+  then
+    error("session manager requires a runtime clock adapter", 2)
   end
 
   if options.transaction_command ~= nil

@@ -25,6 +25,17 @@ local function identifiers()
   end
 end
 
+local function new_session_manager(options)
+  if options.clock == nil then
+    local runtime = fake_runtime.new()
+
+    options.clock = runtime.clock
+    options.runtime = options.runtime or runtime
+  end
+
+  return session_module.new(options)
+end
+
 describe("client sessions", function()
   it("measures through executor decorators without consuming transaction state", function()
     local pending_response
@@ -71,7 +82,7 @@ describe("client sessions", function()
     local runtime = fake_runtime.new()
     local timed = socket_timeout_executor.new(reconnecting, runtime, 100)
     local retrying = retry_executor.new(timed, { enabled_writes = true })
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
     })
@@ -116,7 +127,7 @@ describe("client sessions", function()
   it("inherits and overrides the client operation timeout", function()
     local runtime = fake_runtime.new({ now = 3 })
     local deadlines = {}
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       clock = runtime.clock,
       default_timeout_ms = 100,
       id_factory = identifiers(),
@@ -152,7 +163,7 @@ describe("client sessions", function()
     local identifier = bson.document({
       { "id", bson.binary(string.rep("s", 16), bson.BINARY_SUBTYPE.UUID) },
     })
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = function()
         return identifier
       end,
@@ -184,7 +195,7 @@ describe("client sessions", function()
   end)
 
   it("reuses clean server sessions and discards dirty sessions", function()
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
     })
@@ -200,6 +211,41 @@ describe("client sessions", function()
     local replacement = assert(sessions:start())
 
     assert.are_not.equal(first_lsid, assert(replacement:get_lsid()))
+  end)
+
+  it("expires server sessions through the injected monotonic clock", function()
+    local current_time = 10
+    local sessions = new_session_manager({
+      clock = {
+        now = function()
+          return current_time
+        end,
+        wall_time = function()
+          error("session bookkeeping must not read wall time")
+        end,
+      },
+      id_factory = identifiers(),
+      timeout_minutes = 3,
+    })
+    local first = assert(sessions:start())
+    local first_lsid = assert(first:get_lsid())
+
+    assert(first:end_session())
+    current_time = current_time + 119
+    local reused = assert(sessions:start())
+
+    assert.are.equal(first_lsid, assert(reused:get_lsid()))
+    assert(reused:end_session())
+    current_time = current_time + 120
+    local replacement = assert(sessions:start())
+
+    assert.are_not.equal(first_lsid, assert(replacement:get_lsid()))
+  end)
+
+  it("rejects session bookkeeping without a runtime clock", function()
+    assert.has_error(function()
+      session_module.new({ id_factory = identifiers() })
+    end, "session manager requires a runtime clock adapter")
   end)
 
   it("advances causal time and retains an implicit session for a cursor", function()
@@ -245,7 +291,7 @@ describe("client sessions", function()
       return true
     end
 
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
     })
@@ -282,7 +328,7 @@ describe("client sessions", function()
   end)
 
   it("dirties a session after a network failure", function()
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
     })
@@ -317,7 +363,7 @@ describe("client sessions", function()
   end)
 
   it("increments txnNumber once for each logical retryable write", function()
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
     })
@@ -366,7 +412,7 @@ describe("client sessions", function()
 
   it("decorates and commits one explicit transaction", function()
     local transaction_commands = {}
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
       transaction_command = function(_, name)
@@ -404,7 +450,7 @@ describe("client sessions", function()
 
   it("retries abort after a retryable authentication handshake failure", function()
     local abort_attempts = 0
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
       transaction_command = function(_, name)
@@ -442,7 +488,7 @@ describe("client sessions", function()
 
   it("retries commit after a retryable authentication handshake failure", function()
     local commit_attempts = {}
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
       transaction_command = function(_, name, _, retrying_commit)
@@ -474,7 +520,7 @@ describe("client sessions", function()
   end)
 
   it("does not mask a transaction read preference with an operation preference", function()
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       id_factory = identifiers(),
       timeout_minutes = 30,
     })
@@ -497,7 +543,7 @@ describe("client sessions", function()
 
   it("returns the callback value after a convenient transaction commits", function()
     local transaction_commands = {}
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       clock = {
         now = function() return 0 end,
         sleep = function() return true end,
@@ -528,7 +574,7 @@ describe("client sessions", function()
     local current_time = 0
     local sleeps = {}
     local transaction_commands = {}
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       clock = {
         now = function() return current_time end,
         sleep = function(_, duration)
@@ -574,7 +620,7 @@ describe("client sessions", function()
 
   it("retries an unknown commit result without rerunning the callback", function()
     local commit_count = 0
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       clock = {
         now = function() return 0 end,
         sleep = function() return true end,
@@ -617,7 +663,7 @@ describe("client sessions", function()
       category = errors.CATEGORY.SERVER,
       message = "callback failed",
     })
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       clock = {
         now = function() return 0 end,
         sleep = function() return true end,
@@ -650,7 +696,7 @@ describe("client sessions", function()
       labels = { "TransientTransactionError" },
       message = "retry transaction",
     })
-    local sessions = session_module.new({
+    local sessions = new_session_manager({
       clock = {
         now = function() return 0 end,
         sleep = function() return true end,
