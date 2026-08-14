@@ -11,8 +11,10 @@ local ALLOWED_OPTIONS = {
   dns_nameservers = true,
   dns_query_timeout = true,
   entropy = true,
+  file = true,
   getenv = true,
   gettime = true,
+  http = true,
   lock_poll_interval = true,
   metadata = true,
   socket = true,
@@ -182,6 +184,77 @@ local function new_environment_capability(getenv)
       end
 
       return value
+    end,
+  }
+end
+
+local function file_error(message)
+  return errors.new({
+    category = errors.CATEGORY.NETWORK,
+    message = message,
+  })
+end
+
+local function new_file_capability(adapter)
+  return {
+    read = function(_, path, options)
+      if type(path) ~= "string" or path == "" then
+        error("file path must be a non-empty string", 2)
+      end
+
+      options = options or {}
+
+      if type(options) ~= "table" then
+        error("file read options must be a table", 2)
+      end
+
+      local max_bytes = options.max_bytes or 1024 * 1024
+
+      if math.type(max_bytes) ~= "integer" or max_bytes <= 0 then
+        error("maximum file size must be a positive integer", 2)
+      end
+
+      local ok, err = runtime_contract.check(
+        adapter,
+        options.deadline,
+        options.cancellation
+      )
+
+      if not ok then
+        return nil, err
+      end
+
+      local file = io.open(path, "rb")
+
+      if file == nil then
+        return nil, file_error("file read failed")
+      end
+
+      local outcome = table.pack(pcall(function()
+        return file:read(max_bytes + 1) or ""
+      end))
+
+      file:close()
+
+      if not outcome[1] or type(outcome[2]) ~= "string" then
+        return nil, file_error("file read failed")
+      end
+
+      if #outcome[2] > max_bytes then
+        return nil, file_error("file exceeds the configured size limit")
+      end
+
+      ok, err = runtime_contract.check(
+        adapter,
+        options.deadline,
+        options.cancellation
+      )
+
+      if not ok then
+        return nil, err
+      end
+
+      return outcome[2]
     end,
   }
 end
@@ -396,6 +469,8 @@ function M.new(options)
   adapter.tls = options.tls or require("mongodb.runtime.luasec").new(adapter)
   adapter.entropy = options.entropy or openssl.entropy
   adapter.crypto = options.crypto or openssl.crypto
+  adapter.file = options.file or new_file_capability(adapter)
+  adapter.http = options.http or require("mongodb.runtime.http").new(adapter)
   adapter.metadata = options.metadata or default_metadata(raw_getenv)
 
   return runtime_contract.validate(adapter)

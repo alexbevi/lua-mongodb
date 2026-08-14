@@ -175,6 +175,59 @@ describe("MONGODB-AWS authentication", function()
     assert.are.equal(2, step)
   end)
 
+  it("selects configured web identity credentials before SASL", function()
+    local client_nonce = string.rep("0", 32)
+    local runtime = runtime_with_nonce(client_nonce, {
+      AWS_ROLE_ARN = "arn:aws:iam::123456789012:role/database",
+      AWS_ROLE_SESSION_NAME = "database-driver",
+      AWS_WEB_IDENTITY_TOKEN_FILE = "/var/run/aws-token",
+    })
+    local step = 0
+    local commands = {
+      command = function(_, _, body)
+        step = step + 1
+
+        if step == 1 then
+          return server_first(client_nonce)
+        end
+
+        local payload = assert(bson.decode(body:get("payload").data))
+
+        assert.is_not_nil(payload:get("a"):find(
+          "Credential=AKIDEXAMPLE/",
+          1,
+          true
+        ))
+        assert.are.equal("WEB_TOKEN", payload:get("t"))
+        return bson.document({
+          { "conversationId", 7 },
+          { "done", true },
+          { "payload", bson.binary("") },
+          { "ok", 1 },
+        })
+      end,
+    }
+
+    runtime:set_file("/var/run/aws-token", "identity-token")
+    runtime:queue_http({
+      body = "{\"Credentials\":{\"AccessKeyId\":\"AKIDEXAMPLE\","
+        .. "\"Expiration\":\"2030-01-01T00:00:00Z\","
+        .. "\"SecretAccessKey\":"
+        .. "\"wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY\","
+        .. "\"SessionToken\":\"WEB_TOKEN\"}}",
+      headers = { ["content-type"] = "application/json" },
+      status = 200,
+    })
+
+    assert.is_true(auth.authenticate(commands, runtime, {
+      mechanism = "MONGODB-AWS",
+      source = "$external",
+    }, { mechanism = "MONGODB-AWS" }))
+    assert.are.equal(1, #runtime.calls.file)
+    assert.are.equal(1, #runtime.calls.http)
+    assert.are.equal(2, step)
+  end)
+
   it("clears provider credentials after an authentication failure", function()
     local runtime = runtime_with_nonce(string.rep("0", 32))
     local calls = 0

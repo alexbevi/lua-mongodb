@@ -278,6 +278,26 @@ function FAKE_METHODS:set_environment(name, value)
   self._environment[name] = value
 end
 
+function FAKE_METHODS:set_file(path, value)
+  if type(path) ~= "string" or path == "" then
+    error("file path must be a non-empty string", 2)
+  end
+
+  if value ~= nil and type(value) ~= "string" and not errors.is(value) then
+    error("fake file value must be a string, structured error, or nil", 2)
+  end
+
+  self._files[path] = value
+end
+
+function FAKE_METHODS:queue_http(result)
+  if type(result) ~= "table" and not errors.is(result) then
+    error("HTTP results must be response tables or structured errors", 2)
+  end
+
+  self._http_queue[#self._http_queue + 1] = result
+end
+
 local function new_clock(owner)
   return {
     now = function()
@@ -490,6 +510,104 @@ local function new_environment_capability(owner)
   }
 end
 
+local function fake_file_error()
+  return errors.new({
+    category = errors.CATEGORY.NETWORK,
+    message = "fake file read failed",
+  })
+end
+
+local function new_file_capability(owner)
+  return {
+    read = function(_, path, options)
+      if type(path) ~= "string" or path == "" then
+        error("file path must be a non-empty string", 2)
+      end
+
+      options = options or {}
+
+      if type(options) ~= "table" then
+        error("file read options must be a table", 2)
+      end
+
+      local ok, err = runtime_contract.check(
+        owner,
+        options.deadline,
+        options.cancellation
+      )
+
+      if not ok then
+        return nil, err
+      end
+
+      owner.calls.file[#owner.calls.file + 1] = {
+        options = options,
+        path = path,
+      }
+
+      local value = owner._files[path]
+
+      if value == nil then
+        return nil, fake_file_error()
+      end
+
+      if errors.is(value) then
+        return nil, value
+      end
+
+      local max_bytes = options.max_bytes
+
+      if max_bytes ~= nil then
+        if math.type(max_bytes) ~= "integer" or max_bytes <= 0 then
+          error("maximum file size must be a positive integer", 2)
+        end
+
+        if #value > max_bytes then
+          return nil, fake_file_error()
+        end
+      end
+
+      return value
+    end,
+  }
+end
+
+local function new_http_capability(owner)
+  return {
+    request = function(_, request, deadline, cancellation)
+      if type(request) ~= "table" then
+        error("HTTP request must be a table", 2)
+      end
+
+      local ok, err = runtime_contract.check(owner, deadline, cancellation)
+
+      if not ok then
+        return nil, err
+      end
+
+      owner.calls.http[#owner.calls.http + 1] = {
+        cancellation = cancellation,
+        deadline = deadline,
+        request = request,
+      }
+
+      local result = owner._http_queue[owner._http_head]
+
+      if result == nil then
+        error("fake HTTP script exhausted", 2)
+      end
+
+      owner._http_head = owner._http_head + 1
+
+      if errors.is(result) then
+        return nil, result
+      end
+
+      return result
+    end,
+  }
+end
+
 local function new_tls_capability(owner)
   return {
     wrap = function(_, socket, options, deadline, cancellation)
@@ -635,6 +753,24 @@ function M.new(options)
     environment[name] = value
   end
 
+  if options.files ~= nil and type(options.files) ~= "table" then
+    error("files must be a table", 2)
+  end
+
+  local files = {}
+
+  for path, value in pairs(options.files or {}) do
+    if type(path) ~= "string" or path == "" then
+      error("file paths must be non-empty strings", 2)
+    end
+
+    if type(value) ~= "string" and not errors.is(value) then
+      error("fake file values must be strings or structured errors", 2)
+    end
+
+    files[path] = value
+  end
+
   local fake = setmetatable({
     _connect_head = 1,
     _connect_queue = {},
@@ -642,6 +778,9 @@ function M.new(options)
     _dns_queue = { srv = {}, txt = {} },
     _environment = environment,
     _entropy = options.entropy or "",
+    _files = files,
+    _http_head = 1,
+    _http_queue = {},
     _now = options.now or 0,
     _wall_time = options.wall_time or 0,
     _task_head = 1,
@@ -653,6 +792,8 @@ function M.new(options)
       crypto = {},
       dns = {},
       environment = {},
+      file = {},
+      http = {},
       tls = {},
     },
   }, FAKE_METATABLE)
@@ -666,6 +807,8 @@ function M.new(options)
   fake.task = new_task_capability(fake)
   fake.lock = new_lock_capability(fake)
   fake.environment = new_environment_capability(fake)
+  fake.file = new_file_capability(fake)
+  fake.http = new_http_capability(fake)
   fake.dns = new_dns_capability(fake)
   fake.socket = new_socket_capability(fake)
   fake.tls = new_tls_capability(fake)

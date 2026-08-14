@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "8b584ad42944e7f0ae9fe8a0bff588472b6a7bf60bc77a36f5a6a75a7da2f05a",
+  "plan_digest": "d0ac3a6236a8e44a74e9f72ceb8971edb4ad763b166db4bb7a4efa68e302d0b9",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -2730,11 +2730,43 @@
       "completed_at": "2026-08-14T11:11:59+00:00"
     },
     "AUTH-007": {
-      "status": "pending",
-      "evidence": [],
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_web_identity_spec.lua'",
+          "exit_code": 2,
+          "summary": "Defining AssumeRoleWithWebIdentity exchange test failed because mongodb.auth.aws_web_identity did not exist (0 successes, 1 load error).",
+          "recorded_at": "2026-08-14T11:17:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_web_identity_spec.lua spec/unit/auth_aws_spec.lua spec/unit/runtime_spec.lua spec/unit/http_runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_LINT='<12 touched Lua files>'",
+          "exit_code": 0,
+          "summary": "39 focused unit tests passed; touched-file lint reported 0 warnings and 0 errors across 12 files.",
+          "recorded_at": "2026-08-14T11:31:10+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_INTEGRATION='spec/integration/auth_ping_spec.lua'",
+          "exit_code": 0,
+          "summary": "The directly coupled live authentication ping integration passed (1 success, 0 failures, 0 errors, 0 pending).",
+          "recorded_at": "2026-08-14T11:31:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make rockspec test-package",
+          "exit_code": 0,
+          "summary": "The rockspec lint and isolated source-rock install/public-module package validator passed after adding the web-identity and HTTP modules.",
+          "recorded_at": "2026-08-14T11:31:12+00:00"
+        }
+      ],
       "notes": [
-        "Requeued: Paused before implementation because normative cache review found AUTH-021 used a one-minute validity window instead of the required five-minute window."
-      ]
+        "Requeued: Paused before implementation because normative cache review found AUTH-021 used a one-minute validity window instead of the required five-minute window.",
+        "Requeued: Pinned current authentication specification requires an Accept: application/json STS response; replace the stale XML-response wording before test-first implementation."
+      ],
+      "started_at": "2026-08-14T11:16:58+00:00",
+      "completed_at": "2026-08-14T11:31:23+00:00"
     }
   },
   "verified_references": {

@@ -31,6 +31,34 @@ describe("runtime interface", function()
     assert.is_nil(fake.environment:get("AWS_SESSION_TOKEN"))
   end)
 
+  it("isolates bounded file and scripted HTTP capabilities", function()
+    local fake = fake_runtime.new({ files = { ["/token"] = "value" } })
+    local deadline = 10
+
+    assert.are.equal("value", assert(fake.file:read("/token", {
+      deadline = deadline,
+      max_bytes = 5,
+    })))
+    assert.are.equal("/token", fake.calls.file[1].path)
+    assert.are.equal(deadline, fake.calls.file[1].options.deadline)
+
+    fake:queue_http({ body = "response", headers = {}, status = 200 })
+
+    local request = { method = "GET", url = "https://example.test/" }
+    local response = assert(fake.http:request(request, deadline))
+
+    assert.are.equal("response", response.body)
+    assert.are.equal(request, fake.calls.http[1].request)
+    assert.are.equal(deadline, fake.calls.http[1].deadline)
+
+    fake:set_file("/token", nil)
+
+    local value, err = fake.file:read("/token")
+
+    assert.is_nil(value)
+    assert.is_true(errors.is(err, errors.CATEGORY.NETWORK))
+  end)
+
   it("uses absolute monotonic deadlines", function()
     local fake = fake_runtime.new({ now = 10, wall_time = 1000 })
     local deadline = runtime.deadline_after(fake, 5)

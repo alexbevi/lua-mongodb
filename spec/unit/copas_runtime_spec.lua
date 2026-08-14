@@ -50,6 +50,33 @@ describe("Copas runtime adapter", function()
     assert.are.equal("second", adapter.environment:get("AWS_ACCESS_KEY_ID"))
   end)
 
+  it("reads bounded files through the default adapter", function()
+    local path = os.tmpname()
+    local file = assert(io.open(path, "wb"))
+
+    assert(file:write("token"))
+    assert.is_true(file:close())
+
+    local outcome = table.pack(pcall(function()
+      local adapter = runtime.copas()
+
+      assert.are.equal("token", assert(adapter.file:read(path, {
+        max_bytes = 5,
+      })))
+
+      local value, err = adapter.file:read(path, { max_bytes = 4 })
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.NETWORK))
+    end))
+
+    os.remove(path)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
   it("rejects unsupported Copas versions", function()
     assert.has_error(function()
       copas_runtime.new({

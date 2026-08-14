@@ -78,6 +78,38 @@ function CONNECTION_METHODS:read_exact(length, deadline, cancellation)
   return table.concat(chunks)
 end
 
+function CONNECTION_METHODS:read_some(max_bytes, deadline, cancellation)
+  if math.type(max_bytes) ~= "integer" or max_bytes <= 0 then
+    error("maximum read length must be a positive integer", 2)
+  end
+
+  local open, open_err = check_open(self)
+
+  if not open then
+    return nil, open_err
+  end
+
+  local ok, err = runtime_contract.check(self._runtime, deadline, cancellation)
+
+  if not ok then
+    return nil, err
+  end
+
+  local chunk
+
+  chunk, err = self._socket:read_some(max_bytes, deadline, cancellation)
+
+  if chunk == nil then
+    return nil, err
+  end
+
+  if type(chunk) ~= "string" or #chunk > max_bytes then
+    return nil, network_error("runtime socket returned an invalid read chunk")
+  end
+
+  return chunk
+end
+
 function CONNECTION_METHODS:read_frame(max_message_size, deadline, cancellation)
   require_length("max_message_size", max_message_size)
 
