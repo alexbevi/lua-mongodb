@@ -2682,6 +2682,28 @@
       "notes": [],
       "started_at": "2026-08-14T10:55:04+00:00",
       "completed_at": "2026-08-14T11:00:22+00:00"
+    },
+    "AUTH-021": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua'",
+          "exit_code": 2,
+          "summary": "Provider cache test failed because an absent environment returned unavailable instead of consulting and caching the injected provider (2 successes, 1 failure).",
+          "recorded_at": "2026-08-14T11:04:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_credentials.lua src/mongodb/auth/aws.lua src/mongodb/auth/init.lua spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua'",
+          "exit_code": 0,
+          "summary": "12 focused Lua examples passed for bounded provider-cache reuse, 60-second refresh, environment/cache precedence, provider validation/redaction, and exact authentication-failure invalidation; 0 upstream fixture cases were newly applicable, 0 environment-skipped, and 0 failed; touched-file lint reported 0 warnings/errors; conformance, release, capability, README projection, and rockspec validators passed",
+          "recorded_at": "2026-08-14T11:06:28+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T11:03:01+00:00",
+      "completed_at": "2026-08-14T11:06:28+00:00"
     }
   },
   "verified_references": {

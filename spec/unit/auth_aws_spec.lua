@@ -1,5 +1,6 @@
 local auth = require("mongodb.auth")
 local aws = require("mongodb.auth.aws")
+local aws_credentials = require("mongodb.auth.aws_credentials")
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local fake_runtime = require("mongodb.runtime.fake")
@@ -39,6 +40,14 @@ local function resolved_credentials(session_token)
 end
 
 describe("MONGODB-AWS authentication", function()
+  before_each(function()
+    aws_credentials.clear_cache()
+  end)
+
+  after_each(function()
+    aws_credentials.clear_cache()
+  end)
+
   it("completes a deterministic static-credential SASL conversation", function()
     local client_nonce = string.rep("0", 32)
     local server_nonce = client_nonce .. string.rep("1", 32)
@@ -164,6 +173,48 @@ describe("MONGODB-AWS authentication", function()
       source = "$external",
     }, { mechanism = "MONGODB-AWS" }))
     assert.are.equal(2, step)
+  end)
+
+  it("clears provider credentials after an authentication failure", function()
+    local runtime = runtime_with_nonce(string.rep("0", 32))
+    local calls = 0
+    local provider = function()
+      calls = calls + 1
+      return {
+        expiration = runtime.clock:wall_time() + 120,
+        password = "PRIVATE_SECRET_" .. calls,
+        session_token = "PRIVATE_TOKEN_" .. calls,
+        username = "ACCESS_" .. calls,
+      }
+    end
+    local shell = {
+      mechanism = "MONGODB-AWS",
+      source = "$external",
+    }
+    local commands = {
+      command = function()
+        return nil, errors.new({
+          category = errors.CATEGORY.SERVER,
+          code = 18,
+          message = "authentication failed",
+        })
+      end,
+    }
+    local authenticated, err = auth.authenticate(commands, runtime, shell, {
+      mechanism = "MONGODB-AWS",
+      provider = provider,
+    })
+
+    assert.is_nil(authenticated)
+    assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+    assert.are.equal(1, calls)
+
+    local retried = assert(aws_credentials.resolve(runtime, shell, {
+      provider = provider,
+    }))
+
+    assert.are.equal("ACCESS_2", retried.username)
+    assert.are.equal(2, calls)
   end)
 
   it("derives regional STS scopes from the server host", function()

@@ -22,14 +22,23 @@ function M.authenticate(commands, runtime, credentials, options)
     local err
 
     if credentials.username == nil and credentials.password == nil then
-      resolved, err = aws_credentials.resolve(runtime, credentials)
+      resolved, err = aws_credentials.resolve(runtime, credentials, options)
 
       if not resolved then
         return nil, err
       end
     end
 
-    return aws.authenticate(commands, runtime, resolved, options)
+    local authenticated
+
+    authenticated, err = aws.authenticate(commands, runtime, resolved, options)
+
+    if not authenticated then
+      aws_credentials.invalidate(resolved)
+      return nil, err
+    end
+
+    return true
   end
 
   if mechanism == "PLAIN" then
