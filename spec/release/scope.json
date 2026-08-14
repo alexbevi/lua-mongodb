@@ -38,7 +38,7 @@
     "AUTH-005": "MONGODB-AWS authentication is outside production-core v1",
     "AUTH-010": "MONGODB-OIDC credential configuration is outside production-core v1",
     "AUTH-011": "MONGODB-OIDC machine authentication is outside production-core v1",
-    "AUTH-012": "MONGODB-OIDC human credential caching is outside production-core v1",
+    "AUTH-012": "MONGODB-OIDC human authentication recovery is outside production-core v1",
     "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
     "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
     "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
@@ -47,7 +47,9 @@
     "AUTH-025": "MONGODB-OIDC machine token caching is outside production-core v1",
     "AUTH-026": "MONGODB-OIDC callback coordination is outside production-core v1",
     "AUTH-027": "MONGODB-OIDC human allowed-host enforcement is outside production-core v1",
-    "AUTH-028": "MONGODB-OIDC human authentication is outside production-core v1"
+    "AUTH-028": "MONGODB-OIDC human authentication is outside production-core v1",
+    "AUTH-029": "MONGODB-OIDC human access-token caching is outside production-core v1",
+    "AUTH-030": "MONGODB-OIDC human refresh credential reuse is outside production-core v1"
   },
   "schema_version": 1,
   "statuses": {
