@@ -172,8 +172,44 @@ local function azure_provider(runtime, context, credentials)
   }
 end
 
+local function gcp_provider(runtime, context, credentials)
+  local resource = credentials.mechanism_properties.TOKEN_RESOURCE
+  local response, err = runtime.http:request({
+    headers = { ["metadata-flavor"] = "Google" },
+    max_response_bytes = MAX_TOKEN_BYTES,
+    method = "GET",
+    url = "http://metadata/computeMetadata/v1/instance/"
+      .. "service-accounts/default/identity"
+      .. "?audience=" .. percent_encode(resource),
+  }, context.deadline, context.cancellation)
+
+  if response == nil then
+    return nil, provider_error("gcp", err)
+  end
+
+  if type(response) ~= "table"
+      or math.type(response.status) ~= "integer"
+      or type(response.body) ~= "string"
+  then
+    return nil, provider_error("gcp")
+  end
+
+  if response.status ~= 200 then
+    return nil, provider_error("gcp", nil, {
+      response_body = response.body,
+    })
+  end
+
+  if response.body == "" then
+    return nil, provider_error("gcp")
+  end
+
+  return { access_token = response.body }
+end
+
 local PROVIDERS = {
   azure = azure_provider,
+  gcp = gcp_provider,
   k8s = kubernetes_provider,
   test = test_provider,
 }

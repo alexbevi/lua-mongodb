@@ -3193,6 +3193,28 @@
       "notes": [],
       "started_at": "2026-08-14T14:53:13+00:00",
       "completed_at": "2026-08-14T14:55:50+00:00"
+    },
+    "AUTH-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_gcp_spec.lua'",
+          "exit_code": 2,
+          "summary": "ENVIRONMENT:gcp was rejected by the built-in provider registry before issuing the encoded metadata identity request or starting one-step SASL (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T14:59:31+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_gcp_spec.lua spec/unit/auth_oidc_azure_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc_providers.lua spec/unit/auth_oidc_gcp_spec.lua'",
+          "exit_code": 0,
+          "summary": "All 3 GCP cases and all 4 directly coupled Azure HTTP-provider cases passed; touched-file lint reported zero warnings or errors.",
+          "recorded_at": "2026-08-14T15:00:53+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T14:58:59+00:00",
+      "completed_at": "2026-08-14T15:00:53+00:00"
     }
   },
   "verified_references": {
