@@ -63,7 +63,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     self.assertIn("| Serialization | BSON corpus | 🟢 | 100.0% |", table)
     self.assertIn(
       "| Authentication | Authentication options and additional mechanisms | "
-      "🟡 | 39.7% |",
+      "🟡 | 47.9% |",
       table,
     )
     self.assertRegex(

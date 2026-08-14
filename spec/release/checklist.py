@@ -152,7 +152,7 @@ def generate() -> dict[str, Any]:
   post_v1_exclusions = scope_report.get("deferred_by_scope", {}).get(
     "post-v1-exclusion",
     0,
-  )
+  ) + statuses.get("excluded_scope", 0)
   ledger_summary = ledger.get("summary", {})
 
   if applicable_gaps != 0:

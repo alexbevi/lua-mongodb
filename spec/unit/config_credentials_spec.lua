@@ -60,6 +60,32 @@ describe("authentication credential normalization", function()
     assert.is_nil(tostring(err):find("private-value", 1, true))
   end)
 
+  it("creates only provider-backed MONGODB-AWS credentials", function()
+    local parsed = assert(uri.parse(
+      "mongodb://localhost/?authMechanism=MONGODB-AWS"
+    ))
+    local config = assert(options.normalize(parsed.options, nil, parsed))
+    local credential = assert(credentials.build(parsed, config))
+
+    assert.are.equal("MONGODB-AWS", credential.mechanism)
+    assert.are.equal("$external", credential.source)
+    assert.is_nil(credential.username)
+    assert.is_nil(credential.password)
+
+    parsed = assert(uri.parse(
+      "mongodb://access-key:private-secret@localhost/"
+        .. "?authMechanism=MONGODB-AWS"
+    ))
+    config = assert(options.normalize(parsed.options, nil, parsed))
+    local credential_err
+    credential, credential_err = credentials.build(parsed, config)
+
+    assert.is_nil(credential)
+    assert.is_true(errors.is(credential_err, errors.CATEGORY.CONFIGURATION))
+    assert.are.equal("username", credential_err.details.option)
+    assert.is_nil(tostring(credential_err):find("private-secret", 1, true))
+  end)
+
   it("runs every AUTH-002 legacy credential case", function()
     assert.are.equal(18, auth_config_runner.run_auth_002())
   end)
@@ -70,5 +96,13 @@ describe("authentication credential normalization", function()
 
   it("runs every AUTH-004 X.509 credential case", function()
     assert.are.equal(7, auth_config_runner.run_auth_004())
+  end)
+
+  it("runs and classifies every AUTH-020 AWS credential case", function()
+    assert.are.same({
+      executed = 8,
+      passed = 6,
+      superseded = 2,
+    }, auth_config_runner.run_auth_020())
   end)
 end)

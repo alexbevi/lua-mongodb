@@ -71,6 +71,23 @@ class ReleaseScopeTests(unittest.TestCase):
     ):
       scope.classify(cases, activities)
 
+  def test_accepts_a_reasoned_superseded_case_from_a_completed_activity(self):
+    cases = {
+      "fixture.json::test[1]": {
+        "activity": "AUTH-020",
+        "reason": "superseded by the current authentication specification",
+        "status": "excluded_scope",
+      },
+    }
+    activities = {
+      "AUTH-020": {"milestone": "post-v1", "status": "completed"},
+    }
+
+    report = scope.classify(cases, activities)
+
+    self.assertEqual({"excluded_scope": 1}, report["statuses"])
+    self.assertEqual({}, report["deferred_by_activity"])
+
 
 if __name__ == "__main__":
   unittest.main()

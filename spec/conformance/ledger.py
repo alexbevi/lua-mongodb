@@ -236,6 +236,25 @@ def _deferred(
   }
 
 
+def _excluded(
+  case: dict[str, Any],
+  activity: str,
+  runner: str,
+  evidence: str,
+  reason: str,
+) -> dict[str, Any]:
+  return {
+    **case,
+    "activity": activity,
+    "last_execution": evidence,
+    "reason": reason,
+    "required_environment": "none",
+    "runner": runner,
+    "scope": "superseded",
+    "status": "excluded_scope",
+  }
+
+
 def classify_case(
   identity: str,
   case: dict[str, Any],
@@ -264,6 +283,9 @@ def classify_case(
 
     row = _deferred(case, value["activity"], activities, "spec/unified/run.py")
     row["status"] = value["status"]
+
+    if value["status"] == "excluded_scope":
+      row["reason"] = value.get("reason") or "fixture is outside the supported driver scope"
 
     return row
 
@@ -333,7 +355,16 @@ def classify_case(
     else:
       owner = "AUTH-002"
 
-    if owner in {"AUTH-002", "AUTH-003", "AUTH-004"}:
+    if index in {43, 44}:
+      return _excluded(
+        case,
+        "AUTH-020",
+        "spec/support/auth_config_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
+        "retained legacy assertion was superseded by DRIVERS-3131, which prohibits explicit MONGODB-AWS URI credentials",
+      )
+
+    if owner in {"AUTH-002", "AUTH-003", "AUTH-004", "AUTH-020"}:
       return _passed(
         case,
         owner,
@@ -534,7 +565,9 @@ def validate_cases(
       if value.get(key) != source[key]:
         raise LedgerError(f"conformance {key} is stale for {identity}")
 
-    if set(value) != required:
+    expected_fields = required | ({"reason"} if value.get("status") == "excluded_scope" else set())
+
+    if set(value) != expected_fields:
       raise LedgerError(f"conformance record has malformed fields for {identity}")
 
     activity = value["activity"]
@@ -548,7 +581,7 @@ def validate_cases(
     if not isinstance(value["runner"], str) or not value["runner"]:
       raise LedgerError(f"conformance record has no runner for {identity}")
 
-    if value["status"] != "passed" and activity_states[activity] == "completed":
+    if value["status"] == "deferred_unsupported" and activity_states[activity] == "completed":
       raise LedgerError(f"deferred case is owned by completed activity {activity}: {identity}")
 
     if value["status"] == "passed":
@@ -557,6 +590,10 @@ def validate_cases(
 
       if not isinstance(value["last_execution"], str) or not value["last_execution"]:
         raise LedgerError(f"passing case has no execution evidence: {identity}")
+
+    if value["status"] == "excluded_scope":
+      if not isinstance(value["reason"], str) or not value["reason"].strip():
+        raise LedgerError(f"excluded case has no reason: {identity}")
 
 
 def validate_files(

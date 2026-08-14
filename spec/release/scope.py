@@ -93,6 +93,14 @@ def classify(
 
     statuses[status] += 1
 
+    if status == "excluded_scope":
+      reason = case.get("reason")
+
+      if not isinstance(reason, str) or not reason.strip():
+        raise ScopeError(f"excluded conformance case has no reason: {identity}")
+
+      continue
+
     if status == "passed":
       continue
 
@@ -152,10 +160,14 @@ def release_cases(
 
     if record["status"] != "passed":
       capability = capabilities.get(identity)
+      reason = record.get("reason")
+
+      if reason is None and capability is not None:
+        reason = capability.get("reason")
+
       value["reason"] = (
-        capability.get("reason")
-        if capability is not None
-        else POST_V1_REASONS.get(record["activity"])
+        reason
+        or POST_V1_REASONS.get(record["activity"])
         or f"awaits {record['activity']} conformance"
       )
 

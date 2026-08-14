@@ -2629,6 +2629,28 @@
       "notes": [
         "Requeued: Pinned DRIVERS-3131 rules removed explicit AWS URI credentials and conflict with two retained legacy assertions; split configuration classification from the internal SigV4 SASL state machine before implementation."
       ]
+    },
+    "AUTH-020": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
+          "exit_code": 2,
+          "summary": "Provider-backed MONGODB-AWS credential test failed with unsupported authentication mechanism (7 successes, 1 failure).",
+          "recorded_at": "2026-08-14T10:31:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/config/credentials.lua spec/unit/config_credentials_spec.lua spec/support/auth_config_runner.lua'",
+          "exit_code": 0,
+          "summary": "9 Lua examples and 14 Python tests passed; all 8 AUTH-020 AWS fixtures executed with 6 current assertions passed and 2 contradictory pre-DRIVERS-3131 assertions reasoned as superseded exclusions; 0 environment-skipped, 36 auth cases remain deferred to pending AUTH owners, 0 failed; conformance, README, release, and capability validators passed",
+          "recorded_at": "2026-08-14T10:35:35+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T10:31:25+00:00",
+      "completed_at": "2026-08-14T10:35:42+00:00"
     }
   },
   "verified_references": {

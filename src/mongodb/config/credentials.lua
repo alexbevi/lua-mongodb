@@ -6,6 +6,7 @@ local SCRAM_MECHANISMS = {
   ["SCRAM-SHA-1"] = true,
   ["SCRAM-SHA-256"] = true,
 }
+local AWS_MECHANISM = "MONGODB-AWS"
 local X509_MECHANISM = "MONGODB-X509"
 
 local function config_error(option, message)
@@ -60,7 +61,7 @@ function M.build(parsed, config)
       return config_error("username", mechanism .. " requires a username")
     end
 
-    if mechanism ~= X509_MECHANISM then
+    if mechanism ~= AWS_MECHANISM and mechanism ~= X509_MECHANISM then
       return config_error("auth_mechanism", "unsupported authentication mechanism")
     end
   end
@@ -68,9 +69,42 @@ function M.build(parsed, config)
   if mechanism ~= nil
       and not SCRAM_MECHANISMS[mechanism]
       and mechanism ~= "PLAIN"
+      and mechanism ~= AWS_MECHANISM
       and mechanism ~= X509_MECHANISM
   then
     return config_error("auth_mechanism", "unsupported authentication mechanism")
+  end
+
+  if mechanism == AWS_MECHANISM then
+    if parsed.username ~= nil then
+      return config_error(
+        "username",
+        "MONGODB-AWS credentials must be resolved by a credential provider"
+      )
+    end
+
+    if parsed.password ~= nil then
+      return config_error(
+        "password",
+        "MONGODB-AWS credentials must be resolved by a credential provider"
+      )
+    end
+
+    if config.auth_source ~= nil and config.auth_source ~= "$external" then
+      return config_error("auth_source", "MONGODB-AWS source must be $external")
+    end
+
+    if has_properties(config.auth_mechanism_properties) then
+      return config_error(
+        "auth_mechanism_properties",
+        "MONGODB-AWS URI mechanism properties are not supported"
+      )
+    end
+
+    return immutable({
+      mechanism = AWS_MECHANISM,
+      source = "$external",
+    })
   end
 
   if mechanism == X509_MECHANISM then

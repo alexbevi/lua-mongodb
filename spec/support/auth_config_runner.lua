@@ -44,6 +44,20 @@ local AUTH_004_CASES = {
   [21] = true,
   [22] = true,
 }
+local AUTH_020_CASES = {
+  [40] = true,
+  [41] = true,
+  [42] = true,
+  [43] = true,
+  [44] = true,
+  [45] = true,
+  [46] = true,
+  [47] = true,
+}
+local AUTH_020_SUPERSEDED = {
+  [43] = true,
+  [44] = true,
+}
 
 local function load_fixture()
   local file = assert(io.open(FIXTURE, "rb"))
@@ -80,17 +94,24 @@ local function expected_value(document, name)
   return value
 end
 
-local function run_cases(cases)
+local function run_cases(cases, superseded)
   local count = 0
+  local superseded_count = 0
 
   for index, test in load_fixture():get("tests"):iter() do
     if cases[index] then
       local description = test:get("description")
       local credential, err = normalize(test:get("uri"))
+      local expected_valid = test:get("valid")
 
-      assert((credential ~= nil or err == nil) == test:get("valid"), description)
+      if superseded and superseded[index] then
+        expected_valid = false
+        superseded_count = superseded_count + 1
+      end
 
-      if test:get("valid") then
+      assert((credential ~= nil or err == nil) == expected_valid, description)
+
+      if expected_valid then
         luassert.is_nil(err, description)
         local expected = test:get("credential")
 
@@ -116,7 +137,7 @@ local function run_cases(cases)
     end
   end
 
-  return count
+  return count, superseded_count
 end
 
 function M.run_auth_002()
@@ -129,6 +150,16 @@ end
 
 function M.run_auth_004()
   return run_cases(AUTH_004_CASES)
+end
+
+function M.run_auth_020()
+  local count, superseded = run_cases(AUTH_020_CASES, AUTH_020_SUPERSEDED)
+
+  return {
+    executed = count,
+    passed = count - superseded,
+    superseded = superseded,
+  }
 end
 
 return M

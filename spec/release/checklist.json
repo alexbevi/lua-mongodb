@@ -34,8 +34,8 @@
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 3639,
-      "post_v1_exclusions": 1885
+      "passed_cases": 3645,
+      "post_v1_exclusions": 1879
     },
     "production_core_prerequisites": 71
   },

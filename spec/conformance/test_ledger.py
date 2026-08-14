@@ -81,9 +81,23 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1885,
-      "passed": 3639,
+      "deferred_unsupported": 1877,
+      "excluded_scope": 2,
+      "passed": 3645,
     }, generated["summary"]["statuses"])
+
+    superseded_aws = [
+      generated["cases"][
+        f"auth/tests/legacy/connection-string.json::test[{index}]"
+      ]
+      for index in (43, 44)
+    ]
+    self.assertEqual(
+      ["excluded_scope", "excluded_scope"],
+      [case["status"] for case in superseded_aws],
+    )
+    self.assertTrue(all(case["reason"] for case in superseded_aws))
+    self.assertTrue(all(case["last_execution"] for case in superseded_aws))
 
     dns = [
       case for case in generated["cases"].values()
