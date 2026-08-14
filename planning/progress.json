@@ -3149,6 +3149,28 @@
       "reopened_after_commit": "53b38787ff39cced2a3fd991c5d1b27d28f723c4",
       "started_at": "2026-08-14T14:41:26+00:00",
       "completed_at": "2026-08-14T14:42:36+00:00"
+    },
+    "AUTH-014": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_kubernetes_spec.lua'",
+          "exit_code": 2,
+          "summary": "ENVIRONMENT:k8s was rejected by the built-in provider registry before selecting the AKS token file or starting one-step SASL (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T14:47:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_kubernetes_spec.lua spec/unit/auth_oidc_providers_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc_providers.lua spec/unit/auth_oidc_kubernetes_spec.lua'",
+          "exit_code": 0,
+          "summary": "All 3 Kubernetes provider cases and all 3 directly coupled test-provider cases passed; touched-file lint reported zero warnings or errors.",
+          "recorded_at": "2026-08-14T14:49:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T14:47:25+00:00",
+      "completed_at": "2026-08-14T14:49:14+00:00"
     }
   },
   "verified_references": {

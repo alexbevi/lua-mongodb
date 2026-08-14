@@ -2,8 +2,10 @@ local errors = require("mongodb.error")
 
 local M = {}
 
+local DEFAULT_KUBERNETES_TOKEN_FILE =
+  "/var/run/secrets/kubernetes.io/serviceaccount/token"
 local MAX_TOKEN_BYTES = 1024 * 1024
-local TOKEN_FILE = "OIDC_TOKEN_FILE"
+local TEST_TOKEN_FILE = "OIDC_TOKEN_FILE"
 
 local function provider_error(environment, original)
   local options = {
@@ -29,15 +31,19 @@ local function provider_error(environment, original)
   return errors.new(options)
 end
 
-local function test_provider(runtime, context)
-  local path = runtime.environment:get(TOKEN_FILE)
+local function environment_value(runtime, name)
+  local value = runtime.environment:get(name)
 
-  if path ~= nil and type(path) ~= "string" then
+  if value ~= nil and type(value) ~= "string" then
     error("runtime environment must return strings or nil", 3)
   end
 
+  return value
+end
+
+local function file_token(runtime, context, environment, path, strip)
   if path == nil or path == "" then
-    return nil, provider_error("test")
+    return nil, provider_error(environment)
   end
 
   local token, err = runtime.file:read(path, {
@@ -47,17 +53,43 @@ local function test_provider(runtime, context)
   })
 
   if token == nil then
-    return nil, provider_error("test", err)
+    return nil, provider_error(environment, err)
   end
 
-  token = token:match("^%s*(.-)%s*$")
+  if strip then
+    token = token:match("^%s*(.-)%s*$")
+  end
 
   if token == "" then
-    return nil, provider_error("test")
+    return nil, provider_error(environment)
   end
 
   return { access_token = token }
 end
+
+local function test_provider(runtime, context)
+  local path = environment_value(runtime, TEST_TOKEN_FILE)
+  return file_token(runtime, context, "test", path, true)
+end
+
+local function kubernetes_provider(runtime, context)
+  local path = environment_value(runtime, "AZURE_FEDERATED_TOKEN_FILE")
+
+  if path == nil then
+    path = environment_value(runtime, "AWS_WEB_IDENTITY_TOKEN_FILE")
+  end
+
+  if path == nil then
+    path = DEFAULT_KUBERNETES_TOKEN_FILE
+  end
+
+  return file_token(runtime, context, "k8s", path, false)
+end
+
+local PROVIDERS = {
+  k8s = kubernetes_provider,
+  test = test_provider,
+}
 
 function M.callback(runtime, credentials)
   if type(runtime) ~= "table"
@@ -76,13 +108,14 @@ function M.callback(runtime, credentials)
   end
 
   local environment = credentials.mechanism_properties.ENVIRONMENT
+  local provider = PROVIDERS[environment]
 
-  if environment ~= "test" then
+  if provider == nil then
     return nil, provider_error(environment or "unknown")
   end
 
   return function(context)
-    local result, err = test_provider(runtime, context)
+    local result, err = provider(runtime, context)
 
     if not result then
       error(err, 0)
