@@ -366,6 +366,7 @@ end
 local function mechanism_from(hello, configured)
   if configured ~= nil then
     if configured ~= "PLAIN"
+        and configured ~= "MONGODB-X509"
         and configured ~= "SCRAM-SHA-1"
         and configured ~= "SCRAM-SHA-256"
     then

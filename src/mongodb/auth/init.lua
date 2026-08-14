@@ -1,5 +1,6 @@
 local plain = require("mongodb.auth.plain")
 local scram = require("mongodb.auth.scram")
+local x509 = require("mongodb.auth.x509")
 
 local M = {}
 
@@ -16,6 +17,10 @@ function M.authenticate(commands, runtime, credentials, options)
 
   if mechanism == "PLAIN" then
     return plain.authenticate(commands, credentials, options)
+  end
+
+  if mechanism == "MONGODB-X509" then
+    return x509.authenticate(commands, credentials, options)
   end
 
   return scram.authenticate(commands, runtime, credentials, options)

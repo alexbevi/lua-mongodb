@@ -88,6 +88,19 @@ local client = assert(mongodb.client(
 ))
 ```
 
+For X.509 authentication, provide a client certificate/private-key PEM through the TLS adapter and select `MONGODB-X509`. The certificate subject is used as the username when the URI omits one:
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb://db.example.com/?authMechanism=MONGODB-X509",
+  {
+    tls = true,
+    tls_ca_file = "/path/to/ca.pem",
+    tls_certificate_key_file = "/path/to/client.pem",
+  }
+))
+```
+
 ### URI Options
 
 URI option names use the standard MongoDB spelling and are case-insensitive. When the same setting is supplied in the client options table, the idiomatic `snake_case` client option takes precedence over the URI. The currently accepted URI options are grouped below.
@@ -230,7 +243,7 @@ assert(transferred)
 assert(session:end_session())
 ```
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone and replica-set connections; SCRAM and TLS; generic database commands; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone and replica-set connections; SCRAM, PLAIN, X.509, and TLS; generic database commands; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
 ### Errors and resource lifetimes
 
@@ -263,7 +276,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Connectivity | Server discovery and monitoring | 🟡 | 89.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
 | Connectivity | Load balancer support | 🔴 | 0.0% |
-| Authentication | Authentication options and additional mechanisms | 🟡 | 30.1% |
+| Authentication | Authentication options and additional mechanisms | 🟡 | 39.7% |
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 70.3% |

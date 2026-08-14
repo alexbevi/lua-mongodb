@@ -35,6 +35,15 @@ local AUTH_003_CASES = {
   [25] = true,
   [26] = true,
 }
+local AUTH_004_CASES = {
+  [16] = true,
+  [17] = true,
+  [18] = true,
+  [19] = true,
+  [20] = true,
+  [21] = true,
+  [22] = true,
+}
 
 local function load_fixture()
   local file = assert(io.open(FIXTURE, "rb"))
@@ -116,6 +125,10 @@ end
 
 function M.run_auth_003()
   return run_cases(AUTH_003_CASES)
+end
+
+function M.run_auth_004()
+  return run_cases(AUTH_004_CASES)
 end
 
 return M

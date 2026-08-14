@@ -59,6 +59,7 @@ build = {
     ["mongodb.auth.saslprep"] = "src/mongodb/auth/saslprep.lua",
     ["mongodb.auth.scram"] = "src/mongodb/auth/scram.lua",
     ["mongodb.auth.stringprep_tables"] = "src/mongodb/auth/stringprep_tables.lua",
+    ["mongodb.auth.x509"] = "src/mongodb/auth/x509.lua",
     ["mongodb.client"] = "src/mongodb/client.lua",
     ["mongodb.crud"] = "src/mongodb/crud.lua",
     ["mongodb.cursor"] = "src/mongodb/cursor.lua",

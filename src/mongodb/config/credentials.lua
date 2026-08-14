@@ -6,6 +6,7 @@ local SCRAM_MECHANISMS = {
   ["SCRAM-SHA-1"] = true,
   ["SCRAM-SHA-256"] = true,
 }
+local X509_MECHANISM = "MONGODB-X509"
 
 local function config_error(option, message)
   return nil, errors.new({
@@ -59,11 +60,40 @@ function M.build(parsed, config)
       return config_error("username", mechanism .. " requires a username")
     end
 
+    if mechanism ~= X509_MECHANISM then
+      return config_error("auth_mechanism", "unsupported authentication mechanism")
+    end
+  end
+
+  if mechanism ~= nil
+      and not SCRAM_MECHANISMS[mechanism]
+      and mechanism ~= "PLAIN"
+      and mechanism ~= X509_MECHANISM
+  then
     return config_error("auth_mechanism", "unsupported authentication mechanism")
   end
 
-  if mechanism ~= nil and not SCRAM_MECHANISMS[mechanism] and mechanism ~= "PLAIN" then
-    return config_error("auth_mechanism", "unsupported authentication mechanism")
+  if mechanism == X509_MECHANISM then
+    if parsed.password ~= nil then
+      return config_error("password", "MONGODB-X509 does not support a password")
+    end
+
+    if config.auth_source ~= nil and config.auth_source ~= "$external" then
+      return config_error("auth_source", "MONGODB-X509 source must be $external")
+    end
+
+    if has_properties(config.auth_mechanism_properties) then
+      return config_error(
+        "auth_mechanism_properties",
+        "MONGODB-X509 authentication does not support mechanism properties"
+      )
+    end
+
+    return immutable({
+      mechanism = X509_MECHANISM,
+      source = "$external",
+      username = parsed.username,
+    })
   end
 
   if parsed.password == nil then

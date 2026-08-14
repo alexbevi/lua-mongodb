@@ -333,7 +333,7 @@ def classify_case(
     else:
       owner = "AUTH-002"
 
-    if owner in {"AUTH-002", "AUTH-003"}:
+    if owner in {"AUTH-002", "AUTH-003", "AUTH-004"}:
       return _passed(
         case,
         owner,
