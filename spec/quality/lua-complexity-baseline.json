@@ -43,11 +43,6 @@
       "complexity": 46
     },
     {
-      "path": "src/mongodb/topology.lua",
-      "function": "MANAGER_METHODS.handle_application_error",
-      "complexity": 45
-    },
-    {
       "path": "src/mongodb/unified/driver.lua",
       "function": "create_client",
       "complexity": 42

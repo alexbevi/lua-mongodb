@@ -3498,6 +3498,21 @@
       "notes": [],
       "started_at": "2026-08-14T19:38:52+00:00",
       "completed_at": "2026-08-14T19:41:58+00:00"
+    },
+    "SDAM-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua' FOCUS_LINT='src/mongodb/topology.lua spec/unit/topology_spec.lua' && make test-complexity",
+          "exit_code": 0,
+          "summary": "Twelve topology cases including all 72 pinned application-error fixtures passed before and after the refactor; touched-file lint passed; handle_application_error complexity fell from 45 to 4 and the ratchet now records 10 hotspots.",
+          "recorded_at": "2026-08-14T19:49:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T19:46:24+00:00",
+      "completed_at": "2026-08-14T19:49:54+00:00"
     }
   },
   "verified_references": {

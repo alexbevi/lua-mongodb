@@ -41,6 +41,16 @@ local SHUTDOWN_CODES = {
   [11600] = true,
 }
 
+local APPLICATION_ERROR_FIELDS = {
+  error = true,
+  generation = true,
+  labels = true,
+  max_wire_version = true,
+  response = true,
+  type = true,
+  when = true,
+}
+
 local EVENT_METATABLE = {
   __index = function(value, key)
     local state = EVENT_STATES[value]
@@ -1095,55 +1105,42 @@ function MANAGER_METHODS:pool(address)
   return server and server.pool or nil
 end
 
-function MANAGER_METHODS:handle_application_error(address, fields)
-  local state = MANAGER_STATES[self]
-  local normalized = address_for(state, address)
-
-  if not normalized then
-    return false
-  end
-
+local function validate_application_error_fields(fields)
   if type(fields) ~= "table" then
-    error("application error fields must be a table", 2)
+    error("application error fields must be a table", 3)
   end
-
-  local allowed = {
-    error = true,
-    generation = true,
-    labels = true,
-    max_wire_version = true,
-    response = true,
-    type = true,
-    when = true,
-  }
 
   for key in pairs(fields) do
-    if not allowed[key] then
-      error("unknown application error field: " .. tostring(key), 2)
+    if not APPLICATION_ERROR_FIELDS[key] then
+      error("unknown application error field: " .. tostring(key), 3)
     end
   end
+end
 
-  local server = state.servers[normalized]
-  local pool = server.pool
+local function application_error_generation(fields, pool)
   local generation = fields.generation
 
   if generation == nil then
     generation = pool.generation or 0
   elseif math.type(generation) ~= "integer" or generation < 0 then
-    error("application error generation must be a non-negative integer", 2)
+    error("application error generation must be a non-negative integer", 3)
   end
 
+  return generation
+end
+
+local function application_error_is_stale(state, address, fields, generation, pool)
   if generation < (pool.generation or 0) then
-    return false
+    return true
   end
 
   local response = fields.response
-  local current = state.description:server(normalized)
+  local current = state.description:server(address)
   local incoming_version = bson.is_document(response)
     and response:get("topologyVersion") or nil
 
   if topology_version_is_stale(current.topology_version, incoming_version) then
-    return false
+    return true
   end
 
   local labels = {}
@@ -1155,15 +1152,19 @@ function MANAGER_METHODS:handle_application_error(address, fields)
   if fields.error and errors.has_label(fields.error, "SystemOverloadedError")
       or labels.SystemOverloadedError
   then
-    return false
+    return true
   end
 
+  return false
+end
+
+local function classify_application_error(fields, address)
   local kind = fields.type
 
   if kind ~= "command" and kind ~= "handshake"
       and kind ~= "network" and kind ~= "timeout"
   then
-    error("application error type must be command, handshake, network, or timeout", 2)
+    error("application error type must be command, handshake, network, or timeout", 3)
   end
 
   local before_handshake = fields.when == "beforeHandshakeCompletes"
@@ -1171,65 +1172,81 @@ function MANAGER_METHODS:handle_application_error(address, fields)
   if fields.when ~= nil and not before_handshake
       and fields.when ~= "afterHandshakeCompletes"
   then
-    error("application error when value is invalid", 2)
+    error("application error when value is invalid", 3)
   end
 
   if before_handshake and kind ~= "command" and kind ~= "handshake" then
-    return false
+    return nil
   end
 
   if kind == "timeout" then
-    return false
+    return nil
   end
 
-  local clear_pool
+  local decision = {
+    clear_pool = true,
+    response = fields.response,
+  }
   local err = fields.error
 
   if kind == "network" or kind == "handshake" then
-    clear_pool = true
     err = err or (kind == "network" and errors.new({
         category = errors.CATEGORY.NETWORK,
         message = "application network error",
-        server = normalized,
-      }) or topology_error("connection handshake failed", { server = normalized }))
+        server = address,
+      }) or topology_error("connection handshake failed", { server = address }))
   else
-    if not bson.is_document(response) then
-      error("command application errors require a BSON response", 2)
+    if not bson.is_document(decision.response) then
+      error("command application errors require a BSON response", 3)
     end
 
-    local state_change, code = state_change_kind(response)
+    local state_change, code = state_change_kind(decision.response)
 
     if not state_change then
-      return false
+      return nil
     end
 
-    clear_pool = SHUTDOWN_CODES[code] == true or before_handshake
-    err = err or command_error(response, normalized)
+    decision.clear_pool = SHUTDOWN_CODES[code] == true or before_handshake
+    err = err or command_error(decision.response, address)
   end
 
+  decision.error = err
+  return decision
+end
+
+local function apply_application_error(
+  manager,
+  state,
+  address,
+  server,
+  generation,
+  decision
+)
   assert(state.lock:acquire())
-  local failure_response = response
+  local failure_response = decision.response
 
   if not bson.is_document(failure_response) then
     failure_response = bson.document({})
   end
 
-  process_description(state, normalized, failure_response, {
-    error = err,
+  process_description(state, address, failure_response, {
+    error = decision.error,
     generation = generation,
     last_update_time = state.runtime.clock:now(),
   })
 
-  if clear_pool and state.servers[normalized] then
+  local pool = server.pool
+
+  if decision.clear_pool and state.servers[address] then
     pool:clear(false)
     state.description = state.description:with_generation(
-      normalized,
+      address,
       pool.generation or 0
     )
   end
 
-  self:request_check(normalized)
-  server = state.servers[normalized]
+  manager:request_check(address)
+  server = state.servers[address]
 
   if server and server.check_cancellation then
     server.check_cancellation:cancel("application error requested a server check")
@@ -1238,6 +1255,39 @@ function MANAGER_METHODS:handle_application_error(address, fields)
   state.lock:release()
 
   return true
+end
+
+function MANAGER_METHODS:handle_application_error(address, fields)
+  local state = MANAGER_STATES[self]
+  local normalized = address_for(state, address)
+
+  if not normalized then
+    return false
+  end
+
+  validate_application_error_fields(fields)
+  local server = state.servers[normalized]
+  local pool = server.pool
+  local generation = application_error_generation(fields, pool)
+
+  if application_error_is_stale(state, normalized, fields, generation, pool) then
+    return false
+  end
+
+  local decision = classify_application_error(fields, normalized)
+
+  if not decision then
+    return false
+  end
+
+  return apply_application_error(
+    self,
+    state,
+    normalized,
+    server,
+    generation,
+    decision
+  )
 end
 
 function MANAGER_METHODS:select_server(operation, preference, options)
