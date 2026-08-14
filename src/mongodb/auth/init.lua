@@ -1,5 +1,6 @@
 local aws = require("mongodb.auth.aws")
 local aws_credentials = require("mongodb.auth.aws_credentials")
+local aws_ecs = require("mongodb.auth.aws_ecs")
 local aws_web_identity = require("mongodb.auth.aws_web_identity")
 local plain = require("mongodb.auth.plain")
 local scram = require("mongodb.auth.scram")
@@ -25,16 +26,24 @@ function M.authenticate(commands, runtime, credentials, options)
     if credentials.username == nil and credentials.password == nil then
       local resolve_options = options or {}
 
-      if resolve_options.provider == nil
-          and aws_web_identity.is_configured(runtime)
-      then
+      local provider
+
+      if resolve_options.provider == nil then
+        if aws_web_identity.is_configured(runtime) then
+          provider = aws_web_identity.resolve
+        elseif aws_ecs.is_configured(runtime) then
+          provider = aws_ecs.resolve
+        end
+      end
+
+      if provider ~= nil then
         local with_provider = {}
 
         for name, value in pairs(resolve_options) do
           with_provider[name] = value
         end
 
-        with_provider.provider = aws_web_identity.resolve
+        with_provider.provider = provider
         resolve_options = with_provider
       end
 

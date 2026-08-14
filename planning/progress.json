@@ -2767,6 +2767,42 @@
       ],
       "started_at": "2026-08-14T11:16:58+00:00",
       "completed_at": "2026-08-14T11:31:23+00:00"
+    },
+    "AUTH-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining ECS relative-URI credential exchange failed because mongodb.auth.aws_ecs did not exist (0 successes, 1 load error).",
+          "recorded_at": "2026-08-14T11:41:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_ecs.lua src/mongodb/auth/init.lua spec/unit/auth_aws_ecs_spec.lua spec/unit/auth_aws_spec.lua'",
+          "exit_code": 0,
+          "summary": "14 focused ECS/provider-chain unit tests passed; touched-file lint reported 0 warnings and 0 errors across 4 files.",
+          "recorded_at": "2026-08-14T11:46:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_INTEGRATION='spec/integration/auth_ping_spec.lua'",
+          "exit_code": 0,
+          "summary": "The directly coupled live authentication ping integration passed (1 success, 0 failures, 0 errors, 0 pending).",
+          "recorded_at": "2026-08-14T11:46:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make rockspec test-package",
+          "exit_code": 0,
+          "summary": "Rockspec lint passed and the isolated source-rock installation/public-module package test passed (1 test, 0 failures).",
+          "recorded_at": "2026-08-14T11:46:22+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T11:40:42+00:00",
+      "completed_at": "2026-08-14T11:46:37+00:00"
     }
   },
   "verified_references": {

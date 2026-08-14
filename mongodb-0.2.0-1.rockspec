@@ -57,6 +57,7 @@ build = {
     ["mongodb.auth"] = "src/mongodb/auth/init.lua",
     ["mongodb.auth.aws"] = "src/mongodb/auth/aws.lua",
     ["mongodb.auth.aws_credentials"] = "src/mongodb/auth/aws_credentials.lua",
+    ["mongodb.auth.aws_ecs"] = "src/mongodb/auth/aws_ecs.lua",
     ["mongodb.auth.aws_web_identity"] = "src/mongodb/auth/aws_web_identity.lua",
     ["mongodb.auth.plain"] = "src/mongodb/auth/plain.lua",
     ["mongodb.auth.saslprep"] = "src/mongodb/auth/saslprep.lua",

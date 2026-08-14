@@ -181,6 +181,7 @@ describe("MONGODB-AWS authentication", function()
       AWS_ROLE_ARN = "arn:aws:iam::123456789012:role/database",
       AWS_ROLE_SESSION_NAME = "database-driver",
       AWS_WEB_IDENTITY_TOKEN_FILE = "/var/run/aws-token",
+      AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = "/ignored-ecs-provider",
     })
     local step = 0
     local commands = {
@@ -226,6 +227,69 @@ describe("MONGODB-AWS authentication", function()
     assert.are.equal(1, #runtime.calls.file)
     assert.are.equal(1, #runtime.calls.http)
     assert.are.equal(2, step)
+  end)
+
+  it("selects configured ECS credentials before SASL", function()
+    local client_nonce = string.rep("0", 32)
+    local runtime = runtime_with_nonce(client_nonce, {
+      AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = "/v2/credentials/task-id",
+    })
+    local step = 0
+    local shell = {
+      mechanism = "MONGODB-AWS",
+      source = "$external",
+    }
+    local commands = {
+      command = function(_, _, body)
+        step = step + 1
+
+        if step == 1 then
+          return server_first(client_nonce)
+        end
+
+        local payload = assert(bson.decode(body:get("payload").data))
+
+        assert.is_not_nil(payload:get("a"):find(
+          "Credential=AKIDEXAMPLE/",
+          1,
+          true
+        ))
+        assert.are.equal("ECS_TOKEN", payload:get("t"))
+        return bson.document({
+          { "conversationId", 7 },
+          { "done", true },
+          { "payload", bson.binary("") },
+          { "ok", 1 },
+        })
+      end,
+    }
+
+    runtime:queue_http({
+      body = "{\"AccessKeyId\":\"AKIDEXAMPLE\","
+        .. "\"Expiration\":\"2030-01-01T00:00:00Z\","
+        .. "\"SecretAccessKey\":"
+        .. "\"wJalrXUtnFEMI/K7MDENG+bPxRfiCYEXAMPLEKEY\","
+        .. "\"Token\":\"ECS_TOKEN\"}",
+      headers = { ["content-type"] = "application/json" },
+      status = 200,
+    })
+
+    assert.is_true(auth.authenticate(commands, runtime, shell, {
+      mechanism = "MONGODB-AWS",
+    }))
+    assert.are.equal(1, #runtime.calls.http)
+    assert.are.equal(
+      "http://169.254.170.2/v2/credentials/task-id",
+      runtime.calls.http[1].request.url
+    )
+    assert.are.equal(2, step)
+
+    runtime:set_environment("AWS_CONTAINER_CREDENTIALS_RELATIVE_URI", nil)
+
+    local cached = assert(aws_credentials.resolve(runtime, shell))
+
+    assert.are.equal("AKIDEXAMPLE", cached.username)
+    assert.are.equal(1, #runtime.calls.http)
   end)
 
   it("clears provider credentials after an authentication failure", function()
