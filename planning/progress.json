@@ -3558,6 +3558,21 @@
       "notes": [],
       "started_at": "2026-08-14T20:11:19+00:00",
       "completed_at": "2026-08-14T20:14:41+00:00"
+    },
+    "BSON-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_spec.lua spec/unit/bson_hardening_spec.lua spec/unit/bson_exact_spec.lua' FOCUS_LINT='src/mongodb/bson/codec.lua spec/unit/bson_spec.lua spec/unit/bson_hardening_spec.lua spec/unit/bson_exact_spec.lua'; python3 spec/corpus/run_bson_corpus.py --lua lua; make test-complexity",
+          "exit_code": 0,
+          "summary": "Sixteen focused primitive, exact-numeric, malformed-frame, size, depth, ordered-decoding, and structured-error cases passed; all 728 canonical BSON vectors, 75 decode-error vectors, 180 parse-error vectors, 4 degenerate normalizations, and 1,080 Extended JSON representations passed; touched lint passed; decode_value complexity fell from 67 to 2 and the hotspot was removed.",
+          "recorded_at": "2026-08-14T20:23:25+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T20:19:52+00:00",
+      "completed_at": "2026-08-14T20:23:26+00:00"
     }
   },
   "verified_references": {

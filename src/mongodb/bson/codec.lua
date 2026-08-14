@@ -606,437 +606,459 @@ local function decode_container(data, position, limit, array, context, depth)
   return decoded, document_end + 1
 end
 
-decode_value = function(data, position, limit, element_type, context, depth)
-  if element_type == TYPE_NULL then
-    return value.null, position
+local function decode_null_value(_, position)
+  return value.null, position
+end
+
+local function decode_undefined_value(_, position)
+  return tagged.undefined, position
+end
+
+local function decode_boolean_value(data, position, limit)
+  local ok, err = require_bytes(position, 1, limit, "BSON boolean")
+
+  if not ok then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_UNDEFINED then
-    return tagged.undefined, position
+  local byte = data:byte(position)
+
+  if byte ~= 0 and byte ~= 1 then
+    return nil, nil, bson_error("BSON boolean must be encoded as 0 or 1", position, {
+      value = byte,
+    })
   end
 
-  if element_type == TYPE_BOOLEAN then
-    local ok, err = require_bytes(position, 1, limit, "BSON boolean")
+  return byte == 1, position + 1
+end
 
-    if not ok then
-      return nil, nil, err
-    end
+local function decode_integer_value(data, position, limit, size, constructor)
+  local number, next_position, err = read_integer(
+    data,
+    position,
+    size,
+    limit,
+    "BSON integer"
+  )
 
-    local byte = data:byte(position)
-
-    if byte ~= 0 and byte ~= 1 then
-      return nil, nil, bson_error("BSON boolean must be encoded as 0 or 1", position, {
-        value = byte,
-      })
-    end
-
-    return byte == 1, position + 1
+  if err then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_INT32 or element_type == TYPE_INT64 then
-    local size = element_type == TYPE_INT32 and 4 or 8
-    local number, next_position, err = read_integer(
-      data,
-      position,
-      size,
-      limit,
-      "BSON integer"
-    )
+  return constructor(number), next_position
+end
 
-    if err then
-      return nil, nil, err
-    end
+local function decode_int32_value(data, position, limit)
+  return decode_integer_value(data, position, limit, 4, exact.int32)
+end
 
-    local wrapped = element_type == TYPE_INT32 and exact.int32(number) or exact.int64(number)
-    return wrapped, next_position
+local function decode_int64_value(data, position, limit)
+  return decode_integer_value(data, position, limit, 8, exact.int64)
+end
+
+local function decode_double_value(data, position, limit)
+  local ok, err = require_bytes(position, 8, limit, "BSON double")
+
+  if not ok then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_DOUBLE then
-    local ok, err = require_bytes(position, 8, limit, "BSON double")
+  local next_position = position + 8
+  return exact.double_from_bytes(data:sub(position, next_position - 1)), next_position
+end
 
-    if not ok then
-      return nil, nil, err
-    end
+local function decode_object_id_value(data, position, limit)
+  local ok, err = require_bytes(position, 12, limit, "BSON ObjectId")
 
-    local next_position = position + 8
-    return exact.double_from_bytes(data:sub(position, next_position - 1)), next_position
+  if not ok then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_OBJECT_ID then
-    local ok, err = require_bytes(position, 12, limit, "BSON ObjectId")
+  return tagged.object_id(data:sub(position, position + 11)), position + 12
+end
 
-    if not ok then
-      return nil, nil, err
-    end
+local function decode_datetime_value(data, position, limit)
+  local milliseconds, next_position, err = read_integer(
+    data,
+    position,
+    8,
+    limit,
+    "BSON datetime"
+  )
 
-    return tagged.object_id(data:sub(position, position + 11)), position + 12
+  if err then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_DATETIME then
-    local milliseconds, next_position, err = read_integer(
-      data,
-      position,
-      8,
-      limit,
-      "BSON datetime"
-    )
+  return tagged.datetime(milliseconds), next_position
+end
 
-    if err then
-      return nil, nil, err
-    end
+local function decode_string_value(data, position, limit, context)
+  local length, string_position, err = read_integer(
+    data,
+    position,
+    4,
+    limit,
+    "BSON string length"
+  )
 
-    return tagged.datetime(milliseconds), next_position
+  if not length then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_STRING then
-    local length, string_position, err = read_integer(
-      data,
-      position,
-      4,
-      limit,
-      "BSON string length"
-    )
-
-    if not length then
-      return nil, nil, err
-    end
-
-    if length < 1 then
-      return nil, nil, bson_error("BSON string length must include a terminating NUL", position, {
-        length = length,
-      })
-    end
-
-    if length - 1 > context.max_string_size then
-      return nil, nil, bson_error("BSON string exceeds the configured size limit", position, {
-        length = length - 1,
-        max_string_size = context.max_string_size,
-      })
-    end
-
-    local ok
-    ok, err = require_bytes(string_position, length, limit, "BSON string")
-
-    if not ok then
-      return nil, nil, err
-    end
-
-    local string_end = string_position + length - 1
-
-    if data:byte(string_end) ~= 0 then
-      return nil, nil, bson_error("BSON string is missing its terminating NUL", string_end)
-    end
-
-    local string_value = data:sub(string_position, string_end - 1)
-
-    if context.validate_utf8 then
-      local utf8_offset = invalid_utf8_offset(string_value)
-
-      if utf8_offset then
-        return nil, nil, bson_error(
-          "BSON string contains invalid UTF-8",
-          string_position + utf8_offset - 1
-        )
-      end
-    end
-
-    return string_value, string_end + 1
+  if length < 1 then
+    return nil, nil, bson_error("BSON string length must include a terminating NUL", position, {
+      length = length,
+    })
   end
 
-  if element_type == TYPE_BINARY then
-    local length, binary_position, err = read_integer(
-      data,
-      position,
-      4,
-      limit,
-      "BSON binary length"
-    )
-
-    if not length then
-      return nil, nil, err
-    end
-
-    if length < 0 then
-      return nil, nil, bson_error("BSON binary length cannot be negative", position, {
-        length = length,
-      })
-    end
-
-    if length > context.max_binary_size + 4 then
-      return nil, nil, bson_error("BSON binary value exceeds the configured size limit", position, {
-        length = length,
-        max_binary_size = context.max_binary_size,
-      })
-    end
-
-    local ok
-    ok, err = require_bytes(binary_position, length + 1, limit, "BSON binary value")
-
-    if not ok then
-      return nil, nil, err
-    end
-
-    local subtype = data:byte(binary_position)
-    local data_position = binary_position + 1
-    local next_position = data_position + length
-
-    if subtype == 2 then
-      if length < 4 then
-        return nil, nil, bson_error("old BSON binary subtype length is too small", position, {
-          length = length,
-        })
-      end
-
-      local inner_length = string.unpack("<i4", data, data_position)
-
-      if inner_length < 0 or inner_length ~= length - 4 then
-        return nil, nil, bson_error("old BSON binary subtype length mismatch", data_position, {
-          inner_length = inner_length,
-          outer_length = length,
-        })
-      end
-
-      data_position = data_position + 4
-    end
-
-    local data_length = next_position - data_position
-
-    if data_length > context.max_binary_size then
-      return nil, nil, bson_error("BSON binary value exceeds the configured size limit", position, {
-        length = data_length,
-        max_binary_size = context.max_binary_size,
-      })
-    end
-
-    return value.binary(data:sub(data_position, next_position - 1), subtype), next_position
+  if length - 1 > context.max_string_size then
+    return nil, nil, bson_error("BSON string exceeds the configured size limit", position, {
+      length = length - 1,
+      max_string_size = context.max_string_size,
+    })
   end
 
-  if element_type == TYPE_REGEX then
-    local pattern, options_position, err = read_cstring(
-      data,
-      position,
-      limit,
-      "BSON regex pattern"
-    )
+  local ok
+  ok, err = require_bytes(string_position, length, limit, "BSON string")
 
-    if not pattern then
-      return nil, nil, err
-    end
+  if not ok then
+    return nil, nil, err
+  end
 
-    if #pattern > context.max_string_size then
+  local string_end = string_position + length - 1
+
+  if data:byte(string_end) ~= 0 then
+    return nil, nil, bson_error("BSON string is missing its terminating NUL", string_end)
+  end
+
+  local string_value = data:sub(string_position, string_end - 1)
+
+  if context.validate_utf8 then
+    local utf8_offset = invalid_utf8_offset(string_value)
+
+    if utf8_offset then
       return nil, nil, bson_error(
-        "BSON regex pattern exceeds the configured string size limit",
-        position,
-        { length = #pattern, max_string_size = context.max_string_size }
+        "BSON string contains invalid UTF-8",
+        string_position + utf8_offset - 1
       )
     end
+  end
 
-    local options, next_position
-    options, next_position, err = read_cstring(
-      data,
-      options_position,
-      limit,
-      "BSON regex options"
-    )
+  return string_value, string_end + 1
+end
 
-    if not options then
-      return nil, nil, err
-    end
+local function decode_binary_value(data, position, limit, context)
+  local length, binary_position, err = read_integer(
+    data,
+    position,
+    4,
+    limit,
+    "BSON binary length"
+  )
 
-    if context.validate_utf8 then
-      local utf8_offset = invalid_utf8_offset(pattern)
+  if not length then
+    return nil, nil, err
+  end
 
-      if utf8_offset then
-        return nil, nil, bson_error(
-          "BSON regex pattern contains invalid UTF-8",
-          position + utf8_offset - 1
-        )
-      end
-    end
+  if length < 0 then
+    return nil, nil, bson_error("BSON binary length cannot be negative", position, {
+      length = length,
+    })
+  end
 
-    local ok, regex = pcall(tagged.regex, pattern, options)
+  if length > context.max_binary_size + 4 then
+    return nil, nil, bson_error("BSON binary value exceeds the configured size limit", position, {
+      length = length,
+      max_binary_size = context.max_binary_size,
+    })
+  end
 
-    if not ok then
-      return nil, nil, bson_error("invalid BSON regex options", options_position, {
-        reason = regex,
+  local ok
+  ok, err = require_bytes(binary_position, length + 1, limit, "BSON binary value")
+
+  if not ok then
+    return nil, nil, err
+  end
+
+  local subtype = data:byte(binary_position)
+  local data_position = binary_position + 1
+  local next_position = data_position + length
+
+  if subtype == 2 then
+    if length < 4 then
+      return nil, nil, bson_error("old BSON binary subtype length is too small", position, {
+        length = length,
       })
     end
 
-    return regex, next_position
-  end
+    local inner_length = string.unpack("<i4", data, data_position)
 
-  if element_type == TYPE_CODE then
-    local source, next_position, err = decode_value(
-      data,
-      position,
-      limit,
-      TYPE_STRING,
-      context,
-      depth
-    )
-
-    if err then
-      return nil, nil, err
-    end
-
-    return tagged.code(source), next_position
-  end
-
-  if element_type == TYPE_SYMBOL then
-    local symbol_value, next_position, err = decode_value(
-      data,
-      position,
-      limit,
-      TYPE_STRING,
-      context,
-      depth
-    )
-
-    if err then
-      return nil, nil, err
-    end
-
-    return tagged.symbol(symbol_value), next_position
-  end
-
-  if element_type == TYPE_DB_POINTER then
-    local namespace, object_id_position, err = decode_value(
-      data,
-      position,
-      limit,
-      TYPE_STRING,
-      context,
-      depth
-    )
-
-    if err then
-      return nil, nil, err
-    end
-
-    local object_id, next_position
-    object_id, next_position, err = decode_value(
-      data,
-      object_id_position,
-      limit,
-      TYPE_OBJECT_ID,
-      context,
-      depth
-    )
-
-    if err then
-      return nil, nil, err
-    end
-
-    return tagged.db_pointer(namespace, object_id), next_position
-  end
-
-  if element_type == TYPE_CODE_SCOPE then
-    local total_length, source_position, err = read_integer(
-      data,
-      position,
-      4,
-      limit,
-      "BSON code-with-scope length"
-    )
-
-    if not total_length then
-      return nil, nil, err
-    end
-
-    if total_length < 14 then
-      return nil, nil, bson_error("BSON code-with-scope length must be at least 14", position, {
-        length = total_length,
+    if inner_length < 0 or inner_length ~= length - 4 then
+      return nil, nil, bson_error("old BSON binary subtype length mismatch", data_position, {
+        inner_length = inner_length,
+        outer_length = length,
       })
     end
 
-    local code_end = position + total_length
-
-    if code_end - 1 > limit then
-      return nil, nil, bson_error("BSON code-with-scope exceeds available bytes", position, {
-        length = total_length,
-        available = limit - position + 1,
-      })
-    end
-
-    local source, scope_position
-    source, scope_position, err = decode_value(
-      data,
-      source_position,
-      code_end - 1,
-      TYPE_STRING,
-      context,
-      depth
-    )
-
-    if err then
-      return nil, nil, err
-    end
-
-    local scope, next_position
-    scope, next_position, err = decode_container(
-      data,
-      scope_position,
-      code_end - 1,
-      false,
-      context,
-      depth + 1
-    )
-
-    if err then
-      return nil, nil, err
-    end
-
-    if next_position ~= code_end then
-      return nil, nil, bson_error("BSON code scope does not fill its declared frame", next_position)
-    end
-
-    return tagged.code(source, scope), next_position
+    data_position = data_position + 4
   end
 
-  if element_type == TYPE_TIMESTAMP then
-    local ok, err = require_bytes(position, 8, limit, "BSON timestamp")
+  local data_length = next_position - data_position
 
-    if not ok then
-      return nil, nil, err
-    end
-
-    local increment, time, next_position = string.unpack("<I4I4", data, position)
-    return tagged.timestamp(time, increment), next_position
+  if data_length > context.max_binary_size then
+    return nil, nil, bson_error("BSON binary value exceeds the configured size limit", position, {
+      length = data_length,
+      max_binary_size = context.max_binary_size,
+    })
   end
 
-  if element_type == TYPE_DECIMAL128 then
-    local ok, err = require_bytes(position, 16, limit, "BSON Decimal128")
+  return value.binary(data:sub(data_position, next_position - 1), subtype), next_position
+end
 
-    if not ok then
-      return nil, nil, err
-    end
+local function decode_regex_value(data, position, limit, context)
+  local pattern, options_position, err = read_cstring(
+    data,
+    position,
+    limit,
+    "BSON regex pattern"
+  )
 
-    local next_position = position + 16
-    return exact.decimal128_from_bid(data:sub(position, next_position - 1)), next_position
+  if not pattern then
+    return nil, nil, err
   end
 
-  if element_type == TYPE_MIN_KEY then
-    return tagged.min_key, position
-  end
-
-  if element_type == TYPE_MAX_KEY then
-    return tagged.max_key, position
-  end
-
-  if element_type == TYPE_DOCUMENT or element_type == TYPE_ARRAY then
-    return decode_container(
-      data,
+  if #pattern > context.max_string_size then
+    return nil, nil, bson_error(
+      "BSON regex pattern exceeds the configured string size limit",
       position,
-      limit,
-      element_type == TYPE_ARRAY,
-      context,
-      depth + 1
+      { length = #pattern, max_string_size = context.max_string_size }
     )
   end
 
-  return nil, nil, bson_error("unsupported BSON element type", position - 1, {
-    element_type = element_type,
-  })
+  local options, next_position
+  options, next_position, err = read_cstring(
+    data,
+    options_position,
+    limit,
+    "BSON regex options"
+  )
+
+  if not options then
+    return nil, nil, err
+  end
+
+  if context.validate_utf8 then
+    local utf8_offset = invalid_utf8_offset(pattern)
+
+    if utf8_offset then
+      return nil, nil, bson_error(
+        "BSON regex pattern contains invalid UTF-8",
+        position + utf8_offset - 1
+      )
+    end
+  end
+
+  local ok, regex = pcall(tagged.regex, pattern, options)
+
+  if not ok then
+    return nil, nil, bson_error("invalid BSON regex options", options_position, {
+      reason = regex,
+    })
+  end
+
+  return regex, next_position
+end
+
+local function decode_code_value(data, position, limit, context)
+  local source, next_position, err = decode_string_value(
+    data,
+    position,
+    limit,
+    context
+  )
+
+  if err then
+    return nil, nil, err
+  end
+
+  return tagged.code(source), next_position
+end
+
+local function decode_symbol_value(data, position, limit, context)
+  local symbol_value, next_position, err = decode_string_value(
+    data,
+    position,
+    limit,
+    context
+  )
+
+  if err then
+    return nil, nil, err
+  end
+
+  return tagged.symbol(symbol_value), next_position
+end
+
+local function decode_db_pointer_value(data, position, limit, context)
+  local namespace, object_id_position, err = decode_string_value(
+    data,
+    position,
+    limit,
+    context
+  )
+
+  if err then
+    return nil, nil, err
+  end
+
+  local object_id, next_position
+  object_id, next_position, err = decode_object_id_value(
+    data,
+    object_id_position,
+    limit
+  )
+
+  if err then
+    return nil, nil, err
+  end
+
+  return tagged.db_pointer(namespace, object_id), next_position
+end
+
+local function decode_code_scope_value(data, position, limit, context, depth)
+  local total_length, source_position, err = read_integer(
+    data,
+    position,
+    4,
+    limit,
+    "BSON code-with-scope length"
+  )
+
+  if not total_length then
+    return nil, nil, err
+  end
+
+  if total_length < 14 then
+    return nil, nil, bson_error("BSON code-with-scope length must be at least 14", position, {
+      length = total_length,
+    })
+  end
+
+  local code_end = position + total_length
+
+  if code_end - 1 > limit then
+    return nil, nil, bson_error("BSON code-with-scope exceeds available bytes", position, {
+      length = total_length,
+      available = limit - position + 1,
+    })
+  end
+
+  local source, scope_position
+  source, scope_position, err = decode_string_value(
+    data,
+    source_position,
+    code_end - 1,
+    context
+  )
+
+  if err then
+    return nil, nil, err
+  end
+
+  local scope, next_position
+  scope, next_position, err = decode_container(
+    data,
+    scope_position,
+    code_end - 1,
+    false,
+    context,
+    depth + 1
+  )
+
+  if err then
+    return nil, nil, err
+  end
+
+  if next_position ~= code_end then
+    return nil, nil, bson_error("BSON code scope does not fill its declared frame", next_position)
+  end
+
+  return tagged.code(source, scope), next_position
+end
+
+local function decode_timestamp_value(data, position, limit)
+  local ok, err = require_bytes(position, 8, limit, "BSON timestamp")
+
+  if not ok then
+    return nil, nil, err
+  end
+
+  local increment, time, next_position = string.unpack("<I4I4", data, position)
+  return tagged.timestamp(time, increment), next_position
+end
+
+local function decode_decimal128_value(data, position, limit)
+  local ok, err = require_bytes(position, 16, limit, "BSON Decimal128")
+
+  if not ok then
+    return nil, nil, err
+  end
+
+  local next_position = position + 16
+  return exact.decimal128_from_bid(data:sub(position, next_position - 1)), next_position
+end
+
+local function decode_min_key_value(_, position)
+  return tagged.min_key, position
+end
+
+local function decode_max_key_value(_, position)
+  return tagged.max_key, position
+end
+
+local function decode_document_value(data, position, limit, context, depth)
+  return decode_container(data, position, limit, false, context, depth + 1)
+end
+
+local function decode_array_value(data, position, limit, context, depth)
+  return decode_container(data, position, limit, true, context, depth + 1)
+end
+
+local DECODERS = {
+  [TYPE_DOUBLE] = decode_double_value,
+  [TYPE_STRING] = decode_string_value,
+  [TYPE_DOCUMENT] = decode_document_value,
+  [TYPE_ARRAY] = decode_array_value,
+  [TYPE_BINARY] = decode_binary_value,
+  [TYPE_UNDEFINED] = decode_undefined_value,
+  [TYPE_OBJECT_ID] = decode_object_id_value,
+  [TYPE_BOOLEAN] = decode_boolean_value,
+  [TYPE_DATETIME] = decode_datetime_value,
+  [TYPE_NULL] = decode_null_value,
+  [TYPE_REGEX] = decode_regex_value,
+  [TYPE_DB_POINTER] = decode_db_pointer_value,
+  [TYPE_CODE] = decode_code_value,
+  [TYPE_SYMBOL] = decode_symbol_value,
+  [TYPE_CODE_SCOPE] = decode_code_scope_value,
+  [TYPE_INT32] = decode_int32_value,
+  [TYPE_TIMESTAMP] = decode_timestamp_value,
+  [TYPE_INT64] = decode_int64_value,
+  [TYPE_DECIMAL128] = decode_decimal128_value,
+  [TYPE_MAX_KEY] = decode_max_key_value,
+  [TYPE_MIN_KEY] = decode_min_key_value,
+}
+
+decode_value = function(data, position, limit, element_type, context, depth)
+  local decoder = DECODERS[element_type]
+
+  if not decoder then
+    return nil, nil, bson_error("unsupported BSON element type", position - 1, {
+      element_type = element_type,
+    })
+  end
+
+  return decoder(data, position, limit, context, depth)
 end
 
 function M.encode(document, options)
