@@ -250,13 +250,43 @@ local function validate_auth_inputs(commands, runtime, credentials, options)
     error("MONGODB-OIDC options must be a table", 3)
   end
 
-  local callback = credentials.mechanism_properties.OIDC_CALLBACK
+  local properties = credentials.mechanism_properties
+  local callback = properties.OIDC_CALLBACK
+
+  if callback == nil and type(properties.OIDC_HUMAN_CALLBACK) == "function" then
+    local host = options.server_host
+    local allowed = false
+
+    if type(host) == "string" and host ~= "" then
+      for _, pattern in ipairs(properties.ALLOWED_HOSTS or {}) do
+        if host == pattern then
+          allowed = true
+          break
+        end
+
+        if string.sub(pattern, 1, 2) == "*." then
+          local suffix = string.sub(pattern, 2)
+
+          if #host > #suffix and string.sub(host, -#suffix) == suffix then
+            allowed = true
+            break
+          end
+        end
+      end
+    end
+
+    if not allowed then
+      return nil, auth_error("MONGODB-OIDC human callback host is not allowed")
+    end
+
+    return properties.OIDC_HUMAN_CALLBACK, "human"
+  end
 
   if type(callback) ~= "function" then
     return nil, auth_error("MONGODB-OIDC machine callback is not configured")
   end
 
-  return callback
+  return callback, "machine"
 end
 
 local function callback_context(runtime, credentials, options)
@@ -521,7 +551,7 @@ end
 
 function M.authenticate(commands, runtime, credentials, options)
   options = options or {}
-  local callback, err = validate_auth_inputs(
+  local callback, callback_kind = validate_auth_inputs(
     commands,
     runtime,
     credentials,
@@ -529,9 +559,14 @@ function M.authenticate(commands, runtime, credentials, options)
   )
 
   if not callback then
-    return nil, err
+    return nil, callback_kind
   end
 
+  if callback_kind == "human" then
+    return nil, auth_error("MONGODB-OIDC human authentication is not implemented")
+  end
+
+  local err
   local state = client_state(credentials, runtime)
   local token = state.access_token
 

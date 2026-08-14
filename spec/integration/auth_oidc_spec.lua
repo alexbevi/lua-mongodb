@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local copas = require("copas")
+local errors = require("mongodb.error")
 local mongodb = require("mongodb")
 local op_msg = require("mongodb.wire.op_msg")
 local socket = require("socket")
@@ -21,7 +22,7 @@ local function send_response(client, request, body)
   }))))
 end
 
-describe("MONGODB-OIDC machine command execution", function()
+describe("MONGODB-OIDC command execution", function()
   it("authenticates once before an application command", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())
@@ -79,6 +80,64 @@ describe("MONGODB-OIDC machine command execution", function()
         assert(client:database():run_command("ping"))
         assert.are.equal(1, callbacks)
         assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    assert.is_table(outcome)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
+  it("rejects a human callback host before token or SASL activity", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(client)
+      client = copas.wrap(client)
+      local handshake = receive_frame(client)
+
+      send_response(client, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local bytes, reason = client:receive(4)
+
+      assert.is_nil(bytes)
+      assert.are.equal("closed", reason)
+      client:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local callbacks = 0
+        local client, err = mongodb.client(
+          "mongodb://127.0.0.1:" .. port
+            .. "/admin?authMechanism=MONGODB-OIDC",
+          {
+            auth_mechanism_properties = {
+              ALLOWED_HOSTS = { "login.example.com" },
+              OIDC_HUMAN_CALLBACK = function()
+                callbacks = callbacks + 1
+              end,
+            },
+          }
+        )
+
+        assert.is_nil(client)
+        assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+        assert.are.equal(
+          "MONGODB-OIDC human callback host is not allowed",
+          err.message
+        )
+        assert.are.equal(0, callbacks)
       end))
       copas.removeserver(server)
     end)

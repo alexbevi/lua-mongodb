@@ -488,6 +488,7 @@ local function open_executor(
       cancellation = fields.cancellation,
       deadline = deadline,
       mechanism = mechanism,
+      server_host = host.host,
     })
 
     if not authenticated then

@@ -2993,6 +2993,28 @@
       "notes": [],
       "started_at": "2026-08-14T13:33:05+00:00",
       "completed_at": "2026-08-14T13:36:14+00:00"
+    },
+    "AUTH-027": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_host_spec.lua'",
+          "exit_code": 2,
+          "summary": "A human callback targeting an unlisted host fell through to the machine-callback error instead of enforcing the allowed-host policy (0 successes, 1 failure); neither callback nor SASL ran.",
+          "recorded_at": "2026-08-14T13:45:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_host_spec.lua spec/unit/auth_oidc_config_spec.lua spec/unit/auth_oidc_machine_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua src/mongodb/client.lua spec/unit/auth_oidc_host_spec.lua spec/integration/auth_oidc_spec.lua' && python3 planning/update_plan.py check && git diff --check",
+          "exit_code": 0,
+          "summary": "16 unit and 2 directly coupled integration cases passed; touched-file lint reported 0 warnings/errors; planning validation and whitespace validation passed. No additional unified fixture became applicable because this slice only gates human callback hosts before the human SASL conversation implemented by AUTH-028.",
+          "recorded_at": "2026-08-14T13:49:23+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T13:44:57+00:00",
+      "completed_at": "2026-08-14T13:49:43+00:00"
     }
   },
   "verified_references": {
