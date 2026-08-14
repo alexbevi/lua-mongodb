@@ -96,13 +96,13 @@ describe("MONGODB-AWS credential resolution", function()
     end
   end)
 
-  it("reuses provider credentials until expiration is within one minute", function()
+  it("reuses provider credentials only while expiration exceeds five minutes", function()
     local runtime = fake_runtime.new({ wall_time = 1000 })
     local calls = 0
     local provider = function()
       calls = calls + 1
       return {
-        expiration = runtime.clock:wall_time() + 120,
+        expiration = runtime.clock:wall_time() + 600,
         password = "SECRET_" .. calls,
         session_token = "TOKEN_" .. calls,
         username = "ACCESS_" .. calls,
@@ -123,7 +123,7 @@ describe("MONGODB-AWS credential resolution", function()
     assert.are.equal("ACCESS_1", reused.username)
     assert.are.equal(1, calls)
 
-    runtime:advance(60)
+    runtime:advance(300)
 
     local refreshed = assert(aws_credentials.resolve(runtime, shell, {
       provider = provider,

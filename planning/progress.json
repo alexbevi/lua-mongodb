@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "3009ed5ec5f7db8f0b1c738296788dbdde28e6bd88a408c2aeddb3d7e8eb899b",
+  "plan_digest": "8b584ad42944e7f0ae9fe8a0bff588472b6a7bf60bc77a36f5a6a75a7da2f05a",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -2690,20 +2690,51 @@
           "phase": "red",
           "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua'",
           "exit_code": 2,
-          "summary": "Provider cache test failed because an absent environment returned unavailable instead of consulting and caching the injected provider (2 successes, 1 failure).",
-          "recorded_at": "2026-08-14T11:04:09+00:00"
+          "summary": "Normative five-minute cache-boundary test failed because credentials with exactly 300 seconds remaining were reused under the incorrect 60-second window (4 successes, 1 failure).",
+          "recorded_at": "2026-08-14T11:11:26+00:00"
         },
         {
           "phase": "green",
           "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_credentials.lua src/mongodb/auth/aws.lua src/mongodb/auth/init.lua spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua'",
           "exit_code": 0,
-          "summary": "12 focused Lua examples passed for bounded provider-cache reuse, 60-second refresh, environment/cache precedence, provider validation/redaction, and exact authentication-failure invalidation; 0 upstream fixture cases were newly applicable, 0 environment-skipped, and 0 failed; touched-file lint reported 0 warnings/errors; conformance, release, capability, README projection, and rockspec validators passed",
-          "recorded_at": "2026-08-14T11:06:28+00:00"
+          "summary": "12 focused Lua examples passed with the normative five-minute AWS endpoint credential validity window, including exact 300-second refresh, cache/environment precedence, provider redaction, and failure invalidation; 0 upstream fixture cases were newly applicable, 0 environment-skipped, and 0 failed; touched-file lint and conformance, release, capability, README projection, and rockspec validators passed",
+          "recorded_at": "2026-08-14T11:11:58+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-14T11:03:01+00:00",
-      "completed_at": "2026-08-14T11:06:28+00:00"
+      "notes": [
+        "Requeued: Pinned authentication specification requires endpoint credentials to remain more than five minutes from expiration; correct the plan, test, implementation, and architecture before dependent providers."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-14T11:06:28+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua'",
+              "exit_code": 2,
+              "summary": "Provider cache test failed because an absent environment returned unavailable instead of consulting and caching the injected provider (2 successes, 1 failure).",
+              "recorded_at": "2026-08-14T11:04:09+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_credentials.lua src/mongodb/auth/aws.lua src/mongodb/auth/init.lua spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua'",
+              "exit_code": 0,
+              "summary": "12 focused Lua examples passed for bounded provider-cache reuse, 60-second refresh, environment/cache precedence, provider validation/redaction, and exact authentication-failure invalidation; 0 upstream fixture cases were newly applicable, 0 environment-skipped, and 0 failed; touched-file lint reported 0 warnings/errors; conformance, release, capability, README projection, and rockspec validators passed",
+              "recorded_at": "2026-08-14T11:06:28+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "e9a0cf84b7ce102b7dd5e4cb625adea70b65b4d0",
+      "started_at": "2026-08-14T11:11:04+00:00",
+      "completed_at": "2026-08-14T11:11:59+00:00"
+    },
+    "AUTH-007": {
+      "status": "pending",
+      "evidence": [],
+      "notes": [
+        "Requeued: Paused before implementation because normative cache review found AUTH-021 used a one-minute validity window instead of the required five-minute window."
+      ]
     }
   },
   "verified_references": {

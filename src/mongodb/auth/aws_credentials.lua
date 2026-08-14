@@ -5,7 +5,7 @@ local M = {}
 local ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID"
 local SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY"
 local SESSION_TOKEN = "AWS_SESSION_TOKEN"
-local REFRESH_WINDOW_SECONDS = 60
+local REFRESH_WINDOW_SECONDS = 300
 local cache_entry
 
 local function auth_error(message)
