@@ -76,6 +76,148 @@ describe("MONGODB-AWS ECS credentials", function()
     )
   end)
 
+  it("authorizes full-URI requests with a plaintext token", function()
+    local runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_AUTHORIZATION_TOKEN = "Bearer container-secret",
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "https://credentials.example.test/v1/task",
+      },
+    })
+
+    runtime:queue_http(response(valid_body()))
+
+    assert(ecs.resolve(runtime))
+    assert.are.same({
+      authorization = "Bearer container-secret",
+    }, runtime.calls.http[1].request.headers)
+    assert.are.equal(0, #runtime.calls.file)
+  end)
+
+  it("prefers a bounded file-backed authorization token", function()
+    local runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_AUTHORIZATION_TOKEN = "Bearer ignored-secret",
+        AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE = "/var/run/container-token",
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "https://credentials.example.test/v1/task",
+      },
+    })
+
+    runtime:set_file("/var/run/container-token", "Bearer file-secret")
+    runtime:queue_http(response(valid_body()))
+
+    assert(ecs.resolve(runtime))
+    assert.are.same({
+      authorization = "Bearer file-secret",
+    }, runtime.calls.http[1].request.headers)
+    assert.are.equal("/var/run/container-token", runtime.calls.file[1].path)
+    assert.are.equal(64 * 1024, runtime.calls.file[1].options.max_bytes)
+    assert.are.equal(12, runtime.calls.file[1].options.deadline)
+  end)
+
+  it("ignores full-URI authorization inputs for a relative endpoint", function()
+    local runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_AUTHORIZATION_TOKEN = "Bearer ignored-secret",
+        AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE = "/missing-token",
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "https://credentials.example.test/ignored",
+        AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = RELATIVE_URI,
+      },
+    })
+
+    runtime:queue_http(response(valid_body()))
+
+    assert(ecs.resolve(runtime))
+    assert.is_nil(runtime.calls.http[1].request.headers)
+    assert.are.equal(0, #runtime.calls.file)
+  end)
+
+  it("rejects invalid authorization sources before networking", function()
+    local cases = {
+      { token = "" },
+      { token = "Bearer line\nbreak" },
+      { token_file = "" },
+      {
+        token = "Bearer must-not-fallback",
+        token_file = "/missing-token",
+      },
+      { file_value = "", token_file = "/empty-token" },
+      {
+        file_value = string.rep("x", 64 * 1024 + 1),
+        token_file = "/oversized-token",
+      },
+      {
+        file_value = "Bearer line\nbreak",
+        token_file = "/invalid-token",
+      },
+    }
+
+    for _, case in ipairs(cases) do
+      local runtime = configured_runtime({
+        environment = {
+          AWS_CONTAINER_AUTHORIZATION_TOKEN = case.token,
+          AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE = case.token_file,
+          AWS_CONTAINER_CREDENTIALS_FULL_URI =
+            "https://credentials.example.test/v1/task",
+        },
+      })
+
+      if case.file_value ~= nil then
+        runtime:set_file(case.token_file, case.file_value)
+      end
+
+      local credential, err = ecs.resolve(runtime)
+
+      assert.is_nil(credential)
+      assert_auth_error(err)
+      assert.are.equal(0, #runtime.calls.http)
+      assert.is_nil(tostring(err):find("must-not-fallback", 1, true))
+      assert.is_nil(tostring(err):find("missing-token", 1, true))
+    end
+  end)
+
+  it("preserves token-file timeout and cancellation classifications", function()
+    local runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE = "/container-token",
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "https://credentials.example.test/v1/task",
+      },
+    })
+
+    runtime:set_file("/container-token", "Bearer secret")
+
+    local credential, err = ecs.resolve(runtime, { deadline = 2 })
+
+    assert.is_nil(credential)
+    assert_auth_error(err)
+    assert.is_true(err.timeout)
+    assert.are.equal(errors.CATEGORY.TIMEOUT, err.details.source_category)
+    assert.are.equal(0, #runtime.calls.http)
+
+    runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE = "/container-token",
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "https://credentials.example.test/v1/task",
+      },
+    })
+    runtime:set_file("/container-token", "Bearer secret")
+
+    local cancellation = runtime.cancellation:new()
+
+    cancellation:cancel("container token secret")
+    credential, err = ecs.resolve(runtime, { cancellation = cancellation })
+
+    assert.is_nil(credential)
+    assert_auth_error(err)
+    assert.are.equal(errors.CATEGORY.CANCELLED, err.details.source_category)
+    assert.is_nil(tostring(err):find("container token secret", 1, true))
+    assert.are.equal(0, #runtime.calls.http)
+  end)
+
   it("permits local HTTP container credential endpoints", function()
     local urls = {
       "http://localhost:8080/v1/task",

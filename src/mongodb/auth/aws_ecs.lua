@@ -4,8 +4,11 @@ local errors = require("mongodb.error")
 
 local M = {}
 
+local AUTHORIZATION_TOKEN = "AWS_CONTAINER_AUTHORIZATION_TOKEN"
+local AUTHORIZATION_TOKEN_FILE = "AWS_CONTAINER_AUTHORIZATION_TOKEN_FILE"
 local ENDPOINT = "http://169.254.170.2"
 local FULL_URI = "AWS_CONTAINER_CREDENTIALS_FULL_URI"
+local MAX_AUTHORIZATION_BYTES = 64 * 1024
 local MAX_RESPONSE_BYTES = 1024 * 1024
 local RELATIVE_URI = "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"
 local TIMEOUT_SECONDS = 10
@@ -121,12 +124,14 @@ local function validate_runtime(runtime)
       or type(runtime.clock.wall_time) ~= "function"
       or type(runtime.environment) ~= "table"
       or type(runtime.environment.get) ~= "function"
+      or type(runtime.file) ~= "table"
+      or type(runtime.file.read) ~= "function"
       or type(runtime.http) ~= "table"
       or type(runtime.http.request) ~= "function"
   then
     error(
-      "ECS credential resolution requires runtime environment, HTTP, and "
-        .. "clock adapters",
+      "ECS credential resolution requires runtime environment, file, HTTP, "
+        .. "and clock adapters",
       3
     )
   end
@@ -409,6 +414,40 @@ local function valid_full_uri(value)
   return scheme == "https" or permitted_http_host(host, ipv6)
 end
 
+local function authorization_header(runtime, deadline, cancellation)
+  local token_file = environment_value(runtime, AUTHORIZATION_TOKEN_FILE)
+  local token
+  local err
+
+  if token_file ~= nil then
+    if token_file == "" then
+      return nil, provider_error()
+    end
+
+    token, err = runtime.file:read(token_file, {
+      cancellation = cancellation,
+      deadline = deadline,
+      max_bytes = MAX_AUTHORIZATION_BYTES,
+    })
+
+    if token == nil then
+      return nil, provider_error(err)
+    end
+  else
+    token = environment_value(runtime, AUTHORIZATION_TOKEN)
+  end
+
+  if token == nil then
+    return nil
+  end
+
+  if token == "" or token:find("[%c]") then
+    return nil, provider_error()
+  end
+
+  return token
+end
+
 function M.is_configured(runtime)
   validate_runtime(runtime)
   return environment_value(runtime, RELATIVE_URI) ~= nil
@@ -424,6 +463,7 @@ function M.resolve(runtime, options)
   end
 
   local relative_uri = environment_value(runtime, RELATIVE_URI)
+  local full_uri
   local url
 
   if relative_uri ~= nil then
@@ -433,7 +473,7 @@ function M.resolve(runtime, options)
 
     url = ENDPOINT .. relative_uri
   else
-    local full_uri = environment_value(runtime, FULL_URI)
+    full_uri = environment_value(runtime, FULL_URI)
 
     if not valid_full_uri(full_uri) then
       return nil, provider_error()
@@ -442,10 +482,33 @@ function M.resolve(runtime, options)
     url = full_uri
   end
 
+  local deadline = request_deadline(runtime, options.deadline)
+  local headers
+
+  if full_uri ~= nil then
+    local authorization
+    local auth_err
+
+    authorization, auth_err = authorization_header(
+      runtime,
+      deadline,
+      options.cancellation
+    )
+
+    if auth_err ~= nil then
+      return nil, auth_err
+    end
+
+    if authorization ~= nil then
+      headers = { authorization = authorization }
+    end
+  end
+
   local response, err = runtime.http:request({
+    headers = headers,
     method = "GET",
     url = url,
-  }, request_deadline(runtime, options.deadline), options.cancellation)
+  }, deadline, options.cancellation)
 
   if response == nil then
     return nil, provider_error(err)

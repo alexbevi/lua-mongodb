@@ -2832,6 +2832,28 @@
       "notes": [],
       "started_at": "2026-08-14T11:54:17+00:00",
       "completed_at": "2026-08-14T11:58:50+00:00"
+    },
+    "AUTH-023": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua'",
+          "exit_code": 1,
+          "summary": "The defining full-URI authorization test failed because the ECS provider omitted the configured Authorization header (9 successes, 1 failure).",
+          "recorded_at": "2026-08-14T12:05:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_ecs.lua spec/unit/auth_aws_ecs_spec.lua'",
+          "exit_code": 0,
+          "summary": "23 focused container-authorization/provider-chain unit tests passed; touched-file lint reported 0 warnings and 0 errors across 2 files.",
+          "recorded_at": "2026-08-14T12:07:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T12:05:03+00:00",
+      "completed_at": "2026-08-14T12:09:01+00:00"
     }
   },
   "verified_references": {
