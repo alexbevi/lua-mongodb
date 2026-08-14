@@ -16,12 +16,12 @@ UNIFIED_REPORT ?=
 
 .PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
-	test-unified-meta test-unified-execution test-conformance test-architecture test-quality test-coverage \
+	test-unified-meta test-unified-execution test-conformance test-architecture test-generated test-quality test-coverage \
 	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-release-checklist lint rockspec planning-check
 
 check: check-full
 
-check-fast: test-unit test-integration test-unified-static test-architecture test-stress test-compatibility test-package lint rockspec planning-check
+check-fast: test-unit test-integration test-unified-static test-architecture test-generated test-stress test-compatibility test-package lint rockspec planning-check
 
 check-full: check-fast test-unified-execution test-coverage
 
@@ -118,6 +118,9 @@ test-conformance: check-python test-release-scope test-release-checklist
 test-architecture: check-python
 	@"$(PYTHON)" -m unittest planning.tests.test_architecture_boundaries -v
 	@"$(PYTHON)" planning/check_architecture.py src/mongodb
+
+test-generated: check-python
+	@"$(PYTHON)" tools/generate_stringprep_tables.py --check
 
 test-release-scope: check-python
 	@"$(PYTHON)" -m unittest spec.release.test_scope -v
