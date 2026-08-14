@@ -2803,6 +2803,35 @@
       "notes": [],
       "started_at": "2026-08-14T11:40:42+00:00",
       "completed_at": "2026-08-14T11:46:37+00:00"
+    },
+    "AUTH-022": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua'",
+          "exit_code": 1,
+          "summary": "The defining HTTPS full-container-URI exchange failed because the ECS provider supported only AWS_CONTAINER_CREDENTIALS_RELATIVE_URI (5 successes, 1 failure).",
+          "recorded_at": "2026-08-14T11:54:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_ecs.lua spec/unit/auth_aws_ecs_spec.lua'",
+          "exit_code": 0,
+          "summary": "18 focused full-URI/provider-chain unit tests passed; touched-file lint reported 0 warnings and 0 errors across 2 files.",
+          "recorded_at": "2026-08-14T11:58:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ecs_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_ecs.lua spec/unit/auth_aws_ecs_spec.lua'",
+          "exit_code": 0,
+          "summary": "Final full-URI boundary verification passed 18 focused unit tests, including malformed IPv6 rejection; touched-file lint reported 0 warnings and 0 errors across 2 files.",
+          "recorded_at": "2026-08-14T11:58:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T11:54:17+00:00",
+      "completed_at": "2026-08-14T11:58:50+00:00"
     }
   },
   "verified_references": {

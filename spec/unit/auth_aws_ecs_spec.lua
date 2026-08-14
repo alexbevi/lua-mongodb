@@ -59,6 +59,95 @@ describe("MONGODB-AWS ECS credentials", function()
     assert.are.equal(12, runtime.calls.http[1].deadline)
   end)
 
+  it("fetches temporary credentials from a configured HTTPS full URI", function()
+    local runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "https://credentials.example.test/v1/task",
+      },
+    })
+
+    runtime:queue_http(response(valid_body()))
+
+    assert(ecs.resolve(runtime))
+    assert.are.equal(
+      "https://credentials.example.test/v1/task",
+      runtime.calls.http[1].request.url
+    )
+  end)
+
+  it("permits local HTTP container credential endpoints", function()
+    local urls = {
+      "http://localhost:8080/v1/task",
+      "http://127.12.34.56/v1/task",
+      "http://169.254.170.2/v1/task",
+      "http://169.254.170.23/v1/task",
+      "http://[::1]:8080/v1/task",
+      "http://[0:0:0:0:0:0:0:1]/v1/task",
+      "http://[fd00:ec2::23]/v1/task",
+    }
+
+    for _, url in ipairs(urls) do
+      local runtime = configured_runtime({
+        environment = { AWS_CONTAINER_CREDENTIALS_FULL_URI = url },
+      })
+
+      runtime:queue_http(response(valid_body()))
+
+      assert(ecs.resolve(runtime))
+      assert.are.equal(url, runtime.calls.http[1].request.url)
+    end
+  end)
+
+  it("prefers the relative URI over a configured full URI", function()
+    local runtime = configured_runtime({
+      environment = {
+        AWS_CONTAINER_CREDENTIALS_FULL_URI =
+          "http://attacker.example/ignored",
+        AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = RELATIVE_URI,
+      },
+    })
+
+    runtime:queue_http(response(valid_body()))
+
+    assert(ecs.resolve(runtime))
+    assert.are.equal(
+      "http://169.254.170.2" .. RELATIVE_URI,
+      runtime.calls.http[1].request.url
+    )
+  end)
+
+  it("rejects unsafe and malformed full URIs before networking", function()
+    local urls = {
+      "",
+      "http://credentials.example.test/v1/task",
+      "http://localhost.example/v1/task",
+      "http://169.254.169.254/v1/task",
+      "http://[::2]/v1/task",
+      "http://[1:::2]/v1/task",
+      "http://user@localhost/v1/task",
+      "http://localhost:0/v1/task",
+      "http://localhost/v1/task#fragment",
+      "https://user@credentials.example.test/v1/task",
+      "https://bad host/v1/task",
+      "https://[not-ip]/v1/task",
+      "https://credentials..example/v1/task",
+      "ftp://localhost/v1/task",
+    }
+
+    for _, url in ipairs(urls) do
+      local runtime = configured_runtime({
+        environment = { AWS_CONTAINER_CREDENTIALS_FULL_URI = url },
+      })
+      local credential, err = ecs.resolve(runtime)
+
+      assert.is_true(ecs.is_configured(runtime))
+      assert.is_nil(credential)
+      assert_auth_error(err)
+      assert.are.equal(0, #runtime.calls.http)
+    end
+  end)
+
   it("caps requests to ten seconds and preserves an earlier deadline", function()
     local runtime = configured_runtime()
     local cancellation = runtime.cancellation:new()

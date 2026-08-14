@@ -5,6 +5,7 @@ local errors = require("mongodb.error")
 local M = {}
 
 local ENDPOINT = "http://169.254.170.2"
+local FULL_URI = "AWS_CONTAINER_CREDENTIALS_FULL_URI"
 local MAX_RESPONSE_BYTES = 1024 * 1024
 local RELATIVE_URI = "AWS_CONTAINER_CREDENTIALS_RELATIVE_URI"
 local TIMEOUT_SECONDS = 10
@@ -167,9 +168,251 @@ local function valid_relative_uri(value)
     and value:find("[%c%s]") == nil
 end
 
+local function parse_port(value)
+  if value == nil or value == "" or not value:match("^%d+$") then
+    return nil
+  end
+
+  local port = tonumber(value)
+
+  if port < 1 or port > 65535 then
+    return nil
+  end
+
+  return port
+end
+
+local function parse_ipv4(value)
+  local parts = {}
+
+  for part in value:gmatch("[^.]+") do
+    if not part:match("^%d+$")
+        or #part > 1 and part:sub(1, 1) == "0"
+    then
+      return nil
+    end
+
+    local number = tonumber(part)
+
+    if number > 255 then
+      return nil
+    end
+
+    parts[#parts + 1] = number
+  end
+
+  if #parts ~= 4 then
+    return nil
+  end
+
+  return parts
+end
+
+local function parse_ipv6_piece(value)
+  local words = {}
+
+  if value == "" then
+    return words
+  end
+
+  for word in value:gmatch("[^:]+") do
+    if #word > 4 or not word:match("^[0-9A-Fa-f]+$") then
+      return nil
+    end
+
+    words[#words + 1] = tonumber(word, 16)
+  end
+
+  return words
+end
+
+local function parse_ipv6(value)
+  if value == ""
+      or value:find("[^0-9A-Fa-f:]")
+      or value:find(":::", 1, true)
+      or value:sub(1, 1) == ":" and value:sub(1, 2) ~= "::"
+      or value:sub(-1) == ":" and value:sub(-2) ~= "::"
+  then
+    return nil
+  end
+
+  local compressed = value:find("::", 1, true)
+
+  if compressed ~= nil and value:find("::", compressed + 2, true) then
+    return nil
+  end
+
+  local left
+  local right
+
+  if compressed == nil then
+    left = parse_ipv6_piece(value)
+
+    if left == nil or #left ~= 8 then
+      return nil
+    end
+
+    return left
+  end
+
+  left = parse_ipv6_piece(value:sub(1, compressed - 1))
+  right = parse_ipv6_piece(value:sub(compressed + 2))
+
+  if left == nil or right == nil or #left + #right >= 8 then
+    return nil
+  end
+
+  local words = {}
+
+  for _, word in ipairs(left) do
+    words[#words + 1] = word
+  end
+
+  for _ = 1, 8 - #left - #right do
+    words[#words + 1] = 0
+  end
+
+  for _, word in ipairs(right) do
+    words[#words + 1] = word
+  end
+
+  return words
+end
+
+local function valid_dns_name(value)
+  if #value > 253 or value:sub(-1) == "." then
+    return false
+  end
+
+  local count = 0
+
+  for label in value:gmatch("[^.]+") do
+    if #label > 63
+        or not label:match("^[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9]$")
+          and not label:match("^[A-Za-z0-9]$")
+    then
+      return false
+    end
+
+    count = count + #label + 1
+  end
+
+  return count == #value + 1
+end
+
+local function words_equal(left, right)
+  for index = 1, 8 do
+    if left[index] ~= right[index] then
+      return false
+    end
+  end
+
+  return true
+end
+
+local IPV6_LOOPBACK = { 0, 0, 0, 0, 0, 0, 0, 1 }
+local IPV6_EKS = { 0xfd00, 0x0ec2, 0, 0, 0, 0, 0, 0x23 }
+
+local function permitted_http_host(host, ipv6)
+  local lowered = host:lower()
+
+  if lowered == "localhost" then
+    return true
+  end
+
+  if ipv6 then
+    local words = parse_ipv6(host)
+
+    return words ~= nil
+      and (words_equal(words, IPV6_LOOPBACK)
+        or words_equal(words, IPV6_EKS))
+  end
+
+  local address = parse_ipv4(host)
+
+  return address ~= nil
+    and (address[1] == 127
+      or address[1] == 169
+        and address[2] == 254
+        and address[3] == 170
+        and (address[4] == 2 or address[4] == 23))
+end
+
+local function valid_full_uri(value)
+  if type(value) ~= "string"
+      or value == ""
+      or value:find("#", 1, true)
+      or value:find("[%c%s]")
+  then
+    return false
+  end
+
+  local scheme, remainder = value:match("^(https?)://(.+)$")
+
+  if scheme == nil then
+    return false
+  end
+
+  local separator = remainder:find("[/?]")
+  local authority = separator and remainder:sub(1, separator - 1) or remainder
+
+  if authority == "" or authority:find("@", 1, true) then
+    return false
+  end
+
+  local host
+  local ipv6 = false
+
+  if authority:sub(1, 1) == "[" then
+    local close = authority:find("]", 2, true)
+
+    if close == nil then
+      return false
+    end
+
+    host = authority:sub(2, close - 1)
+    ipv6 = true
+
+    local suffix = authority:sub(close + 1)
+
+    if host == ""
+        or parse_ipv6(host) == nil
+        or suffix ~= "" and (suffix:sub(1, 1) ~= ":"
+          or parse_port(suffix:sub(2)) == nil)
+    then
+      return false
+    end
+  else
+    local colon = authority:find(":", 1, true)
+
+    if colon ~= nil and authority:find(":", colon + 1, true) then
+      return false
+    end
+
+    if colon == nil then
+      host = authority
+    else
+      host = authority:sub(1, colon - 1)
+
+      if parse_port(authority:sub(colon + 1)) == nil then
+        return false
+      end
+    end
+
+    if host == ""
+        or parse_ipv4(host) == nil and not valid_dns_name(host)
+    then
+      return false
+    end
+  end
+
+  return scheme == "https" or permitted_http_host(host, ipv6)
+end
+
 function M.is_configured(runtime)
   validate_runtime(runtime)
   return environment_value(runtime, RELATIVE_URI) ~= nil
+    or environment_value(runtime, FULL_URI) ~= nil
 end
 
 function M.resolve(runtime, options)
@@ -181,14 +424,27 @@ function M.resolve(runtime, options)
   end
 
   local relative_uri = environment_value(runtime, RELATIVE_URI)
+  local url
 
-  if not valid_relative_uri(relative_uri) then
-    return nil, provider_error()
+  if relative_uri ~= nil then
+    if not valid_relative_uri(relative_uri) then
+      return nil, provider_error()
+    end
+
+    url = ENDPOINT .. relative_uri
+  else
+    local full_uri = environment_value(runtime, FULL_URI)
+
+    if not valid_full_uri(full_uri) then
+      return nil, provider_error()
+    end
+
+    url = full_uri
   end
 
   local response, err = runtime.http:request({
     method = "GET",
-    url = ENDPOINT .. relative_uri,
+    url = url,
   }, request_deadline(runtime, options.deadline), options.cancellation)
 
   if response == nil then
