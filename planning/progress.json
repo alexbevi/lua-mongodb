@@ -3015,6 +3015,28 @@
       "notes": [],
       "started_at": "2026-08-14T13:44:57+00:00",
       "completed_at": "2026-08-14T13:49:43+00:00"
+    },
+    "AUTH-028": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_spec.lua'",
+          "exit_code": 2,
+          "summary": "The allowed human callback returned the intentional not-implemented authentication error instead of starting the principal/IdP/JWT two-step SASL conversation (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T13:54:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_spec.lua spec/unit/auth_oidc_host_spec.lua spec/unit/auth_oidc_machine_spec.lua spec/unit/auth_oidc_cache_spec.lua spec/unit/auth_oidc_coordination_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua spec/unit/auth_oidc_human_spec.lua spec/unit/auth_oidc_host_spec.lua spec/integration/auth_oidc_spec.lua' && python3 planning/update_plan.py check && git diff --check",
+          "exit_code": 0,
+          "summary": "25 defining and directly coupled unit cases and 3 loopback integration cases passed; touched-file lint reported 0 warnings/errors; planning and whitespace validation passed. No unified case became newly applicable because pinned OIDC fixtures use the machine test callback or remain owned by AUTH-017/AUTH-018.",
+          "recorded_at": "2026-08-14T14:00:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T13:53:01+00:00",
+      "completed_at": "2026-08-14T14:00:21+00:00"
     }
   },
   "verified_references": {

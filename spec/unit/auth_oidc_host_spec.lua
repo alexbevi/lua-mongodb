@@ -62,10 +62,10 @@ describe("MONGODB-OIDC human allowed hosts", function()
 
       assert.is_nil(authenticated)
       assert.are.equal(
-        "MONGODB-OIDC human authentication is not implemented",
+        "MONGODB-OIDC saslStart failed",
         err.message
       )
-      assert.are.equal(0, commands)
+      assert.are.equal(1, commands)
     end
   end)
 
