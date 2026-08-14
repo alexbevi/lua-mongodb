@@ -3289,22 +3289,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_PYTHON='spec.release.test_checklist'",
+          "command": "GitHub Actions Full Conformance run 31817347421, linux-quality job 94822099446: make check-fast test-coverage",
           "exit_code": 2,
-          "summary": "The v0.3 release contract failed because the checked-in release checklist still reported 0.2.0 (1 test, 1 failure).",
-          "recorded_at": "2026-08-14T15:45:16+00:00"
+          "summary": "The release-blocking Linux quality job ran 373 unit cases with 372 successes and one failure: spec/unit/topology_spec.lua:209 expected the concurrent RTT monitor to run during awaited hello, but the fixed 35 ms test window expired first.",
+          "recorded_at": "2026-08-14T16:04:45+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus release/version/API/coverage/workflow boundaries with touched lint; make rockspec test-package test-release-checklist; make test-coverage; generated release/conformance/README validators",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua' FOCUS_LINT='spec/unit/topology_spec.lua'; repeat exact awaitable-hello scheduling test 50 times; make test-coverage",
           "exit_code": 0,
-          "summary": "Focused gates passed 16 release/version unit tests, 3 client integration tests, 18 release/coverage/workflow Python contracts, and touched Lua lint with zero warnings; the 0.3.0 source rock installed and exercised the complete public API, all 6 release tests and the generated authentication checklist passed, coverage instrumentation passed 405 tests and ratcheted 22252/26039 lines (85.46%) with no macOS or Linux-adjusted regressions, and release scope, conformance ledger, README projection, Python compilation, plan, and diff validators passed. The portable portions of make check also passed; local live unified execution was unavailable because mongod and mongosh are not installed, so the required exact-commit Full Conformance workflow owns that live gate.",
-          "recorded_at": "2026-08-14T15:57:33+00:00"
+          "summary": "The bounded condition-wait version passed its exact test 50/50 repetitions, all 12 directly coupled topology unit tests passed, touched lint reported zero warnings, and coverage passed 405 tests at 22252/26039 lines (85.46%) with no regressions.",
+          "recorded_at": "2026-08-14T16:07:28+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-14T15:44:53+00:00",
-      "completed_at": "2026-08-14T15:57:34+00:00"
+      "notes": [
+        "Requeued: Exact-commit Full Conformance run 31817347421 failed the Linux quality gate because the monitored-topology awaitable-hello unit test used a fixed 35 ms sleep and did not observe its concurrent RTT monitor under CI scheduling load."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-14T15:57:34+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_PYTHON='spec.release.test_checklist'",
+              "exit_code": 2,
+              "summary": "The v0.3 release contract failed because the checked-in release checklist still reported 0.2.0 (1 test, 1 failure).",
+              "recorded_at": "2026-08-14T15:45:16+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus release/version/API/coverage/workflow boundaries with touched lint; make rockspec test-package test-release-checklist; make test-coverage; generated release/conformance/README validators",
+              "exit_code": 0,
+              "summary": "Focused gates passed 16 release/version unit tests, 3 client integration tests, 18 release/coverage/workflow Python contracts, and touched Lua lint with zero warnings; the 0.3.0 source rock installed and exercised the complete public API, all 6 release tests and the generated authentication checklist passed, coverage instrumentation passed 405 tests and ratcheted 22252/26039 lines (85.46%) with no macOS or Linux-adjusted regressions, and release scope, conformance ledger, README projection, Python compilation, plan, and diff validators passed. The portable portions of make check also passed; local live unified execution was unavailable because mongod and mongosh are not installed, so the required exact-commit Full Conformance workflow owns that live gate.",
+              "recorded_at": "2026-08-14T15:57:33+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "8d918d5ac08f5c6d560b5ef08ced13c4e923429b",
+      "started_at": "2026-08-14T16:04:44+00:00",
+      "completed_at": "2026-08-14T16:07:29+00:00"
     }
   },
   "verified_references": {

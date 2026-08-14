@@ -198,7 +198,12 @@ describe("monitored topology", function()
       })
 
       assert(manager:open())
-      assert(runtime.clock:sleep(0.035))
+      local deadline = runtime.clock:now() + 1
+
+      while not rtt_while_awaited and runtime.clock:now() < deadline do
+        assert(runtime.clock:sleep(0.001))
+      end
+
       assert.is_true(manager.description:server("a:27017").round_trip_time > 0)
       assert(manager:close())
 
