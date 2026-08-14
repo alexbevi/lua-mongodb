@@ -20,6 +20,17 @@ SPEC.loader.exec_module(generator)
 
 
 class GeneratedStringprepTests(unittest.TestCase):
+  def test_hangul_composition_is_explicitly_version_independent(self) -> None:
+    class Python314UnicodeData:
+      def decomposition(self, _character: str) -> str:
+        raise AssertionError("Hangul must bypass version-dependent UCD data")
+
+      def normalize(self, _form: str, _value: str) -> str:
+        raise AssertionError("Hangul must bypass version-dependent UCD data")
+
+    with mock.patch.object(generator, "UCD", Python314UnicodeData()):
+      self.assertIsNone(generator.composition_entry(generator.HANGUL_FIRST))
+
   def test_check_reports_drift_without_rewriting(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
       output = Path(temporary) / "stringprep_tables.lua"
