@@ -254,7 +254,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Connectivity | Server discovery and monitoring | 🟡 | 89.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
 | Connectivity | Load balancer support | 🔴 | 0.0% |
-| Authentication | Authentication options and additional mechanisms | 🔴 | 0.0% |
+| Authentication | Authentication options and additional mechanisms | 🟡 | 24.7% |
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 70.3% |

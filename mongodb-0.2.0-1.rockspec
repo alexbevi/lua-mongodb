@@ -48,6 +48,7 @@ build = {
     ["mongodb.bson.tagged"] = "src/mongodb/bson/tagged.lua",
     ["mongodb.bson.value"] = "src/mongodb/bson/value.lua",
     ["mongodb.bson.vector"] = "src/mongodb/bson/vector.lua",
+    ["mongodb.config.credentials"] = "src/mongodb/config/credentials.lua",
     ["mongodb.config.options"] = "src/mongodb/config/options.lua",
     ["mongodb.config.uri"] = "src/mongodb/config/uri.lua",
     ["mongodb.command.executor"] = "src/mongodb/command/executor.lua",

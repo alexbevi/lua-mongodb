@@ -333,6 +333,14 @@ def classify_case(
     else:
       owner = "AUTH-002"
 
+    if owner == "AUTH-002":
+      return _passed(
+        case,
+        owner,
+        "spec/support/auth_config_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
+      )
+
     return _deferred(case, owner, activities)
 
   if suite == "uri-options":

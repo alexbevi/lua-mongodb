@@ -547,9 +547,13 @@ local function apply_uri_options(state, uri_options)
           state.seen.read_preference_tags = true
         end
       elseif not skip then
-        local applied = apply_option(state, option, pair.value, true)
+        local applied, apply_err = apply_option(state, option, pair.value, true)
 
         if not applied then
+          if option == "auth_source" then
+            return nil, apply_err
+          end
+
           state.warnings[#state.warnings + 1] = "invalid MongoDB URI option: " .. option
         end
       end

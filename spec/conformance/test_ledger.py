@@ -81,8 +81,8 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1914,
-      "passed": 3610,
+      "deferred_unsupported": 1896,
+      "passed": 3628,
     }, generated["summary"]["statuses"])
 
     dns = [

@@ -2541,6 +2541,35 @@
       "notes": [],
       "started_at": "2026-08-13T23:55:09+00:00",
       "completed_at": "2026-08-14T00:48:37+00:00"
+    },
+    "AUTH-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
+          "exit_code": 2,
+          "summary": "0 successes; defining test errors because mongodb.config.credentials does not exist",
+          "recorded_at": "2026-08-14T09:48:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/config_options_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/auth_scram_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/config/credentials.lua src/mongodb/config/options.lua src/mongodb/client.lua spec/support/auth_config_runner.lua spec/unit/config_credentials_spec.lua'",
+          "exit_code": 0,
+          "summary": "26 Lua examples and 12 Python tests passed; 18 AUTH-002 legacy cases executed and passed; 0 environment-skipped, 56 auth cases remain deferred to pending AUTH owners, 0 failed; touched-file lint and conformance/readme/release/package validators passed",
+          "recorded_at": "2026-08-14T09:55:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/config_options_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/auth_scram_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/config/credentials.lua src/mongodb/config/options.lua src/mongodb/client.lua spec/support/auth_config_runner.lua spec/unit/config_credentials_spec.lua'",
+          "exit_code": 0,
+          "summary": "27 Lua examples and 12 Python tests passed; 18 AUTH-002 legacy cases executed and passed; 0 environment-skipped, 56 auth cases remain deferred to pending AUTH owners, 0 failed; touched-file lint and conformance/readme/release/package validators passed",
+          "recorded_at": "2026-08-14T09:57:10+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T09:47:48+00:00",
+      "completed_at": "2026-08-14T09:57:11+00:00"
     }
   },
   "verified_references": {

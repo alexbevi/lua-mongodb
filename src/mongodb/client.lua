@@ -1,6 +1,7 @@
 local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local command_executor = require("mongodb.command.executor")
+local credentials = require("mongodb.config.credentials")
 local driver_options = require("mongodb.config.options")
 local dns_discovery = require("mongodb.discovery.dns")
 local errors = require("mongodb.error")
@@ -423,7 +424,7 @@ end
 local function open_executor(
   runtime,
   config,
-  parsed,
+  credential,
   monitor,
   metadata,
   server_address,
@@ -448,7 +449,6 @@ local function open_executor(
     server = server_address,
     server_api = config.server_api,
   })
-  local auth_source = config.auth_source or parsed.database or "admin"
   local hello_options = {
     cancellation = fields.cancellation,
     deadline = deadline,
@@ -456,8 +456,8 @@ local function open_executor(
     topology_version = fields.topology_version,
   }
 
-  if parsed.username ~= nil and authenticate then
-    hello_options.sasl_supported_mechs = auth_source .. "." .. parsed.username
+  if credential ~= nil and credential.mechanism == nil and authenticate then
+    hello_options.sasl_supported_mechs = credential.source .. "." .. credential.username
   end
 
   local hello
@@ -468,9 +468,9 @@ local function open_executor(
     return nil, err
   end
 
-  if authenticate and parsed.username ~= nil then
+  if authenticate and credential ~= nil then
     local mechanism
-    mechanism, err = mechanism_from(hello, config.auth_mechanism)
+    mechanism, err = mechanism_from(hello, credential.mechanism)
 
     if not mechanism then
       executor:close()
@@ -480,9 +480,9 @@ local function open_executor(
     local authenticated
     authenticated, err = scram.authenticate(executor, runtime, {
       mechanism = mechanism,
-      password = parsed.password or "",
-      source = auth_source,
-      username = parsed.username,
+      password = credential.password,
+      source = credential.source,
+      username = credential.username,
     }, {
       cancellation = fields.cancellation,
       deadline = deadline,
@@ -500,6 +500,7 @@ end
 local function connect_topology(
   parsed,
   config,
+  credential,
   special,
   runtime,
   monitor,
@@ -535,7 +536,7 @@ local function connect_topology(
       executor, err, hello = open_executor(
         runtime,
         config,
-        parsed,
+        credential,
         monitor,
         metadata_state.value,
         server_address,
@@ -563,7 +564,7 @@ local function connect_topology(
     local executor = open_executor(
       runtime,
       config,
-      parsed,
+      credential,
       monitor,
       metadata_state.value,
       server_address,
@@ -586,7 +587,7 @@ local function connect_topology(
         return open_executor(
           runtime,
           config,
-          parsed,
+          credential,
           monitor,
           metadata_state.value,
           server_address,
@@ -752,6 +753,12 @@ function M.connect(uri, values)
     return nil, uri_err
   end
 
+  local credential, credential_err = credentials.build(parsed, config)
+
+  if credential_err then
+    return nil, credential_err
+  end
+
   if config.load_balanced then
     return configuration_error(
       "load-balanced deployment execution is not implemented"
@@ -813,6 +820,7 @@ function M.connect(uri, values)
     return connect_topology(
       parsed,
       config,
+      credential,
       special,
       runtime,
       monitor,
@@ -844,7 +852,7 @@ function M.connect(uri, values)
   executor, err, hello = open_executor(
     runtime,
     config,
-    parsed,
+    credential,
     monitor,
     metadata_state.value,
     server_address,
@@ -865,7 +873,7 @@ function M.connect(uri, values)
     local replacement, replacement_err, replacement_hello = open_executor(
       runtime,
       config,
-      parsed,
+      credential,
       monitor,
       metadata_state.value,
       server_address,
