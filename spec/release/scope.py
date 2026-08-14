@@ -38,6 +38,7 @@ POST_V1_REASONS = {
   "AUTH-004": "X.509 authentication is outside production-core v1",
   "AUTH-005": "MONGODB-AWS authentication is outside production-core v1",
   "AUTH-010": "MONGODB-OIDC credential configuration is outside production-core v1",
+  "AUTH-024": "MONGODB-OIDC callback configuration is outside production-core v1",
   "AUTH-011": "MONGODB-OIDC machine authentication is outside production-core v1",
   "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
   "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",

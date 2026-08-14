@@ -43,7 +43,8 @@
     "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
     "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
     "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
-    "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1"
+    "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1",
+    "AUTH-024": "MONGODB-OIDC callback configuration is outside production-core v1"
   },
   "schema_version": 1,
   "statuses": {
