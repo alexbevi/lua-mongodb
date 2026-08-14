@@ -1,5 +1,6 @@
 local aws = require("mongodb.auth.aws")
 local aws_credentials = require("mongodb.auth.aws_credentials")
+local aws_ec2 = require("mongodb.auth.aws_ec2")
 local aws_ecs = require("mongodb.auth.aws_ecs")
 local aws_web_identity = require("mongodb.auth.aws_web_identity")
 local plain = require("mongodb.auth.plain")
@@ -33,6 +34,8 @@ function M.authenticate(commands, runtime, credentials, options)
           provider = aws_web_identity.resolve
         elseif aws_ecs.is_configured(runtime) then
           provider = aws_ecs.resolve
+        else
+          provider = aws_ec2.resolve
         end
       end
 

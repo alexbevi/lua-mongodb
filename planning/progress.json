@@ -2854,6 +2854,35 @@
       "notes": [],
       "started_at": "2026-08-14T12:05:03+00:00",
       "completed_at": "2026-08-14T12:09:01+00:00"
+    },
+    "AUTH-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ec2_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining IMDSv2 credential-resolution test errored because mongodb.auth.aws_ec2 does not exist (0 successes, 1 error).",
+          "recorded_at": "2026-08-14T12:14:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ec2_spec.lua spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_ec2.lua src/mongodb/auth/init.lua spec/unit/auth_aws_ec2_spec.lua spec/unit/auth_aws_spec.lua' && make rockspec test-package && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "22 focused EC2/provider-chain/cache unit tests passed with 0 failures, errors, or pending; touched-file lint reported 0 warnings/errors across 4 files; rockspec lint, source-rock install/module inventory, and generated README compatibility validation passed. The pinned EC2 requirement is prose-only, so 0 unified fixtures were newly applicable, skipped, deferred, or failed.",
+          "recorded_at": "2026-08-14T12:20:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_aws_ec2_spec.lua spec/unit/auth_aws_credentials_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_LINT='src/mongodb/auth/aws_ec2.lua src/mongodb/auth/init.lua spec/unit/auth_aws_ec2_spec.lua spec/unit/auth_aws_spec.lua' && make rockspec test-package && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Post-audit verification passed: 22 focused EC2/provider-chain/cache tests, 0 failures/errors/pending, 0 lint warnings/errors across 4 touched Lua files, rockspec lint, source-rock installation and complete module inventory, and generated README compatibility validation. IMDS response limits are enforced by the runtime request and provider validation.",
+          "recorded_at": "2026-08-14T12:22:16+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T12:13:01+00:00",
+      "completed_at": "2026-08-14T12:22:29+00:00"
     }
   },
   "verified_references": {
