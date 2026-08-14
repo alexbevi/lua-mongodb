@@ -36,4 +36,6 @@ Local verification is selector-driven. Use `make test-focus` with one or more of
 
 Run `make test-architecture` when production module dependencies or runtime boundaries change. The architecture check rejects require cycles and direct OS, filesystem, socket, scheduling, TLS, native-module, or cryptography access outside `mongodb.runtime`.
 
+Run `make test-complexity` when production function control flow changes. New functions above the checked threshold and increases to existing hotspot scores fail; intentional reductions require regenerating and committing the lower baseline with `python3 tools/check_lua_complexity.py --update`.
+
 GitHub Actions runs `make check-fast` on Ubuntu and macOS plus live boundary compatibility rows on every push. The manual and scheduled `Full Conformance` workflow owns complete live unified execution, coverage, the full compatibility matrix, nightly Linux evidence, and weekly macOS evidence. Run broad suites locally only when changing the test infrastructure itself, preparing a release, diagnosing a CI-only failure, or modifying a cross-cutting primitive for which no narrower trustworthy boundary exists.

@@ -30,6 +30,7 @@ make test-focus FOCUS_UNIFIED='crud/tests/unified/example.json::test?1?'
 make test-focus FOCUS_PYTHON=planning.tests.test_update_plan.CommitTests
 make test-architecture
 make test-generated
+make test-complexity
 ```
 
 `check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
@@ -47,6 +48,8 @@ Activity implementation follows red-green vertical slices. A `red_green` activit
 `make test-architecture` validates the production Lua require graph and runtime isolation. It rejects cycles and reports direct OS, filesystem, socket, scheduling, TLS, native-module, or cryptography access outside `mongodb.runtime` with the exact module, file, and line. The target runs in `check-fast`; update its focused Python tests whenever the boundary policy changes.
 
 `make test-generated` runs read-only validators for committed generated source. The Stringprep generator's `--check` mode renders the Unicode 3.2 tables in memory and fails on byte drift without creating or rewriting the output; run the generator without `--check` only when intentionally regenerating the table. The target is part of `check-fast`, while `FOCUS_PYTHON=planning.tests.test_generated_artifacts` selects its focused behavior tests.
+
+`make test-complexity` runs Luacheck's deterministic cyclomatic-complexity report against the checked baseline. New production functions above 40 and increases to existing hotspot scores fail. A reduction also fails until `python3 tools/check_lua_complexity.py --update` records the lower score or removes the hotspot, so improvements cannot be lost. The target is part of `check-fast`, while `FOCUS_PYTHON=planning.tests.test_lua_complexity` selects the ratchet's focused behavior tests.
 
 Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
 

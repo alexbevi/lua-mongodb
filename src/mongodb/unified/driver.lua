@@ -30,7 +30,7 @@ local function validate_fields(specification, allowed, path)
 end
 
 local function client_factory(state)
-  return function(_, specification)
+  local function create_client(_, specification)
     local valid, err = validate_fields(specification, {
       id = true,
       awaitMinPoolSizeMS = true,
@@ -276,6 +276,8 @@ local function client_factory(state)
     state.collectors[client] = collector
     return client
   end
+
+  return create_client
 end
 
 local function database_factory(runner, specification)

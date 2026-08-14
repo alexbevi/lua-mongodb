@@ -3439,6 +3439,28 @@
       "notes": [],
       "started_at": "2026-08-14T19:07:45+00:00",
       "completed_at": "2026-08-14T19:11:15+00:00"
+    },
+    "QUA-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_lua_complexity'",
+          "exit_code": 2,
+          "summary": "Focused complexity tests failed to import the missing tools/check_lua_complexity.py ratchet",
+          "recorded_at": "2026-08-14T19:22:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_lua_complexity' FOCUS_UNIT='spec/unit/unified_driver_spec.lua' FOCUS_LINT='src/mongodb/unified/driver.lua' && make test-complexity",
+          "exit_code": 0,
+          "summary": "Complexity ratchet tests, unified driver unit coverage, touched Lua lint, and the checked baseline passed",
+          "recorded_at": "2026-08-14T19:27:15+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T19:21:29+00:00",
+      "completed_at": "2026-08-14T19:27:15+00:00"
     }
   },
   "verified_references": {

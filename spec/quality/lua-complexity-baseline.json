@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "maximum_new_complexity": 40,
+  "hotspots": [
+    {
+      "path": "src/mongodb/bson/codec.lua",
+      "function": "M._decode_value",
+      "complexity": 67
+    },
+    {
+      "path": "src/mongodb/bson/codec.lua",
+      "function": "M._encode_element",
+      "complexity": 54
+    },
+    {
+      "path": "src/mongodb/bson/json.lua",
+      "function": "convert_document",
+      "complexity": 88
+    },
+    {
+      "path": "src/mongodb/bson/json.lua",
+      "function": "encode_extended",
+      "complexity": 47
+    },
+    {
+      "path": "src/mongodb/config/credentials.lua",
+      "function": "M.build",
+      "complexity": 43
+    },
+    {
+      "path": "src/mongodb/config/options.lua",
+      "function": "apply_option",
+      "complexity": 50
+    },
+    {
+      "path": "src/mongodb/session.lua",
+      "function": "MANAGER_METHODS.decorate",
+      "complexity": 49
+    },
+    {
+      "path": "src/mongodb/session.lua",
+      "function": "finish_transaction",
+      "complexity": 41
+    },
+    {
+      "path": "src/mongodb/topology.lua",
+      "function": "M.new",
+      "complexity": 46
+    },
+    {
+      "path": "src/mongodb/topology.lua",
+      "function": "MANAGER_METHODS.handle_application_error",
+      "complexity": 45
+    },
+    {
+      "path": "src/mongodb/unified/driver.lua",
+      "function": "create_client",
+      "complexity": 42
+    },
+    {
+      "path": "src/mongodb/unified/runner.lua",
+      "function": "assert_expected_error",
+      "complexity": 41
+    }
+  ]
+}
