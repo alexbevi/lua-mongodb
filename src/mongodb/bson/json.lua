@@ -628,23 +628,269 @@ local function parse_iso_datetime(text)
   return seconds * 1000 + milliseconds
 end
 
-local KNOWN_WRAPPERS = {
-  ["$binary"] = true,
-  ["$code"] = true,
-  ["$date"] = true,
-  ["$dbPointer"] = true,
-  ["$maxKey"] = true,
-  ["$minKey"] = true,
-  ["$numberDecimal"] = true,
-  ["$numberDouble"] = true,
-  ["$numberInt"] = true,
-  ["$numberLong"] = true,
-  ["$oid"] = true,
-  ["$regularExpression"] = true,
-  ["$symbol"] = true,
-  ["$timestamp"] = true,
-  ["$undefined"] = true,
-  ["$uuid"] = true,
+local function nested_wrapper_fields(fields, wrapper, expected)
+  if not require_wrapper_fields(fields, { wrapper })
+      or not value.is_document(fields[wrapper]) then
+    return nil, "wrapper"
+  end
+
+  local nested = entry_map(fields[wrapper])
+
+  if not nested or not require_wrapper_fields(nested, expected) then
+    return nil, "value"
+  end
+
+  return nested
+end
+
+local function protected_wrapper_value(constructor, message, ...)
+  local ok, converted = pcall(constructor, ...)
+
+  if ok then
+    return converted
+  end
+
+  return wrapper_error(message)
+end
+
+local function convert_integer_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper }) then
+    return wrapper_error("invalid " .. wrapper .. " wrapper fields")
+  end
+
+  local numeric_kind = wrapper == "$numberInt" and "int32" or "int64"
+  local parsed = parse_integer_string(fields[wrapper], numeric_kind)
+
+  if parsed then
+    return parsed
+  end
+
+  return wrapper_error("invalid " .. wrapper .. " value")
+end
+
+local function convert_double_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper })
+      or type(fields[wrapper]) ~= "string" then
+    return wrapper_error("invalid $numberDouble wrapper")
+  end
+
+  local text = fields[wrapper]
+  local number = text == "Infinity" and math.huge
+    or text == "-Infinity" and -math.huge
+    or text == "NaN" and 0 / 0
+    or tonumber(text)
+
+  if number == nil then
+    return wrapper_error("invalid $numberDouble value")
+  end
+
+  return exact.double(number)
+end
+
+local function convert_decimal_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper })
+      or type(fields[wrapper]) ~= "string" then
+    return wrapper_error("invalid $numberDecimal wrapper")
+  end
+
+  return protected_wrapper_value(
+    exact.decimal128,
+    "invalid $numberDecimal value",
+    fields[wrapper]
+  )
+end
+
+local function convert_oid_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper })
+      or type(fields[wrapper]) ~= "string" then
+    return wrapper_error("invalid $oid wrapper")
+  end
+
+  return protected_wrapper_value(
+    tagged.object_id,
+    "invalid $oid value",
+    fields[wrapper]
+  )
+end
+
+local function convert_binary_wrapper(fields, wrapper)
+  local binary_fields, invalid = nested_wrapper_fields(
+    fields,
+    wrapper,
+    { "base64", "subType" }
+  )
+
+  if not binary_fields then
+    return wrapper_error("invalid $binary " .. invalid)
+  end
+
+  if type(binary_fields.base64) ~= "string"
+      or type(binary_fields.subType) ~= "string"
+      or not binary_fields.subType:match("^%x%x$") then
+    return wrapper_error("invalid $binary value")
+  end
+
+  local data = base64.decode(binary_fields.base64)
+
+  if not data then
+    return wrapper_error("invalid $binary base64 value")
+  end
+
+  return value.binary(data, tonumber(binary_fields.subType, 16))
+end
+
+local function convert_uuid_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper }) then
+    return wrapper_error("invalid $uuid wrapper fields")
+  end
+
+  local data = parse_uuid(fields[wrapper])
+
+  if data then
+    return value.binary(data, 4)
+  end
+
+  return wrapper_error("invalid $uuid value")
+end
+
+local function convert_date_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper }) then
+    return wrapper_error("invalid $date wrapper fields")
+  end
+
+  local milliseconds
+
+  if exact.is(fields[wrapper], "int64") then
+    milliseconds = fields[wrapper].value
+  elseif type(fields[wrapper]) == "string" then
+    milliseconds = parse_iso_datetime(fields[wrapper])
+  end
+
+  if milliseconds then
+    return tagged.datetime(milliseconds)
+  end
+
+  return wrapper_error("invalid $date value")
+end
+
+local function convert_regex_wrapper(fields, wrapper)
+  local regex_fields, invalid = nested_wrapper_fields(
+    fields,
+    wrapper,
+    { "pattern", "options" }
+  )
+
+  if not regex_fields then
+    return wrapper_error("invalid $regularExpression " .. invalid)
+  end
+
+  if type(regex_fields.pattern) ~= "string"
+      or type(regex_fields.options) ~= "string" then
+    return wrapper_error("invalid $regularExpression value")
+  end
+
+  return protected_wrapper_value(
+    tagged.regex,
+    "invalid $regularExpression value",
+    regex_fields.pattern,
+    regex_fields.options
+  )
+end
+
+local function convert_timestamp_wrapper(fields, wrapper)
+  local timestamp_fields, invalid = nested_wrapper_fields(
+    fields,
+    wrapper,
+    { "t", "i" }
+  )
+
+  if not timestamp_fields then
+    return wrapper_error("invalid $timestamp " .. invalid)
+  end
+
+  return protected_wrapper_value(
+    tagged.timestamp,
+    "invalid $timestamp value",
+    integer_value(timestamp_fields.t),
+    integer_value(timestamp_fields.i)
+  )
+end
+
+local function convert_code_wrapper(fields)
+  local expected = fields["$scope"] == nil and { "$code" }
+    or { "$code", "$scope" }
+
+  if not require_wrapper_fields(fields, expected)
+      or type(fields["$code"]) ~= "string"
+      or fields["$scope"] ~= nil and not value.is_document(fields["$scope"]) then
+    return wrapper_error("invalid $code wrapper")
+  end
+
+  return tagged.code(fields["$code"], fields["$scope"])
+end
+
+local function convert_key_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper })
+      or integer_value(fields[wrapper]) ~= 1 then
+    return wrapper_error("invalid " .. wrapper .. " wrapper")
+  end
+
+  return wrapper == "$minKey" and tagged.min_key or tagged.max_key
+end
+
+local function convert_undefined_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper }) or fields[wrapper] ~= true then
+    return wrapper_error("invalid $undefined wrapper")
+  end
+
+  return tagged.undefined
+end
+
+local function convert_symbol_wrapper(fields, wrapper)
+  if not require_wrapper_fields(fields, { wrapper })
+      or type(fields[wrapper]) ~= "string" then
+    return wrapper_error("invalid $symbol wrapper")
+  end
+
+  return tagged.symbol(fields[wrapper])
+end
+
+local function convert_db_pointer_wrapper(fields, wrapper)
+  local pointer_fields, invalid = nested_wrapper_fields(
+    fields,
+    wrapper,
+    { "$ref", "$id" }
+  )
+
+  if not pointer_fields then
+    return wrapper_error("invalid $dbPointer " .. invalid)
+  end
+
+  if type(pointer_fields["$ref"]) ~= "string"
+      or not tagged.is(pointer_fields["$id"], "object_id") then
+    return wrapper_error("invalid $dbPointer value")
+  end
+
+  return tagged.db_pointer(pointer_fields["$ref"], pointer_fields["$id"])
+end
+
+local WRAPPER_HANDLERS = {
+  ["$binary"] = convert_binary_wrapper,
+  ["$code"] = convert_code_wrapper,
+  ["$date"] = convert_date_wrapper,
+  ["$dbPointer"] = convert_db_pointer_wrapper,
+  ["$maxKey"] = convert_key_wrapper,
+  ["$minKey"] = convert_key_wrapper,
+  ["$numberDecimal"] = convert_decimal_wrapper,
+  ["$numberDouble"] = convert_double_wrapper,
+  ["$numberInt"] = convert_integer_wrapper,
+  ["$numberLong"] = convert_integer_wrapper,
+  ["$oid"] = convert_oid_wrapper,
+  ["$regularExpression"] = convert_regex_wrapper,
+  ["$symbol"] = convert_symbol_wrapper,
+  ["$timestamp"] = convert_timestamp_wrapper,
+  ["$undefined"] = convert_undefined_wrapper,
+  ["$uuid"] = convert_uuid_wrapper,
 }
 
 local function convert_document(document, depth, options)
@@ -667,232 +913,12 @@ local function convert_document(document, depth, options)
     return wrapper_error(duplicate_error)
   end
 
-  local wrapper
+  for wrapper in pairs(fields) do
+    local handler = WRAPPER_HANDLERS[wrapper]
 
-  for key in pairs(fields) do
-    if KNOWN_WRAPPERS[key] then
-      wrapper = key
-      break
+    if handler then
+      return handler(fields, wrapper)
     end
-  end
-
-  if not wrapper then
-    return converted_document
-  end
-
-  if wrapper == "$numberInt" or wrapper == "$numberLong" then
-    if not require_wrapper_fields(fields, { wrapper }) then
-      return wrapper_error("invalid " .. wrapper .. " wrapper fields")
-    end
-
-    local numeric_kind = wrapper == "$numberInt" and "int32" or "int64"
-    local parsed = parse_integer_string(fields[wrapper], numeric_kind)
-
-    if parsed then
-      return parsed
-    end
-
-    return wrapper_error("invalid " .. wrapper .. " value")
-  end
-
-  if wrapper == "$numberDouble" then
-    if not require_wrapper_fields(fields, { wrapper }) or type(fields[wrapper]) ~= "string" then
-      return wrapper_error("invalid $numberDouble wrapper")
-    end
-
-    local text = fields[wrapper]
-    local number = text == "Infinity" and math.huge
-      or text == "-Infinity" and -math.huge
-      or text == "NaN" and 0 / 0
-      or tonumber(text)
-
-    if number == nil then
-      return wrapper_error("invalid $numberDouble value")
-    end
-
-    return exact.double(number)
-  end
-
-  if wrapper == "$numberDecimal" then
-    if not require_wrapper_fields(fields, { wrapper }) or type(fields[wrapper]) ~= "string" then
-      return wrapper_error("invalid $numberDecimal wrapper")
-    end
-
-    local ok, decimal = pcall(exact.decimal128, fields[wrapper])
-
-    if ok then
-      return decimal
-    end
-
-    return wrapper_error("invalid $numberDecimal value")
-  end
-
-  if wrapper == "$oid" then
-    if not require_wrapper_fields(fields, { wrapper }) or type(fields[wrapper]) ~= "string" then
-      return wrapper_error("invalid $oid wrapper")
-    end
-
-    local ok, object_id = pcall(tagged.object_id, fields[wrapper])
-
-    if ok then
-      return object_id
-    end
-
-    return wrapper_error("invalid $oid value")
-  end
-
-  if wrapper == "$binary" then
-    if not require_wrapper_fields(fields, { wrapper })
-        or not value.is_document(fields[wrapper]) then
-      return wrapper_error("invalid $binary wrapper")
-    end
-
-    local binary_fields = entry_map(fields[wrapper])
-
-    if not binary_fields or not require_wrapper_fields(binary_fields, { "base64", "subType" })
-        or type(binary_fields.base64) ~= "string" or type(binary_fields.subType) ~= "string"
-        or not binary_fields.subType:match("^%x%x$") then
-      return wrapper_error("invalid $binary value")
-    end
-
-    local data = base64.decode(binary_fields.base64)
-
-    if not data then
-      return wrapper_error("invalid $binary base64 value")
-    end
-
-    return value.binary(data, tonumber(binary_fields.subType, 16))
-  end
-
-  if wrapper == "$uuid" then
-    if not require_wrapper_fields(fields, { wrapper }) then
-      return wrapper_error("invalid $uuid wrapper fields")
-    end
-
-    local data = parse_uuid(fields[wrapper])
-
-    if data then
-      return value.binary(data, 4)
-    end
-
-    return wrapper_error("invalid $uuid value")
-  end
-
-  if wrapper == "$date" then
-    if not require_wrapper_fields(fields, { wrapper }) then
-      return wrapper_error("invalid $date wrapper fields")
-    end
-
-    local milliseconds
-
-    if exact.is(fields[wrapper], "int64") then
-      milliseconds = fields[wrapper].value
-    elseif type(fields[wrapper]) == "string" then
-      milliseconds = parse_iso_datetime(fields[wrapper])
-    end
-
-    if milliseconds then
-      return tagged.datetime(milliseconds)
-    end
-
-    return wrapper_error("invalid $date value")
-  end
-
-  if wrapper == "$regularExpression" then
-    if not require_wrapper_fields(fields, { wrapper })
-        or not value.is_document(fields[wrapper]) then
-      return wrapper_error("invalid $regularExpression wrapper")
-    end
-
-    local regex_fields = entry_map(fields[wrapper])
-
-    if not regex_fields or not require_wrapper_fields(regex_fields, { "pattern", "options" })
-        or type(regex_fields.pattern) ~= "string" or type(regex_fields.options) ~= "string" then
-      return wrapper_error("invalid $regularExpression value")
-    end
-
-    local ok, regex = pcall(tagged.regex, regex_fields.pattern, regex_fields.options)
-
-    if ok then
-      return regex
-    end
-
-    return wrapper_error("invalid $regularExpression value")
-  end
-
-  if wrapper == "$timestamp" then
-    if not require_wrapper_fields(fields, { wrapper })
-        or not value.is_document(fields[wrapper]) then
-      return wrapper_error("invalid $timestamp wrapper")
-    end
-
-    local timestamp_fields = entry_map(fields[wrapper])
-
-    if not timestamp_fields or not require_wrapper_fields(timestamp_fields, { "t", "i" }) then
-      return wrapper_error("invalid $timestamp value")
-    end
-
-    local time = integer_value(timestamp_fields.t)
-    local increment = integer_value(timestamp_fields.i)
-    local ok, timestamp = pcall(tagged.timestamp, time, increment)
-
-    if ok then
-      return timestamp
-    end
-
-    return wrapper_error("invalid $timestamp value")
-  end
-
-  if wrapper == "$code" then
-    local expected = fields["$scope"] == nil and { "$code" } or { "$code", "$scope" }
-
-    if not require_wrapper_fields(fields, expected) or type(fields["$code"]) ~= "string"
-        or fields["$scope"] ~= nil and not value.is_document(fields["$scope"]) then
-      return wrapper_error("invalid $code wrapper")
-    end
-
-    return tagged.code(fields["$code"], fields["$scope"])
-  end
-
-  if wrapper == "$minKey" or wrapper == "$maxKey" then
-    if not require_wrapper_fields(fields, { wrapper }) or integer_value(fields[wrapper]) ~= 1 then
-      return wrapper_error("invalid " .. wrapper .. " wrapper")
-    end
-
-    return wrapper == "$minKey" and tagged.min_key or tagged.max_key
-  end
-
-  if wrapper == "$undefined" then
-    if not require_wrapper_fields(fields, { wrapper }) or fields[wrapper] ~= true then
-      return wrapper_error("invalid $undefined wrapper")
-    end
-
-    return tagged.undefined
-  end
-
-  if wrapper == "$symbol" then
-    if not require_wrapper_fields(fields, { wrapper }) or type(fields[wrapper]) ~= "string" then
-      return wrapper_error("invalid $symbol wrapper")
-    end
-
-    return tagged.symbol(fields[wrapper])
-  end
-
-  if wrapper == "$dbPointer" then
-    if not require_wrapper_fields(fields, { wrapper })
-        or not value.is_document(fields[wrapper]) then
-      return wrapper_error("invalid $dbPointer wrapper")
-    end
-
-    local pointer_fields = entry_map(fields[wrapper])
-
-    if not pointer_fields or not require_wrapper_fields(pointer_fields, { "$ref", "$id" })
-        or type(pointer_fields["$ref"]) ~= "string"
-        or not tagged.is(pointer_fields["$id"], "object_id") then
-      return wrapper_error("invalid $dbPointer value")
-    end
-
-    return tagged.db_pointer(pointer_fields["$ref"], pointer_fields["$id"])
   end
 
   return converted_document

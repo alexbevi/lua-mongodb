@@ -3528,6 +3528,21 @@
       "notes": [],
       "started_at": "2026-08-14T19:55:15+00:00",
       "completed_at": "2026-08-14T19:59:25+00:00"
+    },
+    "BSON-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/extended_json_spec.lua' FOCUS_LINT='src/mongodb/bson/json.lua spec/unit/extended_json_spec.lua'; python3 spec/corpus/run_bson_corpus.py --lua lua; make test-complexity",
+          "exit_code": 0,
+          "summary": "Five focused cases including exact diagnostics for twelve malformed wrapper forms passed; the pinned corpus passed 728 canonical BSON vectors, 180 parse-error vectors, and 1,080 Extended JSON representations; lint passed; convert_document complexity fell from 88 to 6.",
+          "recorded_at": "2026-08-14T20:07:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T20:03:31+00:00",
+      "completed_at": "2026-08-14T20:07:17+00:00"
     }
   },
   "verified_references": {

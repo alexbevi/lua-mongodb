@@ -76,4 +76,48 @@ describe("ordered JSON and Extended JSON", function()
     assert.is_nil(encoded)
     assert.is_true(errors.is(err, errors.CATEGORY.BSON))
   end)
+
+  it("preserves precise errors for recognized malformed wrappers", function()
+    local cases = {
+      {
+        '{"$numberInt":"1","extra":true}',
+        "invalid $numberInt wrapper fields",
+      },
+      { '{"$numberDouble":1}', "invalid $numberDouble wrapper" },
+      {
+        '{"$numberDecimal":"not-a-decimal"}',
+        "invalid $numberDecimal value",
+      },
+      {
+        '{"$binary":{"base64":"","subType":"0"}}',
+        "invalid $binary value",
+      },
+      { '{"$date":"not-a-date"}', "invalid $date value" },
+      {
+        '{"$regularExpression":{"pattern":"x"}}',
+        "invalid $regularExpression value",
+      },
+      {
+        '{"$timestamp":{"t":1,"i":"1"}}',
+        "invalid $timestamp value",
+      },
+      { '{"$code":"return 1","extra":true}', "invalid $code wrapper" },
+      { '{"$minKey":0}', "invalid $minKey wrapper" },
+      { '{"$undefined":false}', "invalid $undefined wrapper" },
+      { '{"$symbol":1}', "invalid $symbol wrapper" },
+      {
+        '{"$dbPointer":{"$ref":"items","$id":"not-an-object-id"}}',
+        "invalid $dbPointer value",
+      },
+    }
+
+    for _, case in ipairs(cases) do
+      local decoded, err = bson.json.decode(case[1])
+
+      assert.is_nil(decoded)
+      assert.is_true(errors.is(err, errors.CATEGORY.BSON))
+      assert.are.equal(case[2], err.message)
+      assert.are.equal(1, err.details.offset)
+    end
+  end)
 end)
