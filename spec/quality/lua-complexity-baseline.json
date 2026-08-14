@@ -21,16 +21,6 @@
       "path": "src/mongodb/topology.lua",
       "function": "M.new",
       "complexity": 46
-    },
-    {
-      "path": "src/mongodb/unified/driver.lua",
-      "function": "create_client",
-      "complexity": 42
-    },
-    {
-      "path": "src/mongodb/unified/runner.lua",
-      "function": "assert_expected_error",
-      "complexity": 41
     }
   ]
 }

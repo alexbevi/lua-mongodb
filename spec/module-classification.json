@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "modules": {
+    "mongodb.unified.driver": {
+      "path": "spec/support/mongodb/unified/driver.lua",
+      "surface": "test-only"
+    },
+    "mongodb.unified.events": {
+      "path": "spec/support/mongodb/unified/events.lua",
+      "surface": "test-only"
+    },
+    "mongodb.unified.failpoints": {
+      "path": "spec/support/mongodb/unified/failpoints.lua",
+      "surface": "test-only"
+    },
+    "mongodb.unified.lifecycle": {
+      "path": "spec/support/mongodb/unified/lifecycle.lua",
+      "surface": "test-only"
+    },
+    "mongodb.unified.runner": {
+      "path": "spec/support/mongodb/unified/runner.lua",
+      "surface": "test-only"
+    },
+    "mongodb.unified.schema": {
+      "path": "spec/support/mongodb/unified/schema.lua",
+      "surface": "test-only"
+    }
+  }
+}

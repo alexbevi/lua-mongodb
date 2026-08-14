@@ -55,7 +55,7 @@ def lua_program(source: Path, paths: list[str]) -> str:
       encoded_file(source / relative),
     ))
 
-  return f'''package.path = "src/?.lua;src/?/init.lua;" .. package.path
+  return f'''package.path = "spec/support/?.lua;spec/support/?/init.lua;src/?.lua;src/?/init.lua;" .. package.path
 local base64 = require("mongodb.bson.base64")
 local json = require("mongodb.bson.json")
 local schema = require("mongodb.unified.schema")

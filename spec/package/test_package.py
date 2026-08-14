@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import os
 from pathlib import Path
 import re
@@ -13,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[2]
 ROCKSPEC = ROOT / "mongodb-0.3.0-1.rockspec"
 SMOKE = ROOT / "spec" / "package" / "smoke.lua"
 SOURCE_ROOT = ROOT / "src" / "mongodb"
+TEST_SUPPORT_ROOT = ROOT / "spec" / "support" / "mongodb"
+MODULE_CLASSIFICATION = ROOT / "spec" / "module-classification.json"
 
 
 def run_command(
@@ -61,6 +64,35 @@ def rockspec_modules() -> dict[str, str]:
   return modules
 
 
+def module_name(path: Path, root: Path) -> str:
+  relative = path.relative_to(root).with_suffix("")
+  parts = list(relative.parts)
+
+  if parts[-1] == "init":
+    parts.pop()
+
+  return ".".join(["mongodb", *parts])
+
+
+def discovered_unified_modules() -> dict[str, str]:
+  modules = {}
+
+  for root in (SOURCE_ROOT, TEST_SUPPORT_ROOT):
+    for path in sorted((root / "unified").glob("*.lua")):
+      modules[module_name(path, root)] = path.relative_to(ROOT).as_posix()
+
+  return modules
+
+
+def module_classification() -> dict[str, dict[str, str]]:
+  document = json.loads(MODULE_CLASSIFICATION.read_text(encoding="utf-8"))
+
+  if document.get("schema_version") != 1:
+    raise AssertionError("unsupported module classification schema version")
+
+  return document["modules"]
+
+
 def local_source_rockspec(directory: Path) -> Path:
   source_name = "lua-mongodb-0.3.0-1"
   archive = directory / f"{source_name}.tar.gz"
@@ -92,6 +124,26 @@ def local_source_rockspec(directory: Path) -> Path:
 
 
 class PackageTests(unittest.TestCase):
+  def test_unified_modules_follow_explicit_package_classification(self) -> None:
+    classified = module_classification()
+    discovered = discovered_unified_modules()
+
+    self.assertEqual(
+      discovered,
+      {name: entry["path"] for name, entry in classified.items()},
+    )
+
+    packaged = rockspec_modules()
+
+    for name, entry in classified.items():
+      with self.subTest(module=name):
+        self.assertIn(entry["surface"], ("runtime", "test-only"))
+
+        if entry["surface"] == "runtime":
+          self.assertEqual(entry["path"], packaged.get(name))
+        else:
+          self.assertNotIn(name, packaged)
+
   def test_source_rock_installs_complete_public_api_without_workspace_paths(
     self,
   ) -> None:
@@ -156,6 +208,15 @@ class PackageTests(unittest.TestCase):
       )
       self.assertEqual(0, smoked.returncode, smoked.stderr or smoked.stdout)
       self.assertIn("installed mongodb public API smoke passed", smoked.stdout)
+
+      installed_lua = install_tree / "share" / "lua" / "5.4"
+
+      for name, entry in module_classification().items():
+        if entry["surface"] == "test-only":
+          module_path = installed_lua.joinpath(*name.split(".")).with_suffix(".lua")
+          init_path = module_path.with_suffix("") / "init.lua"
+          self.assertFalse(module_path.exists(), name)
+          self.assertFalse(init_path.exists(), name)
 
     self.assertEqual(expected_modules(), rockspec_modules())
 

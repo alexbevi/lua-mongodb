@@ -51,6 +51,8 @@ Activity implementation follows red-green vertical slices. A `red_green` activit
 
 `make test-complexity` runs Luacheck's deterministic cyclomatic-complexity report against the checked baseline. New production functions above 40 and increases to existing hotspot scores fail. A reduction also fails until `python3 tools/check_lua_complexity.py --update` records the lower score or removes the hotspot, so improvements cannot be lost. The target is part of `check-fast`, while `FOCUS_PYTHON=planning.tests.test_lua_complexity` selects the ratchet's focused behavior tests.
 
+The unified specification runner is test-only support under `spec/support/mongodb/unified`. `spec/module-classification.json` classifies each `mongodb.unified.*` module explicitly; package and coverage contract tests reject missing classifications, test-only modules in the rockspec, and test-only modules in the production coverage baseline. Use the Make targets so `spec/support/?.lua` and `spec/support/?/init.lua` are added explicitly to the Lua test search path.
+
 Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
 
 Use [`prompt_goal.md`](prompt_goal.md) to launch the incremental production-core implementation.

@@ -1,6 +1,10 @@
 local ROOT = os.getenv("PWD") or "."
 
-package.path = ROOT .. "/src/?.lua;" .. ROOT .. "/src/?/init.lua;" .. package.path
+package.path = ROOT .. "/spec/support/?.lua;"
+  .. ROOT .. "/spec/support/?/init.lua;"
+  .. ROOT .. "/src/?.lua;"
+  .. ROOT .. "/src/?/init.lua;"
+  .. package.path
 
 local bson = require("mongodb.bson")
 local client_module = require("mongodb.client")

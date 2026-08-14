@@ -6,7 +6,8 @@ LUACOV ?= luacov
 PYTHON ?= python3
 
 ROCKSPEC := mongodb-0.3.0-1.rockspec
-BUSTED_PATHS := --lpath=src/?.lua --lpath=src/?/init.lua
+BUSTED_PATHS := --lpath=spec/support/?.lua --lpath=spec/support/?/init.lua \
+	--lpath=src/?.lua --lpath=src/?/init.lua
 FOCUS_UNIT ?=
 FOCUS_INTEGRATION ?=
 FOCUS_UNIFIED ?=

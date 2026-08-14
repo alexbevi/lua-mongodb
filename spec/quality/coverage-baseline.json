@@ -117,8 +117,8 @@
       "covered": 94
     },
     "src/mongodb/config/options.lua": {
-      "active": 526,
-      "covered": 493
+      "active": 546,
+      "covered": 509
     },
     "src/mongodb/config/uri.lua": {
       "active": 201,
@@ -171,6 +171,10 @@
     "src/mongodb/runtime/cancellation.lua": {
       "active": 36,
       "covered": 32
+    },
+    "src/mongodb/runtime/contract.lua": {
+      "active": 76,
+      "covered": 68
     },
     "src/mongodb/runtime/copas.lua": {
       "active": 275,
@@ -240,30 +244,6 @@
       "active": 222,
       "covered": 185
     },
-    "src/mongodb/unified/driver.lua": {
-      "active": 1100,
-      "covered": 393
-    },
-    "src/mongodb/unified/events.lua": {
-      "active": 361,
-      "covered": 317
-    },
-    "src/mongodb/unified/failpoints.lua": {
-      "active": 96,
-      "covered": 75
-    },
-    "src/mongodb/unified/lifecycle.lua": {
-      "active": 174,
-      "covered": 150
-    },
-    "src/mongodb/unified/runner.lua": {
-      "active": 921,
-      "covered": 504
-    },
-    "src/mongodb/unified/schema.lua": {
-      "active": 272,
-      "covered": 0
-    },
     "src/mongodb/wire/op_msg.lua": {
       "active": 299,
       "covered": 255
@@ -285,7 +265,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 26039,
-    "covered": 22252
+    "active": 23211,
+    "covered": 20897
   }
 }

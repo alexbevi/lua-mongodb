@@ -97,12 +97,6 @@ build = {
     ["mongodb.selection"] = "src/mongodb/selection.lua",
     ["mongodb.topology"] = "src/mongodb/topology.lua",
     ["mongodb.topology_executor"] = "src/mongodb/topology_executor.lua",
-    ["mongodb.unified.driver"] = "src/mongodb/unified/driver.lua",
-    ["mongodb.unified.events"] = "src/mongodb/unified/events.lua",
-    ["mongodb.unified.failpoints"] = "src/mongodb/unified/failpoints.lua",
-    ["mongodb.unified.lifecycle"] = "src/mongodb/unified/lifecycle.lua",
-    ["mongodb.unified.schema"] = "src/mongodb/unified/schema.lua",
-    ["mongodb.unified.runner"] = "src/mongodb/unified/runner.lua",
     ["mongodb.wire.op_msg"] = "src/mongodb/wire/op_msg.lua",
   },
 }

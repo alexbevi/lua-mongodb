@@ -3573,6 +3573,28 @@
       "notes": [],
       "started_at": "2026-08-14T20:19:52+00:00",
       "completed_at": "2026-08-14T20:23:26+00:00"
+    },
+    "REL-048": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.package.test_package.PackageTests.test_unified_modules_follow_explicit_package_classification spec.quality.test_coverage_gate.CoverageGateTests.test_production_baseline_excludes_test_only_modules'",
+          "exit_code": 2,
+          "summary": "The boundary contract classified all six mongodb.unified modules as test-only and failed because every module was still installed by the rockspec and retained in the production coverage baseline.",
+          "recorded_at": "2026-08-14T20:30:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.package.test_package spec.quality.test_coverage_gate'; make test-package; make test-unified-static; make test-focus FOCUS_UNIT='spec/unit/unified_runner_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_driver_spec.lua spec/unit/unified_events_spec.lua spec/unit/unified_failpoints_spec.lua' FOCUS_LINT='spec/support/mongodb/unified spec/unified/execute.lua'; make test-coverage; make test-architecture; make test-complexity; make rockspec; python3 planning/update_plan.py check --strict",
+          "exit_code": 0,
+          "summary": "Five focused package and coverage contract tests and the isolated source-rock install passed; all six unified modules remained byte-identical under explicit test paths and 22 directly coupled Lua tests passed; 535 fixtures / 2,531 tests and 320 meta-fixtures passed static validation with no applicability change; 409 coverage tests measured 20,968/23,195 production lines with no regressions; lint, rockspec, architecture, complexity, and strict planning gates passed.",
+          "recorded_at": "2026-08-14T20:39:25+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T20:29:56+00:00",
+      "completed_at": "2026-08-14T20:39:26+00:00"
     }
   },
   "verified_references": {
