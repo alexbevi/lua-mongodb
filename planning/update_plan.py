@@ -580,6 +580,16 @@ def command_start(arguments: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
   activity = require_activity(plan, arguments.activity_id)
+  requested_track = getattr(arguments, "track", None)
+  if requested_track is not None and requested_track not in declared_track_ids(plan):
+    raise PlanError(f"unknown track: {requested_track}")
+  activity_track = activity.get("track")
+  if activity.get("milestone") == "post-v1" and requested_track is None:
+    raise PlanError(f"post-v1 activity {arguments.activity_id} requires --track authorization")
+  if requested_track is not None and activity_track != requested_track:
+    raise PlanError(
+      f"activity {arguments.activity_id} does not belong to track {requested_track}"
+    )
   if any(status_for(progress, item["id"]) == "in_progress" for item in plan["activities"]):
     raise PlanError("another activity is already in_progress")
   record = ensure_record(progress, arguments.activity_id)
@@ -768,6 +778,7 @@ def build_parser() -> argparse.ArgumentParser:
 
   start = subparsers.add_parser("start", help="start a ready activity")
   start.add_argument("activity_id")
+  start.add_argument("--track", help="authorize this declared track for a post-v1 start")
   start.set_defaults(function=command_start)
 
   requeue = subparsers.add_parser(

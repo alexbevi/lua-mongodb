@@ -7,7 +7,7 @@ description: Execute one test-first vertical slice from the Lua MongoDB driver r
 
 1. Read `AGENTS.md`, `planning/plan.json`, `planning/current_state.json`, and the activity's mapped references.
 2. Run `python3 planning/update_plan.py check --strict --pushed` and select a ready activity with `next`, or with `next --track TRACK` when the user authorized a declared roadmap track. Retain that track for the activity loop. Confirm the activity describes one independently verifiable behavior; if it combines operations, fixture families, or acceptance behaviors, split it into ordered activities and commit the plan split before implementation. Stop if dependencies or reference pins are invalid.
-3. Start only that activity with `start ID`. Do not edit submodules, reference pins, or unrelated files.
+3. Start only that activity with `start ID`. For post-v1 work, reassert the user-authorized declared track with `start ID --track TRACK`; it must match the selected activity, and the same track remains in force for the goal. Do not edit submodules, reference pins, or unrelated files.
 4. Write the smallest test that specifies the activity's vertical behavior. Run it and record the failing result with `record-test ID --phase red`.
 5. Implement the Lua behavior behind the documented architecture and runtime boundaries. Follow `AGENTS.md` style and error rules.
 6. Inspect the pinned specification suites for cases made applicable by the behavior. Enable and run every newly applicable case in the same activity; classify remaining cases at test-case granularity with a concrete reason and a real pending roadmap owner.

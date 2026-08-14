@@ -3351,6 +3351,28 @@
       "notes": [],
       "started_at": "2026-08-14T18:32:35+00:00",
       "completed_at": "2026-08-14T18:36:33+00:00"
+    },
+    "PLN-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_update_plan'",
+          "exit_code": 2,
+          "summary": "21 planner tests ran; the new scope contract errored because start rejected --track lua-hardening, leaving post-v1 starts without an explicit track authorization boundary.",
+          "recorded_at": "2026-08-14T18:41:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_update_plan'; python3 planning/update_plan.py check --strict; python3 planning/update_plan.py next --track lua-hardening; git diff --check",
+          "exit_code": 0,
+          "summary": "All 21 planner tests passed: matching-track post-v1 start succeeded, unscoped and mismatched post-v1 starts failed, production-core start remained compatible, and strict planning plus diff checks passed.",
+          "recorded_at": "2026-08-14T18:42:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T18:40:58+00:00",
+      "completed_at": "2026-08-14T18:42:39+00:00"
     }
   },
   "verified_references": {

@@ -74,6 +74,15 @@ def tracked_plan() -> dict:
   return plan
 
 
+def post_v1_tracked_plan() -> dict:
+  plan = tracked_plan()
+  plan["milestones"].append({"id": "post-v1", "goal": "Explicitly authorized work."})
+  for item in plan["activities"]:
+    if item["id"] != "PRE-001":
+      item["milestone"] = "post-v1"
+  return plan
+
+
 def progress_for(plan: dict, statuses: dict[str, str] | None = None) -> dict:
   statuses = statuses or {}
   return {
@@ -255,6 +264,54 @@ class EvidenceTests(unittest.TestCase):
     with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)):
       with self.assertRaisesRegex(update_plan.PlanError, "already in_progress"):
         update_plan.command_start(argparse.Namespace(activity_id="TST-002"))
+
+  def test_post_v1_start_requires_the_matching_authorized_track(self) -> None:
+    plan = post_v1_tracked_plan()
+    parser = update_plan.build_parser()
+    parsed = parser.parse_args(["start", "PLN-001", "--track", "lua-hardening"])
+    self.assertEqual("lua-hardening", parsed.track)
+
+    progress = progress_for(plan, {"PRE-001": "completed"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)):
+      with self.assertRaisesRegex(update_plan.PlanError, "requires --track"):
+        update_plan.command_start(argparse.Namespace(
+          activity_id="PLN-001",
+          track=None,
+        ))
+
+    progress = progress_for(plan, {"PRE-001": "completed"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)):
+      with self.assertRaisesRegex(update_plan.PlanError, "does not belong"):
+        update_plan.command_start(argparse.Namespace(
+          activity_id="ADV-001",
+          track="lua-hardening",
+        ))
+
+    progress = progress_for(plan, {"PRE-001": "completed"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)), \
+        mock.patch.object(update_plan, "git_commit_issues", return_value=[]), \
+        mock.patch.object(update_plan, "save_progress_and_state") as save:
+      result = update_plan.command_start(argparse.Namespace(
+        activity_id="PLN-001",
+        track="lua-hardening",
+      ))
+    self.assertEqual(0, result)
+    self.assertEqual("in_progress", progress["activities"]["PLN-001"]["status"])
+    save.assert_called_once_with(plan, progress)
+
+    production_plan = minimal_plan()
+    production_progress = progress_for(production_plan)
+    with mock.patch.object(
+      update_plan, "load_documents", return_value=(production_plan, production_progress),
+    ), mock.patch.object(update_plan, "git_commit_issues", return_value=[]), \
+        mock.patch.object(update_plan, "save_progress_and_state") as save:
+      result = update_plan.command_start(argparse.Namespace(
+        activity_id="TST-001",
+        track=None,
+      ))
+    self.assertEqual(0, result)
+    self.assertEqual("in_progress", production_progress["activities"]["TST-001"]["status"])
+    save.assert_called_once_with(production_plan, production_progress)
 
   def test_start_requires_completed_activity_commits_to_be_pushed(self) -> None:
     plan = minimal_plan([
