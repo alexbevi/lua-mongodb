@@ -2519,6 +2519,28 @@
       "notes": [],
       "started_at": "2026-08-13T23:35:16+00:00",
       "completed_at": "2026-08-13T23:51:28+00:00"
+    },
+    "REL-045": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready -v",
+          "exit_code": 1,
+          "summary": "Release consistency contract expected 0.2.0 but the checked-in release metadata still reported 0.1.0",
+          "recorded_at": "2026-08-13T23:55:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION=spec/integration/client_api_spec.lua FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'; luarocks lint mongodb-0.2.0-1.rockspec; python3 spec/release/checklist.py --check; python3 spec/conformance/ledger.py --check; python3 spec/release/scope.py --check; python3 planning/update_readme_compatibility.py --check; go run github.com/rhysd/actionlint/cmd/actionlint@v1.7.7 .github/workflows/*.yml; make check",
+          "exit_code": 0,
+          "summary": "Focused gates passed 16 release/version unit tests, 3 client integration tests, 17 Python release/package/workflow tests, isolated source-rock installation, and zero touched-file lint findings; rockspec, checklist, ledger, scope, README projection, workflow lint, and diff validators passed; release-wide make check passed 246 unit tests plus pinned corpora, 26 integration tests, all static gates, package/lint/planning gates, 1309/1309 live unified executions with zero failures, and 272 coverage tests at 19928/23411 lines (85.12%) with no regressions",
+          "recorded_at": "2026-08-14T00:48:36+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-13T23:55:09+00:00",
+      "completed_at": "2026-08-14T00:48:37+00:00"
     }
   },
   "verified_references": {

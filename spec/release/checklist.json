@@ -25,6 +25,12 @@
         "REL-008"
       ]
     },
+    "completed_release_additions": [
+      "ADV-003",
+      "ADV-013",
+      "ADV-014",
+      "ADV-015"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
@@ -36,10 +42,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.1.0-1.rockspec",
-    "rockspec_version": "0.1.0-1",
-    "version": "0.1.0"
+    "rockspec": "mongodb-0.2.0-1.rockspec",
+    "rockspec_version": "0.2.0-1",
+    "version": "0.2.0"
   },
   "schema_version": 1,
-  "type": "production-core-release-checklist"
+  "type": "dns-seedlist-release-checklist"
 }

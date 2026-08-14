@@ -1,18 +1,19 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.1.0-1"
+version = "0.2.0-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.1.0",
+  tag = "v0.2.0",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.1.0 is the production-core v1 release for Lua 5.4.
+    libmongoc. Version 0.2.0 adds DNS seedlist discovery and polling to the
+    production-core v1 foundation for Lua 5.4.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",

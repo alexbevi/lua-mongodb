@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.2.0] - 2026-08-13
+
+DNS seedlist release.
+
+### Added
+
+- Parsed and validated `mongodb+srv` connection strings, including `srvServiceName`, `srvMaxHosts`, implicit TLS, and the allowed `authSource`, `replicaSet`, and `loadBalanced` TXT defaults.
+- Added coroutine-safe SRV and TXT resolution to the Copas runtime adapter with UDP queries, TCP fallback for truncated replies, deadline/cancellation support, and injectable deterministic DNS providers.
+- Resolved and validated initial SRV seedlists before opening MongoDB sockets, including parent-domain security, explicit-option precedence, and randomized host limits.
+- Polled SRV records for Unknown and Sharded topologies using bounded TTL cadence while preserving unchanged servers and safely reconciling additions and removals.
+
+### Conformance
+
+- All 40 pinned replica-set initial DNS seedlist fixtures and all 13 normative SRV polling prose cases pass.
+- The generated ledger classifies 5,524 normative cases: 3,610 pass and 1,914 remain assigned to named post-v1 capabilities.
+
+### Release engineering
+
+- Publication validates the exact release commit against complete Linux, macOS, unified, coverage, packaging, and six-row compatibility evidence before creating or verifying the immutable tag and LuaRocks/GitHub artifacts.
+
 ## [0.1.0] - 2026-08-09
 
 Initial production-core v1 release.
