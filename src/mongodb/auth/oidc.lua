@@ -709,7 +709,8 @@ local function authenticate_human(
   runtime,
   credentials,
   options,
-  callback
+  callback,
+  state
 )
   local start, err = human_sasl_start(commands, credentials, options)
 
@@ -751,6 +752,10 @@ local function authenticate_human(
     return nil, auth_error("MONGODB-OIDC client payload encoding failed", err)
   end
 
+  local token = { access_token = result.access_token }
+
+  state.access_token = token
+  CONNECTION_STATES[commands] = token
   local response
   response, err = commands:command("$external", bson.document({
     { "saslContinue", 1 },
@@ -762,6 +767,10 @@ local function authenticate_human(
   })
 
   if not response then
+    if is_authentication_failure(err) then
+      invalidate_token(commands, credentials, token)
+    end
+
     return nil, auth_error("MONGODB-OIDC saslContinue failed", err)
   end
 
@@ -801,18 +810,33 @@ function M.authenticate(commands, runtime, credentials, options)
     return nil, callback_kind
   end
 
+  local state = client_state(credentials, runtime)
+
   if callback_kind == "human" then
+    local token = state.access_token
+
+    if token ~= nil then
+      local authenticated, err = authenticate_token(
+        commands,
+        credentials,
+        options,
+        token
+      )
+
+      return authenticated, err
+    end
+
     return authenticate_human(
       commands,
       runtime,
       credentials,
       options,
-      callback
+      callback,
+      state
     )
   end
 
   local err
-  local state = client_state(credentials, runtime)
   local token = state.access_token
 
   if token ~= nil then

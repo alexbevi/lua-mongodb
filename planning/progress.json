@@ -3037,6 +3037,28 @@
       "notes": [],
       "started_at": "2026-08-14T13:53:01+00:00",
       "completed_at": "2026-08-14T14:00:21+00:00"
+    },
+    "AUTH-029": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_access_cache_spec.lua'",
+          "exit_code": 2,
+          "summary": "After a successful human two-step conversation, the second connection sent another principal payload with no JWT instead of reusing the access token through one-step SASL (0 successes, 1 failure).",
+          "recorded_at": "2026-08-14T14:09:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/auth_oidc_human_access_cache_spec.lua spec/unit/auth_oidc_human_spec.lua spec/unit/auth_oidc_cache_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua' FOCUS_LINT='src/mongodb/auth/oidc.lua spec/unit/auth_oidc_human_access_cache_spec.lua spec/unit/auth_oidc_human_spec.lua spec/integration/auth_oidc_spec.lua' && python3 planning/update_plan.py check && git diff --check",
+          "exit_code": 0,
+          "summary": "16 defining and directly coupled unit cases and 3 loopback integration cases passed; touched-file lint reported 0 warnings/errors; planning and whitespace validation passed. No unified case became newly applicable because speculative cached-token handshake behavior remains owned by AUTH-017.",
+          "recorded_at": "2026-08-14T14:11:45+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T14:08:37+00:00",
+      "completed_at": "2026-08-14T14:11:46+00:00"
     }
   },
   "verified_references": {
