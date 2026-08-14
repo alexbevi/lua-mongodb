@@ -25,6 +25,37 @@
         "REL-008"
       ]
     },
+    "completed_authentication_gates": [
+      "AUTH-001",
+      "AUTH-002",
+      "AUTH-003",
+      "AUTH-004",
+      "AUTH-005",
+      "AUTH-006",
+      "AUTH-007",
+      "AUTH-008",
+      "AUTH-009",
+      "AUTH-010",
+      "AUTH-011",
+      "AUTH-012",
+      "AUTH-013",
+      "AUTH-014",
+      "AUTH-015",
+      "AUTH-016",
+      "AUTH-017",
+      "AUTH-018",
+      "AUTH-020",
+      "AUTH-021",
+      "AUTH-022",
+      "AUTH-023",
+      "AUTH-024",
+      "AUTH-025",
+      "AUTH-026",
+      "AUTH-027",
+      "AUTH-028",
+      "AUTH-029",
+      "AUTH-030"
+    ],
     "completed_release_additions": [
       "ADV-003",
       "ADV-013",
@@ -42,10 +73,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.2.0-1.rockspec",
-    "rockspec_version": "0.2.0-1",
-    "version": "0.2.0"
+    "rockspec": "mongodb-0.3.0-1.rockspec",
+    "rockspec_version": "0.3.0-1",
+    "version": "0.3.0"
   },
   "schema_version": 1,
-  "type": "dns-seedlist-release-checklist"
+  "type": "authentication-release-checklist"
 }

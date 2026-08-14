@@ -3283,6 +3283,28 @@
       "notes": [],
       "started_at": "2026-08-14T15:28:42+00:00",
       "completed_at": "2026-08-14T15:41:22+00:00"
+    },
+    "REL-047": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_PYTHON='spec.release.test_checklist'",
+          "exit_code": 2,
+          "summary": "The v0.3 release contract failed because the checked-in release checklist still reported 0.2.0 (1 test, 1 failure).",
+          "recorded_at": "2026-08-14T15:45:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus release/version/API/coverage/workflow boundaries with touched lint; make rockspec test-package test-release-checklist; make test-coverage; generated release/conformance/README validators",
+          "exit_code": 0,
+          "summary": "Focused gates passed 16 release/version unit tests, 3 client integration tests, 18 release/coverage/workflow Python contracts, and touched Lua lint with zero warnings; the 0.3.0 source rock installed and exercised the complete public API, all 6 release tests and the generated authentication checklist passed, coverage instrumentation passed 405 tests and ratcheted 22252/26039 lines (85.46%) with no macOS or Linux-adjusted regressions, and release scope, conformance ledger, README projection, Python compilation, plan, and diff validators passed. The portable portions of make check also passed; local live unified execution was unavailable because mongod and mongosh are not installed, so the required exact-commit Full Conformance workflow owns that live gate.",
+          "recorded_at": "2026-08-14T15:57:33+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T15:44:53+00:00",
+      "completed_at": "2026-08-14T15:57:34+00:00"
     }
   },
   "verified_references": {

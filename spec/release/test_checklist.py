@@ -10,7 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("0.2.0", report["release"]["version"])
+    self.assertEqual("authentication-release-checklist", report["type"])
+    self.assertEqual("0.3.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
@@ -36,6 +37,10 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(
       ["ADV-003", "ADV-013", "ADV-014", "ADV-015"],
       report["gates"]["completed_release_additions"],
+    )
+    self.assertEqual(
+      [f"AUTH-{index:03d}" for index in range(1, 31) if index != 19],
+      report["gates"]["completed_authentication_gates"],
     )
     self.assertEqual(
       [

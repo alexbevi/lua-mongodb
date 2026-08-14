@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.3.0] - 2026-08-14
+
+Authentication release.
+
+### Added
+
+- Added SASL PLAIN and MONGODB-X509 authentication with credential-safe structured failures and shared sensitive-command monitoring redaction.
+- Added the pure-Lua MONGODB-AWS SASL conversation and credential resolution from environment variables, web identity, ECS/container endpoints, and EC2 metadata, including bounded runtime-adapter I/O and refreshable provider caching.
+- Added MONGODB-OIDC machine and human callbacks, allowed-host enforcement, coordinated access/refresh-token caching, and built-in test, Kubernetes, Azure, and GCP providers.
+- Added cached-token speculative OIDC authentication and same-connection reauthentication with one operation retry on server code 391.
+
+### Conformance
+
+- All six pinned OIDC no-retry read, write, speculative-authentication, and reauthentication cases pass through the deterministic public-driver loopback.
+- The generated ledger classifies 5,524 normative cases: 3,671 pass, 1,851 remain assigned to named post-v1 capabilities, and two are superseded exclusions.
+
+### Release engineering
+
+- Updated the exact-commit release checklist, LuaRocks package, portable workflows, and public documentation for version 0.3.0.
+
 ## [0.2.0] - 2026-08-13
 
 DNS seedlist release.

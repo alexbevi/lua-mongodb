@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report DNS seedlist v0.2 release readiness."""
+"""Validate and report authentication v0.3 release readiness."""
 
 from __future__ import annotations
 
@@ -21,18 +21,23 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.2.0-1.rockspec"
-RELEASE_VERSION = "0.2.0"
+ROCKSPEC = ROOT / "mongodb-0.3.0-1.rockspec"
+RELEASE_VERSION = "0.3.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 3610
-MAXIMUM_POST_V1_EXCLUSIONS = 1914
+MINIMUM_PASSED_CASES = 3671
+MAXIMUM_POST_V1_EXCLUSIONS = 1853
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
   "security": ["REL-008"],
 }
 RELEASE_ADDITIONS = ["ADV-003", "ADV-013", "ADV-014", "ADV-015"]
+AUTHENTICATION_GATES = [
+  f"AUTH-{index:03d}"
+  for index in range(1, 31)
+  if index != 19
+]
 
 
 class ChecklistError(ValueError):
@@ -95,11 +100,11 @@ def release_metadata() -> dict[str, str]:
   require_text(ROOT / "README.md", f"current release is version `{RELEASE_VERSION}`")
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-13",
+    f"## [{RELEASE_VERSION}] - 2026-08-14",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: DNS seedlist v0.2 release-ready.",
+    "Status: authentication v0.3 release-ready.",
   )
 
   return {
@@ -132,6 +137,12 @@ def generate() -> dict[str, Any]:
   for activity_id in RELEASE_ADDITIONS:
     if activity_id not in activities:
       raise ChecklistError(f"unknown release addition activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
+  for activity_id in AUTHENTICATION_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown authentication gate activity: {activity_id}")
 
     completed_activity(progress, activity_id)
 
@@ -220,6 +231,7 @@ def generate() -> dict[str, Any]:
         "rows": len(compatibility["servers"]),
       },
       "completed_audits": AUDITS,
+      "completed_authentication_gates": AUTHENTICATION_GATES,
       "completed_release_additions": RELEASE_ADDITIONS,
       "conformance": {
         "applicable_gaps": applicable_gaps,
@@ -232,7 +244,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "dns-seedlist-release-checklist",
+    "type": "authentication-release-checklist",
   }
 
 
