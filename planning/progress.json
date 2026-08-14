@@ -3329,6 +3329,28 @@
       "reopened_after_commit": "8d918d5ac08f5c6d560b5ef08ced13c4e923429b",
       "started_at": "2026-08-14T16:04:44+00:00",
       "completed_at": "2026-08-14T16:07:29+00:00"
+    },
+    "PLN-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_update_plan'",
+          "exit_code": 2,
+          "summary": "20 planner tests ran: 17 passed, two failed, and one errored because track declarations were not validated, current state had no ready_by_track grouping, and a requested lua-hardening selection returned unrelated ADV-001.",
+          "recorded_at": "2026-08-14T18:34:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m json.tool planning/schemas/{plan,current_state}.schema.json; make test-focus FOCUS_PYTHON='planning.tests.test_update_plan'; python3 planning/update_plan.py refresh; python3 planning/update_plan.py check --strict; python3 planning/update_plan.py next --track lua-hardening; python3 planning/update_plan.py next",
+          "exit_code": 0,
+          "summary": "All 20 focused planner tests passed; both edited schemas parsed; strict planning validation passed; the active lua-hardening track exposed no unrelated ready activity while unscoped selection remained ADV-001.",
+          "recorded_at": "2026-08-14T18:36:32+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T18:32:35+00:00",
+      "completed_at": "2026-08-14T18:36:33+00:00"
     }
   },
   "verified_references": {

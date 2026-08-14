@@ -13,7 +13,7 @@ The reference checkouts are pinned in `plan.json` and registered as Git submodul
 
 ```sh
 python3 planning/update_plan.py check [--strict [--pushed]]
-python3 planning/update_plan.py next [--json]
+python3 planning/update_plan.py next [--track TRACK] [--json]
 python3 planning/update_plan.py start ID
 python3 planning/update_plan.py requeue ID --reason "..."
 python3 planning/update_plan.py record-test ID --phase red --command "..." --exit-code 1 --summary "..."
@@ -31,6 +31,8 @@ make test-focus FOCUS_PYTHON=planning.tests.test_update_plan.CommitTests
 ```
 
 `check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
+
+Named tracks provide an execution view over the same activity DAG. Each declaration identifies its entry, terminal, and prerequisite activity, and tracked activities name their declaration explicitly. `next --track TRACK` considers only ready members of that track; `current_state.json` exposes the same deterministic grouping as `ready_by_track`. Track selection does not change dependencies, statuses, global plan order, or start authorization, and unscoped `next` retains its original first-ready behavior.
 
 `update_readme_compatibility.py` projects the conformance ledger into the README's driver-layer compatibility table. Run it whenever ledger statuses change; CI uses `--check` so the README cannot drift from executable evidence.
 

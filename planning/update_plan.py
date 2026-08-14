@@ -28,6 +28,7 @@ PROGRESS_PATH = PLANNING_DIR / "progress.json"
 STATE_PATH = PLANNING_DIR / "current_state.json"
 STATUSES = {"pending", "in_progress", "blocked", "completed", "needs_review"}
 COMMIT_RE = re.compile(r"^[a-z]+\([a-z0-9-]+\)!?: .+")
+TRACK_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 # Published history before commit-policy enforcement contains CI follow-ups that
 # reused CI-001's trailer. Do not rewrite that history; reject every new reuse.
 COMMIT_POLICY_BASELINE = "057026301066f9d4adcf22d59710a3e5690ec529"
@@ -89,6 +90,16 @@ def activity_map(plan: dict[str, Any]) -> dict[str, dict[str, Any]]:
   return result
 
 
+def declared_track_ids(plan: dict[str, Any]) -> list[str]:
+  tracks = plan.get("tracks")
+  if not isinstance(tracks, list):
+    return []
+  return [
+    track["id"] for track in tracks
+    if isinstance(track, dict) and isinstance(track.get("id"), str)
+  ]
+
+
 def validate_plan(plan: dict[str, Any]) -> list[str]:
   issues: list[str] = []
   if plan.get("schema_version") != 1:
@@ -103,6 +114,28 @@ def validate_plan(plan: dict[str, Any]) -> list[str]:
   milestone_ids = {
     item.get("id") for item in plan.get("milestones", []) if isinstance(item, dict)
   }
+  track_definitions: dict[str, dict[str, Any]] = {}
+  tracks = plan.get("tracks")
+  if not isinstance(tracks, list):
+    issues.append("plan.tracks must be an array")
+    tracks = []
+  for index, track in enumerate(tracks):
+    if not isinstance(track, dict):
+      issues.append(f"track at index {index} must be an object")
+      continue
+    for key in ("id", "goal", "entry_activity", "terminal_activity", "after_activity"):
+      if key not in track:
+        issues.append(f"track at index {index} is missing {key}")
+    track_id = track.get("id")
+    if not isinstance(track_id, str) or not TRACK_RE.fullmatch(track_id):
+      issues.append(f"track at index {index} has invalid id {track_id}")
+      continue
+    if track_id in track_definitions:
+      issues.append(f"duplicate track id: {track_id}")
+      continue
+    track_definitions[track_id] = track
+    if not isinstance(track.get("goal"), str) or not track.get("goal"):
+      issues.append(f"track {track_id} goal must be a non-empty string")
   mapping_ids: set[str] = set()
   references = plan.get("references")
   if not isinstance(references, dict) or not references:
@@ -148,11 +181,37 @@ def validate_plan(plan: dict[str, Any]) -> list[str]:
       issues.append(f"activity {activity_id} has duplicate dependencies")
     if activity.get("test_policy") not in {"red_green", "validation"}:
       issues.append(f"activity {activity_id} has invalid test_policy")
+    activity_track = activity.get("track")
+    if activity_track is not None:
+      if not isinstance(activity_track, str) or not TRACK_RE.fullmatch(activity_track):
+        issues.append(f"activity {activity_id} has invalid track {activity_track}")
+      elif activity_track not in track_definitions:
+        issues.append(f"activity {activity_id} has unknown track {activity_track}")
     if not COMMIT_RE.fullmatch(str(activity.get("commit", ""))):
       issues.append(f"activity {activity_id} has invalid Conventional Commit subject")
     for mapping_id in activity.get("references", []):
       if mapping_id not in mapping_ids:
         issues.append(f"activity {activity_id} has unknown reference {mapping_id}")
+
+  for track_id, track in track_definitions.items():
+    for field, label in (
+      ("entry_activity", "entry"),
+      ("terminal_activity", "terminal"),
+      ("after_activity", "after"),
+    ):
+      referenced_id = track.get(field)
+      if not isinstance(referenced_id, str) or referenced_id not in activities:
+        issues.append(f"track {track_id} has unknown {label} activity {referenced_id}")
+    entry_id = track.get("entry_activity")
+    if entry_id in activities and activities[entry_id].get("track") != track_id:
+      issues.append(f"track {track_id} entry activity {entry_id} is not assigned to the track")
+    terminal_id = track.get("terminal_activity")
+    if terminal_id in activities and activities[terminal_id].get("track") != track_id:
+      issues.append(f"track {track_id} terminal activity {terminal_id} is not assigned to the track")
+    after_id = track.get("after_activity")
+    if entry_id in activities and after_id in activities:
+      if after_id not in activities[entry_id].get("depends_on", []):
+        issues.append(f"track {track_id} entry activity {entry_id} does not depend on {after_id}")
 
   visiting: set[str] = set()
   visited: set[str] = set()
@@ -286,6 +345,7 @@ def compute_state(
   blocked: list[str] = []
   needs_review: list[str] = []
   ready: list[str] = []
+  ready_by_track = {track_id: [] for track_id in declared_track_ids(plan)}
   for activity_id, activity in activities.items():
     status = status_for(progress, activity_id)
     counts[status] = counts.get(status, 0) + 1
@@ -300,6 +360,9 @@ def compute_state(
       for dependency in activity.get("depends_on", [])
     ):
       ready.append(activity_id)
+      activity_track = activity.get("track")
+      if activity_track in ready_by_track:
+        ready_by_track[activity_track].append(activity_id)
   stale: list[str] = []
   actual_digest = digest_plan(plan)
   if progress.get("plan_digest") != actual_digest:
@@ -323,6 +386,7 @@ def compute_state(
     "counts": counts,
     "active": active,
     "ready": ready,
+    "ready_by_track": ready_by_track,
     "blocked": blocked,
     "needs_review": needs_review,
     "stale": stale,
@@ -475,10 +539,19 @@ def command_next(arguments: argparse.Namespace) -> int:
   state = compute_state(plan, progress)
   if state["stale"]:
     raise PlanError("state is stale; run check and resolve reference or digest issues")
-  activity_id = state["next_ready"]
+  track_id = getattr(arguments, "track", None)
+  if track_id is not None:
+    if track_id not in declared_track_ids(plan):
+      raise PlanError(f"unknown track: {track_id}")
+    track_ready = state["ready_by_track"][track_id]
+    activity_id = track_ready[0] if track_ready else None
+  else:
+    activity_id = state["next_ready"]
   if activity_id is None:
     if arguments.json:
       print("null")
+    elif track_id is not None:
+      print(f"no ready activity in track {track_id}")
     else:
       print("no ready activity")
     return 0
@@ -690,6 +763,7 @@ def build_parser() -> argparse.ArgumentParser:
 
   next_parser = subparsers.add_parser("next", help="show the next ready activity")
   next_parser.add_argument("--json", action="store_true", help="print the full activity as JSON")
+  next_parser.add_argument("--track", help="select only ready activities in this track")
   next_parser.set_defaults(function=command_next)
 
   start = subparsers.add_parser("start", help="start a ready activity")

@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
+import copy
 import importlib.util
+import io
 import json
 from pathlib import Path
 import subprocess
@@ -48,8 +51,27 @@ def minimal_plan(activities: list[dict] | None = None) -> dict:
       }
     },
     "milestones": [{"id": "m1", "goal": "test"}],
+    "tracks": [],
     "activities": activities or [activity("TST-001")],
   }
+
+
+def tracked_plan() -> dict:
+  prerequisite = activity("PRE-001")
+  unrelated = activity("ADV-001", ["PRE-001"])
+  entry = activity("PLN-001", ["PRE-001"])
+  entry["track"] = "lua-hardening"
+  terminal = activity("PLN-002", ["PLN-001"])
+  terminal["track"] = "lua-hardening"
+  plan = minimal_plan([prerequisite, unrelated, entry, terminal])
+  plan["tracks"] = [{
+    "id": "lua-hardening",
+    "goal": "Harden Lua architecture.",
+    "entry_activity": "PLN-001",
+    "terminal_activity": "PLN-002",
+    "after_activity": "PRE-001",
+  }]
+  return plan
 
 
 def progress_for(plan: dict, statuses: dict[str, str] | None = None) -> dict:
@@ -114,6 +136,86 @@ class GraphTests(unittest.TestCase):
     self.assertEqual(first, second)
     self.assertEqual(first["ready"], ["TST-002"])
     self.assertEqual(first["next_ready"], "TST-002")
+
+  def test_track_declarations_and_membership_are_validated(self) -> None:
+    plan = tracked_plan()
+    self.assertEqual(update_plan.validate_plan(plan), [])
+
+    duplicate = copy.deepcopy(plan)
+    duplicate["tracks"].append(copy.deepcopy(duplicate["tracks"][0]))
+    self.assertTrue(any(
+      "duplicate track id" in issue for issue in update_plan.validate_plan(duplicate)
+    ))
+
+    undeclared = copy.deepcopy(plan)
+    undeclared["activities"][1]["track"] = "unplanned"
+    self.assertTrue(any(
+      "unknown track" in issue for issue in update_plan.validate_plan(undeclared)
+    ))
+
+    mismatched_entry = copy.deepcopy(plan)
+    mismatched_entry["tracks"][0]["entry_activity"] = "ADV-001"
+    self.assertTrue(any(
+      "entry activity" in issue for issue in update_plan.validate_plan(mismatched_entry)
+    ))
+
+    unknown_terminal = copy.deepcopy(plan)
+    unknown_terminal["tracks"][0]["terminal_activity"] = "PLN-999"
+    self.assertTrue(any(
+      "unknown terminal activity" in issue
+      for issue in update_plan.validate_plan(unknown_terminal)
+    ))
+
+  def test_state_groups_ready_activities_by_track(self) -> None:
+    plan = tracked_plan()
+    progress = progress_for(plan, {"PRE-001": "completed"})
+    report = {
+      "source": {
+        "expected": "0" * 40, "actual": "0" * 40,
+        "status": "ok", "issues": [], "path": "source",
+      }
+    }
+
+    state = update_plan.compute_state(plan, progress, report)
+
+    self.assertEqual(state["ready"], ["ADV-001", "PLN-001"])
+    self.assertEqual(state["ready_by_track"], {"lua-hardening": ["PLN-001"]})
+    self.assertEqual(state["next_ready"], "ADV-001")
+
+  def test_next_selects_only_the_requested_track(self) -> None:
+    plan = tracked_plan()
+    progress = progress_for(plan, {"PRE-001": "completed"})
+    report = {
+      "source": {
+        "expected": "0" * 40, "actual": "0" * 40,
+        "status": "ok", "issues": [], "path": "source",
+      }
+    }
+    state = update_plan.compute_state(plan, progress, report)
+    parsed = update_plan.build_parser().parse_args([
+      "next", "--track", "lua-hardening",
+    ])
+    self.assertEqual("lua-hardening", parsed.track)
+
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)), \
+        mock.patch.object(update_plan, "compute_state", return_value=state):
+      output = io.StringIO()
+      with contextlib.redirect_stdout(output):
+        result = update_plan.command_next(argparse.Namespace(
+          json=False,
+          track="lua-hardening",
+        ))
+      self.assertEqual(0, result)
+      self.assertEqual("PLN-001: PLN-001", output.getvalue().strip())
+
+      output = io.StringIO()
+      with contextlib.redirect_stdout(output):
+        result = update_plan.command_next(argparse.Namespace(json=False, track=None))
+      self.assertEqual(0, result)
+      self.assertEqual("ADV-001: ADV-001", output.getvalue().strip())
+
+      with self.assertRaisesRegex(update_plan.PlanError, "unknown track"):
+        update_plan.command_next(argparse.Namespace(json=False, track="unknown"))
 
 
 class EvidenceTests(unittest.TestCase):

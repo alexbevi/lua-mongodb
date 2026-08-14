@@ -12,7 +12,7 @@ The production goal stops after `production-core-v1`. Do not begin post-v1 work 
 
 Keep commits small. Each commit must be the smallest practical vertical slice that delivers one independently verifiable behavior from its tests through its implementation and required documentation. If an activity is too large for one such commit, split it into ordered plan activities before implementation; never accumulate several behaviors into a broad checkpoint commit.
 
-1. Run `python3 planning/update_plan.py check --strict --pushed` and `next`.
+1. Run `python3 planning/update_plan.py check --strict --pushed` and `next`. When the user authorizes a declared roadmap track, retain that track for the activity loop and select with `next --track TRACK`.
 2. Start exactly one ready activity through the script.
 3. Add the smallest failing test that defines the vertical slice, run it, and record the red result.
 4. Implement only enough production behavior for the slice, preserving public contracts.

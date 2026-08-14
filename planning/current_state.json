@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 137,
+    "completed": 138,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 25
+    "pending": 24
   },
   "active": [],
   "ready": [
-    "PLN-001",
+    "PLN-002",
     "ADV-001",
     "ADV-002",
     "ADV-004",
@@ -36,8 +36,13 @@
     "ADV-011",
     "ADV-012"
   ],
+  "ready_by_track": {
+    "lua-hardening": [
+      "PLN-002"
+    ]
+  },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "PLN-001"
+  "next_ready": "PLN-002"
 }

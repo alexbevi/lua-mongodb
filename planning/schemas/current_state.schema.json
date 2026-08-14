@@ -3,7 +3,7 @@
   "$id": "current_state.schema.json",
   "title": "Generated Lua MongoDB driver state",
   "type": "object",
-  "required": ["schema_version", "plan_id", "plan_digest", "references", "counts", "active", "ready", "blocked", "needs_review", "stale", "next_ready"],
+  "required": ["schema_version", "plan_id", "plan_digest", "references", "counts", "active", "ready", "ready_by_track", "blocked", "needs_review", "stale", "next_ready"],
   "properties": {
     "schema_version": {"const": 1},
     "plan_id": {"type": "string"},
@@ -11,10 +11,13 @@
     "counts": {"type": "object"},
     "active": {"type": "array", "items": {"type": "string"}},
     "ready": {"type": "array", "items": {"type": "string"}},
+    "ready_by_track": {
+      "type": "object",
+      "additionalProperties": {"type": "array", "items": {"type": "string"}}
+    },
     "blocked": {"type": "array", "items": {"type": "string"}},
     "needs_review": {"type": "array", "items": {"type": "string"}},
     "stale": {"type": "array", "items": {"type": "string"}},
     "next_ready": {"type": ["string", "null"]}
   }
 }
-
