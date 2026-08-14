@@ -364,7 +364,7 @@ def classify_case(
         "retained legacy assertion was superseded by DRIVERS-3131, which prohibits explicit MONGODB-AWS URI credentials",
       )
 
-    if owner in {"AUTH-002", "AUTH-003", "AUTH-004", "AUTH-020"}:
+    if owner in {"AUTH-002", "AUTH-003", "AUTH-004", "AUTH-010", "AUTH-020"}:
       return _passed(
         case,
         owner,

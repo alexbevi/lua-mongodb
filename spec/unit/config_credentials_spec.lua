@@ -86,6 +86,46 @@ describe("authentication credential normalization", function()
     assert.is_nil(tostring(credential_err):find("private-secret", 1, true))
   end)
 
+  it("normalizes a built-in MONGODB-OIDC environment credential", function()
+    local parsed = assert(uri.parse(
+      "mongodb://localhost/?authMechanism=MONGODB-OIDC"
+        .. "&authMechanismProperties=ENVIRONMENT:test"
+    ))
+    local config = assert(options.normalize(parsed.options, nil, parsed))
+    local credential = assert(credentials.build(parsed, config))
+
+    assert.are.equal("MONGODB-OIDC", credential.mechanism)
+    assert.are.equal("$external", credential.source)
+    assert.is_nil(credential.username)
+    assert.is_nil(credential.password)
+    assert.are.same({ ENVIRONMENT = "test" }, credential.mechanism_properties)
+    assert.has_error(function()
+      credential.mechanism_properties.ENVIRONMENT = "private"
+    end, "authentication credentials are immutable")
+  end)
+
+  it("rejects invalid OIDC URI environment configuration without values", function()
+    local cases = {
+      "authSource=admin&authMechanismProperties=ENVIRONMENT:test",
+      "authMechanismProperties=ENVIRONMENT:gcp",
+      "authMechanismProperties=ENVIRONMENT:k8s,TOKEN_RESOURCE:private-resource",
+      "authMechanismProperties=ENVIRONMENT:test,OIDC_CALLBACK:private-callback",
+      "authMechanismProperties=ENVIRONMENT:test,ALLOWED_HOSTS:private-host",
+    }
+
+    for _, query in ipairs(cases) do
+      local parsed = assert(uri.parse(
+        "mongodb://localhost/?authMechanism=MONGODB-OIDC&" .. query
+      ))
+      local config = assert(options.normalize(parsed.options, nil, parsed))
+      local credential, err = credentials.build(parsed, config)
+
+      assert.is_nil(credential)
+      assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
+      assert.is_nil(tostring(err):find("private", 1, true))
+    end
+  end)
+
   it("runs every AUTH-002 legacy credential case", function()
     assert.are.equal(18, auth_config_runner.run_auth_002())
   end)
@@ -104,5 +144,9 @@ describe("authentication credential normalization", function()
       passed = 6,
       superseded = 2,
     }, auth_config_runner.run_auth_020())
+  end)
+
+  it("runs every AUTH-010 OIDC environment credential case", function()
+    assert.are.equal(20, auth_config_runner.run_auth_010())
   end)
 end)

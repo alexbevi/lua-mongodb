@@ -2883,6 +2883,28 @@
       "notes": [],
       "started_at": "2026-08-14T12:13:01+00:00",
       "completed_at": "2026-08-14T12:22:29+00:00"
+    },
+    "AUTH-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining ENVIRONMENT:test credential case failed because MONGODB-OIDC was rejected as an unsupported authentication mechanism (9 successes, 1 failure).",
+          "recorded_at": "2026-08-14T12:31:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope' FOCUS_LINT='src/mongodb/config/credentials.lua spec/unit/config_credentials_spec.lua spec/support/auth_config_runner.lua' && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "12 focused credential/fixture unit tests and 10 ledger/release-scope contract tests passed; all 20 pinned OIDC legacy connection-string cases executed and passed; touched-file lint reported 0 warnings/errors across 3 Lua files; ledger, release-scope, and generated README validators passed. Configuration alone made 0 unified cases newly runnable, skipped, deferred, or failed.",
+          "recorded_at": "2026-08-14T12:35:15+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-14T12:30:43+00:00",
+      "completed_at": "2026-08-14T12:35:29+00:00"
     }
   },
   "verified_references": {

@@ -58,6 +58,28 @@ local AUTH_020_SUPERSEDED = {
   [43] = true,
   [44] = true,
 }
+local AUTH_010_CASES = {
+  [48] = true,
+  [49] = true,
+  [50] = true,
+  [51] = true,
+  [52] = true,
+  [53] = true,
+  [54] = true,
+  [55] = true,
+  [56] = true,
+  [57] = true,
+  [58] = true,
+  [59] = true,
+  [60] = true,
+  [61] = true,
+  [62] = true,
+  [63] = true,
+  [64] = true,
+  [65] = true,
+  [66] = true,
+  [67] = true,
+}
 
 local function load_fixture()
   local file = assert(io.open(FIXTURE, "rb"))
@@ -94,6 +116,38 @@ local function expected_value(document, name)
   return value
 end
 
+local function assert_mechanism_properties(expected, actual, description)
+  if expected == nil or bson.is_null(expected) then
+    luassert.is_nil(actual, description .. ": mechanism_properties")
+    return
+  end
+
+  luassert.is_table(actual, description .. ": mechanism_properties")
+
+  local expected_count = 0
+
+  for name in expected:iter() do
+    luassert.are.equal(
+      expected_value(expected, name),
+      actual[name],
+      description .. ": mechanism_properties." .. name
+    )
+    expected_count = expected_count + 1
+  end
+
+  local actual_count = 0
+
+  for _ in pairs(actual) do
+    actual_count = actual_count + 1
+  end
+
+  luassert.are.equal(
+    expected_count,
+    actual_count,
+    description .. ": mechanism_properties count"
+  )
+end
+
 local function run_cases(cases, superseded)
   local count = 0
   local superseded_count = 0
@@ -126,7 +180,11 @@ local function run_cases(cases, superseded)
             )
           end
 
-          luassert.is_nil(credential.mechanism_properties, description)
+          assert_mechanism_properties(
+            expected:get("mechanism_properties"),
+            credential.mechanism_properties,
+            description
+          )
         end
       else
         luassert.is_nil(credential, description)
@@ -160,6 +218,10 @@ function M.run_auth_020()
     passed = count - superseded,
     superseded = superseded,
   }
+end
+
+function M.run_auth_010()
+  return run_cases(AUTH_010_CASES)
 end
 
 return M

@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1877,
+      "deferred_unsupported": 1857,
       "excluded_scope": 2,
-      "passed": 3645,
+      "passed": 3665,
     }, generated["summary"]["statuses"])
 
     superseded_aws = [
@@ -98,6 +98,25 @@ class ConformanceLedgerTests(unittest.TestCase):
     )
     self.assertTrue(all(case["reason"] for case in superseded_aws))
     self.assertTrue(all(case["last_execution"] for case in superseded_aws))
+
+    oidc_credentials = [
+      generated["cases"][
+        f"auth/tests/legacy/connection-string.json::test[{index}]"
+      ]
+      for index in range(48, 68)
+    ]
+    self.assertEqual(
+      ["AUTH-010"] * 20,
+      [case["activity"] for case in oidc_credentials],
+    )
+    self.assertEqual(
+      ["passed"] * 20,
+      [case["status"] for case in oidc_credentials],
+    )
+    self.assertTrue(all(
+      case["runner"] == "spec/support/auth_config_runner.lua"
+      for case in oidc_credentials
+    ))
 
     dns = [
       case for case in generated["cases"].values()
