@@ -475,6 +475,11 @@ TEST_OVERRIDES.update({
       None,
     ),
   "server-discovery-and-monitoring/tests/unified/"
+    "connectTimeoutMS.json::test[1]": (
+      "CFG-004",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
     "hello-timeout.json::test[3]": (
       "SDAM-008",
       None,

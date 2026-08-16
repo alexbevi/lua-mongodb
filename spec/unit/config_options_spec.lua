@@ -80,6 +80,20 @@ describe("driver option normalization", function()
     assert.are.equal("snapshot", config.read_concern.level)
   end)
 
+  it("preserves zero as an explicit unbounded connect timeout", function()
+    local parsed = assert(uri.parse(
+      "mongodb://localhost/?connectTimeoutMS=0"
+    ))
+    local from_uri = assert(options.normalize(parsed.options))
+    local from_table = assert(options.normalize(nil, {
+      connect_timeout_ms = 0,
+    }))
+
+    assert.are.equal(0, from_uri.connect_timeout_ms)
+    assert.are.equal(0, from_table.connect_timeout_ms)
+    assert.are.equal(10000, assert(options.normalize()).connect_timeout_ms)
+  end)
+
   it("normalizes the required single-threaded URI option", function()
     local parsed = assert(uri.parse(
       "mongodb://localhost/?serverSelectionTryOnce=false"

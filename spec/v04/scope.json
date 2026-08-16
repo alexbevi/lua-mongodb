@@ -12,7 +12,6 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
   "planned_by_activity": {
-    "CFG-004": 1,
     "CMAP-002": 5,
     "CMAP-003": 8,
     "CMAP-004": 3,
@@ -43,8 +42,8 @@
     },
     "server-discovery-and-monitoring": {
       "excluded": 18,
-      "passed": 424,
-      "planned": 17
+      "passed": 425,
+      "planned": 16
     },
     "sessions": {
       "passed": 39
@@ -58,8 +57,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 754,
-    "planned": 97,
+    "passed": 755,
+    "planned": 96,
     "supported": 851
   },
   "target_owners": [

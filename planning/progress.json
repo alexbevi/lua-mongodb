@@ -4042,6 +4042,28 @@
       "notes": [],
       "started_at": "2026-08-16T21:44:48+00:00",
       "completed_at": "2026-08-16T21:50:00+00:00"
+    },
+    "CFG-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_connect_timeout_zero_case_is_runnable",
+          "exit_code": 1,
+          "summary": "The exact connectTimeoutMS=0 identity remained deferred_unsupported instead of runnable under CFG-004.",
+          "recorded_at": "2026-08-16T21:55:20+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_options_spec.lua spec/unit/config_uri_spec.lua spec/unit/topology_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/connectTimeoutMS.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/config/options.lua src/mongodb/topology.lua spec/unit/config_options_spec.lua' && make test-complexity && run generated capability, conformance, release, v0.4, checklist, README, executor JSON, and diff validators",
+          "exit_code": 0,
+          "summary": "30 Lua configuration and topology cases passed; the exact connectTimeoutMS=0 unified case executed and passed with no skips or deferrals; 79 Python registry, conformance, and v0.4 tests passed; 3 Lua files linted cleanly; complexity and all generated artifact validators passed.",
+          "recorded_at": "2026-08-16T21:58:33+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T21:54:44+00:00",
+      "completed_at": "2026-08-16T21:58:33+00:00"
     }
   },
   "verified_references": {
