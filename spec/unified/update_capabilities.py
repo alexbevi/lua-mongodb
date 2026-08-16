@@ -257,13 +257,16 @@ TEST_OVERRIDES.update({
 for index in range(1, 14):
   if index == 8:
     owner = "SES-004"
+    reason = None
   elif index >= 9:
     owner = "SES-007"
+    reason = OWNER_REASONS[owner]
   else:
     owner = "SES-006"
+    reason = OWNER_REASONS[owner]
   TEST_OVERRIDES[
     f"sessions/tests/snapshot-sessions.json::test[{index}]"
-  ] = (owner, OWNER_REASONS[owner])
+  ] = (owner, reason)
 
 for fixture, count in (
   ("snapshot-sessions-not-supported-client-error", 3),

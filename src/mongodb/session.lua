@@ -246,6 +246,10 @@ function SESSION_METHODS:start_transaction(options)
     return nil, err
   end
 
+  if state.snapshot then
+    return client_error("Transactions are not supported in snapshot sessions")
+  end
+
   if transaction_active(state.transaction) then
     return client_error("transaction already in progress")
   end

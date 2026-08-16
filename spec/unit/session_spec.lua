@@ -521,6 +521,29 @@ describe("client sessions", function()
     assert.same({ "commitTransaction", "commitTransaction" }, transaction_commands)
   end)
 
+  it("rejects transactions on snapshot sessions", function()
+    local transaction_commands = 0
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function()
+        transaction_commands = transaction_commands + 1
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start({ snapshot = true }))
+    local started, err = session:start_transaction()
+
+    assert.is_nil(started)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "Transactions are not supported in snapshot sessions",
+      err.message
+    )
+    assert.are.equal("none", session:get_transaction_state())
+    assert.are.equal(0, transaction_commands)
+  end)
+
   it("retries abort after a retryable authentication handshake failure", function()
     local abort_attempts = 0
     local sessions = new_session_manager({

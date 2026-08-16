@@ -3639,6 +3639,28 @@
       "notes": [],
       "started_at": "2026-08-16T17:55:10+00:00",
       "completed_at": "2026-08-16T17:59:34+00:00"
+    },
+    "SES-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='<lua54-path>' LUA_CPATH='<lua54-cpath>' make test-focus FOCUS_UNIT='spec/unit/session_spec.lua'",
+          "exit_code": 2,
+          "summary": "19 existing session tests passed; the new test failed because start_transaction returned true for a snapshot session instead of a local client error",
+          "recorded_at": "2026-08-16T18:05:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua' FOCUS_UNIFIED='sessions/tests/snapshot-sessions.json::test[[]8]' FOCUS_PYTHON='<17 coupled contracts>' FOCUS_LINT='<3 touched Lua files>'; make test-complexity; run capability, ledger, v0.4, README, release-scope, JSON, Python compile, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "21 focused Lua tests passed; the exact upstream case executed 1/1 with 0 failures, skips, or deferrals; 17 Python contracts passed; three Lua files linted cleanly; complexity stayed at four hotspots/max 47; ledger reached 3672 passed/1850 deferred and v0.4 reached 694 passed/157 planned/47 excluded",
+          "recorded_at": "2026-08-16T18:12:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T18:03:51+00:00",
+      "completed_at": "2026-08-16T18:12:47+00:00"
     }
   },
   "verified_references": {

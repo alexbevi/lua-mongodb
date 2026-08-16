@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1391,
-    "runnable": 1391
+    "passed": 1392,
+    "runnable": 1392
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -72529,6 +72529,1016 @@
         ]
       },
       "status": "runnable"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[1]": {
+      "activity": "SES-005",
+      "fingerprint": "e01cde7581b58788cbf4423bc67908b47c04bd8fd103dd0ad7bd77f74c8e5cff",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[2]": {
+      "activity": "SES-005",
+      "fingerprint": "d49154638e8688737a77de5ab0b910d612bbb43137632f750f4cc4b76a6089ce",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline",
+          "aggregate.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[3]": {
+      "activity": "SES-005",
+      "fingerprint": "60b45975177b34c46f73ca30f562841d8ea4a1e8b0c3c49fe59e258ced9eb3e7",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "distinct.fieldName",
+          "distinct.filter",
+          "distinct.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "distinct"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[1]": {
+      "activity": "SES-005",
+      "fingerprint": "34c0a63add47ced14164c108983b713dd663033384e9ddb71ee8ff0070ce2cbd",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[2]": {
+      "activity": "SES-005",
+      "fingerprint": "2374e51cb51d5b1dcdcc3a8f19fca623204f90a75598c2a4b33155113c7496cb",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline",
+          "aggregate.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "aggregate"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[3]": {
+      "activity": "SES-005",
+      "fingerprint": "baf0918b71f1d39891caa114011a60b4603fe3a87f56685c95249f790c6611df",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "distinct.fieldName",
+          "distinct.filter",
+          "distinct.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "distinct"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[1]": {
+      "activity": "SES-005",
+      "fingerprint": "c309b463845b5edbe5ca9b97468e5630e3fe44596948a002a36aa4342f48f640",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "insertOne.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[2]": {
+      "activity": "SES-005",
+      "fingerprint": "653fcee7e04667bb6cfb8f420592eaf699acad66765d29b642b89a80ad0c084c",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "insertMany.documents",
+          "insertMany.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "insertMany"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[3]": {
+      "activity": "SES-005",
+      "fingerprint": "63f7d270988b4f3822811477c1ae58d28347c0c08df7f873a1a601ab9c855b18",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "deleteOne.filter",
+          "deleteOne.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "deleteOne"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[4]": {
+      "activity": "SES-005",
+      "fingerprint": "a0b0c3273009501b47e8671202af6890c75e4ed3c87f333f2a04ee54a80e8fb9",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "updateOne.filter",
+          "updateOne.session",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[5]": {
+      "activity": "SES-005",
+      "fingerprint": "419b4e8537349d9813d60d8e87b60a6c2a096d1599c3209dc36722915645f735",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.session",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[6]": {
+      "activity": "SES-005",
+      "fingerprint": "82356ea90be5f00db9b0539f73b52475456ef1eaad0544196c760e93658e7e4e",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "listDatabases.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "listDatabases"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[7]": {
+      "activity": "SES-005",
+      "fingerprint": "ac0bbfca6213ab6b6016f06c57a70eccce0b70be092af63326c6ee5a84c5ff8d",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "listCollections.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "listCollections"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[8]": {
+      "activity": "SES-005",
+      "fingerprint": "08f993cbc146a707d2ed2fb19c8a252c68412590098a65245a37366585e9a359",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "listIndexes.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "listIndexes"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[9]": {
+      "activity": "SES-005",
+      "fingerprint": "af8ada7db346dcadfa2a3a95a0458e4fcb0d71c1affe30c37033cef0ba1db38d",
+      "reason": "snapshot command concerns await the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName",
+          "runCommand.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[10]": {
+      "activity": "SES-007",
+      "fingerprint": "6bf4b393e80eec179cdbcc7c2f12deb07895afea6064b39c12ebd83e4ba71a25",
+      "reason": "snapshot-time access awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "distinct.fieldName",
+          "distinct.filter",
+          "distinct.session",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$matchesEntity"
+        ],
+        "operations": [
+          "distinct",
+          "getSnapshotTime",
+          "insertOne"
+        ],
+        "special_operations": [
+          "createEntities"
+        ],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[11]": {
+      "activity": "SES-007",
+      "fingerprint": "f0fdf5ee663df9197eaeba50be557579555558b2e2b5ff1d4e3986124762cfb5",
+      "reason": "snapshot-time access awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline",
+          "aggregate.session",
+          "createEntities.entities",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.returnDocument",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$matchesEntity"
+        ],
+        "operations": [
+          "aggregate",
+          "findOneAndUpdate",
+          "getSnapshotTime"
+        ],
+        "special_operations": [
+          "createEntities"
+        ],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[12]": {
+      "activity": "SES-007",
+      "fingerprint": "85cff2e583cc243e5389163515d3b66d4212e5093ecb8b1224053fe2edeea0c9",
+      "reason": "snapshot-time access awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "countDocuments.filter",
+          "countDocuments.session",
+          "createEntities.entities",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$matchesEntity"
+        ],
+        "operations": [
+          "countDocuments",
+          "getSnapshotTime",
+          "insertOne"
+        ],
+        "special_operations": [
+          "createEntities"
+        ],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[13]": {
+      "activity": "SES-007",
+      "fingerprint": "b7d38b88c03977bb184859b6c99d239fadcf7605fb438c174956e8f6dcdafcd7",
+      "reason": "snapshot-time access awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline",
+          "aggregate.session",
+          "createEntities.entities",
+          "distinct.fieldName",
+          "distinct.filter",
+          "distinct.session",
+          "find.filter",
+          "find.session",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.returnDocument",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$matchesEntity"
+        ],
+        "operations": [
+          "aggregate",
+          "distinct",
+          "find",
+          "findOneAndUpdate",
+          "getSnapshotTime"
+        ],
+        "special_operations": [
+          "createEntities"
+        ],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[1]": {
+      "activity": "SES-006",
+      "fingerprint": "5206a1ac0cc1f52a16c52876849ce610aa629285be77e4be3d40bca0f641bb26",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.session",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.returnDocument",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "find",
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[2]": {
+      "activity": "SES-006",
+      "fingerprint": "53fda4a68b0488c07c2fcec27cfecfd88cb0294639f122e79023a1dba3d60022",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "distinct.fieldName",
+          "distinct.filter",
+          "distinct.session",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.returnDocument",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "distinct",
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[3]": {
+      "activity": "SES-006",
+      "fingerprint": "9bed9613539e5d7e4c59e09bb353fc5cc8c5e744b99f10f6f77ecea51eb340ca",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline",
+          "aggregate.session",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.returnDocument",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "aggregate",
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[4]": {
+      "activity": "SES-006",
+      "fingerprint": "ff551edc7d4b8c73d6732fe0f347d54d94775d2fec152479810af7edd2388a31",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "countDocuments.filter",
+          "countDocuments.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "countDocuments"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[5]": {
+      "activity": "SES-006",
+      "fingerprint": "aeb21ee03e62d31d02b8026b615df7d28281981618f8688398ed93d02180e26f",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "aggregate.pipeline",
+          "aggregate.session",
+          "distinct.fieldName",
+          "distinct.filter",
+          "distinct.session",
+          "find.filter",
+          "find.session",
+          "findOneAndUpdate.filter",
+          "findOneAndUpdate.returnDocument",
+          "findOneAndUpdate.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "aggregate",
+          "distinct",
+          "find",
+          "findOneAndUpdate"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[6]": {
+      "activity": "SES-006",
+      "fingerprint": "9b19d0379151c59a1fc5a39abc05f67104c9f39f8073ada7ccbfd8f74e2bf34a",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.session",
+          "insertOne.document",
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "find",
+          "insertOne",
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[7]": {
+      "activity": "SES-006",
+      "fingerprint": "c6a7e02a36f5205506cf6d11469567e70f70959ad94a31b2e050733407e4a6fc",
+      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
+    },
+    "sessions/tests/snapshot-sessions.json::test[8]": {
+      "activity": "SES-004",
+      "fingerprint": "0a4eaf9a39fb5a0a895e762b549a1e9fafa0f88b5f90e58ecfd78f9388cfcf64",
+      "requirements": {
+        "arguments": [],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "startTransaction"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "sessions/tests/snapshot-sessions.json::test[9]": {
+      "activity": "SES-007",
+      "fingerprint": "67c207890b5d7d4148b894ea519e365f317b457dd4c18468c49805ad8d440378",
+      "reason": "snapshot-time access awaits the v0.4 session slice",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "find.filter",
+          "find.session",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$matchesEntity"
+        ],
+        "operations": [
+          "find",
+          "getSnapshotTime",
+          "insertOne"
+        ],
+        "special_operations": [
+          "createEntities"
+        ],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "deferred_unsupported"
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",

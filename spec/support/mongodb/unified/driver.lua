@@ -465,6 +465,8 @@ local function session_factory(runner, specification)
         causalConsistency = true,
         defaultTimeoutMS = true,
         defaultTransactionOptions = true,
+        snapshot = true,
+        snapshotTime = true,
       },
       "$.session.sessionOptions"
     )
@@ -474,6 +476,8 @@ local function session_factory(runner, specification)
     end
 
     options.causal_consistency = session_options:get("causalConsistency")
+    options.snapshot = session_options:get("snapshot")
+    options.snapshot_time = session_options:get("snapshotTime")
     local default_timeout_ms = session_options:get("defaultTimeoutMS")
 
     if bson.is_exact(default_timeout_ms) then

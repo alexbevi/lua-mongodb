@@ -5058,6 +5058,10 @@
       "activity": "REL-022",
       "environment": "live-standalone"
     },
+    "sessions/tests/snapshot-sessions.json::test[8]": {
+      "activity": "SES-004",
+      "environment": "live-replicaset"
+    },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",
       "environment": "live-replicaset"

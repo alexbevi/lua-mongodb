@@ -81,10 +81,17 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1851,
+      "deferred_unsupported": 1850,
       "excluded_scope": 2,
-      "passed": 3671,
+      "passed": 3672,
     }, generated["summary"]["statuses"])
+
+    snapshot_transaction = generated["cases"][
+      "sessions/tests/snapshot-sessions.json::test[8]"
+    ]
+    self.assertEqual("passed", snapshot_transaction["status"])
+    self.assertEqual("production-core-v1", snapshot_transaction["scope"])
+    self.assertEqual("live-replicaset", snapshot_transaction["required_environment"])
 
     superseded_aws = [
       generated["cases"][

@@ -86,7 +86,7 @@ KNOWN_OPERATIONS = {
   "dropSearchIndex", "encrypt", "endSession",
   "estimatedDocumentCount", "find", "findOne", "findOneAndDelete",
   "findOneAndReplace", "findOneAndUpdate", "getKey", "getKeyByAltName",
-  "getKeys", "insertMany", "insertOne", "iterateOnce",
+  "getKeys", "getSnapshotTime", "insertMany", "insertOne", "iterateOnce",
   "iterateUntilDocumentOrError", "listCollectionNames",
   "listCollectionObjects", "listCollections", "listDatabaseNames",
   "listDatabaseObjects", "listDatabases", "listIndexNames", "listIndexes",
@@ -262,6 +262,11 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       and parts[0] in {"collection-management", "index-management"}
       and parts[1] == "tests"
     )
+    is_snapshot_session_fixture = (
+      len(parts) == 3
+      and parts[:2] == ("sessions", "tests")
+      and parts[2].startswith("snapshot-sessions")
+    )
     is_security_monitoring_fixture = relative.as_posix() == (
       "command-logging-and-monitoring/tests/monitoring/redacted-commands.json"
     )
@@ -271,6 +276,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       or is_csot_directory
       or is_release_directory
       or is_management_directory
+      or is_snapshot_session_fixture
       or is_security_monitoring_fixture
     ):
       continue
