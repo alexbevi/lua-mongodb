@@ -3969,6 +3969,28 @@
       "notes": [],
       "started_at": "2026-08-16T20:52:52+00:00",
       "completed_at": "2026-08-16T21:06:19+00:00"
+    },
+    "SDAM-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_monitor_failure_cases_keep_vertical_slice_owners",
+          "exit_code": 1,
+          "summary": "The exact six monitor-failure identities remained deferred_unsupported instead of runnable under SDAM-006.",
+          "recorded_at": "2026-08-16T21:18:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/hello-*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/client.lua src/mongodb/topology.lua src/mongodb/topology_executor.lua spec/support/mongodb/unified/driver.lua spec/unit/topology_spec.lua spec/unit/unified_driver_spec.lua'; make test-complexity; python3 spec/unified/update_capabilities.py --check; python3 -m json.tool spec/unified/executors.json",
+          "exit_code": 0,
+          "summary": "19 focused Lua unit cases and 77 capability/conformance/scope Python cases passed; exact monitor fixtures executed 6 cases with 6 passed, 0 environment skips, 1 explicit SDAM-008 deferral, and 0 failures; 6 Lua files linted with zero warnings; complexity, capability, executor JSON, and diff validators passed.",
+          "recorded_at": "2026-08-16T21:27:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T21:17:41+00:00",
+      "completed_at": "2026-08-16T21:27:19+00:00"
     }
   },
   "verified_references": {

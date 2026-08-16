@@ -17,7 +17,6 @@
     "CMAP-003": 8,
     "CMAP-004": 3,
     "DNS-001": 4,
-    "SDAM-006": 6,
     "SDAM-007": 1,
     "SDAM-008": 1,
     "TXN-003": 9,
@@ -46,8 +45,8 @@
     },
     "server-discovery-and-monitoring": {
       "excluded": 18,
-      "passed": 416,
-      "planned": 25
+      "passed": 422,
+      "planned": 19
     },
     "sessions": {
       "passed": 39
@@ -61,8 +60,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 746,
-    "planned": 105,
+    "passed": 752,
+    "planned": 99,
     "supported": 851
   },
   "target_owners": [

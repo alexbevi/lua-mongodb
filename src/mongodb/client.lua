@@ -572,6 +572,7 @@ local function connect_topology(
     if executor then
       hello, err = executor:hello({
         cancellation = fields.cancellation,
+        deadline = connection_deadline(runtime, config, fields.deadline),
         max_await_time_ms = fields.max_await_time_ms,
         topology_version = fields.topology_version,
       })

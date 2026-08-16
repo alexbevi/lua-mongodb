@@ -461,6 +461,13 @@ for index in (1, 2):
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
   ] = ("ADV-007", OWNER_REASONS["ADV-007"])
 
+for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
+  for index in range(1, 3):
+    TEST_OVERRIDES[
+      "server-discovery-and-monitoring/tests/unified/"
+        f"{fixture}.json::test[{index}]"
+    ] = ("SDAM-006", None)
+
 TEST_OVERRIDES.update({
   "server-discovery-and-monitoring/tests/unified/"
     "hello-timeout.json::test[3]": (

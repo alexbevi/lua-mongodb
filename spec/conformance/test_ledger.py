@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1798,
+      "deferred_unsupported": 1792,
       "excluded_scope": 2,
-      "passed": 3724,
+      "passed": 3730,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][
@@ -110,6 +110,35 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(
       ["live-sharded"] * 6,
       [case["required_environment"] for case in monitoring_modes],
+    )
+
+    monitor_failures = [
+      *[
+        generated["cases"][
+          "server-discovery-and-monitoring/tests/unified/"
+          f"hello-command-error.json::test[{index}]"
+        ]
+        for index in range(1, 3)
+      ],
+      *[
+        generated["cases"][
+          "server-discovery-and-monitoring/tests/unified/"
+          f"hello-network-error.json::test[{index}]"
+        ]
+        for index in range(1, 3)
+      ],
+      *[
+        generated["cases"][
+          "server-discovery-and-monitoring/tests/unified/"
+          f"hello-timeout.json::test[{index}]"
+        ]
+        for index in range(1, 3)
+      ],
+    ]
+    self.assertEqual(["passed"] * 6, [case["status"] for case in monitor_failures])
+    self.assertEqual(
+      ["live-sharded"] * 6,
+      [case["required_environment"] for case in monitor_failures],
     )
 
     snapshot_transaction = generated["cases"][
