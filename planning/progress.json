@@ -4157,6 +4157,49 @@
       "notes": [],
       "started_at": "2026-08-16T22:36:29+00:00",
       "completed_at": "2026-08-16T22:47:57+00:00"
+    },
+    "CMAP-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=interrupts.in.use.connections.after.a.monitor.network.timeout spec/unit/topology_spec.lua'",
+          "exit_code": 2,
+          "summary": "A network-category monitor timeout cleared the pool without interruptInUseConnections, leaving the checked-out connection active instead of closing it as retryable stale work.",
+          "recorded_at": "2026-08-16T22:54:41+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=interrupt spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua'",
+          "exit_code": 2,
+          "summary": "The pool published ConnectionClosed before check-in for interrupted work, and the unified event matcher rejected interruptInUseConnections; three directly coupled lifecycle assertions failed.",
+          "recorded_at": "2026-08-16T23:01:12+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json'",
+          "exit_code": 2,
+          "summary": "All three exact fixtures executed but failed: client construction added an observable application-pool checkout and the interrupted connection lifecycle did not match normative event ordering.",
+          "recorded_at": "2026-08-16T23:01:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json' FOCUS_PYTHON='<classification and projection modules>' FOCUS_LINT='<seven touched Lua files>'",
+          "exit_code": 0,
+          "summary": "Focused verification passed 40 Lua examples and 92 Python tests; all three exact unified cases passed with 0 failures, 0 environment-skips, and 0 deferrals; touched-file lint reported 0 warnings and 0 errors.",
+          "recorded_at": "2026-08-16T23:06:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "capability, conformance, release, v0.4, checklist, and README --check validators; JSON and Python validators; make test-complexity; git diff --check",
+          "exit_code": 0,
+          "summary": "All generated projections were current at 3749 passing/1773 deferred and v0.4 771 passing/80 planned; artifact validators, Lua complexity, and whitespace checks passed.",
+          "recorded_at": "2026-08-16T23:06:10+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T22:53:38+00:00",
+      "completed_at": "2026-08-16T23:06:16+00:00"
     }
   },
   "verified_references": {

@@ -225,7 +225,11 @@ local function finish_close(state, connection, reason)
     connection_id = connection_state.id,
     reason = reason,
   })
-  close_resource(connection_state.resource)
+
+  if not connection_state.resource_closed then
+    connection_state.resource_closed = true
+    close_resource(connection_state.resource)
+  end
 end
 
 local function detach_locked(state, connection)
@@ -943,6 +947,7 @@ function POOL_METHODS:clear(interrupt_in_use_connections)
   end
 
   local prior_state = state.state
+  local cleared_generation = state.generation
 
   state.generation = state.generation + 1
   state.state = "paused"
@@ -964,9 +969,10 @@ function POOL_METHODS:clear(interrupt_in_use_connections)
     for _, connection in ipairs(in_use) do
       local connection_state = CONNECTION_STATES[connection]
 
-      connection_state.interrupted = true
-      detach_locked(state, connection)
-      interrupted[#interrupted + 1] = connection
+      if connection_state.generation <= cleared_generation then
+        connection_state.interrupted = true
+        interrupted[#interrupted + 1] = connection
+      end
     end
 
     for connection in pairs(state.pending) do
@@ -989,7 +995,12 @@ function POOL_METHODS:clear(interrupt_in_use_connections)
   end
 
   for _, connection in ipairs(interrupted) do
-    finish_close(state, connection, "stale")
+    local connection_state = CONNECTION_STATES[connection]
+
+    if not connection_state.resource_closed then
+      connection_state.resource_closed = true
+      close_resource(connection_state.resource)
+    end
   end
 
   schedule_maintenance(self)

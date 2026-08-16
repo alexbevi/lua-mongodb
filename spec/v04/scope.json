@@ -12,7 +12,6 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
   "planned_by_activity": {
-    "CMAP-004": 3,
     "DNS-001": 4,
     "TXN-003": 9,
     "TXN-004": 7,
@@ -40,8 +39,7 @@
     },
     "server-discovery-and-monitoring": {
       "excluded": 18,
-      "passed": 438,
-      "planned": 3
+      "passed": 441
     },
     "sessions": {
       "passed": 39
@@ -55,8 +53,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 768,
-    "planned": 83,
+    "passed": 771,
+    "planned": 80,
     "supported": 851
   },
   "target_owners": [

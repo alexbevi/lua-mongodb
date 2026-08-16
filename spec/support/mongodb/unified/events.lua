@@ -361,6 +361,7 @@ function M.new(specification)
     ConnectionPoolCleared = function(_, event)
       record(collector, {
         address = event.address,
+        interrupt_in_use_connections = event.interrupt_in_use_connections,
         type = "pool_cleared",
       })
     end,
@@ -500,6 +501,11 @@ local function match_event(runner, expected, actual, path)
     allowed = { awaited = true }
   elseif SDAM_EVENT_TYPES[wanted_type] then
     allowed = {}
+  elseif name == "poolClearedEvent" then
+    allowed = {
+      hasServiceId = true,
+      interruptInUseConnections = true,
+    }
   elseif name == "commandStartedEvent" then
     allowed.command = true
   elseif name == "commandSucceededEvent" then
@@ -557,6 +563,15 @@ local function match_event(runner, expected, actual, path)
         or has_service_id(actual.service_id) ~= expected_value
       then
         return configuration_error("event service id presence does not match", field_path)
+      end
+    elseif field == "interruptInUseConnections" then
+      if type(expected_value) ~= "boolean"
+        or actual.interrupt_in_use_connections ~= expected_value
+      then
+        return configuration_error(
+          "event interrupt-in-use state does not match",
+          field_path
+        )
       end
     elseif field == "newDescription" or field == "previousDescription" then
       local actual_description = field == "newDescription"

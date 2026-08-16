@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1776,
+      "deferred_unsupported": 1773,
       "excluded_scope": 2,
-      "passed": 3746,
+      "passed": 3749,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][
@@ -203,6 +203,22 @@ class ConformanceLedgerTests(unittest.TestCase):
 
       self.assertEqual("passed", case["status"])
       self.assertEqual(environment, case["required_environment"])
+
+    interrupted_pool_cases = [
+      generated["cases"][
+        "server-discovery-and-monitoring/tests/unified/"
+        f"interruptInUse-pool-clear.json::test[{index}]"
+      ]
+      for index in range(1, 4)
+    ]
+    self.assertEqual(
+      ["passed"] * 3,
+      [case["status"] for case in interrupted_pool_cases],
+    )
+    self.assertEqual(
+      ["live-replicaset"] * 3,
+      [case["required_environment"] for case in interrupted_pool_cases],
+    )
 
     snapshot_transaction = generated["cases"][
       "sessions/tests/snapshot-sessions.json::test[8]"

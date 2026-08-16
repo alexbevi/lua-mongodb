@@ -501,6 +501,75 @@ describe("monitored topology", function()
     end)
   end)
 
+  it("interrupts in-use connections after a monitor network timeout", function()
+    local runtime = fake_runtime.new()
+    local closed = 0
+    local cleared
+    local event_types = {}
+    local manager = topology.new({
+      check = function()
+        return nil, errors.new({
+          category = errors.CATEGORY.NETWORK,
+          message = "monitor timed out",
+          timeout = true,
+        })
+      end,
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            return {
+              close = function()
+                closed = closed + 1
+              end,
+            }
+          end,
+          listeners = {
+            function(event)
+              event_types[#event_types + 1] = event.type
+
+              if event.type == "ConnectionPoolCleared" then
+                cleared = event
+              end
+            end,
+          },
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "a:27017" },
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("a:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "maxWireVersion", 21 },
+    })))
+    local connection_pool = manager:pool("a:27017")
+    local connection = assert(connection_pool:check_out())
+
+    assert(manager:check_server("a:27017"))
+
+    assert.is_true(connection.interrupted)
+    assert.are.equal("in_use", connection.state)
+    assert.are.equal(1, closed)
+    assert.is_true(cleared.interrupt_in_use_connections)
+    assert(connection_pool:check_in(connection))
+    assert.are.equal("closed", connection.state)
+    assert.same({
+      "ConnectionPoolCleared",
+      "ConnectionCheckedIn",
+      "ConnectionClosed",
+    }, {
+      event_types[#event_types - 2],
+      event_types[#event_types - 1],
+      event_types[#event_types],
+    })
+    assert(manager:close())
+  end)
+
   it("ignores a response returned by a cancelled awaited check", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

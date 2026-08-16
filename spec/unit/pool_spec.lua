@@ -48,6 +48,47 @@ describe("CMAP connection pools", function()
     assert(connection_pool:close())
   end)
 
+  it("publishes check-in before close after interrupting an in-use connection", function()
+    local runtime = fake_runtime.new()
+    local closed = 0
+    local event_types = {}
+    local connection_pool = pool.new({
+      address = "a:27017",
+      connect = function()
+        return {
+          close = function()
+            closed = closed + 1
+          end,
+        }
+      end,
+      listeners = {
+        function(event)
+          event_types[#event_types + 1] = event.type
+        end,
+      },
+      runtime = runtime,
+    })
+
+    assert(connection_pool:ready())
+    local connection = assert(connection_pool:check_out())
+
+    assert(connection_pool:clear(true))
+    assert.is_true(connection.interrupted)
+    assert.are.equal("in_use", connection.state)
+    assert.are.equal(1, closed)
+    assert(connection_pool:check_in(connection))
+    assert.are.equal("closed", connection.state)
+    assert.same({
+      "ConnectionPoolCleared",
+      "ConnectionCheckedIn",
+      "ConnectionClosed",
+    }, {
+      event_types[#event_types - 2],
+      event_types[#event_types - 1],
+      event_types[#event_types],
+    })
+  end)
+
   it("runs every pinned unit CMAP fixture", function()
     local paths = cmap_runner.fixture_paths("unit")
 
@@ -274,9 +315,10 @@ describe("CMAP connection pools", function()
       assert.are.equal(1, connection_pool.total_connection_count)
       assert.are.equal(1, connection_pool.operation_count)
       assert(connection_pool:clear(true))
-      assert.are.equal(0, connection_pool.total_connection_count)
+      assert.are.equal(1, connection_pool.total_connection_count)
       assert.are.equal(1, connection_pool.operation_count)
       assert(connection_pool:check_in(first))
+      assert.are.equal(0, connection_pool.total_connection_count)
       assert.are.equal(0, connection_pool.operation_count)
     end)
   end)

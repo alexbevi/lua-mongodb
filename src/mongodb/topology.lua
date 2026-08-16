@@ -529,7 +529,7 @@ local function monitor_once(state, address)
     duration = duration,
     round_trip_time = round_trip_time,
     success = response ~= nil,
-    timeout = errors.is(check_err, errors.CATEGORY.TIMEOUT),
+    timeout = errors.is(check_err) and check_err:is_timeout(),
   })
 
   current = state.description:server(address)

@@ -559,6 +559,12 @@ for fixture in (
     f"{fixture}.json::test[1]"
   ] = ("CMAP-003", None)
 
+for index in range(1, 4):
+  TEST_OVERRIDES[
+    "server-discovery-and-monitoring/tests/unified/"
+    f"interruptInUse-pool-clear.json::test[{index}]"
+  ] = ("CMAP-004", None)
+
 for fixture, count in (
   ("backpressure-retryable-abort", 2),
   ("backpressure-retryable-commit", 2),

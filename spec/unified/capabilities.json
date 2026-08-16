@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1466,
-    "runnable": 1466
+    "passed": 1469,
+    "runnable": 1469
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -71347,7 +71347,6 @@
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[1]": {
       "activity": "CMAP-004",
       "fingerprint": "ca03d545be713ce831d84e837932b5d81e45934d6f1e06dd4e3062e6e1302d65",
-      "reason": "interrupting in-use connections awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71390,12 +71389,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[2]": {
       "activity": "CMAP-004",
       "fingerprint": "cd472b415ba19ef995833d8191ab6203ae4e2fca2d012d62c1f41d6e01a3f9cc",
-      "reason": "interrupting in-use connections awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71438,12 +71436,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[3]": {
       "activity": "CMAP-004",
       "fingerprint": "9f742a2fb65ea6435a8163b6328df03e19dbea2e594973a83631b10443757779",
-      "reason": "interrupting in-use connections awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71486,7 +71483,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/loadbalanced-emit-topology-changed-before-close.json::test[1]": {
       "activity": "ADV-006",

@@ -717,40 +717,35 @@ local function connect_topology(
     server_selection_timeout_ms = config.server_selection_timeout_ms,
   })
   local capabilities, err
+  local capabilities_deadline = runtime_contract.deadline_after(
+    runtime,
+    config.server_selection_timeout_ms / 1000
+  )
 
-  if config.replica_set == nil then
-    local capabilities_deadline = runtime_contract.deadline_after(
-      runtime,
-      config.server_selection_timeout_ms / 1000
+  while monitor_capabilities == nil do
+    local ok
+    ok, err = runtime_contract.check(runtime, capabilities_deadline)
+
+    if not ok then
+      break
+    end
+
+    local remaining = runtime_contract.remaining(runtime, capabilities_deadline)
+
+    assert(runtime.clock:sleep(math.min(0.01, remaining or math.huge)))
+  end
+
+  capabilities = monitor_capabilities
+
+  if capabilities == nil then
+    local selected, selection_err = manager:select_server(
+      "write",
+      nil,
+      { timeout_ms = 0 }
     )
 
-    while monitor_capabilities == nil do
-      local ok
-      ok, err = runtime_contract.check(runtime, capabilities_deadline)
-
-      if not ok then
-        break
-      end
-
-      local remaining = runtime_contract.remaining(runtime, capabilities_deadline)
-
-      assert(runtime.clock:sleep(math.min(0.01, remaining or math.huge)))
-    end
-
-    capabilities = monitor_capabilities
-
-    if capabilities == nil then
-      local selected, selection_err = manager:select_server(
-        "write",
-        nil,
-        { timeout_ms = 0 }
-      )
-
-      assert(selected == nil)
-      err = selection_err
-    end
-  else
-    capabilities, err = executor:capabilities()
+    assert(selected == nil)
+    err = selection_err
   end
 
   if not capabilities then

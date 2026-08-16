@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 174,
+    "completed": 175,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 20
+    "pending": 19
   },
   "active": [],
   "ready": [
@@ -33,13 +33,13 @@
     "ADV-009",
     "ADV-010",
     "ADV-011",
-    "CMAP-004",
+    "DNS-001",
     "ADV-012"
   ],
   "ready_by_track": {
     "lua-hardening": [],
     "v0-4-sharded-parity": [
-      "CMAP-004"
+      "DNS-001"
     ]
   },
   "blocked": [],

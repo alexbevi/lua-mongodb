@@ -342,6 +342,28 @@ describe("unified command events", function()
     }), { [client] = collector }, "$.expectEvents"))
   end)
 
+  it("matches whether a pool clear interrupted in-use connections", function()
+    local runner = runner_module.new({ runtime = fake_runtime.new() })
+    local client = {}
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({ "poolClearedEvent" }) },
+    })))
+
+    assert(runner:add_entity("client0", "client", client))
+    collector.pool_listener:ConnectionPoolCleared({
+      address = "127.0.0.1:27017",
+      interrupt_in_use_connections = true,
+    })
+
+    assert(event_module.assert_all(runner, expected_cmap_events({
+      document({
+        { "poolClearedEvent", document({
+          { "interruptInUseConnections", true },
+        }) },
+      }),
+    }), { [client] = collector }, "$.expectEvents"))
+  end)
+
   it("discards only an eager construction checkout start", function()
     local runner = runner_module.new({ runtime = fake_runtime.new() })
     local client = {}
