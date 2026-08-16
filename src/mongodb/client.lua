@@ -874,7 +874,7 @@ function M.connect(uri, values)
   local warnings = combine_warnings(parsed, option_warnings)
 
   if parsed.is_srv or config.replica_set ~= nil or config.min_pool_size > 0
-      or special.sdam_listeners ~= nil
+      or special.pool_listeners ~= nil or special.sdam_listeners ~= nil
   then
     return connect_topology(
       parsed,

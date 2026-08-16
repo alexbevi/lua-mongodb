@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1458,
-    "runnable": 1458
+    "passed": 1466,
+    "runnable": 1466
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -70836,7 +70836,6 @@
     "server-discovery-and-monitoring/tests/unified/find-network-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "4144f8adaec8290c5631caf1a370ebb45547c91f497deb94edb33b92ce1f89c1",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70878,12 +70877,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/find-network-timeout-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "c37080a28aefa2fbd4c1aee2df847b45f12eee87ca390914e3093819c6bf077b",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70921,12 +70919,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/find-shutdown-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "3f91d596c03a1f020c5ccc88dbe5b2d1436187fc5c0cfa81dda81bc64230e457",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70970,7 +70967,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/hello-command-error.json::test[1]": {
       "activity": "SDAM-006",
@@ -71258,7 +71255,6 @@
     "server-discovery-and-monitoring/tests/unified/insert-network-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "782d489746b3f3d07537ba5e6f4a125a013d8e4b19849a02b4fcaf38d1bdbe3f",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71298,12 +71294,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/insert-shutdown-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "bc3b8a188932ba16fca5d7d6eb1e8cd4f72f1d45920bd735e269bfb1c37f87c6",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71347,7 +71342,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[1]": {
       "activity": "CMAP-004",
@@ -71917,7 +71912,6 @@
     "server-discovery-and-monitoring/tests/unified/pool-clear-application-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "f52720b1f81551c9985083005c269b3183ed0c48e8b71524e7b63022690dd0b3",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71954,12 +71948,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-checkout-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "1ee2157b013be1581298c5e4deaae90b6c03259509b3822b1c86d32037752439",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71997,7 +71990,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {
       "activity": "REL-039",
@@ -72068,7 +72061,6 @@
     "server-discovery-and-monitoring/tests/unified/pool-cleared-error.json::test[1]": {
       "activity": "CMAP-003",
       "fingerprint": "35a39fc92d94d7de3e53ef308991dfbb7265bc7b671db1f2d95375cfe719e4c3",
-      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -72111,7 +72103,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {
       "activity": "REL-040",

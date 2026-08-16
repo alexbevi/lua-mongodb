@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1784,
+      "deferred_unsupported": 1776,
       "excluded_scope": 2,
-      "passed": 3738,
+      "passed": 3746,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][
@@ -183,6 +183,26 @@ class ConformanceLedgerTests(unittest.TestCase):
       ["live-authenticated-standalone"] * 5,
       [case["required_environment"] for case in authentication_errors],
     )
+
+    application_error_environments = {
+      "find-network-error": "live-standalone",
+      "find-network-timeout-error": "live-standalone",
+      "find-shutdown-error": "live-standalone",
+      "insert-network-error": "live-standalone",
+      "insert-shutdown-error": "live-standalone",
+      "pool-clear-application-error": "live-standalone",
+      "pool-clear-checkout-error": "live-authenticated-standalone",
+      "pool-cleared-error": "live-replicaset",
+    }
+
+    for fixture, environment in application_error_environments.items():
+      case = generated["cases"][
+        "server-discovery-and-monitoring/tests/unified/"
+        f"{fixture}.json::test[1]"
+      ]
+
+      self.assertEqual("passed", case["status"])
+      self.assertEqual(environment, case["required_environment"])
 
     snapshot_transaction = generated["cases"][
       "sessions/tests/snapshot-sessions.json::test[8]"

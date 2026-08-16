@@ -544,6 +544,21 @@ TEST_OVERRIDES.update({
   ),
 })
 
+for fixture in (
+  "find-network-error",
+  "find-network-timeout-error",
+  "find-shutdown-error",
+  "insert-network-error",
+  "insert-shutdown-error",
+  "pool-clear-application-error",
+  "pool-clear-checkout-error",
+  "pool-cleared-error",
+):
+  TEST_OVERRIDES[
+    "server-discovery-and-monitoring/tests/unified/"
+    f"{fixture}.json::test[1]"
+  ] = ("CMAP-003", None)
+
 for fixture, count in (
   ("backpressure-retryable-abort", 2),
   ("backpressure-retryable-commit", 2),

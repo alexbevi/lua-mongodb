@@ -179,6 +179,34 @@ describe("retryable read executor", function()
 end)
 
 describe("retryable write executor", function()
+  it("retries a retryable cleared-pool checkout error", function()
+    local calls = 0
+    local underlying = {
+      close = function() return true end,
+      command = function()
+        calls = calls + 1
+
+        if calls == 1 then
+          return nil, errors.new({
+            category = errors.CATEGORY.POOL,
+            message = "connection pool is paused",
+            retryable = true,
+          })
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local executor = retry_executor.new(underlying, { enabled_writes = true })
+
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { retryable_write = true }
+    ))
+    assert.are.equal(2, calls)
+  end)
+
   it("retries sanitized network and shutdown handshake failures", function()
     for _, first in ipairs({
       errors.new({

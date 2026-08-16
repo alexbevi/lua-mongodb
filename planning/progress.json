@@ -4107,6 +4107,56 @@
       "notes": [],
       "started_at": "2026-08-16T22:04:44+00:00",
       "completed_at": "2026-08-16T22:31:38+00:00"
+    },
+    "CMAP-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=cleared.pool.checkout spec/unit/topology_spec.lua'",
+          "exit_code": 2,
+          "summary": "A checkout rejected by an already-cleared pool changed the server from Standalone to Unknown instead of remaining a local retryable pool error.",
+          "recorded_at": "2026-08-16T22:37:28+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/pool-clear-application-error.json'",
+          "exit_code": 2,
+          "summary": "The exact fixture timed out waiting for PoolCleared because a CMAP-only listener did not route the standalone client through the monitored application pool.",
+          "recorded_at": "2026-08-16T22:40:44+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=retryable.cleared.pool spec/unit/retry_executor_spec.lua'",
+          "exit_code": 2,
+          "summary": "The retryable write executor returned the retryable PoolCleared checkout error after one attempt instead of selecting a fresh connection for a second attempt.",
+          "recorded_at": "2026-08-16T22:42:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/unified/run.py --lua lua --include <eight exact CMAP-003 fixtures>",
+          "exit_code": 0,
+          "summary": "All eight exact application-error fixtures executed and passed: 8 passed, 0 failed, 0 environment-skipped, 0 deferred-unsupported.",
+          "recorded_at": "2026-08-16T22:47:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/unit/retry_executor_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<eight touched/coupled Lua files>'",
+          "exit_code": 0,
+          "summary": "Focused verification passed 34 Lua examples and 91 Python tests; touched-file lint reported 0 warnings and 0 errors.",
+          "recorded_at": "2026-08-16T22:47:56+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "generated artifact --check commands; python json/bytecode validators; make test-complexity; git diff --check",
+          "exit_code": 0,
+          "summary": "Capability, conformance, release, v0.4, checklist, and README projections were current; JSON and Python validators, Lua complexity, and whitespace validation passed.",
+          "recorded_at": "2026-08-16T22:47:56+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T22:36:29+00:00",
+      "completed_at": "2026-08-16T22:47:57+00:00"
     }
   },
   "verified_references": {

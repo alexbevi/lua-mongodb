@@ -70,6 +70,7 @@ end
 
 local function retryable_write(err)
   return errors.is(err, errors.CATEGORY.NETWORK)
+    or (errors.is(err, errors.CATEGORY.POOL) and err:is_retryable())
     or err:has_label("RetryableWriteError")
     or (err:has_label("RetryableError")
       and err:has_label("SystemOverloadedError"))

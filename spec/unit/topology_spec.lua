@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local copas = require("copas")
+local errors = require("mongodb.error")
 local fake_runtime = require("mongodb.runtime.fake")
 local pool = require("mongodb.pool")
 local runtime_module = require("mongodb.runtime")
@@ -725,6 +726,45 @@ describe("monitored topology", function()
 
     assert(commands:command("db", bson.document({ { "ping", 1 } })))
     assert.near(11.25, received_deadline, 0.000001)
+    assert(commands:close())
+  end)
+
+  it("does not report a cleared-pool checkout as an application error", function()
+    local runtime = fake_runtime.new()
+    local manager = topology.new({
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            error("cleared pool must not establish a connection")
+          end,
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "a:27017" },
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("a:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "maxWireVersion", 21 },
+    }), { duration = 0.001 }))
+    local connection_pool = manager:pool("a:27017")
+    local commands = topology_executor.new(manager)
+
+    assert(connection_pool:clear(false))
+    local response, err = commands:command(
+      "db",
+      bson.document({ { "ping", 1 } })
+    )
+
+    assert.is_nil(response)
+    assert.is_true(errors.is(err, errors.CATEGORY.POOL))
+    assert.are.equal("Standalone", manager.description:server("a:27017").type)
+    assert.are.equal(1, connection_pool.generation)
     assert(commands:close())
   end)
 

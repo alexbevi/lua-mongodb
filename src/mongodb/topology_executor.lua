@@ -182,9 +182,7 @@ local function select_connection(state, operation, options)
   })
 
   if not connection then
-    if not reported and not (errors.is(checkout_err, errors.CATEGORY.POOL)
-        and checkout_err:is_timeout())
-    then
+    if not reported and not errors.is(checkout_err, errors.CATEGORY.POOL) then
       report_error(
         state,
         selected.address,
