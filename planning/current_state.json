@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "959aefc85c9d92acbf1b0270fdc2c061d8aeb87d5d3d9e5180fccdd23317b941",
+  "plan_digest": "e1a2e9381ab51161f9935ab27753cdd3ce9c77483bbcae3ac5c7fd588fd42010",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
@@ -20,23 +20,26 @@
     "completed": 151,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 11
+    "pending": 41
   },
   "active": [],
   "ready": [
     "ADV-001",
     "ADV-002",
     "ADV-004",
-    "ADV-005",
     "ADV-007",
     "AUTH-019",
     "ADV-009",
     "ADV-010",
     "ADV-011",
+    "CON-002",
     "ADV-012"
   ],
   "ready_by_track": {
-    "lua-hardening": []
+    "lua-hardening": [],
+    "v0-4-sharded-parity": [
+      "CON-002"
+    ]
   },
   "blocked": [],
   "needs_review": [],
