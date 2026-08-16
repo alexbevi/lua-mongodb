@@ -251,6 +251,54 @@ describe("client sessions", function()
     end, "snapshot_time must be a BSON timestamp")
   end)
 
+  it("rejects snapshot commands before using a pre-5.0 server", function()
+    local commands = {}
+    local underlying = {}
+
+    function underlying.command(_, _, command)
+      commands[#commands + 1] = command
+      return bson.document({ { "ok", 1 } })
+    end
+
+    function underlying.close()
+      return true
+    end
+
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local executor = session_executor.new(underlying, sessions, {
+      max_wire_version = 12,
+    })
+    local snapshot = assert(sessions:start({ snapshot = true }))
+
+    for _, name in ipairs({ "find", "aggregate", "distinct" }) do
+      local response, err = executor:command(
+        "db",
+        bson.document({ { name, "items" } }),
+        { session = snapshot }
+      )
+
+      assert.is_nil(response)
+      assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+      assert.are.equal(
+        "Snapshot reads require MongoDB 5.0 or later",
+        err.message
+      )
+    end
+
+    assert.are.equal(0, #commands)
+    local ordinary = assert(sessions:start())
+
+    assert(executor:command(
+      "db",
+      bson.document({ { "find", "items" } }),
+      { session = ordinary }
+    ))
+    assert.are.equal(1, #commands)
+  end)
+
   it("reuses clean server sessions and discards dirty sessions", function()
     local sessions = new_session_manager({
       id_factory = identifiers(),

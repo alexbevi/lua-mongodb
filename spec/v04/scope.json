@@ -28,7 +28,6 @@
     "SDAM-005": 6,
     "SDAM-006": 7,
     "SDAM-007": 1,
-    "SES-005": 3,
     "SES-006": 7,
     "SES-007": 5,
     "SES-008": 12,
@@ -64,8 +63,8 @@
       "planned": 32
     },
     "sessions": {
-      "passed": 12,
-      "planned": 27
+      "passed": 15,
+      "planned": 24
     },
     "transactions": {
       "excluded": 16,
@@ -76,8 +75,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 694,
-    "planned": 157,
+    "passed": 697,
+    "planned": 154,
     "supported": 851
   },
   "target_owners": [

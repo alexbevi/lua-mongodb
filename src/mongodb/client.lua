@@ -348,6 +348,7 @@ local function public_client(
   end
 
   decorated = session_executor.new(retrying, sessions, {
+    max_wire_version = capabilities.max_wire_version,
     retryable_writes = retryable_writes,
   })
 

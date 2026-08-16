@@ -935,6 +935,12 @@ function MANAGER_METHODS:decorate(command, options)
     return nil, err
   end
 
+  if session_state.snapshot and options.max_wire_version ~= nil
+      and options.max_wire_version < 13
+  then
+    return client_error("Snapshot reads require MongoDB 5.0 or later")
+  end
+
   local context
   context, err = decoration_context(command, options, session_state)
 

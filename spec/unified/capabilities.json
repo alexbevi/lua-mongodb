@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1392,
-    "runnable": 1392
+    "passed": 1395,
+    "runnable": 1395
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -72533,7 +72533,6 @@
     "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[1]": {
       "activity": "SES-005",
       "fingerprint": "e01cde7581b58788cbf4423bc67908b47c04bd8fd103dd0ad7bd77f74c8e5cff",
-      "reason": "snapshot server-version enforcement awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -72555,12 +72554,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[2]": {
       "activity": "SES-005",
       "fingerprint": "d49154638e8688737a77de5ab0b910d612bbb43137632f750f4cc4b76a6089ce",
-      "reason": "snapshot server-version enforcement awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -72582,12 +72580,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[3]": {
       "activity": "SES-005",
       "fingerprint": "60b45975177b34c46f73ca30f562841d8ea4a1e8b0c3c49fe59e258ced9eb3e7",
-      "reason": "snapshot server-version enforcement awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -72610,7 +72607,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[1]": {
       "activity": "SES-008",

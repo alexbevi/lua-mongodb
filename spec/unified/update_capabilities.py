@@ -277,7 +277,7 @@ for fixture, count, owner in (
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"sessions/tests/{fixture}.json::test[{index}]"
-    ] = (owner, OWNER_REASONS[owner])
+    ] = (owner, None if owner == "SES-005" else OWNER_REASONS[owner])
 
 for fixture in (
   "bulkWrite-comment",

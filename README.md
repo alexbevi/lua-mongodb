@@ -219,7 +219,7 @@ end
 
 Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. `with_transaction` starts, commits, and applies the specification retry rules for transient failures. Pass the active session to every operation in the transaction, and keep the callback safe to run more than once.
 
-`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, and require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`.
+`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, and reject command execution against servers older than MongoDB 5.0.
 
 ```lua
 local doc = mongodb.bson.document
@@ -286,7 +286,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Retryable reads | 🟡 | 70.3% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
 | Resilience | Client-side operations timeout | 🟡 | 64.9% |
-| Resilience | Sessions | 🟡 | 30.8% |
+| Resilience | Sessions | 🟡 | 38.5% |
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 64.3% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |

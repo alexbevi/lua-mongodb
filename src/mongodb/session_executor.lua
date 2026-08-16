@@ -119,6 +119,7 @@ local function prepared_command(
   end
 
   return state.manager:decorate(command, {
+    max_wire_version = state.max_wire_version,
     read_concern = options and options.read_concern,
     read_preference = options and options.read_preference,
     retryable_write = retryable_write,
@@ -289,9 +290,16 @@ function M.new(executor, manager, options)
   end
 
   for key in pairs(options) do
-    if key ~= "retryable_writes" then
+    if key ~= "max_wire_version" and key ~= "retryable_writes" then
       error("unknown session executor option: " .. tostring(key), 2)
     end
+  end
+
+  if options.max_wire_version ~= nil
+      and (math.type(options.max_wire_version) ~= "integer"
+        or options.max_wire_version < 0)
+  then
+    error("max_wire_version must be a non-negative integer", 2)
   end
 
   if options.retryable_writes ~= nil
@@ -305,6 +313,7 @@ function M.new(executor, manager, options)
   STATES[value] = {
     executor = executor,
     manager = manager,
+    max_wire_version = options.max_wire_version,
     retryable_writes = options.retryable_writes == true,
   }
   return setmetatable(value, METATABLE)

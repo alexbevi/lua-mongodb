@@ -3661,6 +3661,28 @@
       "notes": [],
       "started_at": "2026-08-16T18:03:51+00:00",
       "completed_at": "2026-08-16T18:12:47+00:00"
+    },
+    "SES-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua '--lpath=spec/support/?.lua' '--lpath=spec/support/?/init.lua' '--lpath=src/?.lua' '--lpath=src/?/init.lua' '--filter=pre%-5%.0' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "0 successes, 1 error: session executor rejected the defining max_wire_version option before the snapshot guard existed",
+          "recorded_at": "2026-08-16T18:28:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua' FOCUS_UNIFIED='sessions/tests/snapshot-sessions-not-supported-client-error.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/client.lua src/mongodb/session.lua src/mongodb/session_executor.lua spec/unit/session_spec.lua'; make test-complexity; make test-architecture; run capability, ledger, v0.4, README, release-scope, release-checklist, JSON, Python compile, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "22 Lua tests and 70 coupled Python tests passed; exact unified cases: 0 executed, 0 passed, 3 environment-skipped on MongoDB 8.2, 0 deferred, 0 failed; 4 touched Lua files linted; complexity, architecture, generated artifacts, release projections, plan, and diff checks passed",
+          "recorded_at": "2026-08-16T18:34:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T18:27:48+00:00",
+      "completed_at": "2026-08-16T18:34:53+00:00"
     }
   },
   "verified_references": {

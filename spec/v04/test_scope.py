@@ -19,8 +19,8 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(694, generated["summary"]["passed"])
-    self.assertEqual(157, generated["summary"]["planned"])
+    self.assertEqual(697, generated["summary"]["passed"])
+    self.assertEqual(154, generated["summary"]["planned"])
     self.assertEqual(47, generated["summary"]["excluded"])
     self.assertEqual(851, generated["summary"]["supported"])
     self.assertEqual(
@@ -41,7 +41,6 @@ class V04ScopeTests(unittest.TestCase):
         "SDAM-005": 6,
         "SDAM-006": 7,
         "SDAM-007": 1,
-        "SES-005": 3,
         "SES-006": 7,
         "SES-007": 5,
         "SES-008": 12,
@@ -63,9 +62,9 @@ class V04ScopeTests(unittest.TestCase):
     activities = scope.load_activities()
     identity = next(
       identity for identity, case in cases.items()
-      if case.get("activity") == "SES-005"
+      if case.get("activity") == "SES-008"
     )
-    activities["SES-005"]["status"] = "completed"
+    activities["SES-008"]["status"] = "completed"
 
     with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
       scope.classify(cases, activities)
