@@ -748,6 +748,10 @@ function COLLECTION_METHODS:create_indexes(models, options)
   return collection_operation(self, admin.create_indexes, models, options)
 end
 
+function COLLECTION_METHODS:create_search_index(model, options)
+  return collection_operation(self, admin.create_search_index, model, options)
+end
+
 function COLLECTION_METHODS:drop(options)
   local state = COLLECTION_STATES[self]
   local client_state = CLIENT_STATES[state.client]

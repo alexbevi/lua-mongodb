@@ -1374,6 +1374,13 @@ local function create_index(_, collection, arguments)
   ))
 end
 
+local function create_search_index(_, collection, arguments)
+  return collection:create_search_index(
+    arguments:get("model"),
+    operation_options(arguments, {})
+  )
+end
+
 local function drop_index(_, collection, arguments)
   return collection:drop_index(arguments:get("name"), operation_options(
     arguments,
@@ -2045,6 +2052,10 @@ function M.new(options)
         createIndex = {
           arguments = { "keys", "name", "rawData", "timeoutMS", "unique" },
           handler = create_index,
+        },
+        createSearchIndex = {
+          arguments = { "model" },
+          handler = create_search_index,
         },
         dropIndex = {
           arguments = { "name", "rawData", "timeoutMS" },

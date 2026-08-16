@@ -215,6 +215,20 @@ for user in cursor:iter() do
 end
 ```
 
+### Search Indexes
+
+`collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. The model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
+
+```lua
+local search_name = assert(users:create_search_index(doc({
+  { "definition", doc({
+    { "mappings", doc({ { "dynamic", true } }) },
+  }) },
+  { "name", "users-search" },
+  { "type", "search" },
+})))
+```
+
 ### Transactions
 
 Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. `with_transaction` starts, commits, and applies the specification retry rules for transient failures. Pass the active session to every operation in the transaction, and keep the callback safe to run more than once.
@@ -292,7 +306,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
 | Programmability | CRUD | 🟡 | 71.5% |
 | Programmability | Collection management | 🟡 | 81.8% |
-| Programmability | Index management | 🟡 | 10.5% |
+| Programmability | Index management | 🟡 | 26.3% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
 | Programmability | Change streams | 🔴 | 0.0% |
 | Programmability | GridFS | 🔴 | 0.0% |

@@ -1749,6 +1749,9 @@
     "crud/tests/unified/findOneAndUpdate-errorResponse.json::test[2]": {"activity": "REL-021", "environment": "live-standalone"},
     "index-management/tests/index-rawdata.json::test[1]": {"activity": "REL-018", "environment": "live-standalone"},
     "index-management/tests/index-rawdata.json::test[2]": {"activity": "REL-018", "environment": "live-standalone"},
+    "index-management/tests/createSearchIndex.json::test[1]": {"activity": "IDX-001", "environment": "live-replicaset"},
+    "index-management/tests/createSearchIndex.json::test[2]": {"activity": "IDX-001", "environment": "live-replicaset"},
+    "index-management/tests/createSearchIndex.json::test[3]": {"activity": "IDX-001", "environment": "live-replicaset"},
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
       "activity": "REL-004",
       "environment": "live-standalone"

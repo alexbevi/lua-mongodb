@@ -52,6 +52,19 @@ describe("administration commands over OP_MSG", function()
       assert.are.equal("kind_1", create_indexes.body:get("indexes"):get(1):get("name"))
       send_response(peer, create_indexes, bson.document({ { "ok", 1 } }))
 
+      local create_search_index = receive_frame(peer)
+      assert.are.equal("createSearchIndexes", create_search_index.body:keys()[1])
+      assert.are.equal(
+        "vectorSearch",
+        create_search_index.body:get("indexes"):get(1):get("type")
+      )
+      send_response(peer, create_search_index, bson.document({
+        { "ok", 1 },
+        { "indexesCreated", bson.array({
+          bson.document({ { "name", "plot-vector" } }),
+        }) },
+      }))
+
       local list_indexes = receive_frame(peer)
       assert.are.equal("listIndexes", list_indexes.body:keys()[1])
       send_response(peer, list_indexes, bson.document({
@@ -118,6 +131,22 @@ describe("administration commands over OP_MSG", function()
           "kind_1",
           assert(collection:create_index(bson.document({ { "kind", 1 } })))
         )
+        assert.are.equal("plot-vector", assert(collection:create_search_index(
+          bson.document({
+            { "definition", bson.document({
+              { "fields", bson.array({
+                bson.document({
+                  { "type", "vector" },
+                  { "path", "plot_embedding" },
+                  { "numDimensions", 1536 },
+                  { "similarity", "euclidean" },
+                }),
+              }) },
+            }) },
+            { "name", "plot-vector" },
+            { "type", "vectorSearch" },
+          })
+        )))
         local indexes = assert(collection:list_indexes())
 
         assert.are.equal("_id_", assert(indexes:next()):get("name"))

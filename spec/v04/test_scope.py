@@ -19,8 +19,8 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(721, generated["summary"]["passed"])
-    self.assertEqual(130, generated["summary"]["planned"])
+    self.assertEqual(724, generated["summary"]["passed"])
+    self.assertEqual(127, generated["summary"]["planned"])
     self.assertEqual(47, generated["summary"]["excluded"])
     self.assertEqual(851, generated["summary"]["supported"])
     self.assertEqual(
@@ -31,7 +31,6 @@ class V04ScopeTests(unittest.TestCase):
         "CMAP-003": 8,
         "CMAP-004": 3,
         "DNS-001": 4,
-        "IDX-001": 3,
         "IDX-002": 4,
         "IDX-003": 3,
         "IDX-004": 1,
@@ -57,11 +56,14 @@ class V04ScopeTests(unittest.TestCase):
   def test_completed_owner_cannot_hide_a_planned_case(self) -> None:
     cases = copy.deepcopy(scope.load_cases())
     activities = scope.load_activities()
-    identity = next(
-      identity for identity, case in cases.items()
-      if case.get("activity") == "IDX-001"
+    identity, owner = next(
+      (identity, case["activity"])
+      for identity, case in cases.items()
+      if case.get("status") == "deferred_unsupported"
+        and case.get("activity") in activities
+        and activities[case["activity"]].get("track") == "v0-4-sharded-parity"
     )
-    activities["IDX-001"]["status"] = "completed"
+    activities[owner]["status"] = "completed"
 
     with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
       scope.classify(cases, activities)

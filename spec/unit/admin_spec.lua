@@ -249,6 +249,134 @@ describe("database and collection management", function()
     end, "index direction must be 1, -1, or a supported index type")
   end)
 
+  it("creates one Search index and returns its server name", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, value)
+        commands[#commands + 1] = value
+        local model = value:get("indexes"):get(1)
+
+        return bson.document({
+          { "ok", 1 },
+          { "indexesCreated", bson.array({
+            bson.document({ { "name", model:get("name") or "default" } }),
+          }) },
+        })
+      end,
+    }
+    local collection = assert(api.new_client(executor, config())
+      :database("app"):collection("events"))
+    local definition = bson.document({
+      { "mappings", bson.document({ { "dynamic", true } }) },
+    })
+
+    assert.are.equal("default", assert(collection:create_search_index(
+      bson.document({
+        { "definition", definition },
+        { "type", "search" },
+      })
+    )))
+    local command = commands[1]
+
+    assert.are.equal("createSearchIndexes", command:keys()[1])
+    assert.are.equal("events", command:get("createSearchIndexes"))
+    assert.are.equal(
+      definition,
+      command:get("indexes"):get(1):get("definition")
+    )
+    assert.are.equal("search", command:get("indexes"):get(1):get("type"))
+    assert.are.equal("default", assert(collection:create_search_index(
+      bson.document({ { "definition", definition } })
+    )))
+    assert.is_nil(commands[2]:get("indexes"):get(1):get("type"))
+
+    local vector_definition = bson.document({
+      { "fields", bson.array({
+        bson.document({
+          { "type", "vector" },
+          { "path", "embedding" },
+          { "numDimensions", 3 },
+          { "similarity", "euclidean" },
+        }),
+      }) },
+    })
+
+    assert.are.equal("vectors", assert(collection:create_search_index(
+      bson.document({
+        { "definition", vector_definition },
+        { "name", "vectors" },
+        { "type", "vectorSearch" },
+      })
+    )))
+    local vector_model = commands[3]:get("indexes"):get(1)
+
+    assert.are.equal(vector_definition, vector_model:get("definition"))
+    assert.are.equal("vectors", vector_model:get("name"))
+    assert.are.equal("vectorSearch", vector_model:get("type"))
+  end)
+
+  it("validates Search index models and propagates command failures", function()
+    local calls = 0
+    local failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "Atlas Search is unavailable",
+    })
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function()
+        calls = calls + 1
+
+        if calls == 1 then
+          return nil, failure
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "indexesCreated", bson.array({}) },
+        })
+      end,
+    }
+    local collection = assert(api.new_client(executor, config())
+      :database("app"):collection("events"))
+    local model = bson.document({
+      { "definition", bson.document({ { "mappings", bson.document({}) } }) },
+    })
+    local name, err = collection:create_search_index(model)
+
+    assert.is_nil(name)
+    assert.are.equal(failure, err)
+    name, err = collection:create_search_index(model)
+    assert.is_nil(name)
+    assert.is_true(errors.is(err, errors.CATEGORY.PROTOCOL))
+    assert.has_error(function()
+      collection:create_search_index(bson.document({}))
+    end, "search index definition must be a BSON document")
+    assert.has_error(function()
+      collection:create_search_index(bson.document({
+        { "definition", bson.document({}) },
+        { "name", "" },
+      }))
+    end, "search index name must be a non-empty UTF-8 string without null bytes")
+    assert.has_error(function()
+      collection:create_search_index(bson.document({
+        { "definition", bson.document({}) },
+        { "type", "vector" },
+      }))
+    end, "search index type must be search or vectorSearch")
+    assert.has_error(function()
+      collection:create_search_index(bson.document({
+        { "definition", bson.document({}) },
+        { "extra", true },
+      }))
+    end, "unknown search index model field: extra")
+    assert.are.equal(2, calls)
+  end)
+
   it("lists indexes and inherits comments on getMore", function()
     local commands = {}
     local responses = {

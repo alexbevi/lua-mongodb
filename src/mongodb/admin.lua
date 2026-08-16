@@ -114,6 +114,12 @@ local LIST_INDEX_OPTIONS = {
   timeout_mode = true,
 }
 
+local SEARCH_INDEX_OPTIONS = {
+  cancellation = true,
+  deadline = true,
+  session = true,
+}
+
 local INDEX_OPTION_NAMES = {
   background = "background",
   bits = "bits",
@@ -955,6 +961,82 @@ function M.create_index(state, keys, options)
   end
 
   return names[1]
+end
+
+local function search_index_model(model)
+  if not bson.is_document(model) then
+    error("search index model must be a BSON document", 3)
+  end
+
+  for key in model:iter() do
+    if key ~= "definition" and key ~= "name" and key ~= "type" then
+      error("unknown search index model field: " .. key, 3)
+    end
+  end
+
+  local definition = model:get("definition")
+
+  if not bson.is_document(definition) then
+    error("search index definition must be a BSON document", 3)
+  end
+
+  local name = model:get("name")
+
+  if name ~= nil and (type(name) ~= "string" or name == ""
+      or utf8.len(name) == nil or name:find("%z"))
+  then
+    error("search index name must be a non-empty UTF-8 string without null bytes", 3)
+  end
+
+  local index_type = model:get("type")
+
+  if index_type ~= nil and index_type ~= "search" and index_type ~= "vectorSearch" then
+    error("search index type must be search or vectorSearch", 3)
+  end
+
+  local entries = { { "definition", definition } }
+
+  if name ~= nil then
+    entries[#entries + 1] = { "name", name }
+  end
+
+  if index_type ~= nil then
+    entries[#entries + 1] = { "type", index_type }
+  end
+
+  return bson.document(entries)
+end
+
+function M.create_search_index(state, model, options)
+  options = validate_options(options, SEARCH_INDEX_OPTIONS, "create_search_index")
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document({
+      { "createSearchIndexes", state.name },
+      { "indexes", bson.array({ search_index_model(model) }) },
+    }),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      session = options.session,
+    }
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  local created = response:get("indexesCreated")
+
+  if not bson.is_array(created) or #created ~= 1
+      or not bson.is_document(created:get(1))
+      or type(created:get(1):get("name")) ~= "string"
+      or created:get(1):get("name") == ""
+  then
+    return protocol_error("createSearchIndexes response contains an invalid created index")
+  end
+
+  return created:get(1):get("name")
 end
 
 local function drop_index(state, name, options, all)
