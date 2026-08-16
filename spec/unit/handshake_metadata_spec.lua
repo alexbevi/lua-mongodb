@@ -170,6 +170,10 @@ describe("handshake client metadata", function()
       })
 
       assert.are.same(test_case.expected, environment_snapshot(value))
+      assert.are.equal(
+        test_case.expected ~= nil and test_case.expected.name ~= nil,
+        metadata.is_faas(test_case.environment or {})
+      )
     end
   end)
 

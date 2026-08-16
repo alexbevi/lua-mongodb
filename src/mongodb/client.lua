@@ -662,6 +662,9 @@ local function connect_topology(
     check = monitor_check,
     heartbeat_frequency_ms = config.heartbeat_frequency_ms,
     heartbeat_listeners = special.heartbeat_listeners,
+    is_faas = handshake_metadata.is_faas(
+      runtime.metadata and runtime.metadata.environment or {}
+    ),
     listeners = special.sdam_listeners or {},
     on_listener_error = special.on_listener_error,
     on_server_close = function(server_address)

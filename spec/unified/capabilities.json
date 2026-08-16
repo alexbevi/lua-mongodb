@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1438,
-    "runnable": 1438
+    "passed": 1444,
+    "runnable": 1444
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -72213,7 +72213,6 @@
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[1]": {
       "activity": "SDAM-005",
       "fingerprint": "cb770fe8a09aa2bd9e7a5f9c4d5ecbbb677f614287df93db7b451c69ed925919",
-      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72247,12 +72246,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[2]": {
       "activity": "SDAM-005",
       "fingerprint": "ae8769b7b1fa8456874b9cbd2f882952f957e448ac420257e1ed113640e46e8c",
-      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72286,12 +72284,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[3]": {
       "activity": "SDAM-005",
       "fingerprint": "e8861ecc6c1efa989fb18188bb87e5f80c4095e109807091220106b89d44126f",
-      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72325,12 +72322,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[4]": {
       "activity": "SDAM-005",
       "fingerprint": "1c57a3ad44c91badd37ba2316e5f4b212b304fcf6ddbc40703562794569a450c",
-      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72364,12 +72360,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[5]": {
       "activity": "SDAM-005",
       "fingerprint": "4d8ffec1a94fa39688d0d539b18f6f43fe4cda6ed1c2b5df5aadb0c5512a99bf",
-      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72403,12 +72398,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[6]": {
       "activity": "SDAM-005",
       "fingerprint": "8a4f42b4bd8c9dd2601aa61366a6a32747d3ca116a9ef5905ffb4055f8ee9224",
-      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -72441,7 +72435,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/sharded-emit-topology-changed-before-close.json::test[1]": {
       "activity": "SDAM-004",

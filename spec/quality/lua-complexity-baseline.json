@@ -16,11 +16,6 @@
       "path": "src/mongodb/session.lua",
       "function": "finish_transaction",
       "complexity": 41
-    },
-    {
-      "path": "src/mongodb/topology.lua",
-      "function": "M.new",
-      "complexity": 46
     }
   ]
 }

@@ -59,6 +59,10 @@ local function client_factory(state)
       runtime = state.runtime,
     }
 
+    if collector:observes_heartbeat() then
+      options.heartbeat_listeners = { collector.heartbeat_listener }
+    end
+
     if collector:observes_sdam() or state.environment_topology == "replicaset" then
       options.sdam_listeners = { collector.sdam_listener }
     end

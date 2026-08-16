@@ -105,6 +105,8 @@ describe("monitored topology", function()
 
     assert.are.equal("ReplicaSetWithPrimary", manager.description.type)
     assert.are.equal(1, ready_count)
+    assert.is_false(events[4].awaited)
+    assert.is_false(events[5].awaited)
     assert.same({
       "TopologyOpening",
       "TopologyDescriptionChanged",
@@ -307,6 +309,51 @@ describe("monitored topology", function()
       assert(manager:open())
       assert(runtime.clock:sleep(0.025))
       assert(manager:close())
+      assert.are.equal(0, rtt_checks)
+    end)
+  end)
+
+  it("uses polling for auto mode on FaaS", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local awaited_checks = 0
+      local checks = 0
+      local rtt_checks = 0
+      local version = bson.document({
+        { "processId", assert(bson.object_id("000000000000000000000001")) },
+        { "counter", bson.int64(1) },
+      })
+      local manager = topology.new({
+        check = function(_, fields)
+          checks = checks + 1
+
+          if fields.awaited then
+            awaited_checks = awaited_checks + 1
+          end
+
+          return hello(true, version)
+        end,
+        heartbeat_frequency_ms = 10,
+        is_faas = true,
+        min_heartbeat_frequency_ms = 5,
+        pool_factory = new_pool,
+        rtt_check = function()
+          rtt_checks = rtt_checks + 1
+          return 25
+        end,
+        runtime = runtime,
+        seeds = { "a:27017" },
+        server_monitoring_mode = "auto",
+        set_name = "rs",
+        type = "ReplicaSetNoPrimary",
+      })
+
+      assert(manager:open())
+      assert(runtime.clock:sleep(0.025))
+      assert(manager:close())
+
+      assert.is_true(checks >= 2)
+      assert.are.equal(0, awaited_checks)
       assert.are.equal(0, rtt_checks)
     end)
   end)

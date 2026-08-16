@@ -16,6 +16,9 @@ local EVENT_NAMES = {
   connection_ready = "connectionReadyEvent",
   pool_cleared = "poolClearedEvent",
   pool_ready = "poolReadyEvent",
+  server_heartbeat_failed = "serverHeartbeatFailedEvent",
+  server_heartbeat_started = "serverHeartbeatStartedEvent",
+  server_heartbeat_succeeded = "serverHeartbeatSucceededEvent",
   server_description_changed = "serverDescriptionChangedEvent",
   topology_closed = "topologyClosedEvent",
   topology_description_changed = "topologyDescriptionChangedEvent",
@@ -33,6 +36,9 @@ local EVENT_TYPES = {
   connectionReadyEvent = "connection_ready",
   poolClearedEvent = "pool_cleared",
   poolReadyEvent = "pool_ready",
+  serverHeartbeatFailedEvent = "server_heartbeat_failed",
+  serverHeartbeatStartedEvent = "server_heartbeat_started",
+  serverHeartbeatSucceededEvent = "server_heartbeat_succeeded",
   serverDescriptionChangedEvent = "server_description_changed",
   topologyClosedEvent = "topology_closed",
   topologyDescriptionChangedEvent = "topology_description_changed",
@@ -53,6 +59,11 @@ local SDAM_EVENT_TYPES = {
   topology_closed = true,
   topology_description_changed = true,
   topology_opening = true,
+}
+local HEARTBEAT_EVENT_TYPES = {
+  server_heartbeat_failed = true,
+  server_heartbeat_started = true,
+  server_heartbeat_succeeded = true,
 }
 local function configuration_error(message, path, details)
   details = details or {}
@@ -135,7 +146,9 @@ local function record(collector, event)
     return
   end
 
-  if CMAP_EVENT_TYPES[event.type] or SDAM_EVENT_TYPES[event.type] then
+  if CMAP_EVENT_TYPES[event.type] or SDAM_EVENT_TYPES[event.type]
+      or HEARTBEAT_EVENT_TYPES[event.type]
+  then
     collector.events[#collector.events + 1] = event
     return
   end
@@ -167,6 +180,16 @@ end
 function COLLECTOR_METHODS:observes_sdam()
   for event_type in pairs(self.observed) do
     if SDAM_EVENT_TYPES[event_type] then
+      return true
+    end
+  end
+
+  return false
+end
+
+function COLLECTOR_METHODS:observes_heartbeat()
+  for event_type in pairs(self.observed) do
+    if HEARTBEAT_EVENT_TYPES[event_type] then
       return true
     end
   end
@@ -378,6 +401,29 @@ function M.new(specification)
       })
     end,
   }
+  collector.heartbeat_listener = {
+    ServerHeartbeatFailed = function(_, event)
+      record(collector, {
+        address = event.address,
+        awaited = event.awaited,
+        type = "server_heartbeat_failed",
+      })
+    end,
+    ServerHeartbeatStarted = function(_, event)
+      record(collector, {
+        address = event.address,
+        awaited = event.awaited,
+        type = "server_heartbeat_started",
+      })
+    end,
+    ServerHeartbeatSucceeded = function(_, event)
+      record(collector, {
+        address = event.address,
+        awaited = event.awaited,
+        type = "server_heartbeat_succeeded",
+      })
+    end,
+  }
   collector.sdam_listener = {
     ServerDescriptionChanged = function(_, event)
       record(collector, {
@@ -450,6 +496,8 @@ local function match_event(runner, expected, actual, path)
       newDescription = true,
       previousDescription = true,
     }
+  elseif HEARTBEAT_EVENT_TYPES[wanted_type] then
+    allowed = { awaited = true }
   elseif SDAM_EVENT_TYPES[wanted_type] then
     allowed = {}
   elseif name == "commandStartedEvent" then
@@ -488,6 +536,15 @@ local function match_event(runner, expected, actual, path)
     elseif field == "databaseName" then
       if actual.database_name ~= expected_value then
         return configuration_error("event database name does not match", field_path)
+      end
+    elseif field == "awaited" then
+      if type(expected_value) ~= "boolean" or actual.awaited ~= expected_value then
+        return configuration_error(
+          "event awaited state does not match"
+            .. " (expected " .. tostring(expected_value)
+            .. ", actual " .. tostring(actual.awaited) .. ")",
+          field_path
+        )
       end
     elseif field == "hasServerConnectionId" then
       if type(expected_value) ~= "boolean"
@@ -583,7 +640,8 @@ function M.assert_all(runner, expected_groups, collectors, path)
 
     for _, event in ipairs(collector.events) do
       local category = CMAP_EVENT_TYPES[event.type] and "cmap"
-        or SDAM_EVENT_TYPES[event.type] and "sdam"
+        or (SDAM_EVENT_TYPES[event.type] or HEARTBEAT_EVENT_TYPES[event.type])
+          and "sdam"
         or "command"
 
       if event_type == category then

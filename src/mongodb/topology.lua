@@ -55,7 +55,11 @@ local EVENT_METATABLE = {
   __index = function(value, key)
     local state = EVENT_STATES[value]
 
-    return state and state[key] or nil
+    if state == nil then
+      return nil
+    end
+
+    return state[key]
   end,
   __metatable = "mongodb.topology.event",
   __newindex = function()
@@ -753,6 +757,22 @@ local function state_change_kind(response)
   return nil
 end
 
+local function monitoring_mode(options)
+  if options.is_faas ~= nil and type(options.is_faas) ~= "boolean" then
+    error("is_faas must be a boolean", 3)
+  end
+
+  local mode = options.server_monitoring_mode or "auto"
+
+  if mode ~= "auto" and mode ~= "poll" and mode ~= "stream" then
+    error("server_monitoring_mode must be auto, poll, or stream", 3)
+  elseif mode == "auto" then
+    return options.is_faas and "poll" or "stream"
+  end
+
+  return mode
+end
+
 function M.new(options)
   if type(options) ~= "table" then
     error("topology manager options must be a table", 2)
@@ -762,6 +782,7 @@ function M.new(options)
     check = true,
     heartbeat_frequency_ms = true,
     heartbeat_listeners = true,
+    is_faas = true,
     listeners = true,
     min_heartbeat_frequency_ms = true,
     on_listener_error = true,
@@ -863,11 +884,7 @@ function M.new(options)
     end
   end
 
-  local mode = options.server_monitoring_mode or "auto"
-
-  if mode ~= "auto" and mode ~= "poll" and mode ~= "stream" then
-    error("server_monitoring_mode must be auto, poll, or stream", 2)
-  end
+  local mode = monitoring_mode(options)
 
   local description = sdam.new({
     seeds = options.seeds,
@@ -899,7 +916,7 @@ function M.new(options)
     rtt_samples = {},
     runtime = options.runtime,
     rtt_check = options.rtt_check,
-    server_monitoring_mode = mode == "auto" and "stream" or mode,
+    server_monitoring_mode = mode,
     servers = {},
     srv = srv,
     srv_cancellation = nil,

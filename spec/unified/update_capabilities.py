@@ -255,6 +255,12 @@ TEST_OVERRIDES.update({
   ),
 })
 
+for index in range(1, 7):
+  TEST_OVERRIDES[
+    "server-discovery-and-monitoring/tests/unified/"
+      f"serverMonitoringMode.json::test[{index}]"
+  ] = ("SDAM-005", None)
+
 for index in range(1, 14):
   if index == 8:
     owner = "SES-004"

@@ -202,6 +202,14 @@ local function faas_name(environment)
   return "vercel"
 end
 
+function M.is_faas(environment)
+  if type(environment) ~= "table" then
+    error("environment metadata must be a table", 2)
+  end
+
+  return faas_name(environment) ~= nil
+end
+
 local function environment_document(environment, files)
   environment = environment or {}
   files = files or {}

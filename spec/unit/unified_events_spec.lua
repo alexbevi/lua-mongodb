@@ -198,6 +198,40 @@ describe("unified command events", function()
     }), { [client] = collector }, "$.expectEvents"))
   end)
 
+  it("collects heartbeat events with their awaited state", function()
+    local runner = runner_module.new({ runtime = fake_runtime.new() })
+    local client = {}
+    local collector = assert(event_module.new(document({
+      { "observeEvents", array({
+        "serverHeartbeatStartedEvent",
+        "serverHeartbeatSucceededEvent",
+        "serverHeartbeatFailedEvent",
+      }) },
+    })))
+
+    assert.is_true(collector:observes_heartbeat())
+    assert(runner:add_entity("client0", "client", client))
+    collector.heartbeat_listener:ServerHeartbeatStarted({ awaited = false })
+    collector.heartbeat_listener:ServerHeartbeatSucceeded({ awaited = false })
+    collector.heartbeat_listener:ServerHeartbeatStarted({ awaited = true })
+
+    assert.are.equal(2, collector:count(
+      "serverHeartbeatStartedEvent",
+      document({})
+    ))
+    assert(event_module.assert_all(runner, expected_sdam_events({
+      document({
+        { "serverHeartbeatStartedEvent", document({ { "awaited", false } }) },
+      }),
+      document({
+        { "serverHeartbeatSucceededEvent", document({ { "awaited", false } }) },
+      }),
+      document({
+        { "serverHeartbeatStartedEvent", document({ { "awaited", true } }) },
+      }),
+    }), { [client] = collector }, "$.expectEvents"))
+  end)
+
   it("matches event order and permits only trailing events when requested", function()
     local runner, collector, collectors = setup()
 

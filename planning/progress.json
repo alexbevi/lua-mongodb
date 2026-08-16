@@ -3947,6 +3947,28 @@
       "notes": [],
       "started_at": "2026-08-16T20:38:20+00:00",
       "completed_at": "2026-08-16T20:45:38+00:00"
+    },
+    "SDAM-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'",
+          "exit_code": 1,
+          "summary": "The auto/FaaS monitor test errored because topology rejected the is_faas decision input, so auto could not select polling.",
+          "recorded_at": "2026-08-16T20:53:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_options_spec.lua spec/unit/topology_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/unified_events_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/client.lua src/mongodb/config/options.lua src/mongodb/handshake/metadata.lua src/mongodb/topology.lua spec/support/mongodb/unified/driver.lua spec/support/mongodb/unified/events.lua spec/unit/topology_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/unified_events_spec.lua'; make test-architecture; make test-complexity; python3 spec/unified/update_capabilities.py --check; python3 -m json.tool spec/unified/executors.json",
+          "exit_code": 0,
+          "summary": "42 focused Lua unit cases and 76 capability/conformance/scope Python cases passed; exact monitoring-mode fixture executed 4 applicable cases with 4 passed, 2 legacy-version environment skips, 0 deferrals, and 0 failures; 9 Lua files linted with zero warnings; architecture, complexity, capability, executor JSON, and diff validators passed.",
+          "recorded_at": "2026-08-16T21:06:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T20:52:52+00:00",
+      "completed_at": "2026-08-16T21:06:19+00:00"
     }
   },
   "verified_references": {
