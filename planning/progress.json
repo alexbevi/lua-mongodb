@@ -3617,6 +3617,28 @@
       "notes": [],
       "started_at": "2026-08-16T17:43:52+00:00",
       "completed_at": "2026-08-16T17:50:57+00:00"
+    },
+    "SES-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='<lua54-path>' LUA_CPATH='<lua54-cpath>' make test-focus FOCUS_UNIT='spec/unit/session_spec.lua'",
+          "exit_code": 2,
+          "summary": "18 existing session tests passed; the new snapshot-session test errored before I/O because snapshot was rejected as an unknown session option",
+          "recorded_at": "2026-08-16T17:57:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH LUA_PATH='<lua54-path>' LUA_CPATH='<lua54-cpath>' make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua' FOCUS_LINT='src/mongodb/session.lua src/mongodb/client.lua spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua'; make test-complexity; run v0.4 scope, README compatibility, strict plan, and diff validators",
+          "exit_code": 0,
+          "summary": "20 focused session tests passed; four touched/coupled Lua files linted with zero warnings; complexity baseline stayed current at four hotspots with maximum 47; v0.4 scope remained 851/898 supported and generated README/plan/diff checks passed",
+          "recorded_at": "2026-08-16T17:59:34+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T17:55:10+00:00",
+      "completed_at": "2026-08-16T17:59:34+00:00"
     }
   },
   "verified_references": {

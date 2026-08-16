@@ -219,6 +219,8 @@ end
 
 Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. `with_transaction` starts, commits, and applies the specification retry rules for transient failures. Pass the active session to every operation in the transaction, and keep the callback safe to run more than once.
 
+`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, and require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`.
+
 ```lua
 local doc = mongodb.bson.document
 local accounts = client:database("bank"):collection("accounts")

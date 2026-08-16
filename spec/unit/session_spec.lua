@@ -195,6 +195,62 @@ describe("client sessions", function()
     assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
   end)
 
+  it("configures snapshot sessions without causal consistency", function()
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local operation_time = bson.timestamp(4, 2)
+    local ordinary = assert(sessions:start())
+
+    assert(ordinary:advance_operation_time(operation_time))
+    local ordinary_command = assert(sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { read_concern = bson.document({}), session = ordinary }
+    ))
+    assert.are.equal(
+      operation_time,
+      ordinary_command:get("readConcern"):get("afterClusterTime")
+    )
+
+    local snapshot = assert(sessions:start({ snapshot = true }))
+    assert(snapshot:advance_operation_time(operation_time))
+    local snapshot_command = assert(sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { read_concern = bson.document({}), session = snapshot }
+    ))
+    assert.is_nil(
+      snapshot_command:get("readConcern"):get("afterClusterTime")
+    )
+    assert(sessions:start({
+      snapshot = true,
+      snapshot_time = bson.timestamp(9, 1),
+    }))
+
+    local validation_sessions = new_session_manager({
+      id_factory = function()
+        error("invalid options allocated a server session")
+      end,
+      timeout_minutes = 30,
+    })
+
+    assert.has_error(function()
+      validation_sessions:start({ snapshot = "true" })
+    end, "snapshot must be a boolean")
+    assert.has_error(function()
+      validation_sessions:start({
+        snapshot = true,
+        causal_consistency = true,
+      })
+    end, "snapshot sessions do not support causal_consistency=true")
+    assert.has_error(function()
+      validation_sessions:start({ snapshot_time = bson.timestamp(9, 1) })
+    end, "snapshot_time requires snapshot=true")
+    assert.has_error(function()
+      validation_sessions:start({ snapshot = true, snapshot_time = 9 })
+    end, "snapshot_time must be a BSON timestamp")
+  end)
+
   it("reuses clean server sessions and discards dirty sessions", function()
     local sessions = new_session_manager({
       id_factory = identifiers(),

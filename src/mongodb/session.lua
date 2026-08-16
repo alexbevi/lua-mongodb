@@ -651,6 +651,7 @@ function MANAGER_METHODS:start(options)
 
   for key in pairs(options) do
     if key ~= "causal_consistency" and key ~= "default_transaction_options"
+        and key ~= "snapshot" and key ~= "snapshot_time"
         and key ~= "timeout_ms"
     then
       error("unknown session option: " .. tostring(key), 2)
@@ -661,6 +662,24 @@ function MANAGER_METHODS:start(options)
     and type(options.causal_consistency) ~= "boolean"
   then
     error("causal_consistency must be a boolean", 2)
+  end
+
+  if options.snapshot ~= nil and type(options.snapshot) ~= "boolean" then
+    error("snapshot must be a boolean", 2)
+  end
+
+  if options.snapshot and options.causal_consistency then
+    error("snapshot sessions do not support causal_consistency=true", 2)
+  end
+
+  if options.snapshot_time ~= nil and not options.snapshot then
+    error("snapshot_time requires snapshot=true", 2)
+  end
+
+  if options.snapshot_time ~= nil
+      and not bson.is_tagged(options.snapshot_time, "timestamp")
+  then
+    error("snapshot_time must be a BSON timestamp", 2)
   end
 
   if options.timeout_ms ~= nil
@@ -708,13 +727,16 @@ function MANAGER_METHODS:start(options)
   end
 
   SESSION_STATES[session] = {
-    causal_consistency = options.causal_consistency ~= false,
+    causal_consistency = not options.snapshot
+      and options.causal_consistency ~= false,
     cluster_time = nil,
     ended = false,
     manager = self,
     default_transaction_options = default_transaction_options,
     operation_time = nil,
     server_session = server_session,
+    snapshot = options.snapshot == true,
+    snapshot_time = options.snapshot_time,
     transaction = { state = "none" },
     timeout_ms = options.timeout_ms ~= nil
       and options.timeout_ms or manager_state.default_timeout_ms,
