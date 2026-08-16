@@ -757,7 +757,14 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     }
     owner = owners.get(fixture, "ADV-011")
 
-    if owner in {"IDX-001", "IDX-002", "IDX-003", "IDX-004", "IDX-005"}:
+    if owner in {
+      "IDX-001",
+      "IDX-002",
+      "IDX-003",
+      "IDX-004",
+      "IDX-005",
+      "IDX-006",
+    }:
       return owner, None
 
     return owner, OWNER_REASONS[owner]

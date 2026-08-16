@@ -306,7 +306,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
 | Programmability | CRUD | 🟡 | 71.5% |
 | Programmability | Collection management | 🟡 | 81.8% |
-| Programmability | Index management | 🟡 | 73.7% |
+| Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
 | Programmability | Change streams | 🔴 | 0.0% |
 | Programmability | GridFS | 🔴 | 0.0% |

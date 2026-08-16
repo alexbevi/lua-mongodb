@@ -3859,6 +3859,28 @@
       "notes": [],
       "started_at": "2026-08-16T19:52:44+00:00",
       "completed_at": "2026-08-16T19:55:11+00:00"
+    },
+    "IDX-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest -v spec.unified.test_cli.UnifiedCliTests.test_search_index_concern_omission_cases_are_runnable",
+          "exit_code": 1,
+          "summary": "The five Search index concern-omission cases remained deferred instead of runnable.",
+          "recorded_at": "2026-08-16T20:02:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/api_handles_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua' FOCUS_UNIFIED='index-management/tests/searchIndexIgnoresReadWriteConcern.json' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/admin.lua src/mongodb/api.lua spec/unit/admin_spec.lua spec/integration/admin_spec.lua' && make test-complexity && python3 spec/unified/update_capabilities.py --check && python3 -m json.tool spec/unified/executors.json >/dev/null",
+          "exit_code": 0,
+          "summary": "18 unit and 1 integration examples passed; all 5 exact Search-index concern-omission unified cases passed; 63 unified CLI tests passed; touched-file lint and complexity/artifact validators passed.",
+          "recorded_at": "2026-08-16T20:03:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T20:01:13+00:00",
+      "completed_at": "2026-08-16T20:05:11+00:00"
     }
   },
   "verified_references": {

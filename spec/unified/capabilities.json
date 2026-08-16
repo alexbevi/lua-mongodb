@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1431,
-    "runnable": 1431
+    "passed": 1436,
+    "runnable": 1436
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50980,7 +50980,6 @@
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[1]": {
       "activity": "IDX-006",
       "fingerprint": "97afa48af689bedeb99e612b8c84c48240a87a7f5e2f16f803e4b4403e4bfe59",
-      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndex.model"
@@ -51008,12 +51007,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[2]": {
       "activity": "IDX-006",
       "fingerprint": "6a14158b5bc2f2115694075c1f05bbc43aeaccb7daa9d23c77acea4edc5e4055",
-      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -51041,12 +51039,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[3]": {
       "activity": "IDX-006",
       "fingerprint": "a33cf7cb83522ce7b32a1301b09f78f080108adf76223c8cfa3c33d257b0543a",
-      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "dropSearchIndex.name"
@@ -51074,12 +51071,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[4]": {
       "activity": "IDX-006",
       "fingerprint": "3efe25e1c60c6371b79b43953b4c6635dd521ab6fda905142b18037b8b6ba652",
-      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -51105,12 +51101,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[5]": {
       "activity": "IDX-006",
       "fingerprint": "0773e6e37ca3e72ef14f41904376acc99482c7d260dd8da59abc1e4a5d90f988",
-      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "updateSearchIndex.definition",
@@ -51139,7 +51134,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/updateSearchIndex.json::test[1]": {
       "activity": "IDX-004",
