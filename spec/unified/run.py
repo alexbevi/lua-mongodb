@@ -22,6 +22,12 @@ from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
+
+if str(ROOT) not in sys.path:
+  sys.path.insert(0, str(ROOT))
+
+from spec import sharded_environment as sharded_cluster
+
 DEFAULT_SOURCE = ROOT / "planning" / "specifications" / "source"
 DEFAULT_MANIFEST = ROOT / "spec" / "unified" / "capabilities.json"
 DEFAULT_PLAN = ROOT / "planning" / "plan.json"
@@ -1433,6 +1439,77 @@ def replica_set_environment(
             process.wait(timeout=5)
 
 
+@contextmanager
+def sharded_environment(
+  classifications: list[dict[str, Any]],
+  registry: dict[str, Any],
+  base_environment: dict[str, str],
+):
+  needs_server = any(
+    value["status"] == "runnable"
+    and registry.get(value["id"], {}).get("environment") == "live-sharded"
+    for value in classifications
+  )
+  environment = base_environment.copy()
+
+  if not needs_server:
+    yield environment
+    return
+
+  configured_uri = environment.get("MONGODB_UNIFIED_SHARDED_URI")
+
+  if configured_uri:
+    version = environment.get("MONGODB_UNIFIED_SHARDED_SERVER_VERSION")
+    encoded_facts = environment.get("MONGODB_UNIFIED_SHARDED_FACTS")
+
+    if not version:
+      raise CapabilityError(
+        "MONGODB_UNIFIED_SHARDED_SERVER_VERSION is required with "
+        "MONGODB_UNIFIED_SHARDED_URI"
+      )
+
+    if not encoded_facts:
+      raise CapabilityError(
+        "MONGODB_UNIFIED_SHARDED_FACTS is required with "
+        "MONGODB_UNIFIED_SHARDED_URI"
+      )
+
+    try:
+      facts = sharded_cluster.validate_facts(json.loads(encoded_facts))
+    except (json.JSONDecodeError, sharded_cluster.ShardedEnvironmentError) as exc:
+      raise CapabilityError(f"invalid sharded environment facts: {exc}") from exc
+
+    if facts["server_version"] != version:
+      raise CapabilityError(
+        "sharded environment facts do not match the configured server version"
+      )
+
+    yield environment
+    return
+
+  try:
+    with sharded_cluster.cluster(
+      mongod=environment.get("MONGOD"),
+      mongos=environment.get("MONGOS"),
+      mongosh=environment.get("MONGOSH"),
+    ) as deployment:
+      facts = deployment["facts"]
+      environment["MONGODB_UNIFIED_SHARDED_URI"] = deployment["uri"]
+      environment["MONGODB_UNIFIED_SHARDED_SERVER_VERSION"] = facts[
+        "server_version"
+      ]
+      environment["MONGODB_UNIFIED_SHARDED_FACTS"] = json.dumps(
+        facts,
+        sort_keys=True,
+      )
+      environment["MONGODB_UNIFIED_TEST_COMMANDS"] = (
+        "1" if deployment["test_commands"] else "0"
+      )
+      yield environment
+  except sharded_cluster.ShardedEnvironmentError as exc:
+    raise CapabilityError(str(exc)) from exc
+
+
 def write_report(report: dict[str, Any], destination: str | None) -> None:
   encoded = json.dumps(report, indent=2, sort_keys=True) + "\n"
 
@@ -1641,6 +1718,18 @@ def main(argv: list[str] | None = None) -> int:
           environment = environments.enter_context(replica_set_manager)
       else:
         environment = environments.enter_context(replica_set_manager)
+
+      sharded_manager = sharded_environment(
+        selected,
+        registry,
+        environment,
+      )
+
+      if "live-sharded" in needed_environments:
+        with timings.observe_environment("live-sharded"):
+          environment = environments.enter_context(sharded_manager)
+      else:
+        environment = environments.enter_context(sharded_manager)
 
       for batch in batches:
         entry = registry.get(batch[0]["id"], {})

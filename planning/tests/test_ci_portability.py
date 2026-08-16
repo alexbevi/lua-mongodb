@@ -61,7 +61,10 @@ class CiPortabilityTests(unittest.TestCase):
       macos.index("Install MongoDB test tools on macOS"),
       macos.index("Run authoritative full portable and loopback checks"),
     )
-    self.assertIn("mongodb-org-server mongodb-mongosh", workflow)
+    self.assertIn(
+      "mongodb-org-server mongodb-org-mongos mongodb-mongosh",
+      workflow,
+    )
     self.assertIn("brew trust mongodb/brew", workflow)
     self.assertIn("mongodb-community@8.0", workflow)
 
@@ -111,6 +114,7 @@ class CiPortabilityTests(unittest.TestCase):
   def test_linux_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
 
+    self.assertIn("mongodb-org-mongos", workflow)
     self.assertIn("shard: [0, 1, 2, 3]", workflow)
     self.assertIn("--shard-count 4", workflow)
     self.assertIn("--shard-index ${{ matrix.shard }}", workflow)

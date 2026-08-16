@@ -1,7 +1,9 @@
 """Contract tests for the live MongoDB compatibility matrix."""
 
+from contextlib import contextmanager
 import unittest
 from copy import deepcopy
+from unittest import mock
 
 from spec.compatibility import matrix
 from spec.compatibility import run
@@ -70,6 +72,95 @@ class CompatibilityMatrixTests(unittest.TestCase):
 
     self.assertIn("--tlsMode", arguments)
     self.assertIn("--tlsAllowConnectionsWithoutCertificates", arguments)
+
+  def test_sharded_environment_facts_are_exact(self):
+    server = {
+      "server_version": "8.0.16",
+      "topology": "sharded",
+    }
+    facts = {
+      "config_server": "lua-mongodb-config/127.0.0.1:27019",
+      "mongoses": ["127.0.0.1:27017"],
+      "server_version": "8.0.16",
+      "shards": [{
+        "host": "lua-mongodb-shard/127.0.0.1:27018",
+        "id": "shard0",
+      }],
+      "topology": "sharded-replicaset",
+    }
+
+    run.validate_server_facts(server, facts)
+
+    invalid = deepcopy(facts)
+    invalid["topology"] = "replicaset"
+
+    with self.assertRaisesRegex(
+      run.CompatibilityError,
+      "sharded-replicaset",
+    ):
+      run.validate_server_facts(server, invalid)
+
+  def test_sharded_live_server_uses_the_shared_owned_environment(self):
+    facts = {
+      "config_server": "lua-mongodb-config/127.0.0.1:27019",
+      "mongoses": ["127.0.0.1:27017"],
+      "server_version": "8.0.16",
+      "shards": [{
+        "host": "lua-mongodb-shard/127.0.0.1:27018",
+        "id": "shard0",
+      }],
+      "topology": "sharded-replicaset",
+    }
+
+    @contextmanager
+    def deployment(**kwargs):
+      self.assertFalse(kwargs["test_commands"])
+      yield {
+        "facts": facts,
+        "test_commands": False,
+        "uri": "mongodb://127.0.0.1:27017",
+      }
+
+    with mock.patch.object(run.sharded_cluster, "cluster", deployment):
+      with run.live_server(
+        {"series": "8.0", "topology": "sharded"},
+        "plain",
+        "unused-docker",
+      ) as actual:
+        self.assertEqual(("mongodb://127.0.0.1:27017", facts), actual)
+
+  def test_sharded_profile_reports_exact_environment_facts(self):
+    facts = {
+      "config_server": "lua-mongodb-config/127.0.0.1:27019",
+      "mongoses": ["127.0.0.1:27017"],
+      "server_version": "8.0.16",
+      "shards": [{
+        "host": "lua-mongodb-shard/127.0.0.1:27018",
+        "id": "shard0",
+      }],
+      "topology": "sharded-replicaset",
+    }
+    server = {
+      "image": "pinned-image",
+      "server_version": "8.0.16",
+      "smoke_test": "suite/tests/unified/test.json::test[1]",
+      "test_commands_smoke_test": "suite/tests/unified/test.json::test[2]",
+      "topology": "sharded",
+    }
+
+    @contextmanager
+    def live(*args, **kwargs):
+      yield "mongodb://127.0.0.1:27017", facts
+
+    with (
+      mock.patch.object(run, "live_server", live),
+      mock.patch.object(run, "run_checked"),
+    ):
+      result = run.run_profile(server, "plain", "docker", "lua")
+
+    self.assertEqual(facts["config_server"], result["environment"]["config_server"])
+    self.assertEqual(facts["mongoses"], result["environment"]["mongoses"])
+    self.assertEqual(facts["shards"], result["environment"]["shards"])
 
 
 if __name__ == "__main__":

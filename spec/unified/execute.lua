@@ -581,18 +581,24 @@ end
 
 local function run_live(selections, topology)
   local replica_set = topology == "replicaset"
-  local uri = os.getenv(replica_set
-    and "MONGODB_UNIFIED_REPLICA_SET_URI" or "MONGODB_UNIFIED_URI")
-  local server_version = os.getenv(replica_set
-    and "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
-    or "MONGODB_UNIFIED_SERVER_VERSION")
+  local sharded = topology == "sharded-replicaset"
+  local uri_name = sharded
+    and "MONGODB_UNIFIED_SHARDED_URI"
+    or replica_set and "MONGODB_UNIFIED_REPLICA_SET_URI"
+    or "MONGODB_UNIFIED_URI"
+  local version_name = sharded
+    and "MONGODB_UNIFIED_SHARDED_SERVER_VERSION"
+    or replica_set and "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
+    or "MONGODB_UNIFIED_SERVER_VERSION"
+  local uri = os.getenv(uri_name)
+  local server_version = os.getenv(version_name)
 
   if type(uri) ~= "string" or uri == "" then
-    error("live unified executor requires MONGODB_UNIFIED_URI", 0)
+    error("live unified executor requires " .. uri_name, 0)
   end
 
   if type(server_version) ~= "string" or server_version == "" then
-    error("live unified executor requires MONGODB_UNIFIED_SERVER_VERSION", 0)
+    error("live unified executor requires " .. version_name, 0)
   end
 
   local parsed = assert(config_uri.parse(uri))
@@ -743,6 +749,8 @@ local function run(identities)
     return run_live(selections, "replicaset")
   elseif environment == "isolated-replicaset" then
     return run_live(selections, "replicaset")
+  elseif environment == "live-sharded" then
+    return run_live(selections, "sharded-replicaset")
   end
 
   error("unknown unified executor environment: " .. tostring(environment), 0)

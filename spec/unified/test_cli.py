@@ -1478,6 +1478,132 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual("isolated-replicaset", registry[csot]["environment"])
     self.assertTrue(effective[csot]["testCommands"])
 
+  def test_live_sharded_environment_requires_exact_external_facts(self) -> None:
+    identity = "transactions/tests/unified/pin-mongos.json::test[1]"
+    classifications = [{"id": identity, "status": "runnable"}]
+    registry = {identity: {"environment": "live-sharded"}}
+    facts = {
+      "config_server": "lua-mongodb-config/127.0.0.1:27019",
+      "mongoses": ["127.0.0.1:27017"],
+      "server_version": "8.0.16",
+      "shards": [{
+        "host": "lua-mongodb-shard/127.0.0.1:27018",
+        "id": "shard0",
+      }],
+      "topology": "sharded-replicaset",
+    }
+    base_environment = {
+      "MONGODB_UNIFIED_SHARDED_FACTS": json.dumps(facts),
+      "MONGODB_UNIFIED_SHARDED_SERVER_VERSION": "8.0.16",
+      "MONGODB_UNIFIED_SHARDED_URI": "mongodb://127.0.0.1:27017",
+    }
+
+    with run.sharded_environment(
+      classifications,
+      registry,
+      base_environment,
+    ) as environment:
+      self.assertEqual(
+        "mongodb://127.0.0.1:27017",
+        environment["MONGODB_UNIFIED_SHARDED_URI"],
+      )
+      self.assertEqual(
+        facts,
+        json.loads(environment["MONGODB_UNIFIED_SHARDED_FACTS"]),
+      )
+
+  def test_owned_sharded_processes_stop_after_success_and_startup_failure(
+    self,
+  ) -> None:
+    from spec import sharded_environment
+
+    class FakeProcess:
+      def __init__(self, pid: int):
+        self.pid = pid
+        self.returncode = None
+        self.terminated = False
+
+      def kill(self) -> None:
+        self.returncode = -9
+
+      def poll(self):
+        return self.returncode
+
+      def terminate(self) -> None:
+        self.terminated = True
+        self.returncode = 0
+
+      def wait(self, timeout: int):
+        return self.returncode
+
+    facts = {
+      "config_server": "lua-mongodb-config/127.0.0.1:27019",
+      "mongoses": ["127.0.0.1:27017"],
+      "server_version": "8.0.16",
+      "shards": [{
+        "host": "lua-mongodb-shard/127.0.0.1:27018",
+        "id": "shard0",
+      }],
+      "topology": "sharded-replicaset",
+    }
+
+    def shell_result(*args, **kwargs):
+      expression = args[2]
+      return json.dumps(facts) if "JSON.stringify" in expression else ""
+
+    successful = [FakeProcess(index) for index in range(1, 4)]
+
+    with (
+      mock.patch.object(sharded_environment, "_server_version", return_value="8.0.16"),
+      mock.patch.object(sharded_environment, "_free_ports", return_value=[27019, 27018, 27017]),
+      mock.patch.object(sharded_environment, "_wait_for_port"),
+      mock.patch.object(sharded_environment, "_initiate_replica_set"),
+      mock.patch.object(sharded_environment, "_run_shell", side_effect=shell_result),
+      mock.patch.object(
+        sharded_environment.subprocess,
+        "Popen",
+        side_effect=successful,
+      ),
+    ):
+      with sharded_environment.cluster(
+        mongod="mongod",
+        mongos="mongos",
+        mongosh="mongosh",
+      ) as deployment:
+        self.assertEqual(facts, deployment["facts"])
+
+    self.assertTrue(all(process.terminated for process in successful))
+
+    failed = [FakeProcess(4), FakeProcess(5)]
+
+    with (
+      mock.patch.object(sharded_environment, "_server_version", return_value="8.0.16"),
+      mock.patch.object(sharded_environment, "_free_ports", return_value=[27019, 27018, 27017]),
+      mock.patch.object(
+        sharded_environment,
+        "_wait_for_port",
+        side_effect=[None, sharded_environment.ShardedEnvironmentError("startup")],
+      ),
+      mock.patch.object(sharded_environment, "_initiate_replica_set"),
+      mock.patch.object(
+        sharded_environment.subprocess,
+        "Popen",
+        side_effect=failed,
+      ),
+    ):
+      with self.assertRaisesRegex(
+        sharded_environment.ShardedEnvironmentError,
+        "startup",
+      ):
+        with sharded_environment.cluster(
+          mongod="mongod",
+          mongos="mongos",
+          mongosh="mongosh",
+        ):
+          pass
+
+    self.assertTrue(all(process.terminated for process in failed))
+
   def test_macos_ci_skips_only_timing_sensitive_csot_cases(self) -> None:
     sensitive = [
       "client-side-operations-timeout/tests/close-cursors.json::test[1]",

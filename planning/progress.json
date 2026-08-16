@@ -3881,6 +3881,28 @@
       "notes": [],
       "started_at": "2026-08-16T20:01:13+00:00",
       "completed_at": "2026-08-16T20:05:11+00:00"
+    },
+    "CI-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest -v spec.unified.test_cli.UnifiedCliTests.test_live_sharded_environment_requires_exact_external_facts",
+          "exit_code": 1,
+          "summary": "The unified harness had no live-sharded environment selector or exact external-facts contract.",
+          "recorded_at": "2026-08-16T20:11:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.compatibility.test_matrix planning.tests.test_ci_portability' FOCUS_LINT='spec/support/mongodb/unified/runner.lua spec/unified/execute.lua' && make test-architecture && python3 -m py_compile spec/sharded_environment.py spec/unified/run.py spec/compatibility/run.py",
+          "exit_code": 0,
+          "summary": "82 Python contracts passed; 2 touched Lua files linted cleanly; 5 architecture tests passed. One local MongoDB 8.0.16 sharded lifecycle smoke passed with exact mongos/config/shard facts and 3/3 owned processes removed. No unified case was enabled in this infrastructure slice; ADV-005 owns the first production mongos execution path.",
+          "recorded_at": "2026-08-16T20:20:25+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T20:10:09+00:00",
+      "completed_at": "2026-08-16T20:20:33+00:00"
     }
   },
   "verified_references": {

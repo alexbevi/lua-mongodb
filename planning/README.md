@@ -56,6 +56,8 @@ Activity implementation follows red-green vertical slices. A `red_green` activit
 
 The unified specification runner is test-only support under `spec/support/mongodb/unified`. `spec/module-classification.json` classifies each `mongodb.unified.*` module explicitly; package and coverage contract tests reject missing classifications, test-only modules in the rockspec, and test-only modules in the production coverage baseline. Use the Make targets so `spec/support/?.lua` and `spec/support/?/init.lua` are added explicitly to the Lua test search path.
 
+`spec/sharded_environment.py` is the shared test-only owner for an ephemeral replica-set-backed sharded deployment. It starts one config server, one shard, and one mongos; verifies exact topology, version, and host facts; and tears down every process after success or partial startup failure. Unified executor entries may select `live-sharded`; externally managed clusters must provide the same facts contract. Full Conformance installs both `mongod` and `mongos`, while driver networking remains behind the normal runtime adapter.
+
 Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
 
 Use [`prompt_goal.md`](prompt_goal.md) to launch the incremental production-core implementation.

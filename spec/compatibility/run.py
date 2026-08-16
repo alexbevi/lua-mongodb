@@ -23,6 +23,7 @@ if str(ROOT) not in sys.path:
   sys.path.insert(0, str(ROOT))
 
 from spec.compatibility import matrix
+from spec import sharded_environment as sharded_cluster
 
 
 PROBE = ROOT / "spec" / "compatibility" / "probe.lua"
@@ -259,6 +260,23 @@ def live_server(
   docker: str,
 ) -> Iterator[tuple[str, dict[str, Any]]]:
   profile = PROFILE_OPTIONS[profile_name]
+
+  if server["topology"] == "sharded":
+    if profile["auth"] or profile["tls"]:
+      raise CompatibilityError(
+        "sharded authentication and TLS profiles are owned by CMP-002"
+      )
+
+    try:
+      with sharded_cluster.cluster(
+        test_commands=profile["test_commands"],
+      ) as deployment:
+        yield deployment["uri"], deployment["facts"]
+    except sharded_cluster.ShardedEnvironmentError as exc:
+      raise EnvironmentUnavailable(str(exc)) from exc
+
+    return
+
   port = free_port()
   container = f"lua-mongodb-{server['series'].replace('.', '-')}-{server['topology']}-{profile_name}"
 
@@ -325,6 +343,35 @@ def live_server(
       )
 
 
+def validate_server_facts(
+  server: dict[str, Any],
+  facts: dict[str, Any],
+) -> None:
+  if server["topology"] == "sharded":
+    try:
+      sharded_cluster.validate_facts(facts)
+    except sharded_cluster.ShardedEnvironmentError as exc:
+      raise CompatibilityError(str(exc)) from exc
+
+    if facts["server_version"] != server["server_version"]:
+      raise CompatibilityError(
+        f"server reported {facts['server_version']}, "
+        f"expected {server['server_version']}"
+      )
+
+    return
+
+  expected_set = REPLICA_SET if server["topology"] == "replicaset" else None
+
+  if facts["serverVersion"] != server["server_version"]:
+    raise CompatibilityError(
+      f"server reported {facts['serverVersion']}, expected {server['server_version']}"
+    )
+
+  if facts["setName"] != expected_set or not facts["isWritablePrimary"]:
+    raise CompatibilityError("server environment facts do not match the matrix topology")
+
+
 def run_profile(
   server: dict[str, Any],
   profile_name: str,
@@ -341,31 +388,46 @@ def run_profile(
       else server["smoke_test"]
     )
     environment = os.environ.copy()
-    prefix = "MONGODB_UNIFIED_REPLICA_SET" if server["topology"] == "replicaset" else "MONGODB_UNIFIED"
+    prefixes = {
+      "replicaset": "MONGODB_UNIFIED_REPLICA_SET",
+      "sharded": "MONGODB_UNIFIED_SHARDED",
+      "standalone": "MONGODB_UNIFIED",
+    }
+    prefix = prefixes[server["topology"]]
 
     environment[f"{prefix}_URI"] = uri
     environment[f"{prefix}_SERVER_VERSION"] = server["server_version"]
+
+    if server["topology"] == "sharded":
+      environment[f"{prefix}_FACTS"] = json.dumps(facts, sort_keys=True)
+
     environment["MONGODB_UNIFIED_TEST_COMMANDS"] = "1" if profile["test_commands"] else "0"
     run_checked([lua, str(UNIFIED_EXECUTOR), identity], environment=environment)
-    expected_set = REPLICA_SET if server["topology"] == "replicaset" else None
+    validate_server_facts(server, facts)
 
-    if facts["serverVersion"] != server["server_version"]:
-      raise CompatibilityError(
-        f"server reported {facts['serverVersion']}, expected {server['server_version']}"
-      )
+    reported_version = (
+      facts["server_version"]
+      if server["topology"] == "sharded"
+      else facts["serverVersion"]
+    )
+    reported_environment = {
+      "authentication": profile["auth"],
+      "image": server["image"],
+      "server_version": reported_version,
+      "test_commands": profile["test_commands"],
+      "tls": profile["tls"],
+      "topology": server["topology"],
+    }
 
-    if facts["setName"] != expected_set or not facts["isWritablePrimary"]:
-      raise CompatibilityError("server environment facts do not match the matrix topology")
+    if server["topology"] == "sharded":
+      reported_environment.update({
+        "config_server": facts["config_server"],
+        "mongoses": facts["mongoses"],
+        "shards": facts["shards"],
+      })
 
     return {
-      "environment": {
-        "authentication": profile["auth"],
-        "image": server["image"],
-        "server_version": facts["serverVersion"],
-        "test_commands": profile["test_commands"],
-        "tls": profile["tls"],
-        "topology": server["topology"],
-      },
+      "environment": reported_environment,
       "gates": ["public-client-ping", f"unified:{identity}"],
       "profile": profile_name,
       "status": "passed",
