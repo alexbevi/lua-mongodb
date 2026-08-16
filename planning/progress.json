@@ -3925,6 +3925,28 @@
       "notes": [],
       "started_at": "2026-08-16T20:26:23+00:00",
       "completed_at": "2026-08-16T20:32:23+00:00"
+    },
+    "SDAM-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest -v spec.unified.test_cli.UnifiedCliTests.test_sharded_topology_close_case_is_runnable",
+          "exit_code": 1,
+          "summary": "The exact sharded topology shutdown fixture remained deferred_unsupported instead of runnable on live-sharded.",
+          "recorded_at": "2026-08-16T20:38:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/unified_events_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/sharded-emit-topology-changed-before-close.json' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/topology.lua spec/unit/topology_spec.lua spec/unified/execute.lua spec/support/mongodb/unified/driver.lua'; make test-complexity; python3 spec/unified/update_capabilities.py --check",
+          "exit_code": 0,
+          "summary": "28 topology, unified-event, and unified-driver unit examples passed; exact sharded shutdown fixture executed 1/1 with two mongoses, 0 environment-skipped, 0 deferred, and 0 failed; 68 unified CLI tests and touched Lua lint passed; complexity and capability validators passed.",
+          "recorded_at": "2026-08-16T20:44:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T20:38:20+00:00",
+      "completed_at": "2026-08-16T20:45:38+00:00"
     }
   },
   "verified_references": {

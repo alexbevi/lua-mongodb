@@ -624,4 +624,46 @@ describe("monitored topology", function()
       "TopologyClosed",
     }, { events[count - 2], events[count - 1], events[count] })
   end)
+
+  it("publishes Sharded shutdown before topology close exactly once", function()
+    local events = {}
+    local topology_changes = {}
+    local manager = topology.new({
+      listeners = {
+        function(event)
+          events[#events + 1] = event.type
+
+          if event.type == "TopologyDescriptionChanged" then
+            topology_changes[#topology_changes + 1] = event
+          end
+        end,
+      },
+      pool_factory = new_pool,
+      runtime = fake_runtime.new(),
+      seeds = { "mongos:27017" },
+      type = "Unknown",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("mongos:27017", bson.document({
+      { "ok", 1 },
+      { "msg", "isdbgrid" },
+      { "maxWireVersion", 25 },
+    }), { duration = 0.01 }))
+    assert(manager:close())
+    local count = #events
+    local shutdown = topology_changes[#topology_changes]
+
+    assert.are.equal("Sharded", shutdown.previous_description.type)
+    assert.are.equal("Unknown", shutdown.new_description.type)
+    assert.are.equal(0, #shutdown.new_description:addresses())
+    assert.are.equal(shutdown.new_description, manager.description)
+    assert.same({
+      "TopologyDescriptionChanged",
+      "ServerClosed",
+      "TopologyClosed",
+    }, { events[count - 2], events[count - 1], events[count] })
+    assert.is_false(manager:close())
+    assert.are.equal(count, #events)
+  end)
 end)

@@ -220,8 +220,21 @@ local function client_factory(state)
       end
     end
 
+    local uri = state.uri
+
+    if specification:get("useMultipleMongoses") == true then
+      uri = state.multiple_mongos_uri
+
+      if type(uri) ~= "string" or uri == "" then
+        return configuration_error(
+          "multiple mongos URI is unavailable",
+          "$.client.useMultipleMongoses"
+        )
+      end
+    end
+
     local client
-    client, err = client_module.connect(state.uri, options)
+    client, err = client_module.connect(uri, options)
 
     if not client then
       return nil, err
@@ -2054,6 +2067,13 @@ function M.new(options)
     error("unified driver requires a URI", 2)
   end
 
+  if options.multiple_mongos_uri ~= nil
+      and (type(options.multiple_mongos_uri) ~= "string"
+        or options.multiple_mongos_uri == "")
+  then
+    error("unified driver multiple mongos URI must be a non-empty string", 2)
+  end
+
   if options.oidc_callback ~= nil and type(options.oidc_callback) ~= "function" then
     error("unified driver OIDC callback must be a function", 2)
   end
@@ -2070,6 +2090,7 @@ function M.new(options)
     collectors = setmetatable({}, { __mode = "k" }),
     environment_topology = options.environment and options.environment.topology,
     internal_client = internal_client,
+    multiple_mongos_uri = options.multiple_mongos_uri,
     oidc_callback = options.oidc_callback,
     runtime = options.runtime,
     uri = options.uri,

@@ -19,6 +19,7 @@ import sys
 import tempfile
 import time
 from typing import Any
+from urllib.parse import urlsplit, urlunsplit
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -1456,6 +1457,19 @@ def sharded_environment(
     yield environment
     return
 
+  mongos_count = max(
+    (
+      registry.get(value["id"], {}).get("mongoses", 1)
+      for value in classifications
+      if value["status"] == "runnable"
+      and registry.get(value["id"], {}).get("environment") == "live-sharded"
+    ),
+    default=1,
+  )
+
+  if type(mongos_count) is not int or mongos_count < 1 or mongos_count > 2:
+    raise CapabilityError("mongoses must be an integer from 1 through 2")
+
   configured_uri = environment.get("MONGODB_UNIFIED_SHARDED_URI")
 
   if configured_uri:
@@ -1484,6 +1498,24 @@ def sharded_environment(
         "sharded environment facts do not match the configured server version"
       )
 
+    if len(facts["mongoses"]) < mongos_count:
+      raise CapabilityError(
+        f"sharded environment requires {mongos_count} mongoses"
+      )
+
+    parsed_uri = urlsplit(configured_uri)
+    credentials = (
+      parsed_uri.netloc.rsplit("@", 1)[0] + "@"
+      if "@" in parsed_uri.netloc else ""
+    )
+    environment["MONGODB_UNIFIED_SHARDED_MULTIPLE_MONGOS_URI"] = urlunsplit((
+      parsed_uri.scheme,
+      credentials + ",".join(facts["mongoses"][:mongos_count]),
+      parsed_uri.path,
+      parsed_uri.query,
+      parsed_uri.fragment,
+    ))
+
     yield environment
     return
 
@@ -1492,9 +1524,13 @@ def sharded_environment(
       mongod=environment.get("MONGOD"),
       mongos=environment.get("MONGOS"),
       mongosh=environment.get("MONGOSH"),
+      mongos_count=mongos_count,
     ) as deployment:
       facts = deployment["facts"]
       environment["MONGODB_UNIFIED_SHARDED_URI"] = deployment["uri"]
+      environment["MONGODB_UNIFIED_SHARDED_MULTIPLE_MONGOS_URI"] = deployment[
+        "multiple_mongos_uri"
+      ]
       environment["MONGODB_UNIFIED_SHARDED_SERVER_VERSION"] = facts[
         "server_version"
       ]

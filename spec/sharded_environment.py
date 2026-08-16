@@ -232,9 +232,13 @@ def cluster(
   mongod: str | None = None,
   mongos: str | None = None,
   mongosh: str | None = None,
+  mongos_count: int = 1,
   test_commands: bool = True,
 ) -> Iterator[dict[str, Any]]:
   """Start, verify, and always tear down one minimal sharded cluster."""
+  if type(mongos_count) is not int or mongos_count < 1 or mongos_count > 2:
+    raise ShardedEnvironmentError("mongos_count must be 1 or 2")
+
   mongod = mongod or shutil.which("mongod")
   mongos = mongos or shutil.which("mongos")
   mongosh = mongosh or shutil.which("mongosh")
@@ -245,13 +249,14 @@ def cluster(
     )
 
   version = _server_version(mongod)
-  config_port, shard_port, mongos_port = _free_ports(3)
+  config_port, shard_port, *mongos_ports = _free_ports(2 + mongos_count)
   config_host = f"127.0.0.1:{config_port}"
   shard_host = f"127.0.0.1:{shard_port}"
-  mongos_host = f"127.0.0.1:{mongos_port}"
+  mongos_hosts = [f"127.0.0.1:{port}" for port in mongos_ports]
   config_server = f"{CONFIG_SET}/{config_host}"
   shard = f"{SHARD_SET}/{shard_host}"
-  uri = f"mongodb://{mongos_host}"
+  uri = f"mongodb://{mongos_hosts[0]}"
+  multiple_mongos_uri = "mongodb://" + ",".join(mongos_hosts)
 
   with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-sharded-") as temp:
     root = Path(temp)
@@ -299,28 +304,29 @@ def cluster(
           deadline=deadline,
         )
 
-      mongos_log = root / "mongos.log"
-      mongos_process = subprocess.Popen(
-        [
-          mongos,
-          "--bind_ip", "127.0.0.1",
-          "--configdb", config_server,
-          "--logpath", str(mongos_log),
-          "--port", str(mongos_port),
-          "--quiet",
-          *test_parameters,
-        ],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-      )
-      processes.append(mongos_process)
-      _wait_for_port(
-        mongos_process,
-        mongos_port,
-        mongos_log,
-        "mongos",
-        time.monotonic() + 60,
-      )
+      for index, mongos_port in enumerate(mongos_ports):
+        mongos_log = root / f"mongos-{index}.log"
+        mongos_process = subprocess.Popen(
+          [
+            mongos,
+            "--bind_ip", "127.0.0.1",
+            "--configdb", config_server,
+            "--logpath", str(mongos_log),
+            "--port", str(mongos_port),
+            "--quiet",
+            *test_parameters,
+          ],
+          stdout=subprocess.DEVNULL,
+          stderr=subprocess.DEVNULL,
+        )
+        processes.append(mongos_process)
+        _wait_for_port(
+          mongos_process,
+          mongos_port,
+          mongos_log,
+          f"mongos {index + 1}",
+          time.monotonic() + 60,
+        )
       _run_shell(
         mongosh,
         uri,
@@ -339,7 +345,7 @@ def cluster(
           "const listed=db.adminCommand({listShards:1});"
           "print(JSON.stringify({"
           "config_server:options.parsed.sharding.configDB,"
-          f'mongoses:["{mongos_host}"],'
+          f"mongoses:{json.dumps(mongos_hosts)},"
           "server_version:db.version(),"
           "shards:listed.shards.map(s=>({id:s._id,host:s.host})),"
           "topology:hello.msg===\"isdbgrid\"?"
@@ -357,7 +363,7 @@ def cluster(
       if (
         facts["server_version"] != version
         or facts["config_server"] != config_server
-        or facts["mongoses"] != [mongos_host]
+        or facts["mongoses"] != mongos_hosts
         or facts["shards"] != [{"host": shard, "id": SHARD_ID}]
       ):
         raise ShardedEnvironmentError(
@@ -366,6 +372,7 @@ def cluster(
 
       yield {
         "facts": facts,
+        "multiple_mongos_uri": multiple_mongos_uri,
         "process_ids": [process.pid for process in processes],
         "test_commands": test_commands,
         "uri": uri,

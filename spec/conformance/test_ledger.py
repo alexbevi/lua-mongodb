@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1805,
+      "deferred_unsupported": 1804,
       "excluded_scope": 2,
-      "passed": 3717,
+      "passed": 3718,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][
@@ -91,6 +91,13 @@ class ConformanceLedgerTests(unittest.TestCase):
     ]
     self.assertEqual("passed", sharded_command_cursor["status"])
     self.assertEqual("live-sharded", sharded_command_cursor["required_environment"])
+
+    sharded_shutdown = generated["cases"][
+      "server-discovery-and-monitoring/tests/unified/"
+      "sharded-emit-topology-changed-before-close.json::test[1]"
+    ]
+    self.assertEqual("passed", sharded_shutdown["status"])
+    self.assertEqual("live-sharded", sharded_shutdown["required_environment"])
 
     snapshot_transaction = generated["cases"][
       "sessions/tests/snapshot-sessions.json::test[8]"

@@ -591,6 +591,8 @@ local function run_live(selections, topology)
     or replica_set and "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
     or "MONGODB_UNIFIED_SERVER_VERSION"
   local uri = os.getenv(uri_name)
+  local multiple_mongos_uri = sharded
+    and os.getenv("MONGODB_UNIFIED_SHARDED_MULTIPLE_MONGOS_URI") or nil
   local server_version = os.getenv(version_name)
 
   if type(uri) ~= "string" or uri == "" then
@@ -648,6 +650,7 @@ local function run_live(selections, topology)
           server_version = server_version,
           topology = topology,
         },
+        multiple_mongos_uri = multiple_mongos_uri,
         runtime = runtime,
         uri = uri,
       }))

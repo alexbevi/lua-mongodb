@@ -455,6 +455,11 @@ for index in (1, 2):
   ] = ("ADV-007", OWNER_REASONS["ADV-007"])
 
 TEST_OVERRIDES.update({
+  "server-discovery-and-monitoring/tests/unified/"
+    "sharded-emit-topology-changed-before-close.json::test[1]": (
+      "SDAM-004",
+      None,
+    ),
   "run-command/tests/unified/runCursorCommand.json::test[1]": (
     "ADV-005",
     None,

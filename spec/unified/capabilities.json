@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1437,
-    "runnable": 1437
+    "passed": 1438,
+    "runnable": 1438
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -72446,7 +72446,6 @@
     "server-discovery-and-monitoring/tests/unified/sharded-emit-topology-changed-before-close.json::test[1]": {
       "activity": "SDAM-004",
       "fingerprint": "cd7cc9e2d3434bd0e9ba82b03710e8132de5e64a711e9cdec7d118193a55bf50",
-      "reason": "sharded topology shutdown awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72476,7 +72475,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": {
       "activity": "REL-041",
