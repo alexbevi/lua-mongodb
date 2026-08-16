@@ -53,9 +53,10 @@ OWNER_REASONS = {
   "SDAM-006": "monitor error and timeout handling awaits the v0.4 SDAM slice",
   "SDAM-007": "server-check cancellation awaits the v0.4 SDAM slice",
   "SES-004": "snapshot transaction rejection awaits the v0.4 session slice",
-  "SES-005": "snapshot command concerns await the v0.4 session slice",
+  "SES-005": "snapshot server-version enforcement awaits the v0.4 session slice",
   "SES-006": "snapshot timestamp capture awaits the v0.4 session slice",
   "SES-007": "snapshot-time access awaits the v0.4 session slice",
+  "SES-008": "snapshot command concerns await the v0.4 session slice",
   "TXN-003": "mongos transaction pinning awaits the v0.4 transaction slice",
   "TXN-004": "mongos transaction unpinning awaits the v0.4 transaction slice",
   "TXN-005": "sharded transaction recovery tokens await the v0.4 transaction slice",
@@ -268,15 +269,15 @@ for index in range(1, 14):
     f"sessions/tests/snapshot-sessions.json::test[{index}]"
   ] = (owner, reason)
 
-for fixture, count in (
-  ("snapshot-sessions-not-supported-client-error", 3),
-  ("snapshot-sessions-not-supported-server-error", 3),
-  ("snapshot-sessions-unsupported-ops", 9),
+for fixture, count, owner in (
+  ("snapshot-sessions-not-supported-client-error", 3, "SES-005"),
+  ("snapshot-sessions-not-supported-server-error", 3, "SES-008"),
+  ("snapshot-sessions-unsupported-ops", 9, "SES-008"),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"sessions/tests/{fixture}.json::test[{index}]"
-    ] = ("SES-005", OWNER_REASONS["SES-005"])
+    ] = (owner, OWNER_REASONS[owner])
 
 for fixture in (
   "bulkWrite-comment",

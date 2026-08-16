@@ -478,8 +478,10 @@ def classify_case(
           owner = "SES-007"
         else:
           owner = "SES-006"
-      else:
+      elif fixture == "snapshot-sessions-not-supported-client-error.json":
         owner = "SES-005"
+      else:
+        owner = "SES-008"
       return _deferred(case, owner, activities)
 
     if "implicit-sessions-default-causal-consistency" in path:

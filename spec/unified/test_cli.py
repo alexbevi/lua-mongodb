@@ -627,9 +627,35 @@ class UnifiedCliTests(unittest.TestCase):
   def test_snapshot_transaction_rejection_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "sessions/tests/snapshot-sessions.json::test[8]"
+    guarded = [
+      f"sessions/tests/snapshot-sessions-not-supported-client-error.json::test[{index}]"
+      for index in range(1, 4)
+    ]
+    server_errors = [
+      *[
+        f"sessions/tests/snapshot-sessions-not-supported-server-error.json::test[{index}]"
+        for index in range(1, 4)
+      ],
+      *[
+        f"sessions/tests/snapshot-sessions-unsupported-ops.json::test[{index}]"
+        for index in range(1, 10)
+      ],
+    ]
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("SES-004", manifest["tests"][identity]["activity"])
+    self.assertEqual(
+      ["SES-005"] * len(guarded),
+      [manifest["tests"][case]["activity"] for case in guarded],
+    )
+    self.assertEqual(
+      ["SES-008"] * len(server_errors),
+      [manifest["tests"][case]["activity"] for case in server_errors],
+    )
+    self.assertTrue(all(
+      manifest["tests"][case]["status"] == "deferred_unsupported"
+      for case in guarded + server_errors
+    ))
     self.assertEqual(
       {"activity": "SES-004", "environment": "live-replicaset"},
       run.load_executor_registry()[identity],

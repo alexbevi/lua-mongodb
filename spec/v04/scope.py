@@ -47,6 +47,7 @@ TARGET_OWNERS = {
   "SES-005",
   "SES-006",
   "SES-007",
+  "SES-008",
   "TXN-003",
   "TXN-004",
   "TXN-005",
