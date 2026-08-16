@@ -52,6 +52,7 @@ OWNER_REASONS = {
   "SDAM-005": "server monitoring modes await the v0.4 SDAM slice",
   "SDAM-006": "monitor error and timeout handling awaits the v0.4 SDAM slice",
   "SDAM-007": "server-check cancellation awaits the v0.4 SDAM slice",
+  "SDAM-008": "streaming monitor deadline extension awaits the v0.4 SDAM slice",
   "SES-004": "snapshot transaction rejection awaits the v0.4 session slice",
   "SES-005": "snapshot server-version enforcement awaits the v0.4 session slice",
   "SES-006": "snapshot timestamp capture awaits the v0.4 session slice",
@@ -461,6 +462,11 @@ for index in (1, 2):
   ] = ("ADV-007", OWNER_REASONS["ADV-007"])
 
 TEST_OVERRIDES.update({
+  "server-discovery-and-monitoring/tests/unified/"
+    "hello-timeout.json::test[3]": (
+      "SDAM-008",
+      OWNER_REASONS["SDAM-008"],
+    ),
   "server-discovery-and-monitoring/tests/unified/"
     "sharded-emit-topology-changed-before-close.json::test[1]": (
       "SDAM-004",

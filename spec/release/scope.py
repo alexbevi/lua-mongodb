@@ -73,6 +73,7 @@ POST_V1_REASONS = {
   "SDAM-005": "server monitoring modes are outside production-core v1",
   "SDAM-006": "monitor error and timeout handling is outside production-core v1",
   "SDAM-007": "server-check cancellation is outside production-core v1",
+  "SDAM-008": "streaming monitor deadline extension is outside production-core v1",
   "SES-004": "snapshot transaction rejection is outside production-core v1",
   "SES-005": "snapshot server-version enforcement is outside production-core v1",
   "SES-006": "snapshot timestamp capture is outside production-core v1",

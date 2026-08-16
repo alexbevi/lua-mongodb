@@ -502,6 +502,40 @@ class UnifiedCliTests(unittest.TestCase):
         registry[identity],
       )
 
+  def test_monitor_failure_cases_keep_vertical_slice_owners(self) -> None:
+    manifest = update_capabilities.generate()
+    failures = [
+      *[
+        "server-discovery-and-monitoring/tests/unified/"
+          f"hello-command-error.json::test[{index}]"
+        for index in range(1, 3)
+      ],
+      *[
+        "server-discovery-and-monitoring/tests/unified/"
+          f"hello-network-error.json::test[{index}]"
+        for index in range(1, 3)
+      ],
+      *[
+        "server-discovery-and-monitoring/tests/unified/"
+          f"hello-timeout.json::test[{index}]"
+        for index in range(1, 3)
+      ],
+    ]
+    streaming = (
+      "server-discovery-and-monitoring/tests/unified/"
+      "hello-timeout.json::test[3]"
+    )
+
+    self.assertEqual(
+      ["SDAM-006"] * 6,
+      [manifest["tests"][identity]["activity"] for identity in failures],
+    )
+    self.assertEqual("SDAM-008", manifest["tests"][streaming]["activity"])
+    self.assertEqual(
+      ["deferred_unsupported"] * 7,
+      [manifest["tests"][identity]["status"] for identity in [*failures, streaming]],
+    )
+
   def test_mongodb_8_2_raw_data_read_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identities = [

@@ -43,6 +43,7 @@ TARGET_OWNERS = {
   "SDAM-005",
   "SDAM-006",
   "SDAM-007",
+  "SDAM-008",
   "SES-004",
   "SES-005",
   "SES-006",

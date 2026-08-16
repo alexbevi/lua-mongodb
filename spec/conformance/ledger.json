@@ -58906,7 +58906,7 @@
       "suite": "server-discovery-and-monitoring"
     },
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[3]": {
-      "activity": "SDAM-006",
+      "activity": "SDAM-008",
       "fingerprint": "e5898b91512ca4e0acee4424e6958371f5140d953711c4f5360ced3d7413f1e9",
       "format": "unified",
       "last_execution": null,
