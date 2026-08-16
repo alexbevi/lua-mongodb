@@ -324,7 +324,13 @@ def classify_case(
       )
 
     if "/tests/sharded/" in path:
-      return _deferred(case, "DNS-001", activities)
+      return _passed(
+        case,
+        "DNS-001",
+        "spec/support/dns_seedlist_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/dns_seedlist_spec.lua'",
+        "deterministic-runtime",
+      )
 
     if "/tests/load-balanced/" in path:
       return _deferred(case, "ADV-006", activities)

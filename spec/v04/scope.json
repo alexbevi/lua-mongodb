@@ -12,7 +12,6 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
   "planned_by_activity": {
-    "DNS-001": 4,
     "TXN-003": 9,
     "TXN-004": 7,
     "TXN-005": 4,
@@ -26,8 +25,7 @@
     },
     "initial-dns-seedlist-discovery": {
       "excluded": 9,
-      "passed": 40,
-      "planned": 4
+      "passed": 44
     },
     "read-write-concern": {
       "excluded": 1,
@@ -53,8 +51,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 771,
-    "planned": 80,
+    "passed": 775,
+    "planned": 76,
     "supported": 851
   },
   "target_owners": [

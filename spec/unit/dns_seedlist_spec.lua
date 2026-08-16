@@ -203,4 +203,8 @@ describe("initial DNS seedlist discovery", function()
   it("runs every pinned replica-set seedlist fixture", function()
     assert.are.equal(40, dns_seedlist_runner.run_replica_set_fixtures())
   end)
+
+  it("runs every pinned sharded srvMaxHosts fixture", function()
+    assert.are.equal(4, dns_seedlist_runner.run_sharded_fixtures())
+  end)
 end)

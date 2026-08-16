@@ -293,7 +293,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | Connection string | 🟢 | 100.0% |
 | Communication | URI options | 🟡 | 78.6% |
 | Communication | Handshake metadata propagation | 🟢 | 100.0% |
-| Communication | Initial DNS seedlist discovery | 🟡 | 75.5% |
+| Communication | Initial DNS seedlist discovery | 🟡 | 83.0% |
 | Communication | Command execution | 🟡 | 85.7% |
 | Connectivity | Server discovery and monitoring | 🟡 | 96.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |

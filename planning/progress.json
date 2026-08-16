@@ -4200,6 +4200,35 @@
       "notes": [],
       "started_at": "2026-08-16T22:53:38+00:00",
       "completed_at": "2026-08-16T23:06:16+00:00"
+    },
+    "DNS-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=sharded.srvMaxHosts spec/unit/dns_seedlist_spec.lua'",
+          "exit_code": 2,
+          "summary": "The deterministic DNS runner exposed no sharded fixture entry point, so none of the four pinned srvMaxHosts boundary cases could execute.",
+          "recorded_at": "2026-08-16T23:10:59+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/dns_seedlist_spec.lua spec/unit/dns_polling_spec.lua' FOCUS_INTEGRATION='spec/integration/dns_seedlist_spec.lua spec/integration/dns_polling_spec.lua' FOCUS_PYTHON='<conformance and projection modules>' FOCUS_LINT='<seven DNS-coupled Lua files>'",
+          "exit_code": 0,
+          "summary": "Focused verification passed 16 unit examples, 3 integration examples, and 16 Python projection tests; all four exact Sharded srvMaxHosts fixtures executed within the deterministic unit boundary and passed; lint reported 0 warnings and 0 errors.",
+          "recorded_at": "2026-08-16T23:12:34+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "conformance, release, v0.4, checklist, and README --check validators; Python bytecode validation; make test-complexity; git diff --check",
+          "exit_code": 0,
+          "summary": "Generated artifacts were current at 3753 passing/1769 deferred and v0.4 775 passing/76 planned; artifact, complexity, and whitespace checks passed.",
+          "recorded_at": "2026-08-16T23:12:35+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T23:10:42+00:00",
+      "completed_at": "2026-08-16T23:12:36+00:00"
     }
   },
   "verified_references": {

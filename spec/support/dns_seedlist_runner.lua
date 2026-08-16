@@ -7,9 +7,10 @@ local uri = require("mongodb.config.uri")
 local M = {}
 
 local ROOT = os.getenv("PWD") or "."
-local SOURCE = ROOT
+local SOURCE_ROOT = ROOT
   .. "/planning/specifications/source/initial-dns-seedlist-discovery/tests/"
-  .. "replica-set/"
+local REPLICA_SET_SOURCE = SOURCE_ROOT .. "replica-set/"
+local SHARDED_SOURCE = SOURCE_ROOT .. "sharded/"
 
 local FIXTURES = {
   "dbname-with-commas-escaped.json",
@@ -52,6 +53,12 @@ local FIXTURES = {
   "uri-with-port.json",
   "uri-with-two-hosts.json",
   "uri-with-uppercase-hostname.json",
+}
+local SHARDED_FIXTURES = {
+  "srvMaxHosts-equal_to_srv_records.json",
+  "srvMaxHosts-greater_than_srv_records.json",
+  "srvMaxHosts-less_than_srv_records.json",
+  "srvMaxHosts-zero.json",
 }
 
 local OPTION_NAMES = {
@@ -126,8 +133,8 @@ local TXT = {
   test21 = { { strings = { "loadBalanced=false" }, ttl = 86400 } },
 }
 
-local function load_fixture(name)
-  local file = assert(io.open(SOURCE .. name, "rb"))
+local function load_fixture(source, name)
+  local file = assert(io.open(source .. name, "rb"))
   local fixture = assert(bson.json.decode(file:read("*a")))
 
   file:close()
@@ -231,9 +238,9 @@ local function assert_parsed_options(fixture, parsed, config, description)
   end
 end
 
-local function run_fixture(name)
+local function run_fixture(source, name)
   local description = "initial DNS seedlist fixture " .. name
-  local fixture = load_fixture(name)
+  local fixture = load_fixture(source, name)
   local parsed, err = uri.parse(fixture:get("uri"))
   local runtime = fake_runtime.new()
 
@@ -274,10 +281,18 @@ end
 
 function M.run_replica_set_fixtures()
   for _, name in ipairs(FIXTURES) do
-    run_fixture(name)
+    run_fixture(REPLICA_SET_SOURCE, name)
   end
 
   return #FIXTURES
+end
+
+function M.run_sharded_fixtures()
+  for _, name in ipairs(SHARDED_FIXTURES) do
+    run_fixture(SHARDED_SOURCE, name)
+  end
+
+  return #SHARDED_FIXTURES
 end
 
 return M
