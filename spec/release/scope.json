@@ -15,7 +15,6 @@
     "CMAP-003": 8,
     "CMAP-004": 3,
     "DNS-001": 4,
-    "SDAM-007": 1,
     "TXN-003": 9,
     "TXN-004": 7,
     "TXN-005": 4,
@@ -23,7 +22,7 @@
     "TXN-007": 36
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1791
+    "post-v1-exclusion": 1790
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -87,9 +86,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1791,
+    "deferred_unsupported": 1790,
     "excluded_scope": 2,
-    "passed": 3731
+    "passed": 3732
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

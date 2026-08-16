@@ -4013,6 +4013,35 @@
       "notes": [],
       "started_at": "2026-08-16T21:31:35+00:00",
       "completed_at": "2026-08-16T21:38:18+00:00"
+    },
+    "SDAM-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_cancel_server_check_case_is_runnable",
+          "exit_code": 1,
+          "summary": "The exact cancel-server-check identity remained deferred_unsupported instead of runnable under SDAM-007.",
+          "recorded_at": "2026-08-16T21:45:11+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'",
+          "exit_code": 2,
+          "summary": "15 topology cases passed and the new cancellation-race case failed because a superseded awaited response changed Unknown to RSSecondary.",
+          "recorded_at": "2026-08-16T21:47:28+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/resource_cleanup_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/cancel-server-check.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/topology.lua src/mongodb/topology_executor.lua spec/unit/topology_spec.lua' && make test-architecture && make test-complexity && run generated capability, conformance, release, v0.4, checklist, README, executor JSON, and diff validators",
+          "exit_code": 0,
+          "summary": "17 Lua topology and resource-cleanup cases passed; the exact unified cancellation case executed and passed with no skips or deferrals; 78 Python registry, conformance, and v0.4 tests passed; 3 touched Lua files linted cleanly; architecture, complexity, generated artifact, executor JSON, and diff validators passed.",
+          "recorded_at": "2026-08-16T21:50:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T21:44:48+00:00",
+      "completed_at": "2026-08-16T21:50:00+00:00"
     }
   },
   "verified_references": {

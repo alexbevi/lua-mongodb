@@ -519,8 +519,7 @@ local function monitor_once(state, address)
   server.last_check_at = state.runtime.clock:now()
   server.last_awaited = awaited and response ~= nil
 
-  if not response and check_cancellation:is_cancelled()
-      and server.check_requested
+  if check_cancellation:is_cancelled() and server.check_requested
   then
     return true
   end

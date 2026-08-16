@@ -470,6 +470,11 @@ for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
 
 TEST_OVERRIDES.update({
   "server-discovery-and-monitoring/tests/unified/"
+    "cancel-server-check.json::test[1]": (
+      "SDAM-007",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
     "hello-timeout.json::test[3]": (
       "SDAM-008",
       None,

@@ -6024,6 +6024,7 @@
     "versioned-api/tests/test-commands-strict-mode.json::test[1]": {"activity": "REL-003", "environment": "live-standalone", "testCommands": true},
     "versioned-api/tests/transaction-handling.json::test[1]": {"activity": "REL-003", "environment": "live-replicaset"},
     "versioned-api/tests/transaction-handling.json::test[2]": {"activity": "REL-003", "environment": "live-replicaset"},
+    "server-discovery-and-monitoring/tests/unified/cancel-server-check.json::test[1]": {"activity": "SDAM-007", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/hello-command-error.json::test[1]": {"activity": "SDAM-006", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/hello-command-error.json::test[2]": {"activity": "SDAM-006", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/hello-network-error.json::test[1]": {"activity": "SDAM-006", "environment": "live-sharded"},

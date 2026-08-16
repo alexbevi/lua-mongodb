@@ -19,8 +19,8 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(753, generated["summary"]["passed"])
-    self.assertEqual(98, generated["summary"]["planned"])
+    self.assertEqual(754, generated["summary"]["passed"])
+    self.assertEqual(97, generated["summary"]["planned"])
     self.assertEqual(47, generated["summary"]["excluded"])
     self.assertEqual(851, generated["summary"]["supported"])
     self.assertEqual(
@@ -30,7 +30,6 @@ class V04ScopeTests(unittest.TestCase):
         "CMAP-003": 8,
         "CMAP-004": 3,
         "DNS-001": 4,
-        "SDAM-007": 1,
         "TXN-003": 9,
         "TXN-004": 7,
         "TXN-005": 4,

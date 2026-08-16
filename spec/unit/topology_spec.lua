@@ -499,6 +499,82 @@ describe("monitored topology", function()
     end)
   end)
 
+  it("ignores a response returned by a cancelled awaited check", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local checks = 0
+      local awaited_cancelled = false
+      local fresh_started = false
+      local version = bson.document({
+        { "processId", assert(bson.object_id("000000000000000000000001")) },
+        { "counter", bson.int64(1) },
+      })
+      local primary = bson.document({
+        { "ok", 1 },
+        { "isWritablePrimary", true },
+        { "setName", "rs" },
+        { "hosts", bson.array({ "a:27017" }) },
+        { "maxWireVersion", 21 },
+        { "topologyVersion", version },
+      })
+      local stale_secondary = bson.document({
+        { "ok", 1 },
+        { "secondary", true },
+        { "setName", "rs" },
+        { "hosts", bson.array({ "a:27017" }) },
+        { "maxWireVersion", 21 },
+        { "topologyVersion", version },
+      })
+      local manager = topology.new({
+        check = function(_, fields)
+          checks = checks + 1
+
+          if checks == 1 then
+            return primary, nil, 10
+          elseif checks == 2 then
+            while not fields.cancellation:is_cancelled() do
+              assert(runtime.clock:sleep(0.001))
+            end
+
+            awaited_cancelled = true
+            return stale_secondary, nil, 10
+          end
+
+          fresh_started = true
+          local slept, err = runtime.clock:sleep(1, fields.cancellation)
+
+          if not slept then
+            return nil, err
+          end
+
+          return primary, nil, 10
+        end,
+        heartbeat_frequency_ms = 10,
+        min_heartbeat_frequency_ms = 5,
+        pool_factory = new_pool,
+        runtime = runtime,
+        seeds = { "a:27017" },
+        set_name = "rs",
+        type = "ReplicaSetNoPrimary",
+      })
+
+      assert(manager:open())
+      assert(runtime.clock:sleep(0.03))
+      assert(manager:handle_application_error("a:27017", {
+        type = "network",
+        when = "afterHandshakeCompletes",
+      }))
+      assert(runtime.clock:sleep(0.03))
+
+      local server_type = manager.description:server("a:27017").type
+
+      assert(manager:close())
+      assert.is_true(awaited_cancelled)
+      assert.is_true(fresh_started)
+      assert.are.equal("Unknown", server_type)
+    end)
+  end)
+
   it("rescans unknown servers until a writable member is selectable", function()
     local runtime = fake_runtime.new()
     local manager = topology.new({
