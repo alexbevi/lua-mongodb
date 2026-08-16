@@ -1464,6 +1464,14 @@ local function list_search_indexes(_, collection, arguments)
   return collect_cursor(cursor)
 end
 
+local function update_search_index(_, collection, arguments)
+  return collection:update_search_index(
+    arguments:get("name"),
+    arguments:get("definition"),
+    operation_options(arguments, {})
+  )
+end
+
 local function drop_index(_, collection, arguments)
   return collection:drop_index(arguments:get("name"), operation_options(
     arguments,
@@ -2147,6 +2155,10 @@ function M.new(options)
         listSearchIndexes = {
           arguments = { "aggregationOptions", "name" },
           handler = list_search_indexes,
+        },
+        updateSearchIndex = {
+          arguments = { "definition", "name" },
+          handler = update_search_index,
         },
         dropIndex = {
           arguments = { "name", "rawData", "timeoutMS" },

@@ -756,7 +756,7 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
       "updateSearchIndex.json": "IDX-004",
     }
     owner = owners.get(fixture, "ADV-011")
-    return owner, None if owner in {"IDX-001", "IDX-002", "IDX-003"} else OWNER_REASONS[owner]
+    return owner, None if owner in {"IDX-001", "IDX-002", "IDX-003", "IDX-004"} else OWNER_REASONS[owner]
 
   if specification == "server-discovery-and-monitoring":
     return classify_sdam(test)

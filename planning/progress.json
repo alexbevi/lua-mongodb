@@ -3815,6 +3815,28 @@
       "notes": [],
       "started_at": "2026-08-16T19:30:23+00:00",
       "completed_at": "2026-08-16T19:37:20+00:00"
+    },
+    "IDX-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua --filter=updates spec/unit/admin_spec.lua",
+          "exit_code": 1,
+          "summary": "The defining Search-index update test errored at spec/unit/admin_spec.lua:527 because the collection had no update_search_index method (0 successes, 1 error).",
+          "recorded_at": "2026-08-16T19:45:07+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua' FOCUS_UNIFIED='index-management/tests/updateSearchIndex.json' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/admin.lua src/mongodb/api.lua spec/support/mongodb/unified/driver.lua spec/unit/admin_spec.lua spec/integration/admin_spec.lua'; make test-complexity; run capability and JSON validators",
+          "exit_code": 0,
+          "summary": "15 focused Lua unit tests, one loopback OP_MSG integration test, and 61 capability Python tests passed; exact unified fixture: 1 executed, 1 passed, 0 environment-skipped, 0 deferred, 0 failed; five touched Lua files linted with zero warnings; complexity and generated capability artifacts passed.",
+          "recorded_at": "2026-08-16T19:46:42+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T19:44:36+00:00",
+      "completed_at": "2026-08-16T19:47:04+00:00"
     }
   },
   "verified_references": {

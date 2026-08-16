@@ -99,6 +99,15 @@ describe("administration commands over OP_MSG", function()
         }) },
       }))
 
+      local update_search_index = receive_frame(peer)
+
+      assert.are.equal("updateSearchIndex", update_search_index.body:keys()[1])
+      assert.are.equal("search-a", update_search_index.body:get("name"))
+      assert.is_false(
+        update_search_index.body:get("definition"):get("mappings"):get("dynamic")
+      )
+      send_response(peer, update_search_index, bson.document({ { "ok", 1 } }))
+
       local list_indexes = receive_frame(peer)
       assert.are.equal("listIndexes", list_indexes.body:keys()[1])
       send_response(peer, list_indexes, bson.document({
@@ -201,6 +210,9 @@ describe("administration commands over OP_MSG", function()
         }))
 
         assert.are.equal("search-a", assert(search_indexes:next()):get("name"))
+        assert.is_true(collection:update_search_index("search-a", bson.document({
+          { "mappings", bson.document({ { "dynamic", false } }) },
+        })))
         local indexes = assert(collection:list_indexes())
 
         assert.are.equal("_id_", assert(indexes:next()):get("name"))

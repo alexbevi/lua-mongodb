@@ -498,6 +498,52 @@ describe("database and collection management", function()
     assert.is_nil(list_named:get("writeConcern"))
   end)
 
+  it("updates a Search index definition", function()
+    local commands = {}
+    local failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "Atlas Search is unavailable",
+    })
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if #commands == 2 then
+          return nil, failure
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local collection = assert(api.new_client(executor, config())
+      :database("app"):collection("events"))
+    local definition = bson.document({
+      { "mappings", bson.document({ { "dynamic", false } }) },
+    })
+
+    assert.is_true(collection:update_search_index("standard", definition))
+    local command = commands[1]
+
+    assert.are.equal("updateSearchIndex", command:keys()[1])
+    assert.are.equal("events", command:get("updateSearchIndex"))
+    assert.are.equal("standard", command:get("name"))
+    assert.are.equal(definition, command:get("definition"))
+    local updated, err = collection:update_search_index("standard", definition)
+
+    assert.is_nil(updated)
+    assert.are.equal(failure, err)
+    assert.has_error(function()
+      collection:update_search_index("", definition)
+    end, "search index name must be a non-empty UTF-8 string without null bytes")
+    assert.has_error(function()
+      collection:update_search_index("standard", {})
+    end, "search index definition must be a BSON document")
+    assert.are.equal(2, #commands)
+  end)
+
   it("lists indexes and inherits comments on getMore", function()
     local commands = {}
     local responses = {
