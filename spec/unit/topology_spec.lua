@@ -124,6 +124,33 @@ describe("monitored topology", function()
     end)())
   end)
 
+  it("selects a discovered mongos without primary semantics", function()
+    local manager = topology.new({
+      pool_factory = new_pool,
+      runtime = fake_runtime.new(),
+      seeds = { "mongos:27017" },
+      type = "Unknown",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("mongos:27017", bson.document({
+      { "ok", 1 },
+      { "msg", "isdbgrid" },
+      { "maxWireVersion", 25 },
+      { "logicalSessionTimeoutMinutes", 30 },
+    }), { duration = 0.01 }))
+
+    local selected, selected_pool = manager:select_server("write", nil, {
+      timeout_ms = 0,
+    })
+
+    assert.are.equal("Sharded", manager.description.type)
+    assert.are.equal("Mongos", selected.type)
+    assert.are.equal("mongos:27017", selected.address)
+    assert.are.equal("ready", selected_pool.state)
+    assert(manager:close())
+  end)
+
   it("runs every applicable pinned SDAM monitoring event fixture", function()
     local paths = sdam_runner.fixture_paths("monitoring")
     local count = 0

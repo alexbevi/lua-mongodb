@@ -13,6 +13,20 @@ local function receive_frame(client)
   }))
 end
 
+local function receive_frame_or_closed(client)
+  local header, err = client:receive(4)
+
+  if header == nil and err == "closed" then
+    return nil
+  end
+
+  assert(header, err)
+  local size = string.unpack("<i4", header)
+  return assert(op_msg.decode(header .. assert(client:receive(size - 4)), {
+    direction = "request",
+  }))
+end
+
 local function send_response(client, request, body)
   assert(client:send(assert(op_msg.encode({
     body = body,
@@ -316,5 +330,85 @@ describe("public standalone client API", function()
     if not outcome[1] then
       error(outcome[2], 0)
     end
+  end)
+end)
+
+describe("public sharded client API", function()
+  it("discovers mongos and executes an ordinary command through it", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local handshakes = 0
+    local pings = 0
+    local outcome
+    local server_error
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      local ok, err = pcall(function()
+        peer = copas.wrap(peer)
+
+        while true do
+          local request = receive_frame_or_closed(peer)
+
+          if request == nil then
+            break
+          end
+
+          local name = request.body:keys()[1]
+
+          if name == "hello" or name == "ismaster" then
+            handshakes = handshakes + 1
+            send_response(peer, request, bson.document({
+              { "ok", 1 },
+              { "helloOk", true },
+              { "isWritablePrimary", true },
+              { "logicalSessionTimeoutMinutes", 30 },
+              { "maxWireVersion", 25 },
+              { "msg", "isdbgrid" },
+            }))
+          elseif name == "ping" then
+            pings = pings + 1
+            send_response(peer, request, bson.document({ { "ok", 1 } }))
+          elseif name == "endSessions" then
+            send_response(peer, request, bson.document({ { "ok", 1 } }))
+          else
+            error("unexpected mongos command " .. tostring(name), 0)
+          end
+        end
+      end)
+
+      if not ok and server_error == nil then
+        server_error = err
+      end
+
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/app",
+          {
+            heartbeat_frequency_ms = 500,
+            runtime = mongodb.runtime.copas(),
+            server_selection_timeout_ms = 2000,
+          }
+        ))
+        local reply = assert(client:database():run_command("ping"))
+
+        assert.are.equal(1, reply:get("ok"):to_number())
+        assert(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if server_error then
+      error(server_error, 0)
+    elseif not outcome[1] then
+      error(outcome[2], 0)
+    end
+
+    assert.is_true(handshakes >= 3)
+    assert.are.equal(1, pings)
   end)
 end)

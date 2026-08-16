@@ -63,6 +63,8 @@ A library wrapping this driver may supply `driver_info = { name = "library", ver
 
 For a DNS seedlist, use a `mongodb+srv` URI. Before opening a MongoDB socket, the driver resolves the URI hostname's SRV records and optional TXT defaults, validates every returned hostname against the URI's parent domain, and enables TLS unless the URI explicitly sets `tls=false` (or its `ssl` alias). Unknown and sharded topologies continue polling SRV records at the DNS TTL cadence, with a 60-second minimum, so mongos additions and removals do not require a client restart.
 
+An ordinary one-seed URI may also point to mongos. The client discovers the sharded topology and executes ordinary and cursor commands through the monitored mongos pool.
+
 ```lua
 local mongodb = require("mongodb")
 
@@ -261,7 +263,7 @@ assert(transferred)
 assert(session:end_session())
 ```
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone and replica-set connections; SCRAM, PLAIN, X.509, and TLS; generic database commands; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
 ### Errors and resource lifetimes
 
@@ -290,7 +292,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | URI options | 🟡 | 78.6% |
 | Communication | Handshake metadata propagation | 🟢 | 100.0% |
 | Communication | Initial DNS seedlist discovery | 🟡 | 75.5% |
-| Communication | Command execution | 🟡 | 81.0% |
+| Communication | Command execution | 🟡 | 85.7% |
 | Connectivity | Server discovery and monitoring | 🟡 | 89.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
 | Connectivity | Load balancer support | 🔴 | 0.0% |
@@ -327,7 +329,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-Post-v1 scope includes change streams, GridFS, wire compression, sharded and load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.4 track incrementally adds complete sharded-deployment behavior; mongos discovery and ordinary command execution are supported now. Other post-v1 scope includes change streams, GridFS, wire compression, load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

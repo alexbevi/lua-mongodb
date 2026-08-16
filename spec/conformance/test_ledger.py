@@ -81,10 +81,16 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1806,
+      "deferred_unsupported": 1805,
       "excluded_scope": 2,
-      "passed": 3716,
+      "passed": 3717,
     }, generated["summary"]["statuses"])
+
+    sharded_command_cursor = generated["cases"][
+      "run-command/tests/unified/runCursorCommand.json::test[1]"
+    ]
+    self.assertEqual("passed", sharded_command_cursor["status"])
+    self.assertEqual("live-sharded", sharded_command_cursor["required_environment"])
 
     snapshot_transaction = generated["cases"][
       "sessions/tests/snapshot-sessions.json::test[8]"

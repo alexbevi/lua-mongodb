@@ -907,7 +907,20 @@ function M.connect(uri, values)
     return nil, err
   end
 
-  if hello.server_type ~= "standalone" then
+  if hello.server_type == "mongos" then
+    executor:close()
+    return connect_topology(
+      parsed,
+      config,
+      credential,
+      special,
+      runtime,
+      monitor,
+      metadata_state,
+      warnings,
+      append_metadata
+    )
+  elseif hello.server_type ~= "standalone" then
     executor:close()
     return configuration_error("the standalone client cannot use this server topology")
   end

@@ -5051,6 +5051,10 @@
       "activity": "REL-005",
       "environment": "live-standalone"
     },
+    "run-command/tests/unified/runCursorCommand.json::test[1]": {
+      "activity": "ADV-005",
+      "environment": "live-sharded"
+    },
     "run-command/tests/unified/runCursorCommand.json::test[2]": {
       "activity": "REL-022",
       "environment": "live-standalone"

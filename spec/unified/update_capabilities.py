@@ -457,7 +457,7 @@ for index in (1, 2):
 TEST_OVERRIDES.update({
   "run-command/tests/unified/runCursorCommand.json::test[1]": (
     "ADV-005",
-    "checkMetadataConsistency requires a sharded deployment outside production-core v1",
+    None,
   ),
   "run-command/tests/unified/runCursorCommand.json::test[5]": (
     "ADV-006",

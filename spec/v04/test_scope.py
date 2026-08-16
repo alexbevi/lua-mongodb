@@ -19,13 +19,12 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(738, generated["summary"]["passed"])
-    self.assertEqual(113, generated["summary"]["planned"])
+    self.assertEqual(739, generated["summary"]["passed"])
+    self.assertEqual(112, generated["summary"]["planned"])
     self.assertEqual(47, generated["summary"]["excluded"])
     self.assertEqual(851, generated["summary"]["supported"])
     self.assertEqual(
       {
-        "ADV-005": 1,
         "CFG-004": 1,
         "CMAP-002": 5,
         "CMAP-003": 8,

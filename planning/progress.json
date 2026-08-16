@@ -3903,6 +3903,28 @@
       "notes": [],
       "started_at": "2026-08-16T20:10:09+00:00",
       "completed_at": "2026-08-16T20:20:33+00:00"
+    },
+    "ADV-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest -v spec.unified.test_cli.UnifiedCliTests.test_sharded_command_cursor_case_is_runnable",
+          "exit_code": 1,
+          "summary": "The exact checkMetadataConsistency command-cursor case remained deferred instead of selecting live-sharded.",
+          "recorded_at": "2026-08-16T20:26:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_UNIFIED='run-command/tests/unified/runCursorCommand.json' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/client.lua spec/unit/topology_spec.lua spec/integration/client_api_spec.lua'; make test-architecture; make test-complexity; python3 spec/unified/update_capabilities.py --check; python3 -m json.tool spec/unified/executors.json",
+          "exit_code": 0,
+          "summary": "13 topology unit and 4 public-client integration examples passed; exact runCursorCommand fixture executed 7/7 with checkMetadataConsistency through live sharded; 66 unified CLI tests and touched lint passed; 5 architecture checks, complexity ratchet, capabilities check, and executor JSON validation passed.",
+          "recorded_at": "2026-08-16T20:32:18+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T20:26:23+00:00",
+      "completed_at": "2026-08-16T20:32:23+00:00"
     }
   },
   "verified_references": {

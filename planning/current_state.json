@@ -17,28 +17,29 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 165,
+    "completed": 166,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 28
+    "pending": 27
   },
   "active": [],
   "ready": [
     "ADV-001",
     "ADV-002",
     "ADV-004",
-    "ADV-005",
+    "ADV-006",
     "ADV-007",
     "AUTH-019",
     "ADV-009",
     "ADV-010",
     "ADV-011",
+    "SDAM-004",
     "ADV-012"
   ],
   "ready_by_track": {
     "lua-hardening": [],
     "v0-4-sharded-parity": [
-      "ADV-005"
+      "SDAM-004"
     ]
   },
   "blocked": [],
