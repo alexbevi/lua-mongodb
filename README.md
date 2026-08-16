@@ -217,7 +217,7 @@ end
 
 ### Search Indexes
 
-`collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
+`collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
 
 ```lua
 local search_name = assert(users:create_search_index(doc({
@@ -306,7 +306,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
 | Programmability | CRUD | 🟡 | 71.5% |
 | Programmability | Collection management | 🟡 | 81.8% |
-| Programmability | Index management | 🟡 | 47.4% |
+| Programmability | Index management | 🟡 | 63.2% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
 | Programmability | Change streams | 🔴 | 0.0% |
 | Programmability | GridFS | 🔴 | 0.0% |

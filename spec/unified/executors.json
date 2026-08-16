@@ -1756,6 +1756,9 @@
     "index-management/tests/createSearchIndexes.json::test[2]": {"activity": "IDX-002", "environment": "live-replicaset"},
     "index-management/tests/createSearchIndexes.json::test[3]": {"activity": "IDX-002", "environment": "live-replicaset"},
     "index-management/tests/createSearchIndexes.json::test[4]": {"activity": "IDX-002", "environment": "live-replicaset"},
+    "index-management/tests/listSearchIndexes.json::test[1]": {"activity": "IDX-003", "environment": "live-replicaset"},
+    "index-management/tests/listSearchIndexes.json::test[2]": {"activity": "IDX-003", "environment": "live-replicaset"},
+    "index-management/tests/listSearchIndexes.json::test[3]": {"activity": "IDX-003", "environment": "live-replicaset"},
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
       "activity": "REL-004",
       "environment": "live-standalone"

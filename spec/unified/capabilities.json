@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1426,
-    "runnable": 1426
+    "passed": 1429,
+    "runnable": 1429
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50892,7 +50892,6 @@
     "index-management/tests/listSearchIndexes.json::test[1]": {
       "activity": "IDX-003",
       "fingerprint": "08f8a2728c030773dad0243d87d9e6d61e5b957d074e564f44192c797405dbde",
-      "reason": "Search index listing awaits the v0.4 index slice",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -50916,12 +50915,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/listSearchIndexes.json::test[2]": {
       "activity": "IDX-003",
       "fingerprint": "9f0af305827a5ad86b00faeb341a036dc2faac9ec56f1261fab2c24ec6ae9194",
-      "reason": "Search index listing awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "listSearchIndexes.name"
@@ -50947,12 +50945,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/listSearchIndexes.json::test[3]": {
       "activity": "IDX-003",
       "fingerprint": "10d26f14f67d45e8922da3fd2e46ef7ce4280c5fd82e1c401f908c902b42eb7e",
-      "reason": "Search index listing awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "listSearchIndexes.aggregationOptions",
@@ -50979,7 +50976,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[1]": {
       "activity": "IDX-006",

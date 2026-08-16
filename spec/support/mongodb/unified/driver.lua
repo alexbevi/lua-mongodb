@@ -1411,6 +1411,59 @@ local function create_search_indexes(_, collection, arguments)
   return bson.array(values)
 end
 
+local function list_search_indexes(_, collection, arguments)
+  local aggregation_options = arguments:get("aggregationOptions")
+    or bson.document({})
+  local fields = {
+    allowDiskUse = "allow_disk_use",
+    batchSize = "batch_size",
+    bypassDocumentValidation = "bypass_document_validation",
+    collation = "collation",
+    comment = "comment",
+    hint = "hint",
+    let = "let",
+    maxTimeMS = "max_time_ms",
+    rawData = "raw_data",
+    timeoutMS = "timeout_ms",
+    timeoutMode = "timeout_mode",
+  }
+
+  if not bson.is_document(aggregation_options) then
+    return configuration_error(
+      "listSearchIndexes aggregationOptions must be a document",
+      "$.arguments.aggregationOptions"
+    )
+  end
+
+  local valid, err = validate_fields(
+    aggregation_options,
+    fields,
+    "$.arguments.aggregationOptions"
+  )
+
+  if not valid then
+    return nil, err
+  end
+
+  local options = operation_options(aggregation_options, fields)
+
+  if arguments:get("session") ~= nil then
+    options.session = arguments:get("session")
+  end
+
+  local cursor
+  cursor, err = collection:list_search_indexes(
+    arguments:get("name"),
+    options
+  )
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
 local function drop_index(_, collection, arguments)
   return collection:drop_index(arguments:get("name"), operation_options(
     arguments,
@@ -2090,6 +2143,10 @@ function M.new(options)
         createSearchIndexes = {
           arguments = { "models" },
           handler = create_search_indexes,
+        },
+        listSearchIndexes = {
+          arguments = { "aggregationOptions", "name" },
+          handler = list_search_indexes,
         },
         dropIndex = {
           arguments = { "name", "rawData", "timeoutMS" },

@@ -76,6 +76,29 @@ describe("administration commands over OP_MSG", function()
         }) },
       }))
 
+      local list_search_indexes = receive_frame(peer)
+      local search_stage = list_search_indexes.body:get("pipeline")
+        :get(1):get("$listSearchIndexes")
+
+      assert.are.equal("aggregate", list_search_indexes.body:keys()[1])
+      assert.are.equal("search-a", search_stage:get("name"))
+      assert.are.equal(
+        10,
+        list_search_indexes.body:get("cursor"):get("batchSize"):to_number()
+      )
+      assert.is_nil(list_search_indexes.body:get("readConcern"))
+      assert.is_nil(list_search_indexes.body:get("writeConcern"))
+      send_response(peer, list_search_indexes, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({
+            bson.document({ { "name", "search-a" } }),
+          }) },
+        }) },
+      }))
+
       local list_indexes = receive_frame(peer)
       assert.are.equal("listIndexes", list_indexes.body:keys()[1])
       send_response(peer, list_indexes, bson.document({
@@ -173,6 +196,11 @@ describe("administration commands over OP_MSG", function()
           { "search-a", "search-b" },
           { search_names[1], search_names[2] }
         )
+        local search_indexes = assert(collection:list_search_indexes("search-a", {
+          batch_size = 10,
+        }))
+
+        assert.are.equal("search-a", assert(search_indexes:next()):get("name"))
         local indexes = assert(collection:list_indexes())
 
         assert.are.equal("_id_", assert(indexes:next()):get("name"))

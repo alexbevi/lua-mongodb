@@ -5,6 +5,12 @@ local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
+local PRIMARY_READ_PREFERENCE = {
+  max_staleness_seconds = -1,
+  mode = "primary",
+  tag_sets = { {} },
+}
+
 local INDEX_STATES = setmetatable({}, { __mode = "k" })
 
 local INDEX_METATABLE = {
@@ -118,6 +124,23 @@ local SEARCH_INDEX_OPTIONS = {
   cancellation = true,
   deadline = true,
   session = true,
+}
+
+local LIST_SEARCH_INDEX_OPTIONS = {
+  allow_disk_use = true,
+  batch_size = true,
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  hint = true,
+  let = true,
+  max_await_time_ms = true,
+  max_time_ms = true,
+  raw_data = true,
+  session = true,
+  timeout_mode = true,
 }
 
 local INDEX_OPTION_NAMES = {
@@ -276,6 +299,14 @@ local function require_document(options, name)
   end
 end
 
+local function require_hint(options)
+  local hint = options.hint
+
+  if hint ~= nil and type(hint) ~= "string" and not bson.is_document(hint) then
+    error("hint must be an index name or BSON document", 3)
+  end
+end
+
 local function require_pipeline(options)
   local pipeline = options.pipeline
 
@@ -421,6 +452,7 @@ local function cursor_from_response(state, response, options)
     database_name = options.database_name,
     deadline = options.deadline,
     executor = state.executor,
+    max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
     session = options.session,
     session_context = options.session_context,
@@ -1077,6 +1109,98 @@ function M.create_search_indexes(state, models, options)
   end
 
   return readonly_list(names, "search_index_names")
+end
+
+function M.list_search_indexes(state, name, options)
+  if name ~= nil and type(name) ~= "string" then
+    error("search index name must be a string", 3)
+  end
+
+  options = validate_options(
+    options,
+    LIST_SEARCH_INDEX_OPTIONS,
+    "list_search_indexes"
+  )
+  require_boolean(options, "allow_disk_use")
+  require_boolean(options, "bypass_document_validation")
+  require_boolean(options, "raw_data")
+  require_document(options, "collation")
+  require_document(options, "let")
+  require_hint(options)
+  require_nonnegative_integer(options, "batch_size")
+  require_nonnegative_integer(options, "max_await_time_ms")
+  require_nonnegative_integer(options, "max_time_ms")
+  options.session_context = options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
+  local stage_entries = {}
+
+  if name ~= nil then
+    stage_entries[1] = { "name", name }
+  end
+
+  local cursor_entries = {}
+
+  if options.batch_size ~= nil then
+    cursor_entries[1] = { "batchSize", options.batch_size }
+  end
+
+  local entries = {
+    { "aggregate", state.name },
+    { "pipeline", bson.array({
+      bson.document({
+        { "$listSearchIndexes", bson.document(stage_entries) },
+      }),
+    }) },
+    { "cursor", bson.document(cursor_entries) },
+  }
+
+  for _, field in ipairs({
+    { "allow_disk_use", "allowDiskUse" },
+    { "collation", "collation" },
+    { "comment", "comment" },
+    { "hint", "hint" },
+    { "let", "let" },
+    { "max_time_ms", "maxTimeMS" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  append_raw_data(entries, state, options)
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      read_preference = PRIMARY_READ_PREFERENCE,
+      retryable_read = true,
+      session = options.session,
+      session_context = options.session_context,
+    }
+  )
+
+  if not response then
+    if options.session_context then
+      state.executor:release_session_context(options.session_context)
+    end
+
+    return nil, err
+  end
+
+  return cursor_from_response(state, response, {
+    batch_size = options.batch_size,
+    cancellation = options.cancellation,
+    comment = options.comment,
+    database_name = state.database_name,
+    deadline = options.deadline,
+    inherit_comment = true,
+    max_await_time_ms = options.max_await_time_ms,
+    session = options.session,
+    session_context = options.session_context,
+    timeout_mode = options.timeout_mode,
+  })
 end
 
 local function drop_index(state, name, options, all)

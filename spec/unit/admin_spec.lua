@@ -447,6 +447,57 @@ describe("database and collection management", function()
     assert.are.equal(2, #commands)
   end)
 
+  it("lists Search indexes through aggregation without concerns", function()
+    local commands = {}
+    local executions = {}
+    local responses = {
+      cursor_response("app.events", 0, {
+        bson.document({ { "name", "standard" } }),
+      }),
+      cursor_response("app.events", 0, {
+        bson.document({ { "name", "vectors" } }),
+      }),
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+        executions[#executions + 1] = options
+        return table.remove(responses, 1)
+      end,
+    }
+    local collection = assert(api.new_client(executor, config({
+      read_concern = { level = "majority" },
+      write_concern = { w = "majority" },
+    })):database("app"):collection("events"))
+    local all = assert(collection:list_search_indexes())
+
+    assert.are.equal("standard", assert(all:next()):get("name"))
+    local list_all = commands[1]
+    local all_stage = list_all:get("pipeline"):get(1):get("$listSearchIndexes")
+
+    assert.are.equal("aggregate", list_all:keys()[1])
+    assert.are.equal(0, #all_stage)
+    assert.is_nil(list_all:get("readConcern"))
+    assert.is_nil(list_all:get("writeConcern"))
+    assert.are.equal("primary", executions[1].read_preference.mode)
+
+    local named = assert(collection:list_search_indexes("vectors", {
+      batch_size = 10,
+    }))
+
+    assert.are.equal("vectors", assert(named:next()):get("name"))
+    local list_named = commands[2]
+    local named_stage = list_named:get("pipeline"):get(1):get("$listSearchIndexes")
+
+    assert.are.equal("vectors", named_stage:get("name"))
+    assert.are.equal(10, list_named:get("cursor"):get("batchSize"))
+    assert.is_nil(list_named:get("readConcern"))
+    assert.is_nil(list_named:get("writeConcern"))
+  end)
+
   it("lists indexes and inherits comments on getMore", function()
     local commands = {}
     local responses = {

@@ -792,6 +792,21 @@ function COLLECTION_METHODS:list_indexes(options)
   return register_client_cursor(COLLECTION_STATES[self].client, cursor)
 end
 
+function COLLECTION_METHODS:list_search_indexes(name, options)
+  local cursor, err = collection_operation(
+    self,
+    admin.list_search_indexes,
+    name,
+    options
+  )
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(COLLECTION_STATES[self].client, cursor)
+end
+
 function COLLECTION_METHODS:find_one(filter, options)
   return collection_operation(self, crud.find_one, filter, options)
 end
