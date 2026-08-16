@@ -38,6 +38,7 @@ end
 
 local function pin_transaction_server(options, session, in_transaction)
   if not in_transaction then
+    session:unpin_server()
     return
   end
 

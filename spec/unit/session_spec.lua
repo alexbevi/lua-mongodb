@@ -705,6 +705,27 @@ describe("client sessions", function()
     assert.same({ false, "router-a:27017" }, selected_addresses)
   end)
 
+  it("unpins a transaction after a successful abort", function()
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function()
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:pin_server("router-a:27017", "Mongos"))
+    assert.is_true(session:is_pinned())
+    assert(session:abort_transaction())
+    assert.is_false(session:is_pinned())
+  end)
+
   it("rejects transactions on snapshot sessions", function()
     local transaction_commands = 0
     local sessions = new_session_manager({

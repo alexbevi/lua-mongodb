@@ -747,22 +747,27 @@ local function assert_session_transaction_state(runner, arguments, path)
   return true
 end
 
-local function assert_session_pinned(runner, arguments, path)
-  local session, err = runner:get_entity(
-    arguments:get("session"),
-    "session",
-    path .. ".arguments.session"
-  )
+local function assert_session_pinned(expected)
+  return function(runner, arguments, path)
+    local session, err = runner:get_entity(
+      arguments:get("session"),
+      "session",
+      path .. ".arguments.session"
+    )
 
-  if not session then
-    return nil, err
+    if not session then
+      return nil, err
+    end
+
+    if session:is_pinned() ~= expected then
+      return configuration_error(
+        expected and "session is not pinned" or "session is pinned",
+        path
+      )
+    end
+
+    return true
   end
-
-  if not session:is_pinned() then
-    return configuration_error("session is not pinned", path)
-  end
-
-  return true
 end
 
 local function assert_collection_exists(state, expected)
@@ -2462,8 +2467,9 @@ function M.new(options)
       assertSameLsidOnLastTwoCommands = assert_last_lsids(state, true),
       assertSessionDirty = assert_session_dirty(true),
       assertSessionNotDirty = assert_session_dirty(false),
-      assertSessionPinned = assert_session_pinned,
+      assertSessionPinned = assert_session_pinned(true),
       assertSessionTransactionState = assert_session_transaction_state,
+      assertSessionUnpinned = assert_session_pinned(false),
       failPoint = failpoint_handler,
       recordTopologyDescription = record_topology_description(state),
       targetedFailPoint = failpoint_handler,

@@ -589,12 +589,16 @@ TEST_OVERRIDES["transactions/tests/unified/count.json::test[1]"] = (
 for fixture, count, owner in (
   ("mongos-recovery-token-errorLabels", 1, "TXN-005"),
   ("mongos-recovery-token", 3, "TXN-005"),
-  ("mongos-unpin", 7, "TXN-004"),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
     ] = (owner, OWNER_REASONS[owner])
+
+for index in range(1, 8):
+  TEST_OVERRIDES[
+    f"transactions/tests/unified/mongos-unpin.json::test[{index}]"
+  ] = ("TXN-004", None)
 
 for index in range(1, 8):
   TEST_OVERRIDES[

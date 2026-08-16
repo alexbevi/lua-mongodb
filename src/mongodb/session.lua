@@ -173,6 +173,7 @@ function SESSION_METHODS:end_session()
     self:abort_transaction()
   end
 
+  self:unpin_server()
   state.ended = true
   local manager_state = MANAGER_STATES[state.manager]
   local server_session = state.server_session
@@ -249,6 +250,19 @@ end
 
 function SESSION_METHODS:is_pinned()
   return self:get_pinned_server_address() ~= nil
+end
+
+function SESSION_METHODS:unpin_server()
+  local state, err = check_session(self)
+
+  if not state then
+    return nil, err
+  end
+
+  local pinned = state.transaction.pinned_server_address ~= nil
+
+  state.transaction.pinned_server_address = nil
+  return pinned
 end
 
 function SESSION_METHODS:pin_server(address, server_type)
@@ -343,6 +357,7 @@ function SESSION_METHODS:start_transaction(options)
 
   state.server_session.transaction_number =
     state.server_session.transaction_number + 1
+  self:unpin_server()
   state.transaction = { options = transaction_options, state = "starting" }
   return true
 end
@@ -426,6 +441,7 @@ local function finish_transaction(session, name, options)
   )
 
   if err and retryable_transaction_command(name, err) then
+    session:unpin_server()
     response, err = manager.transaction_command(
       session,
       name,
@@ -461,11 +477,25 @@ local function finish_transaction(session, name, options)
 end
 
 function SESSION_METHODS:commit_transaction(options)
-  return finish_transaction(self, "commitTransaction", options)
+  local response, err = finish_transaction(self, "commitTransaction", options)
+
+  if err and (err:has_label("TransientTransactionError")
+      or err:has_label("UnknownTransactionCommitResult"))
+  then
+    self:unpin_server()
+  end
+
+  return response, err
 end
 
 function SESSION_METHODS:abort_transaction(options)
-  return finish_transaction(self, "abortTransaction", options)
+  local response, err = finish_transaction(self, "abortTransaction", options)
+
+  if SESSION_STATES[self].transaction.state == "aborted" then
+    self:unpin_server()
+  end
+
+  return response, err
 end
 
 local function abort_with_refreshed_timeout(session)

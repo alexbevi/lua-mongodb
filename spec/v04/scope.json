@@ -12,7 +12,6 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
   "planned_by_activity": {
-    "TXN-004": 7,
     "TXN-005": 6,
     "TXN-006": 20,
     "TXN-007": 36
@@ -43,15 +42,15 @@
     },
     "transactions": {
       "excluded": 16,
-      "passed": 173,
-      "planned": 69
+      "passed": 180,
+      "planned": 62
     }
   },
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 782,
-    "planned": 69,
+    "passed": 789,
+    "planned": 62,
     "supported": 851
   },
   "target_owners": [

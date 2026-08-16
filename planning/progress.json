@@ -4260,6 +4260,28 @@
       ],
       "started_at": "2026-08-16T23:24:07+00:00",
       "completed_at": "2026-08-16T23:36:51+00:00"
+    },
+    "TXN-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua --filter=unpins.a.transaction.after.a.successful.abort'",
+          "exit_code": 2,
+          "summary": "The defining abort-boundary test failed because a successful abort left the session pinned to its mongos.",
+          "recorded_at": "2026-08-16T23:41:17+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='transactions/tests/unified/mongos-unpin.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<4 touched Lua files>'; make test-complexity; run generated validators",
+          "exit_code": 0,
+          "summary": "30 focused Lua unit cases passed; all 7 mongos-unpin cases executed and passed with no skips or deferrals; 94 Python contracts passed; 4 touched Lua files linted cleanly; complexity remained at 3 hotspots/max 47; conformance reached 3767 passed/1755 deferred and v0.4 reached 789 passed/62 planned.",
+          "recorded_at": "2026-08-16T23:45:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T23:40:53+00:00",
+      "completed_at": "2026-08-16T23:45:09+00:00"
     }
   },
   "verified_references": {
