@@ -36,6 +36,23 @@ local function command_options(
   return result
 end
 
+local function pin_transaction_server(options, session, in_transaction)
+  if not in_transaction then
+    return
+  end
+
+  local selected = options.on_server_selected
+
+  options.server_address = session:get_pinned_server_address()
+  options.on_server_selected = function(address, server_type)
+    if selected then
+      selected(address, server_type)
+    end
+
+    session:pin_server(address, server_type)
+  end
+end
+
 local function apply_error(state, session, err)
   local error_response = err.details and err.details.response
 
@@ -176,6 +193,11 @@ function METHODS:command(database, command, options)
     retryable_write,
     in_transaction
   )
+
+  if session then
+    pin_transaction_server(downstream_options, session, in_transaction)
+  end
+
   local context = operation_timeout.current()
   local session_runtime, session_timeout_ms
 

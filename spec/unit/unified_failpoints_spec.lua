@@ -182,4 +182,58 @@ describe("unified failpoints", function()
       assert.is_nil(next(failpoints_by_name))
     end
   end)
+
+  it("targets a pinned session without decorating the failpoint command", function()
+    local commands = {}
+    local finalizer
+    local session = {
+      get_pinned_server_address = function()
+        return "router-a:27017"
+      end,
+    }
+    local database = {
+      run_command = function(_, command, options)
+        commands[#commands + 1] = { command = command, options = options }
+        options.on_server_selected = options.on_server_selected or function() end
+        options.on_server_selected("router-a:27017")
+        return document({ { "ok", 1 } })
+      end,
+    }
+    local client = {
+      database = function()
+        return database
+      end,
+    }
+    local runner = {
+      add_finalizer = function(_, value)
+        finalizer = value
+      end,
+      get_entity = function(_, id, kind)
+        assert.are.equal("session0", id)
+        assert.are.equal("session", kind)
+        return session
+      end,
+    }
+    local handler = failpoints.new({
+      cleanup_database = function()
+        return database
+      end,
+      session_client = function(value)
+        assert.are.equal(session, value)
+        return client
+      end,
+    })
+
+    assert(handler(runner, document({
+      { "failPoint", document({
+        { "configureFailPoint", "failCommand" },
+        { "mode", document({ { "times", 1 } }) },
+      }) },
+      { "session", "session0" },
+    }), "$.operation"))
+    assert.are.equal("router-a:27017", commands[1].options.server_address)
+    assert.is_nil(commands[1].options.session)
+    assert(finalizer())
+    assert.are.equal("off", commands[2].command:get("mode"))
+  end)
 end)

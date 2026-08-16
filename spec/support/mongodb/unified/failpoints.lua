@@ -47,7 +47,7 @@ local function validate_arguments(arguments, path)
   local command = arguments:get("failPoint")
   local session = arguments:get("session")
 
-  if type(client) ~= "string" or client == "" then
+  if client ~= nil and (type(client) ~= "string" or client == "") then
     return configuration_error("failPoint client must be an entity id", path .. ".client")
   end
 
@@ -62,6 +62,13 @@ local function validate_arguments(arguments, path)
     )
   end
 
+  if client == nil and session == nil then
+    return configuration_error(
+      "failPoint requires a client or session entity",
+      path
+    )
+  end
+
   local name = command:get("configureFailPoint")
 
   if type(name) ~= "string" or name == "" then
@@ -71,7 +78,7 @@ local function validate_arguments(arguments, path)
     )
   end
 
-  return client, command, name, session
+  return client or false, command, name, session
 end
 
 local function close_cleanup(close)
@@ -95,17 +102,12 @@ local function execute(options, runner, arguments, path)
     arguments_path
   )
 
-  if not client_id then
+  if client_id == nil then
     return nil, command
   end
 
-  local client, err = runner:get_entity(client_id, "client", arguments_path .. ".client")
-
-  if not client then
-    return nil, err
-  end
-
   local session
+  local err
 
   if session_id then
     session, err = runner:get_entity(
@@ -119,6 +121,30 @@ local function execute(options, runner, arguments, path)
     end
   end
 
+  local client
+  local client_err
+
+  if client_id ~= false then
+    client, client_err = runner:get_entity(
+      client_id,
+      "client",
+      arguments_path .. ".client"
+    )
+  elseif options.session_client then
+    client = options.session_client(session)
+  end
+
+  if not client then
+    if client_err then
+      return nil, client_err
+    end
+
+    return configuration_error(
+      "failPoint session has no owning client",
+      arguments_path .. ".session"
+    )
+  end
+
   local database
   database, err = client:database("admin")
 
@@ -126,11 +152,21 @@ local function execute(options, runner, arguments, path)
     return nil, err
   end
 
+  local targeted = client_id == false
+  local pinned_server = targeted and session:get_pinned_server_address()
+
+  if targeted and not pinned_server then
+    return configuration_error(
+      "targeted failPoint session is not pinned",
+      arguments_path .. ".session"
+    )
+  end
+
   local selected_server
   local response
   response, err = database:run_command(command, command_options(
-    session,
-    nil,
+    not targeted and session or nil,
+    pinned_server,
     function(address)
       selected_server = address
     end
@@ -185,6 +221,10 @@ function M.new(options)
 
   if options.cleanup_database ~= nil and type(options.cleanup_database) ~= "function" then
     error("unified failpoint cleanup_database must be a function", 2)
+  end
+
+  if options.session_client ~= nil and type(options.session_client) ~= "function" then
+    error("unified failpoint session_client must be a function", 2)
   end
 
   return function(runner, arguments, path)

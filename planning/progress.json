@@ -4231,7 +4231,7 @@
       "completed_at": "2026-08-16T23:12:36+00:00"
     },
     "TXN-003": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -4239,11 +4239,27 @@
           "exit_code": 2,
           "summary": "The defining transaction routing test failed because the first command received no on_server_selected callback, so the session could not record a mongos pin.",
           "recorded_at": "2026-08-16T23:18:54+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua --filter=pins.later.transaction.commands.to.the.first.selected.mongos'",
+          "exit_code": 2,
+          "summary": "After the plan split, the defining pin-routing test again failed because no selected-server callback reached the first transaction command.",
+          "recorded_at": "2026-08-16T23:24:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/topology_spec.lua spec/unit/unified_driver_spec.lua spec/unit/unified_failpoints_spec.lua' FOCUS_UNIFIED='transactions/tests/unified/pin-mongos.json::test[[][1-7]]' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<8 touched Lua files>'; make test-complexity; run generated capability, conformance, v0.4, release, README, JSON, Python compile, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "50 focused Lua unit cases passed; all 7 pure pin-mongos cases executed on an owned sharded deployment and passed with no skips or deferrals; 93 coupled Python contracts passed; 8 touched Lua files linted cleanly; complexity remained at 3 hotspots/max 47; generated projections reached 3760 passed/1762 deferred and v0.4 782 passed/69 planned with every validator current.",
+          "recorded_at": "2026-08-16T23:36:40+00:00"
         }
       ],
       "notes": [
         "Requeued: Split the two recoveryToken-coupled pin-mongos cases into TXN-005 before production implementation."
-      ]
+      ],
+      "started_at": "2026-08-16T23:24:07+00:00",
+      "completed_at": "2026-08-16T23:36:51+00:00"
     }
   },
   "verified_references": {

@@ -452,91 +452,100 @@ local function collection_factory(runner, specification)
   return database:collection(specification:get("collectionName"), options)
 end
 
-local function session_factory(runner, specification)
-  local valid, err = validate_fields(specification, {
-    client = true,
-    id = true,
-    sessionOptions = true,
-  }, "$.session")
-
-  if not valid then
-    return nil, err
-  end
-
-  local client
-  client, err = runner:get_entity(
-    specification:get("client"),
-    "client",
-    "$.session.client"
-  )
-
-  if not client then
-    return nil, err
-  end
-
-  local options = {}
-  local session_options = specification:get("sessionOptions")
-
-  if session_options then
-    valid, err = validate_fields(
-      session_options,
-      {
-        causalConsistency = true,
-        defaultTimeoutMS = true,
-        defaultTransactionOptions = true,
-        snapshot = true,
-        snapshotTime = true,
-      },
-      "$.session.sessionOptions"
-    )
+local function session_factory(state)
+  return function(runner, specification)
+    local valid, err = validate_fields(specification, {
+      client = true,
+      id = true,
+      sessionOptions = true,
+    }, "$.session")
 
     if not valid then
       return nil, err
     end
 
-    options.causal_consistency = session_options:get("causalConsistency")
-    options.snapshot = session_options:get("snapshot")
-    local snapshot_time = session_options:get("snapshotTime")
+    local client
+    client, err = runner:get_entity(
+      specification:get("client"),
+      "client",
+      "$.session.client"
+    )
 
-    if type(snapshot_time) == "string" then
-      snapshot_time, err = runner:get_entity(
-        snapshot_time,
-        "bson",
-        "$.session.sessionOptions.snapshotTime"
+    if not client then
+      return nil, err
+    end
+
+    local options = {}
+    local session_options = specification:get("sessionOptions")
+
+    if session_options then
+      valid, err = validate_fields(
+        session_options,
+        {
+          causalConsistency = true,
+          defaultTimeoutMS = true,
+          defaultTransactionOptions = true,
+          snapshot = true,
+          snapshotTime = true,
+        },
+        "$.session.sessionOptions"
       )
 
-      if snapshot_time == nil then
+      if not valid then
         return nil, err
       end
-    end
 
-    options.snapshot_time = snapshot_time
-    local default_timeout_ms = session_options:get("defaultTimeoutMS")
+      options.causal_consistency = session_options:get("causalConsistency")
+      options.snapshot = session_options:get("snapshot")
+      local snapshot_time = session_options:get("snapshotTime")
 
-    if bson.is_exact(default_timeout_ms) then
-      default_timeout_ms = default_timeout_ms:to_number()
-    end
+      if type(snapshot_time) == "string" then
+        snapshot_time, err = runner:get_entity(
+          snapshot_time,
+          "bson",
+          "$.session.sessionOptions.snapshotTime"
+        )
 
-    options.timeout_ms = default_timeout_ms
-    local defaults = session_options:get("defaultTransactionOptions")
-
-    if defaults then
-      local max_commit_time_ms = defaults:get("maxCommitTimeMS")
-
-      if bson.is_exact(max_commit_time_ms) then
-        max_commit_time_ms = max_commit_time_ms:to_number()
+        if snapshot_time == nil then
+          return nil, err
+        end
       end
 
-      options.default_transaction_options = {
-        max_commit_time_ms = max_commit_time_ms,
-        read_concern = defaults:get("readConcern"),
-        read_preference = defaults:get("readPreference"),
-        write_concern = defaults:get("writeConcern"),
-      }
-    end
-  end
+      options.snapshot_time = snapshot_time
+      local default_timeout_ms = session_options:get("defaultTimeoutMS")
 
-  return client:start_session(options)
+      if bson.is_exact(default_timeout_ms) then
+        default_timeout_ms = default_timeout_ms:to_number()
+      end
+
+      options.timeout_ms = default_timeout_ms
+      local defaults = session_options:get("defaultTransactionOptions")
+
+      if defaults then
+        local max_commit_time_ms = defaults:get("maxCommitTimeMS")
+
+        if bson.is_exact(max_commit_time_ms) then
+          max_commit_time_ms = max_commit_time_ms:to_number()
+        end
+
+        options.default_transaction_options = {
+          max_commit_time_ms = max_commit_time_ms,
+          read_concern = defaults:get("readConcern"),
+          read_preference = defaults:get("readPreference"),
+          write_concern = defaults:get("writeConcern"),
+        }
+      end
+    end
+
+    local session
+    session, err = client:start_session(options)
+
+    if session then
+      state.session_clients[session] = client
+    end
+
+    return session, err
+  end
 end
 
 local call_driver
@@ -733,6 +742,24 @@ local function assert_session_transaction_state(runner, arguments, path)
 
   if session:get_transaction_state() ~= arguments:get("state") then
     return configuration_error("session transaction state does not match", path)
+  end
+
+  return true
+end
+
+local function assert_session_pinned(runner, arguments, path)
+  local session, err = runner:get_entity(
+    arguments:get("session"),
+    "session",
+    path .. ".arguments.session"
+  )
+
+  if not session then
+    return nil, err
+  end
+
+  if not session:is_pinned() then
+    return configuration_error("session is not pinned", path)
   end
 
   return true
@@ -2099,6 +2126,7 @@ function M.new(options)
     multiple_mongos_uri = options.multiple_mongos_uri,
     oidc_callback = options.oidc_callback,
     runtime = options.runtime,
+    session_clients = setmetatable({}, { __mode = "k" }),
     uri = options.uri,
   }
   local failpoint_handler = failpoints.new({
@@ -2123,6 +2151,9 @@ function M.new(options)
         return cleanup_client:close()
       end
     end,
+    session_client = function(session)
+      return state.session_clients[session]
+    end,
   })
   local lifecycle = lifecycle_module.new({
     assert_events = function(runner, expected, path)
@@ -2138,7 +2169,7 @@ function M.new(options)
       client = client_factory(state),
       collection = collection_factory,
       database = database_factory,
-      session = session_factory,
+      session = session_factory(state),
     },
     internal_client = internal_client_adapter(internal_client),
     operations = {
@@ -2431,9 +2462,11 @@ function M.new(options)
       assertSameLsidOnLastTwoCommands = assert_last_lsids(state, true),
       assertSessionDirty = assert_session_dirty(true),
       assertSessionNotDirty = assert_session_dirty(false),
+      assertSessionPinned = assert_session_pinned,
       assertSessionTransactionState = assert_session_transaction_state,
       failPoint = failpoint_handler,
       recordTopologyDescription = record_topology_description(state),
+      targetedFailPoint = failpoint_handler,
       waitForEvent = wait_for_event(state),
       waitForPrimaryChange = wait_for_primary_change(state),
     },

@@ -590,12 +590,21 @@ for fixture, count, owner in (
   ("mongos-recovery-token-errorLabels", 1, "TXN-005"),
   ("mongos-recovery-token", 3, "TXN-005"),
   ("mongos-unpin", 7, "TXN-004"),
-  ("pin-mongos", 9, "TXN-003"),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
     ] = (owner, OWNER_REASONS[owner])
+
+for index in range(1, 8):
+  TEST_OVERRIDES[
+    f"transactions/tests/unified/pin-mongos.json::test[{index}]"
+  ] = ("TXN-003", None)
+
+for index in range(8, 10):
+  TEST_OVERRIDES[
+    f"transactions/tests/unified/pin-mongos.json::test[{index}]"
+  ] = ("TXN-005", OWNER_REASONS["TXN-005"])
 
 for index in range(1, 60):
   if index <= 20:

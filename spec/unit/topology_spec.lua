@@ -729,12 +729,14 @@ describe("monitored topology", function()
     ))
     assert(commands:command("db", bson.document({ { "insert", "items" } })))
     local continued_on
+    local continued_type
     assert(commands:command(
       "db",
       bson.document({ { "getMore", bson.int64(1) }, { "collection", "items" } }),
       {
-        on_server_selected = function(address)
+        on_server_selected = function(address, server_type)
           continued_on = address
+          continued_type = server_type
         end,
         server_address = "a:27017",
       }
@@ -742,6 +744,7 @@ describe("monitored topology", function()
 
     assert.same({ "a:27017", "b:27017", "a:27017" }, command_addresses)
     assert.are.equal("a:27017", continued_on)
+    assert.are.equal("RSSecondary", continued_type)
     assert.are.equal(
       "secondary",
       sent_commands[1]:get("$readPreference"):get("mode")

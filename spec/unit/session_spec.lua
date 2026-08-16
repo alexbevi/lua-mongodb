@@ -672,6 +672,39 @@ describe("client sessions", function()
     assert.same({ "commitTransaction", "commitTransaction" }, transaction_commands)
   end)
 
+  it("pins later transaction commands to the first selected mongos", function()
+    local selected_addresses = {}
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        selected_addresses[#selected_addresses + 1] =
+          options.server_address or false
+        assert.is_function(options.on_server_selected)
+        options.on_server_selected("router-a:27017", "Mongos")
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "find", "items" } }),
+      { session = session }
+    ))
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert.same({ false, "router-a:27017" }, selected_addresses)
+  end)
+
   it("rejects transactions on snapshot sessions", function()
     local transaction_commands = 0
     local sessions = new_session_manager({

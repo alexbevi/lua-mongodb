@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1469,
-    "runnable": 1469
+    "passed": 1476,
+    "runnable": 1476
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -80594,7 +80594,6 @@
     "transactions/tests/unified/pin-mongos.json::test[1]": {
       "activity": "TXN-003",
       "fingerprint": "b6ecb9c00905d005c792157076aef20ccfbf3d9b5b0355c3a3c572520ef7fc49",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -80621,12 +80620,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[2]": {
       "activity": "TXN-003",
       "fingerprint": "d49e784bc7b03a090ee044091499820081aadf412f2bc5e296023a045e2b0443",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -80654,12 +80652,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[3]": {
       "activity": "TXN-003",
       "fingerprint": "bd7bde3163c9e61fe5e105da689d0a4b3880625d752bdb67dccf229897a16f29",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -80686,12 +80683,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[4]": {
       "activity": "TXN-003",
       "fingerprint": "7fc4d8332ecd84c1e048c39f51c41ff1bdf8463ef009be7b29c63303096947d0",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -80720,12 +80716,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[5]": {
       "activity": "TXN-003",
       "fingerprint": "1e52d2daddd7008bdaec995c836cbb4fcfcf09e13a5191ffe15467d7708c1162",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -80757,12 +80752,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[6]": {
       "activity": "TXN-003",
       "fingerprint": "26758dccb0c684e06444a45a6c298654174dcc9247b52408c7343b88975c5c1c",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -80794,12 +80788,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[7]": {
       "activity": "TXN-003",
       "fingerprint": "e83c62a9d79ad1b13dc001f74f36c1520de9575c86cda5a826f69697d896a976",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -80834,12 +80827,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/pin-mongos.json::test[8]": {
-      "activity": "TXN-003",
+      "activity": "TXN-005",
       "fingerprint": "a624d810180141d941f138a9449a500889662dfc2fa52830128361281bcae0d8",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
+      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -80879,9 +80872,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[9]": {
-      "activity": "TXN-003",
+      "activity": "TXN-005",
       "fingerprint": "f607be6b774b81d43d271b96bd6fa4bdb0564ae0902474d02dd8f2933a7a7f1e",
-      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
+      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",

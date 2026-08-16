@@ -243,6 +243,39 @@ function SESSION_METHODS:get_transaction_state()
   return SESSION_STATES[self].transaction.state
 end
 
+function SESSION_METHODS:get_pinned_server_address()
+  return SESSION_STATES[self].transaction.pinned_server_address
+end
+
+function SESSION_METHODS:is_pinned()
+  return self:get_pinned_server_address() ~= nil
+end
+
+function SESSION_METHODS:pin_server(address, server_type)
+  local state, err = check_session(self)
+
+  if not state then
+    return nil, err
+  end
+
+  if type(address) ~= "string" or address == "" then
+    error("pinned server address must be a non-empty string", 2)
+  end
+
+  if server_type ~= "Mongos" or not transaction_active(state.transaction) then
+    return false
+  end
+
+  local pinned = state.transaction.pinned_server_address
+
+  if pinned ~= nil and pinned ~= address then
+    error("transaction selected a different mongos than its pin", 2)
+  end
+
+  state.transaction.pinned_server_address = address
+  return true
+end
+
 function SESSION_METHODS:start_transaction(options)
   local state, err = check_session(self)
 

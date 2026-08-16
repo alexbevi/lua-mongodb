@@ -266,7 +266,7 @@ function METHODS:command(database, command, options)
   local response
 
   if options and options.on_server_selected then
-    options.on_server_selected(selected.address)
+    options.on_server_selected(selected.address, selected.server_type)
   end
 
   command = decorate_read_preference(selected, command)
