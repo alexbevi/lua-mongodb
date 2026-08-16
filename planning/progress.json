@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "4b16509ab3958c58f1f79f3ab395db8ce7264ec3dd07dfa88e18164a6772ace6",
+  "plan_digest": "d2c507e8cc150cad9158fd2886fb49b49aed54c66bc26b2288aae2fe15cccb3d",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -4229,6 +4229,21 @@
       "notes": [],
       "started_at": "2026-08-16T23:10:42+00:00",
       "completed_at": "2026-08-16T23:12:36+00:00"
+    },
+    "TXN-003": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua --filter=pins.later.transaction.commands.to.the.first.selected.mongos'",
+          "exit_code": 2,
+          "summary": "The defining transaction routing test failed because the first command received no on_server_selected callback, so the session could not record a mongos pin.",
+          "recorded_at": "2026-08-16T23:18:54+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Split the two recoveryToken-coupled pin-mongos cases into TXN-005 before production implementation."
+      ]
     }
   },
   "verified_references": {

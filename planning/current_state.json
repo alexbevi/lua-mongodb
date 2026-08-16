@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "4b16509ab3958c58f1f79f3ab395db8ce7264ec3dd07dfa88e18164a6772ace6",
+  "plan_digest": "d2c507e8cc150cad9158fd2886fb49b49aed54c66bc26b2288aae2fe15cccb3d",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
