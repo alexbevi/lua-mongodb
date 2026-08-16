@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1792,
+      "deferred_unsupported": 1791,
       "excluded_scope": 2,
-      "passed": 3730,
+      "passed": 3731,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][
@@ -140,6 +140,13 @@ class ConformanceLedgerTests(unittest.TestCase):
       ["live-sharded"] * 6,
       [case["required_environment"] for case in monitor_failures],
     )
+
+    streaming_deadline = generated["cases"][
+      "server-discovery-and-monitoring/tests/unified/"
+      "hello-timeout.json::test[3]"
+    ]
+    self.assertEqual("passed", streaming_deadline["status"])
+    self.assertEqual("live-sharded", streaming_deadline["required_environment"])
 
     snapshot_transaction = generated["cases"][
       "sessions/tests/snapshot-sessions.json::test[8]"

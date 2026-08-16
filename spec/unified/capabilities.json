@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1450,
-    "runnable": 1450
+    "passed": 1451,
+    "runnable": 1451
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -71226,7 +71226,6 @@
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[3]": {
       "activity": "SDAM-008",
       "fingerprint": "e5898b91512ca4e0acee4424e6958371f5140d953711c4f5360ced3d7413f1e9",
-      "reason": "streaming monitor deadline extension awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71261,7 +71260,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/insert-network-error.json::test[1]": {
       "activity": "CMAP-003",

@@ -428,6 +428,17 @@ local function connection_deadline(runtime, config, deadline)
   return deadline and math.min(deadline, connect_deadline) or connect_deadline
 end
 
+local function monitor_deadline(runtime, config, fields)
+  if config.connect_timeout_ms == 0 then
+    return fields.deadline
+  end
+
+  local timeout_ms = config.connect_timeout_ms + (fields.max_await_time_ms or 0)
+  local deadline = runtime_contract.deadline_after(runtime, timeout_ms / 1000)
+
+  return fields.deadline and math.min(fields.deadline, deadline) or deadline
+end
+
 local function open_executor(
   runtime,
   config,
@@ -572,7 +583,7 @@ local function connect_topology(
     if executor then
       hello, err = executor:hello({
         cancellation = fields.cancellation,
-        deadline = connection_deadline(runtime, config, fields.deadline),
+        deadline = monitor_deadline(runtime, config, fields),
         max_await_time_ms = fields.max_await_time_ms,
         topology_version = fields.topology_version,
       })

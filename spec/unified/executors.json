@@ -6030,6 +6030,7 @@
     "server-discovery-and-monitoring/tests/unified/hello-network-error.json::test[2]": {"activity": "SDAM-006", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[1]": {"activity": "SDAM-006", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[2]": {"activity": "SDAM-006", "environment": "live-sharded"},
+    "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[3]": {"activity": "SDAM-008", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {"activity": "REL-038", "environment": "live-standalone", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[1]": {"activity": "SDAM-005", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[2]": {"activity": "SDAM-005", "environment": "live-sharded"},

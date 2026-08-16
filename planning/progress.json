@@ -3991,6 +3991,28 @@
       "notes": [],
       "started_at": "2026-08-16T21:17:41+00:00",
       "completed_at": "2026-08-16T21:27:19+00:00"
+    },
+    "SDAM-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.unified.test_cli.UnifiedCliTests.test_monitor_failure_cases_keep_vertical_slice_owners",
+          "exit_code": 1,
+          "summary": "The exact streaming-timeout identity remained deferred_unsupported instead of runnable under SDAM-008.",
+          "recorded_at": "2026-08-16T21:32:01+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/hello-*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/client.lua src/mongodb/topology.lua spec/unit/topology_spec.lua spec/unit/unified_driver_spec.lua' && make test-complexity && python3 spec/unified/update_capabilities.py --check && python3 -m json.tool spec/unified/executors.json && git diff --check",
+          "exit_code": 0,
+          "summary": "19 Lua unit cases passed; 7 targeted unified hello cases passed; 77 Python registry, conformance, and v0.4 scope tests passed; 4 touched Lua files linted cleanly; complexity, capability, executor JSON, and diff validators passed.",
+          "recorded_at": "2026-08-16T21:38:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T21:31:35+00:00",
+      "completed_at": "2026-08-16T21:38:18+00:00"
     }
   },
   "verified_references": {

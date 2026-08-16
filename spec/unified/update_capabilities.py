@@ -472,7 +472,7 @@ TEST_OVERRIDES.update({
   "server-discovery-and-monitoring/tests/unified/"
     "hello-timeout.json::test[3]": (
       "SDAM-008",
-      OWNER_REASONS["SDAM-008"],
+      None,
     ),
   "server-discovery-and-monitoring/tests/unified/"
     "sharded-emit-topology-changed-before-close.json::test[1]": (
