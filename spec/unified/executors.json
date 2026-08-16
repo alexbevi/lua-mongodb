@@ -5118,6 +5118,34 @@
       "activity": "SES-008",
       "environment": "live-replicaset"
     },
+    "sessions/tests/snapshot-sessions.json::test[1]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[2]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[3]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[4]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[5]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[6]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[7]": {
+      "activity": "SES-006",
+      "environment": "live-replicaset"
+    },
     "sessions/tests/snapshot-sessions.json::test[8]": {
       "activity": "SES-004",
       "environment": "live-replicaset"

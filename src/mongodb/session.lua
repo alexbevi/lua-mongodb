@@ -846,6 +846,13 @@ local function read_concern_with_operation_time(read_concern, session_state)
 
   if session_state.snapshot then
     concern_entries[#concern_entries + 1] = { "level", "snapshot" }
+
+    if session_state.snapshot_time ~= nil then
+      concern_entries[#concern_entries + 1] = {
+        "atClusterTime",
+        session_state.snapshot_time,
+      }
+    end
   elseif session_state.causal_consistency
       and session_state.operation_time ~= nil
   then
@@ -970,6 +977,24 @@ function MANAGER_METHODS:decorate(command, options)
   return bson.document(entries)
 end
 
+local function advance_snapshot_time(response, session)
+  local session_state = SESSION_STATES[session]
+
+  if session_state == nil or not session_state.snapshot
+      or session_state.snapshot_time ~= nil
+  then
+    return
+  end
+
+  local cursor = response:get("cursor")
+  local snapshot_time = bson.is_document(cursor)
+    and cursor:get("atClusterTime") or response:get("atClusterTime")
+
+  if bson.is_tagged(snapshot_time, "timestamp") then
+    session_state.snapshot_time = snapshot_time
+  end
+end
+
 function MANAGER_METHODS:advance(response, session)
   if not bson.is_document(response) then
     return true
@@ -990,6 +1015,10 @@ function MANAGER_METHODS:advance(response, session)
 
   if session and bson.is_tagged(operation_time, "timestamp") then
     session:advance_operation_time(operation_time)
+  end
+
+  if session then
+    advance_snapshot_time(response, session)
   end
 
   return true

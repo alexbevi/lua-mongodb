@@ -3705,6 +3705,28 @@
       "notes": [],
       "started_at": "2026-08-16T18:38:58+00:00",
       "completed_at": "2026-08-16T18:43:08+00:00"
+    },
+    "SES-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua '--lpath=spec/support/?.lua' '--lpath=spec/support/?/init.lua' '--lpath=src/?.lua' '--lpath=src/?/init.lua' '--filter=captures.and.reuses.snapshot' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "0 successes, 1 failure: the command after cursor.atClusterTime capture still had no readConcern.atClusterTime",
+          "recorded_at": "2026-08-16T18:47:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua' FOCUS_UNIFIED='sessions/tests/snapshot-sessions.json' FOCUS_PYTHON='<coupled capability, ledger, v0.4, and release contracts>' FOCUS_LINT='src/mongodb/session.lua src/mongodb/session_executor.lua spec/unit/session_spec.lua'; make test-complexity; run artifact validators",
+          "exit_code": 0,
+          "summary": "24 Lua tests and 70 coupled Python tests passed; exact unified fixture: 8 executed, 8 passed, 0 environment-skipped, 5 deferred to SES-007, 0 failed; 3 Lua files linted; complexity, generated artifacts, release projections, plan, and diff checks passed",
+          "recorded_at": "2026-08-16T18:51:04+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T18:47:20+00:00",
+      "completed_at": "2026-08-16T18:51:05+00:00"
     }
   },
   "verified_references": {

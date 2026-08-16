@@ -325,6 +325,62 @@ describe("client sessions", function()
     assert.is_nil(decorated:get("readConcern"))
   end)
 
+  it("captures and reuses snapshot read timestamps", function()
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local snapshot = assert(sessions:start({ snapshot = true }))
+    local first = assert(sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { session = snapshot }
+    ))
+
+    assert.is_nil(first:get("readConcern"):get("atClusterTime"))
+    local captured = bson.timestamp(9, 1)
+
+    assert(sessions:advance(bson.document({
+      { "cursor", bson.document({ { "atClusterTime", captured } }) },
+    }), snapshot))
+    local second = assert(sessions:decorate(
+      bson.document({ { "aggregate", "items" } }),
+      { session = snapshot }
+    ))
+
+    assert.are.equal(
+      captured,
+      second:get("readConcern"):get("atClusterTime")
+    )
+    assert(sessions:advance(
+      bson.document({ { "atClusterTime", bson.timestamp(12, 1) } }),
+      snapshot
+    ))
+    local third = assert(sessions:decorate(
+      bson.document({ { "distinct", "items" } }),
+      { session = snapshot }
+    ))
+
+    assert.are.equal(
+      captured,
+      third:get("readConcern"):get("atClusterTime")
+    )
+
+    local supplied = bson.timestamp(15, 2)
+    local initialized = assert(sessions:start({
+      snapshot = true,
+      snapshot_time = supplied,
+    }))
+    local initial = assert(sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { session = initialized }
+    ))
+
+    assert.are.equal(
+      supplied,
+      initial:get("readConcern"):get("atClusterTime")
+    )
+  end)
+
   it("reuses clean server sessions and discards dirty sessions", function()
     local sessions = new_session_manager({
       id_factory = identifiers(),

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1407,
-    "runnable": 1407
+    "passed": 1414,
+    "runnable": 1414
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -73194,7 +73194,6 @@
     "sessions/tests/snapshot-sessions.json::test[1]": {
       "activity": "SES-006",
       "fingerprint": "5206a1ac0cc1f52a16c52876849ce610aa629285be77e4be3d40bca0f641bb26",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -73227,12 +73226,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[2]": {
       "activity": "SES-006",
       "fingerprint": "53fda4a68b0488c07c2fcec27cfecfd88cb0294639f122e79023a1dba3d60022",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -73266,12 +73264,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[3]": {
       "activity": "SES-006",
       "fingerprint": "9bed9613539e5d7e4c59e09bb353fc5cc8c5e744b99f10f6f77ecea51eb340ca",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -73304,12 +73301,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[4]": {
       "activity": "SES-006",
       "fingerprint": "ff551edc7d4b8c73d6732fe0f347d54d94775d2fec152479810af7edd2388a31",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -73338,12 +73334,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[5]": {
       "activity": "SES-006",
       "fingerprint": "aeb21ee03e62d31d02b8026b615df7d28281981618f8688398ed93d02180e26f",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -73383,12 +73378,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[6]": {
       "activity": "SES-006",
       "fingerprint": "9b19d0379151c59a1fc5a39abc05f67104c9f39f8073ada7ccbfd8f74e2bf34a",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -73422,12 +73416,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[7]": {
       "activity": "SES-006",
       "fingerprint": "c6a7e02a36f5205506cf6d11469567e70f70959ad94a31b2e050733407e4a6fc",
-      "reason": "snapshot timestamp capture awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -73456,7 +73449,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[8]": {
       "activity": "SES-004",

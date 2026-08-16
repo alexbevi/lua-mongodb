@@ -264,7 +264,7 @@ for index in range(1, 14):
     reason = OWNER_REASONS[owner]
   else:
     owner = "SES-006"
-    reason = OWNER_REASONS[owner]
+    reason = None
   TEST_OVERRIDES[
     f"sessions/tests/snapshot-sessions.json::test[{index}]"
   ] = (owner, reason)
