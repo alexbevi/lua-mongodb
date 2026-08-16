@@ -97,6 +97,50 @@ describe("CMAP connection pools", function()
     }, event_types)
   end)
 
+  it("reports authentication setup failure before closing the connection", function()
+    local runtime = fake_runtime.new()
+    local event_types = {}
+    local connection_pool
+
+    connection_pool = pool.new({
+      address = "a:27017",
+      connect = function()
+        return nil, errors.new({
+          category = errors.CATEGORY.AUTHENTICATION,
+          message = "authentication failed",
+        })
+      end,
+      listeners = {
+        function(event)
+          event_types[#event_types + 1] = event.type
+        end,
+      },
+      on_connection_error = function(err)
+        assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+        assert(connection_pool:clear(false))
+        return true
+      end,
+      runtime = runtime,
+    })
+
+    assert(connection_pool:ready())
+    local connection, err = connection_pool:check_out()
+
+    assert.is_nil(connection)
+    assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+    assert.are.equal("paused", connection_pool.state)
+    assert.are.equal(1, connection_pool.generation)
+    assert.same({
+      "ConnectionPoolCreated",
+      "ConnectionPoolReady",
+      "ConnectionCheckOutStarted",
+      "ConnectionCreated",
+      "ConnectionPoolCleared",
+      "ConnectionClosed",
+      "ConnectionCheckOutFailed",
+    }, event_types)
+  end)
+
   it("replenishes minPoolSize after a background connection error", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

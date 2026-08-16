@@ -4064,6 +4064,49 @@
       "notes": [],
       "started_at": "2026-08-16T21:54:44+00:00",
       "completed_at": "2026-08-16T21:58:33+00:00"
+    },
+    "CMAP-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua '--lpath=spec/support/?.lua' '--lpath=spec/support/?/init.lua' '--lpath=src/?.lua' '--lpath=src/?/init.lua' --filter=authentication spec/unit/pool_spec.lua",
+          "exit_code": 1,
+          "summary": "Authentication setup failure left the pool ready at generation zero because checkout establishment closed the failed connection without invoking the topology error callback first.",
+          "recorded_at": "2026-08-16T22:05:31+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=uses.supplied.capabilities spec/unit/api_handles_spec.lua'",
+          "exit_code": 2,
+          "summary": "Client construction performed one application capabilities discovery call instead of reusing the supplied handshake capabilities.",
+          "recorded_at": "2026-08-16T22:21:14+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=starts.socket.timeouts spec/unit/topology_spec.lua'",
+          "exit_code": 2,
+          "summary": "The socket deadline was fixed at 10.25 before a one-second topology checkout instead of starting at 11.25 for command I/O.",
+          "recorded_at": "2026-08-16T22:26:07+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unit/pool_spec.lua spec/unit/socket_timeout_executor_spec.lua spec/unit/topology_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-*.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/api.lua src/mongodb/client.lua src/mongodb/pool.lua src/mongodb/socket_timeout_executor.lua src/mongodb/topology_executor.lua spec/unified/execute.lua spec/unit/api_handles_spec.lua spec/unit/pool_spec.lua spec/unit/topology_spec.lua'",
+          "exit_code": 0,
+          "summary": "34 focused Lua tests passed; all five authentication-error unified fixtures executed and passed with zero failures, skips, or deferrals; 90 Python contracts passed; touched-file lint reported zero warnings.",
+          "recorded_at": "2026-08-16T22:31:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "capability, conformance, release-scope, v0.4-scope, release-checklist, README, JSON, Python compile, complexity, architecture, and diff validators",
+          "exit_code": 0,
+          "summary": "Generated projections are current at 3,738 passed / 1,784 deferred and v0.4 760 passed / 91 planned; complexity retained maximum 47; five architecture tests and the production graph passed; git diff check passed.",
+          "recorded_at": "2026-08-16T22:31:33+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T22:04:44+00:00",
+      "completed_at": "2026-08-16T22:31:38+00:00"
     }
   },
   "verified_references": {

@@ -470,6 +470,31 @@ for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
 
 TEST_OVERRIDES.update({
   "server-discovery-and-monitoring/tests/unified/"
+    "auth-error.json::test[1]": (
+      "CMAP-002",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
+    "auth-misc-command-error.json::test[1]": (
+      "CMAP-002",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
+    "auth-network-error.json::test[1]": (
+      "CMAP-002",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
+    "auth-network-timeout-error.json::test[1]": (
+      "CMAP-002",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
+    "auth-shutdown-error.json::test[1]": (
+      "CMAP-002",
+      None,
+    ),
+  "server-discovery-and-monitoring/tests/unified/"
     "cancel-server-check.json::test[1]": (
       "SDAM-007",
       None,

@@ -21,13 +21,17 @@ local function command_options(state, options)
   end
 
   if operation_timeout.current() == nil and state.timeout_ms > 0 then
-    local deadline = runtime_contract.deadline_after(
-      state.runtime,
-      state.timeout_ms / 1000
-    )
+    local function socket_deadline()
+      local deadline = runtime_contract.deadline_after(
+        state.runtime,
+        state.timeout_ms / 1000
+      )
 
-    result.socket_deadline = result.deadline and math.min(result.deadline, deadline)
-      or deadline
+      return result.deadline and math.min(result.deadline, deadline) or deadline
+    end
+
+    result.socket_deadline = socket_deadline()
+    result.socket_deadline_factory = socket_deadline
   end
 
   return result

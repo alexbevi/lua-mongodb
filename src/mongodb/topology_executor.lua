@@ -135,6 +135,15 @@ local function report_error(state, address, generation, err, when)
   })
 end
 
+local function refresh_socket_deadline(options)
+  local factory = options.socket_deadline_factory
+
+  if factory then
+    options.socket_deadline = factory()
+    options.socket_deadline_factory = nil
+  end
+end
+
 local function select_connection(state, operation, options)
   local context = operation_timeout.current()
   local deadline = options and options.deadline or context and context.deadline
@@ -167,13 +176,13 @@ local function select_connection(state, operation, options)
   end
 
   local pool = pool_or_err
-  local connection, checkout_err = pool:check_out({
+  local connection, checkout_err, reported = pool:check_out({
     cancellation = options and options.cancellation,
     deadline = deadline,
   })
 
   if not connection then
-    if not (errors.is(checkout_err, errors.CATEGORY.POOL)
+    if not reported and not (errors.is(checkout_err, errors.CATEGORY.POOL)
         and checkout_err:is_timeout())
     then
       report_error(
@@ -255,6 +264,7 @@ function METHODS:command(database, command, options)
 
   command_options.minimum_round_trip_time_ms =
     selected.minimum_round_trip_time_ms
+  refresh_socket_deadline(command_options)
   local response
 
   if options and options.on_server_selected then
@@ -288,6 +298,7 @@ function METHODS:measure(database, command, options)
 
   measure_options.minimum_round_trip_time_ms =
     selected.minimum_round_trip_time_ms
+  refresh_socket_deadline(measure_options)
   command = decorate_read_preference(selected, command)
   measurement, err = selected.executor:measure(database, command, measure_options)
   finish_connection(state, selected, err)

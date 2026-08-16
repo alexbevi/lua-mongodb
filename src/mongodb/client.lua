@@ -360,7 +360,8 @@ local function public_client(
     lazy_object_ids(runtime),
     sessions,
     runtime,
-    append_metadata
+    append_metadata,
+    capabilities
   )
 end
 

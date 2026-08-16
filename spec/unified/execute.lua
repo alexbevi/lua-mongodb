@@ -579,14 +579,16 @@ local function run_oidc_loopback(selections)
   return results
 end
 
-local function run_live(selections, topology)
+local function run_live(selections, topology, authenticated)
   local replica_set = topology == "replicaset"
   local sharded = topology == "sharded-replicaset"
-  local uri_name = sharded
+  local uri_name = authenticated
+    and "MONGODB_UNIFIED_AUTH_URI" or sharded
     and "MONGODB_UNIFIED_SHARDED_URI"
     or replica_set and "MONGODB_UNIFIED_REPLICA_SET_URI"
     or "MONGODB_UNIFIED_URI"
-  local version_name = sharded
+  local version_name = authenticated
+    and "MONGODB_UNIFIED_AUTH_SERVER_VERSION" or sharded
     and "MONGODB_UNIFIED_SHARDED_SERVER_VERSION"
     or replica_set and "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
     or "MONGODB_UNIFIED_SERVER_VERSION"
@@ -748,6 +750,8 @@ local function run(identities)
     return run_loopback(selections[1])
   elseif environment == "live-standalone" then
     return run_live(selections, "single")
+  elseif environment == "live-authenticated-standalone" then
+    return run_live(selections, "single", true)
   elseif environment == "live-replicaset" then
     return run_live(selections, "replicaset")
   elseif environment == "isolated-replicaset" then

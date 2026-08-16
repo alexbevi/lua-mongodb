@@ -4,6 +4,7 @@ local fake_runtime = require("mongodb.runtime.fake")
 local pool = require("mongodb.pool")
 local runtime_module = require("mongodb.runtime")
 local sdam_runner = require("spec.support.sdam_runner")
+local socket_timeout_executor = require("mongodb.socket_timeout_executor")
 local topology = require("mongodb.topology")
 local topology_executor = require("mongodb.topology_executor")
 
@@ -679,6 +680,51 @@ describe("monitored topology", function()
     assert.is_nil(sent_commands[3]:get("$readPreference"))
     assert.are.equal(0, manager:pool("a:27017").operation_count)
     assert.are.equal(0, manager:pool("b:27017").operation_count)
+    assert(commands:close())
+  end)
+
+  it("starts socket timeouts after topology checkout", function()
+    local runtime = fake_runtime.new({ now = 10 })
+    local received_deadline
+    local manager = topology.new({
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            runtime:advance(1)
+            return {
+              close = function() return true end,
+              command = function(_, _, _, options)
+                received_deadline = options.socket_deadline
+                return bson.document({ { "ok", 1 } })
+              end,
+            }
+          end,
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "a:27017" },
+      set_name = "rs",
+      type = "ReplicaSetNoPrimary",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("a:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "setName", "rs" },
+      { "hosts", bson.array({ "a:27017" }) },
+      { "maxWireVersion", 21 },
+    }), { duration = 0.001 }))
+    local commands = socket_timeout_executor.new(
+      topology_executor.new(manager),
+      runtime,
+      250
+    )
+
+    assert(commands:command("db", bson.document({ { "ping", 1 } })))
+    assert.near(11.25, received_deadline, 0.000001)
     assert(commands:close())
   end)
 

@@ -36,6 +36,9 @@ DEFAULT_PROGRESS = ROOT / "planning" / "progress.json"
 DEFAULT_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
 DEFAULT_EXECUTOR_REGISTRY = ROOT / "spec" / "unified" / "executors.json"
 CSOT_FIXTURE_PREFIX = "client-side-operations-timeout/"
+AUTHENTICATED_STANDALONE_ENVIRONMENT = "live-authenticated-standalone"
+AUTHENTICATED_STANDALONE_URI = "MONGODB_UNIFIED_AUTH_URI"
+AUTHENTICATED_STANDALONE_VERSION = "MONGODB_UNIFIED_AUTH_SERVER_VERSION"
 MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/close-cursors.json::test[1]",
   "client-side-operations-timeout/tests/close-cursors.json::test[2]",
@@ -1164,10 +1167,19 @@ def _mongod_version(executable: str) -> str:
 def standalone_environment(
   classifications: list[dict[str, Any]],
   registry: dict[str, Any],
+  authenticated: bool = False,
 ):
+  environment_name = (
+    AUTHENTICATED_STANDALONE_ENVIRONMENT if authenticated else "live-standalone"
+  )
+  uri_name = AUTHENTICATED_STANDALONE_URI if authenticated else "MONGODB_UNIFIED_URI"
+  version_name = (
+    AUTHENTICATED_STANDALONE_VERSION
+    if authenticated else "MONGODB_UNIFIED_SERVER_VERSION"
+  )
   needs_server = any(
     value["status"] == "runnable"
-    and registry.get(value["id"], {}).get("environment") == "live-standalone"
+    and registry.get(value["id"], {}).get("environment") == environment_name
     for value in classifications
   )
   environment = os.environ.copy()
@@ -1176,22 +1188,27 @@ def standalone_environment(
     yield environment
     return
 
-  configured_uri = environment.get("MONGODB_UNIFIED_URI")
+  configured_uri = environment.get(uri_name)
 
   if configured_uri:
-    if not environment.get("MONGODB_UNIFIED_SERVER_VERSION"):
+    if not environment.get(version_name):
       raise CapabilityError(
-        "MONGODB_UNIFIED_SERVER_VERSION is required with MONGODB_UNIFIED_URI"
+        f"{version_name} is required with {uri_name}"
       )
+
+    if authenticated and "@" not in urlsplit(configured_uri).netloc:
+      raise CapabilityError(f"{uri_name} must include authentication credentials")
 
     yield environment
     return
 
   executable = environment.get("MONGOD") or shutil.which("mongod")
+  shell = environment.get("MONGOSH") or shutil.which("mongosh")
 
-  if not executable:
+  if not executable or (authenticated and not shell):
     raise CapabilityError(
-      "runnable live unified cases require mongod; set MONGOD or MONGODB_UNIFIED_URI"
+      "runnable live unified cases require mongod"
+      + (" and mongosh" if authenticated else "")
     )
 
   version = _mongod_version(executable)
@@ -1221,6 +1238,9 @@ def standalone_environment(
     if accepts_api_version_2:
       mongod_command.extend(["--setParameter", "acceptApiVersion2=1"])
 
+    if authenticated:
+      mongod_command.append("--auth")
+
     process = subprocess.Popen(
       mongod_command,
       stdout=subprocess.DEVNULL,
@@ -1246,8 +1266,36 @@ def standalone_environment(
       else:
         raise CapabilityError("ephemeral mongod did not become ready within 15 seconds")
 
-      environment["MONGODB_UNIFIED_URI"] = f"mongodb://127.0.0.1:{port}"
-      environment["MONGODB_UNIFIED_SERVER_VERSION"] = version
+      uri = f"mongodb://127.0.0.1:{port}"
+
+      if authenticated:
+        username = "lua_mongodb_unified"
+        password = "lua_mongodb_unified_password"
+        create_user = subprocess.run(
+          [
+            shell,
+            f"{uri}/admin",
+            "--quiet",
+            "--eval",
+            (
+              'db.createUser({user:"' + username + '",pwd:"' + password
+              + '",roles:[{role:"root",db:"admin"}]})'
+            ),
+          ],
+          capture_output=True,
+          text=True,
+        )
+
+        if create_user.returncode != 0:
+          raise CapabilityError(
+            "could not create ephemeral authenticated unified user: "
+            + (create_user.stderr or create_user.stdout).strip()
+          )
+
+        uri = f"mongodb://{username}:{password}@127.0.0.1:{port}/admin"
+
+      environment[uri_name] = uri
+      environment[version_name] = version
       environment["MONGODB_UNIFIED_TEST_COMMANDS"] = "1"
       yield environment
     finally:
@@ -1683,6 +1731,32 @@ def main(argv: list[str] | None = None) -> int:
     batches = execution_batches(selected, registry)
     timings.finish_setup()
     execution_results: dict[str, tuple[str, str | None]] = {}
+    authenticated_batches = [
+      batch
+      for batch in batches
+      if registry.get(batch[0]["id"], {}).get("environment")
+        == AUTHENTICATED_STANDALONE_ENVIRONMENT
+    ]
+
+    if authenticated_batches:
+      authenticated_classifications = [
+        classification
+        for batch in authenticated_batches
+        for classification in batch
+      ]
+
+      with ExitStack() as authenticated_resources:
+        with timings.observe_environment(AUTHENTICATED_STANDALONE_ENVIRONMENT):
+          authenticated_environment = authenticated_resources.enter_context(
+            standalone_environment(
+              authenticated_classifications,
+              registry,
+              authenticated=True,
+            )
+          )
+
+        for batch in authenticated_batches:
+          execution_results.update(execute_batch(batch, authenticated_environment))
 
     for batch in batches:
       entry = registry.get(batch[0]["id"], {})
@@ -1730,8 +1804,10 @@ def main(argv: list[str] | None = None) -> int:
     needed_environments = {
       registry.get(batch[0]["id"], {}).get("environment")
       for batch in batches
-      if registry.get(batch[0]["id"], {}).get("environment")
-      != "isolated-replicaset"
+      if registry.get(batch[0]["id"], {}).get("environment") not in {
+        "isolated-replicaset",
+        AUTHENTICATED_STANDALONE_ENVIRONMENT,
+      }
     }
 
     with ExitStack() as environments:
@@ -1770,7 +1846,10 @@ def main(argv: list[str] | None = None) -> int:
       for batch in batches:
         entry = registry.get(batch[0]["id"], {})
 
-        if entry.get("environment") != "isolated-replicaset":
+        if entry.get("environment") not in {
+          "isolated-replicaset",
+          AUTHENTICATED_STANDALONE_ENVIRONMENT,
+        }:
           execution_results.update(execute_batch(batch, environment))
 
       report = build_report(

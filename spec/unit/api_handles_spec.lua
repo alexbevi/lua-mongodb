@@ -5,6 +5,45 @@ local driver_options = require("mongodb.config.options")
 local fake_runtime = require("mongodb.runtime.fake")
 
 describe("core MongoDB handles", function()
+  it("uses supplied capabilities without application discovery", function()
+    local discovery_calls = 0
+    local executor = {
+      capabilities = function()
+        discovery_calls = discovery_calls + 1
+        return {
+          max_bson_size = 1,
+          max_message_size = 1,
+          max_wire_version = 1,
+          max_write_batch_size = 1,
+        }
+      end,
+      close = function() return true end,
+      command = function()
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local capabilities = {
+      max_bson_size = 16 * 1024 * 1024,
+      max_message_size = 48000000,
+      max_wire_version = 25,
+      max_write_batch_size = 100000,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize()),
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      nil,
+      capabilities
+    )
+
+    assert.are.equal(0, discovery_calls)
+    assert(client:database("db"))
+  end)
+
   it("validates immutable namespaces, inherits options, runs commands, and closes", function()
     local calls = {}
     local executor = {

@@ -913,7 +913,8 @@ function M.new_client(
   object_ids,
   sessions,
   runtime,
-  append_metadata
+  append_metadata,
+  capabilities
 )
   if type(executor) ~= "table" or type(executor.command) ~= "function"
       or type(executor.close) ~= "function"
@@ -934,7 +935,9 @@ function M.new_client(
   end
 
   local value = {}
-  local capabilities = type(executor.capabilities) == "function" and executor:capabilities()
+
+  capabilities = capabilities
+    or type(executor.capabilities) == "function" and executor:capabilities()
 
   local state = {
     append_metadata = append_metadata,

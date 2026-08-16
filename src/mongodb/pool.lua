@@ -331,14 +331,23 @@ local function establish(
     connect_err = add_backpressure_labels(connect_err)
     assert(acquire(state))
     local detached = detach_locked(state, connection)
+    local reported = false
 
     state.lock:release()
 
     if detached and not defer_failure_close then
+      if errors.is(connect_err, errors.CATEGORY.AUTHENTICATION)
+          and state.on_connection_error
+      then
+        local callback_ok, decision = pcall(state.on_connection_error, connect_err)
+
+        reported = callback_ok and type(decision) == "boolean"
+      end
+
       finish_close(state, connection, "error")
     end
 
-    return nil, connect_err, detached
+    return nil, connect_err, detached, reported
   end
 
   connection_state.resource = resource
@@ -602,7 +611,7 @@ local function connection_is_perished(state, connection)
   return false
 end
 
-local function checkout_failed(state, reason, started_at, err, counted)
+local function checkout_failed(state, reason, started_at, err, counted, reported)
   if counted then
     assert(acquire(state))
     state.operation_count = state.operation_count - 1
@@ -613,7 +622,7 @@ local function checkout_failed(state, reason, started_at, err, counted)
     duration_ms = duration_ms(state, started_at),
     reason = reason,
   })
-  return nil, err
+  return nil, err, reported
 end
 
 local function remove_waiter(state, waiter)
@@ -765,7 +774,7 @@ function POOL_METHODS:check_out(options)
           finish_close(state, item[1], item[2])
         end
 
-        local established, establish_err = establish(
+        local established, establish_err, _, reported = establish(
           self,
           connection,
           "in_use",
@@ -779,7 +788,8 @@ function POOL_METHODS:check_out(options)
             "connectionError",
             started_at,
             establish_err,
-            true
+            true,
+            reported
           )
         end
 
