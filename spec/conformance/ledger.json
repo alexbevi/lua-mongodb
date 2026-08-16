@@ -43569,13 +43569,13 @@
       "activity": "IDX-005",
       "fingerprint": "3c45c443fe6cbf89df593bb400549611b3577735768108806b03064e7bde6708",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "index-management/tests/dropSearchIndex.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "index-management"
     },
     "index-management/tests/index-rawdata.json::test[1]": {
@@ -86653,9 +86653,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1812,
+      "deferred_unsupported": 1811,
       "excluded_scope": 2,
-      "passed": 3710
+      "passed": 3711
     },
     "suites": {
       "auth": 73,

@@ -3837,6 +3837,28 @@
       "notes": [],
       "started_at": "2026-08-16T19:44:36+00:00",
       "completed_at": "2026-08-16T19:47:04+00:00"
+    },
+    "IDX-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua --filter=idempotently spec/unit/admin_spec.lua",
+          "exit_code": 1,
+          "summary": "The defining idempotent Search-index drop test errored at spec/unit/admin_spec.lua:578 because the collection had no drop_search_index method (0 successes, 1 error).",
+          "recorded_at": "2026-08-16T19:53:17+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua' FOCUS_UNIFIED='index-management/tests/dropSearchIndex.json' FOCUS_PYTHON='spec.unified.test_cli' FOCUS_LINT='src/mongodb/admin.lua src/mongodb/api.lua spec/support/mongodb/unified/driver.lua spec/unit/admin_spec.lua spec/integration/admin_spec.lua'; make test-complexity; run capability and JSON validators",
+          "exit_code": 0,
+          "summary": "16 focused Lua unit tests, one loopback OP_MSG integration test, and 62 capability Python tests passed; exact unified fixture: 1 executed, 1 passed, 0 environment-skipped, 0 deferred, 0 failed; five touched Lua files linted with zero warnings; complexity and generated capability artifacts passed.",
+          "recorded_at": "2026-08-16T19:54:45+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T19:52:44+00:00",
+      "completed_at": "2026-08-16T19:55:11+00:00"
     }
   },
   "verified_references": {

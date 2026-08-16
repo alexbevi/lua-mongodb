@@ -1144,6 +1144,38 @@ function M.update_search_index(state, name, definition, options)
   return true
 end
 
+function M.drop_search_index(state, name, options)
+  if type(name) ~= "string" or name == "" or utf8.len(name) == nil
+      or name:find("%z")
+  then
+    error("search index name must be a non-empty UTF-8 string without null bytes", 3)
+  end
+
+  options = validate_options(options, SEARCH_INDEX_OPTIONS, "drop_search_index")
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document({
+      { "dropSearchIndex", state.name },
+      { "name", name },
+    }),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      session = options.session,
+    }
+  )
+
+  if not response and err and err.code == 26 then
+    return true
+  end
+
+  if not response then
+    return nil, err
+  end
+
+  return true
+end
+
 function M.list_search_indexes(state, name, options)
   if name ~= nil and type(name) ~= "string" then
     error("search index name must be a string", 3)

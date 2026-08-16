@@ -1760,6 +1760,7 @@
     "index-management/tests/listSearchIndexes.json::test[2]": {"activity": "IDX-003", "environment": "live-replicaset"},
     "index-management/tests/listSearchIndexes.json::test[3]": {"activity": "IDX-003", "environment": "live-replicaset"},
     "index-management/tests/updateSearchIndex.json::test[1]": {"activity": "IDX-004", "environment": "live-replicaset"},
+    "index-management/tests/dropSearchIndex.json::test[1]": {"activity": "IDX-005", "environment": "live-replicaset"},
     "crud/tests/unified/aggregate-rawdata.json::test[1]": {
       "activity": "REL-004",
       "environment": "live-standalone"

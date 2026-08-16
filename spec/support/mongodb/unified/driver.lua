@@ -1472,6 +1472,13 @@ local function update_search_index(_, collection, arguments)
   )
 end
 
+local function drop_search_index(_, collection, arguments)
+  return collection:drop_search_index(
+    arguments:get("name"),
+    operation_options(arguments, {})
+  )
+end
+
 local function drop_index(_, collection, arguments)
   return collection:drop_index(arguments:get("name"), operation_options(
     arguments,
@@ -2159,6 +2166,10 @@ function M.new(options)
         updateSearchIndex = {
           arguments = { "definition", "name" },
           handler = update_search_index,
+        },
+        dropSearchIndex = {
+          arguments = { "name" },
+          handler = drop_search_index,
         },
         dropIndex = {
           arguments = { "name", "rawData", "timeoutMS" },

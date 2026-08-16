@@ -544,6 +544,52 @@ describe("database and collection management", function()
     assert.are.equal(2, #commands)
   end)
 
+  it("drops a Search index idempotently", function()
+    local commands = {}
+    local missing = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 26,
+      message = "namespace not found",
+    })
+    local failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 13,
+      message = "not authorized",
+    })
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if #commands == 2 then
+          return nil, missing
+        elseif #commands == 3 then
+          return nil, failure
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local collection = assert(api.new_client(executor, config())
+      :database("app"):collection("events"))
+
+    assert.is_true(collection:drop_search_index("standard"))
+    assert.are.equal("dropSearchIndex", commands[1]:keys()[1])
+    assert.are.equal("events", commands[1]:get("dropSearchIndex"))
+    assert.are.equal("standard", commands[1]:get("name"))
+    assert.is_true(collection:drop_search_index("standard"))
+    local dropped, err = collection:drop_search_index("standard")
+
+    assert.is_nil(dropped)
+    assert.are.equal(failure, err)
+    assert.has_error(function()
+      collection:drop_search_index(1)
+    end, "search index name must be a non-empty UTF-8 string without null bytes")
+    assert.are.equal(3, #commands)
+  end)
+
   it("lists indexes and inherits comments on getMore", function()
     local commands = {}
     local responses = {

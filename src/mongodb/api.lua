@@ -766,6 +766,10 @@ function COLLECTION_METHODS:update_search_index(name, definition, options)
   )
 end
 
+function COLLECTION_METHODS:drop_search_index(name, options)
+  return collection_operation(self, admin.drop_search_index, name, options)
+end
+
 function COLLECTION_METHODS:drop(options)
   local state = COLLECTION_STATES[self]
   local client_state = CLIENT_STATES[state.client]
