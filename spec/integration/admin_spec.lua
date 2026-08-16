@@ -65,6 +65,17 @@ describe("administration commands over OP_MSG", function()
         }) },
       }))
 
+      local create_search_indexes = receive_frame(peer)
+      assert.are.equal("createSearchIndexes", create_search_indexes.body:keys()[1])
+      assert.are.equal(2, #create_search_indexes.body:get("indexes"))
+      send_response(peer, create_search_indexes, bson.document({
+        { "ok", 1 },
+        { "indexesCreated", bson.array({
+          bson.document({ { "name", "search-a" } }),
+          bson.document({ { "name", "search-b" } }),
+        }) },
+      }))
+
       local list_indexes = receive_frame(peer)
       assert.are.equal("listIndexes", list_indexes.body:keys()[1])
       send_response(peer, list_indexes, bson.document({
@@ -147,6 +158,21 @@ describe("administration commands over OP_MSG", function()
             { "type", "vectorSearch" },
           })
         )))
+        local search_names = assert(collection:create_search_indexes({
+          bson.document({
+            { "definition", bson.document({ { "mappings", bson.document({}) } }) },
+            { "name", "search-a" },
+          }),
+          bson.document({
+            { "definition", bson.document({ { "mappings", bson.document({}) } }) },
+            { "name", "search-b" },
+          }),
+        }))
+
+        assert.are.same(
+          { "search-a", "search-b" },
+          { search_names[1], search_names[2] }
+        )
         local indexes = assert(collection:list_indexes())
 
         assert.are.equal("_id_", assert(indexes:next()):get("name"))

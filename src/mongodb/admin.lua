@@ -1009,11 +1009,43 @@ end
 
 function M.create_search_index(state, model, options)
   options = validate_options(options, SEARCH_INDEX_OPTIONS, "create_search_index")
+  local names, err = M.create_search_indexes(state, { model }, options)
+
+  if not names then
+    return nil, err
+  end
+
+  return names[1]
+end
+
+local function search_index_models(models)
+  if type(models) ~= "table" then
+    error("search indexes must be a dense array", 3)
+  end
+
+  for key in pairs(models) do
+    if math.type(key) ~= "integer" or key < 1 or key > #models then
+      error("search indexes must be a dense array", 3)
+    end
+  end
+
+  local documents = {}
+
+  for index, model in ipairs(models) do
+    documents[index] = search_index_model(model)
+  end
+
+  return bson.array(documents)
+end
+
+function M.create_search_indexes(state, models, options)
+  options = validate_options(options, SEARCH_INDEX_OPTIONS, "create_search_indexes")
+  local indexes = search_index_models(models)
   local response, err = state.executor:command(
     state.database_name,
     bson.document({
       { "createSearchIndexes", state.name },
-      { "indexes", bson.array({ search_index_model(model) }) },
+      { "indexes", indexes },
     }),
     {
       cancellation = options.cancellation,
@@ -1028,15 +1060,23 @@ function M.create_search_index(state, model, options)
 
   local created = response:get("indexesCreated")
 
-  if not bson.is_array(created) or #created ~= 1
-      or not bson.is_document(created:get(1))
-      or type(created:get(1):get("name")) ~= "string"
-      or created:get(1):get("name") == ""
-  then
+  if not bson.is_array(created) or #created ~= #indexes then
     return protocol_error("createSearchIndexes response contains an invalid created index")
   end
 
-  return created:get(1):get("name")
+  local names = {}
+
+  for index, item in created:iter() do
+    local name = bson.is_document(item) and item:get("name") or nil
+
+    if type(name) ~= "string" or name == "" then
+      return protocol_error("createSearchIndexes response contains an invalid created index")
+    end
+
+    names[index] = name
+  end
+
+  return readonly_list(names, "search_index_names")
 end
 
 local function drop_index(state, name, options, all)

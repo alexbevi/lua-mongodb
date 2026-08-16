@@ -1381,6 +1381,36 @@ local function create_search_index(_, collection, arguments)
   )
 end
 
+local function create_search_indexes(_, collection, arguments)
+  local models = {}
+  local unified_models = arguments:get("models")
+
+  if bson.is_array(unified_models) then
+    for index, model in unified_models:iter() do
+      models[index] = model
+    end
+  else
+    models = unified_models
+  end
+
+  local names, err = collection:create_search_indexes(
+    models,
+    operation_options(arguments, {})
+  )
+
+  if not names then
+    return nil, err
+  end
+
+  local values = {}
+
+  for index = 1, #names do
+    values[index] = names[index]
+  end
+
+  return bson.array(values)
+end
+
 local function drop_index(_, collection, arguments)
   return collection:drop_index(arguments:get("name"), operation_options(
     arguments,
@@ -2056,6 +2086,10 @@ function M.new(options)
         createSearchIndex = {
           arguments = { "model" },
           handler = create_search_index,
+        },
+        createSearchIndexes = {
+          arguments = { "models" },
+          handler = create_search_indexes,
         },
         dropIndex = {
           arguments = { "name", "rawData", "timeoutMS" },

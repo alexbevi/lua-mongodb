@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1422,
-    "runnable": 1422
+    "passed": 1426,
+    "runnable": 1426
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50675,7 +50675,6 @@
     "index-management/tests/createSearchIndexes.json::test[1]": {
       "activity": "IDX-002",
       "fingerprint": "b69c43066425459b651b1afd59b0a06562f2bf5ac80d6c23567897aedef93d51",
-      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50701,12 +50700,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/createSearchIndexes.json::test[2]": {
       "activity": "IDX-002",
       "fingerprint": "7ab202fde92248d0e88254f6b3e513593a8464c115ab8f7ed6474c1b065d968b",
-      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50732,12 +50730,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/createSearchIndexes.json::test[3]": {
       "activity": "IDX-002",
       "fingerprint": "4dc09b65c4536a7570433cba1b7fca3db734786b408ebd3b7947c4b13f2641d8",
-      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50763,12 +50760,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/createSearchIndexes.json::test[4]": {
       "activity": "IDX-002",
       "fingerprint": "ef15b64db4c318baa90d18948eda6dbaa928456993e6baed32a1018227d7bacf",
-      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50794,7 +50790,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/dropSearchIndex.json::test[1]": {
       "activity": "IDX-005",

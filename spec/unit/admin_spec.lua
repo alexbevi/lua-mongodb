@@ -377,6 +377,76 @@ describe("database and collection management", function()
     assert.are.equal(2, calls)
   end)
 
+  it("creates multiple Search indexes in model order", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, value)
+        commands[#commands + 1] = value
+        local created = {}
+
+        if #value:get("indexes") > 0 then
+          created = {
+            bson.document({ { "name", "standard" } }),
+            bson.document({ { "name", "vectors" } }),
+          }
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "indexesCreated", bson.array(created) },
+        })
+      end,
+    }
+    local collection = assert(api.new_client(executor, config())
+      :database("app"):collection("events"))
+    local names = assert(collection:create_search_indexes({
+      bson.document({
+        { "definition", bson.document({
+          { "mappings", bson.document({ { "dynamic", true } }) },
+        }) },
+        { "name", "standard" },
+        { "type", "search" },
+      }),
+      bson.document({
+        { "definition", bson.document({
+          { "fields", bson.array({
+            bson.document({
+              { "type", "vector" },
+              { "path", "embedding" },
+              { "numDimensions", 3 },
+              { "similarity", "euclidean" },
+            }),
+          }) },
+        }) },
+        { "name", "vectors" },
+        { "type", "vectorSearch" },
+      }),
+    }))
+
+    assert.are.same({ "standard", "vectors" }, { names[1], names[2] })
+    local command = commands[1]
+
+    assert.are.equal("standard", command:get("indexes"):get(1):get("name"))
+    assert.are.equal("vectors", command:get("indexes"):get(2):get("name"))
+    assert.has_error(function()
+      names[1] = "changed"
+    end, "administration results are immutable")
+    local empty = assert(collection:create_search_indexes({}))
+
+    assert.are.equal(0, #empty)
+    assert.are.equal(0, #commands[2]:get("indexes"))
+    assert.has_error(function()
+      collection:create_search_indexes("models")
+    end, "search indexes must be a dense array")
+    assert.has_error(function()
+      collection:create_search_indexes({ [2] = bson.document({}) })
+    end, "search indexes must be a dense array")
+    assert.are.equal(2, #commands)
+  end)
+
   it("lists indexes and inherits comments on getMore", function()
     local commands = {}
     local responses = {

@@ -18,7 +18,6 @@
     "CMAP-003": 8,
     "CMAP-004": 3,
     "DNS-001": 4,
-    "IDX-002": 4,
     "IDX-003": 3,
     "IDX-004": 1,
     "IDX-005": 1,
@@ -36,8 +35,8 @@
   "schema_version": 1,
   "suites": {
     "index-management": {
-      "passed": 5,
-      "planned": 14
+      "passed": 9,
+      "planned": 10
     },
     "initial-dns-seedlist-discovery": {
       "excluded": 9,
@@ -70,8 +69,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 724,
-    "planned": 127,
+    "passed": 728,
+    "planned": 123,
     "supported": 851
   },
   "target_owners": [

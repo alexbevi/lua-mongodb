@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1820,
+      "deferred_unsupported": 1816,
       "excluded_scope": 2,
-      "passed": 3702,
+      "passed": 3706,
     }, generated["summary"]["statuses"])
 
     snapshot_transaction = generated["cases"][
@@ -256,8 +256,8 @@ class ConformanceLedgerTests(unittest.TestCase):
       [cases[identity]["activity"] for identity in search_indexes],
     )
     self.assertEqual(
-      ["passed"] * 3,
-      [cases[identity]["status"] for identity in search_indexes[:3]],
+      ["passed"] * 7,
+      [cases[identity]["status"] for identity in search_indexes[:7]],
     )
     self.assertNotIn("REL-017", {case["activity"] for case in cases.values()})
 
