@@ -3595,6 +3595,28 @@
       "notes": [],
       "started_at": "2026-08-14T20:29:56+00:00",
       "completed_at": "2026-08-14T20:39:26+00:00"
+    },
+    "CON-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope'",
+          "exit_code": 2,
+          "summary": "One focused test module failed to import because spec.v04.scope does not exist, exposing the missing generated v0.4 parity classifier and report.",
+          "recorded_at": "2026-08-16T17:45:24+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope'; capability, conformance, production release-scope, v0.4 scope, README projection, Python compile, strict plan, and diff validators",
+          "exit_code": 0,
+          "summary": "68 focused Python tests passed; 2 v0.4 scope target/stale-owner tests passed through the new Make target; 5524 ledger cases remained fully classified with 3671 passed and 1851 explicit deferrals; the v0.4 projection classified 898 domain cases as 693 passed, 158 planned across exact vertical owners, and 47 accountable exclusions, including 48 passing modern read/write-concern cases and one legacy exclusion; all generated --check validators, Python compile, strict planning validation, and diff checks passed; no unified execution was newly applicable in this classification-only slice.",
+          "recorded_at": "2026-08-16T17:50:52+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T17:43:52+00:00",
+      "completed_at": "2026-08-16T17:50:57+00:00"
     }
   },
   "verified_references": {

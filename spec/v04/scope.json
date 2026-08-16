@@ -1,0 +1,111 @@
+{
+  "excluded_by_activity": {
+    "ADV-006": 14,
+    "ADV-007": 6,
+    "ADV-009": 24,
+    "ADV-011": 3
+  },
+  "exclusion_reasons": {
+    "ADV-006": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "ADV-007": "client bulk write remains a separate post-v0.4 capability",
+    "ADV-009": "logging and backpressure remain separate post-v0.4 capabilities",
+    "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
+  },
+  "planned_by_activity": {
+    "ADV-005": 1,
+    "CFG-004": 1,
+    "CMAP-002": 5,
+    "CMAP-003": 8,
+    "CMAP-004": 3,
+    "DNS-001": 4,
+    "IDX-001": 3,
+    "IDX-002": 4,
+    "IDX-003": 3,
+    "IDX-004": 1,
+    "IDX-005": 1,
+    "IDX-006": 5,
+    "SDAM-004": 1,
+    "SDAM-005": 6,
+    "SDAM-006": 7,
+    "SDAM-007": 1,
+    "SES-004": 1,
+    "SES-005": 15,
+    "SES-006": 7,
+    "SES-007": 5,
+    "TXN-003": 9,
+    "TXN-004": 7,
+    "TXN-005": 4,
+    "TXN-006": 20,
+    "TXN-007": 36
+  },
+  "schema_version": 1,
+  "suites": {
+    "index-management": {
+      "passed": 2,
+      "planned": 17
+    },
+    "initial-dns-seedlist-discovery": {
+      "excluded": 9,
+      "passed": 40,
+      "planned": 4
+    },
+    "read-write-concern": {
+      "excluded": 1,
+      "passed": 48
+    },
+    "run-command": {
+      "excluded": 3,
+      "passed": 17,
+      "planned": 1
+    },
+    "server-discovery-and-monitoring": {
+      "excluded": 18,
+      "passed": 409,
+      "planned": 32
+    },
+    "sessions": {
+      "passed": 11,
+      "planned": 28
+    },
+    "transactions": {
+      "excluded": 16,
+      "passed": 166,
+      "planned": 76
+    }
+  },
+  "summary": {
+    "classified": 898,
+    "excluded": 47,
+    "passed": 693,
+    "planned": 158,
+    "supported": 851
+  },
+  "target_owners": [
+    "ADV-005",
+    "CFG-004",
+    "CMAP-002",
+    "CMAP-003",
+    "CMAP-004",
+    "DNS-001",
+    "IDX-001",
+    "IDX-002",
+    "IDX-003",
+    "IDX-004",
+    "IDX-005",
+    "IDX-006",
+    "SDAM-004",
+    "SDAM-005",
+    "SDAM-006",
+    "SDAM-007",
+    "SES-004",
+    "SES-005",
+    "SES-006",
+    "SES-007",
+    "TXN-003",
+    "TXN-004",
+    "TXN-005",
+    "TXN-006",
+    "TXN-007"
+  ],
+  "type": "v0.4-sharded-parity-scope"
+}

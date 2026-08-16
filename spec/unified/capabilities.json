@@ -50583,9 +50583,9 @@
       "status": "runnable"
     },
     "index-management/tests/createSearchIndex.json::test[1]": {
-      "activity": "ADV-011",
+      "activity": "IDX-001",
       "fingerprint": "13b9e941ea663486c93b5088c45ae4e2bf35bb6e32a77113f85168098dbcbc14",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "single Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndex.model"
@@ -50614,9 +50614,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/createSearchIndex.json::test[2]": {
-      "activity": "ADV-011",
+      "activity": "IDX-001",
       "fingerprint": "49e7a78d1ef9ad7a62d74450d239d96992b56a88f8a635ce88ff15c42b561b44",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "single Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndex.model"
@@ -50645,9 +50645,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/createSearchIndex.json::test[3]": {
-      "activity": "ADV-011",
+      "activity": "IDX-001",
       "fingerprint": "247b6335470a1196b9bdb0275006b4fb39d5c80530fcd3319e115a211129ed5d",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "single Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndex.model"
@@ -50676,9 +50676,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/createSearchIndexes.json::test[1]": {
-      "activity": "ADV-011",
+      "activity": "IDX-002",
       "fingerprint": "b69c43066425459b651b1afd59b0a06562f2bf5ac80d6c23567897aedef93d51",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50707,9 +50707,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/createSearchIndexes.json::test[2]": {
-      "activity": "ADV-011",
+      "activity": "IDX-002",
       "fingerprint": "7ab202fde92248d0e88254f6b3e513593a8464c115ab8f7ed6474c1b065d968b",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50738,9 +50738,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/createSearchIndexes.json::test[3]": {
-      "activity": "ADV-011",
+      "activity": "IDX-002",
       "fingerprint": "4dc09b65c4536a7570433cba1b7fca3db734786b408ebd3b7947c4b13f2641d8",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50769,9 +50769,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/createSearchIndexes.json::test[4]": {
-      "activity": "ADV-011",
+      "activity": "IDX-002",
       "fingerprint": "ef15b64db4c318baa90d18948eda6dbaa928456993e6baed32a1018227d7bacf",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "multiple Search index creation awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -50800,9 +50800,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/dropSearchIndex.json::test[1]": {
-      "activity": "ADV-011",
+      "activity": "IDX-005",
       "fingerprint": "3c45c443fe6cbf89df593bb400549611b3577735768108806b03064e7bde6708",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index deletion awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "dropSearchIndex.name"
@@ -50897,9 +50897,9 @@
       "status": "runnable"
     },
     "index-management/tests/listSearchIndexes.json::test[1]": {
-      "activity": "ADV-011",
+      "activity": "IDX-003",
       "fingerprint": "08f8a2728c030773dad0243d87d9e6d61e5b957d074e564f44192c797405dbde",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index listing awaits the v0.4 index slice",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -50926,9 +50926,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/listSearchIndexes.json::test[2]": {
-      "activity": "ADV-011",
+      "activity": "IDX-003",
       "fingerprint": "9f0af305827a5ad86b00faeb341a036dc2faac9ec56f1261fab2c24ec6ae9194",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index listing awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "listSearchIndexes.name"
@@ -50957,9 +50957,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/listSearchIndexes.json::test[3]": {
-      "activity": "ADV-011",
+      "activity": "IDX-003",
       "fingerprint": "10d26f14f67d45e8922da3fd2e46ef7ce4280c5fd82e1c401f908c902b42eb7e",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index listing awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "listSearchIndexes.aggregationOptions",
@@ -50989,9 +50989,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[1]": {
-      "activity": "ADV-011",
+      "activity": "IDX-006",
       "fingerprint": "97afa48af689bedeb99e612b8c84c48240a87a7f5e2f16f803e4b4403e4bfe59",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndex.model"
@@ -51022,9 +51022,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[2]": {
-      "activity": "ADV-011",
+      "activity": "IDX-006",
       "fingerprint": "6a14158b5bc2f2115694075c1f05bbc43aeaccb7daa9d23c77acea4edc5e4055",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "createSearchIndexes.models"
@@ -51055,9 +51055,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[3]": {
-      "activity": "ADV-011",
+      "activity": "IDX-006",
       "fingerprint": "a33cf7cb83522ce7b32a1301b09f78f080108adf76223c8cfa3c33d257b0543a",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "dropSearchIndex.name"
@@ -51088,9 +51088,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[4]": {
-      "activity": "ADV-011",
+      "activity": "IDX-006",
       "fingerprint": "3efe25e1c60c6371b79b43953b4c6635dd521ab6fda905142b18037b8b6ba652",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [],
         "entities": [
@@ -51119,9 +51119,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/searchIndexIgnoresReadWriteConcern.json::test[5]": {
-      "activity": "ADV-011",
+      "activity": "IDX-006",
       "fingerprint": "0773e6e37ca3e72ef14f41904376acc99482c7d260dd8da59abc1e4a5d90f988",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index concern omission awaits the v0.4 index slice",
       "requirements": {
         "arguments": [
           "updateSearchIndex.definition",
@@ -51153,9 +51153,9 @@
       "status": "deferred_unsupported"
     },
     "index-management/tests/updateSearchIndex.json::test[1]": {
-      "activity": "ADV-011",
+      "activity": "IDX-004",
       "fingerprint": "248b593e7881da9bcc7499f35afcdf1ce119d20bb53eb1d2e6926aa1ccf82b5a",
-      "reason": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+      "reason": "Search index updates await the v0.4 index slice",
       "requirements": {
         "arguments": [
           "updateSearchIndex.definition",
@@ -70367,9 +70367,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/auth-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-002",
       "fingerprint": "38bf23eac89fb3f9acb24de61dd4e6ed9417d61f0e624fb46b25982b102b546b",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "authentication failure pool clearing awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70412,9 +70412,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/auth-misc-command-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-002",
       "fingerprint": "daf10e0c1dd499fd3598091a6c0f673f0558de8cd81fc2040a493ebf28b49b12",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "authentication failure pool clearing awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70457,9 +70457,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/auth-network-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-002",
       "fingerprint": "9e91362a42f33237116372d31da3db4bdc44d47fd355cc043f494bc914916400",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "authentication failure pool clearing awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70502,9 +70502,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-002",
       "fingerprint": "8694d83107ca9e35c217904cab45fa0afa7f6d7b9b90c4dc740c3e800813cc19",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "authentication failure pool clearing awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70547,9 +70547,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/auth-shutdown-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-002",
       "fingerprint": "bfae2f9ad78bdb732ffaa2c4a684bff5b35d5cda9526620013b7827f502ed508",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "authentication failure pool clearing awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70774,9 +70774,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/cancel-server-check.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-007",
       "fingerprint": "c89a7fcb0db54f9978f749907a70ac4e1369ec1aa4ddb3515308fae55e87c36c",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server-check cancellation awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70816,9 +70816,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/connectTimeoutMS.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CFG-004",
       "fingerprint": "3d2b848baf96976ca348a2541b7c6bea7e16434d3bb713abc5cd1d0d707b0e84",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "connectTimeoutMS zero semantics await the v0.4 configuration slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70859,9 +70859,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/find-network-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "4144f8adaec8290c5631caf1a370ebb45547c91f497deb94edb33b92ce1f89c1",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70906,9 +70906,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/find-network-timeout-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "c37080a28aefa2fbd4c1aee2df847b45f12eee87ca390914e3093819c6bf077b",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70949,9 +70949,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/find-shutdown-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "3f91d596c03a1f020c5ccc88dbe5b2d1436187fc5c0cfa81dda81bc64230e457",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -70998,9 +70998,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-command-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "dd9c4214e09f07da45e7117638d1da492fe5ed14eefb41f3ba0f163d8e2b717f",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71039,9 +71039,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-command-error.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "96fbc35d0438b21658a2b4b66824654c5b4788f2427ce4f9b4b6fdbf44bdbacf",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71084,9 +71084,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-network-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "690303ef93c7c1fea465f6b2f6f5a15fe035c49c3e37267467e3f991f060f5c6",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71125,9 +71125,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-network-error.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "14b8d1ea611180adf12929ae8ae80eda361744eb2765842c865311883d48833d",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71166,9 +71166,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "9230d404dd100e8b932831e10b15536a4db1d88fce499792e7b31f25b75654e8",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71207,9 +71207,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "41506c524430e9e759da78a238bf66b054404b3a2e019799bcc53530f21c560b",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71248,9 +71248,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/hello-timeout.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-006",
       "fingerprint": "e5898b91512ca4e0acee4424e6958371f5140d953711c4f5360ced3d7413f1e9",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "monitor error and timeout handling awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71288,9 +71288,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/insert-network-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "782d489746b3f3d07537ba5e6f4a125a013d8e4b19849a02b4fcaf38d1bdbe3f",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71333,9 +71333,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/insert-shutdown-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "bc3b8a188932ba16fca5d7d6eb1e8cd4f72f1d45920bd735e269bfb1c37f87c6",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -71382,9 +71382,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-004",
       "fingerprint": "ca03d545be713ce831d84e837932b5d81e45934d6f1e06dd4e3062e6e1302d65",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "interrupting in-use connections awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71430,9 +71430,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-004",
       "fingerprint": "cd472b415ba19ef995833d8191ab6203ae4e2fca2d012d62c1f41d6e01a3f9cc",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "interrupting in-use connections awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71478,9 +71478,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-004",
       "fingerprint": "9f742a2fb65ea6435a8163b6328df03e19dbea2e594973a83631b10443757779",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "interrupting in-use connections awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71947,9 +71947,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-application-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "f52720b1f81551c9985083005c269b3183ed0c48e8b71524e7b63022690dd0b3",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71989,9 +71989,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/pool-clear-checkout-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "1ee2157b013be1581298c5e4deaae90b6c03259509b3822b1c86d32037752439",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72098,9 +72098,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/pool-cleared-error.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "CMAP-003",
       "fingerprint": "35a39fc92d94d7de3e53ef308991dfbb7265bc7b671db1f2d95375cfe719e4c3",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "application error pool-clear ordering awaits the v0.4 CMAP slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -72229,9 +72229,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-005",
       "fingerprint": "cb770fe8a09aa2bd9e7a5f9c4d5ecbbb677f614287df93db7b451c69ed925919",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72268,9 +72268,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-005",
       "fingerprint": "ae8769b7b1fa8456874b9cbd2f882952f957e448ac420257e1ed113640e46e8c",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72307,9 +72307,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-005",
       "fingerprint": "e8861ecc6c1efa989fb18188bb87e5f80c4095e109807091220106b89d44126f",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72346,9 +72346,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[4]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-005",
       "fingerprint": "1c57a3ad44c91badd37ba2316e5f4b212b304fcf6ddbc40703562794569a450c",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72385,9 +72385,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[5]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-005",
       "fingerprint": "4d8ffec1a94fa39688d0d539b18f6f43fe4cda6ed1c2b5df5aadb0c5512a99bf",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72424,9 +72424,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[6]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-005",
       "fingerprint": "8a4f42b4bd8c9dd2601aa61366a6a32747d3ca116a9ef5905ffb4055f8ee9224",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "server monitoring modes await the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "assertEventCount.client",
@@ -72462,9 +72462,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/sharded-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "SDAM-004",
       "fingerprint": "cd7cc9e2d3434bd0e9ba82b03710e8132de5e64a711e9cdec7d118193a55bf50",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "sharded topology shutdown awaits the v0.4 SDAM slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -76738,9 +76738,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[10]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "29eae368569b04737aecc76dc0a1fdf1bc81477db48ac65a389c32f4a7a01eee",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -76780,9 +76780,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[11]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "4fa05bbee3b23c6109021ed3368495c80ffd0ba91c9be32b5fcb824e91a478b8",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -76824,9 +76824,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[12]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "d2a7a1a5cf5cb700a3603eff60da13cc42c1c4fec5b3ef7091a9acb704b5a33d",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -76868,9 +76868,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[13]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "aadea3dd22a4e817b153075e3f40aa38c0724c009911a1c90de874d050d03d61",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -76910,9 +76910,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[14]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "99326c80ad1f272606e5e755e40da2d658bdbff333541fd096eaf3979016ffd7",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -76952,9 +76952,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[15]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "9eed5c81e39a556e13452898fed54235d8a1f7ec1d63e0d2c2233c6eef2fc925",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -76994,9 +76994,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[16]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "d58ef65a2722a4b7ee6921c5a43bc2965728c1779d82df5ac279cca4bb08f132",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77036,9 +77036,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[17]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "129ccf9b521aea7c340c0073387fb0e9b950e85e5ef2807a7a690e8247c93134",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77078,9 +77078,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[18]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "428a38731a3aa0fdb430e9adfc3cca04b6ef8ab7e1ddccbf048543f06ce0cf63",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -77120,9 +77120,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[19]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "3e95fe6ce251461f95693743fca711c6385aa41ee816d7e3c4f80449fe9c7f74",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77163,9 +77163,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "b846574639307bc0d725682b66b28e77438212ddb43fb7c36eed097b8d9d1c4c",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77206,9 +77206,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[20]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "c46e9e1c119be3dadb8b3443e259bc463a1894ec05e9cecdf2f2d9809bf2d4ea",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77249,9 +77249,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[21]": {
-      "activity": "ADV-005",
+      "activity": "ADV-007",
       "fingerprint": "114daacf51564547a5075a4bf32f618e57a1e98692e2a4e3fde60cd06f32ad78",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "client bulkWrite is a post-v1 capability",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77291,9 +77291,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[22]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "0e4bcc025214e364582c1907c8a6472e8ddb4c68bfc4f539cc15e5f03b35d7c2",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77330,9 +77330,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[23]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "4361ba5ba999c9c829a74e9e2144fd821bc0d17c710250fb2f72cad10de07f36",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77369,9 +77369,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[24]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "adb0141f6393e51818b3d1b9d5d6bd50855a5e4c454c953d1f51e70011b2531b",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77411,9 +77411,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[25]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "451702da8acb77cf047b801637056bc07c0b7e6dadc55023f6f6cbbf8a19a52a",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77453,9 +77453,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[26]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "4a6c00277374945201f143649a6651311ff9ca3297e16e1f990db54256589844",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77496,9 +77496,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[27]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "b2b9ad3685257e6b6828dc8e4e8681860204d1074efc14db216ca076382bc26f",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77539,9 +77539,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[28]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "a7039becc51ec373e3d899d9283e86a32a4a6bc96c551d5e8d85eadeac8fd022",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77582,9 +77582,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[29]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "599cec5dde56cca49c6a0bee4893dd356740a2794654beb5d27bdb85217fd3df",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77625,9 +77625,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "86595d2a23ea48ac72b5b2fa23dd3a3d191ae799d4481380d0a37e669f8e4ce3",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77668,9 +77668,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[30]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "9a9429c6dcd66301b9529260283f14db082b9ee2e9cbdb703ac3400ad83c44b8",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77711,9 +77711,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[31]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "d62e87d3f20b45d42a61e75bf509c083210453e84c051933851df890ad6bbbc3",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77754,9 +77754,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[32]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "bae91ff220c92b3bff5f79d665e4e2e89aaa9044c03b8d600b6269352dffefc6",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77796,9 +77796,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[33]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "0b1241d9b0e574fcd1d293e69c0284fc5ab36169221b645e247251d32d5d9123",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77838,9 +77838,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[34]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "624024418fd600d8e5c7958f95d20cdd6224199965b3fca4623e2e46d4cba9b5",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77880,9 +77880,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[35]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "8778939e9e20ac6eab1f50767bd201be0c85216902c416c3b6b2bc8c4c8d9034",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77922,9 +77922,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[36]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "ff9c53b6bfbecb9c8f50f0e2a4e2dcaa059085fe8e2df704cc88dc769a1bb878",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -77964,9 +77964,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[37]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "9c92b1edaa2682a6699d5a509661f809838dadde298e980fc84bd93fd2876f4c",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78006,9 +78006,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[38]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "43b169690d68bcddd46facec34b902fed1e895c6b61dc6e2f737c62e960f3c81",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78050,9 +78050,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[39]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "155368557443707031d4c2de88db60310b7a0181c3e5958b30a069b38436a0b7",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78094,9 +78094,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "2f2544426e7d8cda21ea33bce94c647b2dc2febaa78c6bdb7c072b4ce97491e8",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -78133,9 +78133,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[40]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "cc842c97e0bfa3dec13098f41e18fc0533291d19b4c15c0c59d7a27dfe87e4f6",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78177,9 +78177,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[41]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "048f3ca67250f1b68b2e3a468ab01ca657ca9269362879550961db2dc7ef1f20",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78221,9 +78221,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[42]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "01f53eea59a33d98d445c61ac02a9b7613e7eb48c21ed2ace9c28a2217922c73",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78263,9 +78263,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[43]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "51cca9f3cdfdbfb0d38c71a13879623a218b547edf22048c20156c66eec3e00a",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78305,9 +78305,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[44]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "14d22a4409a65ec3ba37c2600b2f7b143736154b10c31dca1659353b4ea29c03",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78347,9 +78347,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[45]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "9515948f7bef0f6ab1799f27af9e2329c4b6877d27b8328bb7ceb2be3559a8f4",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78389,9 +78389,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[46]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "9ab3d2c35d33237f75d3ea312def81cfaa61914e7a9991b0be70ea19f85b704a",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78431,9 +78431,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[47]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "54e3731730ef1f31d14118a815cb4c531a41073f541fc821e3a804e3a1440072",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78473,9 +78473,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[48]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "703992cfde33c5fea99ca40e360d83b9f87d373cb76b4134a478062b65bd4fa3",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78515,9 +78515,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[49]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "5cad3b14d8697311e15e63af7ecf7da069d770a03913e55929ff06ee8f6b6fa2",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78557,9 +78557,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[4]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "567bb87ef9aec93d15e2c5633b811100a41e749347262c6a9a33477cac690861",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -78599,9 +78599,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[50]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "1d8ae448a828597fdcfbd1a709b54ee4821630cc81bb3c87a333bc7b892a545e",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78641,9 +78641,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[51]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "0ccb5e65695a7d183ff59a65a427aea111fdf8d8dafdcc0b12856136efe7c72a",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78683,9 +78683,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[52]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "ceb9ae38f266e81961b8e32a2384294b7ce58f2bd3a1eb6af57eaec7931a440f",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -78725,9 +78725,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[53]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "a77708b0ccbf2f9e39f38c2b505098804b75b9c214b3e16aa33702e76eaf1cc7",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -78767,9 +78767,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[54]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "a5ad148eed1e27721e4cfe3fa745b2cc005d245e548e096ce53e9ed20e17d833",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78810,9 +78810,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[55]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "1735b0ccae38fdd5bc22afa1faee49faf554949965748d0fda673021c7ee4712",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78853,9 +78853,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[56]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "496192773d2c8bcd3b52fcfccf24680ddc469e85d7aea7c515545efbcd1fe7b6",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78896,9 +78896,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[57]": {
-      "activity": "ADV-005",
+      "activity": "TXN-007",
       "fingerprint": "46639d6d768b5c1bc66db555500ffeb0ff8f5854b17fda3c4dd1e888fb0a0333",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78939,9 +78939,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[58]": {
-      "activity": "ADV-005",
+      "activity": "ADV-007",
       "fingerprint": "7024eb9ff10c239f64ac6ae53130019f4052d641efe264c70ac8d669b776cd0e",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "client bulkWrite is a post-v1 capability",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -78981,9 +78981,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[59]": {
-      "activity": "ADV-005",
+      "activity": "ADV-007",
       "fingerprint": "75846525c406eefe176d950e496f8561595045b84144fa00c1c69200f0e7d3ed",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "client bulkWrite is a post-v1 capability",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79023,9 +79023,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[5]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "373d928e1cbbe22cbf9a695ed40fab745457be707fed386097a8d741f7fd6360",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79066,9 +79066,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[6]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "10099aa542de4190aae9bd554f19c92d9cc837b6886c7b6da59bd56d0ebf092d",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79109,9 +79109,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[7]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "b116566d52971ca4417e0869a4d7fa87d4ddc63346e4fcd19c127fa5fe29debf",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79152,9 +79152,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[8]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "bfa6ca007609bd59663fbd57566dc9ab496f6f04f7fd8f6cf65e22fe0d44e265",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79194,9 +79194,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[9]": {
-      "activity": "ADV-005",
+      "activity": "TXN-006",
       "fingerprint": "9e4301d2d6572f0dff29de0934d025871279798062366e8c41a6f129e4e8b46e",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79236,9 +79236,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-recovery-token-errorLabels.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "TXN-005",
       "fingerprint": "7447c4f5c224d571ead6663256110e372679abc723f46e626d8c345ab7f3c720",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -79278,9 +79278,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-recovery-token.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "TXN-005",
       "fingerprint": "5631177e737c3130007893e50b06c2f7307ea5a272c5fcc7879fc6e784a0e8f5",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -79316,9 +79316,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-recovery-token.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "TXN-005",
       "fingerprint": "5fe21d66152eaeff2b02b92540b93196c1bef195cdb111b696e093d5134d8743",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -79360,9 +79360,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-recovery-token.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "TXN-005",
       "fingerprint": "e05fcabc6fb505cfcbbd7de41f6d12251ee0c3a6e6b16c79a0e6df5e51c1ebd9",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -79402,9 +79402,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "a7f0f1573a881c6dbc8241e62daac818606b30fd9f904a157708135252a55546",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79440,9 +79440,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "f1eff4fc4a481bf4adc00dcaa61dd056e119716cd8144d2e6b6d8a99dae17a6f",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79474,9 +79474,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "f07635a41c3423597b44819ce5bc9bf02928cb9d4c8905677ce3edc06d538a31",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79511,9 +79511,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[4]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "308338dfc1d458122dcf1e627af246349ea43bd47808fd026803a784e815e46e",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79548,9 +79548,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[5]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "b09af78b2096de3b19af7ed5974e4884ad8abe28bbc9c4c2f8229d7ffb06e182",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79584,9 +79584,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[6]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "ed28bc72465ce74f182e4d15c388e661c6280eb1ff0db6cc4dfd0e83c681a70e",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79620,9 +79620,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-unpin.json::test[7]": {
-      "activity": "ADV-005",
+      "activity": "TXN-004",
       "fingerprint": "5ba6969b27fbb2cd66ce62e1a5e4ae5f589598c2ef50896f25f227a3c941231d",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79659,9 +79659,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[1]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "b6ecb9c00905d005c792157076aef20ccfbf3d9b5b0355c3a3c572520ef7fc49",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -79691,9 +79691,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[2]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "d49e784bc7b03a090ee044091499820081aadf412f2bc5e296023a045e2b0443",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -79724,9 +79724,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[3]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "bd7bde3163c9e61fe5e105da689d0a4b3880625d752bdb67dccf229897a16f29",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -79756,9 +79756,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[4]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "7fc4d8332ecd84c1e048c39f51c41ff1bdf8463ef009be7b29c63303096947d0",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -79790,9 +79790,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[5]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "1e52d2daddd7008bdaec995c836cbb4fcfcf09e13a5191ffe15467d7708c1162",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -79827,9 +79827,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[6]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "26758dccb0c684e06444a45a6c298654174dcc9247b52408c7343b88975c5c1c",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79864,9 +79864,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[7]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "e83c62a9d79ad1b13dc001f74f36c1520de9575c86cda5a826f69697d896a976",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79904,9 +79904,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[8]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "a624d810180141d941f138a9449a500889662dfc2fa52830128361281bcae0d8",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -79946,9 +79946,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/pin-mongos.json::test[9]": {
-      "activity": "ADV-005",
+      "activity": "TXN-003",
       "fingerprint": "f607be6b774b81d43d271b96bd6fa4bdb0564ae0902474d02dd8f2933a7a7f1e",
-      "reason": "sharded execution is a post-v1 capability",
+      "reason": "mongos transaction pinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",

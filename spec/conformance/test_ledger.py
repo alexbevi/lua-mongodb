@@ -124,7 +124,7 @@ class ConformanceLedgerTests(unittest.TestCase):
     ]
     self.assertEqual(40, sum(case["status"] == "passed" for case in dns))
     self.assertEqual(4, sum(
-      case["activity"] == "ADV-005" and case["status"] == "deferred_unsupported"
+      case["activity"] == "DNS-001" and case["status"] == "deferred_unsupported"
       for case in dns
     ))
     self.assertEqual(9, sum(
@@ -149,7 +149,7 @@ class ConformanceLedgerTests(unittest.TestCase):
         {identity: {"activity": "UTF-010", "status": "runnable"}},
       )
 
-  def test_advanced_management_cases_are_post_v1_exclusions(self) -> None:
+  def test_advanced_management_cases_keep_vertical_slice_owners(self) -> None:
     cases = ledger.generate()["cases"]
     pre_post_images = [
       "collection-management/tests/"
@@ -184,7 +184,14 @@ class ConformanceLedgerTests(unittest.TestCase):
       [cases[identity]["activity"] for identity in pre_post_images],
     )
     self.assertEqual(
-      ["ADV-011"] * len(search_indexes),
+      [
+        *(["IDX-001"] * 3),
+        *(["IDX-002"] * 4),
+        "IDX-005",
+        *(["IDX-003"] * 3),
+        *(["IDX-006"] * 5),
+        "IDX-004",
+      ],
       [cases[identity]["activity"] for identity in search_indexes],
     )
     self.assertNotIn("REL-017", {case["activity"] for case in cases.values()})

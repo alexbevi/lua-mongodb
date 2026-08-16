@@ -324,7 +324,7 @@ def classify_case(
       )
 
     if "/tests/sharded/" in path:
-      return _deferred(case, "ADV-005", activities)
+      return _deferred(case, "DNS-001", activities)
 
     if "/tests/load-balanced/" in path:
       return _deferred(case, "ADV-006", activities)
@@ -469,7 +469,18 @@ def classify_case(
 
   if suite == "sessions":
     if "snapshot-sessions" in path:
-      return _deferred(case, "ADV-011", activities)
+      fixture = Path(path).name
+      index = int(identity.rsplit("[", 1)[1][:-1])
+      if fixture == "snapshot-sessions.json":
+        if index == 8:
+          owner = "SES-004"
+        elif index >= 9:
+          owner = "SES-007"
+        else:
+          owner = "SES-006"
+      else:
+        owner = "SES-005"
+      return _deferred(case, owner, activities)
 
     if "implicit-sessions-default-causal-consistency" in path:
       return _passed(

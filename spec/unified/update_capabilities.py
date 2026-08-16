@@ -38,6 +38,29 @@ OWNER_REASONS = {
   "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
   "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+  "CFG-004": "connectTimeoutMS zero semantics await the v0.4 configuration slice",
+  "CMAP-002": "authentication failure pool clearing awaits the v0.4 CMAP slice",
+  "CMAP-003": "application error pool-clear ordering awaits the v0.4 CMAP slice",
+  "CMAP-004": "interrupting in-use connections awaits the v0.4 CMAP slice",
+  "IDX-001": "single Search index creation awaits the v0.4 index slice",
+  "IDX-002": "multiple Search index creation awaits the v0.4 index slice",
+  "IDX-003": "Search index listing awaits the v0.4 index slice",
+  "IDX-004": "Search index updates await the v0.4 index slice",
+  "IDX-005": "Search index deletion awaits the v0.4 index slice",
+  "IDX-006": "Search index concern omission awaits the v0.4 index slice",
+  "SDAM-004": "sharded topology shutdown awaits the v0.4 SDAM slice",
+  "SDAM-005": "server monitoring modes await the v0.4 SDAM slice",
+  "SDAM-006": "monitor error and timeout handling awaits the v0.4 SDAM slice",
+  "SDAM-007": "server-check cancellation awaits the v0.4 SDAM slice",
+  "SES-004": "snapshot transaction rejection awaits the v0.4 session slice",
+  "SES-005": "snapshot command concerns await the v0.4 session slice",
+  "SES-006": "snapshot timestamp capture awaits the v0.4 session slice",
+  "SES-007": "snapshot-time access awaits the v0.4 session slice",
+  "TXN-003": "mongos transaction pinning awaits the v0.4 transaction slice",
+  "TXN-004": "mongos transaction unpinning awaits the v0.4 transaction slice",
+  "TXN-005": "sharded transaction recovery tokens await the v0.4 transaction slice",
+  "TXN-006": "non-transient mongos pin retention awaits the v0.4 transaction slice",
+  "TXN-007": "transient mongos unpinning awaits the v0.4 transaction slice",
   "REL-002": "BSON vector behavior awaits the dedicated release conformance slice",
   "REL-003": "the case awaits the v1 configuration conformance slice",
   "REL-004": "the case awaits the v1 CRUD and administration conformance slice",
@@ -230,6 +253,27 @@ TEST_OVERRIDES.update({
     "client bulkWrite is a post-v1 capability",
   ),
 })
+
+for index in range(1, 14):
+  if index == 8:
+    owner = "SES-004"
+  elif index >= 9:
+    owner = "SES-007"
+  else:
+    owner = "SES-006"
+  TEST_OVERRIDES[
+    f"sessions/tests/snapshot-sessions.json::test[{index}]"
+  ] = (owner, OWNER_REASONS[owner])
+
+for fixture, count in (
+  ("snapshot-sessions-not-supported-client-error", 3),
+  ("snapshot-sessions-not-supported-server-error", 3),
+  ("snapshot-sessions-unsupported-ops", 9),
+):
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[
+      f"sessions/tests/{fixture}.json::test[{index}]"
+    ] = ("SES-005", OWNER_REASONS["SES-005"])
 
 for fixture in (
   "bulkWrite-comment",
@@ -455,17 +499,27 @@ TEST_OVERRIDES["transactions/tests/unified/count.json::test[1]"] = (
   "legacy count is outside the v1 public API",
 )
 
-for fixture, count in (
-  ("mongos-pin-auto", 59),
-  ("mongos-recovery-token-errorLabels", 1),
-  ("mongos-recovery-token", 3),
-  ("mongos-unpin", 7),
-  ("pin-mongos", 9),
+for fixture, count, owner in (
+  ("mongos-recovery-token-errorLabels", 1, "TXN-005"),
+  ("mongos-recovery-token", 3, "TXN-005"),
+  ("mongos-unpin", 7, "TXN-004"),
+  ("pin-mongos", 9, "TXN-003"),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
-    ] = ("ADV-005", OWNER_REASONS["ADV-005"])
+    ] = (owner, OWNER_REASONS[owner])
+
+for index in range(1, 60):
+  if index <= 20:
+    owner = "TXN-006"
+  elif index == 21 or index >= 58:
+    owner = "ADV-007"
+  else:
+    owner = "TXN-007"
+  TEST_OVERRIDES[
+    f"transactions/tests/unified/mongos-pin-auto.json::test[{index}]"
+  ] = (owner, OWNER_REASONS[owner])
 
 for fixture, count in (
   ("db-aggregate-rawdata", 2),
@@ -530,8 +584,37 @@ def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
 
 def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   path = test["fixture"].lower()
+  fixture = Path(path).name
   requirements = test["requirements"]
   topologies = set(requirements["topologies"])
+
+  v04_owners = {
+    "auth-error.json": "CMAP-002",
+    "auth-misc-command-error.json": "CMAP-002",
+    "auth-network-error.json": "CMAP-002",
+    "auth-network-timeout-error.json": "CMAP-002",
+    "auth-shutdown-error.json": "CMAP-002",
+    "cancel-server-check.json": "SDAM-007",
+    "connecttimeoutms.json": "CFG-004",
+    "find-network-error.json": "CMAP-003",
+    "find-network-timeout-error.json": "CMAP-003",
+    "find-shutdown-error.json": "CMAP-003",
+    "hello-command-error.json": "SDAM-006",
+    "hello-network-error.json": "SDAM-006",
+    "hello-timeout.json": "SDAM-006",
+    "insert-network-error.json": "CMAP-003",
+    "insert-shutdown-error.json": "CMAP-003",
+    "interruptinuse-pool-clear.json": "CMAP-004",
+    "pool-clear-application-error.json": "CMAP-003",
+    "pool-clear-checkout-error.json": "CMAP-003",
+    "pool-cleared-error.json": "CMAP-003",
+    "servermonitoringmode.json": "SDAM-005",
+    "sharded-emit-topology-changed-before-close.json": "SDAM-004",
+  }
+
+  if fixture in v04_owners:
+    owner = v04_owners[fixture]
+    return owner, OWNER_REASONS[owner]
 
   if requirements["logs"] or "/logging-" in path or "/backpressure-" in path:
     owner = "ADV-009"
@@ -653,10 +736,20 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     return "REL-018", OWNER_REASONS["REL-018"]
 
   if specification == "index-management":
-    if Path(test["fixture"]).name == "index-rawdata.json":
+    fixture = Path(test["fixture"]).name
+    if fixture == "index-rawdata.json":
       return "REL-018", OWNER_REASONS["REL-018"]
 
-    return "ADV-011", OWNER_REASONS["ADV-011"]
+    owners = {
+      "createSearchIndex.json": "IDX-001",
+      "createSearchIndexes.json": "IDX-002",
+      "dropSearchIndex.json": "IDX-005",
+      "listSearchIndexes.json": "IDX-003",
+      "searchIndexIgnoresReadWriteConcern.json": "IDX-006",
+      "updateSearchIndex.json": "IDX-004",
+    }
+    owner = owners.get(fixture, "ADV-011")
+    return owner, OWNER_REASONS[owner]
 
   if specification == "server-discovery-and-monitoring":
     return classify_sdam(test)
