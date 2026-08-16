@@ -299,6 +299,32 @@ describe("client sessions", function()
     assert.are.equal(1, #commands)
   end)
 
+  it("decorates every snapshot command with snapshot read concern", function()
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local snapshot = assert(sessions:start({ snapshot = true }))
+
+    for _, name in ipairs({ "find", "insert", "listCollections", "ping" }) do
+      local decorated = assert(sessions:decorate(
+        bson.document({ { name, "items" } }),
+        { session = snapshot }
+      ))
+      local read_concern = assert(decorated:get("readConcern"))
+
+      assert.are.equal("snapshot", read_concern:get("level"))
+    end
+
+    local ordinary = assert(sessions:start())
+    local decorated = assert(sessions:decorate(
+      bson.document({ { "find", "items" } }),
+      { session = ordinary }
+    ))
+
+    assert.is_nil(decorated:get("readConcern"))
+  end)
+
   it("reuses clean server sessions and discards dirty sessions", function()
     local sessions = new_session_manager({
       id_factory = identifiers(),

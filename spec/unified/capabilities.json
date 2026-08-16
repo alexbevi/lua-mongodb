@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1395,
-    "runnable": 1395
+    "passed": 1407,
+    "runnable": 1407
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -72612,7 +72612,6 @@
     "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[1]": {
       "activity": "SES-008",
       "fingerprint": "34c0a63add47ced14164c108983b713dd663033384e9ddb71ee8ff0070ce2cbd",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -72641,12 +72640,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[2]": {
       "activity": "SES-008",
       "fingerprint": "2374e51cb51d5b1dcdcc3a8f19fca623204f90a75598c2a4b33155113c7496cb",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -72675,12 +72673,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[3]": {
       "activity": "SES-008",
       "fingerprint": "baf0918b71f1d39891caa114011a60b4603fe3a87f56685c95249f790c6611df",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "distinct.fieldName",
@@ -72710,12 +72707,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[1]": {
       "activity": "SES-008",
       "fingerprint": "c309b463845b5edbe5ca9b97468e5630e3fe44596948a002a36aa4342f48f640",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -72745,12 +72741,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[2]": {
       "activity": "SES-008",
       "fingerprint": "653fcee7e04667bb6cfb8f420592eaf699acad66765d29b642b89a80ad0c084c",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "insertMany.documents",
@@ -72780,12 +72775,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[3]": {
       "activity": "SES-008",
       "fingerprint": "63f7d270988b4f3822811477c1ae58d28347c0c08df7f873a1a601ab9c855b18",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -72815,12 +72809,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[4]": {
       "activity": "SES-008",
       "fingerprint": "a0b0c3273009501b47e8671202af6890c75e4ed3c87f333f2a04ee54a80e8fb9",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -72851,12 +72844,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[5]": {
       "activity": "SES-008",
       "fingerprint": "419b4e8537349d9813d60d8e87b60a6c2a096d1599c3209dc36722915645f735",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -72887,12 +72879,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[6]": {
       "activity": "SES-008",
       "fingerprint": "82356ea90be5f00db9b0539f73b52475456ef1eaad0544196c760e93658e7e4e",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "listDatabases.session"
@@ -72921,12 +72912,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[7]": {
       "activity": "SES-008",
       "fingerprint": "ac0bbfca6213ab6b6016f06c57a70eccce0b70be092af63326c6ee5a84c5ff8d",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "listCollections.session"
@@ -72955,12 +72945,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[8]": {
       "activity": "SES-008",
       "fingerprint": "08f993cbc146a707d2ed2fb19c8a252c68412590098a65245a37366585e9a359",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "listIndexes.session"
@@ -72989,12 +72978,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions-unsupported-ops.json::test[9]": {
       "activity": "SES-008",
       "fingerprint": "af8ada7db346dcadfa2a3a95a0458e4fcb0d71c1affe30c37033cef0ba1db38d",
-      "reason": "snapshot command concerns await the v0.4 session slice",
       "requirements": {
         "arguments": [
           "runCommand.command",
@@ -73025,7 +73013,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[10]": {
       "activity": "SES-007",

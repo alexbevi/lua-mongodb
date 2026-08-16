@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 155,
+    "completed": 156,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 38
+    "pending": 37
   },
   "active": [],
   "ready": [
@@ -32,13 +32,13 @@
     "ADV-009",
     "ADV-010",
     "ADV-011",
-    "SES-008",
+    "SES-006",
     "ADV-012"
   ],
   "ready_by_track": {
     "lua-hardening": [],
     "v0-4-sharded-parity": [
-      "SES-008"
+      "SES-006"
     ]
   },
   "blocked": [],

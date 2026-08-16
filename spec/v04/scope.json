@@ -30,7 +30,6 @@
     "SDAM-007": 1,
     "SES-006": 7,
     "SES-007": 5,
-    "SES-008": 12,
     "TXN-003": 9,
     "TXN-004": 7,
     "TXN-005": 4,
@@ -63,8 +62,8 @@
       "planned": 32
     },
     "sessions": {
-      "passed": 15,
-      "planned": 24
+      "passed": 27,
+      "planned": 12
     },
     "transactions": {
       "excluded": 16,
@@ -75,8 +74,8 @@
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 697,
-    "planned": 154,
+    "passed": 709,
+    "planned": 142,
     "supported": 851
   },
   "target_owners": [

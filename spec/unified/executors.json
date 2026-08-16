@@ -5070,6 +5070,54 @@
       "activity": "SES-005",
       "environment": "live-replicaset"
     },
+    "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[1]": {
+      "activity": "SES-008",
+      "environment": "live-standalone"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[2]": {
+      "activity": "SES-008",
+      "environment": "live-standalone"
+    },
+    "sessions/tests/snapshot-sessions-not-supported-server-error.json::test[3]": {
+      "activity": "SES-008",
+      "environment": "live-standalone"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[1]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[2]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[3]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[4]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[5]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[6]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[7]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[8]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions-unsupported-ops.json::test[9]": {
+      "activity": "SES-008",
+      "environment": "live-replicaset"
+    },
     "sessions/tests/snapshot-sessions.json::test[8]": {
       "activity": "SES-004",
       "environment": "live-replicaset"

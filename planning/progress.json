@@ -3683,6 +3683,28 @@
       "notes": [],
       "started_at": "2026-08-16T18:27:48+00:00",
       "completed_at": "2026-08-16T18:34:53+00:00"
+    },
+    "SES-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua '--lpath=spec/support/?.lua' '--lpath=spec/support/?/init.lua' '--lpath=src/?.lua' '--lpath=src/?/init.lua' '--filter=decorates.every.snapshot.command' spec/unit/session_spec.lua",
+          "exit_code": 1,
+          "summary": "0 successes, 1 failure: snapshot find command had no readConcern before all-command snapshot decoration existed",
+          "recorded_at": "2026-08-16T18:39:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua' FOCUS_PYTHON='<coupled capability, ledger, v0.4, and release contracts>' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua'; make test-focus FOCUS_UNIFIED='sessions/tests/snapshot-sessions-unsupported-ops.json'; make test-focus FOCUS_UNIFIED='sessions/tests/snapshot-sessions-not-supported-server-error.json'; make test-complexity; run artifact validators",
+          "exit_code": 0,
+          "summary": "23 Lua tests and 70 coupled Python tests passed; exact unified cases: 12 executed, 12 passed, 0 environment-skipped, 0 deferred, 0 failed; 2 touched Lua files linted; complexity, generated artifacts, release projections, plan, and diff checks passed",
+          "recorded_at": "2026-08-16T18:43:02+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-16T18:38:58+00:00",
+      "completed_at": "2026-08-16T18:43:08+00:00"
     }
   },
   "verified_references": {

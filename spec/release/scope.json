@@ -28,7 +28,6 @@
     "SDAM-007": 1,
     "SES-006": 7,
     "SES-007": 5,
-    "SES-008": 12,
     "TXN-003": 9,
     "TXN-004": 7,
     "TXN-005": 4,
@@ -36,7 +35,7 @@
     "TXN-007": 36
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1847
+    "post-v1-exclusion": 1835
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -99,9 +98,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1847,
+    "deferred_unsupported": 1835,
     "excluded_scope": 2,
-    "passed": 3675
+    "passed": 3687
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

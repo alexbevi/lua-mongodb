@@ -805,7 +805,8 @@ local function decoration_context(command, options, session_state)
     add_causal_read_concern = add_causal_read_concern,
     in_transaction = in_transaction,
     replace_read_concern = not in_transaction
-      and (options.read_concern ~= nil or add_causal_read_concern),
+      and (options.read_concern ~= nil or add_causal_read_concern
+        or session_state.snapshot),
     retryable_write = options.retryable_write == true,
     starting_transaction = transaction.state == "starting",
     transaction = transaction,
@@ -836,12 +837,16 @@ local function read_concern_with_operation_time(read_concern, session_state)
   local concern_entries = {}
 
   for key, value in read_concern:iter() do
-    if key ~= "afterClusterTime" then
+    if key ~= "afterClusterTime"
+        and (key ~= "level" or not session_state.snapshot)
+    then
       concern_entries[#concern_entries + 1] = { key, value }
     end
   end
 
-  if session_state.causal_consistency
+  if session_state.snapshot then
+    concern_entries[#concern_entries + 1] = { "level", "snapshot" }
+  elseif session_state.causal_consistency
       and session_state.operation_time ~= nil
   then
     concern_entries[#concern_entries + 1] = {
