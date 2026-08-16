@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1414,
-    "runnable": 1414
+    "passed": 1419,
+    "runnable": 1419
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -73018,7 +73018,6 @@
     "sessions/tests/snapshot-sessions.json::test[10]": {
       "activity": "SES-007",
       "fingerprint": "6bf4b393e80eec179cdbcc7c2f12deb07895afea6064b39c12ebd83e4ba71a25",
-      "reason": "snapshot-time access awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73055,12 +73054,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[11]": {
       "activity": "SES-007",
       "fingerprint": "f0fdf5ee663df9197eaeba50be557579555558b2e2b5ff1d4e3986124762cfb5",
-      "reason": "snapshot-time access awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -73098,12 +73096,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[12]": {
       "activity": "SES-007",
       "fingerprint": "85cff2e583cc243e5389163515d3b66d4212e5093ecb8b1224053fe2edeea0c9",
-      "reason": "snapshot-time access awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -73139,12 +73136,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[13]": {
       "activity": "SES-007",
       "fingerprint": "b7d38b88c03977bb184859b6c99d239fadcf7605fb438c174956e8f6dcdafcd7",
-      "reason": "snapshot-time access awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -73189,7 +73185,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "sessions/tests/snapshot-sessions.json::test[1]": {
       "activity": "SES-006",
@@ -73480,7 +73476,6 @@
     "sessions/tests/snapshot-sessions.json::test[9]": {
       "activity": "SES-007",
       "fingerprint": "67c207890b5d7d4148b894ea519e365f317b457dd4c18468c49805ad8d440378",
-      "reason": "snapshot-time access awaits the v0.4 session slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73516,7 +73511,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",

@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local errors = require("mongodb.error")
 local fake_runtime = require("mongodb.runtime.fake")
 
 local function array(values)
@@ -16,7 +17,7 @@ local function with_fake_client(callback)
   local client_module = {}
 
   function client_module.connect(_, options)
-    local client = { closed = false, options = options }
+    local client = { closed = false, options = options, sessions = {} }
     local listener = options.sdam_listeners and options.sdam_listeners[1]
 
     connections[#connections + 1] = client
@@ -53,6 +54,27 @@ local function with_fake_client(callback)
 
     function client:is_closed()
       return self.closed
+    end
+
+    function client:start_session(session_options)
+      local session = {
+        ended = false,
+        options = session_options,
+        snapshot_time = session_options.snapshot
+          and (session_options.snapshot_time or bson.timestamp(7, 3)) or nil,
+      }
+
+      function session.end_session()
+        session.ended = true
+        return true
+      end
+
+      function session.get_snapshot_time()
+        return session.snapshot_time
+      end
+
+      self.sessions[#self.sessions + 1] = session
+      return session
     end
 
     return client
@@ -165,6 +187,91 @@ describe("unified driver lifecycle events", function()
       assert.are.equal(1, report.summary.passed)
       assert.is_not_nil(connections[2].options.sdam_listeners)
       assert.is_true(connections[2].closed)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("round-trips snapshot time entities and rejects unknown arguments", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "session", document({
+              { "id", "session0" },
+              { "client", "client0" },
+              { "sessionOptions", document({ { "snapshot", true } }) },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Snapshot time entity round trip" },
+            { "operations", array({
+              document({
+                { "name", "getSnapshotTime" },
+                { "object", "session0" },
+                { "saveResultAsEntity", "savedSnapshotTime" },
+              }),
+              document({
+                { "name", "createEntities" },
+                { "object", "testRunner" },
+                { "arguments", document({
+                  { "entities", array({
+                    document({
+                      { "session", document({
+                        { "id", "session2" },
+                        { "client", "client0" },
+                        { "sessionOptions", document({
+                          { "snapshot", true },
+                          { "snapshotTime", "savedSnapshotTime" },
+                        }) },
+                      }) },
+                    }),
+                  }) },
+                }) },
+              }),
+            }) },
+          }),
+          document({
+            { "description", "Unknown snapshot time argument" },
+            { "operations", array({
+              document({
+                { "name", "getSnapshotTime" },
+                { "object", "session0" },
+                { "arguments", document({ { "unknown", true } }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "snapshot-time.json"))
+
+      assert.are.same({
+        executed = 2,
+        failed = 1,
+        passed = 1,
+        selected = 2,
+        skipped = 0,
+      }, report.summary)
+      assert.are.equal(
+        bson.timestamp(7, 3),
+        connections[2].sessions[2].options.snapshot_time
+      )
+      assert.is_true(errors.is(
+        report.tests[2].error,
+        errors.CATEGORY.CONFIGURATION
+      ))
+      assert.are.equal(
+        "$.tests[2].operations[1].arguments.unknown",
+        report.tests[2].error.details.path
+      )
       assert(lifecycle:close())
     end)
   end)

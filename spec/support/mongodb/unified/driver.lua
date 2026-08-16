@@ -477,7 +477,21 @@ local function session_factory(runner, specification)
 
     options.causal_consistency = session_options:get("causalConsistency")
     options.snapshot = session_options:get("snapshot")
-    options.snapshot_time = session_options:get("snapshotTime")
+    local snapshot_time = session_options:get("snapshotTime")
+
+    if type(snapshot_time) == "string" then
+      snapshot_time, err = runner:get_entity(
+        snapshot_time,
+        "bson",
+        "$.session.sessionOptions.snapshotTime"
+      )
+
+      if snapshot_time == nil then
+        return nil, err
+      end
+    end
+
+    options.snapshot_time = snapshot_time
     local default_timeout_ms = session_options:get("defaultTimeoutMS")
 
     if bson.is_exact(default_timeout_ms) then
@@ -602,6 +616,10 @@ end
 
 local function end_session(_, session)
   return session:end_session()
+end
+
+local function get_snapshot_time(_, session)
+  return session:get_snapshot_time()
 end
 
 local function transaction_options(arguments)
@@ -2228,6 +2246,11 @@ function M.new(options)
         endSession = {
           arguments = {},
           handler = end_session,
+        },
+        getSnapshotTime = {
+          arguments = {},
+          handler = get_snapshot_time,
+          result_kind = "bson",
         },
         startTransaction = {
           arguments = {

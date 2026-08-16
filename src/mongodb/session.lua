@@ -203,6 +203,10 @@ function SESSION_METHODS:get_cluster_time()
   return SESSION_STATES[self].cluster_time
 end
 
+function SESSION_METHODS:get_snapshot_time()
+  return SESSION_STATES[self].snapshot_time
+end
+
 function SESSION_METHODS:get_timeout_context()
   local state = SESSION_STATES[self]
   local manager = MANAGER_STATES[state.manager]

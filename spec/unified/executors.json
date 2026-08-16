@@ -5150,6 +5150,26 @@
       "activity": "SES-004",
       "environment": "live-replicaset"
     },
+    "sessions/tests/snapshot-sessions.json::test[9]": {
+      "activity": "SES-007",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[10]": {
+      "activity": "SES-007",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[11]": {
+      "activity": "SES-007",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[12]": {
+      "activity": "SES-007",
+      "environment": "live-replicaset"
+    },
+    "sessions/tests/snapshot-sessions.json::test[13]": {
+      "activity": "SES-007",
+      "environment": "live-replicaset"
+    },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",
       "environment": "live-replicaset"

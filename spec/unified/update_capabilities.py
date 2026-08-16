@@ -261,7 +261,7 @@ for index in range(1, 14):
     reason = None
   elif index >= 9:
     owner = "SES-007"
-    reason = OWNER_REASONS[owner]
+    reason = None
   else:
     owner = "SES-006"
     reason = None

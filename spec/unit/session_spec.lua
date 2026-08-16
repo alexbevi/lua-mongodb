@@ -381,6 +381,27 @@ describe("client sessions", function()
     )
   end)
 
+  it("exposes snapshot read time without allowing mutation", function()
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local ordinary = assert(sessions:start())
+
+    assert.is_nil(ordinary:get_snapshot_time())
+    local supplied = bson.timestamp(15, 2)
+    local snapshot = assert(sessions:start({
+      snapshot = true,
+      snapshot_time = supplied,
+    }))
+
+    assert.are.equal(supplied, snapshot:get_snapshot_time())
+    assert.has_error(function()
+      snapshot.snapshot_time = bson.timestamp(20, 1)
+    end, "MongoDB client sessions are immutable")
+    assert.are.equal(supplied, snapshot:get_snapshot_time())
+  end)
+
   it("reuses clean server sessions and discards dirty sessions", function()
     local sessions = new_session_manager({
       id_factory = identifiers(),
