@@ -4505,6 +4505,28 @@
       "notes": [],
       "started_at": "2026-08-17T01:41:53+00:00",
       "completed_at": "2026-08-17T01:44:25+00:00"
+    },
+    "TXN-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_transient_mongos_unpin_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The defining 39-case capability contract failed because the 37 automatic transient-unpin cases and two recovery-token-coupled pin-mongos cases remained deferred_unsupported instead of runnable; clientBulkWrite cases 58-59 remained correctly owned by ADV-007.",
+          "recorded_at": "2026-08-17T13:03:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (session units, exact TXN-007 unified identities, Python contracts, touched-file lint); generated-artifact validators; make test-complexity",
+          "exit_code": 0,
+          "summary": "29 Lua assertions passed; 88 Python contracts passed; lint reported 0 warnings and 0 errors; capability, conformance, v0.4, release-scope, release-checklist, and README validators passed; complexity baseline passed. Exact live-sharded execution covered all 37 mongos-pin-auto identities plus pin-mongos tests 8-9: 39 executed, 39 passed, 0 failed, 0 environment-skipped, 0 deferred. mongos-pin-auto clientBulkWrite tests 58-59 remain deferred to ADV-007.",
+          "recorded_at": "2026-08-17T14:20:05+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T13:03:04+00:00",
+      "completed_at": "2026-08-17T14:20:17+00:00"
     }
   },
   "verified_references": {

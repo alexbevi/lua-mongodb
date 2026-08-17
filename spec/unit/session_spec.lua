@@ -705,6 +705,56 @@ describe("client sessions", function()
     assert.same({ false, "router-a:27017" }, selected_addresses)
   end)
 
+  it("unpins only transient transaction application errors", function()
+    local pending_error
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        options.on_server_selected("router-a:27017", "Mongos")
+        return nil, pending_error
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+    })
+    local executor = session_executor.new(underlying, sessions)
+    local transient = assert(sessions:start())
+
+    pending_error = errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "connection closed",
+    })
+    assert(transient:start_transaction())
+    local response, err = executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = transient }
+    )
+
+    assert.is_nil(response)
+    assert.is_true(err:has_label("TransientTransactionError"))
+    assert.is_false(transient:is_pinned())
+
+    local non_transient = assert(sessions:start())
+
+    pending_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 11601,
+      message = "interrupted",
+    })
+    assert(non_transient:start_transaction())
+    response, err = executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = non_transient }
+    )
+
+    assert.is_nil(response)
+    assert.is_false(err:has_label("TransientTransactionError"))
+    assert.is_true(non_transient:is_pinned())
+  end)
+
   it("unpins a transaction after a successful abort", function()
     local sessions = new_session_manager({
       id_factory = identifiers(),

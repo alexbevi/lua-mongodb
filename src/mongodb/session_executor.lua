@@ -80,7 +80,13 @@ local function transaction_error(session, err, transaction_control)
   end
 
   err = errors.without_label(err, "RetryableWriteError")
-  return errors.without_label(err, "UnknownTransactionCommitResult")
+  err = errors.without_label(err, "UnknownTransactionCommitResult")
+
+  if err:has_label("TransientTransactionError") then
+    session:unpin_server()
+  end
+
+  return err
 end
 
 local function command_session(state, options)

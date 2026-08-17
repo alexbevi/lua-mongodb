@@ -19,16 +19,11 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(812, generated["summary"]["passed"])
-    self.assertEqual(39, generated["summary"]["planned"])
+    self.assertEqual(851, generated["summary"]["passed"])
+    self.assertEqual(0, generated["summary"]["planned"])
     self.assertEqual(47, generated["summary"]["excluded"])
     self.assertEqual(851, generated["summary"]["supported"])
-    self.assertEqual(
-      {
-        "TXN-007": 39,
-      },
-      generated["planned_by_activity"],
-    )
+    self.assertEqual({}, generated["planned_by_activity"])
     self.assertEqual(
       {"passed": 48, "excluded": 1},
       generated["suites"]["read-write-concern"],
@@ -40,10 +35,10 @@ class V04ScopeTests(unittest.TestCase):
     identity, owner = next(
       (identity, case["activity"])
       for identity, case in cases.items()
-      if case.get("status") == "deferred_unsupported"
-        and case.get("activity") in activities
-        and activities[case["activity"]].get("track") == "v0-4-sharded-parity"
+      if case.get("status") == "passed"
+        and case.get("activity") in scope.TARGET_OWNERS
     )
+    cases[identity]["status"] = "deferred_unsupported"
     activities[owner]["status"] = "completed"
 
     with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):

@@ -608,12 +608,12 @@ for index in range(1, 8):
 for index in range(8, 10):
   TEST_OVERRIDES[
     f"transactions/tests/unified/pin-mongos.json::test[{index}]"
-  ] = ("TXN-007", OWNER_REASONS["TXN-007"])
+  ] = ("TXN-007", None)
 
 for index in range(1, 60):
   if index == 2 or 22 <= index <= 57:
     owner = "TXN-007"
-    reason = OWNER_REASONS[owner]
+    reason = None
   elif index == 21 or index >= 58:
     owner = "ADV-007"
     reason = OWNER_REASONS[owner]

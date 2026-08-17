@@ -11,9 +11,7 @@
     "ADV-009": "logging and backpressure remain separate post-v0.4 capabilities",
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
-  "planned_by_activity": {
-    "TXN-007": 39
-  },
+  "planned_by_activity": {},
   "schema_version": 1,
   "suites": {
     "index-management": {
@@ -40,15 +38,14 @@
     },
     "transactions": {
       "excluded": 16,
-      "passed": 203,
-      "planned": 39
+      "passed": 242
     }
   },
   "summary": {
     "classified": 898,
     "excluded": 47,
-    "passed": 812,
-    "planned": 39,
+    "passed": 851,
+    "planned": 0,
     "supported": 851
   },
   "target_owners": [
