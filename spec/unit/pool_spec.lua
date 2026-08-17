@@ -44,7 +44,7 @@ describe("CMAP connection pools", function()
     assert.is_nil(connection_pool.runtime)
     assert.are.equal("ConnectionPoolCreated", events[1].type)
     assert.are.equal("ConnectionCheckedOut", events[#events].type)
-    assert(connection_pool:check_in(connection))
+    assert(connection:check_in())
     assert(connection_pool:close())
   end)
 
@@ -87,6 +87,9 @@ describe("CMAP connection pools", function()
       event_types[#event_types - 1],
       event_types[#event_types],
     })
+    assert(connection_pool:close())
+    assert.is_false(connection_pool:clear())
+    assert.is_false(connection:mark_error())
   end)
 
   it("runs every pinned unit CMAP fixture", function()

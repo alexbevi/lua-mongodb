@@ -672,6 +672,8 @@ describe("monitored topology", function()
   it("checks pooled commands out from the selected replica-set member", function()
     local runtime = fake_runtime.new()
     local command_addresses = {}
+    local measured_command
+    local measured_options
     local sent_commands = {}
     local manager
     local function pool_factory(address)
@@ -694,7 +696,9 @@ describe("monitored topology", function()
             return bson.document({ { "ok", 1 } })
           end
 
-          function resource.measure()
+          function resource.measure(_, _, command, options)
+            measured_command = command
+            measured_options = options
             return { message_size = 32 }
           end
 
@@ -711,9 +715,27 @@ describe("monitored topology", function()
       set_name = "rs",
       type = "ReplicaSetNoPrimary",
     })
+    local function with_last_write(response)
+      local entries = response:entries()
+
+      entries[#entries + 1] = {
+        "lastWrite",
+        bson.document({ { "lastWriteDate", bson.datetime(100000) } }),
+      }
+      return bson.document(entries)
+    end
+
     assert(manager:open({ background = false }))
-    assert(manager:process_hello("a:27017", hello(false), { duration = 0.001 }))
-    assert(manager:process_hello("b:27017", hello(true), { duration = 0.001 }))
+    assert(manager:process_hello(
+      "a:27017",
+      with_last_write(hello(false)),
+      { duration = 0.001 }
+    ))
+    assert(manager:process_hello(
+      "b:27017",
+      with_last_write(hello(true)),
+      { duration = 0.001 }
+    ))
     local commands = topology_executor.new(manager)
 
     assert(commands:command(
@@ -741,8 +763,33 @@ describe("monitored topology", function()
         server_address = "a:27017",
       }
     ))
+    local measurement = assert(commands:measure(
+      "db",
+      bson.document({ { "find", "items" } }),
+      {
+        read_preference = {
+          max_staleness_seconds = 120,
+          mode = "secondary",
+          tag_sets = { {}, { zone = "b", region = "east" } },
+        },
+        socket_deadline = 1,
+        socket_deadline_factory = function() return 42 end,
+      }
+    ))
 
     assert.same({ "a:27017", "b:27017", "a:27017" }, command_addresses)
+    assert.are.equal(32, measurement.message_size)
+    assert.are.equal(42, measured_options.socket_deadline)
+    assert.is_nil(measured_options.socket_deadline_factory)
+    assert.are.equal(
+      120,
+      measured_command:get("$readPreference"):get("maxStalenessSeconds")
+    )
+    local measured_tags = measured_command:get("$readPreference"):get("tags")
+
+    assert.are.equal(2, #measured_tags)
+    assert.are.equal("east", measured_tags:get(2):get("region"))
+    assert.same({ "region", "zone" }, measured_tags:get(2):keys())
     assert.are.equal("a:27017", continued_on)
     assert.are.equal("RSSecondary", continued_type)
     assert.are.equal(

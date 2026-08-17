@@ -409,7 +409,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-The v0.4 track incrementally adds complete sharded-deployment behavior; mongos discovery and ordinary command execution are supported now. Other post-v1 scope includes change streams, GridFS, wire compression, load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.4 conformance surface adds snapshot sessions, Search index management, modern read/write-concern behavior, and sharded discovery, monitoring, command execution, and transaction pinning. All 851 applicable cases in that declared surface are classified passing; 47 non-target cases retain explicit later owners or a target-version exclusion. Other post-v1 scope includes change streams, GridFS, wire compression, load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

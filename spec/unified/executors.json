@@ -1776,23 +1776,28 @@
     },
     "crud/tests/unified/aggregate.json::test[1]": {
       "activity": "UTF-013",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/aggregate.json::test[2]": {
       "activity": "UTF-013",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/aggregate.json::test[3]": {
       "activity": "UTF-013",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/aggregate.json::test[5]": {
       "activity": "UTF-013",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/aggregate.json::test[7]": {
       "activity": "UTF-011",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/bulkWrite-arrayFilters.json::test[1]": {
       "activity": "UTF-013",
@@ -2391,23 +2396,28 @@
     },
     "crud/tests/unified/find.json::test[1]": {
       "activity": "UTF-013",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/find.json::test[2]": {
       "activity": "UTF-011",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/find.json::test[3]": {
       "activity": "UTF-011",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/find.json::test[4]": {
       "activity": "UTF-011",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/find.json::test[5]": {
       "activity": "UTF-013",
-      "environment": "live-standalone"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "crud/tests/unified/findOne.json::test[1]": {
       "activity": "UTF-013",
@@ -4446,7 +4456,8 @@
     },
     "retryable-writes/tests/unified/deleteMany.json::test[1]": {
       "activity": "RETRY-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "retryable-writes/tests/unified/deleteOne-errorLabels.json::test[1]": {
       "activity": "RETRY-002",
@@ -4949,7 +4960,8 @@
     },
     "retryable-writes/tests/unified/updateMany.json::test[1]": {
       "activity": "RETRY-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "retryable-writes/tests/unified/updateOne-errorLabels.json::test[1]": {
       "activity": "RETRY-002",
@@ -5193,31 +5205,38 @@
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[2]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[3]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/callback-commits.json::test[1]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/callback-commits.json::test[2]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/callback-retry.json::test[1]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/callback-retry.json::test[2]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/commit-retry-errorLabels.json::test[1]": {
       "activity": "TXN-002",
@@ -5277,35 +5296,43 @@
     },
     "transactions-convenient-api/tests/unified/commit.json::test[1]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/commit.json::test[2]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[1]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[2]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[3]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[4]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[5]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions-convenient-api/tests/unified/transaction-options.json::test[6]": {
       "activity": "TXN-002",
-      "environment": "live-replicaset"
+      "environment": "live-sharded",
+      "mongoses": 2
     },
     "transactions/tests/unified/abort.json::test[1]": {
       "activity": "TXN-001",
@@ -6040,22 +6067,22 @@
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[1]": {"activity": "CMAP-004", "environment": "live-replicaset", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[2]": {"activity": "CMAP-004", "environment": "live-replicaset", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json::test[3]": {"activity": "CMAP-004", "environment": "live-replicaset", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[1]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[2]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[3]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[4]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[5]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[6]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[7]": {"activity": "TXN-003", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/pin-mongos.json::test[8]": {"activity": "TXN-007", "environment": "live-sharded", "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[1]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[2]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[3]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[4]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[5]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[6]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[7]": {"activity": "TXN-003", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/pin-mongos.json::test[8]": {"activity": "TXN-007", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
     "transactions/tests/unified/pin-mongos.json::test[9]": {"activity": "TXN-007", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[1]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[2]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[3]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[4]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[5]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[6]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
-    "transactions/tests/unified/mongos-unpin.json::test[7]": {"activity": "TXN-004", "environment": "live-sharded", "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[1]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[2]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[3]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[4]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[5]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[6]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
+    "transactions/tests/unified/mongos-unpin.json::test[7]": {"activity": "TXN-004", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
     "transactions/tests/unified/mongos-recovery-token.json::test[1]": {"activity": "TXN-005", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
     "transactions/tests/unified/mongos-recovery-token.json::test[2]": {"activity": "TXN-005", "environment": "live-sharded", "mongoses": 2, "testCommands": true},
     "transactions/tests/unified/mongos-recovery-token.json::test[3]": {"activity": "TXN-005", "environment": "live-sharded", "mongoses": 2, "testCommands": true},

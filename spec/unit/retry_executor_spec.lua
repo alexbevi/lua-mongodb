@@ -176,6 +176,17 @@ describe("retryable read executor", function()
     assert.is_nil(calls[1].deprioritized_servers)
     assert.same({ "a:27017" }, calls[2].deprioritized_servers)
   end)
+
+  it("delegates capability discovery to the underlying executor", function()
+    local capabilities = { max_wire_version = 25 }
+    local executor = retry_executor.new({
+      capabilities = function() return capabilities end,
+      close = function() return true end,
+      command = function() return bson.document({ { "ok", 1 } }) end,
+    })
+
+    assert.are.equal(capabilities, executor:capabilities())
+  end)
 end)
 
 describe("retryable write executor", function()

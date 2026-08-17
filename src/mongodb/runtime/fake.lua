@@ -363,6 +363,9 @@ local function new_task_capability(owner)
 
       error("cannot await a running fake task", 2)
     end,
+    yield_control = function()
+      return owner:run_next()
+    end,
     cancel = function(_, task, reason)
       if getmetatable(task) ~= "mongodb.fake_task" or task._owner ~= owner then
         error("task must belong to this fake runtime", 2)

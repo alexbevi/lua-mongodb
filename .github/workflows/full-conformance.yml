@@ -136,6 +136,12 @@ jobs:
           --aggregate build/conformance/shards/*.json
           --report build/conformance/unified.json
 
+      - name: Validate exact v0.4 conformance evidence
+        run: >-
+          python3 spec/v04/scope.py
+          --check
+          --execution-report build/conformance/unified.json
+
       - name: Upload authoritative Linux conformance evidence
         uses: actions/upload-artifact@v7
         with:

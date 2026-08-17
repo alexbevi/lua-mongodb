@@ -852,18 +852,22 @@ local function aggregate_response(state, pipeline, options, writes)
     return response
   end
 
-  return state.executor:command(
+  local server_address
+  local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_server_selected = function(address) server_address = address end,
       read_preference = state.read_preference,
       retryable_read = not writes,
       session = options.session,
       session_context = options.session_context,
     }
   )
+
+  return response, err, server_address
 end
 
 local function cursor_from_response(state, response, options)
@@ -878,6 +882,7 @@ local function cursor_from_response(state, response, options)
     executor = state.executor,
     max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
+    server_address = options.server_address,
     session = options.session,
     session_context = options.session_context,
     timeout_context = operation_timeout.capture(),
@@ -1044,7 +1049,12 @@ function M.aggregate(state, pipeline, options)
     })
   end
 
-  local response, err = aggregate_response(state, pipeline, options, writes)
+  local response, err, server_address = aggregate_response(
+    state,
+    pipeline,
+    options,
+    writes
+  )
 
   if not response then
     if options.session_context then
@@ -1054,6 +1064,7 @@ function M.aggregate(state, pipeline, options)
     return nil, err
   end
 
+  options.server_address = server_address
   return cursor_from_response(state, response, options)
 end
 
@@ -1385,12 +1396,14 @@ function M.find(state, filter, options)
     entries[#entries + 1] = { "readConcern", read_concern }
   end
 
+  local server_address
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_server_selected = function(address) server_address = address end,
       retryable_read = true,
       session = options.session,
       session_context = session_context,
@@ -1416,6 +1429,7 @@ function M.find(state, filter, options)
     executor = state.executor,
     limit = absolute_limit,
     on_close = state.on_cursor_close,
+    server_address = server_address,
     session = options.session,
     session_context = session_context,
     timeout_context = operation_timeout.capture(),

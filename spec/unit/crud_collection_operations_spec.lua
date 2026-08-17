@@ -49,6 +49,11 @@ describe("core collection read and modify operations", function()
           database = database,
           options = options,
         }
+
+        if options.on_server_selected then
+          options.on_server_selected("router-a:27017")
+        end
+
         return table.remove(responses, 1)
       end,
     }
@@ -74,6 +79,7 @@ describe("core collection read and modify operations", function()
     assert.are.equal(1, commands[1].command:get("cursor"):get("batchSize"))
     assert.are.equal("getMore", commands[2].command:keys()[1])
     assert.are.equal(25, commands[2].command:get("maxTimeMS"))
+    assert.are.equal("router-a:27017", commands[2].options.server_address)
 
     assert.are.equal(2, assert(collection:count_documents(filter, {
       limit = 5,

@@ -175,6 +175,10 @@ describe("handshake client metadata", function()
         metadata.is_faas(test_case.environment or {})
       )
     end
+
+    assert.has_error(function()
+      metadata.is_faas("AWS_Lambda_java8")
+    end, "environment metadata must be a table")
   end)
 
   it("bounds oversized metadata in the normative reduction order", function()

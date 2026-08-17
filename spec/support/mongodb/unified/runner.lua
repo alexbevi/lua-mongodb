@@ -1364,7 +1364,9 @@ local function run_thread(runner, arguments, path)
   end
 
   local operation = arguments:get("operation")
+  local started = false
   local task = state.runtime.task:spawn(function()
+    started = true
     local ok, operation_err = runner:execute(operation, append_path(path, "operation"))
 
     if not ok then
@@ -1375,6 +1377,12 @@ local function run_thread(runner, arguments, path)
   end)
 
   thread.tasks[#thread.tasks + 1] = task
+  state.runtime.task:yield_control()
+
+  if not started then
+    error("runtime did not start the dispatched thread operation", 0)
+  end
+
   return true
 end
 

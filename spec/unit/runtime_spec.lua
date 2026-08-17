@@ -115,7 +115,7 @@ describe("runtime interface", function()
     end)
 
     assert.are.equal("pending", first:status())
-    assert.is_true(fake:run_next())
+    assert.is_true(fake.task:yield_control())
     assert.are.same({ "first" }, order)
     assert.are.equal("completed", first:status())
 

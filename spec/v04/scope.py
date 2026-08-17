@@ -14,7 +14,17 @@ ROOT = Path(__file__).resolve().parents[2]
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
+CAPABILITIES = ROOT / "spec" / "unified" / "capabilities.json"
+EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 OUTPUT = ROOT / "spec" / "v04" / "scope.json"
+
+RATCHETS = {
+  "classified": 898,
+  "exact_unified": 355,
+  "passed": 851,
+  "read_write_concern_passed": 48,
+  "supported": 851,
+}
 
 TARGET_SUITES = {
   "index-management",
@@ -63,6 +73,14 @@ EXCLUSION_REASONS = {
   "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
 }
 
+TARGET_VERSION_EXCLUSIONS = {
+  "read-write-concern/tests/operation/"
+  "default-write-concern-3.4.json::test[4]": (
+    "legacy mapReduce concern behavior requires MongoDB 3.4, below the "
+    "v0.4 MongoDB 7.0 compatibility floor"
+  ),
+}
+
 
 class ScopeError(ValueError):
   """Raised when the v0.4 conformance boundary loses accountable ownership."""
@@ -93,16 +111,100 @@ def load_cases(ledger_path: Path = LEDGER) -> dict[str, dict[str, Any]]:
   }
 
 
+def load_executors(
+  executor_path: Path = EXECUTORS,
+) -> dict[str, dict[str, Any]]:
+  return json.loads(executor_path.read_text(encoding="utf-8"))["tests"]
+
+
+def load_capability_ratchets(
+  capabilities_path: Path = CAPABILITIES,
+) -> dict[str, int]:
+  return json.loads(capabilities_path.read_text(encoding="utf-8"))["ratchets"]
+
+
+def validate_execution(
+  cases: dict[str, dict[str, Any]],
+  report: dict[str, Any],
+  expected_ratchets: dict[str, int],
+) -> dict[str, int]:
+  """Require exact passing execution rows for every unified v0.4 target."""
+  if report.get("type") != "execution":
+    raise ScopeError("v0.4 evidence is not a unified execution report")
+
+  if report.get("ratchets") != expected_ratchets:
+    raise ScopeError("v0.4 execution report ratchets do not match the manifest")
+
+  report_rows = report.get("tests")
+  if not isinstance(report_rows, list):
+    raise ScopeError("v0.4 execution report test rows must be an array")
+
+  rows = {}
+  for row in report_rows:
+    if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+      raise ScopeError("v0.4 execution report contains a malformed test row")
+
+    identity = row["id"]
+    if identity in rows:
+      raise ScopeError(f"v0.4 execution report repeats {identity}")
+    rows[identity] = row
+
+  required = sorted(
+    identity
+    for identity, case in cases.items()
+    if case.get("status") == "passed"
+      and case.get("runner") == "spec/unified/execute.lua"
+  )
+
+  for identity in required:
+    row = rows.get(identity)
+    if row is None:
+      raise ScopeError(f"v0.4 execution report is missing {identity}")
+
+    if row.get("status") != "passed":
+      detail = row.get("error")
+      suffix = f": {detail}" if isinstance(detail, str) and detail else ""
+      raise ScopeError(
+        f"v0.4 target did not pass exact execution: {identity}{suffix}"
+      )
+
+  return {"passed": len(required), "required": len(required)}
+
+
+def validate_scope_ratchets(report: dict[str, Any]) -> None:
+  suites = report["suites"]
+  summary = report["summary"]
+  current = {
+    "classified": summary["classified"],
+    "exact_unified": report["evidence"]["exact_unified_cases"],
+    "passed": summary["passed"],
+    "read_write_concern_passed": suites["read-write-concern"].get(
+      "passed", 0,
+    ),
+    "supported": summary["supported"],
+  }
+
+  for name, minimum in RATCHETS.items():
+    if current[name] < minimum:
+      raise ScopeError(
+        f"v0.4 {name} ratchet regressed from {minimum} to {current[name]}"
+      )
+
+
 def classify(
   cases: dict[str, dict[str, Any]],
   activities: dict[str, dict[str, str]],
+  executors: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
+  executors = load_executors() if executors is None else executors
   statuses = Counter()
   suites: dict[str, Counter[str]] = {
     suite: Counter() for suite in sorted(TARGET_SUITES)
   }
   planned_by_activity = Counter()
   excluded_by_activity = Counter()
+  exact_unified = 0
+  seen_target_version_exclusions = set()
 
   for identity, case in cases.items():
     status = case.get("status")
@@ -112,7 +214,29 @@ def classify(
     if owner not in activities:
       raise ScopeError(f"unknown owner for {identity}: {owner}")
 
+    if identity in TARGET_VERSION_EXCLUSIONS:
+      if status not in {"deferred_unsupported", "excluded_scope"}:
+        raise ScopeError(f"stale v0.4 target-version exclusion: {identity}")
+      if owner != "ADV-011":
+        raise ScopeError(f"target-version exclusion has wrong owner: {identity}")
+      seen_target_version_exclusions.add(identity)
+
     if status == "passed":
+      runner = case.get("runner")
+      evidence = case.get("last_execution")
+      if not isinstance(runner, str) or not runner or runner.startswith("pending:"):
+        raise ScopeError(f"passing v0.4 case has no exact runner: {identity}")
+      if not isinstance(evidence, str) or not evidence:
+        raise ScopeError(f"passing v0.4 case has no execution evidence: {identity}")
+
+      if runner == "spec/unified/execute.lua":
+        executor = executors.get(identity)
+        if executor is None:
+          raise ScopeError(f"passing v0.4 case has no exact executor: {identity}")
+        if executor.get("environment") != case.get("required_environment"):
+          raise ScopeError(f"v0.4 executor environment is stale for {identity}")
+        exact_unified += 1
+
       classification = "passed"
     elif status not in {"deferred_unsupported", "excluded_scope"}:
       raise ScopeError(f"unknown conformance status for {identity}: {status}")
@@ -134,11 +258,24 @@ def classify(
     suites[suite][classification] += 1
 
   supported = statuses["passed"] + statuses["planned"]
-  return {
+
+  missing_target_exclusions = (
+    set(TARGET_VERSION_EXCLUSIONS) - seen_target_version_exclusions
+  )
+  if missing_target_exclusions:
+    identity = sorted(missing_target_exclusions)[0]
+    raise ScopeError(f"missing v0.4 target-version exclusion: {identity}")
+
+  report = {
+    "evidence": {
+      "exact_unified_cases": exact_unified,
+      "static_passing_cases": statuses["passed"] - exact_unified,
+    },
     "excluded_by_activity": dict(sorted(excluded_by_activity.items())),
     "exclusion_reasons": EXCLUSION_REASONS,
     "planned_by_activity": dict(sorted(planned_by_activity.items())),
-    "schema_version": 1,
+    "ratchets": RATCHETS,
+    "schema_version": 2,
     "suites": {
       suite: dict(sorted(counts.items()))
       for suite, counts in suites.items()
@@ -151,8 +288,17 @@ def classify(
       "supported": supported,
     },
     "target_owners": sorted(TARGET_OWNERS),
+    "target_version_exclusions": TARGET_VERSION_EXCLUSIONS,
     "type": "v0.4-sharded-parity-scope",
   }
+
+  if statuses["planned"]:
+    raise ScopeError(
+      f"v0.4 conformance still has {statuses['planned']} planned cases"
+    )
+
+  validate_scope_ratchets(report)
+  return report
 
 
 def generate() -> dict[str, Any]:
@@ -176,17 +322,30 @@ def check() -> None:
 def main() -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--check", action="store_true")
+  parser.add_argument("--execution-report", type=Path)
   arguments = parser.parse_args()
   if arguments.check:
     check()
   else:
     write()
-  report = generate()["summary"]
+  generated = generate()
+  report = generated["summary"]
+  exact = ""
+  if arguments.execution_report is not None:
+    execution = json.loads(
+      arguments.execution_report.read_text(encoding="utf-8")
+    )
+    evidence = validate_execution(
+      load_cases(),
+      execution,
+      load_capability_ratchets(),
+    )
+    exact = f", {evidence['passed']} exact unified cases passed"
   print(
     "v0.4 scope: "
     f"{report['supported']}/{report['classified']} supported, "
     f"{report['passed']} passed, {report['planned']} planned, "
-    f"{report['excluded']} excluded"
+    f"{report['excluded']} excluded{exact}"
   )
   return 0
 

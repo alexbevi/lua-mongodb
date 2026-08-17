@@ -142,6 +142,11 @@ describe("find cursor lifecycle", function()
           database = database,
           options = options,
         }
+
+        if options.on_server_selected then
+          options.on_server_selected("router-a:27017")
+        end
+
         return table.remove(responses, 1)
       end,
     }
@@ -160,10 +165,12 @@ describe("find cursor lifecycle", function()
     assert.are.equal("getMore", commands[2].command:keys()[1])
     assert.are.equal(41, commands[2].command:get("getMore"):to_number())
     assert.are.equal(2, commands[2].command:get("batchSize"))
+    assert.are.equal("router-a:27017", commands[2].options.server_address)
     assert.is_true(cursor:close())
     assert.is_false(cursor:close())
     assert.are.equal("killCursors", commands[3].command:keys()[1])
     assert.are.equal(42, commands[3].command:get("cursors"):get(1):to_number())
+    assert.are.equal("router-a:27017", commands[3].options.server_address)
     assert.is_false(executor.closed == true)
   end)
 

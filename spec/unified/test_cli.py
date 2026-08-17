@@ -29,6 +29,16 @@ EMPTY_REQUIREMENTS = {
 }
 
 
+def uses_multiple_mongoses(value: object) -> bool:
+  if isinstance(value, dict):
+    return value.get("useMultipleMongoses") is True or any(
+      uses_multiple_mongoses(item) for item in value.values()
+    )
+  if isinstance(value, list):
+    return any(uses_multiple_mongoses(item) for item in value)
+  return False
+
+
 def discovered_test(identity: str, fingerprint: str = "current") -> dict[str, object]:
   fixture, suffix = identity.split("::test[")
   index = int(suffix[:-1])
@@ -679,6 +689,7 @@ class UnifiedCliTests(unittest.TestCase):
 
     for identity in identities:
       self.assertEqual("live-sharded", registry[identity]["environment"])
+      self.assertEqual(2, registry[identity]["mongoses"])
       self.assertTrue(registry[identity]["testCommands"])
 
   def test_mongos_unpin_boundary_cases_are_runnable(self) -> None:
@@ -700,7 +711,40 @@ class UnifiedCliTests(unittest.TestCase):
 
     for identity in identities:
       self.assertEqual("live-sharded", registry[identity]["environment"])
+      self.assertEqual(2, registry[identity]["mongoses"])
       self.assertTrue(registry[identity]["testCommands"])
+
+  def test_multiple_mongos_entities_use_two_mongos_sharded_executors(self) -> None:
+    registry = run.load_executor_registry()
+    fixtures: dict[str, object] = {}
+    matched = []
+
+    for identity, entry in registry.items():
+      fixture, suffix = identity.split("::test[")
+      index = int(suffix[:-1])
+
+      if fixture not in fixtures:
+        fixtures[fixture] = json.loads(
+          (run.DEFAULT_SOURCE / fixture).read_text(encoding="utf-8")
+        )
+
+      document = fixtures[fixture]
+      assert isinstance(document, dict)
+      tests = document["tests"]
+      assert isinstance(tests, list)
+
+      if not (
+        uses_multiple_mongoses(document.get("createEntities", []))
+        or uses_multiple_mongoses(tests[index - 1])
+      ):
+        continue
+
+      matched.append(identity)
+      with self.subTest(identity=identity):
+        self.assertEqual("live-sharded", entry["environment"])
+        self.assertEqual(2, entry["mongoses"])
+
+    self.assertEqual(104, len(matched))
 
   def test_sharded_recovery_token_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -812,6 +856,7 @@ class UnifiedCliTests(unittest.TestCase):
       {
         "activity": "TXN-007",
         "environment": "live-sharded",
+        "mongoses": 2,
         "testCommands": True,
       },
       registry[recovery_token_coupled[0]],

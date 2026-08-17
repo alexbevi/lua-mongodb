@@ -185,7 +185,9 @@ test-unified-meta: check-busted check-python
 test-unified-execution: check-python
 	@if test -n "$(UNIFIED_REPORT)"; then \
 		mkdir -p "$$(dirname "$(UNIFIED_REPORT)")"; \
-		"$(PYTHON)" spec/unified/run.py --report "$(UNIFIED_REPORT)"; \
+		"$(PYTHON)" spec/unified/run.py --report "$(UNIFIED_REPORT)" && \
+		"$(PYTHON)" spec/v04/scope.py --check \
+			--execution-report "$(UNIFIED_REPORT)"; \
 	else \
 		"$(PYTHON)" spec/unified/run.py; \
 	fi

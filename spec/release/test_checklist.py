@@ -28,6 +28,17 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
+        "classified_cases": 898,
+        "excluded_cases": 47,
+        "exact_unified_cases": 355,
+        "passed_cases": 851,
+        "read_write_concern_passed": 48,
+        "target_version_exclusions": 1,
+      },
+      report["gates"]["v0_4_conformance"],
+    )
+    self.assertEqual(
+      {
         "cleanup": ["REL-042", "REL-043"],
         "packaging": ["REL-007"],
         "security": ["REL-008"],

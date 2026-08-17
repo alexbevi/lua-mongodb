@@ -15,6 +15,7 @@ sys.path.insert(0, str(ROOT))
 
 from spec.compatibility import matrix  # noqa: E402
 from spec.release import scope  # noqa: E402
+from spec.v04 import scope as v04_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -154,6 +155,7 @@ def generate() -> dict[str, Any]:
       completed_activity(progress, activity_id)
 
   scope_report = scope.generate()
+  v04_report = v04_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -191,6 +193,10 @@ def generate() -> dict[str, Any]:
   if ledger_summary.get("statuses") != statuses:
     raise ChecklistError("conformance ledger and release scope statuses differ")
 
+  v04_summary = v04_report["summary"]
+  if v04_summary["planned"] != 0:
+    raise ChecklistError("v0.4 conformance still has planned cases")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -214,6 +220,8 @@ def generate() -> dict[str, Any]:
     "compatibility:",
     "topology: [standalone, replicaset, sharded]",
     "make check-fast test-coverage",
+    "spec/v04/scope.py",
+    "--execution-report build/conformance/unified.json",
   ):
     require_text(full_workflow, expected)
 
@@ -242,6 +250,20 @@ def generate() -> dict[str, Any]:
         "post_v1_exclusions": post_v1_exclusions,
       },
       "production_core_prerequisites": len(production_core),
+      "v0_4_conformance": {
+        "classified_cases": v04_summary["classified"],
+        "excluded_cases": v04_summary["excluded"],
+        "exact_unified_cases": v04_report["evidence"][
+          "exact_unified_cases"
+        ],
+        "passed_cases": v04_summary["passed"],
+        "read_write_concern_passed": v04_report["suites"][
+          "read-write-concern"
+        ]["passed"],
+        "target_version_exclusions": len(
+          v04_report["target_version_exclusions"]
+        ),
+      },
     },
     "ready": True,
     "release": release_metadata(),
@@ -257,7 +279,12 @@ def main(argv: list[str] | None = None) -> int:
 
   try:
     encoded = json.dumps(generate(), indent=2, sort_keys=True) + "\n"
-  except (ChecklistError, matrix.MatrixError, scope.ScopeError) as exc:
+  except (
+    ChecklistError,
+    matrix.MatrixError,
+    scope.ScopeError,
+    v04_scope.ScopeError,
+  ) as exc:
     print(f"release checklist: {exc}")
     return 2
 

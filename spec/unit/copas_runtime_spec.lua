@@ -114,11 +114,16 @@ describe("Copas runtime adapter", function()
     local adapter = runtime.copas()
 
     run_copas(function()
+      local started = false
       local task = adapter.task:spawn(function()
+        started = true
         assert.is_true(adapter.clock:sleep(0.001))
         return 7, "seven"
       end)
 
+      assert.are.equal("pending", task:status())
+      assert.is_true(adapter.task:yield_control())
+      assert.is_true(started)
       assert.are.equal("pending", task:status())
 
       local number, word = adapter.task:await(task)

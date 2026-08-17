@@ -7,7 +7,7 @@
       "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
       "series": "7.0",
       "server_version": "7.0.39",
-      "smoke_test": "retryable-writes/tests/unified/deleteMany.json::test[1]",
+      "smoke_test": "retryable-writes/tests/unified/aggregate-out-merge.json::test[1]",
       "test_commands_smoke_test": "retryable-writes/tests/unified/deleteOne-errorLabels.json::test[1]",
       "topology": "replicaset"
     },
@@ -37,7 +37,7 @@
       "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
       "series": "8.0",
       "server_version": "8.0.28",
-      "smoke_test": "retryable-writes/tests/unified/deleteMany.json::test[1]",
+      "smoke_test": "retryable-writes/tests/unified/aggregate-out-merge.json::test[1]",
       "test_commands_smoke_test": "retryable-writes/tests/unified/deleteOne-errorLabels.json::test[1]",
       "topology": "replicaset"
     },
@@ -67,7 +67,7 @@
       "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
       "series": "8.2",
       "server_version": "8.2.12",
-      "smoke_test": "retryable-writes/tests/unified/deleteMany.json::test[1]",
+      "smoke_test": "retryable-writes/tests/unified/aggregate-out-merge.json::test[1]",
       "test_commands_smoke_test": "retryable-writes/tests/unified/deleteOne-errorLabels.json::test[1]",
       "topology": "replicaset"
     },

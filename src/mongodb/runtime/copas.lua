@@ -348,7 +348,7 @@ local function new_clock(adapter, copas, raw_gettime, raw_wall_time)
   return clock
 end
 
-local function new_task_capability(copas_future)
+local function new_task_capability(copas_future, copas)
   local capability = {}
 
   function capability.spawn(_, callback, ...)
@@ -378,6 +378,11 @@ local function new_task_capability(copas_future)
     end
 
     error(outcome[2], 0)
+  end
+
+  function capability.yield_control()
+    copas.pause(0)
+    return true
   end
 
   function capability.cancel(_, task, reason)
@@ -453,7 +458,7 @@ function M.new(options)
 
   adapter.clock = new_clock(adapter, copas, raw_gettime, raw_wall_time)
   adapter.cancellation = { new = cancellation.new }
-  adapter.task = new_task_capability(copas.future)
+  adapter.task = new_task_capability(copas.future, copas)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)
   adapter.environment = new_environment_capability(raw_getenv)
   adapter.dns = options.dns or require("mongodb.runtime.copas_dns").new(adapter, {

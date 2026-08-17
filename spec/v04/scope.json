@@ -1,4 +1,8 @@
 {
+  "evidence": {
+    "exact_unified_cases": 355,
+    "static_passing_cases": 496
+  },
   "excluded_by_activity": {
     "ADV-006": 14,
     "ADV-007": 6,
@@ -12,7 +16,14 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
   "planned_by_activity": {},
-  "schema_version": 1,
+  "ratchets": {
+    "classified": 898,
+    "exact_unified": 355,
+    "passed": 851,
+    "read_write_concern_passed": 48,
+    "supported": 851
+  },
+  "schema_version": 2,
   "suites": {
     "index-management": {
       "passed": 19
@@ -77,5 +88,8 @@
     "TXN-006",
     "TXN-007"
   ],
+  "target_version_exclusions": {
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": "legacy mapReduce concern behavior requires MongoDB 3.4, below the v0.4 MongoDB 7.0 compatibility floor"
+  },
   "type": "v0.4-sharded-parity-scope"
 }

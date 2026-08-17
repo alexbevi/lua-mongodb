@@ -122,6 +122,8 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("needs: linux-unified", workflow)
     self.assertIn("uses: actions/download-artifact@v8", workflow)
     self.assertIn("--aggregate build/conformance/shards/*.json", workflow)
+    self.assertIn("Validate exact v0.4 conformance evidence", workflow)
+    self.assertIn("--execution-report build/conformance/unified.json", workflow)
     self.assertIn("if-no-files-found: error", workflow)
 
 

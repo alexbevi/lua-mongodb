@@ -95,4 +95,15 @@ describe("socket timeout executor", function()
       { retryable_write = true }
     )
   end)
+
+  it("delegates capability discovery to the underlying executor", function()
+    local capabilities = { max_wire_version = 25 }
+    local executor = socket_timeout_executor.new({
+      capabilities = function() return capabilities end,
+      close = function() return true end,
+      command = function() return bson.document({ { "ok", 1 } }) end,
+    }, fake_runtime.new(), 250)
+
+    assert.are.equal(capabilities, executor:capabilities())
+  end)
 end)

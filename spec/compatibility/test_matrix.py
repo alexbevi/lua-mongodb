@@ -7,9 +7,28 @@ from unittest import mock
 
 from spec.compatibility import matrix
 from spec.compatibility import run
+from spec.unified import run as unified_run
 
 
 class CompatibilityMatrixTests(unittest.TestCase):
+  def test_smoke_tests_match_the_matrix_topology(self):
+    registry = unified_run.load_executor_registry()
+    environments = {
+      "replicaset": "live-replicaset",
+      "sharded": "live-sharded",
+      "standalone": "live-standalone",
+    }
+
+    for server in matrix.validate(matrix.load())["servers"]:
+      for field in ("smoke_test", "test_commands_smoke_test"):
+        identity = server[field]
+
+        with self.subTest(server=server["id"], field=field):
+          self.assertEqual(
+            environments[server["topology"]],
+            registry[identity]["environment"],
+          )
+
   def test_rejects_a_matrix_that_omits_an_advertised_topology(self):
     document = {
       "schema_version": 1,

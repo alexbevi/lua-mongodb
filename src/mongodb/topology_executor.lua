@@ -63,6 +63,17 @@ local function operation_for(command, options)
   return READ_COMMANDS[name] and "read" or "write"
 end
 
+local function tag_document(tag_set)
+  local entries = {}
+
+  for key, value in pairs(tag_set) do
+    entries[#entries + 1] = { key, value }
+  end
+
+  table.sort(entries, function(left, right) return left[1] < right[1] end)
+  return bson.document(entries)
+end
+
 local function decorate_read_preference(selected, command)
   local preference = selected.read_preference
   local command_name = command:keys()[1]
@@ -85,7 +96,7 @@ local function decorate_read_preference(selected, command)
     local tag_sets = {}
 
     for index, tag_set in ipairs(preference.tag_sets) do
-      tag_sets[index] = bson.document(tag_set)
+      tag_sets[index] = tag_document(tag_set)
     end
 
     preference_entries[#preference_entries + 1] = {

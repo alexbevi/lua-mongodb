@@ -4549,6 +4549,28 @@
       "notes": [],
       "started_at": "2026-08-17T14:25:30+00:00",
       "completed_at": "2026-08-17T14:37:40+00:00"
+    },
+    "REL-049": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope.V04ScopeTests.test_exact_execution_rejects_environment_skipped_target'",
+          "exit_code": 2,
+          "summary": "The defining v0.4 closure test errored because spec.v04.scope had no exact-execution validator, so an environment-skipped unified target row could not be rejected.",
+          "recorded_at": "2026-08-17T15:01:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope spec.conformance.test_ledger spec.unified.test_cli spec.release.test_checklist planning.tests.test_ci_portability'; direct Makefile meta-contract; generated capability, executor, ledger, v0.4, compatibility, README, release, YAML, Python, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "103 focused Python contracts and 5 Makefile meta-contracts passed. The generated v0.4 closure ratchets 898 classified, 851 passed, 0 planned, 47 excluded, 48 modern read/write-concern passes, 355 exact unified executor identities, and 496 deterministic evidence rows; all artifact validators report 1545 unified executors, 5524 ledger cases, and 9 compatibility rows current. Exact live execution of the 355 target identities is assigned to the required Full Conformance aggregate-report gate.",
+          "recorded_at": "2026-08-17T15:08:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T15:00:04+00:00",
+      "completed_at": "2026-08-17T15:08:32+00:00"
     }
   },
   "verified_references": {

@@ -119,48 +119,63 @@ local function serve_connection(peer, store)
     { "maxWireVersion", 25 },
   }))
 
-  local request = receive_frame(peer)
-  local name = command_name(request)
+  while true do
+    local request = receive_frame_or_closed(peer)
 
-  if name == "drop" then
-    local concern = request.body:get("writeConcern")
-
-    equal("majority", concern:get("w"))
-    store.documents = {}
-    send_response(peer, request, bson.document({ { "ok", 1 } }))
-
-    request = receive_frame(peer)
-    equal("insert", command_name(request))
-    concern = request.body:get("writeConcern")
-    equal("majority", concern:get("w"))
-
-    for _, document in request_documents(request):iter() do
-      store.documents[#store.documents + 1] = document
+    if request == nil then
+      return
     end
 
-    send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
+    local name = command_name(request)
 
-    request = receive_frame(peer)
-    equal("find", command_name(request))
-    equal(1, request.body:get("sort"):get("_id"):to_number())
-    send_response(peer, request, bson.document({
-      { "ok", 1 },
-      { "cursor", bson.document({
-        { "id", bson.int64(0) },
-        { "ns", "crud-v1.coll" },
-        { "firstBatch", bson.array(store.documents) },
-      }) },
-    }))
-  elseif name == "insert" then
-    assert(request.body:get("writeConcern") == nil, "unexpected writeConcern")
+    if name == "hello" or name == "ismaster" then
+      send_response(peer, request, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWriteBatchSize", 100000 },
+        { "maxWireVersion", 25 },
+      }))
+    elseif name == "ping" then
+      send_response(peer, request, bson.document({ { "ok", 1 } }))
+    elseif name == "drop" then
+      local concern = request.body:get("writeConcern")
 
-    for _, document in request_documents(request):iter() do
-      store.documents[#store.documents + 1] = document
+      equal("majority", concern:get("w"))
+      store.documents = {}
+      store.initialized = false
+      send_response(peer, request, bson.document({ { "ok", 1 } }))
+    elseif name == "insert" then
+      local concern = request.body:get("writeConcern")
+
+      if store.initialized then
+        assert(concern == nil, "unexpected writeConcern")
+      else
+        equal("majority", concern:get("w"))
+        store.initialized = true
+      end
+
+      for _, document in request_documents(request):iter() do
+        store.documents[#store.documents + 1] = document
+      end
+
+      send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
+    elseif name == "find" then
+      equal(1, request.body:get("sort"):get("_id"):to_number())
+      send_response(peer, request, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "crud-v1.coll" },
+          { "firstBatch", bson.array(store.documents) },
+        }) },
+      }))
+      break
+    else
+      error("unsupported loopback unified command: " .. tostring(name), 0)
     end
-
-    send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
-  else
-    error("unsupported loopback unified command: " .. tostring(name), 0)
   end
 
   peer:close()
@@ -258,6 +273,18 @@ local function serve_oidc_connection(peer, store)
       store.documents = {}
       send_response(peer, request, bson.document({ { "ok", 1 }, { "n", 1 } }))
     elseif name == "create" then
+      send_response(peer, request, bson.document({ { "ok", 1 } }))
+    elseif name == "hello" or name == "ismaster" then
+      send_response(peer, request, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWriteBatchSize", 100000 },
+        { "maxWireVersion", 25 },
+      }))
+    elseif name == "ping" then
       send_response(peer, request, bson.document({ { "ok", 1 } }))
     elseif name == "find" then
       if (store.fail_commands.find or 0) > 0 then
@@ -468,12 +495,12 @@ local function run_loopback(selection)
     copas.removeserver(server)
   end)
 
-  if not outcome[1] then
-    error(outcome[2], 0)
-  end
-
   if server_error then
     error(server_error, 0)
+  end
+
+  if not outcome[1] then
+    error(outcome[2], 0)
   end
 
   return {

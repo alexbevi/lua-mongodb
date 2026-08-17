@@ -167,6 +167,10 @@ describe("unified runner core", function()
         { "operation", increment },
       }) },
     })))
+    assert.are.equal(
+      1,
+      assert(runner:get_entity("counter0", "counter")).total
+    )
     assert(runner:execute(document({
       { "name", "waitForThread" },
       { "object", "testRunner" },
