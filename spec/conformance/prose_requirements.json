@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "requirements": {
+    "atlas-sfp-testing/atlas-sfp-testing.md": {
+      "activity": "CON-005",
+      "last_execution": null,
+      "reason": "Atlas Serverless and Fault Proxy guidance has no portable machine fixture corpus and needs an explicit prose-only outcome.",
+      "required_environment": "atlas-sfp",
+      "runner": "pending:CON-005",
+      "status": "deferred_unsupported"
+    },
+    "benchmarking/benchmarking.md": {
+      "activity": "CON-005",
+      "last_execution": null,
+      "reason": "The benchmarking specification defines workload guidance rather than a portable pass/fail fixture corpus and needs an explicit prose-only outcome.",
+      "required_environment": "benchmark",
+      "runner": "pending:CON-005",
+      "status": "deferred_unsupported"
+    },
+    "bson-binary-encrypted/binary-encrypted.md": {
+      "activity": "ADV-010",
+      "last_execution": null,
+      "reason": "Encrypted BSON subtype behavior depends on the pending client-side encryption design and cryptographic runtime boundary.",
+      "required_environment": "live-mongodb",
+      "runner": "pending:ADV-010",
+      "status": "deferred_unsupported"
+    },
+    "bson-binary-uuid/uuid.md": {
+      "activity": "CON-005",
+      "last_execution": null,
+      "reason": "Lua has no standard native UUID type, so the representation rules need an explicit applicability classification.",
+      "required_environment": "none",
+      "runner": "pending:CON-005",
+      "status": "deferred_unsupported"
+    },
+    "bson-decimal128/decimal128.md": {
+      "activity": "BSON-003",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/bson_exact_spec.lua'",
+      "reason": "Deterministic Decimal128 interchange and exact numeric behavior are covered by the exact-value unit vectors.",
+      "required_environment": "none",
+      "runner": "spec/unit/bson_exact_spec.lua",
+      "status": "passed"
+    },
+    "bson-objectid/objectid.md": {
+      "activity": "BSON-009",
+      "last_execution": null,
+      "reason": "Existing ObjectId coverage does not yet execute every unsigned timestamp boundary and 24-bit counter rollover in the normative test plan.",
+      "required_environment": "deterministic-runtime",
+      "runner": "pending:BSON-009",
+      "status": "deferred_unsupported"
+    },
+    "collation/collation.md": {
+      "activity": "CRUD-002",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/crud_mutations_spec.lua spec/unit/admin_spec.lua'",
+      "reason": "Command builders preserve collation documents and enforce the negotiated unacknowledged-write restrictions.",
+      "required_environment": "none",
+      "runner": "spec/unit/crud_mutations_spec.lua",
+      "status": "passed"
+    },
+    "compression/OP_COMPRESSED.md": {
+      "activity": "ADV-004",
+      "last_execution": null,
+      "reason": "OP_COMPRESSED negotiation, framing, and codecs remain a declared post-v1 feature.",
+      "required_environment": "live-mongodb",
+      "runner": "pending:ADV-004",
+      "status": "deferred_unsupported"
+    },
+    "dbref/dbref.md": {
+      "activity": "CON-005",
+      "last_execution": null,
+      "reason": "The driver preserves DBRef-shaped BSON documents but exposes no class-style DBRef abstraction, so applicability needs an explicit classification.",
+      "required_environment": "none",
+      "runner": "pending:CON-005",
+      "status": "deferred_unsupported"
+    },
+    "enumerate-collections/enumerate-collections.md": {
+      "activity": "ENUM-001",
+      "last_execution": null,
+      "reason": "Collection enumeration exists, but its standalone, replica-set primary/secondary, and mongos routing matrix is not yet recorded.",
+      "required_environment": "deterministic-runtime",
+      "runner": "pending:ENUM-001",
+      "status": "deferred_unsupported"
+    },
+    "enumerate-databases/enumerate-databases.md": {
+      "activity": "ENUM-001",
+      "last_execution": null,
+      "reason": "Database enumeration exists, but its standalone, replica-set primary/secondary, and mongos routing matrix is not yet recorded.",
+      "required_environment": "deterministic-runtime",
+      "runner": "pending:ENUM-001",
+      "status": "deferred_unsupported"
+    },
+    "extended-json/extended-json.md": {
+      "activity": "UTF-001",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/extended_json_spec.lua'",
+      "reason": "Canonical and relaxed Extended JSON conversion is covered by deterministic ordered-value unit vectors.",
+      "required_environment": "none",
+      "runner": "spec/unit/extended_json_spec.lua",
+      "status": "passed"
+    },
+    "find_getmore_killcursors_commands/find_getmore_killcursors_commands.md": {
+      "activity": "CUR-001",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua' FOCUS_INTEGRATION='spec/integration/cursor_spec.lua'",
+      "reason": "Find, getMore, killCursors, exhaustion, and cleanup are covered at deterministic command and transport boundaries.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/cursor_spec.lua",
+      "status": "passed"
+    },
+    "logging/logging.md": {
+      "activity": "ADV-009",
+      "last_execution": null,
+      "reason": "Standardized driver logging remains owned by the post-v1 observability activity.",
+      "required_environment": "deterministic-runtime",
+      "runner": "pending:ADV-009",
+      "status": "deferred_unsupported"
+    },
+    "message/OP_MSG.md": {
+      "activity": "WIRE-001",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/op_msg_spec.lua'",
+      "reason": "Kind-0 and kind-1 payloads, flags, framing limits, and response correlation are covered by the OP_MSG unit vectors.",
+      "required_environment": "none",
+      "runner": "spec/unit/op_msg_spec.lua",
+      "status": "passed"
+    },
+    "ocsp-support/ocsp-support.md": {
+      "activity": "TLS-002",
+      "last_execution": null,
+      "reason": "LuaSec 1.3 does not expose certificate revocation or OCSP endpoint verification, so the accepted OCSP behavior remains unsupported.",
+      "required_environment": "ocsp-responder",
+      "runner": "pending:TLS-002",
+      "status": "deferred_unsupported"
+    },
+    "polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.md": {
+      "activity": "ADV-015",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/dns_polling_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/dns_polling_spec.lua'",
+      "reason": "All thirteen prose polling cases run against deterministic DNS, clock, and topology adapters.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/support/dns_polling_runner.lua",
+      "status": "passed"
+    },
+    "server_write_commands/server_write_commands.md": {
+      "activity": "CRUD-002",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/crud_mutations_spec.lua spec/unit/bulk_spec.lua'",
+      "reason": "Insert, update, delete, ordered batching, and acknowledged error shapes are covered by deterministic command vectors.",
+      "required_environment": "none",
+      "runner": "spec/unit/crud_mutations_spec.lua",
+      "status": "passed"
+    },
+    "socks5-support/socks5.md": {
+      "activity": "ADV-012",
+      "last_execution": null,
+      "reason": "SOCKS5 proxy options and transport behavior remain a declared post-v1 runtime-adapter feature.",
+      "required_environment": "socks5-proxy",
+      "runner": "pending:ADV-012",
+      "status": "deferred_unsupported"
+    }
+  }
+}

@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "6d872a2f930bacbf6c6dd50f0e3a2c0ea42f0c79488f3aa0fc9cbc7a8f954627",
+  "plan_digest": "1c77e4d1ce7c5e530a1a4afdbad64faafa49d1df4a67ffa276eebdbe0a457146",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -4357,6 +4357,28 @@
       "notes": [],
       "started_at": "2026-08-17T00:46:53+00:00",
       "completed_at": "2026-08-17T00:51:46+00:00"
+    },
+    "CON-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog'",
+          "exit_code": 2,
+          "summary": "The prose accountability contract failed because the generated catalog had no requirements collection for its 19 prose-only Accepted documents.",
+          "recorded_at": "2026-08-17T00:56:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog spec.conformance.test_ledger'; python3 spec/conformance/catalog.py --check; make test-conformance",
+          "exit_code": 0,
+          "summary": "All 19 prose-only Accepted documents now have stable document requirement identities and pinned fingerprints: 7 cite passing executable evidence and 12 cite concrete reasons with pending owners; catalog, ledger, release-scope, checklist, and README validators passed.",
+          "recorded_at": "2026-08-17T00:59:59+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T00:55:32+00:00",
+      "completed_at": "2026-08-17T01:00:00+00:00"
     }
   },
   "verified_references": {

@@ -52,6 +52,51 @@ class ConformanceCatalogTests(unittest.TestCase):
     self.assertTrue(fixtureless <= set(suites))
     self.assertTrue(all(not suites[name]["has_machine_fixtures"] for name in fixtureless))
 
+  def test_prose_only_documents_have_accountable_requirement_records(self) -> None:
+    generated = catalog.generate()
+    documents = generated["documents"]
+    suites = generated["suites"]
+    requirements = generated["requirements"]
+    prose_sources = {
+      identity for identity, document in documents.items()
+      if not suites[document["suite"]]["has_machine_fixtures"]
+    }
+
+    self.assertEqual(
+      {f"{source}::document" for source in prose_sources},
+      set(requirements),
+    )
+
+    required_fields = {
+      "activity",
+      "fingerprint",
+      "format",
+      "last_execution",
+      "reason",
+      "required_environment",
+      "runner",
+      "scope",
+      "source",
+      "specifications_commit",
+      "status",
+      "suite",
+    }
+
+    for identity, requirement in requirements.items():
+      source = identity.removesuffix("::document")
+      self.assertEqual(required_fields, set(requirement))
+      self.assertEqual(documents[source]["fingerprint"], requirement["fingerprint"])
+      self.assertEqual("prose", requirement["format"])
+      self.assertTrue(requirement["activity"])
+      self.assertTrue(requirement["runner"])
+      self.assertTrue(requirement["scope"])
+      self.assertTrue(requirement["reason"])
+
+      if requirement["status"] == "passed":
+        self.assertTrue(requirement["last_execution"])
+      else:
+        self.assertIsNone(requirement["last_execution"])
+
 
 if __name__ == "__main__":
   unittest.main()

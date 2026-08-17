@@ -43,7 +43,7 @@ Starting post-v1 work requires `start ID --track TRACK`. The track must be decla
 
 `update_readme_compatibility.py` projects the conformance ledger into the README's driver-layer compatibility table. Run it whenever ledger statuses change; CI uses `--check` so the README cannot drift from executable evidence.
 
-`spec/conformance/catalog.py` inventories every document marked Accepted in the pinned specifications checkout, fingerprints its exact bytes, and assigns its suite to one explicit onion-model layer. Unlike the fixture ledger, the catalog includes prose-only specifications and test plans. Its checked artifact fails when an accepted document changes or a suite is added, removed, or left unmapped.
+`spec/conformance/catalog.py` inventories every document marked Accepted in the pinned specifications checkout, fingerprints its exact bytes, and assigns its suite to one explicit onion-model layer. Unlike the fixture ledger, the catalog includes prose-only specifications and test plans. Each prose-only document has a stable requirement record with a roadmap owner, scope, status, runner, and exact execution evidence or reason. Its checked artifact fails when an accepted document changes or a suite or prose requirement is added, removed, or left unclassified.
 
 `spec/v04/scope.py` projects the exact session, transaction, Search-index, read/write-concern, SDAM, DNS, and command cases selected by the `v0-4-sharded-parity` track. It rejects missing or completed target owners and distinguishes planned v0.4 support from accountable exclusions owned by later load-balancing, client-bulk-write, observability, and legacy-API work. `make test-v04-scope` runs its contract and stale-generation checks.
 
