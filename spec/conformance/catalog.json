@@ -288,13 +288,13 @@
   },
   "requirements": {
     "atlas-sfp-testing/atlas-sfp-testing.md::document": {
-      "activity": "CON-005",
+      "activity": "SFP-001",
       "fingerprint": "e5507521136a080ed28e8f27751b28e29390cce97204e66e41d47fe04fbdad71",
       "format": "prose",
       "last_execution": null,
       "reason": "Atlas Serverless and Fault Proxy guidance has no portable machine fixture corpus and needs an explicit prose-only outcome.",
       "required_environment": "atlas-sfp",
-      "runner": "pending:CON-005",
+      "runner": "pending:SFP-001",
       "scope": "post-v1",
       "source": "atlas-sfp-testing/atlas-sfp-testing.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -307,12 +307,12 @@
       "format": "prose",
       "last_execution": null,
       "reason": "The benchmarking specification defines workload guidance rather than a portable pass/fail fixture corpus and needs an explicit prose-only outcome.",
-      "required_environment": "benchmark",
-      "runner": "pending:CON-005",
-      "scope": "post-v1",
+      "required_environment": "none",
+      "runner": "none:no-machine-cases",
+      "scope": "prose-only",
       "source": "benchmarking/benchmarking.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "no_machine_cases",
       "suite": "benchmarking"
     },
     "bson-binary-encrypted/binary-encrypted.md::document": {
@@ -336,11 +336,11 @@
       "last_execution": null,
       "reason": "Lua has no standard native UUID type, so the representation rules need an explicit applicability classification.",
       "required_environment": "none",
-      "runner": "pending:CON-005",
-      "scope": "post-v1",
+      "runner": "none:not-applicable",
+      "scope": "not-applicable",
       "source": "bson-binary-uuid/uuid.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "not_applicable",
       "suite": "bson-binary-uuid"
     },
     "bson-decimal128/decimal128.md::document": {
@@ -406,11 +406,11 @@
       "last_execution": null,
       "reason": "The driver preserves DBRef-shaped BSON documents but exposes no class-style DBRef abstraction, so applicability needs an explicit classification.",
       "required_environment": "none",
-      "runner": "pending:CON-005",
-      "scope": "post-v1",
+      "runner": "none:not-applicable",
+      "scope": "not-applicable",
       "source": "dbref/dbref.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "not_applicable",
       "suite": "dbref"
     },
     "enumerate-collections/enumerate-collections.md::document": {
@@ -920,7 +920,9 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 12,
+      "deferred_unsupported": 9,
+      "no_machine_cases": 1,
+      "not_applicable": 2,
       "passed": 7
     },
     "requirements": 19,

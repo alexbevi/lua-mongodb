@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "1c77e4d1ce7c5e530a1a4afdbad64faafa49d1df4a67ffa276eebdbe0a457146",
+  "plan_digest": "9b0872ed4ca55e71f14e88bc400ccf39d71ecbaa59799a256cda3690517ca26c",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -4395,6 +4395,28 @@
       "notes": [],
       "started_at": "2026-08-17T00:55:32+00:00",
       "completed_at": "2026-08-17T01:00:00+00:00"
+    },
+    "CON-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog'",
+          "exit_code": 2,
+          "summary": "The explicit non-execution contract failed because benchmarking, native UUID mapping, and DBRef applicability were still all collapsed into deferred_unsupported.",
+          "recorded_at": "2026-08-17T01:14:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog spec.conformance.test_ledger planning.tests.test_readme_compatibility'; python3 spec/conformance/catalog.py --check; make test-conformance",
+          "exit_code": 0,
+          "summary": "Explicit non-execution classifications passed: 1 no_machine_cases, 2 not_applicable, 7 passed, and 9 genuinely deferred prose requirements; catalog, ledger, README, scope, checklist, and planning validators all passed.",
+          "recorded_at": "2026-08-17T01:15:41+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T01:13:43+00:00",
+      "completed_at": "2026-08-17T01:15:42+00:00"
     }
   },
   "verified_references": {

@@ -2,20 +2,20 @@
   "schema_version": 1,
   "requirements": {
     "atlas-sfp-testing/atlas-sfp-testing.md": {
-      "activity": "CON-005",
+      "activity": "SFP-001",
       "last_execution": null,
       "reason": "Atlas Serverless and Fault Proxy guidance has no portable machine fixture corpus and needs an explicit prose-only outcome.",
       "required_environment": "atlas-sfp",
-      "runner": "pending:CON-005",
+      "runner": "pending:SFP-001",
       "status": "deferred_unsupported"
     },
     "benchmarking/benchmarking.md": {
       "activity": "CON-005",
       "last_execution": null,
       "reason": "The benchmarking specification defines workload guidance rather than a portable pass/fail fixture corpus and needs an explicit prose-only outcome.",
-      "required_environment": "benchmark",
-      "runner": "pending:CON-005",
-      "status": "deferred_unsupported"
+      "required_environment": "none",
+      "runner": "none:no-machine-cases",
+      "status": "no_machine_cases"
     },
     "bson-binary-encrypted/binary-encrypted.md": {
       "activity": "ADV-010",
@@ -30,8 +30,8 @@
       "last_execution": null,
       "reason": "Lua has no standard native UUID type, so the representation rules need an explicit applicability classification.",
       "required_environment": "none",
-      "runner": "pending:CON-005",
-      "status": "deferred_unsupported"
+      "runner": "none:not-applicable",
+      "status": "not_applicable"
     },
     "bson-decimal128/decimal128.md": {
       "activity": "BSON-003",
@@ -70,8 +70,8 @@
       "last_execution": null,
       "reason": "The driver preserves DBRef-shaped BSON documents but exposes no class-style DBRef abstraction, so applicability needs an explicit classification.",
       "required_environment": "none",
-      "runner": "pending:CON-005",
-      "status": "deferred_unsupported"
+      "runner": "none:not-applicable",
+      "status": "not_applicable"
     },
     "enumerate-collections/enumerate-collections.md": {
       "activity": "ENUM-001",

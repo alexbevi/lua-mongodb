@@ -34,6 +34,8 @@ LAYERS_IN_ORDER = (
 VALID_REQUIREMENT_STATUSES = {
   "deferred_unsupported",
   "excluded_scope",
+  "no_machine_cases",
+  "not_applicable",
   "passed",
 }
 
@@ -219,13 +221,23 @@ def _generate_requirements(
       if status == "deferred_unsupported" and activities[activity]["status"] == "completed":
         raise CatalogError(f"deferred prose requirement has completed owner: {source}")
 
+      if status in {"no_machine_cases", "not_applicable"}:
+        if classification["required_environment"] != "none":
+          raise CatalogError(f"non-execution prose outcome requires no environment: {source}")
+
+        if not classification["runner"].startswith("none:"):
+          raise CatalogError(f"non-execution prose outcome has a runner: {source}")
+
     document = documents[source]
     identity = f"{source}::document"
     requirements[identity] = {
       **classification,
       "fingerprint": document["fingerprint"],
       "format": "prose",
-      "scope": activities[activity]["scope"],
+      "scope": {
+        "no_machine_cases": "prose-only",
+        "not_applicable": "not-applicable",
+      }.get(status, activities[activity]["scope"]),
       "source": source,
       "specifications_commit": specifications_commit,
       "suite": document["suite"],

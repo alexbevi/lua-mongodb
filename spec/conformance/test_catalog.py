@@ -97,6 +97,45 @@ class ConformanceCatalogTests(unittest.TestCase):
       else:
         self.assertIsNone(requirement["last_execution"])
 
+  def test_non_execution_outcomes_are_explicit_and_do_not_claim_evidence(self) -> None:
+    generated = catalog.generate()
+    requirements = generated["requirements"]
+
+    self.assertEqual(
+      "no_machine_cases",
+      requirements["benchmarking/benchmarking.md::document"]["status"],
+    )
+    self.assertEqual(
+      "not_applicable",
+      requirements["bson-binary-uuid/uuid.md::document"]["status"],
+    )
+    self.assertEqual(
+      "not_applicable",
+      requirements["dbref/dbref.md::document"]["status"],
+    )
+
+    non_execution = {
+      identity: requirement
+      for identity, requirement in requirements.items()
+      if requirement["status"] in {"no_machine_cases", "not_applicable"}
+    }
+    self.assertEqual(3, len(non_execution))
+
+    for requirement in non_execution.values():
+      self.assertIsNone(requirement["last_execution"])
+      self.assertEqual("none", requirement["required_environment"])
+      self.assertTrue(requirement["runner"].startswith("none:"))
+      self.assertTrue(requirement["reason"])
+
+    self.assertEqual(
+      {"no_machine_cases": 1, "not_applicable": 2},
+      {
+        status: count
+        for status, count in generated["summary"]["requirement_statuses"].items()
+        if status in {"no_machine_cases", "not_applicable"}
+      },
+    )
+
 
 if __name__ == "__main__":
   unittest.main()
