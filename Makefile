@@ -112,6 +112,8 @@ test-unified-inventory: check-python check-lua
 	@$(MAKE) --no-print-directory test-conformance
 
 test-conformance: check-python test-release-scope test-v04-scope test-release-checklist
+	@"$(PYTHON)" -m unittest spec.conformance.test_catalog -v
+	@"$(PYTHON)" spec/conformance/catalog.py --check
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
 	@"$(PYTHON)" spec/conformance/ledger.py --check
 	@"$(PYTHON)" planning/update_readme_compatibility.py --check

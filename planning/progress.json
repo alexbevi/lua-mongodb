@@ -4335,6 +4335,28 @@
       "notes": [
         "Requeued: Move mongos-pin-auto test 2 to TXN-007 because it asserts transient unpinning rather than non-transient pin retention."
       ]
+    },
+    "CON-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog'",
+          "exit_code": 2,
+          "summary": "The new accepted-document catalog contract failed to import because no catalog generator exists, leaving 57 accepted documents and 50 onion suites untracked.",
+          "recorded_at": "2026-08-17T00:47:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog'; env -u FOCUS_PYTHON python3 -m unittest planning.tests.test_local_testing -v; python3 spec/conformance/catalog.py --check; make test-conformance",
+          "exit_code": 0,
+          "summary": "Catalog contract passed for 57 Accepted documents across 50 onion suites, including 19 prose-only suites; Makefile contract, catalog drift check, release scopes, ledger, checklist, and README projection all passed.",
+          "recorded_at": "2026-08-17T00:51:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T00:46:53+00:00",
+      "completed_at": "2026-08-17T00:51:46+00:00"
     }
   },
   "verified_references": {

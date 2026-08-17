@@ -1,0 +1,656 @@
+{
+  "documents": {
+    "atlas-sfp-testing/atlas-sfp-testing.md": {
+      "fingerprint": "e5507521136a080ed28e8f27751b28e29390cce97204e66e41d47fe04fbdad71",
+      "source": "atlas-sfp-testing/atlas-sfp-testing.md",
+      "suite": "atlas-sfp-testing"
+    },
+    "auth/auth.md": {
+      "fingerprint": "9fd98c3e70b3f3c1f804d7f3031db85e1a9b773158e5110ff46ca9590444d4c5",
+      "source": "auth/auth.md",
+      "suite": "auth"
+    },
+    "benchmarking/benchmarking.md": {
+      "fingerprint": "7a87356afb23ae634f0eb2498cd9122cbfb49671837ad1e1e7dc19f8193f69e2",
+      "source": "benchmarking/benchmarking.md",
+      "suite": "benchmarking"
+    },
+    "bson-binary-encrypted/binary-encrypted.md": {
+      "fingerprint": "fbd740e921d8240afb14155a1e28d98e39a02443676e4bf0f2274f6e106fb55f",
+      "source": "bson-binary-encrypted/binary-encrypted.md",
+      "suite": "bson-binary-encrypted"
+    },
+    "bson-binary-uuid/uuid.md": {
+      "fingerprint": "5836d1afe9ae87ec0f3a080470c3d3ca37968d5e1833c44ea3fd68fa88fdc7b4",
+      "source": "bson-binary-uuid/uuid.md",
+      "suite": "bson-binary-uuid"
+    },
+    "bson-binary-vector/bson-binary-vector.md": {
+      "fingerprint": "17d948182337b93c1afa4899e641f59149bed6d76f707d58ed7d4475f48a97da",
+      "source": "bson-binary-vector/bson-binary-vector.md",
+      "suite": "bson-binary-vector"
+    },
+    "bson-corpus/bson-corpus.md": {
+      "fingerprint": "183fc9ca5f5b2b88c583784708dbba09fd70356e8ce15fa12e4459f07bdd6bd1",
+      "source": "bson-corpus/bson-corpus.md",
+      "suite": "bson-corpus"
+    },
+    "bson-decimal128/decimal128.md": {
+      "fingerprint": "48c4910200cf97ea2de9d4fedf0e297655c279d2cf5237d3dd215ef4cd9fe5f8",
+      "source": "bson-decimal128/decimal128.md",
+      "suite": "bson-decimal128"
+    },
+    "bson-objectid/objectid.md": {
+      "fingerprint": "80d92976ffa70aa1daf6e520aa8ee8db744f47f81857d9e641254e5e32de54af",
+      "source": "bson-objectid/objectid.md",
+      "suite": "bson-objectid"
+    },
+    "causal-consistency/causal-consistency.md": {
+      "fingerprint": "5a741090011c6d25bce1846d6f1a2fc8c68b0b08c08cbd950fd3f472f58ba454",
+      "source": "causal-consistency/causal-consistency.md",
+      "suite": "causal-consistency"
+    },
+    "change-streams/change-streams.md": {
+      "fingerprint": "0039cb9eed7cca53b5bbbdcda28f4860560aa4e384531f2a28c102e283f903a6",
+      "source": "change-streams/change-streams.md",
+      "suite": "change-streams"
+    },
+    "client-backpressure/client-backpressure.md": {
+      "fingerprint": "2390794ff0b8bf3da5473a4ab95e75dbad4516b8d0500fda821aa6282c5ca641",
+      "source": "client-backpressure/client-backpressure.md",
+      "suite": "client-backpressure"
+    },
+    "client-side-encryption/client-side-encryption.md": {
+      "fingerprint": "d3484b1328c7e8b5745aa0013994b35de0c12689a62d89136fe4c21f0db545c4",
+      "source": "client-side-encryption/client-side-encryption.md",
+      "suite": "client-side-encryption"
+    },
+    "client-side-operations-timeout/client-side-operations-timeout.md": {
+      "fingerprint": "1e22d4996bbce75eba1b6af8ec24ad09d2e2e065293e2052ab87a22fbdb7fbae",
+      "source": "client-side-operations-timeout/client-side-operations-timeout.md",
+      "suite": "client-side-operations-timeout"
+    },
+    "collation/collation.md": {
+      "fingerprint": "9db536ef6665d9b5e3087c8f1517589a6249a19bdfad3d25b090d67f1a79f1d4",
+      "source": "collation/collation.md",
+      "suite": "collation"
+    },
+    "command-logging-and-monitoring/command-logging-and-monitoring.md": {
+      "fingerprint": "06fae592eb07f2863c3d40a9792d7e7a0223449ccc49430b6d7755bfda601ba9",
+      "source": "command-logging-and-monitoring/command-logging-and-monitoring.md",
+      "suite": "command-logging-and-monitoring"
+    },
+    "compression/OP_COMPRESSED.md": {
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "source": "compression/OP_COMPRESSED.md",
+      "suite": "compression"
+    },
+    "connection-monitoring-and-pooling/connection-monitoring-and-pooling.md": {
+      "fingerprint": "728834074a627605db86b98514f89b78209c28cf0e8124da9d5fd2658dd78b7b",
+      "source": "connection-monitoring-and-pooling/connection-monitoring-and-pooling.md",
+      "suite": "connection-monitoring-and-pooling"
+    },
+    "connection-string/connection-string-spec.md": {
+      "fingerprint": "e34a5a2ff763225dd3b2832e451e12f6fa661b566cb636629fa872549d39d8f3",
+      "source": "connection-string/connection-string-spec.md",
+      "suite": "connection-string"
+    },
+    "crud/bulk-write.md": {
+      "fingerprint": "ad2bfb599b434c956a1aa1600d2e0731eafa39fea1c7f3b476800a0f90bd4a5b",
+      "source": "crud/bulk-write.md",
+      "suite": "crud"
+    },
+    "crud/crud.md": {
+      "fingerprint": "fdd3331556961658302a9169b461e172f67f2f06e9b4f66363810a8a086f3ddf",
+      "source": "crud/crud.md",
+      "suite": "crud"
+    },
+    "dbref/dbref.md": {
+      "fingerprint": "482e0a9c53d9a65dd22559b3f6beea07c3e1f5e248269f504cb756374b8254fc",
+      "source": "dbref/dbref.md",
+      "suite": "dbref"
+    },
+    "enumerate-collections/enumerate-collections.md": {
+      "fingerprint": "18cf64dc3e4c6ad2bd45b24e3f7d1976913bc3e65ff9cbc0d9789c4745bbd35f",
+      "source": "enumerate-collections/enumerate-collections.md",
+      "suite": "enumerate-collections"
+    },
+    "enumerate-databases/enumerate-databases.md": {
+      "fingerprint": "290a95dd1e42b1a98e62f9c20aa051722a11b84843b0f939789e2b05d8718283",
+      "source": "enumerate-databases/enumerate-databases.md",
+      "suite": "enumerate-databases"
+    },
+    "extended-json/extended-json.md": {
+      "fingerprint": "175e7a01c0f21befe2f22cee04bae8ba5a2398813b9fef835e5c15648b5e9557",
+      "source": "extended-json/extended-json.md",
+      "suite": "extended-json"
+    },
+    "find_getmore_killcursors_commands/find_getmore_killcursors_commands.md": {
+      "fingerprint": "0d29a4ea48f9c1af2d3abb6c82e25a880d82eb245a0f8bd9e4f6877da6ef03b7",
+      "source": "find_getmore_killcursors_commands/find_getmore_killcursors_commands.md",
+      "suite": "find_getmore_killcursors_commands"
+    },
+    "gridfs/gridfs-spec.md": {
+      "fingerprint": "5b55732b7d3d149542de7a78d71d696952b1b5dd015589c580aef4be4d892ee7",
+      "source": "gridfs/gridfs-spec.md",
+      "suite": "gridfs"
+    },
+    "index-management/index-management.md": {
+      "fingerprint": "31049e28b62febc91f9cc5346d32229d7214eb113aa3c9d9131cdf18d54f7bd8",
+      "source": "index-management/index-management.md",
+      "suite": "index-management"
+    },
+    "initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.md": {
+      "fingerprint": "4332f55aed3801fe73718ae066b5fc7e66b31c7ed47c21d0e3a8f58077e6512a",
+      "source": "initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.md",
+      "suite": "initial-dns-seedlist-discovery"
+    },
+    "load-balancers/load-balancers.md": {
+      "fingerprint": "a30a685848129045e6a632dd39632f7101053c6d5fe5492e2bbaaa451f58fb28",
+      "source": "load-balancers/load-balancers.md",
+      "suite": "load-balancers"
+    },
+    "logging/logging.md": {
+      "fingerprint": "c860ca591144ef3fc5bfd623087d961ff384d1f6773d85af41fa892e8d6e671a",
+      "source": "logging/logging.md",
+      "suite": "logging"
+    },
+    "max-staleness/max-staleness.md": {
+      "fingerprint": "e10154ed2e7f2b763a0630cfb1b9bebe8b5ade620d4fa93d8d709f100e5aad42",
+      "source": "max-staleness/max-staleness.md",
+      "suite": "max-staleness"
+    },
+    "message/OP_MSG.md": {
+      "fingerprint": "92f0dbedda0e0d927957beea5702b9fb801e3a07301fd27520e33e6181838712",
+      "source": "message/OP_MSG.md",
+      "suite": "message"
+    },
+    "mongodb-handshake/handshake.md": {
+      "fingerprint": "6883a805d0a9b9dbd548b3d1e4fc18d8f7ba8b3793b69f372ed5a9119200ad20",
+      "source": "mongodb-handshake/handshake.md",
+      "suite": "mongodb-handshake"
+    },
+    "ocsp-support/ocsp-support.md": {
+      "fingerprint": "3cc845ccddf04c803815f3140ad152af0c1194feec68d78cc2369c28e952c9d1",
+      "source": "ocsp-support/ocsp-support.md",
+      "suite": "ocsp-support"
+    },
+    "open-telemetry/open-telemetry.md": {
+      "fingerprint": "62cb4158b68f53cdc4bc21c204e8a4015ff1503f4f1f5c09a6a04b699a27aa69",
+      "source": "open-telemetry/open-telemetry.md",
+      "suite": "open-telemetry"
+    },
+    "polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.md": {
+      "fingerprint": "4b315a36a2ea6dc87097e50f07a2297f8388c25c56de5a3c5d9a42ff7f3ecb6f",
+      "source": "polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.md",
+      "suite": "polling-srv-records-for-mongos-discovery"
+    },
+    "read-write-concern/read-write-concern.md": {
+      "fingerprint": "e6ba9a016cf5545876a85f2ac267c0fbafe188b0fe93984f4700a23a79607a64",
+      "source": "read-write-concern/read-write-concern.md",
+      "suite": "read-write-concern"
+    },
+    "retryable-reads/retryable-reads.md": {
+      "fingerprint": "adf72ff3786e9b0d4d4f366936e534cf1339eddf553d15d901e829850f708fd7",
+      "source": "retryable-reads/retryable-reads.md",
+      "suite": "retryable-reads"
+    },
+    "retryable-writes/retryable-writes.md": {
+      "fingerprint": "53e24288a8fb9dd20f2ca7d43fa499a408c89f53f6b5b990facf8080bb0e473d",
+      "source": "retryable-writes/retryable-writes.md",
+      "suite": "retryable-writes"
+    },
+    "run-command/run-command.md": {
+      "fingerprint": "0485a97fba28248c3639f2a307af6484d66dba16fa6e31fcaa5d721053371c9b",
+      "source": "run-command/run-command.md",
+      "suite": "run-command"
+    },
+    "server-discovery-and-monitoring/server-discovery-and-monitoring-logging-and-monitoring.md": {
+      "fingerprint": "d1b851d1a77b66867caf6f608b97d6ab8abceb223caae348134d1f32c25614fc",
+      "source": "server-discovery-and-monitoring/server-discovery-and-monitoring-logging-and-monitoring.md",
+      "suite": "server-discovery-and-monitoring"
+    },
+    "server-discovery-and-monitoring/server-discovery-and-monitoring-summary.md": {
+      "fingerprint": "f19a911defaf65381cf74a86e2ce75bdbddc83c4a31e50404987ac250a7e3643",
+      "source": "server-discovery-and-monitoring/server-discovery-and-monitoring-summary.md",
+      "suite": "server-discovery-and-monitoring"
+    },
+    "server-discovery-and-monitoring/server-discovery-and-monitoring-tests.md": {
+      "fingerprint": "65ce7a7762ae4ed9ef318b6079f926ee098d7254c1cc14f64150a64be70eada3",
+      "source": "server-discovery-and-monitoring/server-discovery-and-monitoring-tests.md",
+      "suite": "server-discovery-and-monitoring"
+    },
+    "server-discovery-and-monitoring/server-discovery-and-monitoring.md": {
+      "fingerprint": "935b787582c4b38e06c9a057dd2fbaced91d3be8a57a82064e43184aa8258811",
+      "source": "server-discovery-and-monitoring/server-discovery-and-monitoring.md",
+      "suite": "server-discovery-and-monitoring"
+    },
+    "server-discovery-and-monitoring/server-monitoring.md": {
+      "fingerprint": "af47c8a30e4825537a3ec498f50f4a264197731d683c9dc1d7520af3059aacbd",
+      "source": "server-discovery-and-monitoring/server-monitoring.md",
+      "suite": "server-discovery-and-monitoring"
+    },
+    "server-selection/server-selection-tests.md": {
+      "fingerprint": "276fb703851158c006ae74316808bee3fc2f9dcb2c8438270807db0993f1ff6f",
+      "source": "server-selection/server-selection-tests.md",
+      "suite": "server-selection"
+    },
+    "server-selection/server-selection.md": {
+      "fingerprint": "d6264bc743e65788263df7ffd6ccbfc8c04b90b1fb8ec2cf5d1fa452668200a1",
+      "source": "server-selection/server-selection.md",
+      "suite": "server-selection"
+    },
+    "server_write_commands/server_write_commands.md": {
+      "fingerprint": "3a7d03dbafc8714bf7db1721e156ca2735f41a2b8a3a2820c4d90eacbafd37a9",
+      "source": "server_write_commands/server_write_commands.md",
+      "suite": "server_write_commands"
+    },
+    "sessions/driver-sessions.md": {
+      "fingerprint": "f5aa99469028a8e8ae5d5e9d940fd0d3c098e4bd25a61e292f1e9aa1ed2de65d",
+      "source": "sessions/driver-sessions.md",
+      "suite": "sessions"
+    },
+    "sessions/snapshot-sessions.md": {
+      "fingerprint": "40e54caff402a38c6546c9e65077efcc3c4e931f1f32829569ab7e4ceb549725",
+      "source": "sessions/snapshot-sessions.md",
+      "suite": "sessions"
+    },
+    "socks5-support/socks5.md": {
+      "fingerprint": "390e7684f4e8c56d6db49e93d83956ad23011115037bb4d3af2d38fa2e3b81f7",
+      "source": "socks5-support/socks5.md",
+      "suite": "socks5-support"
+    },
+    "transactions-convenient-api/transactions-convenient-api.md": {
+      "fingerprint": "2b5a9ce0419a2c13ebda6e3a498648f24aa3418fc7621755eeda3d767e8c76c2",
+      "source": "transactions-convenient-api/transactions-convenient-api.md",
+      "suite": "transactions-convenient-api"
+    },
+    "transactions/transactions.md": {
+      "fingerprint": "7dcb5c956a32f5bb97ac1ec453e536d75de5575c6f96af813d645a1688cc71ac",
+      "source": "transactions/transactions.md",
+      "suite": "transactions"
+    },
+    "unified-test-format/unified-test-format.md": {
+      "fingerprint": "44e88282bb3b6427bd891cbde6ad3653852831d5fc0e7c2f429e9daa4d1d56a4",
+      "source": "unified-test-format/unified-test-format.md",
+      "suite": "unified-test-format"
+    },
+    "uri-options/uri-options.md": {
+      "fingerprint": "33492940fd5db1b307e2ef9b60788835c93236f73236bec13a2b638d13c1ccc3",
+      "source": "uri-options/uri-options.md",
+      "suite": "uri-options"
+    },
+    "versioned-api/versioned-api.md": {
+      "fingerprint": "0898f87554b00492b9bf102d60a5a943890ff105d24e93c28986fb587472c546",
+      "source": "versioned-api/versioned-api.md",
+      "suite": "versioned-api"
+    }
+  },
+  "schema_version": 1,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+  "suites": {
+    "atlas-sfp-testing": {
+      "documents": [
+        "atlas-sfp-testing/atlas-sfp-testing.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Testability"
+    },
+    "auth": {
+      "documents": [
+        "auth/auth.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Authentication"
+    },
+    "benchmarking": {
+      "documents": [
+        "benchmarking/benchmarking.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Testability"
+    },
+    "bson-binary-encrypted": {
+      "documents": [
+        "bson-binary-encrypted/binary-encrypted.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Programmability"
+    },
+    "bson-binary-uuid": {
+      "documents": [
+        "bson-binary-uuid/uuid.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Serialization"
+    },
+    "bson-binary-vector": {
+      "documents": [
+        "bson-binary-vector/bson-binary-vector.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Serialization"
+    },
+    "bson-corpus": {
+      "documents": [
+        "bson-corpus/bson-corpus.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Serialization"
+    },
+    "bson-decimal128": {
+      "documents": [
+        "bson-decimal128/decimal128.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Serialization"
+    },
+    "bson-objectid": {
+      "documents": [
+        "bson-objectid/objectid.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Serialization"
+    },
+    "causal-consistency": {
+      "documents": [
+        "causal-consistency/causal-consistency.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "change-streams": {
+      "documents": [
+        "change-streams/change-streams.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    },
+    "client-backpressure": {
+      "documents": [
+        "client-backpressure/client-backpressure.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Observability"
+    },
+    "client-side-encryption": {
+      "documents": [
+        "client-side-encryption/client-side-encryption.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    },
+    "client-side-operations-timeout": {
+      "documents": [
+        "client-side-operations-timeout/client-side-operations-timeout.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "collation": {
+      "documents": [
+        "collation/collation.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Programmability"
+    },
+    "command-logging-and-monitoring": {
+      "documents": [
+        "command-logging-and-monitoring/command-logging-and-monitoring.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Observability"
+    },
+    "compression": {
+      "documents": [
+        "compression/OP_COMPRESSED.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Communication"
+    },
+    "connection-monitoring-and-pooling": {
+      "documents": [
+        "connection-monitoring-and-pooling/connection-monitoring-and-pooling.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Connectivity"
+    },
+    "connection-string": {
+      "documents": [
+        "connection-string/connection-string-spec.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Communication"
+    },
+    "crud": {
+      "documents": [
+        "crud/bulk-write.md",
+        "crud/crud.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    },
+    "dbref": {
+      "documents": [
+        "dbref/dbref.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Serialization"
+    },
+    "enumerate-collections": {
+      "documents": [
+        "enumerate-collections/enumerate-collections.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Programmability"
+    },
+    "enumerate-databases": {
+      "documents": [
+        "enumerate-databases/enumerate-databases.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Programmability"
+    },
+    "extended-json": {
+      "documents": [
+        "extended-json/extended-json.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Serialization"
+    },
+    "find_getmore_killcursors_commands": {
+      "documents": [
+        "find_getmore_killcursors_commands/find_getmore_killcursors_commands.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Programmability"
+    },
+    "gridfs": {
+      "documents": [
+        "gridfs/gridfs-spec.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    },
+    "index-management": {
+      "documents": [
+        "index-management/index-management.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    },
+    "initial-dns-seedlist-discovery": {
+      "documents": [
+        "initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Communication"
+    },
+    "load-balancers": {
+      "documents": [
+        "load-balancers/load-balancers.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Connectivity"
+    },
+    "logging": {
+      "documents": [
+        "logging/logging.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Observability"
+    },
+    "max-staleness": {
+      "documents": [
+        "max-staleness/max-staleness.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Availability"
+    },
+    "message": {
+      "documents": [
+        "message/OP_MSG.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Communication"
+    },
+    "mongodb-handshake": {
+      "documents": [
+        "mongodb-handshake/handshake.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Communication"
+    },
+    "ocsp-support": {
+      "documents": [
+        "ocsp-support/ocsp-support.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Communication"
+    },
+    "open-telemetry": {
+      "documents": [
+        "open-telemetry/open-telemetry.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Observability"
+    },
+    "polling-srv-records-for-mongos-discovery": {
+      "documents": [
+        "polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Availability"
+    },
+    "read-write-concern": {
+      "documents": [
+        "read-write-concern/read-write-concern.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    },
+    "retryable-reads": {
+      "documents": [
+        "retryable-reads/retryable-reads.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "retryable-writes": {
+      "documents": [
+        "retryable-writes/retryable-writes.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "run-command": {
+      "documents": [
+        "run-command/run-command.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Communication"
+    },
+    "server-discovery-and-monitoring": {
+      "documents": [
+        "server-discovery-and-monitoring/server-discovery-and-monitoring-logging-and-monitoring.md",
+        "server-discovery-and-monitoring/server-discovery-and-monitoring-summary.md",
+        "server-discovery-and-monitoring/server-discovery-and-monitoring-tests.md",
+        "server-discovery-and-monitoring/server-discovery-and-monitoring.md",
+        "server-discovery-and-monitoring/server-monitoring.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Connectivity"
+    },
+    "server-selection": {
+      "documents": [
+        "server-selection/server-selection-tests.md",
+        "server-selection/server-selection.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Availability"
+    },
+    "server_write_commands": {
+      "documents": [
+        "server_write_commands/server_write_commands.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Programmability"
+    },
+    "sessions": {
+      "documents": [
+        "sessions/driver-sessions.md",
+        "sessions/snapshot-sessions.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "socks5-support": {
+      "documents": [
+        "socks5-support/socks5.md"
+      ],
+      "has_machine_fixtures": false,
+      "layer": "Communication"
+    },
+    "transactions": {
+      "documents": [
+        "transactions/transactions.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "transactions-convenient-api": {
+      "documents": [
+        "transactions-convenient-api/transactions-convenient-api.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Resilience"
+    },
+    "unified-test-format": {
+      "documents": [
+        "unified-test-format/unified-test-format.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Testability"
+    },
+    "uri-options": {
+      "documents": [
+        "uri-options/uri-options.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Communication"
+    },
+    "versioned-api": {
+      "documents": [
+        "versioned-api/versioned-api.md"
+      ],
+      "has_machine_fixtures": true,
+      "layer": "Programmability"
+    }
+  },
+  "summary": {
+    "documents": 57,
+    "machine_fixture_suites": 31,
+    "prose_only_suites": 19,
+    "suites": 50
+  }
+}

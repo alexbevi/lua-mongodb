@@ -24,6 +24,7 @@ python3 planning/update_plan.py complete ID
 python3 planning/update_plan.py refresh
 python3 planning/update_plan.py reference-report
 python3 planning/update_readme_compatibility.py [--check]
+python3 spec/conformance/catalog.py [--check]
 python3 spec/v04/scope.py [--check]
 make test-focus FOCUS_UNIT=spec/unit/example_spec.lua FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
 make test-focus FOCUS_INTEGRATION=spec/integration/example_spec.lua
@@ -41,6 +42,8 @@ Named tracks provide an execution view over the same activity DAG. Each declarat
 Starting post-v1 work requires `start ID --track TRACK`. The track must be declared and the activity must belong to it, so authorization for one goal cannot spill into unrelated ready post-v1 activities. Production-core starts remain backward compatible without a track. The agent retains the user's single track authorization across its loop and reasserts that scope on each start.
 
 `update_readme_compatibility.py` projects the conformance ledger into the README's driver-layer compatibility table. Run it whenever ledger statuses change; CI uses `--check` so the README cannot drift from executable evidence.
+
+`spec/conformance/catalog.py` inventories every document marked Accepted in the pinned specifications checkout, fingerprints its exact bytes, and assigns its suite to one explicit onion-model layer. Unlike the fixture ledger, the catalog includes prose-only specifications and test plans. Its checked artifact fails when an accepted document changes or a suite is added, removed, or left unmapped.
 
 `spec/v04/scope.py` projects the exact session, transaction, Search-index, read/write-concern, SDAM, DNS, and command cases selected by the `v0-4-sharded-parity` track. It rejects missing or completed target owners and distinguishes planned v0.4 support from accountable exclusions owned by later load-balancing, client-bulk-write, observability, and legacy-API work. `make test-v04-scope` runs its contract and stale-generation checks.
 
