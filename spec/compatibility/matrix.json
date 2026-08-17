@@ -12,6 +12,16 @@
       "topology": "replicaset"
     },
     {
+      "id": "mongodb-7.0-sharded",
+      "image": "mongodb/mongodb-community-server:7.0.39-ubuntu2204@sha256:ac6bc022cf8478082ce2bbfe0a44e4da8b14949bb454cbf23d289ce984e815f8",
+      "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
+      "series": "7.0",
+      "server_version": "7.0.39",
+      "smoke_test": "run-command/tests/unified/runCursorCommand.json::test[1]",
+      "test_commands_smoke_test": "transactions/tests/unified/mongos-unpin.json::test[1]",
+      "topology": "sharded"
+    },
+    {
       "id": "mongodb-7.0-standalone",
       "image": "mongodb/mongodb-community-server:7.0.39-ubuntu2204@sha256:ac6bc022cf8478082ce2bbfe0a44e4da8b14949bb454cbf23d289ce984e815f8",
       "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
@@ -32,6 +42,16 @@
       "topology": "replicaset"
     },
     {
+      "id": "mongodb-8.0-sharded",
+      "image": "mongodb/mongodb-community-server:8.0.28-ubuntu2204@sha256:deb967722fbfafe19f328ef8bfd1e5068f38a932eb607b14c9d86d83b5eb595b",
+      "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
+      "series": "8.0",
+      "server_version": "8.0.28",
+      "smoke_test": "run-command/tests/unified/runCursorCommand.json::test[1]",
+      "test_commands_smoke_test": "transactions/tests/unified/mongos-unpin.json::test[1]",
+      "topology": "sharded"
+    },
+    {
       "id": "mongodb-8.0-standalone",
       "image": "mongodb/mongodb-community-server:8.0.28-ubuntu2204@sha256:deb967722fbfafe19f328ef8bfd1e5068f38a932eb607b14c9d86d83b5eb595b",
       "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
@@ -50,6 +70,16 @@
       "smoke_test": "retryable-writes/tests/unified/deleteMany.json::test[1]",
       "test_commands_smoke_test": "retryable-writes/tests/unified/deleteOne-errorLabels.json::test[1]",
       "topology": "replicaset"
+    },
+    {
+      "id": "mongodb-8.2-sharded",
+      "image": "mongodb/mongodb-community-server:8.2.12-ubuntu2204@sha256:ed7000edd775a8a7d1010618b72b2c71603efe2ca4f827b7f291110a696b4a41",
+      "profiles": ["plain", "test-commands", "auth", "tls", "auth-tls"],
+      "series": "8.2",
+      "server_version": "8.2.12",
+      "smoke_test": "run-command/tests/unified/runCursorCommand.json::test[1]",
+      "test_commands_smoke_test": "transactions/tests/unified/mongos-unpin.json::test[1]",
+      "topology": "sharded"
     },
     {
       "id": "mongodb-8.2-standalone",

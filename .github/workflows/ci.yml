@@ -64,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        entry: [mongodb-7.0-standalone, mongodb-8.2-replicaset]
+        entry: [mongodb-7.0-standalone, mongodb-8.0-sharded, mongodb-8.2-replicaset]
     runs-on: ubuntu-latest
 
     steps:

@@ -4527,6 +4527,28 @@
       "notes": [],
       "started_at": "2026-08-17T13:03:04+00:00",
       "completed_at": "2026-08-17T14:20:17+00:00"
+    },
+    "CMP-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.compatibility.test_matrix.CompatibilityMatrixTests.test_checked_in_matrix_covers_every_profile_with_pinned_images'",
+          "exit_code": 2,
+          "summary": "The defining compatibility contract expected nine rows and 45 profiles across standalone, replica-set, and Sharded topologies, but the checked-in matrix contained only six standalone/replica-set rows.",
+          "recorded_at": "2026-08-17T14:25:50+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.compatibility.test_matrix spec.release.test_checklist spec.release.test_publish planning.tests.test_ci_portability' FOCUS_LINT='spec/compatibility/probe.lua spec/compatibility/sharded_probe.lua'; exact sharded public/unified smoke; compatibility and checklist validators",
+          "exit_code": 0,
+          "summary": "25 Python contracts passed and Lua lint reported 0 warnings/errors. The owned MongoDB 8.0.16 sharded deployment passed the v0.4 public probe; runCursorCommand test 1 and mongos-unpin test 1 each executed 1, passed 1, failed 0, environment-skipped 0, deferred 0. The matrix validator reports 9 rows and 45 profiles, release/checklist/README/workflow validators pass, and pinned image-backed auth/TLS execution is assigned to the required CI Fast sharded row because the local Docker daemon is unavailable.",
+          "recorded_at": "2026-08-17T14:37:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T14:25:30+00:00",
+      "completed_at": "2026-08-17T14:37:40+00:00"
     }
   },
   "verified_references": {

@@ -13,7 +13,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_MATRIX = ROOT / "spec" / "compatibility" / "matrix.json"
 REQUIRED_SERIES = {"7.0", "8.0", "8.2"}
-REQUIRED_TOPOLOGIES = {"standalone", "replicaset"}
+REQUIRED_TOPOLOGIES = {"standalone", "replicaset", "sharded"}
 REQUIRED_PROFILES = {"plain", "test-commands", "auth", "tls", "auth-tls"}
 IMAGE = re.compile(
   r"^mongodb/mongodb-community-server:"

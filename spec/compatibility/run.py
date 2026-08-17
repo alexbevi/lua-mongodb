@@ -27,11 +27,13 @@ from spec import sharded_environment as sharded_cluster
 
 
 PROBE = ROOT / "spec" / "compatibility" / "probe.lua"
+SHARDED_PROBE = ROOT / "spec" / "compatibility" / "sharded_probe.lua"
 UNIFIED_EXECUTOR = ROOT / "spec" / "unified" / "execute.lua"
 TLS_FIXTURES = ROOT / "spec" / "fixtures" / "tls"
 REPLICA_SET = "lua-mongodb-compat"
 USERNAME = "compat"
 PASSWORD = "compat-password"
+TLS_CLUSTER_PASSWORD = "test-client-password"
 PROFILE_OPTIONS = {
   "plain": {"auth": False, "test_commands": False, "tls": False},
   "test-commands": {"auth": False, "test_commands": True, "tls": False},
@@ -97,8 +99,10 @@ def docker_ready(docker: str) -> None:
 def prepare_tls(directory: Path) -> Path:
   ca_file = directory / "ca.pem"
   combined = directory / "server-combined.pem"
+  cluster = directory / "cluster-combined.pem"
 
   shutil.copyfile(TLS_FIXTURES / "ca.pem", ca_file)
+  shutil.copyfile(TLS_FIXTURES / "client.pem", cluster)
   combined.write_bytes(
     (TLS_FIXTURES / "server.pem").read_bytes()
     + (TLS_FIXTURES / "server-key.pem").read_bytes()
@@ -106,6 +110,7 @@ def prepare_tls(directory: Path) -> Path:
   os.chmod(directory, 0o755)
   os.chmod(ca_file, 0o444)
   os.chmod(combined, 0o444)
+  os.chmod(cluster, 0o444)
   return ca_file
 
 
@@ -262,18 +267,31 @@ def live_server(
   profile = PROFILE_OPTIONS[profile_name]
 
   if server["topology"] == "sharded":
-    if profile["auth"] or profile["tls"]:
-      raise CompatibilityError(
-        "sharded authentication and TLS profiles are owned by CMP-002"
-      )
+    with tempfile.TemporaryDirectory(prefix="lua-mongodb-compat-") as temporary:
+      directory = Path(temporary)
+      ca_file = prepare_tls(directory)
 
-    try:
-      with sharded_cluster.cluster(
-        test_commands=profile["test_commands"],
-      ) as deployment:
-        yield deployment["uri"], deployment["facts"]
-    except sharded_cluster.ShardedEnvironmentError as exc:
-      raise EnvironmentUnavailable(str(exc)) from exc
+      try:
+        with sharded_cluster.docker_cluster(
+          docker=docker,
+          image=server["image"],
+          test_commands=profile["test_commands"],
+          username=USERNAME if profile["auth"] else None,
+          password=PASSWORD if profile["auth"] else None,
+          tls_ca_file=ca_file if profile["tls"] else None,
+          tls_certificate_key_file=(
+            directory / "server-combined.pem" if profile["tls"] else None
+          ),
+          tls_cluster_file=(
+            directory / "cluster-combined.pem" if profile["tls"] else None
+          ),
+          tls_cluster_password=(
+            TLS_CLUSTER_PASSWORD if profile["tls"] else None
+          ),
+        ) as deployment:
+          yield deployment["uri"], deployment["facts"]
+      except sharded_cluster.ShardedEnvironmentError as exc:
+        raise CompatibilityError(str(exc)) from exc
 
     return
 
@@ -381,7 +399,8 @@ def run_profile(
   profile = PROFILE_OPTIONS[profile_name]
 
   with live_server(server, profile_name, docker) as (uri, facts):
-    run_checked([lua, str(PROBE), uri])
+    probe = SHARDED_PROBE if server["topology"] == "sharded" else PROBE
+    run_checked([lua, str(probe), uri])
     identity = (
       server["test_commands_smoke_test"]
       if profile["test_commands"]
@@ -426,9 +445,15 @@ def run_profile(
         "shards": facts["shards"],
       })
 
+    probe_gate = (
+      "public-sharded-v0.4-smoke"
+      if server["topology"] == "sharded"
+      else "public-client-ping"
+    )
+
     return {
       "environment": reported_environment,
-      "gates": ["public-client-ping", f"unified:{identity}"],
+      "gates": [probe_gate, f"unified:{identity}"],
       "profile": profile_name,
       "status": "passed",
     }

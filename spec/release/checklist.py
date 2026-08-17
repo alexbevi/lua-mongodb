@@ -198,6 +198,7 @@ def generate() -> dict[str, Any]:
   for expected in (
     "portable:",
     "compatibility-smoke:",
+    "mongodb-8.0-sharded",
     "make check-fast",
     "planning/update_plan.py check --strict",
   ):
@@ -211,6 +212,7 @@ def generate() -> dict[str, Any]:
     "linux-aggregate:",
     "macos:",
     "compatibility:",
+    "topology: [standalone, replicaset, sharded]",
     "make check-fast test-coverage",
   ):
     require_text(full_workflow, expected)

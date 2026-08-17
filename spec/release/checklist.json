@@ -10,8 +10,8 @@
       "full-macos"
     ],
     "compatibility": {
-      "profiles": 30,
-      "rows": 6
+      "profiles": 45,
+      "rows": 9
     },
     "completed_audits": {
       "cleanup": [

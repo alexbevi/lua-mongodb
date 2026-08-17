@@ -102,6 +102,7 @@ class CiPortabilityTests(unittest.TestCase):
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
     self.assertIn("mongodb-7.0-standalone", workflow)
+    self.assertIn("mongodb-8.0-sharded", workflow)
     self.assertIn("mongodb-8.2-replicaset", workflow)
     self.assertNotIn("mongodb-8.0-standalone", workflow)
 
@@ -109,7 +110,7 @@ class CiPortabilityTests(unittest.TestCase):
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
 
     self.assertIn('series: ["7.0", "8.0", "8.2"]', workflow)
-    self.assertIn("topology: [standalone, replicaset]", workflow)
+    self.assertIn("topology: [standalone, replicaset, sharded]", workflow)
 
   def test_linux_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")

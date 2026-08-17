@@ -23,7 +23,7 @@ class ReleaseChecklistTests(unittest.TestCase):
       conformance["passed_cases"] + conformance["post_v1_exclusions"],
     )
     self.assertEqual(
-      {"profiles": 30, "rows": 6},
+      {"profiles": 45, "rows": 9},
       report["gates"]["compatibility"],
     )
     self.assertEqual(

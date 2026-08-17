@@ -254,7 +254,7 @@ local search_name = assert(users:create_search_index(doc({
 
 ### Transactions
 
-Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. The driver provides both APIs described in the [MongoDB transaction API guide](https://www.mongodb.com/docs/manual/core/transactions-in-applications/):
+Transactions require a replica-set-backed deployment, reached directly with a URI such as `mongodb://localhost:27017/bank?replicaSet=rs0` or through one or more mongos routers. The driver provides both APIs described in the [MongoDB transaction API guide](https://www.mongodb.com/docs/manual/core/transactions-in-applications/):
 
 - **Callback API:** `with_transaction` owns start, commit, abort, and the specification retries for transient transaction and unknown commit-result errors. Prefer it for most transactions, and keep the callback safe to run more than once.
 - **Core API:** `start_transaction`, `commit_transaction`, and `abort_transaction` expose the lifecycle directly. Use it when the application needs custom control over error handling and retries.
@@ -442,7 +442,7 @@ make test-focus FOCUS_UNIT=spec/unit/example_spec.lua \
   FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
 ```
 
-Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for the directly affected boundary. GitHub Actions runs the fast portable and compatibility-boundary gates after each push; the Full Conformance workflow runs complete unified, coverage, and compatibility gates before release and on its schedule.
+Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for the directly affected boundary. GitHub Actions runs the fast portable gates plus representative standalone, replica-set, and sharded compatibility rows after each push; the Full Conformance workflow runs complete unified and coverage gates plus all nine server/topology compatibility rows before release and on its schedule.
 
 See [`planning/README.md`](planning/README.md) for roadmap commands and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for implementation details and design decisions.
 

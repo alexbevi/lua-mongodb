@@ -207,7 +207,7 @@ jobs:
       fail-fast: false
       matrix:
         series: ["7.0", "8.0", "8.2"]
-        topology: [standalone, replicaset]
+        topology: [standalone, replicaset, sharded]
     runs-on: ubuntu-latest
 
     steps:

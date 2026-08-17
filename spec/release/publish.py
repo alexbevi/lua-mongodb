@@ -25,10 +25,13 @@ REQUIRED_FULL_JOBS = (
   "macos",
   "compatibility (7.0, standalone)",
   "compatibility (7.0, replicaset)",
+  "compatibility (7.0, sharded)",
   "compatibility (8.0, standalone)",
   "compatibility (8.0, replicaset)",
+  "compatibility (8.0, sharded)",
   "compatibility (8.2, standalone)",
   "compatibility (8.2, replicaset)",
+  "compatibility (8.2, sharded)",
 )
 
 
