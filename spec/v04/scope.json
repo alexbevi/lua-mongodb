@@ -12,9 +12,9 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API"
   },
   "planned_by_activity": {
-    "TXN-005": 6,
+    "TXN-005": 4,
     "TXN-006": 20,
-    "TXN-007": 36
+    "TXN-007": 38
   },
   "schema_version": 1,
   "suites": {

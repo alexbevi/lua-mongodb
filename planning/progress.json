@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "d2c507e8cc150cad9158fd2886fb49b49aed54c66bc26b2288aae2fe15cccb3d",
+  "plan_digest": "7b516b15bec2d03cd9817bdd4707643ebeb7e6a7004837680eec77af900eee61",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -4282,6 +4282,21 @@
       "notes": [],
       "started_at": "2026-08-16T23:40:53+00:00",
       "completed_at": "2026-08-16T23:45:09+00:00"
+    },
+    "TXN-005": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua --filter=forwards.the.latest.recovery.token.to.transaction.control'",
+          "exit_code": 2,
+          "summary": "The defining recovery-token test errored because sessions had no boundary to append the cached token to commit or abort commands.",
+          "recorded_at": "2026-08-16T23:49:16+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Move pin-mongos cases 8-9 to TXN-007 because they also require transient application-operation unpinning."
+      ]
     }
   },
   "verified_references": {

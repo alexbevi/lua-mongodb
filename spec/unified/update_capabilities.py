@@ -608,7 +608,7 @@ for index in range(1, 8):
 for index in range(8, 10):
   TEST_OVERRIDES[
     f"transactions/tests/unified/pin-mongos.json::test[{index}]"
-  ] = ("TXN-005", OWNER_REASONS["TXN-005"])
+  ] = ("TXN-007", OWNER_REASONS["TXN-007"])
 
 for index in range(1, 60):
   if index <= 20:

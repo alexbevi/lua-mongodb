@@ -63716,7 +63716,7 @@
       "suite": "transactions"
     },
     "transactions/tests/unified/pin-mongos.json::test[8]": {
-      "activity": "TXN-005",
+      "activity": "TXN-007",
       "fingerprint": "a624d810180141d941f138a9449a500889662dfc2fa52830128361281bcae0d8",
       "format": "unified",
       "last_execution": null,
@@ -63729,7 +63729,7 @@
       "suite": "transactions"
     },
     "transactions/tests/unified/pin-mongos.json::test[9]": {
-      "activity": "TXN-005",
+      "activity": "TXN-007",
       "fingerprint": "f607be6b774b81d43d271b96bd6fa4bdb0564ae0902474d02dd8f2933a7a7f1e",
       "format": "unified",
       "last_execution": null,
