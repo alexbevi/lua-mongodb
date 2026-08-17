@@ -613,13 +613,16 @@ for index in range(8, 10):
 for index in range(1, 60):
   if index == 2 or 22 <= index <= 57:
     owner = "TXN-007"
+    reason = OWNER_REASONS[owner]
   elif index == 21 or index >= 58:
     owner = "ADV-007"
+    reason = OWNER_REASONS[owner]
   else:
     owner = "TXN-006"
+    reason = None
   TEST_OVERRIDES[
     f"transactions/tests/unified/mongos-pin-auto.json::test[{index}]"
-  ] = (owner, OWNER_REASONS[owner])
+  ] = (owner, reason)
 
 for fixture, count in (
   ("db-aggregate-rawdata", 2),

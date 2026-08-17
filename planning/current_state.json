@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 181,
+    "completed": 182,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 21
+    "pending": 20
   },
   "active": [],
   "ready": [
@@ -33,7 +33,7 @@
     "ADV-009",
     "ADV-010",
     "ADV-011",
-    "TXN-006",
+    "TXN-007",
     "CON-005",
     "TLS-002",
     "ADV-012"
@@ -41,7 +41,7 @@
   "ready_by_track": {
     "lua-hardening": [],
     "v0-4-sharded-parity": [
-      "TXN-006"
+      "TXN-007"
     ],
     "spec-suite-completeness": [
       "CON-005"

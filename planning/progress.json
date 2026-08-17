@@ -4322,7 +4322,7 @@
       "completed_at": "2026-08-17T00:35:00+00:00"
     },
     "TXN-006": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -4330,11 +4330,27 @@
           "exit_code": 2,
           "summary": "The defining capability test fails because all 20 supported non-transient retain-pin cases are still deferred instead of runnable.",
           "recorded_at": "2026-08-17T00:39:39+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_nontransient_mongos_pin_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The defining capability contract failed because all 19 exact non-transient mongos pin-retention cases remained deferred_unsupported instead of runnable; transient test 2 and clientBulkWrite test 21 were correctly left to TXN-007 and ADV-007.",
+          "recorded_at": "2026-08-17T01:04:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='transactions/tests/unified/mongos-pin-auto.json'; make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/session.lua src/mongodb/session_executor.lua spec/unit/session_spec.lua'; generated --check validators; make test-complexity",
+          "exit_code": 0,
+          "summary": "The automatic mongos-pin fixture executed 19 newly runnable cases against a two-mongos deployment: 19 passed, 0 failed, 0 environment-skipped, and 40 explicitly deferred to TXN-007 or ADV-007. The focused boundary also passed 28 Lua transaction tests, 87 Python capability/conformance/v0.4 tests, prescribed lint, all generated-artifact drift checks, README projection, and complexity.",
+          "recorded_at": "2026-08-17T01:09:28+00:00"
         }
       ],
       "notes": [
         "Requeued: Move mongos-pin-auto test 2 to TXN-007 because it asserts transient unpinning rather than non-transient pin retention."
-      ]
+      ],
+      "started_at": "2026-08-17T01:03:31+00:00",
+      "completed_at": "2026-08-17T01:09:29+00:00"
     },
     "CON-003": {
       "status": "completed",
