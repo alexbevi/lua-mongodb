@@ -19,6 +19,9 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  FULL_CONFORMANCE_MONGODB_VERSION: "8.0.16"
+
 jobs:
   linux-quality:
     runs-on: ubuntu-latest
@@ -95,7 +98,14 @@ jobs:
           echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
             | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
           sudo apt-get update
-          sudo apt-get install -y mongodb-org-server mongodb-org-mongos mongodb-mongosh
+          sudo apt-get install -y mongodb-mongosh
+          mongodb_dir="$RUNNER_TEMP/full-conformance-mongodb"
+          mkdir -p "$mongodb_dir"
+          curl -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-${FULL_CONFORMANCE_MONGODB_VERSION}.tgz" \
+            | tar -xz --strip-components=1 -C "$mongodb_dir"
+          echo "$mongodb_dir/bin" >> "$GITHUB_PATH"
+          "$mongodb_dir/bin/mongod" --version
+          "$mongodb_dir/bin/mongos" --version
 
       - name: Run deterministic unified shard
         run: >-
@@ -188,9 +198,19 @@ jobs:
 
       - name: Install MongoDB test tools on macOS
         run: |
-          brew tap mongodb/brew
-          brew trust mongodb/brew
-          brew install mongodb-community@8.0
+          brew install mongosh
+          case "$(uname -m)" in
+            arm64) mongodb_arch=arm64 ;;
+            x86_64) mongodb_arch=x86_64 ;;
+            *) echo "unsupported macOS architecture" >&2; exit 2 ;;
+          esac
+          mongodb_dir="$RUNNER_TEMP/full-conformance-mongodb"
+          mkdir -p "$mongodb_dir"
+          curl -fsSL "https://fastdl.mongodb.org/osx/mongodb-macos-${mongodb_arch}-${FULL_CONFORMANCE_MONGODB_VERSION}.tgz" \
+            | tar -xz --strip-components=1 -C "$mongodb_dir"
+          echo "$mongodb_dir/bin" >> "$GITHUB_PATH"
+          "$mongodb_dir/bin/mongod" --version
+          "$mongodb_dir/bin/mongos" --version
 
       - name: Run authoritative full portable and loopback checks
         run: make check-full UNIFIED_REPORT=build/conformance/unified.json

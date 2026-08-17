@@ -61,12 +61,26 @@ class CiPortabilityTests(unittest.TestCase):
       macos.index("Install MongoDB test tools on macOS"),
       macos.index("Run authoritative full portable and loopback checks"),
     )
+    self.assertIn("sudo apt-get install -y mongodb-mongosh", linux)
+    self.assertIn("brew install mongosh", macos)
+    self.assertIn("$RUNNER_TEMP/full-conformance-mongodb", linux)
+    self.assertIn("$RUNNER_TEMP/full-conformance-mongodb", macos)
+    self.assertIn('echo "$mongodb_dir/bin" >> "$GITHUB_PATH"', linux)
+    self.assertIn('echo "$mongodb_dir/bin" >> "$GITHUB_PATH"', macos)
+
+  def test_full_unified_pins_the_server_patch_while_compatibility_moves(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+
+    self.assertIn('FULL_CONFORMANCE_MONGODB_VERSION: "8.0.16"', workflow)
     self.assertIn(
-      "mongodb-org-server mongodb-org-mongos mongodb-mongosh",
+      "mongodb-linux-x86_64-ubuntu2404-${FULL_CONFORMANCE_MONGODB_VERSION}.tgz",
       workflow,
     )
-    self.assertIn("brew trust mongodb/brew", workflow)
-    self.assertIn("mongodb-community@8.0", workflow)
+    self.assertIn(
+      "mongodb-macos-${mongodb_arch}-${FULL_CONFORMANCE_MONGODB_VERSION}.tgz",
+      workflow,
+    )
+    self.assertIn('series: ["7.0", "8.0", "8.2"]', workflow)
 
   def test_missing_compatibility_report_does_not_mask_primary_failure(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
@@ -115,7 +129,7 @@ class CiPortabilityTests(unittest.TestCase):
   def test_linux_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
 
-    self.assertIn("mongodb-org-mongos", workflow)
+    self.assertIn('"$mongodb_dir/bin/mongos" --version', workflow)
     self.assertIn("shard: [0, 1, 2, 3]", workflow)
     self.assertIn("--shard-count 4", workflow)
     self.assertIn("--shard-index ${{ matrix.shard }}", workflow)
