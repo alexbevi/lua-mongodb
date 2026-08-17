@@ -25,8 +25,8 @@ class V04ScopeTests(unittest.TestCase):
     self.assertEqual(851, generated["summary"]["supported"])
     self.assertEqual(
       {
-        "TXN-006": 20,
-        "TXN-007": 38,
+        "TXN-006": 19,
+        "TXN-007": 39,
       },
       generated["planned_by_activity"],
     )

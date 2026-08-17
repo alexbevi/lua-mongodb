@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "7b516b15bec2d03cd9817bdd4707643ebeb7e6a7004837680eec77af900eee61",
+  "plan_digest": "db1dfb867d498bc694e91c5db07935d114c7cf70ecbef957a1d357c51997e798",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -4320,6 +4320,21 @@
       ],
       "started_at": "2026-08-17T00:05:32+00:00",
       "completed_at": "2026-08-17T00:35:00+00:00"
+    },
+    "TXN-006": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_nontransient_mongos_pin_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The defining capability test fails because all 20 supported non-transient retain-pin cases are still deferred instead of runnable.",
+          "recorded_at": "2026-08-17T00:39:39+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Move mongos-pin-auto test 2 to TXN-007 because it asserts transient unpinning rather than non-transient pin retention."
+      ]
     }
   },
   "verified_references": {

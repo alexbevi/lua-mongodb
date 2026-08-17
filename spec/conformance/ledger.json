@@ -62988,7 +62988,7 @@
       "suite": "transactions"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[2]": {
-      "activity": "TXN-006",
+      "activity": "TXN-007",
       "fingerprint": "86595d2a23ea48ac72b5b2fa23dd3a3d191ae799d4481380d0a37e669f8e4ce3",
       "format": "unified",
       "last_execution": null,

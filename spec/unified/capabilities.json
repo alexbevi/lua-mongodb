@@ -78558,9 +78558,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[2]": {
-      "activity": "TXN-006",
+      "activity": "TXN-007",
       "fingerprint": "86595d2a23ea48ac72b5b2fa23dd3a3d191ae799d4481380d0a37e669f8e4ce3",
-      "reason": "non-transient mongos pin retention awaits the v0.4 transaction slice",
+      "reason": "transient mongos unpinning awaits the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",

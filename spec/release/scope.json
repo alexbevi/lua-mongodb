@@ -10,8 +10,8 @@
     "ADV-011": 157,
     "ADV-012": 15,
     "AUTH-019": 11,
-    "TXN-006": 20,
-    "TXN-007": 38
+    "TXN-006": 19,
+    "TXN-007": 39
   },
   "deferred_by_scope": {
     "post-v1-exclusion": 1751
