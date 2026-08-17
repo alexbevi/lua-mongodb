@@ -235,9 +235,14 @@ local search_name = assert(users:create_search_index(doc({
 
 ### Transactions
 
-Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. `with_transaction` starts, commits, and applies the specification retry rules for transient failures. Pass the active session to every operation in the transaction, and keep the callback safe to run more than once.
+Transactions require a client connected with a replica-set URI such as `mongodb://localhost:27017/bank?replicaSet=rs0`. The driver provides both APIs described in the [MongoDB transaction API guide](https://www.mongodb.com/docs/manual/core/transactions-in-applications/):
 
-`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
+- **Callback API:** `with_transaction` owns start, commit, abort, and the specification retries for transient transaction and unknown commit-result errors. Prefer it for most transactions, and keep the callback safe to run more than once.
+- **Core API:** `start_transaction`, `commit_transaction`, and `abort_transaction` expose the lifecycle directly. Use it when the application needs custom control over error handling and retries.
+
+Pass the active session to every operation with either API.
+
+#### Callback API
 
 ```lua
 local doc = mongodb.bson.document
@@ -264,6 +269,53 @@ end, {
 assert(transferred)
 assert(session:end_session())
 ```
+
+#### Core API
+
+```lua
+local doc = mongodb.bson.document
+local accounts = client:database("bank"):collection("accounts")
+local session = assert(client:start_session())
+
+local function transfer()
+  local started, err = session:start_transaction({
+    read_concern = doc({ { "level", "snapshot" } }),
+    write_concern = doc({ { "w", "majority" } }),
+  })
+
+  if not started then
+    return nil, err
+  end
+
+  local updated
+  updated, err = accounts:update_one(
+    doc({ { "_id", "checking" } }),
+    doc({ { "$inc", doc({ { "balance", -100 } }) } }),
+    { session = session }
+  )
+
+  if updated then
+    updated, err = accounts:update_one(
+      doc({ { "_id", "savings" } }),
+      doc({ { "$inc", doc({ { "balance", 100 } }) } }),
+      { session = session }
+    )
+  end
+
+  if not updated then
+    local aborted, abort_err = session:abort_transaction()
+    return nil, aborted and err or abort_err
+  end
+
+  return session:commit_transaction()
+end
+
+local transferred, err = transfer()
+assert(session:end_session())
+assert(transferred, err)
+```
+
+`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
 The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
