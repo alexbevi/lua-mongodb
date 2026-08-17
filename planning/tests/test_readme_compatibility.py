@@ -22,22 +22,38 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "🔴",
       readme_compatibility.status_marker({"deferred_unsupported": 3}),
     )
+    self.assertEqual(
+      "⚪",
+      readme_compatibility.status_marker({
+        "no_machine_cases": 1,
+        "not_applicable": 2,
+      }),
+    )
 
-  def test_passing_percentage_includes_every_tracked_case(self) -> None:
+  def test_supported_percentage_counts_only_scored_outcomes(self) -> None:
     self.assertEqual(
       "100.0%",
-      readme_compatibility.passing_percentage({"passed": 3}),
+      readme_compatibility.supported_percentage({"passed": 3}),
     )
     self.assertEqual(
       "66.7%",
-      readme_compatibility.passing_percentage({
+      readme_compatibility.supported_percentage({
         "passed": 2,
         "deferred_unsupported": 1,
+        "no_machine_cases": 4,
+        "not_applicable": 5,
       }),
     )
     self.assertEqual(
       "0.0%",
-      readme_compatibility.passing_percentage({"deferred_unsupported": 3}),
+      readme_compatibility.supported_percentage({"deferred_unsupported": 3}),
+    )
+    self.assertEqual(
+      "N/A",
+      readme_compatibility.supported_percentage({
+        "no_machine_cases": 1,
+        "not_applicable": 2,
+      }),
     )
 
   def test_table_follows_the_onion_and_covers_every_suite(self) -> None:
@@ -65,9 +81,10 @@ class ReadmeCompatibilityTests(unittest.TestCase):
 
     self.assertEqual(sorted(positions), positions)
     self.assertIn(
-      "| Driver layer | Specification suite | Status | Tests Passing % |",
+      "| Driver layer | Specification suite | Status | Tracked support % |",
       table,
     )
+    self.assertNotIn("Tests Passing", table)
     self.assertIn("| Serialization | BSON corpus | 🟢 | 100.0% |", table)
     self.assertIn(
       "| Authentication | Authentication options and additional mechanisms | "

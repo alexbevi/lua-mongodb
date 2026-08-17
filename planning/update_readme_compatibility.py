@@ -94,6 +94,11 @@ CATALOG_REQUIREMENT_STATUSES = frozenset({
   "passed",
 })
 
+NON_EXECUTION_STATUSES = frozenset({
+  "no_machine_cases",
+  "not_applicable",
+})
+
 
 class ReadmeCompatibilityError(ValueError):
   """Raised when conformance evidence cannot produce a complete projection."""
@@ -191,7 +196,10 @@ def suite_counts(
 
 def status_marker(counts: dict[str, int]) -> str:
   passed = counts.get("passed", 0)
-  incomplete = sum(count for status, count in counts.items() if status != "passed")
+  incomplete = sum(
+    count for status, count in counts.items()
+    if status != "passed" and status not in NON_EXECUTION_STATUSES
+  )
 
   if passed > 0 and incomplete == 0:
     return "🟢"
@@ -199,16 +207,20 @@ def status_marker(counts: dict[str, int]) -> str:
   if passed > 0:
     return "🟡"
 
-  return "🔴"
+  if incomplete > 0:
+    return "🔴"
+
+  return "⚪"
 
 
-def passing_percentage(counts: dict[str, int]) -> str:
-  total = sum(counts.values())
+def supported_percentage(counts: dict[str, int]) -> str:
+  total = sum(
+    count for status, count in counts.items()
+    if status not in NON_EXECUTION_STATUSES
+  )
 
   if total == 0:
-    raise ReadmeCompatibilityError(
-      "cannot calculate a passing percentage without tracked cases"
-    )
+    return "N/A"
 
   return f"{counts.get('passed', 0) / total * 100:.1f}%"
 
@@ -254,7 +266,7 @@ def render_table(
     )
 
   lines = [
-    "| Driver layer | Specification suite | Status | Tests Passing % |",
+    "| Driver layer | Specification suite | Status | Tracked support % |",
     "| --- | --- | :---: | ---: |",
   ]
 
@@ -262,7 +274,7 @@ def render_table(
     for suite, label in entries:
       lines.append(
         f"| {layer} | {label} | {status_marker(counts[suite])} | "
-        f"{passing_percentage(counts[suite])} |"
+        f"{supported_percentage(counts[suite])} |"
       )
 
   return "\n".join(lines)

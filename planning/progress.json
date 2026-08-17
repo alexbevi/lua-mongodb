@@ -4483,6 +4483,28 @@
       "notes": [],
       "started_at": "2026-08-17T01:35:25+00:00",
       "completed_at": "2026-08-17T01:38:33+00:00"
+    },
+    "CON-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'",
+          "exit_code": 2,
+          "summary": "Expected error and failure: supported_percentage did not exist and the generated table still used the Tests Passing % heading.",
+          "recorded_at": "2026-08-17T01:42:05+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'; README/catalog/ledger --check; stale-heading scan",
+          "exit_code": 0,
+          "summary": "Four projection tests passed, including execution-only denominator and N/A behavior; README, catalog, ledger, stale-heading, and diff checks passed.",
+          "recorded_at": "2026-08-17T01:43:37+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T01:41:53+00:00",
+      "completed_at": "2026-08-17T01:44:25+00:00"
     }
   },
   "verified_references": {
