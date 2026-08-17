@@ -63,6 +63,40 @@
       "ADV-014",
       "ADV-015"
     ],
+    "completed_v0_4_gates": [
+      "ADV-005",
+      "CON-002",
+      "SES-003",
+      "SES-004",
+      "SES-005",
+      "SES-008",
+      "SES-006",
+      "SES-007",
+      "IDX-001",
+      "IDX-002",
+      "IDX-003",
+      "IDX-004",
+      "IDX-005",
+      "IDX-006",
+      "CI-005",
+      "SDAM-004",
+      "SDAM-005",
+      "SDAM-006",
+      "SDAM-008",
+      "SDAM-007",
+      "CFG-004",
+      "CMAP-002",
+      "CMAP-003",
+      "CMAP-004",
+      "DNS-001",
+      "TXN-003",
+      "TXN-004",
+      "TXN-005",
+      "TXN-006",
+      "TXN-007",
+      "CMP-002",
+      "REL-049"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
@@ -82,10 +116,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.3.0-1.rockspec",
-    "rockspec_version": "0.3.0-1",
-    "version": "0.3.0"
+    "rockspec": "mongodb-0.4.0-1.rockspec",
+    "rockspec_version": "0.4.0-1",
+    "version": "0.4.0"
   },
   "schema_version": 1,
-  "type": "authentication-release-checklist"
+  "type": "sharded-parity-release-checklist"
 }

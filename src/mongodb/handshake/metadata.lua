@@ -3,7 +3,7 @@ local bson = require("mongodb.bson")
 local M = {}
 
 local DRIVER_NAME = "lua-mongodb"
-local DRIVER_VERSION = "0.3.0"
+local DRIVER_VERSION = "0.4.0"
 local DRIVER_INFO_DELIMITER = "|"
 local DOCKER_ENV_PATH = "/.dockerenv"
 local INT32_MIN = -0x80000000

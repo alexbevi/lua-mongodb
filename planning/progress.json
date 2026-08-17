@@ -4636,6 +4636,28 @@
       "reopened_after_commit": "e7069b7ba6c5c0e7bce989d977bd41a35df9cf29",
       "started_at": "2026-08-17T20:29:39+00:00",
       "completed_at": "2026-08-17T20:45:17+00:00"
+    },
+    "REL-050": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "The release checklist still identified the authentication 0.3 release instead of the sharded parity 0.4 release and exposed no completed v0.4 track gate set.",
+          "recorded_at": "2026-08-17T22:02:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='release version surfaces'; make rockspec test-release-checklist; generated release/conformance/README/workflow validators",
+          "exit_code": 0,
+          "summary": "16 focused Lua unit cases, 4 client integration cases, and 19 Python release/package/workflow contracts passed; the 0.4.0 source rock installed and smoked in isolation; touched Lua lint and LuaRocks lint had zero findings; checklist, scope, ledger, README, Python, workflow YAML, and diff validators passed. No unified fixture classification changed.",
+          "recorded_at": "2026-08-17T22:08:10+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T22:01:37+00:00",
+      "completed_at": "2026-08-17T22:08:11+00:00"
     }
   },
   "verified_references": {

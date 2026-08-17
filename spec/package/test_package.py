@@ -11,7 +11,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-ROCKSPEC = ROOT / "mongodb-0.3.0-1.rockspec"
+ROCKSPEC = ROOT / "mongodb-0.4.0-1.rockspec"
 SMOKE = ROOT / "spec" / "package" / "smoke.lua"
 SOURCE_ROOT = ROOT / "src" / "mongodb"
 TEST_SUPPORT_ROOT = ROOT / "spec" / "support" / "mongodb"
@@ -94,7 +94,7 @@ def module_classification() -> dict[str, dict[str, str]]:
 
 
 def local_source_rockspec(directory: Path) -> Path:
-  source_name = "lua-mongodb-0.3.0-1"
+  source_name = "lua-mongodb-0.4.0-1"
   archive = directory / f"{source_name}.tar.gz"
 
   with tarfile.open(archive, "w:gz") as package:

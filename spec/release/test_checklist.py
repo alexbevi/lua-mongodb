@@ -1,4 +1,4 @@
-"""Contract tests for the DNS seedlist v0.2 release checklist."""
+"""Contract tests for the sharded parity v0.4 release checklist."""
 
 import unittest
 
@@ -10,14 +10,14 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("authentication-release-checklist", report["type"])
-    self.assertEqual("0.3.0", report["release"]["version"])
+    self.assertEqual("sharded-parity-release-checklist", report["type"])
+    self.assertEqual("0.4.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 3610)
-    self.assertLessEqual(conformance["post_v1_exclusions"], 1914)
+    self.assertGreaterEqual(conformance["passed_cases"], 3829)
+    self.assertLessEqual(conformance["post_v1_exclusions"], 1695)
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"] + conformance["post_v1_exclusions"],
@@ -52,6 +52,43 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(
       [f"AUTH-{index:03d}" for index in range(1, 31) if index != 19],
       report["gates"]["completed_authentication_gates"],
+    )
+    self.assertEqual(
+      [
+        "ADV-005",
+        "CON-002",
+        "SES-003",
+        "SES-004",
+        "SES-005",
+        "SES-008",
+        "SES-006",
+        "SES-007",
+        "IDX-001",
+        "IDX-002",
+        "IDX-003",
+        "IDX-004",
+        "IDX-005",
+        "IDX-006",
+        "CI-005",
+        "SDAM-004",
+        "SDAM-005",
+        "SDAM-006",
+        "SDAM-008",
+        "SDAM-007",
+        "CFG-004",
+        "CMAP-002",
+        "CMAP-003",
+        "CMAP-004",
+        "DNS-001",
+        "TXN-003",
+        "TXN-004",
+        "TXN-005",
+        "TXN-006",
+        "TXN-007",
+        "CMP-002",
+        "REL-049",
+      ],
+      report["gates"]["completed_v0_4_gates"],
     )
     self.assertEqual(
       [

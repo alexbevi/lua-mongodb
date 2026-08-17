@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.4.0] - 2026-08-17
+
+Sharded parity release.
+
+### Added
+
+- Added snapshot sessions with server-version enforcement, transaction rejection, snapshot read concerns, and stable snapshot-time capture and access.
+- Added create, list, update, and drop Search index operations, including multi-index creation and concern omission.
+- Added sharded discovery, monitoring modes and recovery, `srvMaxHosts`, command execution through mongos, transaction pinning and unpinning, and recovery-token forwarding.
+- Added pool-clear handling for authentication, application, and monitor failures, including optional interruption of in-use connections.
+
+### Conformance
+
+- All 851 applicable v0.4 cases pass: 355 through exact unified execution and 496 through deterministic runners; 47 non-target cases retain explicit later owners or target-version exclusions.
+- All 48 modern read/write-concern cases pass, and the pinned MongoDB 7.0, 8.0, and 8.2 compatibility matrix covers standalone, replica-set, and sharded deployments.
+
+### Release engineering
+
+- Added exact sharded Full Conformance, dual-version index evidence, and guarded v0.4.0 LuaRocks publication metadata.
+
 ## [0.3.0] - 2026-08-14
 
 Authentication release.

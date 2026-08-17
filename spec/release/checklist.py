@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report authentication v0.3 release readiness."""
+"""Validate and report sharded parity v0.4 release readiness."""
 
 from __future__ import annotations
 
@@ -22,12 +22,12 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.3.0-1.rockspec"
-RELEASE_VERSION = "0.3.0"
+ROCKSPEC = ROOT / "mongodb-0.4.0-1.rockspec"
+RELEASE_VERSION = "0.4.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 3671
-MAXIMUM_POST_V1_EXCLUSIONS = 1853
+MINIMUM_PASSED_CASES = 3829
+MAXIMUM_POST_V1_EXCLUSIONS = 1695
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -39,10 +39,45 @@ AUTHENTICATION_GATES = [
   for index in range(1, 31)
   if index != 19
 ]
+V04_GATES = [
+  "ADV-005",
+  "CON-002",
+  "SES-003",
+  "SES-004",
+  "SES-005",
+  "SES-008",
+  "SES-006",
+  "SES-007",
+  "IDX-001",
+  "IDX-002",
+  "IDX-003",
+  "IDX-004",
+  "IDX-005",
+  "IDX-006",
+  "CI-005",
+  "SDAM-004",
+  "SDAM-005",
+  "SDAM-006",
+  "SDAM-008",
+  "SDAM-007",
+  "CFG-004",
+  "CMAP-002",
+  "CMAP-003",
+  "CMAP-004",
+  "DNS-001",
+  "TXN-003",
+  "TXN-004",
+  "TXN-005",
+  "TXN-006",
+  "TXN-007",
+  "CMP-002",
+  "REL-049",
+]
+V04_RELEASE_ACTIVITY = "REL-050"
 
 
 class ChecklistError(ValueError):
-  """Raised when the production-core release is not ready."""
+  """Raised when the sharded parity release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -101,11 +136,11 @@ def release_metadata() -> dict[str, str]:
   require_text(ROOT / "README.md", f"current release is version `{RELEASE_VERSION}`")
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-14",
+    f"## [{RELEASE_VERSION}] - 2026-08-17",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: authentication v0.3 release-ready.",
+    "Status: sharded parity v0.4 release-ready.",
   )
 
   return {
@@ -124,6 +159,14 @@ def generate() -> dict[str, Any]:
     activity["id"]: activity
     for activity in plan.get("activities", [])
   }
+  v04_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-4-sharded-parity"
+  ]
+
+  if v04_track != [*V04_GATES, V04_RELEASE_ACTIVITY]:
+    raise ChecklistError("v0.4 release gate inventory does not match the track")
 
   production_core = [
     activity["id"]
@@ -144,6 +187,12 @@ def generate() -> dict[str, Any]:
   for activity_id in AUTHENTICATION_GATES:
     if activity_id not in activities:
       raise ChecklistError(f"unknown authentication gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
+  for activity_id in V04_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.4 gate activity: {activity_id}")
 
     completed_activity(progress, activity_id)
 
@@ -246,6 +295,7 @@ def generate() -> dict[str, Any]:
       "completed_audits": AUDITS,
       "completed_authentication_gates": AUTHENTICATION_GATES,
       "completed_release_additions": RELEASE_ADDITIONS,
+      "completed_v0_4_gates": V04_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -271,7 +321,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "authentication-release-checklist",
+    "type": "sharded-parity-release-checklist",
   }
 
 
