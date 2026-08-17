@@ -357,18 +357,46 @@
       "status": "passed",
       "suite": "bson-decimal128"
     },
-    "bson-objectid/objectid.md::document": {
+    "bson-objectid/objectid.md::counter-rollover": {
       "activity": "BSON-009",
       "fingerprint": "80d92976ffa70aa1daf6e520aa8ee8db744f47f81857d9e641254e5e32de54af",
       "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+      "reason": "A deterministic generator vector covers the 24-bit counter rollover from 0xffffff to zero.",
+      "required_environment": "none",
+      "runner": "spec/unit/bson_tagged_spec.lua",
+      "scope": "post-v1",
+      "source": "bson-objectid/objectid.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "bson-objectid"
+    },
+    "bson-objectid/objectid.md::post-fork-random": {
+      "activity": "BSON-010",
+      "fingerprint": "80d92976ffa70aa1daf6e520aa8ee8db744f47f81857d9e641254e5e32de54af",
+      "format": "prose",
       "last_execution": null,
-      "reason": "Existing ObjectId coverage does not yet execute every unsigned timestamp boundary and 24-bit counter rollover in the normative test plan.",
-      "required_environment": "deterministic-runtime",
-      "runner": "pending:BSON-009",
+      "reason": "The generator does not yet detect a fork or equivalent process-identity change and regenerate its five-byte process-unique value.",
+      "required_environment": "fork-capable-runtime",
+      "runner": "pending:BSON-010",
       "scope": "post-v1",
       "source": "bson-objectid/objectid.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "deferred_unsupported",
+      "suite": "bson-objectid"
+    },
+    "bson-objectid/objectid.md::timestamp-boundaries": {
+      "activity": "BSON-009",
+      "fingerprint": "80d92976ffa70aa1daf6e520aa8ee8db744f47f81857d9e641254e5e32de54af",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+      "reason": "Deterministic runtime vectors cover timestamps 0x00000000, 0x7fffffff, 0x80000000, and 0xffffffff as unsigned big-endian values.",
+      "required_environment": "none",
+      "runner": "spec/unit/bson_tagged_spec.lua",
+      "scope": "post-v1",
+      "source": "bson-objectid/objectid.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
       "suite": "bson-objectid"
     },
     "collation/collation.md::document": {
@@ -923,9 +951,9 @@
       "deferred_unsupported": 9,
       "no_machine_cases": 1,
       "not_applicable": 2,
-      "passed": 7
+      "passed": 9
     },
-    "requirements": 19,
+    "requirements": 21,
     "suites": 50
   }
 }

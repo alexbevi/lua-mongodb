@@ -187,61 +187,82 @@ def _generate_requirements(
   requirements = {}
 
   for source in sorted(prose_sources):
-    classification = classifications[source]
+    configured = classifications[source]
+    configured_entries = configured if isinstance(configured, list) else [configured]
 
-    if not isinstance(classification, dict) or set(classification) != required_fields:
-      raise CatalogError(f"prose requirement has malformed fields: {source}")
+    if not configured_entries:
+      raise CatalogError(f"prose document has no requirement records: {source}")
 
-    activity = classification["activity"]
-    status = classification["status"]
+    for configured_entry in configured_entries:
+      if not isinstance(configured_entry, dict):
+        raise CatalogError(f"prose requirement must be an object: {source}")
 
-    if activity not in activities:
-      raise CatalogError(f"prose requirement has unknown owner {activity}: {source}")
+      suffix = configured_entry.get("id", "document")
+      classification = {
+        key: value for key, value in configured_entry.items() if key != "id"
+      }
 
-    if status not in VALID_REQUIREMENT_STATUSES:
-      raise CatalogError(f"prose requirement has unknown status: {source}")
+      if (
+        not isinstance(suffix, str)
+        or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", suffix)
+        or set(classification) != required_fields
+      ):
+        raise CatalogError(f"prose requirement has malformed fields: {source}")
 
-    for field in ("reason", "required_environment", "runner"):
-      if not isinstance(classification[field], str) or not classification[field].strip():
-        raise CatalogError(f"prose requirement has no {field}: {source}")
+      identity = f"{source}::{suffix}"
 
-    if status == "passed":
-      if activities[activity]["status"] != "completed":
-        raise CatalogError(f"passing prose requirement has incomplete owner: {source}")
+      if identity in requirements:
+        raise CatalogError(f"duplicate prose requirement identity: {identity}")
 
-      if not isinstance(classification["last_execution"], str) or not classification["last_execution"]:
-        raise CatalogError(f"passing prose requirement has no execution evidence: {source}")
+      activity = classification["activity"]
+      status = classification["status"]
 
-      if classification["runner"].startswith("pending:"):
-        raise CatalogError(f"passing prose requirement has a pending runner: {source}")
-    else:
-      if classification["last_execution"] is not None:
-        raise CatalogError(f"non-passing prose requirement has execution evidence: {source}")
+      if activity not in activities:
+        raise CatalogError(f"prose requirement has unknown owner {activity}: {identity}")
 
-      if status == "deferred_unsupported" and activities[activity]["status"] == "completed":
-        raise CatalogError(f"deferred prose requirement has completed owner: {source}")
+      if status not in VALID_REQUIREMENT_STATUSES:
+        raise CatalogError(f"prose requirement has unknown status: {identity}")
 
-      if status in {"no_machine_cases", "not_applicable"}:
-        if classification["required_environment"] != "none":
-          raise CatalogError(f"non-execution prose outcome requires no environment: {source}")
+      for field in ("reason", "required_environment", "runner"):
+        if not isinstance(classification[field], str) or not classification[field].strip():
+          raise CatalogError(f"prose requirement has no {field}: {identity}")
 
-        if not classification["runner"].startswith("none:"):
-          raise CatalogError(f"non-execution prose outcome has a runner: {source}")
+      if status == "passed":
+        if activities[activity]["status"] not in {"completed", "in_progress"}:
+          raise CatalogError(f"passing prose requirement has inactive owner: {identity}")
 
-    document = documents[source]
-    identity = f"{source}::document"
-    requirements[identity] = {
-      **classification,
-      "fingerprint": document["fingerprint"],
-      "format": "prose",
-      "scope": {
-        "no_machine_cases": "prose-only",
-        "not_applicable": "not-applicable",
-      }.get(status, activities[activity]["scope"]),
-      "source": source,
-      "specifications_commit": specifications_commit,
-      "suite": document["suite"],
-    }
+        if not isinstance(classification["last_execution"], str) or not classification["last_execution"]:
+          raise CatalogError(f"passing prose requirement has no execution evidence: {identity}")
+
+        if classification["runner"].startswith("pending:"):
+          raise CatalogError(f"passing prose requirement has a pending runner: {identity}")
+      else:
+        if classification["last_execution"] is not None:
+          raise CatalogError(f"non-passing prose requirement has execution evidence: {identity}")
+
+        if status == "deferred_unsupported" and activities[activity]["status"] == "completed":
+          raise CatalogError(f"deferred prose requirement has completed owner: {identity}")
+
+        if status in {"no_machine_cases", "not_applicable"}:
+          if classification["required_environment"] != "none":
+            raise CatalogError(f"non-execution prose outcome requires no environment: {identity}")
+
+          if not classification["runner"].startswith("none:"):
+            raise CatalogError(f"non-execution prose outcome has a runner: {identity}")
+
+      document = documents[source]
+      requirements[identity] = {
+        **classification,
+        "fingerprint": document["fingerprint"],
+        "format": "prose",
+        "scope": {
+          "no_machine_cases": "prose-only",
+          "not_applicable": "not-applicable",
+        }.get(status, activities[activity]["scope"]),
+        "source": source,
+        "specifications_commit": specifications_commit,
+        "suite": document["suite"],
+      }
 
   return requirements
 

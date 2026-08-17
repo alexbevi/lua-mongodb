@@ -41,14 +41,35 @@
       "runner": "spec/unit/bson_exact_spec.lua",
       "status": "passed"
     },
-    "bson-objectid/objectid.md": {
-      "activity": "BSON-009",
-      "last_execution": null,
-      "reason": "Existing ObjectId coverage does not yet execute every unsigned timestamp boundary and 24-bit counter rollover in the normative test plan.",
-      "required_environment": "deterministic-runtime",
-      "runner": "pending:BSON-009",
-      "status": "deferred_unsupported"
-    },
+    "bson-objectid/objectid.md": [
+      {
+        "id": "timestamp-boundaries",
+        "activity": "BSON-009",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+        "reason": "Deterministic runtime vectors cover timestamps 0x00000000, 0x7fffffff, 0x80000000, and 0xffffffff as unsigned big-endian values.",
+        "required_environment": "none",
+        "runner": "spec/unit/bson_tagged_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "counter-rollover",
+        "activity": "BSON-009",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+        "reason": "A deterministic generator vector covers the 24-bit counter rollover from 0xffffff to zero.",
+        "required_environment": "none",
+        "runner": "spec/unit/bson_tagged_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "post-fork-random",
+        "activity": "BSON-010",
+        "last_execution": null,
+        "reason": "The generator does not yet detect a fork or equivalent process-identity change and regenerate its five-byte process-unique value.",
+        "required_environment": "fork-capable-runtime",
+        "runner": "pending:BSON-010",
+        "status": "deferred_unsupported"
+      }
+    ],
     "collation/collation.md": {
       "activity": "CRUD-002",
       "last_execution": "make test-focus FOCUS_UNIT='spec/unit/crud_mutations_spec.lua spec/unit/admin_spec.lua'",

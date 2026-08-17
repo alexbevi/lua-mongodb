@@ -62,10 +62,7 @@ class ConformanceCatalogTests(unittest.TestCase):
       if not suites[document["suite"]]["has_machine_fixtures"]
     }
 
-    self.assertEqual(
-      {f"{source}::document" for source in prose_sources},
-      set(requirements),
-    )
+    self.assertEqual(prose_sources, {value["source"] for value in requirements.values()})
 
     required_fields = {
       "activity",
@@ -83,7 +80,7 @@ class ConformanceCatalogTests(unittest.TestCase):
     }
 
     for identity, requirement in requirements.items():
-      source = identity.removesuffix("::document")
+      source = requirement["source"]
       self.assertEqual(required_fields, set(requirement))
       self.assertEqual(documents[source]["fingerprint"], requirement["fingerprint"])
       self.assertEqual("prose", requirement["format"])
@@ -135,6 +132,22 @@ class ConformanceCatalogTests(unittest.TestCase):
         if status in {"no_machine_cases", "not_applicable"}
       },
     )
+
+  def test_objectid_requirement_records_normative_boundary_execution(self) -> None:
+    requirements = catalog.generate()["requirements"]
+
+    for suffix in ("timestamp-boundaries", "counter-rollover"):
+      requirement = requirements[f"bson-objectid/objectid.md::{suffix}"]
+
+      self.assertEqual("BSON-009", requirement["activity"])
+      self.assertEqual("passed", requirement["status"])
+      self.assertEqual("spec/unit/bson_tagged_spec.lua", requirement["runner"])
+      self.assertIn("spec/unit/bson_tagged_spec.lua", requirement["last_execution"])
+
+    post_fork = requirements["bson-objectid/objectid.md::post-fork-random"]
+    self.assertEqual("BSON-010", post_fork["activity"])
+    self.assertEqual("deferred_unsupported", post_fork["status"])
+    self.assertIsNone(post_fork["last_execution"])
 
 
 if __name__ == "__main__":

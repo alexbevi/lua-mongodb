@@ -25,6 +25,37 @@ describe("BSON tagged values", function()
     assert.are.equal(first, bson.object_id(tostring(first)))
   end)
 
+  it("encodes every normative unsigned ObjectId timestamp boundary", function()
+    local boundaries = {
+      { 0x00000000, "00000000" },
+      { 0x7fffffff, "7fffffff" },
+      { 0x80000000, "80000000" },
+      { 0xffffffff, "ffffffff" },
+    }
+
+    for _, boundary in ipairs(boundaries) do
+      local runtime = fake_runtime.new({
+        wall_time = boundary[1],
+        entropy = "\16\17\18\19\20\0\0\0",
+      })
+      local object_id = assert(assert(bson.object_id_generator(runtime)):new())
+
+      assert.are.equal(boundary[2] .. "1011121314000000", tostring(object_id))
+      assert.are.equal(boundary[1], object_id.timestamp)
+    end
+  end)
+
+  it("wraps the ObjectId counter from 0xffffff to zero", function()
+    local runtime = fake_runtime.new({
+      wall_time = 0x01020304,
+      entropy = "\16\17\18\19\20\255\255\255",
+    })
+    local generator = assert(bson.object_id_generator(runtime))
+
+    assert.are.equal("010203041011121314ffffff", tostring(assert(generator:new())))
+    assert.are.equal("010203041011121314000000", tostring(assert(generator:new())))
+  end)
+
   it("round trips tagged values using the pinned PyMongo byte layout", function()
     local document = bson.document({
       { "oid", bson.object_id("010203041011121314151617") },

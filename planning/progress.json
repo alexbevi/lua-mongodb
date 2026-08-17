@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "9b0872ed4ca55e71f14e88bc400ccf39d71ecbaa59799a256cda3690517ca26c",
+  "plan_digest": "55145ecc16e461cfea37579f0320809bd9447aaa300b396eea9393b62a9eaf65",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -4417,6 +4417,28 @@
       "notes": [],
       "started_at": "2026-08-17T01:13:43+00:00",
       "completed_at": "2026-08-17T01:15:42+00:00"
+    },
+    "BSON-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks path)\"; make test-focus LUA=/opt/homebrew/Cellar/lua@5.4/5.4.8/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=\"spec/unit/bson_tagged_spec.lua\" FOCUS_PYTHON=\"spec.conformance.test_catalog\"",
+          "exit_code": 2,
+          "summary": "All six ObjectId/tagged-value unit cases, including the four unsigned timestamp boundaries and counter rollover, passed; the conformance contract failed because the ObjectId prose requirement was still classified deferred_unsupported without the new exact evidence.",
+          "recorded_at": "2026-08-17T01:21:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks path)\"; make test-focus LUA=/opt/homebrew/Cellar/lua@5.4/5.4.8/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=\"spec/unit/bson_tagged_spec.lua\" FOCUS_PYTHON=\"spec.conformance.test_catalog spec.conformance.test_ledger\" FOCUS_LINT=\"src/mongodb/bson/tagged.lua spec/unit/bson_tagged_spec.lua\"; python3 spec/conformance/catalog.py --check; make test-complexity; make test-conformance",
+          "exit_code": 0,
+          "summary": "All six tagged-value tests passed, including four unsigned ObjectId timestamp boundaries and the 0xffffff-to-zero rollover; catalog and ledger tests, two-file lint, complexity, release scopes, checklist, and generated conformance checks passed. The separate post-fork requirement remains explicitly deferred to BSON-010.",
+          "recorded_at": "2026-08-17T01:24:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T01:19:23+00:00",
+      "completed_at": "2026-08-17T01:24:08+00:00"
     }
   },
   "verified_references": {

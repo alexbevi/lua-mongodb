@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "9b0872ed4ca55e71f14e88bc400ccf39d71ecbaa59799a256cda3690517ca26c",
+  "plan_digest": "55145ecc16e461cfea37579f0320809bd9447aaa300b396eea9393b62a9eaf65",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
@@ -17,7 +17,7 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 183,
+    "completed": 184,
     "in_progress": 0,
     "needs_review": 0,
     "pending": 20
@@ -34,9 +34,10 @@
     "ADV-010",
     "ADV-011",
     "TXN-007",
-    "BSON-009",
+    "ENUM-001",
     "TLS-002",
     "SFP-001",
+    "BSON-010",
     "ADV-012"
   ],
   "ready_by_track": {
@@ -45,7 +46,7 @@
       "TXN-007"
     ],
     "spec-suite-completeness": [
-      "BSON-009"
+      "ENUM-001"
     ]
   },
   "blocked": [],
