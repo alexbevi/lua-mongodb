@@ -4461,6 +4461,28 @@
       "notes": [],
       "started_at": "2026-08-17T01:27:23+00:00",
       "completed_at": "2026-08-17T01:31:53+00:00"
+    },
+    "CON-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'",
+          "exit_code": 2,
+          "summary": "Two expected failures: the six requested suites were absent from DRIVER_LAYERS and suite_counts had no catalog-derived Atlas SFP outcome.",
+          "recorded_at": "2026-08-17T01:35:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility spec.conformance.test_catalog spec.conformance.test_ledger'; README/catalog/ledger --check",
+          "exit_code": 0,
+          "summary": "Four projection tests and 10 catalog/ledger tests passed; the generated README exposes all six prose-only rows with catalog-derived outcomes, and README, catalog, ledger, and diff checks passed.",
+          "recorded_at": "2026-08-17T01:38:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T01:35:25+00:00",
+      "completed_at": "2026-08-17T01:38:33+00:00"
     }
   },
   "verified_references": {

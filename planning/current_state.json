@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 185,
+    "completed": 186,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 19
+    "pending": 18
   },
   "active": [],
   "ready": [
@@ -34,7 +34,7 @@
     "ADV-010",
     "ADV-011",
     "TXN-007",
-    "CON-006",
+    "CON-007",
     "TLS-002",
     "SFP-001",
     "BSON-010",
@@ -46,7 +46,7 @@
       "TXN-007"
     ],
     "spec-suite-completeness": [
-      "CON-006"
+      "CON-007"
     ]
   },
   "blocked": [],

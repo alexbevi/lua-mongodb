@@ -48,6 +48,14 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     }
 
     self.assertEqual(set(readme_compatibility.suite_counts()), suites)
+    self.assertTrue({
+      "atlas-sfp-testing",
+      "compression",
+      "logging",
+      "ocsp-support",
+      "polling-srv-records-for-mongos-discovery",
+      "socks5-support",
+    } <= suites)
 
     table = readme_compatibility.render_table()
     positions = [
@@ -70,6 +78,31 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       table,
       r"\| Resilience \| Client-side operations timeout \| 🟡 \| \d+\.\d% \|",
     )
+
+  def test_prose_only_rows_use_catalog_requirement_outcomes(self) -> None:
+    counts = readme_compatibility.suite_counts()
+
+    for suite in (
+      "atlas-sfp-testing",
+      "compression",
+      "logging",
+      "ocsp-support",
+      "socks5-support",
+    ):
+      self.assertEqual({"deferred_unsupported": 1}, dict(counts[suite]))
+
+    self.assertEqual(
+      {"passed": 1},
+      dict(counts["polling-srv-records-for-mongos-discovery"]),
+    )
+
+    table = readme_compatibility.render_table()
+    self.assertIn("| Communication | OCSP support | 🔴 | 0.0% |", table)
+    self.assertIn("| Communication | Wire compression | 🔴 | 0.0% |", table)
+    self.assertIn("| Communication | SOCKS5 proxy support | 🔴 | 0.0% |", table)
+    self.assertIn("| Observability | Standardized logging | 🔴 | 0.0% |", table)
+    self.assertIn("| Availability | Periodic SRV polling | 🟢 | 100.0% |", table)
+    self.assertIn("| Testability | Atlas SFP testing | 🔴 | 0.0% |", table)
 
 
 if __name__ == "__main__":
