@@ -5744,7 +5744,7 @@
     },
     "transactions/tests/unified/retryable-abort-handshake.json::test[1]": {
       "activity": "REL-036",
-      "environment": "live-replicaset",
+      "environment": "live-authenticated-replicaset",
       "runSkipped": true,
       "testCommands": true
     },
@@ -5834,7 +5834,7 @@
     },
     "transactions/tests/unified/retryable-commit-handshake.json::test[1]": {
       "activity": "REL-037",
-      "environment": "live-replicaset",
+      "environment": "live-authenticated-replicaset",
       "runSkipped": true,
       "testCommands": true
     },
@@ -6159,7 +6159,7 @@
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[4]": {"activity": "SDAM-005", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[5]": {"activity": "SDAM-005", "environment": "live-sharded"},
     "server-discovery-and-monitoring/tests/unified/serverMonitoringMode.json::test[6]": {"activity": "SDAM-005", "environment": "live-sharded"},
-    "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {"activity": "REL-039", "environment": "live-standalone", "testCommands": true},
+    "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[1]": {"activity": "REL-039", "environment": "live-authenticated-standalone", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/pool-clear-min-pool-size-error.json::test[2]": {"activity": "REL-039", "environment": "live-standalone", "testCommands": true},
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {"activity": "REL-040", "environment": "isolated-replicaset", "replicaSetMembers": 3},
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {"activity": "REL-041", "environment": "live-replicaset"},

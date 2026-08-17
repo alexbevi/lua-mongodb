@@ -67,6 +67,10 @@ class LocalTestingTests(unittest.TestCase):
     )
     self.assertIn("spec/v04/scope.py --check", makefile)
     self.assertIn('--execution-report "$(UNIFIED_REPORT)"', makefile)
+    self.assertIn(
+      '--execution-report "$(V04_SUPPLEMENTAL_REPORT)"',
+      makefile,
+    )
     self.assertIn("test-package", fast_gate)
     self.assertEqual(
       makefile.count("spec/unified/validate_fixtures.py --lua"),

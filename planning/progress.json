@@ -4555,23 +4555,24 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_unified_pins_the_server_patch_while_compatibility_moves'",
+          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope.V04ScopeTests.test_exact_execution_combines_mutually_exclusive_server_versions'",
           "exit_code": 2,
-          "summary": "The workflow still pinned MongoDB 8.0.16, which environment-skips the required index-management rawData target; the portability contract requires tested MongoDB 8.2.0.",
-          "recorded_at": "2026-08-17T19:12:35+00:00"
+          "summary": "The v0.4 validator accepted only one execution-report object and crashed on the two exact reports required for mutually exclusive <8.2 and >=8.2 rawData branches.",
+          "recorded_at": "2026-08-17T20:30:03+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'; MongoDB 8.2.0 make test-focus FOCUS_UNIFIED='index-management/tests/index-rawdata.json'; MongoDB 8.2.0 make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json'; Ruby YAML parse; git diff --check",
+          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope spec.unified.test_cli spec.conformance.test_ledger spec.release.test_checklist planning.tests.test_ci_portability' FOCUS_LINT='spec/unified/execute.lua'; exact authenticated and pre-8.2 unified fixtures; combined scope.py execution reports; generated --check validators; YAML/JSON/diff checks",
           "exit_code": 0,
-          "summary": "11 workflow contracts passed; rawData index fixture executed 1/1 applicable case with 1 version-opposite environment skip; interrupt fixture executed and passed 3/3 with 0 skipped/deferred/failed; YAML and diff validators passed.",
-          "recorded_at": "2026-08-17T19:14:04+00:00"
+          "summary": "108 focused Python contracts and 5 Makefile self-tests passed; authenticated exact fixtures executed 4/4 and pre-8.2 rawData executed 1/1 with 0 failures; combined reports passed all 350 in-floor exact unified targets; Lua lint and every generated/workflow validator passed.",
+          "recorded_at": "2026-08-17T20:45:12+00:00"
         }
       ],
       "notes": [
         "Requeued: Required Full Conformance exposed SERVER-128517-affected interruptInUse failures on MongoDB 8.0.29; reopen the conformance slice to pin its fixture server while retaining moving compatibility rows.",
         "Requeued: Full Conformance 32052667182 showed the 8.0.16 repair environment-skips the required index rawData target; MongoDB 8.2.0 is required to satisfy both rawData and interrupt-in-use exact cases.",
-        "Requeued: Full Conformance 32052667182 showed the 8.0.16 repair environment-skips the required index rawData target; MongoDB 8.2.0 is required to satisfy both rawData and interrupt-in-use exact cases."
+        "Requeued: Full Conformance 32052667182 showed the 8.0.16 repair environment-skips the required index rawData target; MongoDB 8.2.0 is required to satisfy both rawData and interrupt-in-use exact cases.",
+        "Requeued: Full Conformance 32059518529 proved a single MongoDB version cannot execute both mutually exclusive index rawData branches; exact v0.4 validation must combine current and pre-8.2 execution reports."
       ],
       "reopen_history": [
         {
@@ -4611,11 +4612,30 @@
               "recorded_at": "2026-08-17T17:43:52+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-17T19:14:08+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_unified_pins_the_server_patch_while_compatibility_moves'",
+              "exit_code": 2,
+              "summary": "The workflow still pinned MongoDB 8.0.16, which environment-skips the required index-management rawData target; the portability contract requires tested MongoDB 8.2.0.",
+              "recorded_at": "2026-08-17T19:12:35+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'; MongoDB 8.2.0 make test-focus FOCUS_UNIFIED='index-management/tests/index-rawdata.json'; MongoDB 8.2.0 make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json'; Ruby YAML parse; git diff --check",
+              "exit_code": 0,
+              "summary": "11 workflow contracts passed; rawData index fixture executed 1/1 applicable case with 1 version-opposite environment skip; interrupt fixture executed and passed 3/3 with 0 skipped/deferred/failed; YAML and diff validators passed.",
+              "recorded_at": "2026-08-17T19:14:04+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "b231b00e08860bddd4e192b212595445c9e8b93e",
-      "started_at": "2026-08-17T19:12:16+00:00",
-      "completed_at": "2026-08-17T19:14:08+00:00"
+      "reopened_after_commit": "e7069b7ba6c5c0e7bce989d977bd41a35df9cf29",
+      "started_at": "2026-08-17T20:29:39+00:00",
+      "completed_at": "2026-08-17T20:45:17+00:00"
     }
   },
   "verified_references": {

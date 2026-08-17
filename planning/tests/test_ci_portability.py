@@ -73,6 +73,10 @@ class CiPortabilityTests(unittest.TestCase):
 
     self.assertIn('FULL_CONFORMANCE_MONGODB_VERSION: "8.2.0"', workflow)
     self.assertIn(
+      'FULL_CONFORMANCE_LEGACY_MONGODB_VERSION: "8.0.16"',
+      workflow,
+    )
+    self.assertIn(
       "mongodb-linux-x86_64-ubuntu2404-${FULL_CONFORMANCE_MONGODB_VERSION}.tgz",
       workflow,
     )
@@ -133,11 +137,20 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("shard: [0, 1, 2, 3]", workflow)
     self.assertIn("--shard-count 4", workflow)
     self.assertIn("--shard-index ${{ matrix.shard }}", workflow)
-    self.assertIn("needs: linux-unified", workflow)
+    self.assertIn("needs: [linux-unified, linux-version-branches]", workflow)
     self.assertIn("uses: actions/download-artifact@v8", workflow)
     self.assertIn("--aggregate build/conformance/shards/*.json", workflow)
     self.assertIn("Validate exact v0.4 conformance evidence", workflow)
     self.assertIn("--execution-report build/conformance/unified.json", workflow)
+    self.assertIn(
+      "--execution-report build/conformance/version-branches/"
+      "unified-pre-8.2.json",
+      workflow,
+    )
+    self.assertIn(
+      "V04_SUPPLEMENTAL_REPORT=build/conformance/unified-pre-8.2.json",
+      workflow,
+    )
     self.assertIn("if-no-files-found: error", workflow)
 
 

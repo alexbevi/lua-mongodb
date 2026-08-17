@@ -21,6 +21,7 @@ permissions:
 
 env:
   FULL_CONFORMANCE_MONGODB_VERSION: "8.2.0"
+  FULL_CONFORMANCE_LEGACY_MONGODB_VERSION: "8.0.16"
 
 jobs:
   linux-quality:
@@ -122,8 +123,59 @@ jobs:
           path: build/conformance/unified-shard-${{ matrix.shard }}.json
           if-no-files-found: warn
 
+  linux-version-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install driver dependencies
+        run: luarocks install --only-deps mongodb-0.3.0-1.rockspec
+
+      - name: Install pre-8.2 MongoDB test tools
+        run: |
+          curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc \
+            | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-8.0.gpg
+          echo "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" \
+            | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh
+          mongodb_dir="$RUNNER_TEMP/full-conformance-mongodb-pre-8.2"
+          mkdir -p "$mongodb_dir"
+          curl -fsSL "https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2404-${FULL_CONFORMANCE_LEGACY_MONGODB_VERSION}.tgz" \
+            | tar -xz --strip-components=1 -C "$mongodb_dir"
+          echo "$mongodb_dir/bin" >> "$GITHUB_PATH"
+          "$mongodb_dir/bin/mongod" --version
+
+      - name: Run exact pre-8.2 v0.4 branches
+        run: >-
+          python3 spec/unified/run.py
+          --include index-management/tests/index-rawdata.json
+          --report build/conformance/unified-pre-8.2.json
+
+      - name: Upload pre-8.2 exact evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: unified-pre-8.2-${{ github.sha }}
+          path: build/conformance/unified-pre-8.2.json
+          if-no-files-found: error
+
   linux-aggregate:
-    needs: linux-unified
+    needs: [linux-unified, linux-version-branches]
     runs-on: ubuntu-latest
 
     steps:
@@ -140,6 +192,12 @@ jobs:
           path: build/conformance/shards
           merge-multiple: true
 
+      - name: Download pre-8.2 exact evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: unified-pre-8.2-${{ github.sha }}
+          path: build/conformance/version-branches
+
       - name: Aggregate exact unified evidence and global ratchets
         run: >-
           python3 spec/unified/run.py
@@ -151,12 +209,15 @@ jobs:
           python3 spec/v04/scope.py
           --check
           --execution-report build/conformance/unified.json
+          --execution-report build/conformance/version-branches/unified-pre-8.2.json
 
       - name: Upload authoritative Linux conformance evidence
         uses: actions/upload-artifact@v7
         with:
           name: full-conformance-linux-${{ github.sha }}
-          path: build/conformance/unified.json
+          path: |
+            build/conformance/unified.json
+            build/conformance/version-branches/unified-pre-8.2.json
           if-no-files-found: error
 
   macos:
@@ -212,8 +273,26 @@ jobs:
           "$mongodb_dir/bin/mongod" --version
           "$mongodb_dir/bin/mongos" --version
 
+      - name: Run exact pre-8.2 v0.4 branches
+        run: |
+          case "$(uname -m)" in
+            arm64) mongodb_arch=arm64 ;;
+            x86_64) mongodb_arch=x86_64 ;;
+            *) echo "unsupported macOS architecture" >&2; exit 2 ;;
+          esac
+          legacy_mongodb_dir="$RUNNER_TEMP/full-conformance-mongodb-pre-8.2"
+          mkdir -p "$legacy_mongodb_dir"
+          curl -fsSL "https://fastdl.mongodb.org/osx/mongodb-macos-${mongodb_arch}-${FULL_CONFORMANCE_LEGACY_MONGODB_VERSION}.tgz" \
+            | tar -xz --strip-components=1 -C "$legacy_mongodb_dir"
+          PATH="$legacy_mongodb_dir/bin:$PATH" python3 spec/unified/run.py \
+            --include index-management/tests/index-rawdata.json \
+            --report build/conformance/unified-pre-8.2.json
+
       - name: Run authoritative full portable and loopback checks
-        run: make check-full UNIFIED_REPORT=build/conformance/unified.json
+        run: >-
+          make check-full
+          UNIFIED_REPORT=build/conformance/unified.json
+          V04_SUPPLEMENTAL_REPORT=build/conformance/unified-pre-8.2.json
 
       - name: Verify executable roadmap and commit evidence
         run: python3 planning/update_plan.py check --strict
@@ -225,6 +304,7 @@ jobs:
           name: full-conformance-macos-${{ github.sha }}
           path: |
             build/conformance/unified.json
+            build/conformance/unified-pre-8.2.json
             build/quality/luacov.report.out
           if-no-files-found: warn
 

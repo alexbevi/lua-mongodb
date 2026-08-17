@@ -74,6 +74,28 @@ EXCLUSION_REASONS = {
 }
 
 TARGET_VERSION_EXCLUSIONS = {
+  "server-discovery-and-monitoring/tests/unified/"
+  "serverMonitoringMode.json::test[2]": (
+    "polling behavior below MongoDB 4.4 is outside the v0.4 MongoDB 7.0 "
+    "compatibility floor"
+  ),
+  "server-discovery-and-monitoring/tests/unified/"
+  "serverMonitoringMode.json::test[4]": (
+    "streaming behavior below MongoDB 4.4 is outside the v0.4 MongoDB 7.0 "
+    "compatibility floor"
+  ),
+  "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[1]": (
+    "snapshot-session rejection on MongoDB 4.4 and older is outside the "
+    "v0.4 MongoDB 7.0 compatibility floor"
+  ),
+  "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[2]": (
+    "snapshot-session rejection on MongoDB 4.4 and older is outside the "
+    "v0.4 MongoDB 7.0 compatibility floor"
+  ),
+  "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[3]": (
+    "snapshot-session rejection on MongoDB 4.4 and older is outside the "
+    "v0.4 MongoDB 7.0 compatibility floor"
+  ),
   "read-write-concern/tests/operation/"
   "default-write-concern-3.4.json::test[4]": (
     "legacy mapReduce concern behavior requires MongoDB 3.4, below the "
@@ -125,50 +147,66 @@ def load_capability_ratchets(
 
 def validate_execution(
   cases: dict[str, dict[str, Any]],
-  report: dict[str, Any],
+  report: dict[str, Any] | list[dict[str, Any]],
   expected_ratchets: dict[str, int],
 ) -> dict[str, int]:
   """Require exact passing execution rows for every unified v0.4 target."""
-  if report.get("type") != "execution":
-    raise ScopeError("v0.4 evidence is not a unified execution report")
-
-  if report.get("ratchets") != expected_ratchets:
-    raise ScopeError("v0.4 execution report ratchets do not match the manifest")
-
-  report_rows = report.get("tests")
-  if not isinstance(report_rows, list):
-    raise ScopeError("v0.4 execution report test rows must be an array")
-
-  rows = {}
-  for row in report_rows:
-    if not isinstance(row, dict) or not isinstance(row.get("id"), str):
-      raise ScopeError("v0.4 execution report contains a malformed test row")
-
-    identity = row["id"]
-    if identity in rows:
-      raise ScopeError(f"v0.4 execution report repeats {identity}")
-    rows[identity] = row
-
-  required = sorted(
+  reports = report if isinstance(report, list) else [report]
+  required = {
     identity
     for identity, case in cases.items()
     if case.get("status") == "passed"
       and case.get("runner") == "spec/unified/execute.lua"
-  )
+      and identity not in TARGET_VERSION_EXCLUSIONS
+  }
+  passed = set()
 
-  for identity in required:
-    row = rows.get(identity)
-    if row is None:
-      raise ScopeError(f"v0.4 execution report is missing {identity}")
+  for report_index, exact_report in enumerate(reports):
+    if not isinstance(exact_report, dict) or exact_report.get("type") != "execution":
+      raise ScopeError("v0.4 evidence is not a unified execution report")
 
-    if row.get("status") != "passed":
-      detail = row.get("error")
-      suffix = f": {detail}" if isinstance(detail, str) and detail else ""
-      raise ScopeError(
-        f"v0.4 target did not pass exact execution: {identity}{suffix}"
-      )
+    report_ratchets = exact_report.get("ratchets")
+    if report_index == 0 and report_ratchets != expected_ratchets:
+      raise ScopeError("v0.4 execution report ratchets do not match the manifest")
+    if report_index > 0:
+      if not isinstance(report_ratchets, dict) or set(report_ratchets) != set(expected_ratchets):
+        raise ScopeError("v0.4 supplemental report ratchets are malformed")
+      for name, value in report_ratchets.items():
+        if not isinstance(value, int) or not 0 <= value <= expected_ratchets[name]:
+          raise ScopeError("v0.4 supplemental report ratchets are malformed")
 
-  return {"passed": len(required), "required": len(required)}
+    report_rows = exact_report.get("tests")
+    if not isinstance(report_rows, list):
+      raise ScopeError("v0.4 execution report test rows must be an array")
+
+    seen = set()
+    for row in report_rows:
+      if not isinstance(row, dict) or not isinstance(row.get("id"), str):
+        raise ScopeError("v0.4 execution report contains a malformed test row")
+
+      identity = row["id"]
+      if identity in seen:
+        raise ScopeError(f"v0.4 execution report repeats {identity}")
+      seen.add(identity)
+
+      if identity not in required:
+        continue
+
+      status = row.get("status")
+      if status == "passed":
+        passed.add(identity)
+      elif status != "environment_skipped":
+        detail = row.get("error")
+        suffix = f": {detail}" if isinstance(detail, str) and detail else ""
+        raise ScopeError(
+          f"v0.4 target did not pass exact execution: {identity}{suffix}"
+        )
+
+  missing = sorted(required - passed)
+  if missing:
+    raise ScopeError(f"v0.4 target did not pass exact execution: {missing[0]}")
+
+  return {"passed": len(passed), "required": len(required)}
 
 
 def validate_scope_ratchets(report: dict[str, Any]) -> None:
@@ -215,9 +253,9 @@ def classify(
       raise ScopeError(f"unknown owner for {identity}: {owner}")
 
     if identity in TARGET_VERSION_EXCLUSIONS:
-      if status not in {"deferred_unsupported", "excluded_scope"}:
+      if status not in {"passed", "deferred_unsupported", "excluded_scope"}:
         raise ScopeError(f"stale v0.4 target-version exclusion: {identity}")
-      if owner != "ADV-011":
+      if status != "passed" and owner != "ADV-011":
         raise ScopeError(f"target-version exclusion has wrong owner: {identity}")
       seen_target_version_exclusions.add(identity)
 
@@ -322,7 +360,7 @@ def check() -> None:
 def main() -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--check", action="store_true")
-  parser.add_argument("--execution-report", type=Path)
+  parser.add_argument("--execution-report", action="append", type=Path)
   arguments = parser.parse_args()
   if arguments.check:
     check()
@@ -332,9 +370,10 @@ def main() -> int:
   report = generated["summary"]
   exact = ""
   if arguments.execution_report is not None:
-    execution = json.loads(
-      arguments.execution_report.read_text(encoding="utf-8")
-    )
+    execution = [
+      json.loads(report.read_text(encoding="utf-8"))
+      for report in arguments.execution_report
+    ]
     evidence = validate_execution(
       load_cases(),
       execution,

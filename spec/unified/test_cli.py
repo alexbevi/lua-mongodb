@@ -356,7 +356,7 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(
       {
         "activity": "REL-036",
-        "environment": "live-replicaset",
+        "environment": "live-authenticated-replicaset",
         "runSkipped": True,
         "testCommands": True,
       },
@@ -376,7 +376,7 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(
       {
         "activity": "REL-037",
-        "environment": "live-replicaset",
+        "environment": "live-authenticated-replicaset",
         "runSkipped": True,
         "testCommands": True,
       },
@@ -422,11 +422,14 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(1545, manifest["ratchets"]["runnable"])
     self.assertEqual(1545, manifest["ratchets"]["passed"])
 
-    for identity in identities:
+    for index, identity in enumerate(identities, start=1):
       self.assertEqual(
         {
           "activity": "REL-039",
-          "environment": "live-standalone",
+          "environment": (
+            "live-authenticated-standalone"
+            if index == 1 else "live-standalone"
+          ),
           "testCommands": True,
         },
         run.load_executor_registry()[identity],
@@ -1937,6 +1940,46 @@ class UnifiedCliTests(unittest.TestCase):
           environment[run.AUTHENTICATED_STANDALONE_URI],
           configured[run.AUTHENTICATED_STANDALONE_URI],
         )
+
+  def test_authenticated_replica_set_requires_a_credentialed_uri(self) -> None:
+    identity = (
+      "transactions/tests/unified/"
+      "retryable-commit-handshake.json::test[1]"
+    )
+    classifications = [{"id": identity, "status": "runnable"}]
+    registry = {
+      identity: {"environment": run.AUTHENTICATED_REPLICA_SET_ENVIRONMENT},
+    }
+    environment = {
+      run.AUTHENTICATED_REPLICA_SET_URI: (
+        "mongodb://127.0.0.1:27017/admin?replicaSet=rs"
+      ),
+      run.AUTHENTICATED_REPLICA_SET_VERSION: "8.2.0",
+    }
+
+    with self.assertRaisesRegex(run.CapabilityError, "credentials"):
+      with run.replica_set_environment(
+        classifications,
+        registry,
+        environment,
+        authenticated=True,
+      ):
+        pass
+
+    environment[run.AUTHENTICATED_REPLICA_SET_URI] = (
+      "mongodb://user:pass@127.0.0.1:27017/admin?replicaSet=rs"
+    )
+
+    with run.replica_set_environment(
+      classifications,
+      registry,
+      environment,
+      authenticated=True,
+    ) as configured:
+      self.assertEqual(
+        environment[run.AUTHENTICATED_REPLICA_SET_URI],
+        configured[run.AUTHENTICATED_REPLICA_SET_URI],
+      )
 
   def test_live_sharded_environment_requires_exact_external_facts(self) -> None:
     identity = "transactions/tests/unified/pin-mongos.json::test[1]"

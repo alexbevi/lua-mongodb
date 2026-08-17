@@ -39,6 +39,11 @@ CSOT_FIXTURE_PREFIX = "client-side-operations-timeout/"
 AUTHENTICATED_STANDALONE_ENVIRONMENT = "live-authenticated-standalone"
 AUTHENTICATED_STANDALONE_URI = "MONGODB_UNIFIED_AUTH_URI"
 AUTHENTICATED_STANDALONE_VERSION = "MONGODB_UNIFIED_AUTH_SERVER_VERSION"
+AUTHENTICATED_REPLICA_SET_ENVIRONMENT = "live-authenticated-replicaset"
+AUTHENTICATED_REPLICA_SET_URI = "MONGODB_UNIFIED_AUTH_REPLICA_SET_URI"
+AUTHENTICATED_REPLICA_SET_VERSION = (
+  "MONGODB_UNIFIED_AUTH_REPLICA_SET_SERVER_VERSION"
+)
 MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/close-cursors.json::test[1]",
   "client-side-operations-timeout/tests/close-cursors.json::test[2]",
@@ -1314,10 +1319,22 @@ def replica_set_environment(
   classifications: list[dict[str, Any]],
   registry: dict[str, Any],
   base_environment: dict[str, str],
+  authenticated: bool = False,
 ):
+  environment_name = (
+    AUTHENTICATED_REPLICA_SET_ENVIRONMENT if authenticated else "live-replicaset"
+  )
+  uri_name = (
+    AUTHENTICATED_REPLICA_SET_URI
+    if authenticated else "MONGODB_UNIFIED_REPLICA_SET_URI"
+  )
+  version_name = (
+    AUTHENTICATED_REPLICA_SET_VERSION
+    if authenticated else "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
+  )
   needs_server = any(
     value["status"] == "runnable"
-    and registry.get(value["id"], {}).get("environment") == "live-replicaset"
+    and registry.get(value["id"], {}).get("environment") == environment_name
     for value in classifications
   )
   environment = base_environment.copy()
@@ -1331,7 +1348,7 @@ def replica_set_environment(
       registry.get(value["id"], {}).get("replicaSetMembers", 1)
       for value in classifications
       if value["status"] == "runnable"
-      and registry.get(value["id"], {}).get("environment") == "live-replicaset"
+      and registry.get(value["id"], {}).get("environment") == environment_name
     ),
     default=1,
   )
@@ -1339,14 +1356,16 @@ def replica_set_environment(
   if type(member_count) is not int or member_count < 1 or member_count > 3:
     raise CapabilityError("replicaSetMembers must be an integer from 1 through 3")
 
-  configured_uri = environment.get("MONGODB_UNIFIED_REPLICA_SET_URI")
+  configured_uri = environment.get(uri_name)
 
   if configured_uri:
-    if not environment.get("MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"):
+    if not environment.get(version_name):
       raise CapabilityError(
-        "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION is required with "
-        "MONGODB_UNIFIED_REPLICA_SET_URI"
+        f"{version_name} is required with {uri_name}"
       )
+
+    if authenticated and "@" not in urlsplit(configured_uri).netloc:
+      raise CapabilityError(f"{uri_name} must include authentication credentials")
 
     yield environment
     return
@@ -1374,12 +1393,19 @@ def replica_set_environment(
   with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-rs-") as directory:
     root = Path(directory)
     processes: list[subprocess.Popen[bytes]] = []
+    key_file = root / "replica-set-key"
+
+    if authenticated:
+      key_file.write_text(
+        "bHVhLW1vbmdvZGItZHJpdmVyLXVuaWZpZWQtdGVzdC1rZXk=\n",
+        encoding="utf-8",
+      )
+      key_file.chmod(0o600)
 
     for index, port in enumerate(ports):
       database_path = root / f"db-{index}"
       database_path.mkdir()
-      processes.append(subprocess.Popen(
-        [
+      command = [
           executable,
           "--bind_ip", "127.0.0.1",
           "--dbpath", str(database_path),
@@ -1389,7 +1415,13 @@ def replica_set_environment(
           "--quiet",
           "--replSet", set_name,
           "--setParameter", "enableTestCommands=1",
-        ],
+      ]
+
+      if authenticated:
+        command.extend(["--auth", "--keyFile", str(key_file)])
+
+      processes.append(subprocess.Popen(
+        command,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
       ))
@@ -1467,11 +1499,42 @@ def replica_set_environment(
         raise CapabilityError("ephemeral replica set did not elect a primary")
 
       seed_list = ",".join(f"127.0.0.1:{port}" for port in ports)
-      environment["MONGODB_UNIFIED_REPLICA_SET_URI"] = (
+      uri = (
         f"mongodb://{seed_list}/?replicaSet={set_name}"
         "&serverSelectionTimeoutMS=5000&heartbeatFrequencyMS=500"
       )
-      environment["MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"] = version
+
+      if authenticated:
+        username = "lua_mongodb_unified"
+        password = "lua_mongodb_unified_password"
+        create_user = subprocess.run(
+          [
+            shell,
+            f"{direct_uri}/admin",
+            "--quiet",
+            "--eval",
+            (
+              'db.createUser({user:"' + username + '",pwd:"' + password
+              + '",roles:[{role:"root",db:"admin"}]})'
+            ),
+          ],
+          capture_output=True,
+          text=True,
+        )
+
+        if create_user.returncode != 0:
+          raise CapabilityError(
+            "could not create ephemeral authenticated replica-set user: "
+            + (create_user.stderr or create_user.stdout).strip()
+          )
+
+        uri = (
+          f"mongodb://{username}:{password}@{seed_list}/admin?replicaSet={set_name}"
+          "&serverSelectionTimeoutMS=5000&heartbeatFrequencyMS=500"
+        )
+
+      environment[uri_name] = uri
+      environment[version_name] = version
       environment["MONGODB_UNIFIED_TEST_COMMANDS"] = "1"
       yield environment
     finally:
@@ -1758,6 +1821,34 @@ def main(argv: list[str] | None = None) -> int:
         for batch in authenticated_batches:
           execution_results.update(execute_batch(batch, authenticated_environment))
 
+    authenticated_replica_set_batches = [
+      batch
+      for batch in batches
+      if registry.get(batch[0]["id"], {}).get("environment")
+        == AUTHENTICATED_REPLICA_SET_ENVIRONMENT
+    ]
+
+    if authenticated_replica_set_batches:
+      authenticated_replica_set_classifications = [
+        classification
+        for batch in authenticated_replica_set_batches
+        for classification in batch
+      ]
+
+      with ExitStack() as authenticated_resources:
+        with timings.observe_environment(AUTHENTICATED_REPLICA_SET_ENVIRONMENT):
+          authenticated_environment = authenticated_resources.enter_context(
+            replica_set_environment(
+              authenticated_replica_set_classifications,
+              registry,
+              os.environ.copy(),
+              authenticated=True,
+            )
+          )
+
+        for batch in authenticated_replica_set_batches:
+          execution_results.update(execute_batch(batch, authenticated_environment))
+
     for batch in batches:
       entry = registry.get(batch[0]["id"], {})
 
@@ -1806,6 +1897,7 @@ def main(argv: list[str] | None = None) -> int:
       for batch in batches
       if registry.get(batch[0]["id"], {}).get("environment") not in {
         "isolated-replicaset",
+        AUTHENTICATED_REPLICA_SET_ENVIRONMENT,
         AUTHENTICATED_STANDALONE_ENVIRONMENT,
       }
     }
@@ -1848,6 +1940,7 @@ def main(argv: list[str] | None = None) -> int:
 
         if entry.get("environment") not in {
           "isolated-replicaset",
+          AUTHENTICATED_REPLICA_SET_ENVIRONMENT,
           AUTHENTICATED_STANDALONE_ENVIRONMENT,
         }:
           execution_results.update(execute_batch(batch, environment))

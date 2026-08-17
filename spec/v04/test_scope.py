@@ -117,6 +117,60 @@ class V04ScopeTests(unittest.TestCase):
       ),
     )
 
+  def test_exact_execution_combines_mutually_exclusive_server_versions(
+    self,
+  ) -> None:
+    identity = "index-management/tests/index-rawdata.json::test[2]"
+    cases = {
+      identity: {
+        "runner": "spec/unified/execute.lua",
+        "status": "passed",
+      },
+    }
+    ratchets = {"classified": 1, "passed": 1, "runnable": 1}
+    supplemental = self.exact_report(identity)
+    supplemental["ratchets"] = {
+      "classified": 0,
+      "passed": 0,
+      "runnable": 0,
+    }
+
+    self.assertEqual(
+      {"passed": 1, "required": 1},
+      scope.validate_execution(
+        cases,
+        [
+          self.exact_report(identity, "environment_skipped"),
+          supplemental,
+        ],
+        ratchets,
+      ),
+    )
+
+  def test_exact_execution_does_not_mask_a_failed_version(self) -> None:
+    identity = "transactions/tests/unified/pin-mongos.json::test[1]"
+    cases = {
+      identity: {
+        "runner": "spec/unified/execute.lua",
+        "status": "passed",
+      },
+    }
+    ratchets = {"classified": 1, "passed": 1, "runnable": 1}
+
+    with self.assertRaisesRegex(scope.ScopeError, "unknown unified operation"):
+      scope.validate_execution(
+        cases,
+        [
+          self.exact_report(identity),
+          self.exact_report(
+            identity,
+            "failed",
+            "unknown unified operation: futureWrite",
+          ),
+        ],
+        ratchets,
+      )
+
   def test_generated_scope_defines_the_requested_parity_boundary(self) -> None:
     generated = scope.generate()
     committed = json.loads(scope.OUTPUT.read_text(encoding="utf-8"))
@@ -138,14 +192,9 @@ class V04ScopeTests(unittest.TestCase):
       {"passed": 48, "excluded": 1},
       generated["suites"]["read-write-concern"],
     )
+    self.assertEqual(6, len(generated["target_version_exclusions"]))
     self.assertEqual(
-      {
-        "read-write-concern/tests/operation/"
-        "default-write-concern-3.4.json::test[4]": (
-          "legacy mapReduce concern behavior requires MongoDB 3.4, below "
-          "the v0.4 MongoDB 7.0 compatibility floor"
-        ),
-      },
+      scope.TARGET_VERSION_EXCLUSIONS,
       generated["target_version_exclusions"],
     )
 

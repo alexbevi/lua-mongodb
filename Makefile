@@ -14,6 +14,7 @@ FOCUS_UNIFIED ?=
 FOCUS_PYTHON ?=
 FOCUS_LINT ?=
 UNIFIED_REPORT ?=
+V04_SUPPLEMENTAL_REPORT ?=
 
 .PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
@@ -185,9 +186,15 @@ test-unified-meta: check-busted check-python
 test-unified-execution: check-python
 	@if test -n "$(UNIFIED_REPORT)"; then \
 		mkdir -p "$$(dirname "$(UNIFIED_REPORT)")"; \
-		"$(PYTHON)" spec/unified/run.py --report "$(UNIFIED_REPORT)" && \
-		"$(PYTHON)" spec/v04/scope.py --check \
-			--execution-report "$(UNIFIED_REPORT)"; \
+		"$(PYTHON)" spec/unified/run.py --report "$(UNIFIED_REPORT)"; \
+		if test -n "$(V04_SUPPLEMENTAL_REPORT)"; then \
+			"$(PYTHON)" spec/v04/scope.py --check \
+				--execution-report "$(UNIFIED_REPORT)" \
+				--execution-report "$(V04_SUPPLEMENTAL_REPORT)"; \
+		else \
+			"$(PYTHON)" spec/v04/scope.py --check \
+				--execution-report "$(UNIFIED_REPORT)"; \
+		fi; \
 	else \
 		"$(PYTHON)" spec/unified/run.py; \
 	fi

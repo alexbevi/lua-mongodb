@@ -220,6 +220,27 @@ class ConformanceLedgerTests(unittest.TestCase):
       [case["required_environment"] for case in interrupted_pool_cases],
     )
 
+    authenticated_min_pool = generated["cases"][
+      "server-discovery-and-monitoring/tests/unified/"
+      "pool-clear-min-pool-size-error.json::test[1]"
+    ]
+    self.assertEqual(
+      "live-authenticated-standalone",
+      authenticated_min_pool["required_environment"],
+    )
+
+    authenticated_transaction_controls = [
+      generated["cases"][
+        "transactions/tests/unified/"
+        f"retryable-{operation}-handshake.json::test[1]"
+      ]
+      for operation in ("abort", "commit")
+    ]
+    self.assertEqual(
+      ["live-authenticated-replicaset"] * 2,
+      [case["required_environment"] for case in authenticated_transaction_controls],
+    )
+
     snapshot_transaction = generated["cases"][
       "sessions/tests/snapshot-sessions.json::test[8]"
     ]

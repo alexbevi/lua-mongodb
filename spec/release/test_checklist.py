@@ -33,7 +33,7 @@ class ReleaseChecklistTests(unittest.TestCase):
         "exact_unified_cases": 355,
         "passed_cases": 851,
         "read_write_concern_passed": 48,
-        "target_version_exclusions": 1,
+        "target_version_exclusions": 6,
       },
       report["gates"]["v0_4_conformance"],
     )
@@ -61,6 +61,7 @@ class ReleaseChecklistTests(unittest.TestCase):
         "full-linux-aggregate",
         "full-linux-quality",
         "full-linux-unified",
+        "full-linux-version-branches",
         "full-macos",
       ],
       report["gates"]["ci"],

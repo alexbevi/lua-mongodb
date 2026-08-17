@@ -215,6 +215,7 @@ def generate() -> dict[str, Any]:
   for expected in (
     "linux-quality:",
     "linux-unified:",
+    "linux-version-branches:",
     "linux-aggregate:",
     "macos:",
     "compatibility:",
@@ -222,6 +223,7 @@ def generate() -> dict[str, Any]:
     "make check-fast test-coverage",
     "spec/v04/scope.py",
     "--execution-report build/conformance/unified.json",
+    "unified-pre-8.2.json",
   ):
     require_text(full_workflow, expected)
 
@@ -234,6 +236,7 @@ def generate() -> dict[str, Any]:
         "full-linux-aggregate",
         "full-linux-quality",
         "full-linux-unified",
+        "full-linux-version-branches",
         "full-macos",
       ],
       "compatibility": {
