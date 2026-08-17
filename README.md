@@ -219,7 +219,26 @@ for user in cursor:iter() do
 end
 ```
 
-### Search Indexes
+### Index Management
+
+`collection:create_index` creates one index from an ordered key document and returns its name. Use `mongodb.index_model` with `collection:create_indexes` to create several indexes together; `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Key directions may be ascending (`1`), descending (`-1`), `text`, `hashed`, `2d`, `2dsphere`, or `geoHaystack`.
+
+MongoDB's [index properties guide](https://www.mongodb.com/docs/manual/core/indexes/index-properties/) covers case-insensitive, hidden, partial, sparse, TTL, and unique indexes. Configure those properties with `collation`, `hidden`, `partial_filter_expression`, `sparse`, `expire_after_seconds`, and `unique`, respectively. Not every property is compatible with every index type; MongoDB validates the final combination.
+
+This example creates a case-insensitive unique index only for active users:
+
+```lua
+local email_index = assert(users:create_index(doc({ { "email", 1 } }), {
+  name = "active_email_unique",
+  unique = true,
+  partial_filter_expression = doc({ { "active", true } }),
+  collation = doc({ { "locale", "en" }, { "strength", 2 } }),
+}))
+
+print(email_index)
+```
+
+#### Search Indexes
 
 `collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. `collection:update_search_index` replaces the definition of a named Search index, and `collection:drop_search_index` idempotently removes one by name. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
 
