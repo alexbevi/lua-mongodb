@@ -20,7 +20,7 @@ permissions:
   contents: read
 
 env:
-  FULL_CONFORMANCE_MONGODB_VERSION: "8.0.16"
+  FULL_CONFORMANCE_MONGODB_VERSION: "8.2.0"
 
 jobs:
   linux-quality:

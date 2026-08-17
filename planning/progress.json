@@ -4557,19 +4557,21 @@
           "phase": "red",
           "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_unified_pins_the_server_patch_while_compatibility_moves'",
           "exit_code": 2,
-          "summary": "Full Conformance did not pin the known-good MongoDB 8.0.16 patch while the moving compatibility matrix remained 7.0/8.0/8.2; MongoDB 8.0.29 reproduced SERVER-128517 failures in interruptInUse cases 2 and 3.",
-          "recorded_at": "2026-08-17T17:41:38+00:00"
+          "summary": "The workflow still pinned MongoDB 8.0.16, which environment-skips the required index-management rawData target; the portability contract requires tested MongoDB 8.2.0.",
+          "recorded_at": "2026-08-17T19:12:35+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json'; Ruby workflow YAML parse; git diff --check",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'; MongoDB 8.2.0 make test-focus FOCUS_UNIFIED='index-management/tests/index-rawdata.json'; MongoDB 8.2.0 make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json'; Ruby YAML parse; git diff --check",
           "exit_code": 0,
-          "summary": "All 11 CI portability contracts passed; MongoDB 8.0.16 executed all 3 interruptInUse cases with 3 passed, 0 failed, 0 environment-skipped, and 0 deferred; workflow YAML and diff validation passed. Full Conformance is fixed at 8.0.16 while all nine moving 7.0/8.0/8.2 compatibility rows remain configured.",
-          "recorded_at": "2026-08-17T17:43:52+00:00"
+          "summary": "11 workflow contracts passed; rawData index fixture executed 1/1 applicable case with 1 version-opposite environment skip; interrupt fixture executed and passed 3/3 with 0 skipped/deferred/failed; YAML and diff validators passed.",
+          "recorded_at": "2026-08-17T19:14:04+00:00"
         }
       ],
       "notes": [
-        "Requeued: Required Full Conformance exposed SERVER-128517-affected interruptInUse failures on MongoDB 8.0.29; reopen the conformance slice to pin its fixture server while retaining moving compatibility rows."
+        "Requeued: Required Full Conformance exposed SERVER-128517-affected interruptInUse failures on MongoDB 8.0.29; reopen the conformance slice to pin its fixture server while retaining moving compatibility rows.",
+        "Requeued: Full Conformance 32052667182 showed the 8.0.16 repair environment-skips the required index rawData target; MongoDB 8.2.0 is required to satisfy both rawData and interrupt-in-use exact cases.",
+        "Requeued: Full Conformance 32052667182 showed the 8.0.16 repair environment-skips the required index rawData target; MongoDB 8.2.0 is required to satisfy both rawData and interrupt-in-use exact cases."
       ],
       "reopen_history": [
         {
@@ -4590,11 +4592,30 @@
               "recorded_at": "2026-08-17T15:08:31+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-17T17:43:53+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_unified_pins_the_server_patch_while_compatibility_moves'",
+              "exit_code": 2,
+              "summary": "Full Conformance did not pin the known-good MongoDB 8.0.16 patch while the moving compatibility matrix remained 7.0/8.0/8.2; MongoDB 8.0.29 reproduced SERVER-128517 failures in interruptInUse cases 2 and 3.",
+              "recorded_at": "2026-08-17T17:41:38+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/interruptInUse-pool-clear.json'; Ruby workflow YAML parse; git diff --check",
+              "exit_code": 0,
+              "summary": "All 11 CI portability contracts passed; MongoDB 8.0.16 executed all 3 interruptInUse cases with 3 passed, 0 failed, 0 environment-skipped, and 0 deferred; workflow YAML and diff validation passed. Full Conformance is fixed at 8.0.16 while all nine moving 7.0/8.0/8.2 compatibility rows remain configured.",
+              "recorded_at": "2026-08-17T17:43:52+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "f6a6450acc5ffb83ac66f0207880ca691cc705eb",
-      "started_at": "2026-08-17T17:41:37+00:00",
-      "completed_at": "2026-08-17T17:43:53+00:00"
+      "reopened_after_commit": "b231b00e08860bddd4e192b212595445c9e8b93e",
+      "started_at": "2026-08-17T19:12:16+00:00",
+      "completed_at": "2026-08-17T19:14:08+00:00"
     }
   },
   "verified_references": {

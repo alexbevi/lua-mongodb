@@ -71,7 +71,7 @@ class CiPortabilityTests(unittest.TestCase):
   def test_full_unified_pins_the_server_patch_while_compatibility_moves(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
 
-    self.assertIn('FULL_CONFORMANCE_MONGODB_VERSION: "8.0.16"', workflow)
+    self.assertIn('FULL_CONFORMANCE_MONGODB_VERSION: "8.2.0"', workflow)
     self.assertIn(
       "mongodb-linux-x86_64-ubuntu2404-${FULL_CONFORMANCE_MONGODB_VERSION}.tgz",
       workflow,
