@@ -19,13 +19,12 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(789, generated["summary"]["passed"])
-    self.assertEqual(62, generated["summary"]["planned"])
+    self.assertEqual(793, generated["summary"]["passed"])
+    self.assertEqual(58, generated["summary"]["planned"])
     self.assertEqual(47, generated["summary"]["excluded"])
     self.assertEqual(851, generated["summary"]["supported"])
     self.assertEqual(
       {
-        "TXN-005": 4,
         "TXN-006": 20,
         "TXN-007": 38,
       },

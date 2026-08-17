@@ -4284,7 +4284,7 @@
       "completed_at": "2026-08-16T23:45:09+00:00"
     },
     "TXN-005": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -4292,11 +4292,34 @@
           "exit_code": 2,
           "summary": "The defining recovery-token test errored because sessions had no boundary to append the cached token to commit or abort commands.",
           "recorded_at": "2026-08-16T23:49:16+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua --filter=forwards.the.latest.recovery.token.to.transaction.control'",
+          "exit_code": 2,
+          "summary": "The restarted defining test errors because sessions do not yet capture or append the latest recoveryToken to transaction control commands.",
+          "recorded_at": "2026-08-17T00:06:12+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua --filter=forwards.the.latest.recovery.token.to.transaction.control'",
+          "exit_code": 2,
+          "summary": "The behavior-level test fails because a successful active-transaction response does not cache recoveryToken and transaction decoration therefore omits it from commitTransaction.",
+          "recorded_at": "2026-08-17T00:07:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/session_fixtures_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='transactions/tests/unified/mongos-recovery-token*.json' FOCUS_PYTHON='spec/unified/test_cli.py spec/conformance/test_ledger.py spec/v04/test_scope.py' FOCUS_LINT='src/mongodb/session.lua spec/support/mongodb/unified/driver.lua spec/unit/session_spec.lua spec/unit/unified_driver_spec.lua'; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused green: 34 Lua session/adapter tests passed; all 4 recovery-token unified cases executed and passed with 0 skips, deferrals, or failures; 86 capability/conformance/v0.4 Python tests passed; touched Lua lint had 0 warnings/errors; complexity and all generated capability, ledger, v0.4, release, checklist, and README validators passed.",
+          "recorded_at": "2026-08-17T00:34:38+00:00"
         }
       ],
       "notes": [
         "Requeued: Move pin-mongos cases 8-9 to TXN-007 because they also require transient application-operation unpinning."
-      ]
+      ],
+      "started_at": "2026-08-17T00:05:32+00:00",
+      "completed_at": "2026-08-17T00:35:00+00:00"
     }
   },
   "verified_references": {

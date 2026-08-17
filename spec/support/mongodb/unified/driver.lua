@@ -541,6 +541,19 @@ local function session_factory(state)
     session, err = client:start_session(options)
 
     if session then
+      if state.initial_cluster_time ~= nil then
+        local advanced
+
+        advanced, err = session:advance_cluster_time(
+          state.initial_cluster_time
+        )
+
+        if not advanced then
+          session:end_session()
+          return nil, err
+        end
+      end
+
       state.session_clients[session] = client
     end
 
@@ -1973,7 +1986,7 @@ local function bulk_result(value)
   return bson.document(entries)
 end
 
-local function internal_client_adapter(client)
+local function internal_client_adapter(client, state)
   local adapter = {}
 
   function adapter.setup_initial_data(_, initial_data)
@@ -2036,6 +2049,23 @@ local function internal_client_adapter(client)
       end
     end
 
+    local admin, err = client:database("admin")
+
+    if not admin then
+      return nil, err
+    end
+
+    local response
+    response, err = admin:run_command(
+      bson.document({ { "ping", 1 } }),
+      { monitor = false }
+    )
+
+    if not response then
+      return nil, err
+    end
+
+    state.initial_cluster_time = response:get("$clusterTime")
     return true
   end
 
@@ -2127,6 +2157,7 @@ function M.new(options)
   local state = {
     collectors = setmetatable({}, { __mode = "k" }),
     environment_topology = options.environment and options.environment.topology,
+    initial_cluster_time = nil,
     internal_client = internal_client,
     multiple_mongos_uri = options.multiple_mongos_uri,
     oidc_callback = options.oidc_callback,
@@ -2136,9 +2167,10 @@ function M.new(options)
   }
   local failpoint_handler = failpoints.new({
     cleanup_database = function()
-      local cleanup_client, cleanup_err = client_module.connect(state.uri, {
-        runtime = state.runtime,
-      })
+      local cleanup_client, cleanup_err = client_module.connect(
+        state.multiple_mongos_uri or state.uri,
+        { pool_listeners = {}, runtime = state.runtime }
+      )
 
       if not cleanup_client then
         return nil, cleanup_err
@@ -2176,7 +2208,7 @@ function M.new(options)
       database = database_factory,
       session = session_factory(state),
     },
-    internal_client = internal_client_adapter(internal_client),
+    internal_client = internal_client_adapter(internal_client, state),
     operations = {
       client = {
         appendMetadata = {

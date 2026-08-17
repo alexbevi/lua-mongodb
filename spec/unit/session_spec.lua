@@ -726,6 +726,58 @@ describe("client sessions", function()
     assert.is_false(session:is_pinned())
   end)
 
+  it("forwards the latest recovery token to transaction control", function()
+    local transaction_command
+    local sessions
+
+    sessions = new_session_manager({
+      id_factory = identifiers(),
+      timeout_minutes = 30,
+      transaction_command = function(session, name)
+        transaction_command = assert(sessions:decorate(
+          bson.document({ { name, 1 } }),
+          { session = session, transaction_control = true }
+        ))
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+    local first_token = bson.document({ { "shard", "a" } })
+    local latest_token = bson.document({ { "shard", "b" } })
+    local failed_token = bson.document({ { "shard", "ignored" } })
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(sessions:advance(bson.document({
+      { "ok", 1 },
+      { "recoveryToken", first_token },
+    }), session))
+    assert(sessions:advance(bson.document({
+      { "ok", 1 },
+      { "recoveryToken", latest_token },
+    }), session))
+    assert(sessions:advance(bson.document({
+      { "ok", 0 },
+      { "recoveryToken", failed_token },
+    }), session))
+    assert(session:commit_transaction())
+    local forwarded_token = transaction_command:get("recoveryToken")
+
+    assert.is_not_nil(forwarded_token)
+    assert.are.equal(latest_token, forwarded_token)
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:abort_transaction())
+    assert.is_nil(transaction_command:get("recoveryToken"))
+  end)
+
   it("rejects transactions on snapshot sessions", function()
     local transaction_commands = 0
     local sessions = new_session_manager({

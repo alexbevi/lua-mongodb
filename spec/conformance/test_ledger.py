@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1755,
+      "deferred_unsupported": 1751,
       "excluded_scope": 2,
-      "passed": 3767,
+      "passed": 3771,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][

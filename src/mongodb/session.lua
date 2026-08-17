@@ -941,6 +941,13 @@ local function append_transaction_fields(entries, context, session_state, measur
   }
   entries[#entries + 1] = { "autocommit", false }
 
+  if context.transaction_control and transaction.recovery_token ~= nil then
+    entries[#entries + 1] = {
+      "recoveryToken",
+      transaction.recovery_token,
+    }
+  end
+
   if not context.starting_transaction then
     return
   end
@@ -1086,6 +1093,21 @@ function MANAGER_METHODS:advance(response, session)
 
   if session then
     advance_snapshot_time(response, session)
+
+    local ok = response:get("ok")
+
+    if bson.is_exact(ok) then
+      ok = ok:to_number()
+    end
+
+    local session_state = SESSION_STATES[session]
+    local recovery_token = response:get("recoveryToken")
+
+    if ok == 1 and transaction_active(session_state.transaction)
+        and bson.is_document(recovery_token)
+    then
+      session_state.transaction.recovery_token = recovery_token
+    end
   end
 
   return true

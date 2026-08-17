@@ -586,14 +586,14 @@ TEST_OVERRIDES["transactions/tests/unified/count.json::test[1]"] = (
   "legacy count is outside the v1 public API",
 )
 
-for fixture, count, owner in (
-  ("mongos-recovery-token-errorLabels", 1, "TXN-005"),
-  ("mongos-recovery-token", 3, "TXN-005"),
+for fixture, count in (
+  ("mongos-recovery-token-errorLabels", 1),
+  ("mongos-recovery-token", 3),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
-    ] = (owner, OWNER_REASONS[owner])
+    ] = ("TXN-005", None)
 
 for index in range(1, 8):
   TEST_OVERRIDES[

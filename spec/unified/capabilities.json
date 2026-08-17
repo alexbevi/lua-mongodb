@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1483,
-    "runnable": 1483
+    "passed": 1487,
+    "runnable": 1487
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -80171,7 +80171,6 @@
     "transactions/tests/unified/mongos-recovery-token-errorLabels.json::test[1]": {
       "activity": "TXN-005",
       "fingerprint": "7447c4f5c224d571ead6663256110e372679abc723f46e626d8c345ab7f3c720",
-      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -80208,12 +80207,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-recovery-token.json::test[1]": {
       "activity": "TXN-005",
       "fingerprint": "5631177e737c3130007893e50b06c2f7307ea5a272c5fcc7879fc6e784a0e8f5",
-      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -80246,12 +80244,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-recovery-token.json::test[2]": {
       "activity": "TXN-005",
       "fingerprint": "5fe21d66152eaeff2b02b92540b93196c1bef195cdb111b696e093d5134d8743",
-      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -80290,12 +80287,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-recovery-token.json::test[3]": {
       "activity": "TXN-005",
       "fingerprint": "e05fcabc6fb505cfcbbd7de41f6d12251ee0c3a6e6b16c79a0e6df5e51c1ebd9",
-      "reason": "sharded transaction recovery tokens await the v0.4 transaction slice",
       "requirements": {
         "arguments": [
           "insertOne.document",
@@ -80332,7 +80328,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-unpin.json::test[1]": {
       "activity": "TXN-004",

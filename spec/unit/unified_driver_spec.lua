@@ -15,9 +15,18 @@ local function with_fake_client(callback)
   local saved_driver = package.loaded["mongodb.unified.driver"]
   local connections = {}
   local client_module = {}
+  local cluster_time = document({
+    { "clusterTime", bson.timestamp(9, 4) },
+    { "signature", document({}) },
+  })
 
-  function client_module.connect(_, options)
-    local client = { closed = false, options = options, sessions = {} }
+  function client_module.connect(uri, options)
+    local client = {
+      closed = false,
+      options = options,
+      sessions = {},
+      uri = uri,
+    }
     local listener = options.sdam_listeners and options.sdam_listeners[1]
 
     connections[#connections + 1] = client
@@ -73,8 +82,59 @@ local function with_fake_client(callback)
         return session.snapshot_time
       end
 
+      function session.get_pinned_server_address()
+        return "b:27017"
+      end
+
+      function session.advance_cluster_time(_, value)
+        session.cluster_time = value
+        return true
+      end
+
       self.sessions[#self.sessions + 1] = session
       return session
+    end
+
+    function client.database(_, name)
+      local database = {}
+
+      function database.drop_collection()
+        return true
+      end
+
+      function database.create_collection()
+        return true
+      end
+
+      function database.collection()
+        return {
+          insert_many = function()
+            return true
+          end,
+        }
+      end
+
+      function database.run_command(_, command, command_options)
+        assert.are.equal("admin", name)
+
+        if command:get("configureFailPoint") ~= nil then
+          if command_options.on_server_selected then
+            command_options.on_server_selected(
+              command_options.server_address or "b:27017"
+            )
+          end
+
+          return document({ { "ok", 1 } })
+        end
+
+        assert.are.equal(1, command:get("ping"))
+        return document({
+          { "ok", 1 },
+          { "$clusterTime", cluster_time },
+        })
+      end
+
+      return database
     end
 
     return client
@@ -83,7 +143,7 @@ local function with_fake_client(callback)
   package.loaded["mongodb.client"] = client_module
   package.loaded["mongodb.unified.driver"] = nil
   local outcome = table.pack(pcall(function()
-    callback(require("mongodb.unified.driver"), connections)
+    callback(require("mongodb.unified.driver"), connections, cluster_time)
   end))
 
   package.loaded["mongodb.unified.driver"] = saved_driver
@@ -95,6 +155,100 @@ local function with_fake_client(callback)
 end
 
 describe("unified driver lifecycle events", function()
+  it("cleans targeted failpoints through the multiple-mongos URI", function()
+    with_fake_client(function(driver, connections)
+      local multiple_mongos_uri = "mongodb://a:27017,b:27017"
+      local lifecycle = assert(driver.new({
+        environment = { topology = "sharded" },
+        multiple_mongos_uri = multiple_mongos_uri,
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({
+              { "id", "client0" },
+              { "useMultipleMongoses", true },
+            }) },
+          }),
+          document({
+            { "session", document({
+              { "id", "session0" },
+              { "client", "client0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Targeted cleanup" },
+            { "operations", array({
+              document({
+                { "name", "targetedFailPoint" },
+                { "object", "testRunner" },
+                { "arguments", document({
+                  { "session", "session0" },
+                  { "failPoint", document({
+                    { "configureFailPoint", "failCommand" },
+                    { "mode", document({ { "times", 1 } }) },
+                  }) },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "targeted-cleanup.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal(multiple_mongos_uri, connections[3].uri)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("advances sessions to the sharded initial-data cluster time", function()
+    with_fake_client(function(driver, connections, cluster_time)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "sharded" },
+        multiple_mongos_uri = "mongodb://a:27017,b:27017",
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "initialData", array({
+          document({
+            { "collectionName", "test" },
+            { "databaseName", "transaction-tests" },
+            { "documents", array({}) },
+          }),
+        }) },
+        { "createEntities", array({
+          document({
+            { "client", document({
+              { "id", "client0" },
+              { "useMultipleMongoses", true },
+            }) },
+          }),
+          document({
+            { "session", document({
+              { "id", "session0" },
+              { "client", "client0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Sharded transaction setup" },
+            { "operations", array({}) },
+          }),
+        }) },
+      }), "sharded-transaction.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal(cluster_time, connections[2].sessions[1].cluster_time)
+      assert(lifecycle:close())
+    end)
+  end)
+
   it("forwards monitor timing URI options", function()
     with_fake_client(function(driver, connections)
       local lifecycle = assert(driver.new({
