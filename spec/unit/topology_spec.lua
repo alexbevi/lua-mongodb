@@ -756,6 +756,113 @@ describe("monitored topology", function()
     assert(commands:close())
   end)
 
+  it("routes enumeration commands through every required topology role", function()
+    local cases = {
+      {
+        address = "standalone:27017",
+        hello = bson.document({
+          { "ok", 1 },
+          { "isWritablePrimary", true },
+          { "maxWireVersion", 25 },
+        }),
+        name = "standalone",
+        topology_type = "Single",
+      },
+      {
+        address = "primary:27017",
+        hello = bson.document({
+          { "ok", 1 },
+          { "isWritablePrimary", true },
+          { "setName", "rs" },
+          { "hosts", bson.array({ "primary:27017" }) },
+          { "maxWireVersion", 25 },
+        }),
+        name = "replica-set primary",
+        set_name = "rs",
+        topology_type = "ReplicaSetNoPrimary",
+      },
+      {
+        address = "secondary:27017",
+        hello = bson.document({
+          { "ok", 1 },
+          { "isWritablePrimary", false },
+          { "secondary", true },
+          { "setName", "rs" },
+          { "hosts", bson.array({ "secondary:27017" }) },
+          { "maxWireVersion", 25 },
+        }),
+        name = "direct replica-set secondary",
+        topology_type = "Single",
+      },
+      {
+        address = "mongos:27017",
+        hello = bson.document({
+          { "ok", 1 },
+          { "msg", "isdbgrid" },
+          { "maxWireVersion", 25 },
+        }),
+        name = "mongos",
+        topology_type = "Unknown",
+      },
+    }
+
+    for _, case in ipairs(cases) do
+      local runtime = fake_runtime.new()
+      local selected_addresses = {}
+      local manager = topology.new({
+        pool_factory = function(address)
+          return pool.new({
+            address = address,
+            connect = function()
+              return {
+                close = function() return true end,
+                command = function()
+                  selected_addresses[#selected_addresses + 1] = address
+                  return bson.document({ { "ok", 1 } })
+                end,
+              }
+            end,
+            runtime = runtime,
+          })
+        end,
+        runtime = runtime,
+        seeds = { case.address },
+        set_name = case.set_name,
+        type = case.topology_type,
+      })
+
+      assert(manager:open({ background = false }), case.name)
+      assert(manager:process_hello(case.address, case.hello, {
+        duration = 0.001,
+      }), case.name)
+      local commands = topology_executor.new(manager, {
+        read_preference = {
+          max_staleness_seconds = -1,
+          mode = "secondary",
+          tag_sets = { {} },
+        },
+      })
+      local primary = {
+        max_staleness_seconds = -1,
+        mode = "primary",
+        tag_sets = { {} },
+      }
+
+      assert(commands:command(
+        "admin",
+        bson.document({ { "listDatabases", 1 } }),
+        { read_preference = primary }
+      ), case.name)
+      assert(commands:command(
+        "app",
+        bson.document({ { "listCollections", 1 } }),
+        { read_preference = primary }
+      ), case.name)
+      assert.same({ case.address, case.address }, selected_addresses, case.name)
+      assert(commands:close(), case.name)
+    end
+  end)
+
   it("starts socket timeouts after topology checkout", function()
     local runtime = fake_runtime.new({ now = 10 })
     local received_deadline

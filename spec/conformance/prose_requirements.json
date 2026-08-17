@@ -96,19 +96,19 @@
     },
     "enumerate-collections/enumerate-collections.md": {
       "activity": "ENUM-001",
-      "last_execution": null,
-      "reason": "Collection enumeration exists, but its standalone, replica-set primary/secondary, and mongos routing matrix is not yet recorded.",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua'",
+      "reason": "Deterministic admin and topology vectors verify primary selection plus standalone, replica-set primary, directly connected replica-set secondary, and mongos routing.",
       "required_environment": "deterministic-runtime",
-      "runner": "pending:ENUM-001",
-      "status": "deferred_unsupported"
+      "runner": "spec/unit/topology_spec.lua",
+      "status": "passed"
     },
     "enumerate-databases/enumerate-databases.md": {
       "activity": "ENUM-001",
-      "last_execution": null,
-      "reason": "Database enumeration exists, but its standalone, replica-set primary/secondary, and mongos routing matrix is not yet recorded.",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua'",
+      "reason": "Deterministic admin and topology vectors verify primary selection plus standalone, replica-set primary, directly connected replica-set secondary, and mongos routing.",
       "required_environment": "deterministic-runtime",
-      "runner": "pending:ENUM-001",
-      "status": "deferred_unsupported"
+      "runner": "spec/unit/topology_spec.lua",
+      "status": "passed"
     },
     "extended-json/extended-json.md": {
       "activity": "UTF-001",

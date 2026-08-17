@@ -4439,6 +4439,28 @@
       "notes": [],
       "started_at": "2026-08-17T01:19:23+00:00",
       "completed_at": "2026-08-17T01:24:08+00:00"
+    },
+    "ENUM-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/topology_spec.lua'",
+          "exit_code": 2,
+          "summary": "33 successes and one expected error: both enumeration execution options omitted read_preference, so the primary-selection assertion observed nil.",
+          "recorded_at": "2026-08-17T01:29:34+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua' FOCUS_PYTHON='spec.conformance.test_catalog spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/admin.lua src/mongodb/topology_executor.lua spec/unit/admin_spec.lua spec/unit/topology_spec.lua spec/integration/admin_spec.lua'; catalog/ledger --check; make test-complexity",
+          "exit_code": 0,
+          "summary": "34 unit and one integration test passed across primary-selection and four-role routing; 10 catalog/ledger tests, five-file lint, generated catalog and ledger checks, complexity, and diff checks passed.",
+          "recorded_at": "2026-08-17T01:31:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-17T01:27:23+00:00",
+      "completed_at": "2026-08-17T01:31:53+00:00"
     }
   },
   "verified_references": {

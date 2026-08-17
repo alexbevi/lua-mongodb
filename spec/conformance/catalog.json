@@ -445,28 +445,28 @@
       "activity": "ENUM-001",
       "fingerprint": "18cf64dc3e4c6ad2bd45b24e3f7d1976913bc3e65ff9cbc0d9789c4745bbd35f",
       "format": "prose",
-      "last_execution": null,
-      "reason": "Collection enumeration exists, but its standalone, replica-set primary/secondary, and mongos routing matrix is not yet recorded.",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua'",
+      "reason": "Deterministic admin and topology vectors verify primary selection plus standalone, replica-set primary, directly connected replica-set secondary, and mongos routing.",
       "required_environment": "deterministic-runtime",
-      "runner": "pending:ENUM-001",
+      "runner": "spec/unit/topology_spec.lua",
       "scope": "post-v1",
       "source": "enumerate-collections/enumerate-collections.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "enumerate-collections"
     },
     "enumerate-databases/enumerate-databases.md::document": {
       "activity": "ENUM-001",
       "fingerprint": "290a95dd1e42b1a98e62f9c20aa051722a11b84843b0f939789e2b05d8718283",
       "format": "prose",
-      "last_execution": null,
-      "reason": "Database enumeration exists, but its standalone, replica-set primary/secondary, and mongos routing matrix is not yet recorded.",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua'",
+      "reason": "Deterministic admin and topology vectors verify primary selection plus standalone, replica-set primary, directly connected replica-set secondary, and mongos routing.",
       "required_environment": "deterministic-runtime",
-      "runner": "pending:ENUM-001",
+      "runner": "spec/unit/topology_spec.lua",
       "scope": "post-v1",
       "source": "enumerate-databases/enumerate-databases.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "enumerate-databases"
     },
     "extended-json/extended-json.md::document": {
@@ -948,10 +948,10 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 9,
+      "deferred_unsupported": 7,
       "no_machine_cases": 1,
       "not_applicable": 2,
-      "passed": 9
+      "passed": 11
     },
     "requirements": 21,
     "suites": 50

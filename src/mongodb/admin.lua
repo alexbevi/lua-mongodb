@@ -761,6 +761,7 @@ function M.list_collections(state, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      read_preference = PRIMARY_READ_PREFERENCE,
       retryable_read = true,
       session = options.session,
       session_context = options.session_context,
@@ -832,6 +833,7 @@ function M.list_databases(state, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      read_preference = PRIMARY_READ_PREFERENCE,
       retryable_read = true,
       session = options.session,
     }

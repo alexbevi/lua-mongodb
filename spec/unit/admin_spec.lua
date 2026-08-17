@@ -170,6 +170,35 @@ describe("database and collection management", function()
     assert.are.equal("app", commands[6].database)
   end)
 
+  it("forces database and collection enumeration onto primary selection", function()
+    local executions = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        executions[#executions + 1] = options
+
+        if command:keys()[1] == "listDatabases" then
+          return bson.document({
+            { "ok", 1 },
+            { "databases", bson.array({}) },
+          })
+        end
+
+        return cursor_response("app.$cmd.listCollections", 0, {})
+      end,
+    }
+    local client = api.new_client(executor, config({
+      read_preference = { mode = "secondary" },
+    }))
+
+    assert(client:list_databases())
+    assert(client:database("app"):list_collections())
+    assert.are.equal("primary", executions[1].read_preference.mode)
+    assert.are.equal("primary", executions[2].read_preference.mode)
+  end)
+
   it("creates named index models and manages indexes", function()
     local commands = {}
     local responses = {

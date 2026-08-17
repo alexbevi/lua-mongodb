@@ -149,6 +149,22 @@ class ConformanceCatalogTests(unittest.TestCase):
     self.assertEqual("deferred_unsupported", post_fork["status"])
     self.assertIsNone(post_fork["last_execution"])
 
+  def test_enumeration_requirements_record_the_topology_matrix(self) -> None:
+    requirements = catalog.generate()["requirements"]
+
+    for source in (
+      "enumerate-collections/enumerate-collections.md::document",
+      "enumerate-databases/enumerate-databases.md::document",
+    ):
+      requirement = requirements[source]
+
+      self.assertEqual("ENUM-001", requirement["activity"])
+      self.assertEqual("passed", requirement["status"])
+      self.assertEqual("deterministic-runtime", requirement["required_environment"])
+      self.assertEqual("spec/unit/topology_spec.lua", requirement["runner"])
+      self.assertIn("spec/unit/admin_spec.lua", requirement["last_execution"])
+      self.assertIn("spec/unit/topology_spec.lua", requirement["last_execution"])
+
 
 if __name__ == "__main__":
   unittest.main()
