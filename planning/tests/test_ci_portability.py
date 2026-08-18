@@ -141,6 +141,11 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("uses: actions/download-artifact@v8", workflow)
     self.assertIn("--aggregate build/conformance/shards/*.json", workflow)
     self.assertIn("Validate exact v0.4 conformance evidence", workflow)
+    self.assertIn("Validate exact v0.5 conformance evidence", workflow)
+    self.assertIn(
+      "change-streams-disambiguatedPaths.json::test?1?",
+      workflow,
+    )
     self.assertIn("--execution-report build/conformance/unified.json", workflow)
     self.assertIn(
       "--execution-report build/conformance/version-branches/"
@@ -150,6 +155,14 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn(
       "V04_SUPPLEMENTAL_REPORT=build/conformance/unified-pre-8.2.json",
       workflow,
+    )
+    v05_evidence = workflow[
+      workflow.index("Validate exact v0.5 conformance evidence"):
+      workflow.index("Upload authoritative Linux conformance evidence")
+    ]
+    self.assertIn(
+      "build/conformance/version-branches/unified-pre-8.2.json",
+      v05_evidence,
     )
     self.assertIn("if-no-files-found: error", workflow)
 

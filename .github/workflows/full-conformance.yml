@@ -161,10 +161,11 @@ jobs:
           echo "$mongodb_dir/bin" >> "$GITHUB_PATH"
           "$mongodb_dir/bin/mongod" --version
 
-      - name: Run exact pre-8.2 v0.4 branches
+      - name: Run exact supplemental version branches
         run: >-
           python3 spec/unified/run.py
           --include index-management/tests/index-rawdata.json
+          --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?'
           --report build/conformance/unified-pre-8.2.json
 
       - name: Upload pre-8.2 exact evidence
@@ -207,6 +208,13 @@ jobs:
       - name: Validate exact v0.4 conformance evidence
         run: >-
           python3 spec/v04/scope.py
+          --check
+          --execution-report build/conformance/unified.json
+          --execution-report build/conformance/version-branches/unified-pre-8.2.json
+
+      - name: Validate exact v0.5 conformance evidence
+        run: >-
+          python3 spec/v05/scope.py
           --check
           --execution-report build/conformance/unified.json
           --execution-report build/conformance/version-branches/unified-pre-8.2.json
@@ -273,7 +281,7 @@ jobs:
           "$mongodb_dir/bin/mongod" --version
           "$mongodb_dir/bin/mongos" --version
 
-      - name: Run exact pre-8.2 v0.4 branches
+      - name: Run exact supplemental version branches
         run: |
           case "$(uname -m)" in
             arm64) mongodb_arch=arm64 ;;
@@ -286,6 +294,7 @@ jobs:
             | tar -xz --strip-components=1 -C "$legacy_mongodb_dir"
           PATH="$legacy_mongodb_dir/bin:$PATH" python3 spec/unified/run.py \
             --include index-management/tests/index-rawdata.json \
+            --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' \
             --report build/conformance/unified-pre-8.2.json
 
       - name: Run authoritative full portable and loopback checks

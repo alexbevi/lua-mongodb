@@ -437,7 +437,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
-| Resilience | Retryable reads | 🟡 | 80.5% |
+| Resilience | Retryable reads | 🟡 | 85.3% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
 | Resilience | Client-side operations timeout | 🟡 | 72.9% |
 | Resilience | Sessions | 🟢 | 100.0% |
@@ -448,7 +448,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
-| Programmability | Change streams | 🟡 | 43.8% |
+| Programmability | Change streams | 🟡 | 78.7% |
 | Programmability | GridFS | 🔴 | 0.0% |
 | Programmability | Stable API | 🟡 | 92.7% |
 | Programmability | Client-side encryption | 🔴 | 0.0% |

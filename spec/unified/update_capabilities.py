@@ -277,6 +277,14 @@ for index in (2, 4, 5):
     f"change-streams/tests/unified/change-streams.json::test[{index}]"
   ] = ("CS-001", None)
 
+for index in (3, 6):
+  TEST_OVERRIDES[
+    f"change-streams/tests/unified/change-streams.json::test[{index}]"
+  ] = (
+    "ADV-011",
+    "the change-stream comment fixture is capped below MongoDB 4.4",
+  )
+
 for index in range(2, 18):
   TEST_OVERRIDES[
     "change-streams/tests/unified/"
@@ -469,7 +477,7 @@ for index in (13, 14):
   ] = ("CS-006", OWNER_REASONS["CS-006"])
 
 for identity, value in EXECUTOR_TESTS.items():
-  if value["activity"] in {"CS-006", "CS-007", "CS-008"}:
+  if value["activity"] in {"CS-006", "CS-007", "CS-008", "REL-051"}:
     TEST_OVERRIDES[identity] = (value["activity"], None)
 
 for index in (13, 14, 24, 25, 50, 51):
@@ -479,11 +487,6 @@ for index in (13, 14, 24, 25, 50, 51):
     "ADV-002",
     "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
   )
-
-for index in (31, 32):
-  TEST_OVERRIDES[
-    f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("REL-051", OWNER_REASONS["REL-051"])
 
 for index in (7, 8):
   TEST_OVERRIDES[

@@ -26,6 +26,7 @@ python3 planning/update_plan.py reference-report
 python3 planning/update_readme_compatibility.py [--check]
 python3 spec/conformance/catalog.py [--check]
 python3 spec/v04/scope.py [--check]
+python3 spec/v05/scope.py [--check]
 make test-focus FOCUS_UNIT=spec/unit/example_spec.lua FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
 make test-focus FOCUS_INTEGRATION=spec/integration/example_spec.lua
 make test-focus FOCUS_UNIFIED='crud/tests/unified/example.json::test?1?'
@@ -46,6 +47,8 @@ Starting post-v1 work requires `start ID --track TRACK`. The track must be decla
 `spec/conformance/catalog.py` inventories every document marked Accepted in the pinned specifications checkout, fingerprints its exact bytes, and assigns its suite to one explicit onion-model layer. Unlike the fixture ledger, the catalog includes prose-only specifications and test plans. Each prose-only document has a stable requirement record with a roadmap owner, scope, status, runner, and exact execution evidence or reason. `not_applicable` identifies a language or API mismatch and `no_machine_cases` identifies normative prose with no portable executable assertions; neither status counts as an execution. The checked artifact fails when an accepted document changes or a suite or prose requirement is added, removed, or left unclassified.
 
 `spec/v04/scope.py` projects the exact session, transaction, Search-index, read/write-concern, SDAM, DNS, and command cases selected by the `v0-4-sharded-parity` track. It rejects missing or completed target owners, missing executor evidence, planned rows at release closure, and ratchet reductions, while distinguishing accountable exclusions owned by later load-balancing, client-bulk-write, observability, and legacy-API work. `make test-v04-scope` runs its contract and stale-generation checks. Passing `--execution-report` additionally requires every unified v0.4 target identity to have a passing row in the authoritative Full Conformance report; missing, failed, unknown-operation, and environment-skipped rows fail the gate.
+
+`spec/v05/scope.py` projects all change-stream suite cases, retryable-read watch cases, change-stream CSOT cases, and pre/post-image event cases selected by the `v0-5-v0-7-api` track. It requires exact executor evidence for every in-floor case, records the pre-4.4 comment, MongoDB 4.2 resumable-code, and pre-7.0 error-label branches as identity-specific `ADV-011` exclusions, and rejects completed deferral owners, planned rows, and ratchet reductions. `make test-v05-scope` runs its contract and stale-generation checks. Full Conformance supplies its aggregate MongoDB 8.2 report and the focused MongoDB 8.0.16 version-branch report through repeated `--execution-report` arguments; a missing, failed, unknown-operation, or solely environment-skipped target fails the v0.5 gate.
 
 Activity implementation follows red-green vertical slices. A `red_green` activity cannot complete without a recorded nonzero red command and successful green command. A `validation` activity requires successful green evidence. Only one activity may be `in_progress`.
 

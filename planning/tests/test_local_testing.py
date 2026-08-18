@@ -66,10 +66,16 @@ class LocalTestingTests(unittest.TestCase):
       makefile,
     )
     self.assertIn("spec/v04/scope.py --check", makefile)
+    self.assertIn("spec/v05/scope.py --check", makefile)
     self.assertIn('--execution-report "$(UNIFIED_REPORT)"', makefile)
     self.assertIn(
       '--execution-report "$(V04_SUPPLEMENTAL_REPORT)"',
       makefile,
+    )
+    self.assertEqual(
+      2,
+      makefile.count('--execution-report "$(V04_SUPPLEMENTAL_REPORT)"'),
+      "both v0.4 and v0.5 must consume supplemental version evidence",
     )
     self.assertIn("test-package", fast_gate)
     self.assertEqual(

@@ -5008,19 +5008,79 @@
       "completed_at": "2026-08-18T04:07:45+00:00"
     },
     "REL-051": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
           "command": "make test-focus FOCUS_PYTHON='spec.v05.test_scope'",
           "exit_code": 2,
           "summary": "The v0.5 scope contract could not import spec.v05.scope, so no generated artifact enforced the 189-case change-stream boundary, exact passing evidence, version exclusions, or zero planned cases.",
-          "recorded_at": "2026-08-18T04:13:17+00:00"
+          "recorded_at": "2026-08-18T04:58:58+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='<eight exact REL-051 fixture selectors>'",
+          "exit_code": 0,
+          "summary": "All 49 newly classified REL-051 identities were selected through their eight upstream fixture families: 47 executed and passed, 2 MongoDB 8.1-only nsType cases environment-skipped on the local MongoDB 8.0.16 server, 0 failed, and 0 unknown operations. The two pre-4.4 comment cases were explicitly reclassified to ADV-011 rather than counted as runnable; pinned MongoDB 8.2 Full Conformance remains authoritative for the two nsType passes.",
+          "recorded_at": "2026-08-18T04:58:59+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' && make test-focus FOCUS_PYTHON='<v0.5 scope, catalog, compatibility, README, release, and CI contracts>'",
+          "exit_code": 0,
+          "summary": "Focused capability and ledger contracts passed 101/101; v0.5 scope, prose catalog, compatibility, README projection, release scope/checklist, and local/CI wiring contracts passed 35/35. The scope proves 189 classified targets, 170 exact passes, zero planned rows, and 19 explicit ADV-011 version exclusions.",
+          "recorded_at": "2026-08-18T04:59:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/v04/scope.py --check && python3 spec/v05/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "All generated capability, prose catalog, 5,524-case ledger, release scope, v0.4 scope, v0.5 scope, release checklist, and README compatibility artifacts are current; capability ratchets are 1,717 runnable/passed and the ledger is 4,001 passed, 1,521 deferred, and 2 superseded.",
+          "recorded_at": "2026-08-18T04:59:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/unified/run.py --include index-management/tests/index-rawdata.json --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' --report build/rel051-version-branches.json",
+          "exit_code": 0,
+          "summary": "The focused MongoDB 8.0.16 version branch selected three identities: disambiguatedPaths test 1 passed, the applicable pre-8.2 index branch passed, and the mutually exclusive index branch environment-skipped; 0 failed. Focused Makefile, Full Conformance wiring, and v0.5 multi-report validation contracts passed 10/10.",
+          "recorded_at": "2026-08-18T04:59:01+00:00"
         }
       ],
       "notes": [
-        "Requeued: Normative v0.5 change-stream fixtures exposed the missing public and unified collection rename behavior; split that independently verifiable behavior before conformance closure."
-      ]
+        "Requeued: Normative v0.5 change-stream fixtures exposed the missing public and unified collection rename behavior; split that independently verifiable behavior before conformance closure.",
+        "Requeued: Restore focused evidence lost when concurrent record-test processes raced before the activity commit."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-18T04:57:06+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.v05.test_scope'",
+              "exit_code": 2,
+              "summary": "The v0.5 scope contract could not import spec.v05.scope, so no generated artifact enforced the 189-case change-stream boundary, exact passing evidence, version exclusions, or zero planned cases.",
+              "recorded_at": "2026-08-18T04:13:17+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/v04/scope.py --check && python3 spec/v05/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "All generated capability, prose catalog, 5,524-case ledger, release scope, v0.4 scope, v0.5 scope, release checklist, and README compatibility artifacts are current; capability ratchets are 1,717 runnable/passed and the ledger is 4,001 passed, 1,521 deferred, and 2 superseded.",
+              "recorded_at": "2026-08-18T04:54:32+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/unified/run.py --include index-management/tests/index-rawdata.json --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' --report build/rel051-version-branches.json",
+              "exit_code": 0,
+              "summary": "The focused MongoDB 8.0.16 version branch selected three identities: disambiguatedPaths test 1 passed, the applicable pre-8.2 index branch passed, and the mutually exclusive index branch environment-skipped; 0 failed. Focused Makefile, Full Conformance wiring, and v0.5 multi-report validation contracts passed 10/10.",
+              "recorded_at": "2026-08-18T04:56:19+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "0984afc827205407f2367364f814e11c28a6ab66",
+      "started_at": "2026-08-18T04:58:57+00:00",
+      "completed_at": "2026-08-18T04:59:02+00:00"
     },
     "CS-012": {
       "status": "completed",
