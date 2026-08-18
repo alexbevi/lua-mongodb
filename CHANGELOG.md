@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.6.0] - 2026-08-18
+
+Legacy APIs release.
+
+### Added
+
+- Added the deprecated collection `count` command with inherited concerns, read preference, retryable reads, and client-side operation timeouts.
+- Added legacy collection mapReduce with inline and output modes, inherited concerns, and the specification-required single-attempt read behavior.
+- Added database aggregation cursors with read/write pipeline routing, retries, timeouts, empty-batch continuation, and server-returned namespace handling.
+- Added tailable and awaitData find cursors with nonblocking empty-batch polling, option validation, bounded wait budgets, and cancellation through runtime adapters.
+
+### Conformance
+
+- All 81 applicable v0.6 legacy API cases have exact unified executors across standalone, replica-set, authenticated, and isolated profiles.
+- Ninety-two old-server-only cases are exact target-version exclusions, and three command-cursor timeout cases are explicit pinned-PyMongo behavioral exclusions.
+
+### Release engineering
+
+- Added the generated v0.6 conformance projection to Full Conformance and the exact-commit LuaRocks release checklist.
+
 ## [0.5.0] - 2026-08-18
 
 Change streams release.

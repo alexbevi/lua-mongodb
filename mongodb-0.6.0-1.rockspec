@@ -1,20 +1,19 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.5.0-1"
+version = "0.6.0-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.5.0",
+  tag = "v0.6.0",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.5.0 adds collection, database, and cluster change
-    streams with resumability, operation timeouts, expanded events,
-    pre/post images, and collection rename support.
+    libmongoc. Version 0.6.0 adds deprecated count and mapReduce commands,
+    database aggregation, and tailable and awaitData cursors.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",

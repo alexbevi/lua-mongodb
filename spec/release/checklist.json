@@ -130,7 +130,8 @@
       "LEG-010",
       "LEG-011",
       "LEG-012",
-      "LEG-013"
+      "LEG-013",
+      "REL-053"
     ],
     "conformance": {
       "applicable_gaps": 0,
@@ -166,10 +167,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.5.0-1.rockspec",
-    "rockspec_version": "0.5.0-1",
-    "version": "0.5.0"
+    "rockspec": "mongodb-0.6.0-1.rockspec",
+    "rockspec_version": "0.6.0-1",
+    "version": "0.6.0"
   },
   "schema_version": 1,
-  "type": "change-stream-release-checklist"
+  "type": "legacy-api-release-checklist"
 }

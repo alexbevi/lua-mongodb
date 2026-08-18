@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report change streams v0.5 release readiness."""
+"""Validate and report legacy APIs v0.6 release readiness."""
 
 from __future__ import annotations
 
@@ -24,12 +24,12 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.5.0-1.rockspec"
-RELEASE_VERSION = "0.5.0"
+ROCKSPEC = ROOT / "mongodb-0.6.0-1.rockspec"
+RELEASE_VERSION = "0.6.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 4001
-MAXIMUM_POST_V1_EXCLUSIONS = 1523
+MINIMUM_PASSED_CASES = 4082
+MAXIMUM_POST_V1_EXCLUSIONS = 1442
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -96,13 +96,13 @@ V05_RELEASE_ACTIVITY = "REL-052"
 V06_GATES = [
   "ADV-011",
   *(f"LEG-{index:03d}" for index in range(1, 14)),
+  "REL-053",
 ]
-V06_CONFORMANCE_ACTIVITY = "REL-053"
 V06_RELEASE_ACTIVITY = "REL-054"
 
 
 class ChecklistError(ValueError):
-  """Raised when the change streams release is not ready."""
+  """Raised when the legacy APIs release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -165,7 +165,7 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: change streams v0.5 release-ready.",
+    "Status: legacy APIs v0.6 release-ready.",
   )
 
   return {
@@ -206,7 +206,6 @@ def generate() -> dict[str, Any]:
   v06_segment = [
     "ADV-007",
     *V06_GATES,
-    V06_CONFORMANCE_ACTIVITY,
     V06_RELEASE_ACTIVITY,
   ]
   if api_track[len(v05_prefix):len(v05_prefix) + len(v06_segment)] != v06_segment:
@@ -422,7 +421,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "change-stream-release-checklist",
+    "type": "legacy-api-release-checklist",
   }
 
 

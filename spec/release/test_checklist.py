@@ -1,4 +1,4 @@
-"""Contract tests for the change streams v0.5 release checklist."""
+"""Contract tests for the legacy APIs v0.6 release checklist."""
 
 import unittest
 
@@ -10,14 +10,14 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("change-stream-release-checklist", report["type"])
-    self.assertEqual("0.5.0", report["release"]["version"])
+    self.assertEqual("legacy-api-release-checklist", report["type"])
+    self.assertEqual("0.6.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 4001)
-    self.assertLessEqual(conformance["post_v1_exclusions"], 1523)
+    self.assertGreaterEqual(conformance["passed_cases"], 4082)
+    self.assertLessEqual(conformance["post_v1_exclusions"], 1442)
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"] + conformance["post_v1_exclusions"],
@@ -120,7 +120,11 @@ class ReleaseChecklistTests(unittest.TestCase):
       report["gates"]["completed_v0_5_gates"],
     )
     self.assertEqual(
-      ["ADV-011", *[f"LEG-{index:03d}" for index in range(1, 14)]],
+      [
+        "ADV-011",
+        *[f"LEG-{index:03d}" for index in range(1, 14)],
+        "REL-053",
+      ],
       report["gates"]["completed_v0_6_gates"],
     )
     self.assertEqual(
