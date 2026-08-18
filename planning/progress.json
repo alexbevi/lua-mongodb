@@ -5531,6 +5531,28 @@
       "notes": [],
       "started_at": "2026-08-18T17:38:05+00:00",
       "completed_at": "2026-08-18T17:42:23+00:00"
+    },
+    "LEG-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_database_aggregate_timeout_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "1 focused test failed: the exact database aggregate cursor timeout-mode case was deferred_unsupported instead of runnable",
+          "recorded_at": "2026-08-18T17:49:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/database_aggregate_spec.lua' FOCUS_UNIFIED='<twelve exact LEG-007 CSOT database aggregate identities>' FOCUS_PYTHON='database aggregate timeout classification plus conformance/release/README contracts' FOCUS_LINT='spec/support/mongodb/unified/driver.lua spec/unit/database_aggregate_spec.lua'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "3 unit cases passed; 12 exact database aggregate CSOT identities executed and passed with 0 environment skips, 0 deferred, and 0 failed; 16 Python contracts passed; 2 touched Lua files linted; complexity, capability, ledger, release scope, v0.4, v0.5, checklist, README, JSON, Python compile, and diff validators passed",
+          "recorded_at": "2026-08-18T17:53:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T17:48:38+00:00",
+      "completed_at": "2026-08-18T17:53:52+00:00"
     }
   },
   "verified_references": {

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1770,
-    "runnable": 1770
+    "passed": 1782,
+    "runnable": 1782
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -17459,7 +17459,6 @@
     "client-side-operations-timeout/tests/cursors.json::test[3]": {
       "activity": "LEG-007",
       "fingerprint": "67b98dce8653628f75c652848f52d964828fcc47372783b31e077cb3871a5f98",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -17480,7 +17479,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/cursors.json::test[4]": {
       "activity": "TIME-001",
@@ -23152,7 +23151,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[7]": {
       "activity": "LEG-007",
       "fingerprint": "f707767ad0cdf149405c900ca4c57f1ebee0d725b3d8d47442866d2958ef8844",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -23185,12 +23183,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[8]": {
       "activity": "LEG-007",
       "fingerprint": "fee2916710c51c01ab46f5f1d7d5d6169b62455483e4b189b0e426d767e52fba",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -23223,7 +23220,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[9]": {
       "activity": "QUA-001",
@@ -26659,7 +26656,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[1]": {
       "activity": "LEG-007",
       "fingerprint": "f965b2c2080ff44f76060e75fd9128024432965d812d791ee7eefff77cbe08e5",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -26692,7 +26688,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[20]": {
       "activity": "QUA-001",
@@ -27064,7 +27060,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[2]": {
       "activity": "LEG-007",
       "fingerprint": "300fefd73602e90b7916992dfe036be0ebd9408490b1ec443f8fdb65ce885fc7",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -27097,7 +27092,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[30]": {
       "activity": "CS-008",
@@ -30662,7 +30657,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[7]": {
       "activity": "LEG-007",
       "fingerprint": "ce7d435fec63f3db572a3f58f2f5de5cf7c466eec214a0b234d9edbca3de6220",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30694,12 +30688,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[8]": {
       "activity": "LEG-007",
       "fingerprint": "4f922b5f4f397251040cf00ea1a2c0d01800de7eef85edaffcb98db74919d13b",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -30731,7 +30724,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[9]": {
       "activity": "QUA-001",
@@ -31303,7 +31296,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[25]": {
       "activity": "LEG-007",
       "fingerprint": "e8498e6b611bd7f96e5b53a4c5a57561e85d842875cab1f50b795937628a9c9b",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31332,12 +31324,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[26]": {
       "activity": "LEG-007",
       "fingerprint": "3bf53e8fbf46433fb0d9c95f2a80e5e3686b0ba99f2a9314e86db4cc58f12952",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -31366,7 +31357,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[27]": {
       "activity": "REL-006",
@@ -33431,7 +33422,6 @@
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[37]": {
       "activity": "LEG-007",
       "fingerprint": "1f77a7f8d92b4a3910b01705cf54d05bfc04813cf1c6ded145271772360734a5",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -33458,12 +33448,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[38]": {
       "activity": "LEG-007",
       "fingerprint": "940250db3f2c9f975edf6c860d34f863bec4ab9af1969ab8622ee42cbf887fb4",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -33495,12 +33484,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[39]": {
       "activity": "LEG-007",
       "fingerprint": "752bd40da237f579d957885f6756e0505b92ac2583345e4977962a301a2778fe",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -33532,7 +33520,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[3]": {
       "activity": "QUA-001",

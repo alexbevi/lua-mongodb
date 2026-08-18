@@ -1,6 +1,18 @@
 {
   "schema_version": 1,
   "tests": {
+    "client-side-operations-timeout/tests/cursors.json::test[3]": {"activity": "LEG-007", "environment": "isolated-replicaset"},
+    "client-side-operations-timeout/tests/global-timeoutMS.json::test[7]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/global-timeoutMS.json::test[8]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[1]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[2]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[7]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[8]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[25]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[26]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[37]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[38]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[39]": {"activity": "LEG-007", "environment": "isolated-replicaset", "testCommands": true},
     "retryable-reads/tests/unified/handshakeError.json::test[7]": {"activity": "LEG-006", "environment": "live-authenticated-replicaset", "testCommands": true},
     "retryable-reads/tests/unified/handshakeError.json::test[8]": {"activity": "LEG-006", "environment": "live-authenticated-replicaset", "testCommands": true},
     "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": {"activity": "LEG-005", "environment": "live-replicaset"},

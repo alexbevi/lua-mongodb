@@ -2556,7 +2556,7 @@ function M.new(options)
           arguments = {
             "allowDiskUse", "batchSize", "bypassDocumentValidation",
             "collation", "comment", "hint", "let", "maxTimeMS", "pipeline",
-            "rawData",
+            "rawData", "timeoutMode", "timeoutMS",
           },
           handler = aggregate,
         },

@@ -2,6 +2,7 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local fake_runtime = require("mongodb.runtime.fake")
 local retry_executor = require("mongodb.retry_executor")
 
 describe("database aggregate", function()
@@ -126,5 +127,77 @@ describe("database aggregate", function()
     end
 
     assert.are.equal(2, write_attempts)
+  end)
+
+  it("keeps one deadline across a retry and cursor continuation", function()
+    local runtime = fake_runtime.new({ now = 2 })
+    local calls = {}
+    local underlying = {
+      capabilities = function()
+        return { max_wire_version = 27 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        calls[#calls + 1] = {
+          deadline = options.deadline,
+          name = name,
+        }
+        runtime:advance(0.010)
+
+        if #calls == 1 then
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 10107,
+            message = "not writable primary",
+          })
+        elseif name == "aggregate" then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(42) },
+              { "ns", "app.$cmd.aggregate" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.$cmd.aggregate" },
+            { "nextBatch", bson.array({}) },
+          }) },
+        })
+      end,
+    }
+    local executor = retry_executor.new(underlying, { enabled_reads = true })
+    local database = assert(api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, { timeout_ms = 50 })),
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    ):database("app"))
+    local cursor = assert(database:aggregate(bson.array({
+      bson.document({ { "$match", bson.document({}) } }),
+    })))
+
+    assert.is_nil(cursor:next())
+    assert.are.same({ "aggregate", "aggregate", "getMore" }, {
+      calls[1].name,
+      calls[2].name,
+      calls[3].name,
+    })
+
+    for _, call in ipairs(calls) do
+      assert.near(2.05, call.deadline, 0.000001)
+    end
   end)
 end)

@@ -456,7 +456,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 91.1% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
-| Resilience | Client-side operations timeout | 🟡 | 75.3% |
+| Resilience | Client-side operations timeout | 🟡 | 77.6% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |

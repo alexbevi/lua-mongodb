@@ -246,7 +246,7 @@ TEST_OVERRIDES.update({
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
     "LEG-007",
-    "database aggregate is outside the v1 public collection adapter",
+    None,
   ),
   "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": (
     "LEG-005",
@@ -832,10 +832,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
     )
 
   if "aggregate on database" in test["description"]:
-    return (
-      "LEG-007",
-      "database aggregate is outside the v1 public API",
-    )
+    return ("LEG-007", None)
 
   if fixture == "retryability-legacy-timeouts.json":
     return (
