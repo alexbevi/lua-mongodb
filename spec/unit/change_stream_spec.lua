@@ -724,4 +724,349 @@ describe("collection change streams", function()
       commands[4]:keys()[1],
     })
   end)
+
+  it("keeps startAfter when resuming before the first event", function()
+    local commands = {}
+    local start_after = bson.document({ { "token", "invalidate" } })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(53) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      false,
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+    }
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        local response = table.remove(responses, 1)
+
+        if response == false then
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 50,
+            labels = { "ResumableChangeStreamError" },
+            message = "resume before the first event",
+          })
+        end
+
+        return response
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:database("app"):collection("events"):watch(
+      nil,
+      { start_after = start_after }
+    ))
+
+    assert.is_nil(stream:try_next())
+    local resumed_stage = commands[3]:get("pipeline"):get(1):get("$changeStream")
+    local resumed_start_after = resumed_stage:get("startAfter")
+
+    assert.are.equal(start_after, resumed_start_after)
+    assert.is_nil(resumed_stage:get("resumeAfter"))
+    assert.is_nil(resumed_stage:get("startAtOperationTime"))
+  end)
+
+  it("switches startAfter to resumeAfter after the first event", function()
+    local commands = {}
+    local sent_options = {}
+    local session = {}
+    local start_after = bson.document({ { "token", "invalidate" } })
+    local event_token = bson.document({ { "token", "event" } })
+    local change = bson.document({
+      { "_id", event_token },
+      { "operationType", "insert" },
+    })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(54) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({ change }) },
+        }) },
+      }),
+      false,
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+    }
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+        sent_options[#sent_options + 1] = options
+        local response = table.remove(responses, 1)
+
+        if response == false then
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 50,
+            labels = { "ResumableChangeStreamError" },
+            message = "resume after the first event",
+          })
+        end
+
+        return response
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local watch_options = {
+      session = session,
+      start_after = start_after,
+    }
+    local stream = assert(client:database("app"):collection("events"):watch(
+      nil,
+      watch_options
+    ))
+
+    assert.are.equal(change, assert(stream:next()))
+    assert.is_nil(stream:try_next())
+    local resumed_stage = commands[3]:get("pipeline"):get(1):get("$changeStream")
+
+    assert.are.equal(event_token, resumed_stage:get("resumeAfter"))
+    assert.is_nil(resumed_stage:get("startAfter"))
+    assert.is_nil(resumed_stage:get("startAtOperationTime"))
+    assert.are.equal(session, sent_options[3].session)
+    assert.are.equal(start_after, watch_options.start_after)
+    assert.is_nil(watch_options.resume_after)
+  end)
+
+  it("selects exactly one token, operation time, or empty resume position", function()
+    local operation_time = bson.timestamp(50, 2)
+    local resume_after = bson.document({ { "token", "resume" } })
+    local post_batch_resume_token = bson.document({ { "token", "batch" } })
+    local cases = {
+      {
+        max_wire_version = 25,
+        options = { start_at_operation_time = operation_time },
+        expected_name = "startAtOperationTime",
+        expected_value = operation_time,
+      },
+      {
+        max_wire_version = 25,
+        operation_time = operation_time,
+        options = {},
+        expected_name = "startAtOperationTime",
+        expected_value = operation_time,
+      },
+      {
+        max_wire_version = 25,
+        operation_time = operation_time,
+        post_batch_resume_token = post_batch_resume_token,
+        options = {},
+        expected_name = "resumeAfter",
+        expected_value = post_batch_resume_token,
+      },
+      {
+        max_wire_version = 25,
+        options = { resume_after = resume_after },
+        expected_name = "resumeAfter",
+        expected_value = resume_after,
+      },
+      {
+        max_wire_version = 6,
+        operation_time = operation_time,
+        options = {},
+      },
+    }
+
+    for _, case in ipairs(cases) do
+      local commands = {}
+      local executor = {
+        capabilities = function()
+          return { max_wire_version = case.max_wire_version }
+        end,
+        close = function()
+          return true
+        end,
+        command = function(_, _, command)
+          commands[#commands + 1] = command
+
+          if #commands == 1 then
+            local cursor_entries = {
+              { "id", bson.int64(55) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }
+
+            if case.post_batch_resume_token ~= nil then
+              cursor_entries[#cursor_entries + 1] = {
+                "postBatchResumeToken",
+                case.post_batch_resume_token,
+              }
+            end
+
+            local response_entries = {
+              { "ok", 1 },
+              { "cursor", bson.document(cursor_entries) },
+            }
+
+            if case.operation_time ~= nil then
+              response_entries[#response_entries + 1] = {
+                "operationTime",
+                case.operation_time,
+              }
+            end
+
+            return bson.document(response_entries)
+          elseif #commands == 2 then
+            return nil, errors.new({
+              category = errors.CATEGORY.NETWORK,
+              message = "position selection interruption",
+            })
+          end
+
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        end,
+      }
+      local config = assert(driver_options.normalize(nil, {}))
+      local client = api.new_client(executor, config)
+      local stream = assert(client:database("app"):collection("events"):watch(
+        nil,
+        case.options
+      ))
+
+      assert.is_nil(stream:try_next())
+      local resumed_stage =
+        commands[3]:get("pipeline"):get(1):get("$changeStream")
+
+      if case.expected_name == nil then
+        assert.are.equal(0, #resumed_stage)
+      else
+        assert.are.equal(1, #resumed_stage)
+        assert.are.equal(
+          case.expected_value,
+          resumed_stage:get(case.expected_name)
+        )
+      end
+    end
+  end)
+
+  it("preserves a saved operation time and session across later resumes", function()
+    local commands = {}
+    local sent_options = {}
+    local session = {}
+    local operation_time = bson.timestamp(60, 3)
+    local change = bson.document({
+      { "_id", bson.document({ { "token", "later" } }) },
+      { "operationType", "insert" },
+    })
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+        sent_options[#sent_options + 1] = options
+
+        if #commands == 1 then
+          return bson.document({
+            { "ok", 1 },
+            { "operationTime", operation_time },
+            { "cursor", bson.document({
+              { "id", bson.int64(56) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif #commands == 2 or #commands == 5 then
+          return nil, errors.new({
+            category = errors.CATEGORY.NETWORK,
+            message = "repeated position interruption",
+          })
+        elseif #commands == 3 then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(57) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif #commands == 4 then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(57) },
+              { "ns", "app.events" },
+              { "nextBatch", bson.array({}) },
+            }) },
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.events" },
+            { "firstBatch", bson.array({ change }) },
+          }) },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local watch_options = { session = session }
+    local stream = assert(client:database("app"):collection("events"):watch(
+      nil,
+      watch_options
+    ))
+
+    assert.is_nil(stream:try_next())
+    assert.are.equal(change, assert(stream:try_next()))
+
+    for _, index in ipairs({ 3, 6 }) do
+      local stage = commands[index]:get("pipeline"):get(1):get("$changeStream")
+
+      assert.are.equal(1, #stage)
+      assert.are.equal(operation_time, stage:get("startAtOperationTime"))
+      assert.are.equal(session, sent_options[index].session)
+    end
+
+    assert.are.equal(session, watch_options.session)
+    assert.is_nil(watch_options.start_at_operation_time)
+    assert.is_nil(watch_options.resume_after)
+    assert.is_nil(watch_options.start_after)
+  end)
 end)

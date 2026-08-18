@@ -4803,6 +4803,35 @@
       "notes": [],
       "started_at": "2026-08-18T02:05:34+00:00",
       "completed_at": "2026-08-18T02:20:00+00:00"
+    },
+    "CS-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining startAfter-before-first-event case failed with 12 successes and 1 failure: the resumed aggregate omitted startAfter because the current recreation path incorrectly rewrote it to resumeAfter.",
+          "recorded_at": "2026-08-18T02:26:24+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (resume-position unit/cursor matrix, OP_MSG change-stream integration, targeted classification/ledger/release Python checks, touched Lua lint)",
+          "exit_code": 0,
+          "summary": "Focused behavior verification passed: 22 unit/cursor cases, 2 OP_MSG integration cases, 4 targeted Python checks, and luacheck on 5 touched Lua files; 0 failures, errors, pending cases, or lint findings. Architecture boundaries and the Lua complexity baseline also passed.",
+          "recorded_at": "2026-08-18T02:36:43+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (exact change-streams-clusterTime test 1 plus directly coupled resume error-label tests 1-12 and 14-18 and allowlist tests 1 and 18)",
+          "exit_code": 0,
+          "summary": "The newly applicable cluster-time case and all 19 directly coupled resumability cases executed and passed: 20 executed, 20 passed, 0 environment-skipped, 0 deferred-unsupported, and 0 failed. Capability, conformance, release-scope, release-checklist, and README validators passed at 1,572 runnable and 3,856 ledger-passed cases.",
+          "recorded_at": "2026-08-18T02:36:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T02:25:05+00:00",
+      "completed_at": "2026-08-18T02:37:03+00:00"
     }
   },
   "verified_references": {

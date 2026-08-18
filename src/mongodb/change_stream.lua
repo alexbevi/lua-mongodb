@@ -1,3 +1,4 @@
+local bson = require("mongodb.bson")
 local cursor_model = require("mongodb.cursor")
 local errors = require("mongodb.error")
 
@@ -87,10 +88,32 @@ local function read_cursor(state, cooperative)
   return document, err
 end
 
+local function cache_resume_token(state, resume_token)
+  state.operation_time = nil
+  state.resume_token = resume_token
+end
+
+local function resume_position(state)
+  if state.resume_token ~= nil then
+    if state.uses_start_after then
+      return "start_after", state.resume_token
+    end
+
+    return "resume_after", state.resume_token
+  end
+
+  if state.operation_time ~= nil then
+    return "start_at_operation_time", state.operation_time
+  end
+
+  return nil, nil
+end
+
 local function recreate_cursor(state)
   state.cursor:close()
 
-  local cursor, err = state.recreate(state.resume_token)
+  local position_name, position_value = resume_position(state)
+  local cursor, err = state.recreate(position_name, position_value)
 
   if not cursor then
     return nil, err
@@ -101,7 +124,7 @@ local function recreate_cursor(state)
   local post_batch_resume_token, has_next = cursor_model.resume_info(cursor)
 
   if not has_next and post_batch_resume_token ~= nil then
-    state.resume_token = post_batch_resume_token
+    cache_resume_token(state, post_batch_resume_token)
   end
 
   return true
@@ -131,7 +154,7 @@ local function advance(value, cooperative)
     local post_batch_resume_token = cursor_model.resume_info(state.cursor)
 
     if post_batch_resume_token ~= nil then
-      state.resume_token = post_batch_resume_token
+      cache_resume_token(state, post_batch_resume_token)
     end
 
     return nil
@@ -150,7 +173,8 @@ local function advance(value, cooperative)
     resume_token = post_batch_resume_token
   end
 
-  state.resume_token = resume_token
+  state.uses_start_after = false
+  cache_resume_token(state, resume_token)
   return document
 end
 
@@ -206,19 +230,44 @@ function M.new(cursor, options)
     error("change stream recreation must be a function", 2)
   end
 
+  if options.start_at_operation_time ~= nil
+      and not bson.is_tagged(options.start_at_operation_time, "timestamp")
+  then
+    error("change stream start operation time must be a timestamp", 2)
+  end
+
+  if options.uses_start_after ~= nil
+      and type(options.uses_start_after) ~= "boolean"
+  then
+    error("change stream start-after state must be a boolean", 2)
+  end
+
   local value = {}
-  local post_batch_resume_token, has_next = cursor_model.resume_info(cursor)
+  local post_batch_resume_token, has_next, initial_operation_time =
+    cursor_model.resume_info(cursor)
   local resume_token = options.resume_token
+  local operation_time = options.start_at_operation_time
 
   if not has_next and post_batch_resume_token ~= nil then
     resume_token = post_batch_resume_token
+    operation_time = nil
+  elseif resume_token == nil
+      and operation_time == nil
+      and not has_next
+      and options.max_wire_version ~= nil
+      and options.max_wire_version >= 7
+      and bson.is_tagged(initial_operation_time, "timestamp")
+  then
+    operation_time = initial_operation_time
   end
 
   STREAM_STATES[value] = {
     cursor = cursor,
     max_wire_version = options.max_wire_version or 0,
+    operation_time = operation_time,
     recreate = options.recreate,
     resume_token = resume_token,
+    uses_start_after = options.uses_start_after == true,
   }
   return setmetatable(value, STREAM_METATABLE)
 end

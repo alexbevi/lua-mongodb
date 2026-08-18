@@ -212,7 +212,7 @@ print(deleted.deleted_count)
 
 ### Change Streams
 
-On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection. Its pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once from that cached token; terminal errors and a failed recreation are returned directly.
+On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection. Its pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
 
 ```lua
 local events = assert(users:watch(mongodb.bson.array({
@@ -436,7 +436,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | Collection management | 🟡 | 81.8% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
-| Programmability | Change streams | 🟡 | 28.1% |
+| Programmability | Change streams | 🟡 | 29.2% |
 | Programmability | GridFS | 🔴 | 0.0% |
 | Programmability | Stable API | 🟡 | 92.7% |
 | Programmability | Client-side encryption | 🔴 | 0.0% |

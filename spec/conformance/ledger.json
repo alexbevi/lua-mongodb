@@ -14251,16 +14251,16 @@
       "suite": "causal-consistency"
     },
     "change-streams/tests/unified/change-streams-clusterTime.json::test[1]": {
-      "activity": "REL-051",
+      "activity": "CS-005",
       "fingerprint": "2f7eedc24e5e855d5d1eb7671d753fa647537267d23a95ef8d0c8c3c81608ec8",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "change-streams/tests/unified/change-streams-clusterTime.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-disambiguatedPaths.json::test[1]": {
@@ -86653,9 +86653,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1667,
+      "deferred_unsupported": 1666,
       "excluded_scope": 2,
-      "passed": 3855
+      "passed": 3856
     },
     "suites": {
       "auth": 73,

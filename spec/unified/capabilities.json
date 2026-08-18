@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1571,
-    "runnable": 1571
+    "passed": 1572,
+    "runnable": 1572
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -186,9 +186,8 @@
       "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-clusterTime.json::test[1]": {
-      "activity": "REL-051",
+      "activity": "CS-005",
       "fingerprint": "2f7eedc24e5e855d5d1eb7671d753fa647537267d23a95ef8d0c8c3c81608ec8",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -217,7 +216,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-disambiguatedPaths.json::test[1]": {
       "activity": "REL-051",

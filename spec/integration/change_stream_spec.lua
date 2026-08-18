@@ -154,4 +154,95 @@ describe("collection change streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("resumes from the initial aggregate operation time", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local operation_time = bson.timestamp(70, 4)
+    local event = bson.document({
+      { "_id", bson.document({ { "token", "resumed" } }) },
+      { "operationType", "insert" },
+    })
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local aggregate = receive_frame(peer)
+      local initial_stage =
+        aggregate.body:get("pipeline"):get(1):get("$changeStream")
+
+      assert.are.equal(0, #initial_stage)
+      send_response(peer, aggregate, bson.document({
+        { "ok", 1 },
+        { "operationTime", operation_time },
+        { "cursor", bson.document({
+          { "id", bson.int64(52) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }))
+
+      local get_more = receive_frame(peer)
+
+      assert.are.equal("getMore", get_more.body:keys()[1])
+      send_response(peer, get_more, bson.document({
+        { "ok", 0 },
+        { "code", 50 },
+        { "errmsg", "resume from operation time" },
+        { "errorLabels", bson.array({ "ResumableChangeStreamError" }) },
+      }))
+
+      local resumed_aggregate = receive_frame(peer)
+      local resumed_stage =
+        resumed_aggregate.body:get("pipeline"):get(1):get("$changeStream")
+
+      assert.are.equal(1, #resumed_stage)
+      assert.are.equal(
+        operation_time,
+        resumed_stage:get("startAtOperationTime")
+      )
+      assert.is_nil(resumed_stage:get("resumeAfter"))
+      assert.is_nil(resumed_stage:get("startAfter"))
+      send_response(peer, resumed_aggregate, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({ event }) },
+        }) },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/app",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local collection = assert(client:database():collection("events"))
+        local stream = assert(collection:watch())
+        local change = assert(stream:try_next())
+
+        assert.are.equal("insert", change:get("operationType"))
+        assert.are.equal("resumed", change:get("_id"):get("token"))
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

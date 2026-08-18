@@ -954,13 +954,15 @@ function COLLECTION_METHODS:watch(pipeline, options)
   options = copy_change_stream_options(options)
 
   local state = COLLECTION_STATES[self]
-  local function recreate(resume_token)
+  local function recreate(position_name, position_value)
     local resume_options = copy_change_stream_options(options)
 
-    if resume_token ~= nil then
-      resume_options.resume_after = resume_token
-      resume_options.start_after = nil
-      resume_options.start_at_operation_time = nil
+    resume_options.resume_after = nil
+    resume_options.start_after = nil
+    resume_options.start_at_operation_time = nil
+
+    if position_name ~= nil then
+      resume_options[position_name] = position_value
     end
 
     local resumed, resume_err = collection_operation(
@@ -981,6 +983,8 @@ function COLLECTION_METHODS:watch(pipeline, options)
     max_wire_version = state.max_wire_version,
     recreate = recreate,
     resume_token = options.start_after or options.resume_after,
+    start_at_operation_time = options.start_at_operation_time,
+    uses_start_after = options.start_after ~= nil,
   })
 end
 

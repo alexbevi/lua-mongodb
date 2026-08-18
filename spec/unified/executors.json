@@ -25,6 +25,10 @@
       "activity": "AUTH-017",
       "environment": "deterministic-loopback"
     },
+    "change-streams/tests/unified/change-streams-clusterTime.json::test[1]": {
+      "activity": "CS-005",
+      "environment": "live-replicaset"
+    },
     "change-streams/tests/unified/change-streams-errors.json::test[3]": {
       "activity": "CS-003",
       "environment": "live-replicaset"

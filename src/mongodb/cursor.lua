@@ -399,7 +399,9 @@ function M.resume_info(value)
     error("resume information requires a cursor", 2)
   end
 
-  return state.post_batch_resume_token, state.position <= #state.documents
+  return state.post_batch_resume_token,
+    state.position <= #state.documents,
+    state.operation_time
 end
 
 function M.new(response, options)
@@ -441,6 +443,7 @@ function M.new(response, options)
     max_await_time_ms = options.max_await_time_ms,
     numeric_id = batch.numeric_id,
     on_close = options.on_close,
+    operation_time = response:get("operationTime"),
     position = 1,
     post_batch_resume_token = batch.post_batch_resume_token,
     retrieved = 0,
