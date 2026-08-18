@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1655,
-    "runnable": 1655
+    "passed": 1665,
+    "runnable": 1665
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -523,9 +523,8 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[10]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "f3ca7ca18851167d44b3ea748d36e772d0460b96e130fe1e836066695e88d795",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -562,12 +561,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[1]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "7aa918c6e6662dddef282ba81996cb87411644cf90d49525c21bb768b2d43b6e",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -603,12 +601,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[2]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "75687d4c9b330937963e72ec0c941a9cc326ba26437392c24277dc5ae9849d77",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -644,12 +641,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[3]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "87b7a6482bc9fb51c0a3a2ba8f9fd639cac2e30d404cb2940d1beda48f0edd95",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -685,12 +681,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[4]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "00db57c779505d62bd42908e840293d22df8f135c9d1e9f8a1fcf010f6730685",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -724,12 +719,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[5]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "f24340ac87703163035449b7abf59587f19a9ab18b2184dd7aa17bd930f94a71",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -765,12 +759,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[6]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "def74c5671ab5b7ca58c42e90d8e212cbbbe8e4c2e2026046f4c4a2b172ac49c",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -806,12 +799,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[7]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "84d08de2dce23fd2de9f25609fe2c8afa2083db3d4ef2b692c22f4584458a2fd",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -847,12 +839,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[8]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "36a51a959482f299aab82877a1d88b027cf18caf3787c3fe9dbefa3ce69f5a9e",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -886,12 +877,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[9]": {
-      "activity": "REL-051",
+      "activity": "CS-011",
       "fingerprint": "acdec4beb72b87d467804c4494125361d50df39b920b26dc0f7eec1300afc1f7",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -928,7 +918,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[10]": {
       "activity": "ADV-011",

@@ -443,7 +443,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
-| Programmability | Change streams | 🟡 | 29.2% |
+| Programmability | Change streams | 🟡 | 40.4% |
 | Programmability | GridFS | 🔴 | 0.0% |
 | Programmability | Stable API | 🟡 | 92.7% |
 | Programmability | Client-side encryption | 🔴 | 0.0% |

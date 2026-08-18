@@ -4984,6 +4984,28 @@
       "notes": [],
       "started_at": "2026-08-18T03:55:20+00:00",
       "completed_at": "2026-08-18T03:59:28+00:00"
+    },
+    "CS-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_change_stream_image_event_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The targeted capability contract failed because all ten pre/post-image event identities were REL-051 deferred_unsupported instead of CS-011 runnable.",
+          "recorded_at": "2026-08-18T04:04:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='change-streams/tests/unified/change-streams-pre_and_post_images.json::*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility'; make test-complexity; generated capability, conformance, release-scope, release-checklist, README, executor JSON, Python compile, and diff validators",
+          "exit_code": 0,
+          "summary": "The exact image-event matrix executed 10 cases: 10 passed, 0 environment-skipped, 0 deferred, and 0 failed. All 109 coupled capability/conformance/release/README contracts passed; complexity and artifact validators were green.",
+          "recorded_at": "2026-08-18T04:07:38+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T04:03:07+00:00",
+      "completed_at": "2026-08-18T04:07:45+00:00"
     }
   },
   "verified_references": {

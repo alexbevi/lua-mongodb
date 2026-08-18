@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 202,
+    "completed": 203,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 19
+    "pending": 18
   },
   "active": [],
   "ready": [
-    "CS-011",
+    "REL-051",
     "ADV-002",
     "ADV-004",
     "ADV-006",
@@ -41,11 +41,11 @@
     "v0-4-sharded-parity": [],
     "spec-suite-completeness": [],
     "v0-5-v0-7-api": [
-      "CS-011"
+      "REL-051"
     ]
   },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "CS-011"
+  "next_ready": "REL-051"
 }
