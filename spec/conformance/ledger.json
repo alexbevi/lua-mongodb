@@ -14515,12 +14515,13 @@
       "fingerprint": "09aaec38cfaee2ca77eb22844c2edc6f49d72780e6c89bdad52fd7634a4e715a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[11]": {
@@ -14528,12 +14529,13 @@
       "fingerprint": "0d89c12b4f5593ad8733a311d8cdc69a9d444f30c7f089de836b103f6dfa4199",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[12]": {
@@ -14541,12 +14543,13 @@
       "fingerprint": "21895e8e19208949714173d95063b595a76af798171e24e363e3865436b90199",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[13]": {
@@ -14554,12 +14557,13 @@
       "fingerprint": "6b5c13a32add857fb834da77644c1cacc9395402d707cf21da57912b64decf2e",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[14]": {
@@ -14567,12 +14571,13 @@
       "fingerprint": "599a8a02ad01fba91db7bfd84d45b6a00241bb443a3628c2ab87b7ef52f67e0a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[15]": {
@@ -14580,12 +14585,13 @@
       "fingerprint": "7aa3d6728580ccc045573fb3147d2a40b7f374ddc212e0af58dc8599f5366782",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[16]": {
@@ -14593,12 +14599,13 @@
       "fingerprint": "c29054c9bb299624d9c7721b28ce9f6bf317f5ccf7b8bdc91b41caf62e3eb91f",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[17]": {
@@ -14606,12 +14613,13 @@
       "fingerprint": "c5a76da50b224e79b43b27c705b57cc85068337adf2e8d8b690b55bc00ca41d5",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[18]": {
@@ -14645,12 +14653,13 @@
       "fingerprint": "3ae6d9f52f7670ff9c40c2f320e67445269ecfd4ae0fa4a0b5815314172bd2f5",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[3]": {
@@ -14658,12 +14667,13 @@
       "fingerprint": "964bfc132469451f1cc5c0286f6992448493600a94b83050e55f2b52f2aa49c9",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[4]": {
@@ -14671,12 +14681,13 @@
       "fingerprint": "8c6334d6a1fa7e12ba178b4f5a8b1609accfe3777daecb7d12ebae10810b3589",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[5]": {
@@ -14684,12 +14695,13 @@
       "fingerprint": "9fbff9dbdf7431d2241d477de3a60720e129b8e0ff4e8ae2fed9a63fb68e2ac3",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[6]": {
@@ -14697,12 +14709,13 @@
       "fingerprint": "355e82910f71d1a47d7ad3e4651e630cb9a14cb9ce8c5e546256cb1dc7a8a4ef",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[7]": {
@@ -14710,12 +14723,13 @@
       "fingerprint": "fbfd7989867265bcc4d118084d5a586bb3cb19f43e80a897430a2d4b44e1a736",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[8]": {
@@ -14723,12 +14737,13 @@
       "fingerprint": "f3d8b7b7f5ac197895d70bc2d1acafd7ed8b997c376884db11918107de9a9633",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[9]": {
@@ -14736,12 +14751,13 @@
       "fingerprint": "074f31ec6dffb1f8b223166701df4a83401d98a818a2e64422c1c684a5c5e6c1",
       "format": "unified",
       "last_execution": null,
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-allowlist.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[10]": {
@@ -14788,12 +14804,13 @@
       "fingerprint": "82729a08d16aab9e027610cd0a56e3054ab17ba6ff901a589ed7054518afa189",
       "format": "unified",
       "last_execution": null,
+      "reason": "the StaleShardVersion label fixture is capped below MongoDB 7.0",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams-resume-errorLabels.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[14]": {
@@ -15321,12 +15338,13 @@
       "fingerprint": "2ff5989b0755868c260a95393a62d7a45f9cf7a72d6817efad6724ba614d8dc2",
       "format": "unified",
       "last_execution": null,
+      "reason": "the change-stream comment fixture is capped below MongoDB 4.4",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[4]": {
@@ -15360,12 +15378,13 @@
       "fingerprint": "ce5e1bfd85891fa5a4325671438547bbf3e9192c038d2cb448e216505cd7dd9e",
       "format": "unified",
       "last_execution": null,
+      "reason": "the change-stream comment fixture is capped below MongoDB 4.4",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "change-streams/tests/unified/change-streams.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[7]": {
@@ -33469,12 +33488,13 @@
       "fingerprint": "7ea2c7b6c05706aba1500147cc446923115390cc3f9ed546d128955d0372cede",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "client-side-operations-timeout/tests/runCursorCommand.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": {
@@ -33482,12 +33502,13 @@
       "fingerprint": "d45ef83db87ffcf661184b0bc365646283e0fdfdb1c3226f5eef3632f1c78f7b",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "client-side-operations-timeout/tests/runCursorCommand.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": {
@@ -33495,12 +33516,13 @@
       "fingerprint": "c02068748ffddf99e0727fddf30dc1ac1d037a2bcb402f011b7bbd6b9a0fdeb3",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture omits commandName and timeoutMS while expecting a client timeout, and the pinned behavioral reference requires command_name for createCommandCursor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "client-side-operations-timeout/tests/runCursorCommand.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/sessions-inherit-timeoutMS.json::test[1]": {
@@ -34652,12 +34674,13 @@
       "fingerprint": "1c32b82ec6e387e32cd20b9b4750ae77902f266cfc9920d9703033d780730774",
       "format": "unified",
       "last_execution": null,
+      "reason": "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "command-logging-and-monitoring/tests/monitoring/redacted-commands.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[5]": {
@@ -36706,12 +36729,13 @@
       "fingerprint": "0457cbe0817d4850dd2ac63211944bcd36277109e279d38c61ea00679b2d7c34",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/aggregate-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/aggregate-let.json::test[3]": {
@@ -36732,12 +36756,13 @@
       "fingerprint": "48d54183a4dd6e81c24a3fd0d48f0031f7776cffb53cb42326760feecc92aa54",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/aggregate-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": {
@@ -37018,12 +37043,13 @@
       "fingerprint": "3b0a5676a78ad33f857fc3a7be0777fa3abcb7c1954dae7396e37aabd242d151",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/aggregate.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/aggregate.json::test[5]": {
@@ -37044,12 +37070,13 @@
       "fingerprint": "f5483fb6ef4821ef644275f774cc132c3f5db64589c7198268db3b36fe13e57a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/aggregate.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/aggregate.json::test[7]": {
@@ -37161,12 +37188,13 @@
       "fingerprint": "2f8a6133f680791dadcaa03ca97d30ff10ecabeb210ef8ef7bec4ca6d07fb40d",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[1]": {
@@ -37174,12 +37202,13 @@
       "fingerprint": "cd04a66f6cdd808c49a83897af906c5c5b054c37953c398c83f1f3d9823ca6bb",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-delete-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-delete-hint-serverError.json::test[2]": {
@@ -37187,12 +37216,13 @@
       "fingerprint": "17764c7a78fea7f97d345ce791f0a97d54a56fe2e838b0de7ac83b0db017f39d",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-delete-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-delete-hint.json::test[1]": {
@@ -37226,12 +37256,13 @@
       "fingerprint": "970c99460e9128455d056434055b192d34230e7f551ccf2ac46808ac1843e8a3",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[2]": {
@@ -37239,12 +37270,13 @@
       "fingerprint": "1c38269fac90488867509f02ee4191a2c7cfb6925151e400297ed9af93c8ff10",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-deleteMany-hint-unacknowledged.json::test[3]": {
@@ -37291,12 +37323,13 @@
       "fingerprint": "3d8e62d51ee2a2d55897b12daf68090818efdae832f21e6c8f4bc82e53091f7e",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-deleteMany-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-deleteMany-rawdata.json::test[1]": {
@@ -37330,12 +37363,13 @@
       "fingerprint": "e2ab1e73c25663119f60bcc1dd7057ed8fbd8ea35d6011111b2e991401e360ea",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[2]": {
@@ -37343,12 +37377,13 @@
       "fingerprint": "92897b243c86c4a1845367a1e75c3cc634b76cbb7e360d5accdc6b8067d43a63",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-deleteOne-hint-unacknowledged.json::test[3]": {
@@ -37395,12 +37430,13 @@
       "fingerprint": "571a1366d06370e85c7093ed7622624b6f21bf1a83aca4afad63cc5431cabdf3",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-deleteOne-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-deleteOne-rawdata.json::test[1]": {
@@ -37460,12 +37496,13 @@
       "fingerprint": "0bf7ec17e191debf465842d786e29fc3f493a86082044913e9e48c2c0fd0f3ac",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[3]": {
@@ -37538,12 +37575,13 @@
       "fingerprint": "123ce0af925cbc6c86794037a91cd5b25eb62675c60882188677365208984bce",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-replaceOne-dots_and_dollars.json::test[4]": {
@@ -37603,12 +37641,13 @@
       "fingerprint": "d45da63d00461b168fb22dae1027886f40d7d7d389e6a9d3cb21c6768fbe8f0c",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-replaceOne-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-replaceOne-rawdata.json::test[1]": {
@@ -37837,12 +37876,13 @@
       "fingerprint": "5631df326566b7d9ef56e96f62efa1a6cf91fd6f22b1d41714cd916115a5ff0b",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-updateMany-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-updateMany-pipeline.json::test[1]": {
@@ -37980,12 +38020,13 @@
       "fingerprint": "90a3fc998e5cfad1c368d6779f0ce662b024085b1d917da603589351bd091261",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/bulkWrite-updateOne-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/bulkWrite-updateOne-pipeline.json::test[1]": {
@@ -39189,12 +39230,13 @@
       "fingerprint": "6f7365efa5023f245f7263455bb6451307d7af248e8256ac19b4fdd7e98d3cb4",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/countDocuments-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/countDocuments-rawdata.json::test[1]": {
@@ -39358,12 +39400,13 @@
       "fingerprint": "700021ca77b32d344d52224c693f5dc4e05ca893365fb03965787b31c247f847",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/db-aggregate-write-readPreference.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[3]": {
@@ -39384,12 +39427,13 @@
       "fingerprint": "39a3c6225754193a2280f522b7b4993af1b288e4ae4bc59341f77889b0e62e4d",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/db-aggregate-write-readPreference.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/db-aggregate.json::test[1]": {
@@ -39462,12 +39506,13 @@
       "fingerprint": "96cb9d59acee870205ceef6eabab438089ff4b1faf8662ba097fe52db5a29c9a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteMany-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[1]": {
@@ -39475,12 +39520,13 @@
       "fingerprint": "3ff633561c60e67a9fa3dcc7ac8d56bd20b002a291d8674237a349437d206839",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteMany-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteMany-hint-serverError.json::test[2]": {
@@ -39488,12 +39534,13 @@
       "fingerprint": "3d23b5f4dff4f3e4ddb12140b7a18ae5852a844612f0e8e95c79d65a1097db4b",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteMany-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[1]": {
@@ -39501,12 +39548,13 @@
       "fingerprint": "43bcc468349a5ccdf43f9c0035a6272448199cb8942913d276380bbf522704f8",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteMany-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[2]": {
@@ -39514,12 +39562,13 @@
       "fingerprint": "86749752895a11764500a8a969e08e60bd3deec603e5e406fc2a310f5e9ecdad",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteMany-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteMany-hint-unacknowledged.json::test[3]": {
@@ -39592,12 +39641,13 @@
       "fingerprint": "6df0ef48fecd3d14d7c14c9bf1ddcbc66724f2ad1c0aa75b2df3ee4076ebecf3",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteMany-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteMany-rawdata.json::test[1]": {
@@ -39696,12 +39746,13 @@
       "fingerprint": "08f6ec7c642544af2e157559666f9229adac452903d1e55989499058792b8748",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteOne-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteOne-errorResponse.json::test[1]": {
@@ -39722,12 +39773,13 @@
       "fingerprint": "3e0d975d1ef8ab550c63e8e97fcdcc554b1e78712dc5a65d478ed99896181ffe",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteOne-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteOne-hint-serverError.json::test[2]": {
@@ -39735,12 +39787,13 @@
       "fingerprint": "d7e06d162f71c6fa3dc5b0c63d1fb895bf3174bea44effd5bae72c20c7b9754f",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteOne-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[1]": {
@@ -39748,12 +39801,13 @@
       "fingerprint": "535020e8c374ded6a0a2558907170f8dad5881442015e94f6d95012618bd2c93",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteOne-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[2]": {
@@ -39761,12 +39815,13 @@
       "fingerprint": "39867c02e8411f4e1321c6bde01e9fb5d9ba639b5c6f1e1faf166108701f550c",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteOne-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteOne-hint-unacknowledged.json::test[3]": {
@@ -39839,12 +39894,13 @@
       "fingerprint": "a0156b16bb1b7b6bc89b101a77ee1e501393d806069e4d21d50649c01a23c06c",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/deleteOne-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/deleteOne-rawdata.json::test[1]": {
@@ -39956,12 +40012,13 @@
       "fingerprint": "5cefd159a8c330bd06fdc6d214705ac67fc1ac8ff966c0a776a3a77040cd1537",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/distinct-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/distinct-hint.json::test[1]": {
@@ -40073,12 +40130,13 @@
       "fingerprint": "44e25169104337597fd7cd9dba07535de40e349dd71518bd675eb71a40083408",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/estimatedDocumentCount-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/estimatedDocumentCount-rawdata.json::test[1]": {
@@ -40190,12 +40248,13 @@
       "fingerprint": "c169f04febf57156a5589155d0d3538d8b0ec2cf1afc2ffdcc84f06c780f6b3c",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/find-allowdiskuse-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/find-allowdiskuse-serverError.json::test[2]": {
@@ -40203,12 +40262,13 @@
       "fingerprint": "e1cc82ff58c6fd1eb68bcb9a993161791b874808182fbe6d8978609e7dc1ce94",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/find-allowdiskuse-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/find-allowdiskuse.json::test[1]": {
@@ -40294,12 +40354,13 @@
       "fingerprint": "1249432587925f6597ead1f1b5b7345a8e8134def4e44fe3366a1fcaa037b7a0",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/find-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/find-comment.json::test[4]": {
@@ -40320,12 +40381,13 @@
       "fingerprint": "9e303a066beaba142e3b635999cb23b465432319740dd831eab4153d06355110",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/find-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/find-let.json::test[1]": {
@@ -40346,12 +40408,13 @@
       "fingerprint": "8c59d670fa4306359ddac92bb1918e387292061cb868ffc37eff21d340f5c1a5",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/find-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/find-rawdata.json::test[1]": {
@@ -40515,12 +40578,13 @@
       "fingerprint": "4b841c5bb8cdd99ba0b5314e96c71c35511138ff0063fbb17b7c481eca428552",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndDelete-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[1]": {
@@ -40528,12 +40592,13 @@
       "fingerprint": "84feeba5823b6f816d79e582603eb2cb5f63930ed13913f855769342e829cd44",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndDelete-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndDelete-hint-serverError.json::test[2]": {
@@ -40541,12 +40606,13 @@
       "fingerprint": "55f16d0896c5c50bc41b36c53541a5ab1937b0c0ec59ce1ec9be8dc585be46b4",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndDelete-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[1]": {
@@ -40554,12 +40620,13 @@
       "fingerprint": "b9635a1df3fcec7354071c71d832fb5701f930f70fdf5b6f10d5424bd3721618",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[2]": {
@@ -40567,12 +40634,13 @@
       "fingerprint": "caca4036c1082852ce81d8b914e089a7e9d6e6a35e8e1426eec9a527b110bedc",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndDelete-hint-unacknowledged.json::test[3]": {
@@ -40645,12 +40713,13 @@
       "fingerprint": "85db8b7c2fc3ea06cb2b2d8e21f971858aa472dbc921adff5801e8a84368407f",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndDelete-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndDelete-rawdata.json::test[1]": {
@@ -40762,12 +40831,13 @@
       "fingerprint": "e91cfcd5f1a7325944d8de8716f18b11e21ab6c35006bae4972f24bec90e3c0b",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[1]": {
@@ -40801,12 +40871,13 @@
       "fingerprint": "4b9ce95b5963734ae0f61cb7415ac5af33c6d40af2e4582ca7caccf7283eb382",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-dots_and_dollars.json::test[4]": {
@@ -40827,12 +40898,13 @@
       "fingerprint": "dbda23b132f67363389c87eee9d0f69768358d96cd815c0e149622cd15f6683a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-hint-serverError.json::test[2]": {
@@ -40840,12 +40912,13 @@
       "fingerprint": "4beed59c7077ad1eafe1fcf33d5ef10e70c5a4cb44a7921551e1bd9188fdfe15",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[1]": {
@@ -40853,12 +40926,13 @@
       "fingerprint": "1576f454fe76915105a8795c983c0123b5f1fab8bd229b0c70a71f083c0870e6",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[2]": {
@@ -40866,12 +40940,13 @@
       "fingerprint": "8b3d008c6ce70a8272c2d0e928440c91c71bb48d3d5c43893f5a660e32a80633",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-hint-unacknowledged.json::test[3]": {
@@ -40944,12 +41019,13 @@
       "fingerprint": "b5522dabc8e9686fda3c4a27da4d7b2f2ac5caed76aa843ec41e42781bd1f488",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndReplace-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndReplace-rawdata.json::test[1]": {
@@ -41191,12 +41267,13 @@
       "fingerprint": "c4049e17316d1efe3eea53417f82ea0727e47fd124337f49519c77d7cbfd4058",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndUpdate-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndUpdate-dots_and_dollars.json::test[1]": {
@@ -41282,12 +41359,13 @@
       "fingerprint": "23ab4debae3c3cc882a579129d0eaa8bde90b997ad5f7bc5015ad0a52d1ef837",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndUpdate-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndUpdate-hint-serverError.json::test[2]": {
@@ -41295,12 +41373,13 @@
       "fingerprint": "49037b863510469508c03175974013f867731a45e391bb94113a26568174fb2e",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndUpdate-hint-serverError.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[1]": {
@@ -41308,12 +41387,13 @@
       "fingerprint": "d12e921d97b00789c484b2fa181b2747c7ee2cefd82e18f0b5df95daa4442c7e",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[2]": {
@@ -41321,12 +41401,13 @@
       "fingerprint": "da37086023f3f77856f1026fc0a3491366e4bed59623f45f6e7d682e1817631a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-4.4 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndUpdate-hint-unacknowledged.json::test[3]": {
@@ -41399,12 +41480,13 @@
       "fingerprint": "5d72c368543f16e0931763c2fe0223fa5269717ec9a6296cc24649fbc66dec51",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/findOneAndUpdate-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/findOneAndUpdate-pipeline.json::test[1]": {
@@ -41581,12 +41663,13 @@
       "fingerprint": "cf76abe49fd491de942b4e71d8443bc866e85be44a94e678c6752136b8520625",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/insertMany-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[1]": {
@@ -41607,12 +41690,13 @@
       "fingerprint": "4a38ef3889f95893be2191d8949d0cfbf3068cb006547316a00e7f32bd5f903f",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/insertMany-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/insertMany-dots_and_dollars.json::test[3]": {
@@ -41750,12 +41834,13 @@
       "fingerprint": "efbf28fc98ac928e4e0429921ef7c13f63ccb5b48e1898c3d4b4b340b5159be1",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/insertOne-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[1]": {
@@ -41776,12 +41861,13 @@
       "fingerprint": "6fdf0bcb01588c986948fb9873c8e45ae745d577a0bef4ba7484c275b98ff926",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/insertOne-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/insertOne-dots_and_dollars.json::test[3]": {
@@ -41867,12 +41953,13 @@
       "fingerprint": "1b8584badbfcc2e1e87c7e1cf71cef23071302f9406bbd8126fda453cd68a649",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/insertOne-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/insertOne-errorResponse.json::test[1]": {
@@ -41971,12 +42058,13 @@
       "fingerprint": "7a82ea66446f4e5888461fee9a407cc60edc017464f00e33eebf9681aa183d8a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/replaceOne-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[1]": {
@@ -42010,12 +42098,13 @@
       "fingerprint": "d7a0ff52c81a15d3925ecb5cc3fd4ff31ba74a7bb12c097dc119187395110d29",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/replaceOne-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/replaceOne-dots_and_dollars.json::test[4]": {
@@ -42036,12 +42125,13 @@
       "fingerprint": "4a90f7d371a38193ccfe95f06cd9b90190fb1e41bfda3a4a46dd4c3a22f4cde9",
       "format": "unified",
       "last_execution": null,
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/replaceOne-dots_and_dollars.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/replaceOne-hint-unacknowledged.json::test[1]": {
@@ -42114,12 +42204,13 @@
       "fingerprint": "11339127051c1e062baa3f6a26b7ec9ef82aca216bd6b7c22a7f0d25d3d740f2",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/replaceOne-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/replaceOne-rawdata.json::test[1]": {
@@ -42335,12 +42426,13 @@
       "fingerprint": "192de775889260307df0a96a222f44900e2b71cf1935889e40902f9b939d775a",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/updateMany-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/updateMany-dots_and_dollars.json::test[1]": {
@@ -42465,12 +42557,13 @@
       "fingerprint": "38fff32be51a1c145011220bdc26c618bf2b8800980eb11a4e533ddb1589614c",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/updateMany-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/updateMany-pipeline.json::test[1]": {
@@ -42686,12 +42779,13 @@
       "fingerprint": "2a0e42cf94b657787f47a25ae276db21ddd456d0d084da9211e3bf7978b1b82d",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/updateOne-comment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/updateOne-dots_and_dollars.json::test[1]": {
@@ -42829,12 +42923,13 @@
       "fingerprint": "764546d7010e132169ed9329440c11fc09b336c86ce47405ba3c9a3d2f4906ec",
       "format": "unified",
       "last_execution": null,
+      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
       "required_environment": "live-mongodb",
       "runner": "spec/unified/run.py",
       "scope": "post-v1",
       "source": "crud/tests/unified/updateOne-let.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "excluded_scope",
       "suite": "crud"
     },
     "crud/tests/unified/updateOne-pipeline.json::test[1]": {
@@ -86653,8 +86748,8 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1440,
-      "excluded_scope": 2,
+      "deferred_unsupported": 1345,
+      "excluded_scope": 97,
       "passed": 4082
     },
     "suites": {

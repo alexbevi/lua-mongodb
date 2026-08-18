@@ -17,6 +17,7 @@ from spec.compatibility import matrix  # noqa: E402
 from spec.release import scope  # noqa: E402
 from spec.v04 import scope as v04_scope  # noqa: E402
 from spec.v05 import scope as v05_scope  # noqa: E402
+from spec.v06 import scope as v06_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -92,6 +93,12 @@ V05_GATES = [
   "REL-051",
 ]
 V05_RELEASE_ACTIVITY = "REL-052"
+V06_GATES = [
+  "ADV-011",
+  *(f"LEG-{index:03d}" for index in range(1, 14)),
+]
+V06_CONFORMANCE_ACTIVITY = "REL-053"
+V06_RELEASE_ACTIVITY = "REL-054"
 
 
 class ChecklistError(ValueError):
@@ -196,6 +203,15 @@ def generate() -> dict[str, Any]:
   if api_track[:len(v05_prefix)] != v05_prefix:
     raise ChecklistError("v0.5 release gate inventory does not match the track")
 
+  v06_segment = [
+    "ADV-007",
+    *V06_GATES,
+    V06_CONFORMANCE_ACTIVITY,
+    V06_RELEASE_ACTIVITY,
+  ]
+  if api_track[len(v05_prefix):len(v05_prefix) + len(v06_segment)] != v06_segment:
+    raise ChecklistError("v0.6 release gate inventory does not match the track")
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -230,6 +246,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in V06_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.6 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   for activity_ids in AUDITS.values():
     for activity_id in activity_ids:
       if activity_id not in activities:
@@ -240,6 +262,7 @@ def generate() -> dict[str, Any]:
   scope_report = scope.generate()
   v04_report = v04_scope.generate()
   v05_report = v05_scope.generate()
+  v06_report = v06_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -285,6 +308,10 @@ def generate() -> dict[str, Any]:
   if v05_summary["planned"] != 0:
     raise ChecklistError("v0.5 conformance still has planned cases")
 
+  v06_summary = v06_report["summary"]
+  if v06_summary["planned"] != 0:
+    raise ChecklistError("v0.6 conformance still has planned cases")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -314,6 +341,7 @@ def generate() -> dict[str, Any]:
     "make check-fast test-coverage",
     "spec/v04/scope.py",
     "spec/v05/scope.py",
+    "spec/v06/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-pre-8.2.json",
   ):
@@ -343,6 +371,7 @@ def generate() -> dict[str, Any]:
       "completed_release_additions": RELEASE_ADDITIONS,
       "completed_v0_4_gates": V04_GATES,
       "completed_v0_5_gates": V05_GATES,
+      "completed_v0_6_gates": V06_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -375,6 +404,20 @@ def generate() -> dict[str, Any]:
           v05_report["target_version_exclusions"]
         ),
       },
+      "v0_6_conformance": {
+        "classified_cases": v06_summary["classified"],
+        "excluded_cases": v06_summary["excluded"],
+        "exact_unified_cases": v06_report["evidence"][
+          "exact_unified_cases"
+        ],
+        "passed_cases": v06_summary["passed"],
+        "reference_behavior_exclusions": len(
+          v06_report["reference_behavior_exclusions"]
+        ),
+        "target_version_exclusions": len(
+          v06_report["target_version_exclusions"]
+        ),
+      },
     },
     "ready": True,
     "release": release_metadata(),
@@ -396,6 +439,7 @@ def main(argv: list[str] | None = None) -> int:
     scope.ScopeError,
     v04_scope.ScopeError,
     v05_scope.ScopeError,
+    v06_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

@@ -116,6 +116,22 @@
       "CS-012",
       "REL-051"
     ],
+    "completed_v0_6_gates": [
+      "ADV-011",
+      "LEG-001",
+      "LEG-002",
+      "LEG-003",
+      "LEG-004",
+      "LEG-005",
+      "LEG-006",
+      "LEG-007",
+      "LEG-008",
+      "LEG-009",
+      "LEG-010",
+      "LEG-011",
+      "LEG-012",
+      "LEG-013"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
@@ -137,6 +153,14 @@
       "excluded_cases": 19,
       "passed_cases": 170,
       "target_version_exclusions": 19
+    },
+    "v0_6_conformance": {
+      "classified_cases": 176,
+      "exact_unified_cases": 81,
+      "excluded_cases": 95,
+      "passed_cases": 81,
+      "reference_behavior_exclusions": 3,
+      "target_version_exclusions": 92
     }
   },
   "ready": true,

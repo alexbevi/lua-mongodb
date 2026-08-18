@@ -139,7 +139,7 @@ class UnifiedCliTests(unittest.TestCase):
       ["REL-008"] * len(runnable),
       [manifest["tests"][identity]["activity"] for identity in runnable],
     )
-    self.assertEqual("deferred_unsupported", manifest["tests"][pre_v1]["status"])
+    self.assertEqual("excluded_scope", manifest["tests"][pre_v1]["status"])
     self.assertEqual("REL-053", manifest["tests"][pre_v1]["activity"])
     self.assertEqual(1798, manifest["ratchets"]["runnable"])
     self.assertEqual(1798, manifest["ratchets"]["passed"])
@@ -545,7 +545,7 @@ class UnifiedCliTests(unittest.TestCase):
       },
     )
     self.assertEqual(
-      {("REL-053", "deferred_unsupported")},
+      {("REL-053", "excluded_scope")},
       {
         (
           manifest["tests"][identity]["activity"],
@@ -770,7 +770,7 @@ class UnifiedCliTests(unittest.TestCase):
     ]
     self.assertEqual(19, len(version_exclusions))
     self.assertEqual(
-      {("REL-053", "deferred_unsupported")},
+      {("REL-053", "excluded_scope")},
       {
         (
           manifest["tests"][identity]["activity"],
@@ -1475,7 +1475,7 @@ class UnifiedCliTests(unittest.TestCase):
       },
     )
     self.assertEqual(
-      {("REL-053", "deferred_unsupported")},
+      {("REL-053", "excluded_scope")},
       {
         (
           manifest["tests"][identity]["activity"],
@@ -1580,7 +1580,7 @@ class UnifiedCliTests(unittest.TestCase):
       },
     )
     self.assertEqual(
-      {("REL-053", "deferred_unsupported")},
+      {("REL-053", "excluded_scope")},
       {
         (
           manifest["tests"][identity]["activity"],
@@ -2063,7 +2063,7 @@ class UnifiedCliTests(unittest.TestCase):
     )
     self.assertEqual("REL-053", manifest["tests"][skipped_reference]["activity"])
     self.assertEqual(
-      "deferred_unsupported",
+      "excluded_scope",
       manifest["tests"][skipped_reference]["status"],
     )
 
@@ -2105,7 +2105,7 @@ class UnifiedCliTests(unittest.TestCase):
       "client-side-operations-timeout/tests/runCursorCommand.json::test[6]"
     )
     self.assertEqual(
-      ("REL-053", "deferred_unsupported"),
+      ("REL-053", "excluded_scope"),
       (
         manifest["tests"][command_cursor]["activity"],
         manifest["tests"][command_cursor]["status"],
@@ -2135,6 +2135,19 @@ class UnifiedCliTests(unittest.TestCase):
         classifications,
         {"DONE-001": "completed"},
       )
+
+  def test_per_test_classification_allows_a_completed_exact_exclusion(self) -> None:
+    discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]
+    classifications = {discovered[0]["id"]: classification("DONE-001")}
+    classifications[discovered[0]["id"]]["status"] = "excluded_scope"
+
+    result = run.classify_tests(
+      discovered,
+      classifications,
+      {"DONE-001": "completed"},
+    )
+
+    self.assertEqual("excluded_scope", result[0]["status"])
 
   def test_inventory_reports_stable_per_test_identities(self) -> None:
     fixtures = [

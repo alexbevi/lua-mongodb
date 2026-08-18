@@ -627,7 +627,7 @@ def classify_tests(
       )
 
     if (
-      status != "runnable"
+      status == "deferred_unsupported"
       and activity_states is not None
       and activity_states[activity] == "completed"
     ):

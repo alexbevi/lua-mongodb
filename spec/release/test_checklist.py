@@ -49,6 +49,17 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
+        "classified_cases": 176,
+        "excluded_cases": 95,
+        "exact_unified_cases": 81,
+        "passed_cases": 81,
+        "reference_behavior_exclusions": 3,
+        "target_version_exclusions": 92,
+      },
+      report["gates"]["v0_6_conformance"],
+    )
+    self.assertEqual(
+      {
         "cleanup": ["REL-042", "REL-043"],
         "packaging": ["REL-007"],
         "security": ["REL-008"],
@@ -107,6 +118,10 @@ class ReleaseChecklistTests(unittest.TestCase):
         "REL-051",
       ],
       report["gates"]["completed_v0_5_gates"],
+    )
+    self.assertEqual(
+      ["ADV-011", *[f"LEG-{index:03d}" for index in range(1, 14)]],
+      report["gates"]["completed_v0_6_gates"],
     )
     self.assertEqual(
       [

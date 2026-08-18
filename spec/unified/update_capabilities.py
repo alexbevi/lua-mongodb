@@ -958,11 +958,14 @@ def generate() -> dict[str, object]:
 
   for test in discovered:
     activity, reason = classify_test(test)
+    status = "runnable" if reason is None else "deferred_unsupported"
+    if activity == "REL-053" and reason is not None:
+      status = "excluded_scope"
     tests[test["id"]] = {
       "activity": activity,
       "fingerprint": test["fingerprint"],
       "requirements": test["requirements"],
-      "status": "runnable" if reason is None else "deferred_unsupported",
+      "status": status,
     }
 
     if reason is not None:

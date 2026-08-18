@@ -506,7 +506,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution; nineteen legacy-server cases retain explicit `ADV-011` version exclusions. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, client bulk write, legacy command and cursor APIs, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

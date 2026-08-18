@@ -5685,6 +5685,35 @@
       "notes": [],
       "started_at": "2026-08-18T19:29:44+00:00",
       "completed_at": "2026-08-18T19:42:18+00:00"
+    },
+    "REL-053": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.v06.test_scope.V06ScopeTests.test_generated_scope_closes_the_legacy_api_surface",
+          "exit_code": 2,
+          "summary": "1 defining Python test errored because spec.v06.scope did not exist",
+          "recorded_at": "2026-08-18T19:51:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.v06.test_scope plus directly coupled v0.5, capability, ledger, release-scope, and release-checklist cases'",
+          "exit_code": 0,
+          "summary": "15 focused Python tests passed; 0 failed and 0 environment-skipped; v0.6 projection closes 176 cases as 81 exact passes, 92 target-version exclusions, and 3 pinned-reference exclusions",
+          "recorded_at": "2026-08-18T20:03:19+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 generated conformance/release --check validators and planning.tests.test_local_testing",
+          "exit_code": 0,
+          "summary": "7 generated artifact checks and 5 workflow/Makefile contract tests passed; ledger has 4082 passed, 1345 deferred, and 97 excluded cases; README projection is current",
+          "recorded_at": "2026-08-18T20:03:20+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T19:48:01+00:00",
+      "completed_at": "2026-08-18T20:03:29+00:00"
     }
   },
   "verified_references": {

@@ -47,7 +47,8 @@ class LocalTestingTests(unittest.TestCase):
       ROOT / ".github" / "workflows" / "full-conformance.yml"
     ).read_text(encoding="utf-8")
 
-    self.assertIn("make check-full", workflow)
+    self.assertIn("make check-fast test-coverage", workflow)
+    self.assertIn("python3 spec/unified/run.py", workflow)
 
   def test_makefile_separates_fast_and_full_verification(self) -> None:
     makefile = MAKEFILE.read_text(encoding="utf-8")
@@ -67,15 +68,16 @@ class LocalTestingTests(unittest.TestCase):
     )
     self.assertIn("spec/v04/scope.py --check", makefile)
     self.assertIn("spec/v05/scope.py --check", makefile)
+    self.assertIn("spec/v06/scope.py --check", makefile)
     self.assertIn('--execution-report "$(UNIFIED_REPORT)"', makefile)
     self.assertIn(
       '--execution-report "$(V04_SUPPLEMENTAL_REPORT)"',
       makefile,
     )
     self.assertEqual(
-      2,
+      3,
       makefile.count('--execution-report "$(V04_SUPPLEMENTAL_REPORT)"'),
-      "both v0.4 and v0.5 must consume supplemental version evidence",
+      "v0.4 through v0.6 must consume supplemental version evidence",
     )
     self.assertIn("test-package", fast_gate)
     self.assertEqual(
