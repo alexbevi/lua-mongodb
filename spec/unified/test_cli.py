@@ -2211,6 +2211,51 @@ class UnifiedCliTests(unittest.TestCase):
       report["timings"]["slowest_fixture_groups"],
     )
 
+  def test_execution_progress_is_flushed_to_its_diagnostic_stream(self) -> None:
+    classifications = [
+      {
+        "fixture": "transactions/tests/unified/mongos-pin-auto.json",
+        "id": "transactions/tests/unified/mongos-pin-auto.json::test[1]",
+        "status": "runnable",
+      },
+      {
+        "fixture": "transactions/tests/unified/mongos-pin-auto.json",
+        "id": "transactions/tests/unified/mongos-pin-auto.json::test[2]",
+        "status": "runnable",
+      },
+    ]
+    stream = mock.Mock()
+    progress = run.ExecutionProgress(
+      total_batches=3,
+      stream=stream,
+      clock=mock.Mock(side_effect=[10.0, 12.5]),
+    )
+
+    started = progress.start(classifications, "live-sharded")
+    progress.finish(
+      classifications,
+      "live-sharded",
+      {
+        classifications[0]["id"]: ("passed", None),
+        classifications[1]["id"]: (
+          "environment_skipped",
+          "not available",
+        ),
+      },
+      started,
+    )
+
+    output = "".join(call.args[0] for call in stream.write.call_args_list)
+    self.assertEqual(
+      "unified progress: [1/3] start live-sharded "
+      "transactions/tests/unified/mongos-pin-auto.json (2 tests)\n"
+      "unified progress: [1/3] done live-sharded "
+      "transactions/tests/unified/mongos-pin-auto.json "
+      "duration_ms=2500.000 passed=1 environment_skipped=1 failed=0\n",
+      output,
+    )
+    self.assertEqual(2, stream.flush.call_count)
+
   def test_batch_report_omission_fails_every_selected_identity(self) -> None:
     classifications = [
       {

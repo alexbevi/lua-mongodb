@@ -5238,6 +5238,35 @@
       "reopened_after_commit": "fc4b5c2a0a3b4865e5788011f344acec3b10bec8",
       "started_at": "2026-08-18T13:06:25+00:00",
       "completed_at": "2026-08-18T13:11:57+00:00"
+    },
+    "CI-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
+          "exit_code": 2,
+          "summary": "The new progress contract failed because spec.unified.run exposed no ExecutionProgress boundary, so long fixture batches emitted no flushed start or completion diagnostics.",
+          "recorded_at": "2026-08-18T14:56:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
+          "exit_code": 0,
+          "summary": "All 97 unified CLI contracts passed, including flushed start/completion diagnostics with stable position, duration, and exact outcome counts.",
+          "recorded_at": "2026-08-18T15:00:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 FOCUS_UNIFIED='crud/tests/unified/insertOne.json::test?1?'",
+          "exit_code": 0,
+          "summary": "The directly coupled loopback batch executed 1 case: 1 passed, 0 environment-skipped, 0 deferred, and 0 failed; progress appeared before and after execution without changing conformance output.",
+          "recorded_at": "2026-08-18T15:00:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T14:55:41+00:00",
+      "completed_at": "2026-08-18T15:00:24+00:00"
     }
   },
   "verified_references": {

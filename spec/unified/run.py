@@ -250,6 +250,75 @@ class ExecutionTimings:
     )
 
 
+class ExecutionProgress:
+  """Emit flushed human diagnostics without changing report output."""
+
+  def __init__(
+    self,
+    total_batches: int,
+    stream: Any = None,
+    clock: Any = time.perf_counter,
+  ):
+    if type(total_batches) is not int or total_batches < 0:
+      raise CapabilityError("unified progress total must be a non-negative integer")
+
+    self._clock = clock
+    self._current = 0
+    self._stream = stream or sys.stderr
+    self._total = total_batches
+
+  def start(
+    self,
+    classifications: list[dict[str, Any]],
+    environment: str,
+  ) -> tuple[int, float]:
+    if not classifications:
+      raise CapabilityError("cannot report an empty unified fixture group")
+
+    self._current += 1
+    fixture = classifications[0]["fixture"]
+    print(
+      f"unified progress: [{self._current}/{self._total}] start "
+      f"{environment} {fixture} ({len(classifications)} tests)",
+      file=self._stream,
+      flush=True,
+    )
+    return self._current, self._clock()
+
+  def finish(
+    self,
+    classifications: list[dict[str, Any]],
+    environment: str,
+    results: dict[str, tuple[str, str | None]],
+    started: tuple[int, float],
+  ) -> None:
+    index, started_at = started
+    fixture = classifications[0]["fixture"]
+    counts = {
+      "environment_skipped": 0,
+      "failed": 0,
+      "passed": 0,
+    }
+
+    for status, _ in results.values():
+      if status in counts:
+        counts[status] += 1
+
+    duration_ms = _duration_ms(
+      self._clock() - started_at,
+      f"unified progress fixture group {fixture}",
+    )
+    print(
+      f"unified progress: [{index}/{self._total}] done "
+      f"{environment} {fixture} duration_ms={duration_ms:.3f} "
+      f"passed={counts['passed']} "
+      f"environment_skipped={counts['environment_skipped']} "
+      f"failed={counts['failed']}",
+      file=self._stream,
+      flush=True,
+    )
+
+
 def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[str]:
   """Return sorted source-relative unified JSON fixture paths."""
   if not source.is_dir():
@@ -1761,12 +1830,16 @@ def main(argv: list[str] | None = None) -> int:
 
     registry = apply_environment_overrides(load_executor_registry())
 
+    batches = execution_batches(selected, registry)
+    batch_progress = ExecutionProgress(len(batches))
+
     def execute_batch(
       batch: list[dict[str, Any]],
       environment: dict[str, str],
     ) -> dict[str, tuple[str, str | None]]:
       entry = registry.get(batch[0]["id"], {})
       environment_name = entry.get("environment") or "unregistered"
+      progress_started = batch_progress.start(batch, environment_name)
 
       with timings.observe_fixture_group(batch, environment_name):
         runnable = []
@@ -1793,9 +1866,14 @@ def main(argv: list[str] | None = None) -> int:
             environment,
           )(runnable))
 
+        batch_progress.finish(
+          batch,
+          environment_name,
+          results,
+          progress_started,
+        )
         return results
 
-    batches = execution_batches(selected, registry)
     timings.finish_setup()
     execution_results: dict[str, tuple[str, str | None]] = {}
     authenticated_batches = [
