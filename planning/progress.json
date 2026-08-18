@@ -5399,6 +5399,28 @@
       "reopened_after_commit": "29f0036c77d66a2a46c1dbd0ddc0493d6668f4c7",
       "started_at": "2026-08-18T16:11:40+00:00",
       "completed_at": "2026-08-18T16:12:15+00:00"
+    },
+    "LEG-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\"; /Users/alex/.luarocks/bin/busted --lua=/opt/homebrew/opt/lua@5.4/bin/lua spec/unit/legacy_count_spec.lua --filter=eligible",
+          "exit_code": 1,
+          "summary": "The defining public count test failed on the first NotWritablePrimary response instead of retrying; 0 successes, 1 failure, and 0 errors.",
+          "recorded_at": "2026-08-18T16:20:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/legacy_count_spec.lua spec/unit/retry_executor_spec.lua' FOCUS_UNIFIED='<exact count.json and count-serverErrors.json runs>' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/crud.lua spec/unit/legacy_count_spec.lua'; make test-complexity; generated --check validators",
+          "exit_code": 0,
+          "summary": "Thirteen defining and directly coupled unit assertions passed; all 17 newly applicable retryable-count unified cases executed and passed with 0 environment-skipped, 0 deferred, and 0 failed; 130 capability/ledger/scope contracts passed; touched-file lint reported 0 warnings and errors; complexity and all generated validators passed at 1,742 runnable cases and 4,026 ledger-passed cases.",
+          "recorded_at": "2026-08-18T16:26:18+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T16:18:44+00:00",
+      "completed_at": "2026-08-18T16:26:24+00:00"
     }
   },
   "verified_references": {

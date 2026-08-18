@@ -1116,7 +1116,7 @@ function M.count(state, filter, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       read_preference = state.read_preference,
-      retryable_read = false,
+      retryable_read = true,
       session = options.session,
     }
   )

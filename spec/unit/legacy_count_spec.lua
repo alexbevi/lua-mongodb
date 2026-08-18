@@ -1,6 +1,8 @@
 local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
+local errors = require("mongodb.error")
+local retry_executor = require("mongodb.retry_executor")
 
 describe("legacy collection count", function()
   it("encodes the count command and returns n", function()
@@ -50,5 +52,73 @@ describe("legacy collection count", function()
     assert.is_true(sent.command:get("rawData"))
     assert.are.equal(1, sent.command:get("skip"))
     assert.are.equal("majority", sent.command:get("readConcern"):get("level"))
+  end)
+
+  it("retries one eligible command failure", function()
+    local attempts = 0
+    local underlying = {
+      capabilities = function()
+        return { max_wire_version = 27 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function()
+        attempts = attempts + 1
+
+        if attempts == 1 then
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 10107,
+            message = "not writable primary",
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 2 } })
+      end,
+    }
+    local executor = retry_executor.new(underlying, { enabled_reads = true })
+    local config = assert(driver_options.normalize(nil, {}))
+    local collection = assert(api.new_client(executor, config)
+      :database("app"):collection("users"))
+
+    assert.are.equal(2, assert(collection:count(bson.document({}))))
+    assert.are.equal(2, attempts)
+  end)
+
+  it("does not retry disabled or ineligible failures", function()
+    for _, case in ipairs({
+      { code = 10107, enabled = false },
+      { code = 2, enabled = true },
+    }) do
+      local attempts = 0
+      local underlying = {
+        capabilities = function()
+          return { max_wire_version = 27 }
+        end,
+        close = function()
+          return true
+        end,
+        command = function()
+          attempts = attempts + 1
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = case.code,
+            message = "count failed",
+          })
+        end,
+      }
+      local executor = retry_executor.new(underlying, {
+        enabled_reads = case.enabled,
+      })
+      local config = assert(driver_options.normalize(nil, {}))
+      local collection = assert(api.new_client(executor, config)
+        :database("app"):collection("users"))
+      local result, err = collection:count(bson.document({}))
+
+      assert.is_nil(result)
+      assert.are.equal(case.code, err.code)
+      assert.are.equal(1, attempts)
+    end
   end)
 end)

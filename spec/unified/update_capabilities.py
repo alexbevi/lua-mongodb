@@ -431,7 +431,6 @@ for identity in (
   )
 
 for fixture, count, owner, reason in (
-  ("count", 17, "LEG-001", OWNER_REASONS["LEG-001"]),
   ("changeStreams-client.watch", 17, "CS-007", OWNER_REASONS["CS-007"]),
   ("changeStreams-db.coll.watch", 17, "REL-051", OWNER_REASONS["REL-051"]),
   ("changeStreams-db.watch", 17, "CS-006", OWNER_REASONS["CS-006"]),

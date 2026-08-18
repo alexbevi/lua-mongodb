@@ -8,7 +8,6 @@
     "ADV-010": 777,
     "ADV-012": 15,
     "AUTH-019": 11,
-    "LEG-001": 17,
     "LEG-002": 13,
     "LEG-003": 1,
     "LEG-004": 3,
@@ -21,7 +20,7 @@
     "REL-053": 91
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1513
+    "post-v1-exclusion": 1496
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -108,9 +107,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1513,
+    "deferred_unsupported": 1496,
     "excluded_scope": 2,
-    "passed": 4009
+    "passed": 4026
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"
