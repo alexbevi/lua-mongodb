@@ -15005,16 +15005,16 @@
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[3]": {
-      "activity": "REL-051",
+      "activity": "CS-012",
       "fingerprint": "1ed1c833e9f3d3f5ff990534d15f71cce43e35725ce50d8b28cd498911dfec54",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "change-streams/tests/unified/change-streams-showExpandedEvents.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[4]": {
@@ -15252,16 +15252,16 @@
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[21]": {
-      "activity": "REL-051",
+      "activity": "CS-012",
       "fingerprint": "738c6144f7157c150eee740eefb9b0a001d872516541a6bb8bd012fe8559cd6f",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "change-streams/tests/unified/change-streams.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[22]": {
@@ -15369,16 +15369,16 @@
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[7]": {
-      "activity": "REL-051",
+      "activity": "CS-012",
       "fingerprint": "36e2602b087ade34ff8c09422ce73707edaf602bb7ecde0f71f69c5df4313d00",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "change-streams/tests/unified/change-streams.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[8]": {
@@ -86653,9 +86653,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1573,
+      "deferred_unsupported": 1570,
       "excluded_scope": 2,
-      "passed": 3949
+      "passed": 3952
     },
     "suites": {
       "auth": 73,

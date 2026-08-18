@@ -62,6 +62,15 @@ describe("administration commands over OP_MSG", function()
       assert.is_nil(modify.body:get("writeConcern"))
       send_response(peer, modify, bson.document({ { "ok", 1 } }))
 
+      local rename = receive_frame(peer)
+      assert.are.equal("renameCollection", rename.body:keys()[1])
+      assert.are.equal("app.events", rename.body:get("renameCollection"))
+      assert.are.equal("app.renamed", rename.body:get("to"))
+      assert.is_true(rename.body:get("dropTarget"))
+      assert.are.equal("rename", rename.body:get("comment"))
+      assert.are.equal("admin", rename.body:get("$db"))
+      send_response(peer, rename, bson.document({ { "ok", 1 } }))
+
       local create_indexes = receive_frame(peer)
       assert.are.equal("createIndexes", create_indexes.body:keys()[1])
       assert.are.equal("kind_1", create_indexes.body:get("indexes"):get(1):get("name"))
@@ -198,6 +207,10 @@ describe("administration commands over OP_MSG", function()
           change_stream_pre_and_post_images = bson.document({
             { "enabled", true },
           }),
+        }))
+        assert(collection:rename("renamed", {
+          comment = "rename",
+          drop_target = true,
         }))
 
         assert.are.equal(

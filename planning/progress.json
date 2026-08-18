@@ -5021,6 +5021,28 @@
       "notes": [
         "Requeued: Normative v0.5 change-stream fixtures exposed the missing public and unified collection rename behavior; split that independently verifiable behavior before conformance closure."
       ]
+    },
+    "CS-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua'",
+          "exit_code": 2,
+          "summary": "The focused admin unit file had 14 successes and one error: the rename command contract failed because collection:rename was nil.",
+          "recorded_at": "2026-08-18T04:23:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/admin_spec.lua' FOCUS_INTEGRATION='spec/integration/admin_spec.lua' FOCUS_UNIFIED='<three exact rename-event identities>' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<five touched Lua files>'; make test-architecture; make test-complexity; make test-package; generated capability, ledger, release, README, JSON, Python compile, and diff validators",
+          "exit_code": 0,
+          "summary": "Public rename command coverage passed 15 unit cases and one OP_MSG loopback integration; the three exact generic, expanded, and rename/invalidate unified cases each executed and passed with 0 skips, deferrals, or failures. All 110 coupled Python contracts, five-file lint, architecture, complexity, package, and artifact validators passed.",
+          "recorded_at": "2026-08-18T04:29:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T04:22:46+00:00",
+      "completed_at": "2026-08-18T04:29:16+00:00"
     }
   },
   "verified_references": {

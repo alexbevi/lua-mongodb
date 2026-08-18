@@ -786,6 +786,11 @@ function COLLECTION_METHODS:drop(options)
   end)
 end
 
+function COLLECTION_METHODS:rename(new_name, options)
+  validate_collection_name(new_name)
+  return collection_operation(self, admin.rename_collection, new_name, options)
+end
+
 function COLLECTION_METHODS:drop_index(name, options)
   return collection_operation(self, admin.drop_index, name, options)
 end

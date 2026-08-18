@@ -101,6 +101,14 @@ local DROP_DATABASE_OPTIONS = {
   session = true,
 }
 
+local RENAME_COLLECTION_OPTIONS = {
+  cancellation = true,
+  comment = true,
+  deadline = true,
+  drop_target = true,
+  session = true,
+}
+
 local CREATE_INDEX_OPTIONS = {
   cancellation = true,
   comment = true,
@@ -723,6 +731,29 @@ function M.drop_collection(state, name, options)
   end
 
   return true
+end
+
+function M.rename_collection(state, new_name, options)
+  options = validate_options(
+    options,
+    RENAME_COLLECTION_OPTIONS,
+    "rename_collection"
+  )
+  require_boolean(options, "drop_target")
+  local entries = {
+    { "renameCollection", state.full_name },
+    { "to", state.database_name .. "." .. new_name },
+  }
+
+  if options.drop_target ~= nil then
+    entries[#entries + 1] = { "dropTarget", options.drop_target }
+  end
+
+  if options.comment ~= nil then
+    entries[#entries + 1] = { "comment", options.comment }
+  end
+
+  return execute_write(state, "admin", entries, options)
 end
 
 function M.list_collections(state, options)

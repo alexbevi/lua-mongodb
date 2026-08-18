@@ -1465,6 +1465,13 @@ local function drop_collection(_, database, arguments)
   ))
 end
 
+local function rename_collection(_, collection, arguments)
+  return collection:rename(arguments:get("to"), operation_options(
+    arguments,
+    { dropTarget = "drop_target" }
+  ))
+end
+
 local function create_index(_, collection, arguments)
   return collection:create_index(arguments:get("keys"), operation_options(
     arguments,
@@ -2351,6 +2358,10 @@ function M.new(options)
         dropIndexes = {
           arguments = { "timeoutMS" },
           handler = drop_indexes,
+        },
+        rename = {
+          arguments = { "dropTarget", "to" },
+          handler = rename_collection,
         },
         aggregate = {
           arguments = {

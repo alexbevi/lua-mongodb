@@ -107,6 +107,39 @@ describe("database and collection management", function()
     assert.are.equal("majority", sent.command:get("writeConcern"):get("w"))
   end)
 
+  it("renames a collection through the admin database", function()
+    local sent
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, database, command, options)
+        sent = { command = command, database = database, options = options }
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local collection = assert(api.new_client(executor, config({
+      write_concern = { w = "majority" },
+    })):database("app")):collection("events")
+    local session = {}
+    local response = assert(collection:rename("archive", {
+      comment = "rename",
+      drop_target = true,
+      session = session,
+    }))
+
+    assert.are.equal(1, response:get("ok"))
+    assert.are.equal("admin", sent.database)
+    assert.are.equal("renameCollection", sent.command:keys()[1])
+    assert.are.equal("app.events", sent.command:get("renameCollection"))
+    assert.are.equal("app.archive", sent.command:get("to"))
+    assert.is_true(sent.command:get("dropTarget"))
+    assert.are.equal("rename", sent.command:get("comment"))
+    assert.are.equal("majority", sent.command:get("writeConcern"):get("w"))
+    assert.are.equal(session, sent.options.session)
+    assert.is_nil(sent.options.read_operation)
+  end)
+
   it("lists and drops databases and collections with command cursors", function()
     local commands = {}
     local responses = {
