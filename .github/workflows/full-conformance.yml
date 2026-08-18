@@ -292,9 +292,13 @@ jobs:
           mkdir -p "$legacy_mongodb_dir"
           curl -fsSL "https://fastdl.mongodb.org/osx/mongodb-macos-${mongodb_arch}-${FULL_CONFORMANCE_LEGACY_MONGODB_VERSION}.tgz" \
             | tar -xz --strip-components=1 -C "$legacy_mongodb_dir"
+          MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 \
           PATH="$legacy_mongodb_dir/bin:$PATH" python3 spec/unified/run.py \
             --include index-management/tests/index-rawdata.json \
             --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' \
+            --include 'client-side-operations-timeout/tests/change-streams.json::test?4?' \
+            --include 'client-side-operations-timeout/tests/change-streams.json::test?5?' \
+            --include 'client-side-operations-timeout/tests/change-streams.json::test?6?' \
             --report build/conformance/unified-pre-8.2.json
 
       - name: Run authoritative full portable and loopback checks

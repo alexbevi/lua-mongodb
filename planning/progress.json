@@ -5109,21 +5109,36 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "python3 spec/quality/coverage_gate.py --report build/quality/ci-24ccf3b/luacov.report.out --baseline spec/quality/coverage-baseline.json",
-          "exit_code": 1,
-          "summary": "The exact Linux coverage artifact rejected the release candidate because change_stream.lua had no checked-in baseline and cursor.lua regressed from 198/223 to 241/275 covered lines.",
-          "recorded_at": "2026-08-18T05:25:40+00:00"
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases'",
+          "exit_code": 2,
+          "summary": "The focused contracts failed because the macOS supplemental workflow did not execute the three v0.5 CSOT identities and the late-run macOS timing policy did not isolate their duplicate executions.",
+          "recorded_at": "2026-08-18T12:52:24+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate' && python3 spec/quality/coverage_gate.py --report build/quality/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform darwin && python3 spec/quality/coverage_gate.py --report build/quality/ci-24ccf3b/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases'",
           "exit_code": 0,
-          "summary": "Coverage-gate contracts passed; the canonical macOS report passed at 21752/23988 and the exact Linux CI report passed at 21753/23988 with one explicit LuaSec platform line.",
-          "recorded_at": "2026-08-18T05:36:59+00:00"
+          "summary": "The focused workflow and runner-policy contracts passed: macOS executes the three v0.5 CSOT cases early and skips only their timing-sensitive late duplicates.",
+          "recorded_at": "2026-08-18T12:53:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "CI=true MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include 'client-side-operations-timeout/tests/change-streams.json::test?4?' --include 'client-side-operations-timeout/tests/change-streams.json::test?5?' --include 'client-side-operations-timeout/tests/change-streams.json::test?6?' --report build/conformance/macos-timing-sensitive-v05.json",
+          "exit_code": 0,
+          "summary": "All three timing-sensitive change-stream CSOT identities executed exactly and passed on macOS with MongoDB 8.0.16; zero failed, skipped, or deferred.",
+          "recorded_at": "2026-08-18T12:53:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases spec.v05.test_scope.V05ScopeTests.test_exact_execution_combines_environment_reports' && python3 spec/v05/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Fourteen coupled workflow, platform-policy, and multi-report scope tests passed; the generated v0.5 scope and README projection remained current.",
+          "recorded_at": "2026-08-18T12:53:14+00:00"
         }
       ],
       "notes": [
-        "Requeued: Exact-commit Full Conformance exposed a stale coverage ratchet for the new change-stream module and expanded cursor surface."
+        "Requeued: Exact-commit Full Conformance exposed a stale coverage ratchet for the new change-stream module and expanded cursor surface.",
+        "Requeued: Exact-commit Full Conformance passed every Linux gate but exposed three timing-sensitive change-stream CSOT duplicates late in the 90-minute macOS run."
       ],
       "reopen_history": [
         {
@@ -5165,11 +5180,30 @@
               "recorded_at": "2026-08-18T05:14:01+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-18T05:37:00+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "python3 spec/quality/coverage_gate.py --report build/quality/ci-24ccf3b/luacov.report.out --baseline spec/quality/coverage-baseline.json",
+              "exit_code": 1,
+              "summary": "The exact Linux coverage artifact rejected the release candidate because change_stream.lua had no checked-in baseline and cursor.lua regressed from 198/223 to 241/275 covered lines.",
+              "recorded_at": "2026-08-18T05:25:40+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate' && python3 spec/quality/coverage_gate.py --report build/quality/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform darwin && python3 spec/quality/coverage_gate.py --report build/quality/ci-24ccf3b/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
+              "exit_code": 0,
+              "summary": "Coverage-gate contracts passed; the canonical macOS report passed at 21752/23988 and the exact Linux CI report passed at 21753/23988 with one explicit LuaSec platform line.",
+              "recorded_at": "2026-08-18T05:36:59+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "24ccf3b56c503a96387e368b8d011e84aafb3f80",
-      "started_at": "2026-08-18T05:25:31+00:00",
-      "completed_at": "2026-08-18T05:37:00+00:00"
+      "reopened_after_commit": "e425019ab847f65ab3f29f89016c016a383cb870",
+      "started_at": "2026-08-18T12:50:27+00:00",
+      "completed_at": "2026-08-18T12:53:14+00:00"
     }
   },
   "verified_references": {

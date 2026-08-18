@@ -45,6 +45,9 @@ AUTHENTICATED_REPLICA_SET_VERSION = (
   "MONGODB_UNIFIED_AUTH_REPLICA_SET_SERVER_VERSION"
 )
 MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
+  "client-side-operations-timeout/tests/change-streams.json::test[4]",
+  "client-side-operations-timeout/tests/change-streams.json::test[5]",
+  "client-side-operations-timeout/tests/change-streams.json::test[6]",
   "client-side-operations-timeout/tests/close-cursors.json::test[1]",
   "client-side-operations-timeout/tests/close-cursors.json::test[2]",
   "client-side-operations-timeout/tests/command-execution.json::test[1]",
@@ -1132,6 +1135,7 @@ def platform_environment_skip(
 
   if (
     environment.get("CI")
+    and not environment.get("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT")
     and platform == "darwin"
     and identity in MACOS_CI_TIMING_SENSITIVE_CSOT
   ):

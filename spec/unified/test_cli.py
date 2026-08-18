@@ -2638,6 +2638,9 @@ class UnifiedCliTests(unittest.TestCase):
       "client-side-operations-timeout/tests/command-execution.json::test[1]",
       "client-side-operations-timeout/tests/command-execution.json::test[2]",
       "client-side-operations-timeout/tests/command-execution.json::test[3]",
+      "client-side-operations-timeout/tests/change-streams.json::test[4]",
+      "client-side-operations-timeout/tests/change-streams.json::test[5]",
+      "client-side-operations-timeout/tests/change-streams.json::test[6]",
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[2]",
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
@@ -2655,6 +2658,11 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertIsNone(
       run.platform_environment_skip(sensitive[0], {"CI": "true"}, "linux")
     )
+    self.assertIsNone(run.platform_environment_skip(
+      sensitive[0],
+      {"CI": "true", "MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT": "1"},
+      "darwin",
+    ))
 
 
 if __name__ == "__main__":
