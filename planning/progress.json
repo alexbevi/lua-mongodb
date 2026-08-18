@@ -5720,65 +5720,38 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT=spec/unit/pool_spec.lua",
-          "exit_code": 2,
-          "summary": "8 pool tests passed and the defining shutdown case failed because close returned with one in-flight minPoolSize connection setup still unsettled",
-          "recorded_at": "2026-08-18T21:59:24+00:00"
-        },
-        {
-          "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_runs_every_pre_8_2_v0_6_rawdata_branch",
-          "exit_code": 2,
-          "summary": "The defining workflow contract failed because both pre-8.2 v0.6 rawData identities were absent from Linux and macOS supplemental execution",
-          "recorded_at": "2026-08-18T21:59:25+00:00"
-        },
-        {
-          "phase": "red",
-          "command": "GitHub Actions Full Conformance 32187203966",
+          "command": "GitHub Actions Full Conformance 32191602338, linux-quality job 95886925126",
           "exit_code": 1,
-          "summary": "Exact release qualification failed: Linux command-execution CSOT exposed an in-flight Copas maintenance coroutine after client teardown, and macOS aggregate lacked count and database-aggregate pre-8.2 rawData passes",
-          "recorded_at": "2026-08-18T21:59:26+00:00"
+          "summary": "502 tests passed but the coverage gate found src/mongodb/runtime/fake.lua at 369/444 versus its 370/444 ratchet because pool close now drains the queued maintenance task before resource cleanup calls run_all",
+          "recorded_at": "2026-08-18T22:20:57+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-coverage LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACOV=/Users/alex/.luarocks/bin/luacov",
+          "exit_code": 2,
+          "summary": "The local defining coverage gate reproduced the fake runtime regression at 369/444 after all 502 unit and integration tests passed",
+          "recorded_at": "2026-08-18T22:20:58+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION=spec/integration/client_api_spec.lua FOCUS_PYTHON='planning.tests.test_ci_portability spec.v06.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/pool.lua spec/unit/pool_spec.lua'",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/runtime_spec.lua FOCUS_LINT=spec/unit/runtime_spec.lua",
           "exit_code": 0,
-          "summary": "30 pool/topology unit tests, 4 client lifecycle integration tests, and 21 workflow/v0.6/release Python contracts passed; 2 touched Lua files linted with 0 warnings",
-          "recorded_at": "2026-08-18T22:07:27+00:00"
+          "summary": "12 fake runtime unit tests passed and the touched test file linted with 0 warnings",
+          "recorded_at": "2026-08-18T22:22:32+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIFIED='command-execution plus exact pre-8.2 count and database-aggregate rawData identities'",
+          "command": "make test-coverage LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACOV=/Users/alex/.luarocks/bin/luacov",
           "exit_code": 0,
-          "summary": "The command-execution fixture executed 3 and passed 3; the two exact pre-8.2 rawData identities each executed and passed; 0 failed, environment-skipped, deferred, or unknown",
-          "recorded_at": "2026-08-18T22:07:27+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "python3 spec/unified/run.py --include exact-v0.6-version-branches && python3 spec/v04/scope.py --check --execution-report macos-aggregate --execution-report pre-8.2 && python3 spec/v05/scope.py --check --allow-macos-ci-timing-skips --execution-report macos-aggregate --execution-report pre-8.2 && python3 spec/v06/scope.py --check --allow-macos-ci-timing-skips --execution-report macos-aggregate --execution-report pre-8.2",
-          "exit_code": 0,
-          "summary": "Supplemental evidence executed 4 and passed 4 with 1 mutually exclusive environment skip, 0 failed or deferred; combined macOS evidence satisfied v0.4, v0.5, and all 81 v0.6 targets as 77 passes plus 4 named timing skips",
-          "recorded_at": "2026-08-18T22:07:28+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "8 repeated exact command-execution fixture runs",
-          "exit_code": 0,
-          "summary": "All 24 CSOT command-execution cases passed across 8 isolated repetitions with no malformed output, dead-coroutine diagnostics, environment skips, or deferrals",
-          "recorded_at": "2026-08-18T22:07:29+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-architecture && make test-complexity && artifact-specific release validators",
-          "exit_code": 0,
-          "summary": "Architecture boundaries passed, Lua complexity remained at 3 hotspots with maximum 47, v0.6 scope and 0.6.0 release checklist were current, README compatibility and Python compilation passed, mongodb-0.6.0-1.rockspec lint passed, and git diff validation was clean",
-          "recorded_at": "2026-08-18T22:07:30+00:00"
+          "summary": "All 502 unit and integration tests plus 3 coverage-gate contracts passed; coverage was 21965/24208 lines (90.73%) with fake.lua restored to its 370/444 ratchet and no regressions",
+          "recorded_at": "2026-08-18T22:22:33+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance 32181733249 failed on Linux and macOS because changeStream iterateUntilDocumentOrError dispatched through the generic cursor iterator",
         "Requeued: Full Conformance 32183001770 failed coverage ratchets, four exact macOS tailable CSOT timing cases, and one Linux command-execution batch with an empty malformed report",
-        "Requeued: Full Conformance 32187203966 exposed a Copas dead-coroutine wakeup in Linux command-execution CSOT and omitted the pre-8.2 count-rawdata branch from supplemental evidence"
+        "Requeued: Full Conformance 32187203966 exposed a Copas dead-coroutine wakeup in Linux command-execution CSOT and omitted the pre-8.2 count-rawdata branch from supplemental evidence",
+        "Requeued: Full Conformance 32191602338 showed the intentional pool-shutdown drain removed the only fake runtime run_all coverage path, regressing its per-file ratchet by one line"
       ],
       "reopen_history": [
         {
@@ -5900,11 +5873,72 @@
               "recorded_at": "2026-08-18T21:16:16+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-18T22:07:41+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT=spec/unit/pool_spec.lua",
+              "exit_code": 2,
+              "summary": "8 pool tests passed and the defining shutdown case failed because close returned with one in-flight minPoolSize connection setup still unsettled",
+              "recorded_at": "2026-08-18T21:59:24+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON=planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_runs_every_pre_8_2_v0_6_rawdata_branch",
+              "exit_code": 2,
+              "summary": "The defining workflow contract failed because both pre-8.2 v0.6 rawData identities were absent from Linux and macOS supplemental execution",
+              "recorded_at": "2026-08-18T21:59:25+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "GitHub Actions Full Conformance 32187203966",
+              "exit_code": 1,
+              "summary": "Exact release qualification failed: Linux command-execution CSOT exposed an in-flight Copas maintenance coroutine after client teardown, and macOS aggregate lacked count and database-aggregate pre-8.2 rawData passes",
+              "recorded_at": "2026-08-18T21:59:26+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION=spec/integration/client_api_spec.lua FOCUS_PYTHON='planning.tests.test_ci_portability spec.v06.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/pool.lua spec/unit/pool_spec.lua'",
+              "exit_code": 0,
+              "summary": "30 pool/topology unit tests, 4 client lifecycle integration tests, and 21 workflow/v0.6/release Python contracts passed; 2 touched Lua files linted with 0 warnings",
+              "recorded_at": "2026-08-18T22:07:27+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIFIED='command-execution plus exact pre-8.2 count and database-aggregate rawData identities'",
+              "exit_code": 0,
+              "summary": "The command-execution fixture executed 3 and passed 3; the two exact pre-8.2 rawData identities each executed and passed; 0 failed, environment-skipped, deferred, or unknown",
+              "recorded_at": "2026-08-18T22:07:27+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/unified/run.py --include exact-v0.6-version-branches && python3 spec/v04/scope.py --check --execution-report macos-aggregate --execution-report pre-8.2 && python3 spec/v05/scope.py --check --allow-macos-ci-timing-skips --execution-report macos-aggregate --execution-report pre-8.2 && python3 spec/v06/scope.py --check --allow-macos-ci-timing-skips --execution-report macos-aggregate --execution-report pre-8.2",
+              "exit_code": 0,
+              "summary": "Supplemental evidence executed 4 and passed 4 with 1 mutually exclusive environment skip, 0 failed or deferred; combined macOS evidence satisfied v0.4, v0.5, and all 81 v0.6 targets as 77 passes plus 4 named timing skips",
+              "recorded_at": "2026-08-18T22:07:28+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "8 repeated exact command-execution fixture runs",
+              "exit_code": 0,
+              "summary": "All 24 CSOT command-execution cases passed across 8 isolated repetitions with no malformed output, dead-coroutine diagnostics, environment skips, or deferrals",
+              "recorded_at": "2026-08-18T22:07:29+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-architecture && make test-complexity && artifact-specific release validators",
+              "exit_code": 0,
+              "summary": "Architecture boundaries passed, Lua complexity remained at 3 hotspots with maximum 47, v0.6 scope and 0.6.0 release checklist were current, README compatibility and Python compilation passed, mongodb-0.6.0-1.rockspec lint passed, and git diff validation was clean",
+              "recorded_at": "2026-08-18T22:07:30+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "7f732bb85a8dd422d22b3819b0b6f06982aade9a",
-      "started_at": "2026-08-18T21:52:15+00:00",
-      "completed_at": "2026-08-18T22:07:41+00:00"
+      "reopened_after_commit": "df142fdfbbf961316a6b8fa42ed8d64451bde532",
+      "started_at": "2026-08-18T22:20:42+00:00",
+      "completed_at": "2026-08-18T22:22:43+00:00"
     }
   },
   "verified_references": {

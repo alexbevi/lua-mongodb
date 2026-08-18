@@ -118,13 +118,14 @@ describe("runtime interface", function()
     assert.is_true(fake.task:yield_control())
     assert.are.same({ "first" }, order)
     assert.are.equal("completed", first:status())
+    assert.are.equal(1, fake:run_all())
 
     local number, word = fake.task:await(second)
 
     assert.are.equal(2, number)
     assert.are.equal("two", word)
     assert.are.same({ "first", "second" }, order)
-    assert.is_false(fake:run_next())
+    assert.are.equal(0, fake:run_all())
   end)
 
   it("provides deterministic cancellation for pending tasks", function()
