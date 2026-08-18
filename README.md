@@ -188,7 +188,9 @@ For a capped collection, pass `cursor_type = "tailable"` to `find`, or use
 `cursor_type = "tailable_await"` to let the server wait for new data before
 returning an empty batch. Each `next()` call checks at most one server batch,
 so an empty live batch returns `nil` without closing the cursor and the
-application can poll again later:
+application can poll again later. Set `max_await_time_ms` to bound each server
+wait; when `timeout_ms` is also positive, the maximum await time must be lower
+than that client timeout:
 
 ```lua
 local events = client:database("app"):collection("events")
@@ -474,7 +476,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 91.1% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
-| Resilience | Client-side operations timeout | 🟡 | 79.2% |
+| Resilience | Client-side operations timeout | 🟡 | 80.3% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |

@@ -1646,12 +1646,14 @@ function M.find(state, filter, options)
     deadline = options.deadline,
     executor = state.executor,
     limit = absolute_limit,
+    max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
     server_address = server_address,
     session = options.session,
     session_context = session_context,
     timeout_context = operation_timeout.capture(),
-    timeout_mode = options.timeout_mode,
+    timeout_mode = cursor_type == "tailable_await"
+      and "iteration" or options.timeout_mode,
   })
 end
 

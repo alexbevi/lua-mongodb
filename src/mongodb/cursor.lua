@@ -398,6 +398,28 @@ function M.try_next(value)
   return document, err
 end
 
+function M.next_until_document_or_error(value)
+  local state = CURSOR_STATES[value]
+
+  if not state then
+    error("blocking iteration requires a cursor", 2)
+  end
+
+  return operation_timeout.resume(
+    state.timeout_context,
+    state.timeout_mode == "iteration",
+    function()
+      while true do
+        local document, err, finished = advance_once(value, state)
+
+        if finished then
+          return document, err
+        end
+      end
+    end
+  )
+end
+
 function M.collection_name(response, database_name)
   local cursor = response:get("cursor")
 

@@ -1162,10 +1162,15 @@ local function tailable_find_options(collection, options)
       return client_error("max_await_time_ms must be less than timeout_ms")
     end
 
-    if options.timeout_mode ~= nil or timeout_ms ~= nil
-        or options.max_await_time_ms ~= nil
-    then
-      return client_error("tailable await wait budgets are outside the supported API")
+    if options.timeout_mode == "iteration" then
+      local prepared = {}
+
+      for key, value in pairs(options) do
+        prepared[key] = value
+      end
+
+      prepared.timeout_mode = nil
+      return prepared
     end
 
     return options

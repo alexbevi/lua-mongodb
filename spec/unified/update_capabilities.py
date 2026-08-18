@@ -600,8 +600,8 @@ TEST_OVERRIDES.update({
     "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
-    "LEG-012",
-    "tailable awaitData command cursors require the pending awaitData wait-budget behavior",
+    "REL-053",
+    "the fixture omits commandName and timeoutMS while expecting a client timeout, and the pinned behavioral reference requires command_name for createCommandCursor",
   ),
 })
 
@@ -821,8 +821,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   if fixture.startswith("tailable-"):
     return (
       "LEG-012" if fixture.startswith("tailable-awaitData") else "LEG-009",
-      "tailable awaitData cursors require the pending wait-budget behavior"
-        if fixture.startswith("tailable-awaitData") else None,
+      None,
     )
 
   unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS

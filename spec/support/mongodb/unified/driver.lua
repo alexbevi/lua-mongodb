@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local bulk = require("mongodb.bulk")
 local client_module = require("mongodb.client")
+local cursor_model = require("mongodb.cursor")
 local errors = require("mongodb.error")
 local event_module = require("mongodb.unified.events")
 local failpoints = require("mongodb.unified.failpoints")
@@ -1379,6 +1380,10 @@ local function iterate_cursor(_, cursor)
   return cursor:next()
 end
 
+local function iterate_cursor_until(_, cursor)
+  return cursor_model.next_until_document_or_error(cursor)
+end
+
 local function iterate_change_stream_once(_, stream)
   return stream:try_next()
 end
@@ -1408,7 +1413,7 @@ local CURSOR_OPERATIONS = {
   },
   iterateUntilDocumentOrError = {
     arguments = {},
-    handler = iterate_cursor,
+    handler = iterate_cursor_until,
   },
 }
 

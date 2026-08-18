@@ -142,6 +142,47 @@ describe("find cursor lifecycle", function()
     assert.are.equal(0, calls)
   end)
 
+  it("applies max await time to an awaitData getMore", function()
+    local commands = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(42) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return table.remove(responses, 1)
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("events"):find(
+      nil,
+      {
+        cursor_type = "tailable_await",
+        max_await_time_ms = 25,
+      }
+    ))
+
+    assert.is_nil(cursor:next())
+    assert.is_nil(commands[1]:get("maxTimeMS"))
+    assert.are.equal(25, commands[2]:get("maxTimeMS"))
+  end)
+
   it("keeps a lifetime deadline and refreshes an iteration deadline", function()
     local runtime = fake_runtime.new({ now = 2 })
     local deadlines = {}
