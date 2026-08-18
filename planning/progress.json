@@ -4687,6 +4687,35 @@
       "notes": [],
       "started_at": "2026-08-18T01:00:57+00:00",
       "completed_at": "2026-08-18T01:17:17+00:00"
+    },
+    "CS-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 1,
+          "summary": "The new stage-option test errored because collection:watch passed full_document through to aggregate, which rejected it as an unknown aggregate option; 1 success, 1 error.",
+          "recorded_at": "2026-08-18T01:26:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua' FOCUS_INTEGRATION='spec/integration/change_stream_spec.lua' FOCUS_UNIFIED='change-streams/tests/unified/change-streams.json::test[[][245]]' FOCUS_PYTHON='targeted capability, ledger, scope, and checklist cases' FOCUS_LINT='touched Lua files'",
+          "exit_code": 0,
+          "summary": "Three option-routing unit cases, one deterministic OP_MSG integration case, and three exact live change-stream comment unified cases passed; five coupled capability and conformance assertions passed; touched Lua lint reported zero warnings or errors.",
+          "recorded_at": "2026-08-18T01:31:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-complexity and generated capability, ledger, release-scope, v0.4-scope, release-checklist, and README --check validators",
+          "exit_code": 0,
+          "summary": "The Lua complexity baseline remained current and every affected generated conformance, scope, checklist, and README projection validated without drift.",
+          "recorded_at": "2026-08-18T01:31:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T01:24:42+00:00",
+      "completed_at": "2026-08-18T01:31:44+00:00"
     }
   },
   "verified_references": {

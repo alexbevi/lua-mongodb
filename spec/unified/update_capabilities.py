@@ -270,6 +270,11 @@ for index in range(1, 7):
       f"serverMonitoringMode.json::test[{index}]"
   ] = ("SDAM-005", None)
 
+for index in (2, 4, 5):
+  TEST_OVERRIDES[
+    f"change-streams/tests/unified/change-streams.json::test[{index}]"
+  ] = ("CS-001", None)
+
 for index in range(1, 14):
   if index == 8:
     owner = "SES-004"

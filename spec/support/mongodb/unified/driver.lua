@@ -1400,7 +1400,21 @@ local CURSOR_OPERATIONS = {
 }
 
 local function create_change_stream(_, collection, arguments)
-  return collection:watch(arguments:get("pipeline") or bson.array({}))
+  return collection:watch(
+    arguments:get("pipeline") or bson.array({}),
+    operation_options(arguments, {
+      batchSize = "batch_size",
+      collation = "collation",
+      comment = "comment",
+      fullDocument = "full_document",
+      fullDocumentBeforeChange = "full_document_before_change",
+      maxAwaitTimeMS = "max_await_time_ms",
+      resumeAfter = "resume_after",
+      showExpandedEvents = "show_expanded_events",
+      startAfter = "start_after",
+      startAtOperationTime = "start_at_operation_time",
+    })
+  )
 end
 
 local function create_collection(_, database, arguments)
@@ -2240,7 +2254,12 @@ function M.new(options)
       },
       collection = {
         createChangeStream = {
-          arguments = { "pipeline" },
+          arguments = {
+            "batchSize", "collation", "comment", "fullDocument",
+            "fullDocumentBeforeChange", "maxAwaitTimeMS", "pipeline",
+            "resumeAfter", "session", "showExpandedEvents", "startAfter",
+            "startAtOperationTime",
+          },
           handler = create_change_stream,
           result_kind = "changeStream",
         },

@@ -866,7 +866,48 @@ function COLLECTION_METHODS:aggregate(pipeline, options)
   return register_cursor(self, cursor)
 end
 
-local function change_stream_pipeline(pipeline)
+local CHANGE_STREAM_STAGE_OPTIONS = {
+  { "full_document", "fullDocument", "string" },
+  { "full_document_before_change", "fullDocumentBeforeChange", "string" },
+  { "resume_after", "resumeAfter", "document" },
+  { "start_after", "startAfter", "document" },
+  { "start_at_operation_time", "startAtOperationTime", "timestamp" },
+  { "show_expanded_events", "showExpandedEvents", "boolean" },
+}
+
+local function require_change_stream_option(name, value, kind)
+  local valid = kind == "string" and type(value) == "string"
+    or kind == "document" and bson.is_document(value)
+    or kind == "timestamp" and bson.is_tagged(value, "timestamp")
+    or kind == "boolean" and type(value) == "boolean"
+
+  if value ~= nil and not valid then
+    error(name .. " must be a " .. kind, 4)
+  end
+end
+
+local function change_stream_options(options)
+  local aggregate_options = {}
+  local stage_entries = {}
+
+  for key, value in pairs(options) do
+    aggregate_options[key] = value
+  end
+
+  for _, field in ipairs(CHANGE_STREAM_STAGE_OPTIONS) do
+    local value = options[field[1]]
+
+    if value ~= nil then
+      require_change_stream_option(field[1], value, field[3])
+      stage_entries[#stage_entries + 1] = { field[2], value }
+      aggregate_options[field[1]] = nil
+    end
+  end
+
+  return bson.document(stage_entries), aggregate_options
+end
+
+local function change_stream_pipeline(pipeline, stage_options)
   pipeline = pipeline or bson.array({})
 
   if not bson.is_array(pipeline) then
@@ -874,7 +915,7 @@ local function change_stream_pipeline(pipeline)
   end
 
   local stages = {
-    bson.document({ { "$changeStream", bson.document({}) } }),
+    bson.document({ { "$changeStream", stage_options } }),
   }
 
   for _, stage in pipeline:iter() do
@@ -884,13 +925,17 @@ local function change_stream_pipeline(pipeline)
   return bson.array(stages)
 end
 
-function COLLECTION_METHODS:watch(pipeline, options)
-  local cursor, err = collection_operation(
-    self,
-    crud.aggregate,
-    change_stream_pipeline(pipeline),
-    options
+local function watch_collection(state, pipeline, options)
+  local stage_options, aggregate_options = change_stream_options(options)
+  return crud.aggregate(
+    state,
+    change_stream_pipeline(pipeline, stage_options),
+    aggregate_options
   )
+end
+
+function COLLECTION_METHODS:watch(pipeline, options)
+  local cursor, err = collection_operation(self, watch_collection, pipeline, options)
 
   if not cursor then
     return nil, err

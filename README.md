@@ -212,12 +212,16 @@ print(deleted.deleted_count)
 
 ### Change Streams
 
-On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection. Its pipeline is appended after the required `$changeStream` stage. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early.
+On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection. Its pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early.
 
 ```lua
 local events = assert(users:watch(mongodb.bson.array({
   doc({ { "$match", doc({ { "operationType", "insert" } }) } }),
-})))
+}), {
+  batch_size = 10,
+  full_document = "updateLookup",
+  max_await_time_ms = 1000,
+}))
 
 local change = assert(events:next())
 print(change:get("operationType"))
@@ -431,7 +435,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | Collection management | 🟡 | 81.8% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟡 | 98.0% |
-| Programmability | Change streams | 🔴 | 0.0% |
+| Programmability | Change streams | 🟡 | 3.4% |
 | Programmability | GridFS | 🔴 | 0.0% |
 | Programmability | Stable API | 🟡 | 92.7% |
 | Programmability | Client-side encryption | 🔴 | 0.0% |

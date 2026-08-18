@@ -45,13 +45,45 @@ describe("collection change streams over OP_MSG", function()
       assert.are.equal("aggregate", aggregate.body:keys()[1])
       assert.are.equal("events", aggregate.body:get("aggregate"))
       assert.are.equal("$changeStream", pipeline:get(1):keys()[1])
+      assert.are.equal(
+        "futureServerMode",
+        pipeline:get(1):get("$changeStream"):get("fullDocument")
+      )
       assert.are.equal("$match", pipeline:get(2):keys()[1])
+      assert.are.equal(
+        2,
+        aggregate.body:get("cursor"):get("batchSize"):to_number()
+      )
+      assert.are.equal("en", aggregate.body:get("collation"):get("locale"))
+      assert.are.equal(
+        1,
+        aggregate.body:get("comment"):get("trace"):to_number()
+      )
+      assert.are.equal(
+        "majority",
+        aggregate.body:get("readConcern"):get("level")
+      )
       send_response(peer, aggregate, bson.document({
         { "ok", 1 },
         { "cursor", bson.document({
           { "id", bson.int64(51) },
           { "ns", "app.events" },
-          { "firstBatch", bson.array({
+          { "firstBatch", bson.array({}) },
+        }) },
+      }))
+
+      local get_more = receive_frame(peer)
+
+      assert.are.equal("getMore", get_more.body:keys()[1])
+      assert.are.equal(2, get_more.body:get("batchSize"):to_number())
+      assert.are.equal(250, get_more.body:get("maxTimeMS"):to_number())
+      assert.are.equal(1, get_more.body:get("comment"):get("trace"):to_number())
+      send_response(peer, get_more, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(51) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({
             bson.document({
               { "_id", bson.document({ { "token", 1 } }) },
               { "operationType", "insert" },
@@ -72,14 +104,23 @@ describe("collection change streams over OP_MSG", function()
       outcome = table.pack(pcall(function()
         local client = assert(mongodb.client(
           "mongodb://127.0.0.1:" .. port .. "/app",
-          { runtime = mongodb.runtime.copas() }
+          {
+            read_concern = { level = "majority" },
+            runtime = mongodb.runtime.copas(),
+          }
         ))
         local collection = assert(client:database():collection("events"))
         local stream = assert(collection:watch(bson.array({
           bson.document({ { "$match", bson.document({
             { "operationType", "insert" },
           }) } }),
-        })))
+        }), {
+          batch_size = 2,
+          collation = bson.document({ { "locale", "en" } }),
+          comment = bson.document({ { "trace", 1 } }),
+          full_document = "futureServerMode",
+          max_await_time_ms = 250,
+        }))
 
         assert.are.equal("insert", assert(stream:next()):get("operationType"))
         assert.is_true(stream:close())

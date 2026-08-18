@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1546,
-    "runnable": 1546
+    "passed": 1549,
+    "runnable": 1549
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -3259,9 +3259,8 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[2]": {
-      "activity": "REL-051",
+      "activity": "CS-001",
       "fingerprint": "337c15f5a3f1e7a798a47ef1d2d801c6a6f557a4936c0c720683743eb34bd980",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3286,7 +3285,7 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams.json::test[3]": {
       "activity": "REL-051",
@@ -3319,9 +3318,8 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[4]": {
-      "activity": "REL-051",
+      "activity": "CS-001",
       "fingerprint": "b45f82795a9ce37cf1e90f5d10a2f85c0aac81724aab183915d1987d860f6ddb",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3346,12 +3344,11 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams.json::test[5]": {
-      "activity": "REL-051",
+      "activity": "CS-001",
       "fingerprint": "11a771aa0903dee778999f0b0e54cfad0afec1aaf2ce5f6913fa651420491a3c",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3381,7 +3378,7 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams.json::test[6]": {
       "activity": "REL-051",
