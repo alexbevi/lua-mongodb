@@ -1028,11 +1028,16 @@ function POOL_METHODS:close()
   end
 
   local available = collect_available_locked(state)
+  local maintenance_task = state.maintenance_task
 
   state.lock:release()
 
   for _, connection in ipairs(available) do
     finish_close(state, connection, "poolClosed")
+  end
+
+  if maintenance_task and maintenance_task:status() == "pending" then
+    state.runtime.task:await(maintenance_task)
   end
 
   publish(state, "ConnectionPoolClosed")

@@ -5720,57 +5720,65 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_malformed_batch_report_preserves_process_diagnostics spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases spec.v06.test_scope.V06ScopeTests.test_exact_execution_accepts_only_named_macos_timing_skips'",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/pool_spec.lua",
           "exit_code": 2,
-          "summary": "Three defining policy tests failed: malformed Lua batch diagnostics omitted process output, four exact tailable CSOT identities were not classified for hosted macOS, and the v0.6 validator had no exact timing-skip mode",
-          "recorded_at": "2026-08-18T21:09:10+00:00"
+          "summary": "8 pool tests passed and the defining shutdown case failed because close returned with one in-flight minPoolSize connection setup still unsettled",
+          "recorded_at": "2026-08-18T21:59:24+00:00"
         },
         {
           "phase": "red",
-          "command": "GitHub Actions Full Conformance 32183001770",
+          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_runs_every_pre_8_2_v0_6_rawdata_branch",
+          "exit_code": 2,
+          "summary": "The defining workflow contract failed because both pre-8.2 v0.6 rawData identities were absent from Linux and macOS supplemental execution",
+          "recorded_at": "2026-08-18T21:59:25+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "GitHub Actions Full Conformance 32187203966",
           "exit_code": 1,
-          "summary": "Release qualification failed: api.lua needed 9 covered lines, cursor.lua needed 8, four exact hosted-macOS tailable CSOT cases exceeded 200-250ms budgets, and one Linux command-execution fixture batch returned an empty malformed report",
-          "recorded_at": "2026-08-18T21:09:11+00:00"
+          "summary": "Exact release qualification failed: Linux command-execution CSOT exposed an in-flight Copas maintenance coroutine after client teardown, and macOS aggregate lacked count and database-aggregate pre-8.2 rawData passes",
+          "recorded_at": "2026-08-18T21:59:26+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/cursor_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.v06.test_scope planning.tests.test_ci_portability' FOCUS_LINT='spec/unit/cursor_spec.lua'",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION=spec/integration/client_api_spec.lua FOCUS_PYTHON='planning.tests.test_ci_portability spec.v06.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/pool.lua spec/unit/pool_spec.lua'",
           "exit_code": 0,
-          "summary": "11 cursor unit tests and 128 unified-runner, exact v0.6 validator, and CI workflow tests passed; one touched Lua file linted with 0 warnings; 0 failed, environment-skipped, or deferred",
-          "recorded_at": "2026-08-18T21:16:12+00:00"
+          "summary": "30 pool/topology unit tests, 4 client lifecycle integration tests, and 21 workflow/v0.6/release Python contracts passed; 2 touched Lua files linted with 0 warnings",
+          "recorded_at": "2026-08-18T22:07:27+00:00"
         },
         {
           "phase": "green",
-          "command": "MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include client-side-operations-timeout/tests/command-execution.json",
+          "command": "make test-focus FOCUS_UNIFIED='command-execution plus exact pre-8.2 count and database-aggregate rawData identities'",
           "exit_code": 0,
-          "summary": "Linux-authoritative command-execution reproduction executed 3, passed 3, environment-skipped 0, deferred 0, failed 0",
-          "recorded_at": "2026-08-18T21:16:13+00:00"
+          "summary": "The command-execution fixture executed 3 and passed 3; the two exact pre-8.2 rawData identities each executed and passed; 0 failed, environment-skipped, deferred, or unknown",
+          "recorded_at": "2026-08-18T22:07:27+00:00"
         },
         {
           "phase": "green",
-          "command": "CI=true python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include exact-v06-tailable-csot-identities",
+          "command": "python3 spec/unified/run.py --include exact-v0.6-version-branches && python3 spec/v04/scope.py --check --execution-report macos-aggregate --execution-report pre-8.2 && python3 spec/v05/scope.py --check --allow-macos-ci-timing-skips --execution-report macos-aggregate --execution-report pre-8.2 && python3 spec/v06/scope.py --check --allow-macos-ci-timing-skips --execution-report macos-aggregate --execution-report pre-8.2",
           "exit_code": 0,
-          "summary": "Hosted-macOS policy selected exactly 4 tailable CSOT identities: 0 executed, 0 passed, 4 environment-skipped, 0 deferred, 0 failed; portable Linux remains authoritative",
-          "recorded_at": "2026-08-18T21:16:14+00:00"
+          "summary": "Supplemental evidence executed 4 and passed 4 with 1 mutually exclusive environment skip, 0 failed or deferred; combined macOS evidence satisfied v0.4, v0.5, and all 81 v0.6 targets as 77 passes plus 4 named timing skips",
+          "recorded_at": "2026-08-18T22:07:28+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-coverage LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACOV=/Users/alex/.luarocks/bin/luacov",
+          "command": "8 repeated exact command-execution fixture runs",
           "exit_code": 0,
-          "summary": "501 unit/integration tests and 3 coverage-gate tests passed; coverage 21962/24205 (90.73%), api.lua 637/712 and cursor.lua 256/291, with no ratchet regressions",
-          "recorded_at": "2026-08-18T21:16:15+00:00"
+          "summary": "All 24 CSOT command-execution cases passed across 8 isolated repetitions with no malformed output, dead-coroutine diagnostics, environment skips, or deferrals",
+          "recorded_at": "2026-08-18T22:07:29+00:00"
         },
         {
           "phase": "green",
-          "command": "python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+          "command": "make test-architecture && make test-complexity && artifact-specific release validators",
           "exit_code": 0,
-          "summary": "Generated v0.6 scope, 0.6.0 release checklist, and README conformance projection are current; 176 v0.6 identities and 5524 release cases remain exactly classified",
-          "recorded_at": "2026-08-18T21:16:16+00:00"
+          "summary": "Architecture boundaries passed, Lua complexity remained at 3 hotspots with maximum 47, v0.6 scope and 0.6.0 release checklist were current, README compatibility and Python compilation passed, mongodb-0.6.0-1.rockspec lint passed, and git diff validation was clean",
+          "recorded_at": "2026-08-18T22:07:30+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance 32181733249 failed on Linux and macOS because changeStream iterateUntilDocumentOrError dispatched through the generic cursor iterator",
-        "Requeued: Full Conformance 32183001770 failed coverage ratchets, four exact macOS tailable CSOT timing cases, and one Linux command-execution batch with an empty malformed report"
+        "Requeued: Full Conformance 32183001770 failed coverage ratchets, four exact macOS tailable CSOT timing cases, and one Linux command-execution batch with an empty malformed report",
+        "Requeued: Full Conformance 32187203966 exposed a Copas dead-coroutine wakeup in Linux command-execution CSOT and omitted the pre-8.2 count-rawdata branch from supplemental evidence"
       ],
       "reopen_history": [
         {
@@ -5838,11 +5846,65 @@
               "recorded_at": "2026-08-18T20:29:01+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-18T21:16:22+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_malformed_batch_report_preserves_process_diagnostics spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases spec.v06.test_scope.V06ScopeTests.test_exact_execution_accepts_only_named_macos_timing_skips'",
+              "exit_code": 2,
+              "summary": "Three defining policy tests failed: malformed Lua batch diagnostics omitted process output, four exact tailable CSOT identities were not classified for hosted macOS, and the v0.6 validator had no exact timing-skip mode",
+              "recorded_at": "2026-08-18T21:09:10+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "GitHub Actions Full Conformance 32183001770",
+              "exit_code": 1,
+              "summary": "Release qualification failed: api.lua needed 9 covered lines, cursor.lua needed 8, four exact hosted-macOS tailable CSOT cases exceeded 200-250ms budgets, and one Linux command-execution fixture batch returned an empty malformed report",
+              "recorded_at": "2026-08-18T21:09:11+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/cursor_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.v06.test_scope planning.tests.test_ci_portability' FOCUS_LINT='spec/unit/cursor_spec.lua'",
+              "exit_code": 0,
+              "summary": "11 cursor unit tests and 128 unified-runner, exact v0.6 validator, and CI workflow tests passed; one touched Lua file linted with 0 warnings; 0 failed, environment-skipped, or deferred",
+              "recorded_at": "2026-08-18T21:16:12+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include client-side-operations-timeout/tests/command-execution.json",
+              "exit_code": 0,
+              "summary": "Linux-authoritative command-execution reproduction executed 3, passed 3, environment-skipped 0, deferred 0, failed 0",
+              "recorded_at": "2026-08-18T21:16:13+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "CI=true python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include exact-v06-tailable-csot-identities",
+              "exit_code": 0,
+              "summary": "Hosted-macOS policy selected exactly 4 tailable CSOT identities: 0 executed, 0 passed, 4 environment-skipped, 0 deferred, 0 failed; portable Linux remains authoritative",
+              "recorded_at": "2026-08-18T21:16:14+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-coverage LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACOV=/Users/alex/.luarocks/bin/luacov",
+              "exit_code": 0,
+              "summary": "501 unit/integration tests and 3 coverage-gate tests passed; coverage 21962/24205 (90.73%), api.lua 637/712 and cursor.lua 256/291, with no ratchet regressions",
+              "recorded_at": "2026-08-18T21:16:15+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "Generated v0.6 scope, 0.6.0 release checklist, and README conformance projection are current; 176 v0.6 identities and 5524 release cases remain exactly classified",
+              "recorded_at": "2026-08-18T21:16:16+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "6822b5d368c6843597bf82ed50a990392ac0046a",
-      "started_at": "2026-08-18T21:06:34+00:00",
-      "completed_at": "2026-08-18T21:16:22+00:00"
+      "reopened_after_commit": "7f732bb85a8dd422d22b3819b0b6f06982aade9a",
+      "started_at": "2026-08-18T21:52:15+00:00",
+      "completed_at": "2026-08-18T22:07:41+00:00"
     }
   },
   "verified_references": {

@@ -230,6 +230,27 @@ class CiPortabilityTests(unittest.TestCase):
     )
     self.assertIn("if-no-files-found: error", workflow)
 
+  def test_full_conformance_runs_every_pre_8_2_v0_6_rawdata_branch(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    linux = workflow[
+      workflow.index("  linux-version-branches:"):
+      workflow.index("  linux-aggregate:")
+    ]
+    macos = workflow[
+      workflow.index("  macos-version-branches:"):
+      workflow.index("  macos-aggregate:")
+    ]
+
+    for job in (linux, macos):
+      self.assertIn(
+        "crud/tests/unified/count-rawdata.json::test?2?",
+        job,
+      )
+      self.assertIn(
+        "crud/tests/unified/db-aggregate-rawdata.json::test?2?",
+        job,
+      )
+
   def test_manual_macos_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
     macos = workflow[

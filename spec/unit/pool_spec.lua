@@ -234,6 +234,39 @@ describe("CMAP connection pools", function()
     end)
   end)
 
+  it("settles in-flight minPoolSize maintenance before close returns", function()
+    run_copas(function()
+      local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
+      local connection_started = false
+      local connection_settled = false
+      local connection_pool = pool.new({
+        address = "a:27017",
+        connect = function(options)
+          connection_started = true
+          local _, err = runtime.clock:sleep(60, options.cancellation)
+
+          connection_settled = true
+          return nil, err
+        end,
+        min_pool_size = 1,
+        poll_interval_ms = 1,
+        runtime = runtime,
+      })
+
+      assert(connection_pool:ready())
+
+      while not connection_started do
+        assert(runtime.clock:sleep(0.001))
+      end
+
+      assert.are.equal(1, connection_pool.pending_connection_count)
+      assert(connection_pool:close())
+      assert.is_true(connection_settled)
+      assert.are.equal(0, connection_pool.pending_connection_count)
+      assert.are.equal(0, connection_pool.total_connection_count)
+    end)
+  end)
+
   it("replenishes minPoolSize without clearing after a handshake error", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })
