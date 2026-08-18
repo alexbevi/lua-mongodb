@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1755,
-    "runnable": 1755
+    "passed": 1756,
+    "runnable": 1756
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -51337,7 +51337,6 @@
     "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": {
       "activity": "LEG-003",
       "fingerprint": "ebeb6f0ac0086e8f1a13f278400315d7d6402bd37776d1f064e721e01005f980",
-      "reason": "legacy mapReduce is outside the v1 public API",
       "requirements": {
         "arguments": [
           "mapReduce.map",
@@ -51363,7 +51362,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "read-write-concern/tests/operation/default-write-concern-4.2.json::test[1]": {
       "activity": "REL-003",

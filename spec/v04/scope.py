@@ -270,7 +270,10 @@ def classify(
         raise ScopeError(f"target-version exclusion has wrong owner: {identity}")
       seen_target_version_exclusions.add(identity)
 
-    if status == "passed":
+    if identity in TARGET_VERSION_EXCLUSIONS and owner in EXCLUSION_REASONS:
+      classification = "excluded"
+      excluded_by_activity[owner] += 1
+    elif status == "passed":
       runner = case.get("runner")
       evidence = case.get("last_execution")
       if not isinstance(runner, str) or not runner or runner.startswith("pending:"):

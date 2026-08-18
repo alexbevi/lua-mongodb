@@ -1717,6 +1717,27 @@ local function count(_, collection, arguments)
   ))
 end
 
+local function map_reduce(_, collection, arguments)
+  return collection:map_reduce(
+    arguments:get("map"),
+    arguments:get("reduce"),
+    arguments:get("out"),
+    operation_options(arguments, {
+      bypassDocumentValidation = "bypass_document_validation",
+      collation = "collation",
+      comment = "comment",
+      finalize = "finalize",
+      jsMode = "js_mode",
+      limit = "limit",
+      maxTimeMS = "max_time_ms",
+      query = "query",
+      scope = "scope",
+      sort = "sort",
+      verbose = "verbose",
+    })
+  )
+end
+
 local function count_documents(_, collection, arguments)
   return collection:count_documents(arguments:get("filter"), operation_options(
     arguments,
@@ -2391,6 +2412,14 @@ function M.new(options)
             "rawData", "skip",
           },
           handler = count,
+        },
+        mapReduce = {
+          arguments = {
+            "bypassDocumentValidation", "collation", "comment", "finalize",
+            "jsMode", "limit", "map", "maxTimeMS", "out", "query",
+            "reduce", "scope", "sort", "verbose",
+          },
+          handler = map_reduce,
         },
         countDocuments = {
           arguments = {

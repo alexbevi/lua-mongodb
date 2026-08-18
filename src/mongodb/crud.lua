@@ -119,6 +119,22 @@ local COUNT_OPTIONS = {
   skip = true,
   session = true,
 }
+local MAP_REDUCE_OPTIONS = {
+  bypass_document_validation = true,
+  cancellation = true,
+  collation = true,
+  comment = true,
+  deadline = true,
+  finalize = true,
+  js_mode = true,
+  limit = true,
+  max_time_ms = true,
+  query = true,
+  scope = true,
+  session = true,
+  sort = true,
+  verbose = true,
+}
 local ESTIMATED_COUNT_OPTIONS = {
   cancellation = true,
   comment = true,
@@ -385,6 +401,12 @@ end
 local function require_document(name, value)
   if not bson.is_document(value) then
     error(name .. " must be a BSON document", 3)
+  end
+end
+
+local function require_javascript(name, value)
+  if type(value) ~= "string" and not bson.is_tagged(value, "code") then
+    error(name .. " must be a string or BSON code", 3)
   end
 end
 
@@ -1126,6 +1148,103 @@ function M.count(state, filter, options)
   end
 
   return count_field(response, "n")
+end
+
+function M.map_reduce(state, map, reduce, out, options)
+  require_javascript("map", map)
+  require_javascript("reduce", reduce)
+
+  if type(out) ~= "string" and not bson.is_document(out) then
+    error("out must be a collection name or BSON document", 2)
+  end
+
+  options = validate_options(options, MAP_REDUCE_OPTIONS, "map_reduce")
+  require_boolean_option(options, "bypass_document_validation")
+  require_boolean_option(options, "js_mode")
+  require_boolean_option(options, "verbose")
+  require_document_option(options, "collation")
+  require_document_option(options, "query")
+  require_document_option(options, "scope")
+  require_document_option(options, "sort")
+  require_nonnegative_integer(options, "limit")
+  require_nonnegative_integer(options, "max_time_ms")
+
+  if options.finalize ~= nil then
+    require_javascript("finalize", options.finalize)
+  end
+
+  local inline = bson.is_document(out) and out:get("inline") ~= nil
+  local entries = {
+    { "mapReduce", state.name },
+    { "map", map },
+    { "reduce", reduce },
+    { "out", out },
+  }
+
+  for _, field in ipairs({
+    { "bypass_document_validation", "bypassDocumentValidation" },
+    { "collation", "collation" },
+    { "comment", "comment" },
+    { "finalize", "finalize" },
+    { "js_mode", "jsMode" },
+    { "limit", "limit" },
+    { "max_time_ms", "maxTimeMS" },
+    { "query", "query" },
+    { "scope", "scope" },
+    { "sort", "sort" },
+    { "verbose", "verbose" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  if inline then
+    append_read_concern(entries, state)
+  else
+    local write_concern = concern_document(state.write_concern, true)
+
+    if write_concern then
+      entries[#entries + 1] = { "writeConcern", write_concern }
+    end
+  end
+
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      read_operation = inline,
+      read_preference = state.read_preference,
+      retryable_read = false,
+      session = options.session,
+    }
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  if not inline then
+    local valid
+    valid, err = check_write_response(response)
+
+    if not valid then
+      return nil, err
+    end
+  end
+
+  local result_field = inline and "results" or "result"
+  local value = response:get(result_field)
+
+  if value == nil or inline and not bson.is_array(value) then
+    return protocol_error(
+      "mapReduce response is missing its " .. result_field .. " field"
+    )
+  end
+
+  return value
 end
 
 function M.count_documents(state, filter, options)

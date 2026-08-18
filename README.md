@@ -203,6 +203,8 @@ end
 
 For counts, prefer `collection:count_documents(filter, options)` for an exact query count or `collection:estimated_document_count(options)` for a fast metadata estimate. The deprecated `collection:count(filter, options)` method remains available for compatibility and sends the legacy `count` command directly; its result can be inaccurate on a sharded cluster while orphaned documents or chunk migrations are present.
 
+The deprecated `collection:map_reduce(map, reduce, out, options)` helper accepts JavaScript strings or `mongodb.bson.code` values. An inline output document such as `doc({ { "inline", 1 } })` returns the result documents as a BSON array; output-producing forms return the server's result collection name or document. Prefer aggregation pipelines for new applications.
+
 Once the example work is complete, delete the inserted document using its generated identifier:
 
 ```lua
@@ -449,7 +451,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | CRUD | 🟡 | 72.9% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
-| Programmability | Read/write concern | 🟡 | 98.0% |
+| Programmability | Read/write concern | 🟢 | 100.0% |
 | Programmability | Change streams | 🟡 | 78.7% |
 | Programmability | GridFS | 🔴 | 0.0% |
 | Programmability | Stable API | 🟡 | 92.7% |

@@ -262,7 +262,7 @@ TEST_OVERRIDES.update({
   ),
   "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": (
     "LEG-003",
-    "legacy mapReduce is outside the v1 public API",
+    None,
   ),
   "versioned-api/tests/crud-api-version-1-strict.json::test[2]": (
     "LEG-005",

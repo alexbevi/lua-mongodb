@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "tests": {
+    "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": {"activity": "LEG-003", "environment": "live-standalone"},
     "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": {
       "activity": "AUTH-011",
       "environment": "deterministic-loopback"

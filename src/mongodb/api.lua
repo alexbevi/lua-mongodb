@@ -1087,6 +1087,10 @@ function COLLECTION_METHODS:count(filter, options)
   return collection_operation(self, crud.count, filter, options)
 end
 
+function COLLECTION_METHODS:map_reduce(map, reduce, out, options)
+  return collection_operation(self, crud.map_reduce, map, reduce, out, options)
+end
+
 function COLLECTION_METHODS:count_documents(filter, options)
   return collection_operation(self, crud.count_documents, filter, options)
 end

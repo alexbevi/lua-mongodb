@@ -5443,6 +5443,28 @@
       "notes": [],
       "started_at": "2026-08-18T16:32:29+00:00",
       "completed_at": "2026-08-18T16:38:45+00:00"
+    },
+    "LEG-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/legacy_map_reduce_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining public collection map_reduce command contract errored because the method did not exist; 0 successes, 0 failures, and 1 error ran.",
+          "recorded_at": "2026-08-18T16:51:43+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/legacy_map_reduce_spec.lua spec/unit/legacy_count_spec.lua spec/unit/api_handles_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='read-write-concern/tests/operation/default-write-concern-3.4.json::test[[]4]' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/api.lua src/mongodb/crud.lua spec/support/mongodb/unified/driver.lua spec/unit/legacy_map_reduce_spec.lua'; make test-complexity; generated --check validators",
+          "exit_code": 0,
+          "summary": "Twenty defining and directly coupled Lua specs passed; the one newly applicable mapReduce default-concern case executed and passed with 0 environment-skipped, 0 deferred, and 0 failed; 132 capability, ledger, scope, release, and README contracts passed; touched-file lint reported 0 warnings and errors; complexity and all generated validators passed at 1,756 runnable cases and 4,040 ledger-passed cases while preserving the v0.4 historical exclusion.",
+          "recorded_at": "2026-08-18T16:59:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T16:49:07+00:00",
+      "completed_at": "2026-08-18T16:59:50+00:00"
     }
   },
   "verified_references": {

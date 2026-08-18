@@ -46286,13 +46286,13 @@
       "activity": "LEG-003",
       "fingerprint": "ebeb6f0ac0086e8f1a13f278400315d7d6402bd37776d1f064e721e01005f980",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-standalone",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "read-write-concern/tests/operation/default-write-concern-3.4.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "read-write-concern"
     },
     "read-write-concern/tests/operation/default-write-concern-4.2.json::test[1]": {
@@ -86653,9 +86653,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1483,
+      "deferred_unsupported": 1482,
       "excluded_scope": 2,
-      "passed": 4039
+      "passed": 4040
     },
     "suites": {
       "auth": 73,
