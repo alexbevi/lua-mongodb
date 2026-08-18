@@ -994,6 +994,65 @@ describe("monitored topology", function()
     assert(commands:close())
   end)
 
+  it("discards a cancelled pooled connection without an SDAM failure", function()
+    local runtime = fake_runtime.new()
+    local connect_count = 0
+    local closed_count = 0
+    local manager = topology.new({
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            connect_count = connect_count + 1
+            local cancelled = connect_count == 1
+
+            return {
+              close = function()
+                closed_count = closed_count + 1
+                return true
+              end,
+              command = function()
+                if cancelled then
+                  return nil, errors.new({
+                    category = errors.CATEGORY.CANCELLED,
+                    message = "stop pooled read",
+                  })
+                end
+
+                return bson.document({ { "ok", 1 } })
+              end,
+            }
+          end,
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "a:27017" },
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("a:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "maxWireVersion", 21 },
+    }), { duration = 0.001 }))
+    local commands = topology_executor.new(manager)
+    local response, err = commands:command(
+      "db",
+      bson.document({ { "ping", 1 } })
+    )
+
+    assert.is_nil(response)
+    assert.is_true(errors.is(err, errors.CATEGORY.CANCELLED))
+    assert.are.equal("Standalone", manager.description:server("a:27017").type)
+    assert.are.equal(0, manager:pool("a:27017").generation)
+    assert(commands:command("db", bson.document({ { "ping", 1 } })))
+    assert.are.equal(2, connect_count)
+    assert.are.equal(1, closed_count)
+    assert(commands:close())
+  end)
+
   it("clears a failed primary and selects its promoted replica", function()
     local runtime = fake_runtime.new()
     local manager = topology.new({

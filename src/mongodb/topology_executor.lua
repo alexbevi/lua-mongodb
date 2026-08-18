@@ -219,20 +219,25 @@ end
 
 local function finish_connection(state, selected, err)
   if err then
+    local cancelled = errors.is(err, errors.CATEGORY.CANCELLED)
+
     if errors.is(err, errors.CATEGORY.NETWORK)
         or errors.is(err, errors.CATEGORY.PROTOCOL)
         or errors.is(err, errors.CATEGORY.TIMEOUT)
+        or cancelled
     then
       selected.connection:mark_error()
     end
 
-    report_error(
-      state,
-      selected.address,
-      selected.connection.generation,
-      err,
-      "afterHandshakeCompletes"
-    )
+    if not cancelled then
+      report_error(
+        state,
+        selected.address,
+        selected.connection.generation,
+        err,
+        "afterHandshakeCompletes"
+      )
+    end
   end
 
   selected.pool:check_in(selected.connection)

@@ -56,6 +56,16 @@ local function retry_timeout(owner, operation, reason, deadline, token)
   })
 end
 
+local function interrupt_on_cancel(socket, token)
+  if token == nil then
+    return function() end
+  end
+
+  return token:on_cancel(function()
+    socket:close()
+  end)
+end
+
 local function parse_ipv4(value)
   local parts = {}
 
@@ -249,7 +259,16 @@ function SOCKET_METHODS:read_some(max_bytes, deadline, token)
     end
 
     self._socket:settimeout(timeout)
+    local unsubscribe = interrupt_on_cancel(self, token)
     local data, reason, partial = self._socket:receivepartial(max_bytes)
+
+    unsubscribe()
+    local ok
+    ok, err = runtime_contract.check(self._owner.runtime, deadline, token)
+
+    if not ok then
+      return nil, err
+    end
 
     if data then
       return data

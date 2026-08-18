@@ -186,7 +186,10 @@ local function get_more(value, state)
   )
 
   if not response then
-    if not errors.is(err, errors.CATEGORY.TIMEOUT) then
+    local cancelled_await = state.cursor_type == "tailable_await"
+      and errors.is(err, errors.CATEGORY.CANCELLED)
+
+    if not errors.is(err, errors.CATEGORY.TIMEOUT) and not cancelled_await then
       mark_closed(value, state)
     end
 

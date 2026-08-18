@@ -37,6 +37,7 @@ end
 local function discard_failed(state, err)
   if errors.is(err, errors.CATEGORY.NETWORK)
       or errors.is(err, errors.CATEGORY.PROTOCOL)
+      or errors.is(err, errors.CATEGORY.CANCELLED)
   then
     state.executor:close()
     state.executor = nil

@@ -5663,6 +5663,28 @@
       "notes": [],
       "started_at": "2026-08-18T19:09:06+00:00",
       "completed_at": "2026-08-18T19:22:21+00:00"
+    },
+    "LEG-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=keeps.a.cancelled.awaitData.cursor.available.for.explicit.close spec/unit/cursor_spec.lua'",
+          "exit_code": 2,
+          "summary": "1 focused unit case failed after the cancellation token reached getMore because the structured cancellation error incorrectly closed the otherwise live awaitData cursor before explicit cleanup",
+          "recorded_at": "2026-08-18T19:31:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/network_transport_spec.lua spec/unit/session_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/cursor_spec.lua spec/integration/copas_tcp_spec.lua' FOCUS_LINT='8 touched Lua files'; make test-complexity; make test-architecture; capability, ledger, release-scope, and checklist --check validators",
+          "exit_code": 0,
+          "summary": "63 focused unit cases and 4 loopback integration cases passed; 0 newly applicable unified identities exist for awaitData cancellation, so 0 unified cases were executed, environment-skipped, deferred in execution, or failed; 8 touched Lua files linted; complexity, architecture, capability, ledger, release-scope, checklist, and diff validators passed",
+          "recorded_at": "2026-08-18T19:42:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T19:29:44+00:00",
+      "completed_at": "2026-08-18T19:42:18+00:00"
     }
   },
   "verified_references": {

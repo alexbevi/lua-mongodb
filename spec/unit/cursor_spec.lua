@@ -2,6 +2,7 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local runtime_contract = require("mongodb.runtime")
 local fake_runtime = require("mongodb.runtime.fake")
 
 describe("find cursor lifecycle", function()
@@ -181,6 +182,65 @@ describe("find cursor lifecycle", function()
     assert.is_nil(cursor:next())
     assert.is_nil(commands[1]:get("maxTimeMS"))
     assert.are.equal(25, commands[2]:get("maxTimeMS"))
+  end)
+
+  it("keeps a cancelled awaitData cursor available for explicit close", function()
+    local runtime = fake_runtime.new()
+    local cancellation = runtime.cancellation:new()
+    local commands = {}
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = name
+
+        if name == "find" then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(42) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif name == "getMore" then
+          assert.are.equal(cancellation, options.cancellation)
+          cancellation:cancel("stop awaitData read")
+          return runtime_contract.check(runtime, nil, options.cancellation)
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursorsKilled", bson.array({ bson.int64(42) }) },
+        })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize()),
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local cursor = assert(client:database("app"):collection("events"):find(
+      nil,
+      {
+        cancellation = cancellation,
+        cursor_type = "tailable_await",
+      }
+    ))
+    local document, err = cursor:next()
+
+    assert.is_nil(document)
+    assert.is_true(errors.is(err, errors.CATEGORY.CANCELLED))
+    assert.are.equal("stop awaitData read", err.message)
+    assert.is_false(cursor:is_closed())
+    assert.is_true(cursor:close())
+    assert.is_true(cursor:is_closed())
+    assert.are.same({ "find", "getMore", "killCursors" }, commands)
   end)
 
   it("keeps a lifetime deadline and refreshes an iteration deadline", function()
