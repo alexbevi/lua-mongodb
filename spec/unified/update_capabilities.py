@@ -250,15 +250,15 @@ TEST_OVERRIDES.update({
   ),
   "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": (
     "LEG-005",
-    "database aggregate is outside the v1 public collection adapter",
+    None,
   ),
   "crud/tests/unified/db-aggregate.json::test[1]": (
     "LEG-005",
-    "database aggregate is outside the v1 public collection adapter",
+    None,
   ),
   "crud/tests/unified/db-aggregate.json::test[2]": (
     "LEG-005",
-    "database aggregate is outside the v1 public collection adapter",
+    None,
   ),
   "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": (
     "LEG-003",
@@ -266,11 +266,11 @@ TEST_OVERRIDES.update({
   ),
   "versioned-api/tests/crud-api-version-1-strict.json::test[2]": (
     "LEG-005",
-    "database aggregate is outside the v1 public API",
+    None,
   ),
   "versioned-api/tests/crud-api-version-1.json::test[2]": (
     "LEG-005",
-    "database aggregate is outside the v1 public API",
+    None,
   ),
   "versioned-api/tests/crud-api-version-1.json::test[4]": (
     "ADV-007",
@@ -677,14 +677,23 @@ for index in range(1, 60):
     f"transactions/tests/unified/mongos-pin-auto.json::test[{index}]"
   ] = (owner, reason)
 
-for fixture, count in (
-  ("db-aggregate-rawdata", 2),
-  ("db-aggregate-write-readPreference", 4),
-):
-  for index in range(1, count + 1):
-    TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
-      "LEG-005",
-      "database aggregate is outside the v1 public collection adapter",
+for index in range(1, 3):
+  TEST_OVERRIDES[
+    f"crud/tests/unified/db-aggregate-rawdata.json::test[{index}]"
+  ] = ("LEG-005", None)
+
+for index in range(1, 5):
+  identity = (
+    "crud/tests/unified/"
+    f"db-aggregate-write-readPreference.json::test[{index}]"
+  )
+
+  if index in (1, 3):
+    TEST_OVERRIDES[identity] = ("LEG-005", None)
+  else:
+    TEST_OVERRIDES[identity] = (
+      "REL-053",
+      "the pre-5.0 server requirement is outside the v1 compatibility matrix",
     )
 
 for operation in ("Delete", "Replace", "Update"):

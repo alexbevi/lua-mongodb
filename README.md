@@ -201,6 +201,19 @@ for team in active_users_by_team:iter() do
 end
 ```
 
+Database-level pipelines use `database:aggregate` and return the same cursor type. For example, an administrative pipeline can enumerate one local session without naming a collection:
+
+```lua
+local sessions = assert(client:database("admin"):aggregate(mongodb.bson.array({
+  doc({ { "$listLocalSessions", doc({}) } }),
+  doc({ { "$limit", 1 } }),
+})))
+
+for session_document in sessions:iter() do
+  print(session_document)
+end
+```
+
 For counts, prefer `collection:count_documents(filter, options)` for an exact query count or `collection:estimated_document_count(options)` for a fast metadata estimate. The deprecated `collection:count(filter, options)` method remains available for compatibility and sends the legacy `count` command directly; its result can be inaccurate on a sharded cluster while orphaned documents or chunk migrations are present.
 
 The deprecated `collection:map_reduce(map, reduce, out, options)` helper accepts JavaScript strings or `mongodb.bson.code` values. An inline output document such as `doc({ { "inline", 1 } })` returns the result documents as a BSON array; output-producing forms return the server's result collection name or document. Prefer aggregation pipelines for new applications.
@@ -400,7 +413,7 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
 ### Errors and resource lifetimes
 
@@ -448,13 +461,13 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 72.9% |
+| Programmability | CRUD | 🟡 | 74.3% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |
 | Programmability | Change streams | 🟡 | 78.7% |
 | Programmability | GridFS | 🔴 | 0.0% |
-| Programmability | Stable API | 🟡 | 92.7% |
+| Programmability | Stable API | 🟡 | 97.6% |
 | Programmability | Client-side encryption | 🔴 | 0.0% |
 | Observability | Command logging and monitoring | 🟡 | 13.8% |
 | Observability | Standardized logging | 🔴 | 0.0% |

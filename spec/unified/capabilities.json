@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1759,
-    "runnable": 1759
+    "passed": 1768,
+    "runnable": 1768
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37048,7 +37048,6 @@
     "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": {
       "activity": "LEG-005",
       "fingerprint": "560cf7445d28c0c764ede1801bfc0198d8f944c2e8941b69b1b8f4b702e8e1dd",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -37071,7 +37070,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-merge.json::test[1]": {
       "activity": "UTF-013",
@@ -42574,7 +42573,6 @@
     "crud/tests/unified/db-aggregate-rawdata.json::test[1]": {
       "activity": "LEG-005",
       "fingerprint": "14c778737de6f76cf689faad36aa3fd0df02b61ee637b6e3b223b69938d9e68b",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -42599,12 +42597,11 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/db-aggregate-rawdata.json::test[2]": {
       "activity": "LEG-005",
       "fingerprint": "b2e66c11922408dd234b8cbc536208f1cedcc3c49690e6d2f18ed59192d096e7",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -42629,12 +42626,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[1]": {
       "activity": "LEG-005",
       "fingerprint": "d06f901672a91cc611c1765eec1e82b6aa926c42341a838cba666e87e772a2af",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -42658,12 +42654,12 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[2]": {
-      "activity": "LEG-005",
+      "activity": "REL-053",
       "fingerprint": "700021ca77b32d344d52224c693f5dc4e05ca893365fb03965787b31c247f847",
-      "reason": "database aggregate is outside the v1 public collection adapter",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -42694,7 +42690,6 @@
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[3]": {
       "activity": "LEG-005",
       "fingerprint": "f6f0cc696a634e6759aaab56cc72d3641248bf8d62d756dea6dfd71bf8e862b6",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -42718,12 +42713,12 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/db-aggregate-write-readPreference.json::test[4]": {
-      "activity": "LEG-005",
+      "activity": "REL-053",
       "fingerprint": "39a3c6225754193a2280f522b7b4993af1b288e4ae4bc59341f77889b0e62e4d",
-      "reason": "database aggregate is outside the v1 public collection adapter",
+      "reason": "the pre-5.0 server requirement is outside the v1 compatibility matrix",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -42754,7 +42749,6 @@
     "crud/tests/unified/db-aggregate.json::test[1]": {
       "activity": "LEG-005",
       "fingerprint": "91525ebd7cbfcb25204febec9551ac84b5277f4101dce2aa053c55bdcae9f5ed",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -42774,12 +42768,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/db-aggregate.json::test[2]": {
       "activity": "LEG-005",
       "fingerprint": "0ffb715db6f6622c9e962e41aa252918730cfd99569a82c18f1ec8864c49274c",
-      "reason": "database aggregate is outside the v1 public collection adapter",
       "requirements": {
         "arguments": [
           "aggregate.allowDiskUse",
@@ -42800,7 +42793,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/deleteMany-collation.json::test[1]": {
       "activity": "UTF-012",
@@ -85026,7 +85019,6 @@
     "versioned-api/tests/crud-api-version-1-strict.json::test[2]": {
       "activity": "LEG-005",
       "fingerprint": "af832c8a7f7793bb48b95a882c3b045b1364e398c7d8a1c94c840ceb435a2573",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -85050,7 +85042,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "versioned-api/tests/crud-api-version-1-strict.json::test[3]": {
       "activity": "REL-003",
@@ -85543,7 +85535,6 @@
     "versioned-api/tests/crud-api-version-1.json::test[2]": {
       "activity": "LEG-005",
       "fingerprint": "ac80d04d1773c0d26727247741b413cdc87dde722662b97a32d07af36476029b",
-      "reason": "database aggregate is outside the v1 public API",
       "requirements": {
         "arguments": [
           "aggregate.pipeline"
@@ -85567,7 +85558,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "versioned-api/tests/crud-api-version-1.json::test[3]": {
       "activity": "REL-003",

@@ -5487,6 +5487,28 @@
       "notes": [],
       "started_at": "2026-08-18T17:10:45+00:00",
       "completed_at": "2026-08-18T17:16:03+00:00"
+    },
+    "LEG-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_UNIT=spec/unit/database_aggregate_spec.lua",
+          "exit_code": 2,
+          "summary": "0 successes, 0 failures, 1 error: database aggregate calls missing aggregate method",
+          "recorded_at": "2026-08-18T17:24:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/database_aggregate_spec.lua' FOCUS_UNIFIED='<nine exact LEG-005 database aggregate identities>' FOCUS_PYTHON='database aggregate classification plus conformance/release/README contracts' FOCUS_LINT='src/mongodb/api.lua spec/support/mongodb/unified/driver.lua spec/unit/database_aggregate_spec.lua'; make test-complexity; make test-architecture; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "1 unit passed; 9 runnable unified identities selected with 8 executed/passed, 1 mutually exclusive pre-8.2 environment skip, 0 failed, and 2 pre-v1 cases explicitly deferred to REL-053; 16 Python contracts passed; 3 touched Lua files linted; complexity, architecture, capability, ledger, release scope, v0.4, v0.5, checklist, README, JSON, Python compile, and diff validators passed",
+          "recorded_at": "2026-08-18T17:31:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T17:23:45+00:00",
+      "completed_at": "2026-08-18T17:31:38+00:00"
     }
   },
   "verified_references": {

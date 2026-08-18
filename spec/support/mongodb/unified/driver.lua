@@ -336,7 +336,16 @@ local function database_factory(runner, specification)
     end
 
     if read_preference then
-      options.read_preference = { mode = read_preference:get("mode") }
+      local max_staleness = read_preference:get("maxStalenessSeconds")
+
+      if bson.is_exact(max_staleness) then
+        max_staleness = max_staleness:to_number()
+      end
+
+      options.read_preference = {
+        max_staleness_seconds = max_staleness,
+        mode = read_preference:get("mode"),
+      }
     end
 
     if write_concern then
@@ -2543,6 +2552,14 @@ function M.new(options)
         },
       },
       database = {
+        aggregate = {
+          arguments = {
+            "allowDiskUse", "batchSize", "bypassDocumentValidation",
+            "collation", "comment", "hint", "let", "maxTimeMS", "pipeline",
+            "rawData",
+          },
+          handler = aggregate,
+        },
         createChangeStream = {
           arguments = {
             "batchSize", "collation", "comment", "fullDocument",

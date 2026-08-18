@@ -1,6 +1,15 @@
 {
   "schema_version": 1,
   "tests": {
+    "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "crud/tests/unified/db-aggregate-rawdata.json::test[1]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "crud/tests/unified/db-aggregate-rawdata.json::test[2]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "crud/tests/unified/db-aggregate-write-readPreference.json::test[1]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "crud/tests/unified/db-aggregate-write-readPreference.json::test[3]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "crud/tests/unified/db-aggregate.json::test[1]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "crud/tests/unified/db-aggregate.json::test[2]": {"activity": "LEG-005", "environment": "live-replicaset"},
+    "versioned-api/tests/crud-api-version-1-strict.json::test[2]": {"activity": "LEG-005", "environment": "live-standalone"},
+    "versioned-api/tests/crud-api-version-1.json::test[2]": {"activity": "LEG-005", "environment": "live-standalone"},
     "retryable-reads/tests/unified/mapReduce.json::test[1]": {"activity": "LEG-004", "environment": "isolated-replicaset", "testCommands": true},
     "retryable-reads/tests/unified/mapReduce.json::test[2]": {"activity": "LEG-004", "environment": "isolated-replicaset", "testCommands": true},
     "retryable-reads/tests/unified/mapReduce.json::test[3]": {"activity": "LEG-004", "environment": "isolated-replicaset", "testCommands": true},

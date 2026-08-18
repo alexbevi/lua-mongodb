@@ -726,6 +726,17 @@ local function database_operation(database, operation, ...)
   end)
 end
 
+function DATABASE_METHODS:aggregate(pipeline, options)
+  local state = DATABASE_STATES[self]
+  local cursor, err = database_operation(self, crud.aggregate, pipeline, options)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return register_client_cursor(state.client, cursor)
+end
+
 function COLLECTION_METHODS:insert_one(document, options)
   return collection_operation(self, crud.insert_one, document, options)
 end
