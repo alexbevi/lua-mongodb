@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1783,
-    "runnable": 1783
+    "passed": 1787,
+    "runnable": 1787
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -35124,9 +35124,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": {
-      "activity": "LEG-009",
+      "activity": "REL-053",
       "fingerprint": "d45ef83db87ffcf661184b0bc365646283e0fdfdb1c3226f5eef3632f1c78f7b",
-      "reason": "tailable command-cursor iteration timeout conformance is deferred with the remaining non-awaitData tailable cursor behavior",
+      "reason": "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -35581,7 +35581,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[10]": {
       "activity": "LEG-010",
       "fingerprint": "481a34973fcf0926bd5bc0504a79f11a6b6f4fab84dc7d722dcba87fb2990129",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35620,7 +35620,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[11]": {
       "activity": "LEG-010",
       "fingerprint": "d2bab5260e06a37661b1cffdf6b6d75da61c11a8194d42a1de7291f61b1c59f5",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35657,7 +35657,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[12]": {
       "activity": "LEG-010",
       "fingerprint": "a3852a9f20329f7342fc55b42b26e764f87977405a9a8ccaab8f9e450ef9b23d",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35696,7 +35696,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[13]": {
       "activity": "LEG-010",
       "fingerprint": "5d24d8043b9b16648e324a7ac9dc7f9375082b7c0bfe56157ee178e9818ce9f0",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35730,7 +35730,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[1]": {
       "activity": "LEG-010",
       "fingerprint": "693bb001a82af1046585aae676f4400054cf21369d84afe4c7b712e8d3cf8218",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -35757,7 +35757,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[2]": {
       "activity": "LEG-010",
       "fingerprint": "c7dfa36ebc2a224cd5f201d87812754549d627cede39164b97515cb99ae1dbae",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -35785,7 +35785,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[3]": {
       "activity": "LEG-010",
       "fingerprint": "2c270e84a797aaf5d88fbe01172ce529e187961de5def7556f82d62b484771b7",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "aggregate.maxAwaitTimeMS",
@@ -35838,7 +35838,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[5]": {
       "activity": "LEG-010",
       "fingerprint": "3b5526ff463f47c6082a47cc16863aa4259977b841ce7a16c44954484254ce95",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -35866,7 +35866,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[6]": {
       "activity": "LEG-010",
       "fingerprint": "69bf73d583d17559ed52db8dd1d6c3db0c78c551c7e4d27953e437b7f297a567",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "aggregate.maxAwaitTimeMS",
@@ -35919,7 +35919,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[8]": {
       "activity": "LEG-010",
       "fingerprint": "01a1cd722010beb5d7506d1df62d767b64d1a278546446712fc0641baee17d13",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -35953,7 +35953,7 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[9]": {
       "activity": "LEG-010",
       "fingerprint": "45c088cf34d465467574b039df0cfd26069ddd31779a5ce5a936cfc1f7fbcc6a",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "reason": "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -35991,7 +35991,6 @@
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[1]": {
       "activity": "LEG-009",
       "fingerprint": "963e5c87a68c0b013a11c6d9853615fbcde7dcf10935e9c9d239ef84fe8d0f3e",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -36013,12 +36012,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[2]": {
       "activity": "LEG-009",
       "fingerprint": "6d0d005b9db6d1f572cabf63dbbae8446e3681096070eee78d7ddba408aa8713",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36047,12 +36045,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]": {
       "activity": "LEG-009",
       "fingerprint": "5cbcd32cba03875ee80b54a9c8ab8fd9e4cc59f871f04ee6a16c870c0e619b6a",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36085,12 +36082,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[4]": {
       "activity": "LEG-009",
       "fingerprint": "636a07e485f2f9e8a0714b819188c94fabcb50a49d7f2bda5e4e0f6445d82750",
-      "reason": "tailable cursor unified adapters are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createFindCursor.batchSize",
@@ -36122,7 +36118,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/waitQueueTimeout.json::test[1]": {
       "activity": "TIME-001",

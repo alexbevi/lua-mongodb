@@ -1676,6 +1676,7 @@ local function create_find_cursor(_, collection, arguments, _, path)
       batchSize = "batch_size",
       collation = "collation",
       comment = "comment",
+      cursorType = "cursor_type",
       hint = "hint",
       let = "let",
       limit = "limit",
@@ -1696,6 +1697,7 @@ local function find(_, collection, arguments)
       batchSize = "batch_size",
       collation = "collation",
       comment = "comment",
+      cursorType = "cursor_type",
       hint = "hint",
       let = "let",
       limit = "limit",
@@ -2369,8 +2371,8 @@ function M.new(options)
         createFindCursor = {
           arguments = {
             "allowDiskUse", "batchSize", "collation", "comment", "filter",
-            "hint", "let", "limit", "maxTimeMS", "projection", "rawData",
-            "skip", "sort", "timeoutMode", "timeoutMS",
+            "cursorType", "hint", "let", "limit", "maxTimeMS", "projection",
+            "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
           },
           handler = create_find_cursor,
           result_kind = "findCursor",
@@ -2453,8 +2455,9 @@ function M.new(options)
         },
         find = {
           arguments = {
-            "allowDiskUse", "batchSize", "collation", "comment", "filter", "hint",
-            "let", "limit", "maxTimeMS", "projection", "rawData", "skip", "sort",
+            "allowDiskUse", "batchSize", "collation", "comment", "cursorType",
+            "filter", "hint", "let", "limit", "maxTimeMS", "projection",
+            "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
           },
           handler = find,
         },

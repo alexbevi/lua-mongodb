@@ -593,8 +593,8 @@ TEST_OVERRIDES.update({
     "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": (
-    "LEG-009",
-    "tailable command-cursor iteration timeout conformance is deferred with the remaining non-awaitData tailable cursor behavior",
+    "REL-053",
+    "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
     "LEG-010",
@@ -810,7 +810,8 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   if fixture.startswith("tailable-"):
     return (
       "LEG-010" if fixture.startswith("tailable-awaitData") else "LEG-009",
-      "tailable cursor unified adapters are outside the v1 public cursor surface",
+      "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior"
+        if fixture.startswith("tailable-awaitData") else None,
     )
 
   unsupported = operations - CSOT_SUPPORTED_OPERATIONS - CSOT_TEST_OPERATIONS

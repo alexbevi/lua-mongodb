@@ -46,6 +46,7 @@ local FIND_OPTIONS = {
   session = true,
   timeout_mode = true,
 }
+local FIND_ONE_OPTIONS = {}
 local INSERT_OPTIONS = {
   bypass_document_validation = true,
   cancellation = true,
@@ -200,9 +201,16 @@ local FIND_AND_UPDATE_OPTIONS = {
   session = true,
 }
 
+for name in pairs(FIND_OPTIONS) do
+  FIND_ONE_OPTIONS[name] = true
+end
+
 for name in pairs(FIND_OPTION_FIELDS) do
   FIND_OPTIONS[name] = true
+  FIND_ONE_OPTIONS[name] = true
 end
+
+FIND_OPTIONS.cursor_type = true
 
 local function protocol_error(message, details)
   return nil, errors.new({
@@ -1521,6 +1529,7 @@ function M.find(state, filter, options)
   end
 
   options = validate_options(options, FIND_OPTIONS, "find")
+  local cursor_type = options.cursor_type or "non_tailable"
   local session_context = options.session == nil
     and type(state.executor.release_session_context) == "function" and {} or nil
   local batch_size = options.batch_size or 0
@@ -1536,6 +1545,10 @@ function M.find(state, filter, options)
 
   if options.no_cursor_timeout ~= nil and type(options.no_cursor_timeout) ~= "boolean" then
     error("no_cursor_timeout must be a boolean", 2)
+  end
+
+  if cursor_type ~= "non_tailable" and cursor_type ~= "tailable" then
+    error("cursor_type must be non_tailable or tailable", 2)
   end
 
   local single_batch = limit < 0
@@ -1567,6 +1580,10 @@ function M.find(state, filter, options)
 
   if options.no_cursor_timeout ~= nil then
     entries[#entries + 1] = { "noCursorTimeout", options.no_cursor_timeout }
+  end
+
+  if cursor_type == "tailable" then
+    entries[#entries + 1] = { "tailable", true }
   end
 
   local read_concern = concern_document(state.read_concern, false)
@@ -1603,6 +1620,7 @@ function M.find(state, filter, options)
     client_state = state.client_state,
     collection_name = state.name,
     comment = options.comment,
+    cursor_type = cursor_type,
     database_name = state.database_name,
     deadline = options.deadline,
     executor = state.executor,
@@ -1623,7 +1641,7 @@ function M.find_one(state, filter, options)
     filter = bson.document({ { "_id", filter } })
   end
 
-  options = validate_options(options, FIND_OPTIONS, "find_one")
+  options = validate_options(options, FIND_ONE_OPTIONS, "find_one")
   local entries = {
     { "find", state.name },
     { "filter", filter },

@@ -5575,6 +5575,28 @@
       "notes": [],
       "started_at": "2026-08-18T18:00:57+00:00",
       "completed_at": "2026-08-18T18:11:14+00:00"
+    },
+    "LEG-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=encodes.and.polls.a.non%-awaitData.tailable.cursor spec/unit/cursor_spec.lua'",
+          "exit_code": 2,
+          "summary": "1 focused unit case errored before I/O because collection find rejected the cursor_type option instead of encoding and polling a tailable cursor",
+          "recorded_at": "2026-08-18T18:18:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/api_handles_spec.lua' FOCUS_UNIFIED='client-side-operations-timeout/tests/tailable-non-awaitData.json::test[[][1-4]]' FOCUS_PYTHON='tailable classification plus conformance/release/v0.4/v0.5/README contracts' FOCUS_LINT='4 touched Lua files'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "16 focused Lua cases passed; 4 exact non-awaitData tailable cursor identities executed and passed with 0 environment skips, 0 deferred, and 0 failed; 33 Python contracts passed; 4 touched Lua files linted; complexity, capability, ledger, release scope, v0.4, v0.5, checklist, README, JSON, and Python compile validators passed; the pinned-reference timeoutMode incompatibility remains explicitly deferred to REL-053",
+          "recorded_at": "2026-08-18T18:29:45+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T18:17:26+00:00",
+      "completed_at": "2026-08-18T18:29:46+00:00"
     }
   },
   "verified_references": {

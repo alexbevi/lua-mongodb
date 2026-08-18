@@ -184,6 +184,22 @@ for matching_user in cursor:iter() do
 end
 ```
 
+For a capped collection, pass `cursor_type = "tailable"` to `find`. Each
+`next()` call checks at most one server batch, so an empty live batch returns
+`nil` without closing the cursor and the application can poll again later:
+
+```lua
+local events = client:database("app"):collection("events")
+local cursor = assert(events:find(nil, { cursor_type = "tailable" }))
+local event = cursor:next()
+
+if event then
+  print(event)
+end
+
+assert(cursor:close())
+```
+
 For reporting reads, `aggregate` accepts an ordered BSON array of pipeline stages and returns the same cursor type as `find`. This pipeline filters active users, groups them by team, and orders the busiest teams first:
 
 ```lua
@@ -413,7 +429,7 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD and collection bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD and collection bulk writes, including non-awaitData tailable finds; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
 ### Errors and resource lifetimes
 
@@ -456,7 +472,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 91.1% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
-| Resilience | Client-side operations timeout | 🟡 | 77.6% |
+| Resilience | Client-side operations timeout | 🟡 | 78.3% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |

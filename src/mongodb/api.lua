@@ -1137,8 +1137,53 @@ function COLLECTION_METHODS:find_one_and_update(filter, update, options)
   return collection_operation(self, crud.find_one_and_update, filter, update, options)
 end
 
+local function tailable_find_options(collection, options)
+  if type(options) ~= "table" or options.cursor_type == nil
+      or options.cursor_type == "non_tailable"
+  then
+    return options
+  end
+
+  if options.cursor_type == "tailable_await" then
+    return client_error("tailable await cursors are outside the supported API")
+  end
+
+  if options.cursor_type ~= "tailable" then
+    return options
+  end
+
+  if options.timeout_mode == "cursor_lifetime" then
+    return client_error(
+      "cursor_lifetime timeout mode is not supported for tailable cursors"
+    )
+  end
+
+  local state = COLLECTION_STATES[collection]
+
+  if options.timeout_mode == nil
+      and (options.timeout_ms ~= nil or state.timeout_ms ~= nil)
+  then
+    local prepared = {}
+
+    for key, value in pairs(options) do
+      prepared[key] = value
+    end
+
+    prepared.timeout_mode = "iteration"
+    return prepared
+  end
+
+  return options
+end
+
 function COLLECTION_METHODS:find(filter, options)
-  local cursor, err = collection_operation(self, crud.find, filter, options)
+  local prepared, option_err = tailable_find_options(self, options)
+
+  if prepared == nil and option_err then
+    return nil, option_err
+  end
+
+  local cursor, err = collection_operation(self, crud.find, filter, prepared)
 
   if not cursor then
     return nil, err
