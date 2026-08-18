@@ -1,6 +1,6 @@
 # MongoDB Lua Driver
 
-A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.4.0`; it adds snapshot sessions, Search index management, modern read/write concerns, and sharded discovery, monitoring, commands, and transactions to the authenticated production-core foundation. It targets Lua 5.4 without binding or wrapping `libmongoc`.
+A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.5.0`; it adds collection, database, and cluster change streams with resumability, operation timeouts, expanded events, pre/post images, and collection rename support. It targets Lua 5.4 without binding or wrapping `libmongoc`.
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
@@ -20,18 +20,18 @@ LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server 
 From a source checkout, build and install the release rock with:
 
 ```sh
-luarocks make mongodb-0.4.0-1.rockspec
+luarocks make mongodb-0.5.0-1.rockspec
 ```
 
 `make test-package` builds a source rock from the current checkout, installs it into an isolated LuaRocks tree, verifies that every production module is packaged, and exercises the documented public API without workspace module paths.
 
-The public LuaRocks rock name is `mongodb`. Install version 0.4.0 with:
+The public LuaRocks rock name is `mongodb`. Install version 0.5.0 with:
 
 ```sh
-luarocks install mongodb 0.4.0-1
+luarocks install mongodb 0.5.0-1
 ```
 
-The release rockspec is built and verified from the immutable `v0.4.0` tag before publication.
+The release rockspec is built and verified from the immutable `v0.5.0` tag before publication.
 
 ## Getting Started
 
@@ -469,7 +469,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-The v0.4 conformance surface adds snapshot sessions, Search index management, modern read/write-concern behavior, and sharded discovery, monitoring, command execution, and transaction pinning. All 851 applicable cases in that declared surface are classified passing; 47 non-target cases retain explicit later owners or a target-version exclusion. Other post-v1 scope includes change streams, GridFS, wire compression, load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution; nineteen legacy-server cases retain explicit `ADV-011` version exclusions. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, client bulk write, legacy command and cursor APIs, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

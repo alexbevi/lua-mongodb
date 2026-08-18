@@ -97,6 +97,22 @@
       "CMP-002",
       "REL-049"
     ],
+    "completed_v0_5_gates": [
+      "ADV-001",
+      "CS-001",
+      "CS-002",
+      "CS-003",
+      "CS-004",
+      "CS-005",
+      "CS-006",
+      "CS-007",
+      "CS-008",
+      "CS-009",
+      "CS-010",
+      "CS-011",
+      "CS-012",
+      "REL-051"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
@@ -111,15 +127,22 @@
       "passed_cases": 851,
       "read_write_concern_passed": 48,
       "target_version_exclusions": 6
+    },
+    "v0_5_conformance": {
+      "classified_cases": 189,
+      "exact_unified_cases": 170,
+      "excluded_cases": 19,
+      "passed_cases": 170,
+      "target_version_exclusions": 19
     }
   },
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.4.0-1.rockspec",
-    "rockspec_version": "0.4.0-1",
-    "version": "0.4.0"
+    "rockspec": "mongodb-0.5.0-1.rockspec",
+    "rockspec_version": "0.5.0-1",
+    "version": "0.5.0"
   },
   "schema_version": 1,
-  "type": "sharded-parity-release-checklist"
+  "type": "change-stream-release-checklist"
 }

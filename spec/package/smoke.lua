@@ -15,7 +15,7 @@ local document = bson.document({
 })
 local decoded = assert(bson.decode(assert(bson.encode(document))))
 
-assert(mongodb._VERSION == "0.4.0")
+assert(mongodb._VERSION == "0.5.0")
 assert(decoded:get("name") == "Ada")
 assert(decoded:get("count"):to_number() == 2)
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report sharded parity v0.4 release readiness."""
+"""Validate and report change streams v0.5 release readiness."""
 
 from __future__ import annotations
 
@@ -16,18 +16,19 @@ sys.path.insert(0, str(ROOT))
 from spec.compatibility import matrix  # noqa: E402
 from spec.release import scope  # noqa: E402
 from spec.v04 import scope as v04_scope  # noqa: E402
+from spec.v05 import scope as v05_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.4.0-1.rockspec"
-RELEASE_VERSION = "0.4.0"
+ROCKSPEC = ROOT / "mongodb-0.5.0-1.rockspec"
+RELEASE_VERSION = "0.5.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 3829
-MAXIMUM_POST_V1_EXCLUSIONS = 1695
+MINIMUM_PASSED_CASES = 4001
+MAXIMUM_POST_V1_EXCLUSIONS = 1523
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -74,10 +75,27 @@ V04_GATES = [
   "REL-049",
 ]
 V04_RELEASE_ACTIVITY = "REL-050"
+V05_GATES = [
+  "ADV-001",
+  "CS-001",
+  "CS-002",
+  "CS-003",
+  "CS-004",
+  "CS-005",
+  "CS-006",
+  "CS-007",
+  "CS-008",
+  "CS-009",
+  "CS-010",
+  "CS-011",
+  "CS-012",
+  "REL-051",
+]
+V05_RELEASE_ACTIVITY = "REL-052"
 
 
 class ChecklistError(ValueError):
-  """Raised when the sharded parity release is not ready."""
+  """Raised when the change streams release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -136,11 +154,11 @@ def release_metadata() -> dict[str, str]:
   require_text(ROOT / "README.md", f"current release is version `{RELEASE_VERSION}`")
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-17",
+    f"## [{RELEASE_VERSION}] - 2026-08-18",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: sharded parity v0.4 release-ready.",
+    "Status: change streams v0.5 release-ready.",
   )
 
   return {
@@ -167,6 +185,16 @@ def generate() -> dict[str, Any]:
 
   if v04_track != [*V04_GATES, V04_RELEASE_ACTIVITY]:
     raise ChecklistError("v0.4 release gate inventory does not match the track")
+
+  api_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-5-v0-7-api"
+  ]
+  v05_prefix = [*V05_GATES, V05_RELEASE_ACTIVITY]
+
+  if api_track[:len(v05_prefix)] != v05_prefix:
+    raise ChecklistError("v0.5 release gate inventory does not match the track")
 
   production_core = [
     activity["id"]
@@ -196,6 +224,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in V05_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.5 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   for activity_ids in AUDITS.values():
     for activity_id in activity_ids:
       if activity_id not in activities:
@@ -205,6 +239,7 @@ def generate() -> dict[str, Any]:
 
   scope_report = scope.generate()
   v04_report = v04_scope.generate()
+  v05_report = v05_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -246,6 +281,10 @@ def generate() -> dict[str, Any]:
   if v04_summary["planned"] != 0:
     raise ChecklistError("v0.4 conformance still has planned cases")
 
+  v05_summary = v05_report["summary"]
+  if v05_summary["planned"] != 0:
+    raise ChecklistError("v0.5 conformance still has planned cases")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -271,6 +310,7 @@ def generate() -> dict[str, Any]:
     "topology: [standalone, replicaset, sharded]",
     "make check-fast test-coverage",
     "spec/v04/scope.py",
+    "spec/v05/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-pre-8.2.json",
   ):
@@ -296,6 +336,7 @@ def generate() -> dict[str, Any]:
       "completed_authentication_gates": AUTHENTICATION_GATES,
       "completed_release_additions": RELEASE_ADDITIONS,
       "completed_v0_4_gates": V04_GATES,
+      "completed_v0_5_gates": V05_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -317,11 +358,22 @@ def generate() -> dict[str, Any]:
           v04_report["target_version_exclusions"]
         ),
       },
+      "v0_5_conformance": {
+        "classified_cases": v05_summary["classified"],
+        "excluded_cases": v05_summary["excluded"],
+        "exact_unified_cases": v05_report["evidence"][
+          "exact_unified_cases"
+        ],
+        "passed_cases": v05_summary["passed"],
+        "target_version_exclusions": len(
+          v05_report["target_version_exclusions"]
+        ),
+      },
     },
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "sharded-parity-release-checklist",
+    "type": "change-stream-release-checklist",
   }
 
 
@@ -337,6 +389,7 @@ def main(argv: list[str] | None = None) -> int:
     matrix.MatrixError,
     scope.ScopeError,
     v04_scope.ScopeError,
+    v05_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

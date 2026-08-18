@@ -2,6 +2,25 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.5.0] - 2026-08-18
+
+Change streams release.
+
+### Added
+
+- Added collection, database, and cluster change streams with pipeline and cursor options, blocking and non-blocking iteration, immutable resume-token access, and one-attempt resumability.
+- Added change-stream operation timeouts, comments, expanded events, namespace types, disambiguated update paths, pre/post-image events, and image configuration for collection creation and modification.
+- Added collection rename support with inherited write concern and rename/invalidate change-event coverage.
+
+### Conformance
+
+- All 170 v0.5 cases within the MongoDB 7.0–8.2 release floor have exact unified executors across standalone, replica-set, authenticated, isolated, and sharded profiles.
+- Nineteen legacy-only cases remain explicit `ADV-011` exclusions: two pre-4.4 comment branches, sixteen MongoDB 4.2 resumable-code branches, and one pre-7.0 StaleShardVersion label branch.
+
+### Release engineering
+
+- Added a generated v0.5 change-stream scope and exact Full Conformance evidence across the pinned MongoDB 8.2 primary and focused MongoDB 8.0.16 version branch.
+
 ## [0.4.0] - 2026-08-17
 
 Sharded parity release.

@@ -1,4 +1,4 @@
-"""Contract tests for the sharded parity v0.4 release checklist."""
+"""Contract tests for the change streams v0.5 release checklist."""
 
 import unittest
 
@@ -10,14 +10,14 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("sharded-parity-release-checklist", report["type"])
-    self.assertEqual("0.4.0", report["release"]["version"])
+    self.assertEqual("change-stream-release-checklist", report["type"])
+    self.assertEqual("0.5.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 3829)
-    self.assertLessEqual(conformance["post_v1_exclusions"], 1695)
+    self.assertGreaterEqual(conformance["passed_cases"], 4001)
+    self.assertLessEqual(conformance["post_v1_exclusions"], 1523)
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"] + conformance["post_v1_exclusions"],
@@ -36,6 +36,16 @@ class ReleaseChecklistTests(unittest.TestCase):
         "target_version_exclusions": 6,
       },
       report["gates"]["v0_4_conformance"],
+    )
+    self.assertEqual(
+      {
+        "classified_cases": 189,
+        "excluded_cases": 19,
+        "exact_unified_cases": 170,
+        "passed_cases": 170,
+        "target_version_exclusions": 19,
+      },
+      report["gates"]["v0_5_conformance"],
     )
     self.assertEqual(
       {
@@ -89,6 +99,14 @@ class ReleaseChecklistTests(unittest.TestCase):
         "REL-049",
       ],
       report["gates"]["completed_v0_4_gates"],
+    )
+    self.assertEqual(
+      [
+        "ADV-001",
+        *[f"CS-{index:03d}" for index in range(1, 13)],
+        "REL-051",
+      ],
+      report["gates"]["completed_v0_5_gates"],
     )
     self.assertEqual(
       [

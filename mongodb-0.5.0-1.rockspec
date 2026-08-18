@@ -1,20 +1,20 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.4.0-1"
+version = "0.5.0-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.4.0",
+  tag = "v0.5.0",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.4.0 adds snapshot sessions, Search index
-    management, modern read/write concern conformance, and sharded
-    discovery, command, monitoring, and transaction support.
+    libmongoc. Version 0.5.0 adds collection, database, and cluster change
+    streams with resumability, operation timeouts, expanded events,
+    pre/post images, and collection rename support.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",
