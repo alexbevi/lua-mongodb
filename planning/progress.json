@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "9b59ed608cd406f06fef3cd01e9168dc3d76c279b85b72d6dbbb703603958520",
+  "plan_digest": "16ab0fd139a8e5302812176eaaed170d776409d632303c23b088c82bda689314",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -5006,6 +5006,21 @@
       "notes": [],
       "started_at": "2026-08-18T04:03:07+00:00",
       "completed_at": "2026-08-18T04:07:45+00:00"
+    },
+    "REL-051": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v05.test_scope'",
+          "exit_code": 2,
+          "summary": "The v0.5 scope contract could not import spec.v05.scope, so no generated artifact enforced the 189-case change-stream boundary, exact passing evidence, version exclusions, or zero planned cases.",
+          "recorded_at": "2026-08-18T04:13:17+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Normative v0.5 change-stream fixtures exposed the missing public and unified collection rename behavior; split that independently verifiable behavior before conformance closure."
+      ]
     }
   },
   "verified_references": {
