@@ -454,7 +454,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
-| Resilience | Retryable reads | 🟡 | 90.5% |
+| Resilience | Retryable reads | 🟡 | 91.1% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
 | Resilience | Client-side operations timeout | 🟡 | 75.3% |
 | Resilience | Sessions | 🟢 | 100.0% |

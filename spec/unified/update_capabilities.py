@@ -488,7 +488,7 @@ for index in (13, 14, 24, 25, 50, 51):
 for index in (7, 8):
   TEST_OVERRIDES[
     f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("LEG-006", OWNER_REASONS["LEG-006"])
+  ] = ("LEG-006", None)
 
 for index in (*range(1, 5), *range(9, 13), *range(15, 31)):
   TEST_OVERRIDES[
