@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "17ae3f31386c22220eacb6b9eb6a4740d9d90c9ee2067aec0fa91949890c73cf",
+  "plan_digest": "504161945190b1b51508d40be45b454618b50c06d09f64fc5d68a5564688b7e9",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
@@ -20,7 +20,7 @@
     "completed": 226,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 13
+    "pending": 20
   },
   "active": [],
   "ready": [
@@ -34,7 +34,8 @@
     "TLS-002",
     "SFP-001",
     "BSON-010",
-    "ADV-012"
+    "ADV-012",
+    "EXM-001"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -43,7 +44,10 @@
     "v0-5-v0-7-api": [
       "ADV-007"
     ],
-    "macos-ci-signal": []
+    "macos-ci-signal": [],
+    "driver-examples": [
+      "EXM-001"
+    ]
   },
   "blocked": [],
   "needs_review": [],
