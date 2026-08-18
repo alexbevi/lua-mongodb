@@ -3182,6 +3182,23 @@
       "activity": "ADV-001",
       "environment": "live-replicaset"
     },
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[1]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[2]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[3]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[4]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[5]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[6]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[7]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[8]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[9]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[10]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[11]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[12]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[13]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch.json::test[1]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch.json::test[2]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch.json::test[3]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
+    "retryable-reads/tests/unified/changeStreams-db.watch.json::test[4]": {"activity": "CS-006", "environment": "isolated-replicaset", "testCommands": true},
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "environment": "live-standalone",
@@ -3625,6 +3642,16 @@
     "retryable-reads/tests/unified/handshakeError.json::test[12]": {
       "activity": "REL-034",
       "environment": "live-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[13]": {
+      "activity": "CS-006",
+      "environment": "live-authenticated-replicaset",
+      "testCommands": true
+    },
+    "retryable-reads/tests/unified/handshakeError.json::test[14]": {
+      "activity": "CS-006",
+      "environment": "live-authenticated-replicaset",
       "testCommands": true
     },
     "retryable-reads/tests/unified/handshakeError.json::test[15]": {

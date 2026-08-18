@@ -780,7 +780,7 @@ local function aggregate_entries(state, pipeline, options, writes)
   end
 
   local entries = {
-    { "aggregate", state.name },
+    { "aggregate", state.aggregate_target or state.name },
     { "pipeline", pipeline },
     { "cursor", bson.document(cursor_entries) },
   }
@@ -854,7 +854,7 @@ local function aggregate_response(state, pipeline, options, writes)
 
   local server_address
   local response, err = state.executor:command(
-    state.database_name,
+    state.database_name or state.name,
     bson.document(entries),
     {
       cancellation = options.cancellation,
@@ -871,13 +871,25 @@ local function aggregate_response(state, pipeline, options, writes)
 end
 
 local function cursor_from_response(state, response, options)
+  local database_name = state.database_name or state.name
+  local collection_name = state.name
+
+  if state.cursor_collection_from_response then
+    local err
+    collection_name, err = cursor_model.collection_name(response, database_name)
+
+    if err then
+      return nil, err
+    end
+  end
+
   return cursor_model.new(response, {
     batch_size = options.batch_size or 0,
     cancellation = options.cancellation,
     client_state = state.client_state,
-    collection_name = state.name,
+    collection_name = collection_name,
     comment = options.comment,
-    database_name = state.database_name,
+    database_name = database_name,
     deadline = options.deadline,
     executor = state.executor,
     max_await_time_ms = options.max_await_time_ms,

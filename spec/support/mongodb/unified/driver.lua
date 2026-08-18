@@ -1412,8 +1412,8 @@ local CHANGE_STREAM_OPERATIONS = {
   iterateUntilDocumentOrError = CURSOR_OPERATIONS.iterateUntilDocumentOrError,
 }
 
-local function create_change_stream(_, collection, arguments)
-  return collection:watch(
+local function create_change_stream(_, target, arguments)
+  return target:watch(
     arguments:get("pipeline") or bson.array({}),
     operation_options(arguments, {
       batchSize = "batch_size",
@@ -2446,6 +2446,16 @@ function M.new(options)
         },
       },
       database = {
+        createChangeStream = {
+          arguments = {
+            "batchSize", "collation", "comment", "fullDocument",
+            "fullDocumentBeforeChange", "maxAwaitTimeMS", "pipeline",
+            "resumeAfter", "session", "showExpandedEvents", "startAfter",
+            "startAtOperationTime",
+          },
+          handler = create_change_stream,
+          result_kind = "changeStream",
+        },
         createCommandCursor = {
           arguments = {
             "batchSize", "command", "commandName", "comment", "cursorType",

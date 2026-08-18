@@ -466,6 +466,10 @@ for index in (13, 14):
     f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
   ] = ("CS-006", OWNER_REASONS["CS-006"])
 
+for identity, value in EXECUTOR_TESTS.items():
+  if value["activity"] == "CS-006":
+    TEST_OVERRIDES[identity] = ("CS-006", None)
+
 for index in (31, 32):
   TEST_OVERRIDES[
     f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"

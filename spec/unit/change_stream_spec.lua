@@ -1070,3 +1070,88 @@ describe("collection change streams", function()
     assert.is_nil(watch_options.start_after)
   end)
 end)
+
+describe("database change streams", function()
+  it("uses aggregate 1 and the server-returned cursor namespace", function()
+    local commands = {}
+    local change = bson.document({
+      { "_id", bson.document({ { "token", "database" } }) },
+      { "operationType", "insert" },
+    })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(58) },
+          { "ns", "app.database_changes" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(59) },
+          { "ns", "app.resumed_database_changes" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(59) },
+          { "ns", "app.resumed_database_changes" },
+          { "nextBatch", bson.array({ change }) },
+        }) },
+      }),
+      bson.document({ { "ok", 1 } }),
+    }
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, database, command)
+        commands[#commands + 1] = {
+          command = command,
+          database = database,
+        }
+
+        if #commands == 2 then
+          return nil, errors.new({
+            category = errors.CATEGORY.NETWORK,
+            message = "resume the database stream",
+          })
+        end
+
+        return table.remove(responses, 1)
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local database = assert(client:database("app"))
+    local stream = assert(database:watch())
+
+    assert.are.equal(change, assert(stream:next()))
+    assert.is_true(stream:close())
+    assert.are.equal("app", commands[1].database)
+    assert.are.equal(1, commands[1].command:get("aggregate"))
+    assert.are.equal("getMore", commands[2].command:keys()[1])
+    assert.are.equal(
+      "database_changes",
+      commands[2].command:get("collection")
+    )
+    assert.are.equal(1, commands[3].command:get("aggregate"))
+    assert.are.equal("getMore", commands[4].command:keys()[1])
+    assert.are.equal(
+      "resumed_database_changes",
+      commands[4].command:get("collection")
+    )
+    assert.are.equal("killCursors", commands[5].command:keys()[1])
+    assert.are.equal(
+      "resumed_database_changes",
+      commands[5].command:get("killCursors")
+    )
+  end)
+end)

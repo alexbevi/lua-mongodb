@@ -4832,6 +4832,35 @@
       "notes": [],
       "started_at": "2026-08-18T02:25:05+00:00",
       "completed_at": "2026-08-18T02:37:03+00:00"
+    },
+    "CS-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining database-scoped watch case failed with 16 successes and 1 error because database:watch was absent, before any aggregate:1 or server-returned namespace behavior could execute.",
+          "recorded_at": "2026-08-18T02:43:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (exact database createChangeStream retryable-read fixtures)",
+          "exit_code": 0,
+          "summary": "All 19 newly applicable database-scoped change-stream cases executed and passed: 19 executed, 19 passed, 0 environment-skipped, 0 deferred-unsupported, and 0 failed.",
+          "recorded_at": "2026-08-18T02:56:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (database watch unit/cursor/API cases, OP_MSG integration, targeted classification/ledger/release Python checks, touched Lua lint); make test-architecture; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: 29 unit cases, 3 OP_MSG integration cases, 5 targeted Python checks, and luacheck on 6 touched Lua files, with zero failures, errors, pending cases, or lint findings. Architecture boundaries and complexity passed; capability, ledger, scope, checklist, README, JSON, and diff validators passed at 1,591 runnable unified cases, 3,875 ledger-passed cases, and 1,647 explicit post-v1 deferrals.",
+          "recorded_at": "2026-08-18T02:56:15+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T02:43:02+00:00",
+      "completed_at": "2026-08-18T02:56:16+00:00"
     }
   },
   "verified_references": {

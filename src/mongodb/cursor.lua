@@ -392,6 +392,25 @@ function M.try_next(value)
   return document, err
 end
 
+function M.collection_name(response, database_name)
+  local cursor = response:get("cursor")
+
+  if not bson.is_document(cursor) then
+    return nil
+  end
+
+  local namespace = cursor:get("ns")
+  local prefix = database_name .. "."
+
+  if type(namespace) ~= "string" or namespace:sub(1, #prefix) ~= prefix
+      or #namespace == #prefix
+  then
+    return protocol_error("cursor response contains an invalid namespace")
+  end
+
+  return namespace:sub(#prefix + 1)
+end
+
 function M.resume_info(value)
   local state = CURSOR_STATES[value]
 

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1572,
-    "runnable": 1572
+    "passed": 1591,
+    "runnable": 1591
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -53320,7 +53320,6 @@
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[10]": {
       "activity": "CS-006",
       "fingerprint": "00ffb8705ee9866b90b984db0d2769c1b94b11e4dd72eb0d8ed0e120b953c052",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53349,12 +53348,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[11]": {
       "activity": "CS-006",
       "fingerprint": "85e3481e11a817e82e4d5c7cd0cd41142e8fee34e4941bc6c67cf416048855a8",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53383,12 +53381,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[12]": {
       "activity": "CS-006",
       "fingerprint": "8cbfa1fe068f96ab6d5dcbd5e7ca3e387173638b08d9e04c031c2aafe0d2813f",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53417,12 +53414,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[13]": {
       "activity": "CS-006",
       "fingerprint": "7b13c92ef8609370424e0ded9a4b5e3a5cdee380d2ed16e96326dd80669e7fdc",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53453,12 +53449,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[1]": {
       "activity": "CS-006",
       "fingerprint": "bfc331bc7a23e4bd43df3805952acb020a4518d8a0e97e5920e6cf0e5df75222",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53487,12 +53482,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[2]": {
       "activity": "CS-006",
       "fingerprint": "622d73a88142f43816b1d7eeb22181eb8777f2bd62346138b692c09c834c8dc7",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53521,12 +53515,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[3]": {
       "activity": "CS-006",
       "fingerprint": "ac24e30022d6bdeb4848bb023e2772048e957ce67a4794cbcab0776ac95e5b7d",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53555,12 +53548,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[4]": {
       "activity": "CS-006",
       "fingerprint": "231025754583ec82855bdd3a2aa28b82838021cb0e13e7162bd549d5f84e7284",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53589,12 +53581,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[5]": {
       "activity": "CS-006",
       "fingerprint": "eb588adf3fc57cc214592fd6112beac8bdef4c9bfc1c2b83db4ed2f06caefe05",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53623,12 +53614,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[6]": {
       "activity": "CS-006",
       "fingerprint": "5419da0bf02e588eea69484550844ff2305e9b0328492aca24a19c6171e92422",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53657,12 +53647,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[7]": {
       "activity": "CS-006",
       "fingerprint": "f49ff4f9ad51c3afe6009279ab8122b4542c6b3b7b3691166e3d48aa80c3c10e",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53691,12 +53680,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[8]": {
       "activity": "CS-006",
       "fingerprint": "b220d82e2e03a4539f6241b463b95eb63b4dc8dc357a55126b28e0c130947638",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53725,12 +53713,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[9]": {
       "activity": "CS-006",
       "fingerprint": "b43a52b429da775e80bc0e71d386ba05ffbd66659576edd451ed7151df1353c0",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53759,12 +53746,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[1]": {
       "activity": "CS-006",
       "fingerprint": "cc5a6d8ac4d48fac1da81c4429aba293bd2d0b5157f21e033764570e1de84376",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -53789,12 +53775,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[2]": {
       "activity": "CS-006",
       "fingerprint": "bdd3f9cb35f7ce4c17f46f1535c9783be27a83346b71879faad0c975f4d2db14",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53823,12 +53808,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[3]": {
       "activity": "CS-006",
       "fingerprint": "e1487a4bf06b2b505a434570fa7484d75e45ba9d2553618ac5615e5c3b9acf34",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53859,12 +53843,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[4]": {
       "activity": "CS-006",
       "fingerprint": "447bdfc07f0c47c29d1e9d999bc05b133cdb38ef2932ef04f611a799e14cc3cf",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53893,7 +53876,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/count-serverErrors.json::test[10]": {
       "activity": "ADV-011",
@@ -58971,7 +58954,6 @@
     "retryable-reads/tests/unified/handshakeError.json::test[13]": {
       "activity": "CS-006",
       "fingerprint": "cb9230a011a541a179775d1d28fe116572394b669b424d57d187fb30e5969db7",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59007,12 +58989,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[14]": {
       "activity": "CS-006",
       "fingerprint": "dce2630761bd7f3c1d0f3cda86d1c896149c2ba6846d216e6a403387aa080d2c",
-      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59048,7 +59029,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[15]": {
       "activity": "REL-034",

@@ -81,13 +81,6 @@ local function client_error(message)
   })
 end
 
-local function protocol_error(message)
-  return nil, errors.new({
-    category = errors.CATEGORY.PROTOCOL,
-    message = message,
-  })
-end
-
 local function require_name(kind, name)
   if type(name) ~= "string" then
     error(kind .. " name must be a string", 3)
@@ -280,25 +273,6 @@ local function command_cursor_options(options)
   return options
 end
 
-local function command_cursor_collection(response, database_name)
-  local cursor = response:get("cursor")
-
-  if not bson.is_document(cursor) then
-    return nil
-  end
-
-  local namespace = cursor:get("ns")
-  local prefix = database_name .. "."
-
-  if type(namespace) ~= "string" or namespace:sub(1, #prefix) ~= prefix
-      or #namespace == #prefix
-  then
-    return protocol_error("command cursor contains an invalid namespace")
-  end
-
-  return namespace:sub(#prefix + 1)
-end
-
 local function new_database(client, name, options)
   validate_database_name(name)
   local client_state = CLIENT_STATES[client]
@@ -311,8 +285,11 @@ local function new_database(client, name, options)
   local value = {}
 
   DATABASE_STATES[value] = {
+    aggregate_target = 1,
     client = client,
     client_state = client_state,
+    cursor_collection_from_response = true,
+    database_name = name,
     executor = client_state.executor,
     max_wire_version = client_state.max_wire_version,
     name = name,
@@ -675,7 +652,10 @@ function DATABASE_METHODS:run_cursor_command(command, options)
     end
 
     local collection_name
-    collection_name, option_err = command_cursor_collection(response, state.name)
+    collection_name, option_err = cursor_model.collection_name(
+      response,
+      state.name
+    )
 
     if option_err then
       if session_context then
@@ -715,6 +695,23 @@ local function collection_operation(collection, operation, ...)
   local state = COLLECTION_STATES[collection]
   local client_state = CLIENT_STATES[state.client]
   local open, err = ensure_open(client_state)
+
+  if not open then
+    return nil, err
+  end
+
+  local arguments = table.pack(...)
+  local options = arguments[arguments.n]
+
+  return run_operation(state, options, function(prepared)
+    arguments[arguments.n] = prepared
+    return operation(state, table.unpack(arguments, 1, arguments.n))
+  end)
+end
+
+local function database_operation(database, operation, ...)
+  local state = DATABASE_STATES[database]
+  local open, err = ensure_open(CLIENT_STATES[state.client])
 
   if not open then
     return nil, err
@@ -925,7 +922,7 @@ local function change_stream_pipeline(pipeline, stage_options)
   return bson.array(stages)
 end
 
-local function watch_collection(state, pipeline, options)
+local function watch_target(state, pipeline, options)
   local stage_options, aggregate_options = change_stream_options(options)
   return crud.aggregate(
     state,
@@ -944,8 +941,14 @@ local function copy_change_stream_options(options)
   return copied
 end
 
-function COLLECTION_METHODS:watch(pipeline, options)
-  local cursor, err = collection_operation(self, watch_collection, pipeline, options)
+local function open_change_stream(
+  pipeline,
+  options,
+  execute,
+  register,
+  max_wire_version
+)
+  local cursor, err = execute(pipeline, options)
 
   if not cursor then
     return nil, err
@@ -953,7 +956,6 @@ function COLLECTION_METHODS:watch(pipeline, options)
 
   options = copy_change_stream_options(options)
 
-  local state = COLLECTION_STATES[self]
   local function recreate(position_name, position_value)
     local resume_options = copy_change_stream_options(options)
 
@@ -965,27 +967,64 @@ function COLLECTION_METHODS:watch(pipeline, options)
       resume_options[position_name] = position_value
     end
 
-    local resumed, resume_err = collection_operation(
-      self,
-      watch_collection,
-      pipeline,
-      resume_options
-    )
+    local resumed, resume_err = execute(pipeline, resume_options)
 
     if not resumed then
       return nil, resume_err
     end
 
-    return register_cursor(self, resumed)
+    return register(resumed)
   end
 
-  return change_stream.new(register_cursor(self, cursor), {
-    max_wire_version = state.max_wire_version,
+  return change_stream.new(register(cursor), {
+    max_wire_version = max_wire_version,
     recreate = recreate,
     resume_token = options.start_after or options.resume_after,
     start_at_operation_time = options.start_at_operation_time,
     uses_start_after = options.start_after ~= nil,
   })
+end
+
+function COLLECTION_METHODS:watch(pipeline, options)
+  local state = COLLECTION_STATES[self]
+
+  return open_change_stream(
+    pipeline,
+    options,
+    function(selected_pipeline, selected_options)
+      return collection_operation(
+        self,
+        watch_target,
+        selected_pipeline,
+        selected_options
+      )
+    end,
+    function(cursor)
+      return register_cursor(self, cursor)
+    end,
+    state.max_wire_version
+  )
+end
+
+function DATABASE_METHODS:watch(pipeline, options)
+  local state = DATABASE_STATES[self]
+
+  return open_change_stream(
+    pipeline,
+    options,
+    function(selected_pipeline, selected_options)
+      return database_operation(
+        self,
+        watch_target,
+        selected_pipeline,
+        selected_options
+      )
+    end,
+    function(cursor)
+      return register_client_cursor(state.client, cursor)
+    end,
+    state.max_wire_version
+  )
 end
 
 function COLLECTION_METHODS:count_documents(filter, options)
