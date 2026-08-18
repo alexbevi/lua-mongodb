@@ -5720,43 +5720,74 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON=spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/unified_driver_spec.lua",
           "exit_code": 2,
-          "summary": "1 defining release-checklist test failed because metadata still reported 0.5.0 instead of 0.6.0",
-          "recorded_at": "2026-08-18T20:12:05+00:00"
+          "summary": "8 unit tests passed and the defining change-stream blocking-iteration case failed because the unified adapter reported 0 passes and never called stream:next",
+          "recorded_at": "2026-08-18T20:27:39+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION=spec/integration/client_api_spec.lua FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/unified_driver_spec.lua FOCUS_UNIFIED='change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' FOCUS_LINT='spec/support/mongodb/unified/driver.lua spec/unit/unified_driver_spec.lua'",
           "exit_code": 0,
-          "summary": "16 unit, 4 integration, and 22 Python release/package/publication tests passed; 6 touched Lua files linted with 0 warnings; 0 failed, environment-skipped, or deferred",
-          "recorded_at": "2026-08-18T20:16:19+00:00"
+          "summary": "9 unit tests and the exact pre-8.2 change-stream case passed; unified evidence was 1 executed, 1 passed, 0 environment-skipped, 0 deferred, 0 failed; 2 touched Lua files linted with 0 warnings",
+          "recorded_at": "2026-08-18T20:29:00+00:00"
         },
         {
           "phase": "green",
-          "command": "python3 spec/release/checklist.py --check",
+          "command": "python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include index-management/tests/index-rawdata.json --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' --report /tmp/lua-mongodb-v06-version-branches.json && python3 spec/v05/scope.py --check && python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
           "exit_code": 0,
-          "summary": "generated v0.6 release checklist is current with 5524 classified cases, 0 applicable gaps, 4082 passes, and 1442 exclusions",
-          "recorded_at": "2026-08-18T20:16:20+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make rockspec LUAROCKS=/opt/homebrew/bin/luarocks",
-          "exit_code": 0,
-          "summary": "mongodb-0.6.0-1.rockspec passed LuaRocks lint",
-          "recorded_at": "2026-08-18T20:16:21+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "python3 spec/release/publish.py metadata --rockspec mongodb-0.6.0-1.rockspec",
-          "exit_code": 0,
-          "summary": "publication metadata resolved mongodb 0.6.0-1, immutable v0.6.0 tag, and mongodb-0.6.0-1.src.rock",
-          "recorded_at": "2026-08-18T20:16:22+00:00"
+          "summary": "Exact supplemental version branch evidence was 2 executed, 2 passed, 1 environment-skipped, 0 deferred, 0 failed; v0.5, v0.6, release-checklist, and README artifact validators passed",
+          "recorded_at": "2026-08-18T20:29:01+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-18T20:11:36+00:00",
-      "completed_at": "2026-08-18T20:16:38+00:00"
+      "notes": [
+        "Requeued: Full Conformance 32181733249 failed on Linux and macOS because changeStream iterateUntilDocumentOrError dispatched through the generic cursor iterator"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-18T20:16:38+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON=spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready",
+              "exit_code": 2,
+              "summary": "1 defining release-checklist test failed because metadata still reported 0.5.0 instead of 0.6.0",
+              "recorded_at": "2026-08-18T20:12:05+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION=spec/integration/client_api_spec.lua FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'",
+              "exit_code": 0,
+              "summary": "16 unit, 4 integration, and 22 Python release/package/publication tests passed; 6 touched Lua files linted with 0 warnings; 0 failed, environment-skipped, or deferred",
+              "recorded_at": "2026-08-18T20:16:19+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/release/checklist.py --check",
+              "exit_code": 0,
+              "summary": "generated v0.6 release checklist is current with 5524 classified cases, 0 applicable gaps, 4082 passes, and 1442 exclusions",
+              "recorded_at": "2026-08-18T20:16:20+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make rockspec LUAROCKS=/opt/homebrew/bin/luarocks",
+              "exit_code": 0,
+              "summary": "mongodb-0.6.0-1.rockspec passed LuaRocks lint",
+              "recorded_at": "2026-08-18T20:16:21+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/release/publish.py metadata --rockspec mongodb-0.6.0-1.rockspec",
+              "exit_code": 0,
+              "summary": "publication metadata resolved mongodb 0.6.0-1, immutable v0.6.0 tag, and mongodb-0.6.0-1.src.rock",
+              "recorded_at": "2026-08-18T20:16:22+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "88b0a3aa3be0cc19f013f8e166de7c7902f27c49",
+      "started_at": "2026-08-18T20:26:27+00:00",
+      "completed_at": "2026-08-18T20:29:12+00:00"
     }
   },
   "verified_references": {

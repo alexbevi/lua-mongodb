@@ -121,11 +121,29 @@ local function with_fake_client(callback)
       end
 
       function database.collection()
-        return {
-          insert_many = function()
+        local collection = {}
+
+        function collection.insert_many()
+          return true
+        end
+
+        function collection.watch()
+          local stream = {}
+
+          function stream.next()
+            client.change_stream_next_calls =
+              (client.change_stream_next_calls or 0) + 1
+            return document({ { "operationType", "update" } })
+          end
+
+          function stream.close()
             return true
-          end,
-        }
+          end
+
+          return stream
+        end
+
+        return collection
       end
 
       function database.run_command(_, command, command_options)
@@ -263,6 +281,64 @@ describe("unified driver collection management", function()
         connections[2].modified_collections[1].options
           .change_stream_pre_and_post_images
       )
+      assert(lifecycle:close())
+    end)
+  end)
+end)
+
+describe("unified driver change streams", function()
+  it("uses blocking stream iteration until a document or error", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "app" },
+            }) },
+          }),
+          document({
+            { "collection", document({
+              { "id", "collection0" },
+              { "database", "database0" },
+              { "collectionName", "events" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Block until a change document" },
+            { "operations", array({
+              document({
+                { "name", "createChangeStream" },
+                { "object", "collection0" },
+                { "arguments", document({}) },
+                { "saveResultAsEntity", "changeStream0" },
+              }),
+              document({
+                { "name", "iterateUntilDocumentOrError" },
+                { "object", "changeStream0" },
+                { "arguments", document({}) },
+                { "expectResult", document({
+                  { "operationType", "update" },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "change-stream-blocking-iteration.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal(1, connections[2].change_stream_next_calls)
       assert(lifecycle:close())
     end)
   end)

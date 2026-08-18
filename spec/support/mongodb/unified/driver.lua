@@ -1388,6 +1388,10 @@ local function iterate_change_stream_once(_, stream)
   return stream:try_next()
 end
 
+local function iterate_change_stream_until(_, stream)
+  return stream:next()
+end
+
 local function close_cursor(_, cursor, arguments)
   return cursor:close(operation_options(arguments, {}))
 end
@@ -1423,7 +1427,10 @@ local CHANGE_STREAM_OPERATIONS = {
     arguments = {},
     handler = iterate_change_stream_once,
   },
-  iterateUntilDocumentOrError = CURSOR_OPERATIONS.iterateUntilDocumentOrError,
+  iterateUntilDocumentOrError = {
+    arguments = {},
+    handler = iterate_change_stream_until,
+  },
 }
 
 local function create_change_stream(_, target, arguments)
