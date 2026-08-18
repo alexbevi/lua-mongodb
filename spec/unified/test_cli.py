@@ -2410,6 +2410,30 @@ class UnifiedCliTests(unittest.TestCase):
       results[second["id"]],
     )
 
+  def test_malformed_batch_report_preserves_process_diagnostics(self) -> None:
+    classification = {
+      "id": "client-side-operations-timeout/tests/command-execution.json::test[1]",
+      "status": "runnable",
+    }
+    completed = subprocess.CompletedProcess(
+      args=[],
+      returncode=0,
+      stdout="",
+      stderr="executor stopped without a report\n",
+    )
+
+    with mock.patch("spec.unified.run.subprocess.run", return_value=completed):
+      results = run.lua_batch_executor(
+        "lua", Path("execute.lua"), {},
+      )([classification])
+
+    status, detail = results[classification["id"]]
+    self.assertEqual("failed", status)
+    self.assertIn("malformed batch report", detail)
+    self.assertIn("exit code 0", detail)
+    self.assertIn("stdout: <empty>", detail)
+    self.assertIn("stderr: executor stopped without a report", detail)
+
   def test_execution_batches_are_stable_per_fixture_and_environment(self) -> None:
     classifications = [
       {
@@ -3042,7 +3066,13 @@ class UnifiedCliTests(unittest.TestCase):
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
       "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
       "client-side-operations-timeout/tests/runCursorCommand.json::test[3]",
+      "client-side-operations-timeout/tests/tailable-awaitData.json::test[9]",
+      "client-side-operations-timeout/tests/tailable-awaitData.json::test[10]",
+      "client-side-operations-timeout/tests/tailable-awaitData.json::test[12]",
+      "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]",
     ]
+
+    self.assertEqual(set(sensitive), run.MACOS_CI_TIMING_SENSITIVE_CSOT)
 
     for identity in sensitive:
       self.assertIsNotNone(

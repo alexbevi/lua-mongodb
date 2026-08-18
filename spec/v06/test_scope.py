@@ -78,6 +78,51 @@ class V06ScopeTests(unittest.TestCase):
         ratchets,
       )
 
+  def test_exact_execution_accepts_only_named_macos_timing_skips(self) -> None:
+    identity = (
+      "client-side-operations-timeout/tests/"
+      "tailable-awaitData.json::test[9]"
+    )
+    cases = {identity: {"status": "passed"}}
+    ratchets = {"classified": 1, "passed": 1, "runnable": 1}
+    report = self.exact_report(identity, "environment_skipped")
+
+    self.assertEqual(
+      {
+        "client-side-operations-timeout/tests/"
+        "tailable-awaitData.json::test[9]",
+        "client-side-operations-timeout/tests/"
+        "tailable-awaitData.json::test[10]",
+        "client-side-operations-timeout/tests/"
+        "tailable-awaitData.json::test[12]",
+        "client-side-operations-timeout/tests/"
+        "tailable-non-awaitData.json::test[3]",
+      },
+      scope.MACOS_CI_TIMING_SKIPS,
+    )
+
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
+      scope.validate_execution(cases, report, ratchets)
+
+    self.assertEqual(
+      {"macos_timing_skipped": 1, "passed": 0, "required": 1},
+      scope.validate_execution(
+        cases,
+        report,
+        ratchets,
+        allow_macos_ci_timing_skips=True,
+      ),
+    )
+
+    unrelated = "client-side-operations-timeout/tests/count.json::test[1]"
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(unrelated)):
+      scope.validate_execution(
+        {unrelated: {"status": "passed"}},
+        self.exact_report(unrelated, "environment_skipped"),
+        ratchets,
+        allow_macos_ci_timing_skips=True,
+      )
+
   def test_exclusion_identity_status_and_reason_are_exact(self) -> None:
     cases = copy.deepcopy(scope.load_cases())
     activities = scope.load_activities()

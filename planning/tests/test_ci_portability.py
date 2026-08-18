@@ -88,7 +88,7 @@ class CiPortabilityTests(unittest.TestCase):
     )
     self.assertIn('series: ["7.0", "8.0", "8.2"]', workflow)
 
-  def test_macos_declares_only_the_v0_5_timing_skip_policy(
+  def test_macos_declares_only_the_v0_5_and_v0_6_timing_skip_policies(
     self,
   ) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
@@ -107,10 +107,7 @@ class CiPortabilityTests(unittest.TestCase):
     ]
 
     self.assertNotIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT", supplemental)
-    self.assertIn(
-      "--allow-macos-ci-timing-skips",
-      authoritative,
-    )
+    self.assertEqual(2, authoritative.count("--allow-macos-ci-timing-skips"))
 
     for index in (4, 5, 6):
       self.assertNotIn(

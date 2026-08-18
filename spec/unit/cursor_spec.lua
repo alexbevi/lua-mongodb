@@ -1,6 +1,7 @@
 local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
+local cursor_model = require("mongodb.cursor")
 local errors = require("mongodb.error")
 local runtime_contract = require("mongodb.runtime")
 local fake_runtime = require("mongodb.runtime.fake")
@@ -43,7 +44,15 @@ describe("find cursor lifecycle", function()
         return table.remove(responses, 1)
       end,
     }
-    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, { timeout_ms = 50 })),
+      nil,
+      nil,
+      nil,
+      nil,
+      fake_runtime.new()
+    )
     local cursor = assert(client:database("app"):collection("events"):find(
       nil,
       { cursor_type = "tailable" }
@@ -99,10 +108,21 @@ describe("find cursor lifecycle", function()
         return table.remove(responses, 1)
       end,
     }
-    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, { timeout_ms = 50 })),
+      nil,
+      nil,
+      nil,
+      nil,
+      fake_runtime.new()
+    )
     local cursor = assert(client:database("app"):collection("events"):find(
       nil,
-      { cursor_type = "tailable_await" }
+      {
+        cursor_type = "tailable_await",
+        timeout_mode = "iteration",
+      }
     ))
 
     assert.is_true(commands[1]:get("tailable"))
@@ -277,7 +297,7 @@ describe("find cursor lifecycle", function()
       { timeout_mode = "iteration" }
     ))
 
-    assert.is_nil(cursor:next())
+    assert.is_nil(cursor_model.next_until_document_or_error(cursor))
     assert.near(2.05, deadlines[1], 0.000001)
     assert.near(2.06, deadlines[2], 0.000001)
   end)

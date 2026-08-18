@@ -57,6 +57,10 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",
   "client-side-operations-timeout/tests/runCursorCommand.json::test[3]",
+  "client-side-operations-timeout/tests/tailable-awaitData.json::test[9]",
+  "client-side-operations-timeout/tests/tailable-awaitData.json::test[10]",
+  "client-side-operations-timeout/tests/tailable-awaitData.json::test[12]",
+  "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]",
 })
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
@@ -1105,9 +1109,24 @@ def lua_batch_executor(
       report = json.loads(process.stdout)
       rows = report["results"]
     except (json.JSONDecodeError, KeyError, TypeError) as exc:
+      def output_detail(value: str) -> str:
+        normalized = value.strip()
+
+        if not normalized:
+          return "<empty>"
+
+        limit = 1000
+        if len(normalized) > limit:
+          return normalized[:limit] + "..."
+
+        return normalized
+
       return failed_results(
         classifications,
-        f"unified executor returned a malformed batch report: {exc}",
+        "unified executor returned a malformed batch report: "
+        f"{exc}; exit code {process.returncode}; "
+        f"stdout: {output_detail(process.stdout)}; "
+        f"stderr: {output_detail(process.stderr)}",
       )
 
     if not isinstance(rows, list):

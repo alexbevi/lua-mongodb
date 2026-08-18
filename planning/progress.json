@@ -5720,28 +5720,57 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/unified_driver_spec.lua",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_malformed_batch_report_preserves_process_diagnostics spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases spec.v06.test_scope.V06ScopeTests.test_exact_execution_accepts_only_named_macos_timing_skips'",
           "exit_code": 2,
-          "summary": "8 unit tests passed and the defining change-stream blocking-iteration case failed because the unified adapter reported 0 passes and never called stream:next",
-          "recorded_at": "2026-08-18T20:27:39+00:00"
+          "summary": "Three defining policy tests failed: malformed Lua batch diagnostics omitted process output, four exact tailable CSOT identities were not classified for hosted macOS, and the v0.6 validator had no exact timing-skip mode",
+          "recorded_at": "2026-08-18T21:09:10+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "GitHub Actions Full Conformance 32183001770",
+          "exit_code": 1,
+          "summary": "Release qualification failed: api.lua needed 9 covered lines, cursor.lua needed 8, four exact hosted-macOS tailable CSOT cases exceeded 200-250ms budgets, and one Linux command-execution fixture batch returned an empty malformed report",
+          "recorded_at": "2026-08-18T21:09:11+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/unified_driver_spec.lua FOCUS_UNIFIED='change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' FOCUS_LINT='spec/support/mongodb/unified/driver.lua spec/unit/unified_driver_spec.lua'",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/cursor_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.v06.test_scope planning.tests.test_ci_portability' FOCUS_LINT='spec/unit/cursor_spec.lua'",
           "exit_code": 0,
-          "summary": "9 unit tests and the exact pre-8.2 change-stream case passed; unified evidence was 1 executed, 1 passed, 0 environment-skipped, 0 deferred, 0 failed; 2 touched Lua files linted with 0 warnings",
-          "recorded_at": "2026-08-18T20:29:00+00:00"
+          "summary": "11 cursor unit tests and 128 unified-runner, exact v0.6 validator, and CI workflow tests passed; one touched Lua file linted with 0 warnings; 0 failed, environment-skipped, or deferred",
+          "recorded_at": "2026-08-18T21:16:12+00:00"
         },
         {
           "phase": "green",
-          "command": "python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include index-management/tests/index-rawdata.json --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' --report /tmp/lua-mongodb-v06-version-branches.json && python3 spec/v05/scope.py --check && python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+          "command": "MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include client-side-operations-timeout/tests/command-execution.json",
           "exit_code": 0,
-          "summary": "Exact supplemental version branch evidence was 2 executed, 2 passed, 1 environment-skipped, 0 deferred, 0 failed; v0.5, v0.6, release-checklist, and README artifact validators passed",
-          "recorded_at": "2026-08-18T20:29:01+00:00"
+          "summary": "Linux-authoritative command-execution reproduction executed 3, passed 3, environment-skipped 0, deferred 0, failed 0",
+          "recorded_at": "2026-08-18T21:16:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "CI=true python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include exact-v06-tailable-csot-identities",
+          "exit_code": 0,
+          "summary": "Hosted-macOS policy selected exactly 4 tailable CSOT identities: 0 executed, 0 passed, 4 environment-skipped, 0 deferred, 0 failed; portable Linux remains authoritative",
+          "recorded_at": "2026-08-18T21:16:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-coverage LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACOV=/Users/alex/.luarocks/bin/luacov",
+          "exit_code": 0,
+          "summary": "501 unit/integration tests and 3 coverage-gate tests passed; coverage 21962/24205 (90.73%), api.lua 637/712 and cursor.lua 256/291, with no ratchet regressions",
+          "recorded_at": "2026-08-18T21:16:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Generated v0.6 scope, 0.6.0 release checklist, and README conformance projection are current; 176 v0.6 identities and 5524 release cases remain exactly classified",
+          "recorded_at": "2026-08-18T21:16:16+00:00"
         }
       ],
       "notes": [
-        "Requeued: Full Conformance 32181733249 failed on Linux and macOS because changeStream iterateUntilDocumentOrError dispatched through the generic cursor iterator"
+        "Requeued: Full Conformance 32181733249 failed on Linux and macOS because changeStream iterateUntilDocumentOrError dispatched through the generic cursor iterator",
+        "Requeued: Full Conformance 32183001770 failed coverage ratchets, four exact macOS tailable CSOT timing cases, and one Linux command-execution batch with an empty malformed report"
       ],
       "reopen_history": [
         {
@@ -5783,11 +5812,37 @@
               "recorded_at": "2026-08-18T20:16:22+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-18T20:29:12+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/unified_driver_spec.lua",
+              "exit_code": 2,
+              "summary": "8 unit tests passed and the defining change-stream blocking-iteration case failed because the unified adapter reported 0 passes and never called stream:next",
+              "recorded_at": "2026-08-18T20:27:39+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/unified_driver_spec.lua FOCUS_UNIFIED='change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' FOCUS_LINT='spec/support/mongodb/unified/driver.lua spec/unit/unified_driver_spec.lua'",
+              "exit_code": 0,
+              "summary": "9 unit tests and the exact pre-8.2 change-stream case passed; unified evidence was 1 executed, 1 passed, 0 environment-skipped, 0 deferred, 0 failed; 2 touched Lua files linted with 0 warnings",
+              "recorded_at": "2026-08-18T20:29:00+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include index-management/tests/index-rawdata.json --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' --report /tmp/lua-mongodb-v06-version-branches.json && python3 spec/v05/scope.py --check && python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "Exact supplemental version branch evidence was 2 executed, 2 passed, 1 environment-skipped, 0 deferred, 0 failed; v0.5, v0.6, release-checklist, and README artifact validators passed",
+              "recorded_at": "2026-08-18T20:29:01+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "88b0a3aa3be0cc19f013f8e166de7c7902f27c49",
-      "started_at": "2026-08-18T20:26:27+00:00",
-      "completed_at": "2026-08-18T20:29:12+00:00"
+      "reopened_after_commit": "6822b5d368c6843597bf82ed50a990392ac0046a",
+      "started_at": "2026-08-18T21:06:34+00:00",
+      "completed_at": "2026-08-18T21:16:22+00:00"
     }
   },
   "verified_references": {

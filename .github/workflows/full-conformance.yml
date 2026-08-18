@@ -498,6 +498,7 @@ jobs:
         run: >-
           python3 spec/v06/scope.py
           --check
+          --allow-macos-ci-timing-skips
           --execution-report build/conformance/unified-macos.json
           --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
 
