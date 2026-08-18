@@ -2252,6 +2252,16 @@ function M.new(options)
           arguments = {},
           handler = close_client,
         },
+        createChangeStream = {
+          arguments = {
+            "batchSize", "collation", "comment", "fullDocument",
+            "fullDocumentBeforeChange", "maxAwaitTimeMS", "pipeline",
+            "resumeAfter", "session", "showExpandedEvents", "startAfter",
+            "startAtOperationTime",
+          },
+          handler = create_change_stream,
+          result_kind = "changeStream",
+        },
         listDatabaseNames = {
           arguments = { "filter" },
           handler = list_database_names,

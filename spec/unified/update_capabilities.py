@@ -467,8 +467,8 @@ for index in (13, 14):
   ] = ("CS-006", OWNER_REASONS["CS-006"])
 
 for identity, value in EXECUTOR_TESTS.items():
-  if value["activity"] == "CS-006":
-    TEST_OVERRIDES[identity] = ("CS-006", None)
+  if value["activity"] in {"CS-006", "CS-007"}:
+    TEST_OVERRIDES[identity] = (value["activity"], None)
 
 for index in (31, 32):
   TEST_OVERRIDES[

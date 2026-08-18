@@ -212,7 +212,7 @@ print(deleted.deleted_count)
 
 ### Change Streams
 
-On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, while `database:watch` observes every collection in that database. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
+On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
 
 ```lua
 local events = assert(users:watch(mongodb.bson.array({
@@ -230,6 +230,9 @@ assert(events:close())
 
 local database_events = assert(client:database("app"):watch())
 assert(database_events:close())
+
+local cluster_events = assert(client:watch())
+assert(cluster_events:close())
 ```
 
 ### Bulk Operations
@@ -428,7 +431,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
-| Resilience | Retryable reads | 🟡 | 75.5% |
+| Resilience | Retryable reads | 🟡 | 80.5% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
 | Resilience | Client-side operations timeout | 🟡 | 64.9% |
 | Resilience | Sessions | 🟢 | 100.0% |

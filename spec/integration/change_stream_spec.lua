@@ -340,4 +340,103 @@ describe("collection change streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("watches a cluster through admin with returned cursor namespaces", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local resume_token = bson.document({ { "token", "cluster-position" } })
+    local event = bson.document({
+      { "_id", bson.document({ { "token", "cluster-event" } }) },
+      { "operationType", "insert" },
+    })
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local aggregate = receive_frame(peer)
+      local initial_stage =
+        aggregate.body:get("pipeline"):get(1):get("$changeStream")
+
+      assert.are.equal(1, aggregate.body:get("aggregate"):to_number())
+      assert.are.equal("admin", aggregate.body:get("$db"))
+      assert.is_true(initial_stage:get("allChangesForCluster"))
+      send_response(peer, aggregate, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(70) },
+          { "ns", "admin.cluster_changes" },
+          { "firstBatch", bson.array({}) },
+          { "postBatchResumeToken", resume_token },
+        }) },
+      }))
+
+      local get_more = receive_frame(peer)
+
+      assert.are.equal("cluster_changes", get_more.body:get("collection"))
+      send_response(peer, get_more, bson.document({
+        { "ok", 0 },
+        { "code", 50 },
+        { "errmsg", "resume cluster watch" },
+        { "errorLabels", bson.array({ "ResumableChangeStreamError" }) },
+      }))
+
+      local resumed_aggregate = receive_frame(peer)
+      local resumed_stage =
+        resumed_aggregate.body:get("pipeline"):get(1):get("$changeStream")
+
+      assert.are.equal(1, resumed_aggregate.body:get("aggregate"):to_number())
+      assert.are.equal("admin", resumed_aggregate.body:get("$db"))
+      assert.is_true(resumed_stage:get("allChangesForCluster"))
+      assert.are.equal(
+        "cluster-position",
+        resumed_stage:get("resumeAfter"):get("token")
+      )
+      send_response(peer, resumed_aggregate, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(71) },
+          { "ns", "admin.resumed_cluster_changes" },
+          { "firstBatch", bson.array({ event }) },
+        }) },
+      }))
+
+      local kill = receive_frame(peer)
+
+      assert.are.equal("resumed_cluster_changes", kill.body:get("killCursors"))
+      assert.are.equal(71, kill.body:get("cursors"):get(1):to_number())
+      send_response(peer, kill, bson.document({ { "ok", 1 } }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/app",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local stream = assert(client:watch())
+        local change = assert(stream:next())
+
+        assert.are.equal("insert", change:get("operationType"))
+        assert.are.equal("cluster-event", change:get("_id"):get("token"))
+        assert.is_true(stream:close())
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

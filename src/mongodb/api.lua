@@ -883,7 +883,7 @@ local function require_change_stream_option(name, value, kind)
   end
 end
 
-local function change_stream_options(options)
+local function change_stream_options(options, all_changes_for_cluster)
   local aggregate_options = {}
   local stage_entries = {}
 
@@ -899,6 +899,10 @@ local function change_stream_options(options)
       stage_entries[#stage_entries + 1] = { field[2], value }
       aggregate_options[field[1]] = nil
     end
+  end
+
+  if all_changes_for_cluster then
+    stage_entries[#stage_entries + 1] = { "allChangesForCluster", true }
   end
 
   return bson.document(stage_entries), aggregate_options
@@ -922,13 +926,20 @@ local function change_stream_pipeline(pipeline, stage_options)
   return bson.array(stages)
 end
 
-local function watch_target(state, pipeline, options)
-  local stage_options, aggregate_options = change_stream_options(options)
+local function watch_target(state, pipeline, options, all_changes_for_cluster)
+  local stage_options, aggregate_options = change_stream_options(
+    options,
+    all_changes_for_cluster
+  )
   return crud.aggregate(
     state,
     change_stream_pipeline(pipeline, stage_options),
     aggregate_options
   )
+end
+
+local function watch_cluster(state, pipeline, options)
+  return watch_target(state, pipeline, options, true)
 end
 
 local function copy_change_stream_options(options)
@@ -1022,6 +1033,32 @@ function DATABASE_METHODS:watch(pipeline, options)
     end,
     function(cursor)
       return register_client_cursor(state.client, cursor)
+    end,
+    state.max_wire_version
+  )
+end
+
+function CLIENT_METHODS:watch(pipeline, options)
+  local state = CLIENT_STATES[self]
+  local database, err = new_database(self, "admin")
+
+  if not database then
+    return nil, err
+  end
+
+  return open_change_stream(
+    pipeline,
+    options,
+    function(selected_pipeline, selected_options)
+      return database_operation(
+        database,
+        watch_cluster,
+        selected_pipeline,
+        selected_options
+      )
+    end,
+    function(cursor)
+      return register_client_cursor(self, cursor)
     end,
     state.max_wire_version
   )

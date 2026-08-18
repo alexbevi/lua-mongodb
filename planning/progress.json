@@ -4861,6 +4861,35 @@
       "notes": [],
       "started_at": "2026-08-18T02:43:02+00:00",
       "completed_at": "2026-08-18T02:56:16+00:00"
+    },
+    "CS-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining cluster-scoped watch case errored with 17 successes and 1 error because client:watch was absent, before admin aggregate:1, allChangesForCluster, or server-returned namespace behavior could execute.",
+          "recorded_at": "2026-08-18T03:04:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (exact client createChangeStream retryable-read fixtures across live-sharded, isolated-replicaset, and live-authenticated-replicaset)",
+          "exit_code": 0,
+          "summary": "All 19 newly applicable cluster-scoped change-stream cases executed and passed: 19 executed, 19 passed, 0 environment-skipped, 0 deferred-unsupported, and 0 failed; the defining success case executed against a real sharded deployment.",
+          "recorded_at": "2026-08-18T03:12:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (cluster watch unit/cursor/API cases, OP_MSG integration, targeted classification/ledger/release Python checks, touched Lua lint); make test-architecture; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: 30 unit cases, 4 OP_MSG integration cases, 7 targeted Python checks, and luacheck on 4 touched Lua files, with zero failures, errors, pending cases, or lint findings. Architecture boundaries and complexity passed; capability, ledger, scope, checklist, README, JSON, and diff validators passed at 1,610 runnable unified cases, 3,894 ledger-passed cases, and 1,628 explicit post-v1 deferrals.",
+          "recorded_at": "2026-08-18T03:12:05+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T03:03:30+00:00",
+      "completed_at": "2026-08-18T03:12:05+00:00"
     }
   },
   "verified_references": {

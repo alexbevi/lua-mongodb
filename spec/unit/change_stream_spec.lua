@@ -1155,3 +1155,94 @@ describe("database change streams", function()
     )
   end)
 end)
+
+describe("cluster change streams", function()
+  it("uses admin aggregate 1 and server-returned cursor namespaces", function()
+    local commands = {}
+    local change = bson.document({
+      { "_id", bson.document({ { "token", "cluster" } }) },
+      { "operationType", "insert" },
+    })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(68) },
+          { "ns", "admin.cluster_changes" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(69) },
+          { "ns", "admin.resumed_cluster_changes" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(69) },
+          { "ns", "admin.resumed_cluster_changes" },
+          { "nextBatch", bson.array({ change }) },
+        }) },
+      }),
+      bson.document({ { "ok", 1 } }),
+    }
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, database, command)
+        commands[#commands + 1] = {
+          command = command,
+          database = database,
+        }
+
+        if #commands == 2 then
+          return nil, errors.new({
+            category = errors.CATEGORY.NETWORK,
+            message = "resume the cluster stream",
+          })
+        end
+
+        return table.remove(responses, 1)
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:watch())
+
+    assert.are.equal(change, assert(stream:next()))
+    assert.is_true(stream:close())
+    assert.are.equal("admin", commands[1].database)
+    assert.are.equal(1, commands[1].command:get("aggregate"))
+    local pipeline = commands[1].command:get("pipeline")
+    local change_stream_stage = pipeline:get(1):get("$changeStream")
+    assert.is_true(change_stream_stage:get("allChangesForCluster"))
+    assert.are.equal("getMore", commands[2].command:keys()[1])
+    assert.are.equal(
+      "cluster_changes",
+      commands[2].command:get("collection")
+    )
+    assert.are.equal("admin", commands[3].database)
+    assert.are.equal(1, commands[3].command:get("aggregate"))
+    local resume_pipeline = commands[3].command:get("pipeline")
+    local resume_stage = resume_pipeline:get(1):get("$changeStream")
+    assert.is_true(resume_stage:get("allChangesForCluster"))
+    assert.are.equal("getMore", commands[4].command:keys()[1])
+    assert.are.equal(
+      "resumed_cluster_changes",
+      commands[4].command:get("collection")
+    )
+    assert.are.equal("killCursors", commands[5].command:keys()[1])
+    assert.are.equal(
+      "resumed_cluster_changes",
+      commands[5].command:get("killCursors")
+    )
+  end)
+end)
