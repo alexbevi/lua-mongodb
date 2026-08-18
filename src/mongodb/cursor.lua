@@ -423,6 +423,16 @@ function M.resume_info(value)
     state.operation_time
 end
 
+function M.timeout_context(value)
+  local state = CURSOR_STATES[value]
+
+  if not state then
+    error("timeout context requires a cursor", 2)
+  end
+
+  return state.timeout_context
+end
+
 function M.new(response, options)
   if not bson.is_document(response) then
     error("cursor creation requires a command response", 2)

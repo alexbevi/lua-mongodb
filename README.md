@@ -212,7 +212,7 @@ print(deleted.deleted_count)
 
 ### Change Streams
 
-On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
+On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `timeout_ms` limits stream establishment and each iteration separately; one iteration budget covers both `getMore` and any resume attempt. A positive timeout requires a lower `max_await_time_ms`, which is further bounded by the remaining timeout budget. A timed-out stream remains usable, and its next iteration attempts to resume it. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
 
 ```lua
 local events = assert(users:watch(mongodb.bson.array({
@@ -221,6 +221,7 @@ local events = assert(users:watch(mongodb.bson.array({
   batch_size = 10,
   full_document = "updateLookup",
   max_await_time_ms = 1000,
+  timeout_ms = 5000,
 }))
 
 local change = assert(events:next())
@@ -433,7 +434,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 80.5% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
-| Resilience | Client-side operations timeout | 🟡 | 64.9% |
+| Resilience | Client-side operations timeout | 🟡 | 72.9% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 93.8% |

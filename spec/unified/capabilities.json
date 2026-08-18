@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1610,
-    "runnable": 1610
+    "passed": 1653,
+    "runnable": 1653
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -16874,7 +16874,6 @@
     "client-side-operations-timeout/tests/change-streams.json::test[1]": {
       "activity": "CS-008",
       "fingerprint": "8298e3f7f4869cb48a505110de2c2c597378079e3eb2cc6e6a27513a8e774b9c",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -16899,12 +16898,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[2]": {
       "activity": "CS-008",
       "fingerprint": "26d42cd3914caea300ba3b7a598b675990806152f397debf794ee4aae801f066",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -16929,12 +16927,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[3]": {
       "activity": "CS-008",
       "fingerprint": "25f559b0c6caa008f8d25f44b43109f240462db7183fbd9732cffeca78d5dead",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -16966,12 +16963,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[4]": {
       "activity": "CS-008",
       "fingerprint": "948fda51d98b2e165eb2481ed6019ce81aa85406bb9fc620f85ad3c9c4251337",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17005,12 +17001,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[5]": {
       "activity": "CS-008",
       "fingerprint": "e4b316e18b9d418a2e52aaf98c558a1c9ad348a15e2367cce2b310754789b9f2",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.batchSize",
@@ -17045,12 +17040,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[6]": {
       "activity": "CS-008",
       "fingerprint": "b3bc152a552ab7689cf9690452e2f54125f619e6c2100cb7379a462ce8f4b69d",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17084,12 +17078,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[7]": {
       "activity": "CS-008",
       "fingerprint": "e450b2a56c75e5b7645f6bbee904e634d72bc41b3b756faecb121512695c9cf0",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -17124,12 +17117,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[8]": {
       "activity": "CS-008",
       "fingerprint": "8d679c021a72159f0afc1b72a6cbc960f6467a9198d7fc8682c32da6ac23d39f",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17162,7 +17154,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
       "activity": "REL-025",
@@ -17697,9 +17689,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[13]": {
-      "activity": "CS-008",
+      "activity": "ADV-002",
       "fingerprint": "e9c41941390cb22c408e0f68719ae3a07e170a16134c8606c631d26d5bb2bf8c",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
+      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17734,9 +17726,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[14]": {
-      "activity": "CS-008",
+      "activity": "ADV-002",
       "fingerprint": "b3845bf3d4736bb229d09eafd52d06c7db925030f6b3a6bf61becb4bf934e764",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
+      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -18161,9 +18153,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[24]": {
-      "activity": "CS-008",
+      "activity": "ADV-002",
       "fingerprint": "71c04049e3e272e884a885b673bea83d797a4f2cce2607d2979107819d53333a",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
+      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -18198,9 +18190,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[25]": {
-      "activity": "CS-008",
+      "activity": "ADV-002",
       "fingerprint": "1cd3e8d820ec0a8a1f069ae7a90df0e1c6955d0f8a60245152f57e1555b37416",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
+      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -19273,9 +19265,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[50]": {
-      "activity": "CS-008",
+      "activity": "ADV-002",
       "fingerprint": "b3265b88369d6cfbe0475fa3b01e2bb7cc39368efeffec49e6e5c33c80619039",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
+      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -19310,9 +19302,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[51]": {
-      "activity": "CS-008",
+      "activity": "ADV-002",
       "fingerprint": "ea3d3c22e53efc98a7390994e5a5db58ca45eb4c1290e8bd78759686a53d5673",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
+      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21125,7 +21117,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[15]": {
       "activity": "CS-008",
       "fingerprint": "46bb6566c05731d46c1052487c3f0dbe3eb343f96c9197200477d58c1758f055",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21158,12 +21149,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[16]": {
       "activity": "CS-008",
       "fingerprint": "9904a284e1b453b18fbe29806e4477e78678e68cc0ecb2cbcb8ceb0daeae57bb",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21196,7 +21186,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[17]": {
       "activity": "QUA-001",
@@ -21939,7 +21929,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[35]": {
       "activity": "CS-008",
       "fingerprint": "c56227d99f6b77f3b1b19e2ce51920e39246439e864dc4b394adf2a440049a7b",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21972,12 +21961,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[36]": {
       "activity": "CS-008",
       "fingerprint": "af8efab20c84b6bcc1ffd1f81ca453ff3a9fd5e596bb0ca17523fe6b997eea4f",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -22010,7 +21998,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[37]": {
       "activity": "QUA-001",
@@ -22949,7 +22937,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[5]": {
       "activity": "CS-008",
       "fingerprint": "7c612825fe3e41621772dad69dc2e4c427b7de97aa2fea9914f63bbbb1ba050e",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -22982,7 +22969,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[60]": {
       "activity": "QUA-001",
@@ -23174,7 +23161,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[6]": {
       "activity": "CS-008",
       "fingerprint": "af09e746b29ca9e7405c7f1d6e6c6b0db3a5f49dc730bac0b308600669f6633e",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -23207,7 +23193,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[7]": {
       "activity": "ADV-011",
@@ -24892,7 +24878,6 @@
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[19]": {
       "activity": "CS-008",
       "fingerprint": "42cc3d39d92471cd3ab2ada29129c8b4ac88ed46d1408444b3db72da06c3e0f9",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -24925,7 +24910,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[1]": {
       "activity": "QUA-001",
@@ -24967,7 +24952,6 @@
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[20]": {
       "activity": "CS-008",
       "fingerprint": "65c2f2f04e4124cf9002cd219d1fa9495a7a6ee89366088aab6fed500cdd403b",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -25000,7 +24984,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[21]": {
       "activity": "QUA-001",
@@ -26354,7 +26338,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[10]": {
       "activity": "CS-008",
       "fingerprint": "8f38f436820f9056714af65ff39e4c2514ba83fd2034426cf9c838f8b6b3371d",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -26387,7 +26370,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[11]": {
       "activity": "QUA-001",
@@ -27094,7 +27077,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[29]": {
       "activity": "CS-008",
       "fingerprint": "637ddeb7dd1d31d50aaf69c4c4bf6d07bb23a815748358cca041ea77c20bb835",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -27127,7 +27109,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[2]": {
       "activity": "ADV-011",
@@ -27170,7 +27152,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[30]": {
       "activity": "CS-008",
       "fingerprint": "f5a963d7479e8d9b8b4ba9813e2d46085540706373c7f720eb8add59679bdedf",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -27203,7 +27184,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[31]": {
       "activity": "QUA-001",
@@ -28484,7 +28465,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[9]": {
       "activity": "CS-008",
       "fingerprint": "e93bf14fac14ba63b742d5a16841aa0f2a45ab0e385b7f17e4c80b8de0ceae88",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -28517,7 +28497,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[10]": {
       "activity": "QUA-001",
@@ -28704,7 +28684,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[15]": {
       "activity": "CS-008",
       "fingerprint": "b6474b2ea089836c2e1239a4a274e3a231e3b7489c25165db7e832352ce7c322",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -28736,12 +28715,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[16]": {
       "activity": "CS-008",
       "fingerprint": "9e91efbbd3b89396017a5c4f23e490e806e68dab67599d6785438a16b8cf8432",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -28773,7 +28751,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[17]": {
       "activity": "QUA-001",
@@ -29496,7 +29474,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[35]": {
       "activity": "CS-008",
       "fingerprint": "5e50f507ac51c11f3d8cbc9dc144b353dab3336cad5c757607d364e0261a3ebe",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -29528,12 +29505,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[36]": {
       "activity": "CS-008",
       "fingerprint": "2058483ccdc6d51d0e23db85680f73cf5aedcaa72aba0877445bf4e02075950b",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -29565,7 +29541,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[37]": {
       "activity": "QUA-001",
@@ -30479,7 +30455,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[5]": {
       "activity": "CS-008",
       "fingerprint": "98551414864410a57b3a4447ef31561d68069c81f74403c96169ccac79bd237f",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -30511,7 +30486,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[60]": {
       "activity": "QUA-001",
@@ -30703,7 +30678,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[6]": {
       "activity": "CS-008",
       "fingerprint": "bc504f77d9366d8d87d4f9a0ab6d02286e45700bc3c1736a55d8f388cd3825c3",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -30735,7 +30709,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[7]": {
       "activity": "ADV-011",
@@ -31315,7 +31289,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[23]": {
       "activity": "CS-008",
       "fingerprint": "6189a65653b3932537dc806b9761bced39fec5f8559ac581b8994eb2c1f479a0",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31344,12 +31317,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[24]": {
       "activity": "CS-008",
       "fingerprint": "c7075c21ad398e6c001aeb025cb6b829442cd5488340c13752fb1eaaaf32fad8",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31378,7 +31350,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[25]": {
       "activity": "ADV-011",
@@ -31616,7 +31588,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[31]": {
       "activity": "CS-008",
       "fingerprint": "a5561416987a296159ec11aec8d2708f6660e139127267371e2fc7745f0565c7",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31645,12 +31616,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[32]": {
       "activity": "CS-008",
       "fingerprint": "706da543a4cff95e5f36d931a1750cf184929ebdcf66064b7881f48b8b7354a9",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31679,7 +31649,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[33]": {
       "activity": "REL-006",
@@ -32245,7 +32215,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[49]": {
       "activity": "CS-008",
       "fingerprint": "f34dad479b4abbc4e10ae7635b8c1eff2f986e5b33d08158e7395c19a0074ff9",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32274,7 +32243,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[4]": {
       "activity": "REL-006",
@@ -32312,7 +32281,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[50]": {
       "activity": "CS-008",
       "fingerprint": "0de15ecb0ec2460fab2539342b712d801fd72a6a8b4b7cc6e3db42cf3ca30165",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32341,7 +32309,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[5]": {
       "activity": "REL-006",
@@ -33414,7 +33382,6 @@
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[34]": {
       "activity": "CS-008",
       "fingerprint": "4b82c76a43f6e9370dee8e6c8c0dfd834ffe5887024f61a846b4d4fe856ff67c",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33441,12 +33408,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[35]": {
       "activity": "CS-008",
       "fingerprint": "e9fb15fa46d96bce67df420f10445c24a29631244b2e7f54198c4832dedd21cc",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33478,12 +33444,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[36]": {
       "activity": "CS-008",
       "fingerprint": "74dc0abd7f4475e18430c7ef0522582c6218faa7e27809e12cdc3739ec8773e8",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33515,7 +33480,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[37]": {
       "activity": "ADV-011",
@@ -33868,7 +33833,6 @@
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[46]": {
       "activity": "CS-008",
       "fingerprint": "44df099886b20e1a8722e8c1a1fade850e1548f9528b80c71accad9b7143e3d7",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33895,12 +33859,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[47]": {
       "activity": "CS-008",
       "fingerprint": "90b9efde35c51a5e3e73c27a27798ef342838e5e5421965cc6ff748bb8f62590",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33932,12 +33895,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[48]": {
       "activity": "CS-008",
       "fingerprint": "7b8573da1af3273bee2b9ba7942049c934b0d3db76d3f956c0d4c2fcf63a21ee",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33969,7 +33931,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[49]": {
       "activity": "QUA-001",
@@ -34901,7 +34863,6 @@
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[73]": {
       "activity": "CS-008",
       "fingerprint": "3726b041cfa430d4ecba0cad32c2cfd9c5b3e5169212cfa6253aedf1f753703e",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -34928,12 +34889,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[74]": {
       "activity": "CS-008",
       "fingerprint": "d8e3d2f5f908a7a2ada44b714704441bbe8de8807b4c4df527abbdc8bb1b07fa",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -34965,12 +34925,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[75]": {
       "activity": "CS-008",
       "fingerprint": "3eaf76ba663a82f02c36923dc89f34871ee3feabdbb3354625ada36293146632",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -35002,7 +34961,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[7]": {
       "activity": "QUA-001",
@@ -35922,7 +35881,6 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[4]": {
       "activity": "CS-008",
       "fingerprint": "8d344294309b7f06d6f1ffbbc75631635c951ed203be124c3d83c054bf6d829f",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -35944,7 +35902,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[5]": {
       "activity": "ADV-011",
@@ -36004,7 +35962,6 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[7]": {
       "activity": "CS-008",
       "fingerprint": "6b81adc825a3545bf0f98765458e78caadb29963ee1fdeeac36a793e553c8df6",
-      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -36026,7 +35983,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[8]": {
       "activity": "ADV-011",

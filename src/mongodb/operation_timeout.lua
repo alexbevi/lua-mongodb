@@ -92,6 +92,22 @@ function M.prepare_command(command, minimum_round_trip_time_ms)
 
   for key, value in command:iter() do
     if key ~= "maxTimeMS" or name == "getMore" or context.deadline == nil then
+      if key == "maxTimeMS" and name == "getMore"
+          and context.deadline ~= nil
+      then
+        local remaining_ms =
+          (context.deadline - context.runtime.clock:now()) * 1000
+        local budget = math.floor(
+          remaining_ms - (minimum_round_trip_time_ms or 0)
+        )
+
+        if budget <= 0 then
+          return nil, transformed_timeout(runtime_contract.timeout_error())
+        end
+
+        value = math.min(value, math.max(1, budget))
+      end
+
       if key == "writeConcern" then
         value = without_wtimeout(value)
       end
@@ -243,7 +259,9 @@ function M.resume(context, refresh, callback)
   local parent = CONTEXTS[key]
   local active = context
 
-  if refresh then
+  if parent ~= nil and parent ~= context then
+    active = parent
+  elseif refresh then
     local deadline
 
     if context.timeout_ms > 0 then

@@ -1,6 +1,7 @@
 local bson = require("mongodb.bson")
 local cursor_model = require("mongodb.cursor")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -130,11 +131,34 @@ local function recreate_cursor(state)
   return true
 end
 
-local function advance(value, cooperative)
-  local state = STREAM_STATES[value]
-  local document, err = read_cursor(state, cooperative)
+local function is_csot_timeout(err)
+  return errors.is(err)
+    and err:is_timeout()
+    and err.details ~= nil
+    and err.details.csot == true
+end
 
-  if err and state.recreate and is_resumable(state, err) then
+local function advance_once(value, cooperative)
+  local state = STREAM_STATES[value]
+  local err
+
+  if state.resume_required then
+    local recreated
+    recreated, err = recreate_cursor(state)
+
+    if not recreated then
+      return nil, err
+    end
+
+    state.resume_required = false
+  end
+
+  local document
+  document, err = read_cursor(state, cooperative)
+
+  if err and not is_csot_timeout(err)
+      and state.recreate and is_resumable(state, err)
+  then
     local recreated
     recreated, err = recreate_cursor(state)
 
@@ -146,6 +170,10 @@ local function advance(value, cooperative)
   end
 
   if err then
+    if is_csot_timeout(err) then
+      state.resume_required = true
+    end
+
     return nil, err
   end
 
@@ -176,6 +204,24 @@ local function advance(value, cooperative)
   state.uses_start_after = false
   cache_resume_token(state, resume_token)
   return document
+end
+
+local function advance(value, cooperative)
+  local state = STREAM_STATES[value]
+  local context = state.timeout_context
+
+  if context == nil then
+    return advance_once(value, cooperative)
+  end
+
+  return operation_timeout.run(
+    context.runtime,
+    context.timeout_ms,
+    { timeout_mode = "iteration" },
+    function()
+      return advance_once(value, cooperative)
+    end
+  )
 end
 
 function STREAM_METHODS:next()
@@ -266,7 +312,9 @@ function M.new(cursor, options)
     max_wire_version = options.max_wire_version or 0,
     operation_time = operation_time,
     recreate = options.recreate,
+    resume_required = false,
     resume_token = resume_token,
+    timeout_context = cursor_model.timeout_context(cursor),
     uses_start_after = options.uses_start_after == true,
   }
   return setmetatable(value, STREAM_METATABLE)

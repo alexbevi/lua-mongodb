@@ -4890,6 +4890,42 @@
       "notes": [],
       "started_at": "2026-08-18T03:03:30+00:00",
       "completed_at": "2026-08-18T03:12:05+00:00"
+    },
+    "CS-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining shared-budget case failed with 18 successes and 1 failure: after getMore consumed 120ms, the resume aggregate received a refreshed 2.32 deadline instead of retaining the iteration's 2.20 deadline.",
+          "recorded_at": "2026-08-18T03:18:43+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eight exact make test-focus FOCUS_UNIFIED selector runs across the change-stream CSOT fixture families",
+          "exit_code": 0,
+          "summary": "Executed all 43 newly runnable exact CS-008 unified identities: 43 passed, 0 environment-skipped, 0 deferred, and 0 failed. Six deprecated-option cases requiring unsupported GridFS bucket entities remain explicitly deferred to ADV-002 and were not counted as applicable CS-008 executions.",
+          "recorded_at": "2026-08-18T03:32:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with change-stream/cursor/operation-timeout/API units, change-stream OP_MSG integration, targeted capability/ledger/release Python contracts, and touched Lua lint; make test-architecture test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: 38 unit, 4 directly coupled loopback integration, and 13 targeted Python cases; touched-file lint reported 0 warnings/errors in 7 files. Architecture passed 5/5, complexity stayed at 3 baselined hotspots with maximum 47, and all capability, ledger, release, README, JSON, and diff validators passed.",
+          "recorded_at": "2026-08-18T03:32:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with change-stream, cursor, operation-timeout, and session unit cases after nested-context refinement; make test-complexity and generated artifact validators",
+          "exit_code": 0,
+          "summary": "The final coupled regression gate passed 60 unit cases with 0 failures and operation-timeout lint with 0 findings; complexity and all generated artifacts remained current.",
+          "recorded_at": "2026-08-18T03:33:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T03:16:41+00:00",
+      "completed_at": "2026-08-18T03:33:47+00:00"
     }
   },
   "verified_references": {

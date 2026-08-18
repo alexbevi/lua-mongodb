@@ -927,6 +927,20 @@ local function change_stream_pipeline(pipeline, stage_options)
 end
 
 local function watch_target(state, pipeline, options, all_changes_for_cluster)
+  local timeout_context = operation_timeout.capture()
+  local timeout_ms = timeout_context and timeout_context.timeout_ms
+
+  if options.max_await_time_ms ~= nil
+      and timeout_ms ~= nil and timeout_ms > 0
+      and options.max_await_time_ms >= timeout_ms
+  then
+    return client_error("max_await_time_ms must be less than timeout_ms")
+  end
+
+  if options.timeout_mode ~= nil then
+    return client_error("timeout_mode is not supported for change streams")
+  end
+
   local stage_options, aggregate_options = change_stream_options(
     options,
     all_changes_for_cluster

@@ -2,6 +2,7 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local fake_runtime = require("mongodb.runtime.fake")
 
 describe("collection change streams", function()
   it("opens, yields from, and closes a collection stream", function()
@@ -501,6 +502,190 @@ describe("collection change streams", function()
     )
     assert.are.equal(session, sent_options[3].session)
     assert.are.equal("secondary", sent_options[3].read_preference.mode)
+  end)
+
+  it("shares one timeout budget across getMore and resume", function()
+    local runtime = fake_runtime.new({ now = 2 })
+    local commands = {}
+    local event = bson.document({
+      { "_id", bson.document({ { "token", "within-budget" } }) },
+      { "operationType", "insert" },
+    })
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = {
+          deadline = options.deadline,
+          name = name,
+        }
+
+        if #commands == 1 then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(48) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif name == "getMore" then
+          runtime:advance(0.120)
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 7,
+            labels = { "ResumableChangeStreamError" },
+            message = "resume within the iteration budget",
+          })
+        elseif name == "killCursors" then
+          return bson.document({ { "ok", 1 } })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.events" },
+            { "firstBatch", bson.array({ event }) },
+          }) },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 200 }))
+    local client = api.new_client(
+      executor,
+      config,
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local collection = assert(client:database("app"):collection("events"))
+    local stream = assert(collection:watch())
+
+    assert.are.equal(event, assert(stream:next()))
+    assert.are.same({ "aggregate", "getMore", "aggregate" }, {
+      commands[1].name,
+      commands[2].name,
+      commands[3].name,
+    })
+    assert.near(2.2, commands[2].deadline, 0.000001)
+    assert.near(2.2, commands[3].deadline, 0.000001)
+  end)
+
+  it("resumes on the iteration after a CSOT timeout", function()
+    local runtime = fake_runtime.new({ now = 3 })
+    local commands = {}
+    local timeout_error = errors.new({
+      category = errors.CATEGORY.TIMEOUT,
+      details = { csot = true },
+      message = "iteration timed out",
+    })
+    local event = bson.document({
+      { "_id", bson.document({ { "token", "after-timeout" } }) },
+      { "operationType", "insert" },
+    })
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = name
+
+        if #commands == 1 then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(49) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif #commands == 2 then
+          return nil, timeout_error
+        elseif name == "killCursors" then
+          return bson.document({ { "ok", 1 } })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.events" },
+            { "firstBatch", bson.array({ event }) },
+          }) },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 200 }))
+    local client = api.new_client(
+      executor,
+      config,
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local collection = assert(client:database("app"):collection("events"))
+    local stream = assert(collection:watch())
+    local document, err = stream:try_next()
+
+    assert.is_nil(document)
+    assert.are.equal(timeout_error, err)
+    assert.is_false(stream:is_closed())
+    assert.are.equal(event, assert(stream:try_next()))
+    assert.are.same({ "aggregate", "getMore", "killCursors", "aggregate" }, commands)
+  end)
+
+  it("validates stream timeout options before establishment", function()
+    local runtime = fake_runtime.new({ now = 4 })
+    local executor = {
+      close = function() return true end,
+      command = function()
+        error("invalid timeout options must not execute a command")
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(
+      executor,
+      config,
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local collection = assert(client:database("app"):collection("events"))
+    local stream, err = collection:watch(nil, {
+      max_await_time_ms = 5,
+      timeout_ms = 5,
+    })
+
+    assert.is_nil(stream)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.matches("max_await_time_ms", err.message, nil, true)
+
+    stream, err = collection:watch(nil, {
+      timeout_mode = "iteration",
+      timeout_ms = 5,
+    })
+
+    assert.is_nil(stream)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.matches("timeout_mode", err.message, nil, true)
   end)
 
   it("classifies network, cursor, legacy, and modern server errors", function()

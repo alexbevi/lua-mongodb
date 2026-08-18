@@ -467,8 +467,16 @@ for index in (13, 14):
   ] = ("CS-006", OWNER_REASONS["CS-006"])
 
 for identity, value in EXECUTOR_TESTS.items():
-  if value["activity"] in {"CS-006", "CS-007"}:
+  if value["activity"] in {"CS-006", "CS-007", "CS-008"}:
     TEST_OVERRIDES[identity] = (value["activity"], None)
+
+for index in (13, 14, 24, 25, 50, 51):
+  TEST_OVERRIDES[
+    f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
+  ] = (
+    "ADV-002",
+    "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
+  )
 
 for index in (31, 32):
   TEST_OVERRIDES[

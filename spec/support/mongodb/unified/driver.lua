@@ -1426,6 +1426,7 @@ local function create_change_stream(_, target, arguments)
       showExpandedEvents = "show_expanded_events",
       startAfter = "start_after",
       startAtOperationTime = "start_at_operation_time",
+      timeoutMS = "timeout_ms",
     })
   )
 end
@@ -2025,12 +2026,22 @@ local function internal_client_adapter(client, state)
       local database_name = specification:get("databaseName")
       local collection_name = specification:get("collectionName")
       local create_options = specification:get("createOptions")
+      local collection_options
 
       if create_options and #create_options > 0 then
-        return configuration_error(
-          "createOptions are not supported by the first unified CRUD adapter",
-          "$.initialData[" .. index .. "].createOptions"
-        )
+        local valid, option_err = validate_fields(create_options, {
+          capped = true,
+          size = true,
+        }, "$.initialData[" .. index .. "].createOptions")
+
+        if not valid then
+          return nil, option_err
+        end
+
+        collection_options = operation_options(create_options, {
+          capped = "capped",
+          size = "size",
+        })
       end
 
       local database, err = client:database(database_name, {
@@ -2046,6 +2057,18 @@ local function internal_client_adapter(client, state)
 
       if not dropped then
         return nil, err
+      end
+
+      if collection_options then
+        local created
+        created, err = database:create_collection(
+          collection_name,
+          collection_options
+        )
+
+        if not created then
+          return nil, err
+        end
       end
 
       local documents = specification:get("documents")
@@ -2070,7 +2093,7 @@ local function internal_client_adapter(client, state)
         if not inserted then
           return nil, err
         end
-      else
+      elseif not collection_options then
         local created
         created, err = database:create_collection(collection_name)
 
@@ -2257,7 +2280,7 @@ function M.new(options)
             "batchSize", "collation", "comment", "fullDocument",
             "fullDocumentBeforeChange", "maxAwaitTimeMS", "pipeline",
             "resumeAfter", "session", "showExpandedEvents", "startAfter",
-            "startAtOperationTime",
+            "startAtOperationTime", "timeoutMS",
           },
           handler = create_change_stream,
           result_kind = "changeStream",
@@ -2281,7 +2304,7 @@ function M.new(options)
             "batchSize", "collation", "comment", "fullDocument",
             "fullDocumentBeforeChange", "maxAwaitTimeMS", "pipeline",
             "resumeAfter", "session", "showExpandedEvents", "startAfter",
-            "startAtOperationTime",
+            "startAtOperationTime", "timeoutMS",
           },
           handler = create_change_stream,
           result_kind = "changeStream",
@@ -2461,7 +2484,7 @@ function M.new(options)
             "batchSize", "collation", "comment", "fullDocument",
             "fullDocumentBeforeChange", "maxAwaitTimeMS", "pipeline",
             "resumeAfter", "session", "showExpandedEvents", "startAfter",
-            "startAtOperationTime",
+            "startAtOperationTime", "timeoutMS",
           },
           handler = create_change_stream,
           result_kind = "changeStream",

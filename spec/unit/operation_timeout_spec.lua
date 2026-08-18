@@ -79,4 +79,23 @@ describe("client-side operation timeout", function()
       assert.is_nil(command:get("maxTimeMS"))
     end)
   end)
+
+  it("bounds getMore maxTimeMS by the remaining RTT-adjusted budget", function()
+    local runtime = fake_runtime.new({ now = 1 })
+
+    operation_timeout.run(runtime, 100, {}, function()
+      runtime:advance(0.020)
+      local command = assert(operation_timeout.prepare_command(
+        bson.document({
+          { "getMore", bson.int64(1) },
+          { "maxTimeMS", 100 },
+        }),
+        10
+      ))
+      local max_time_ms = command:get("maxTimeMS")
+
+      assert.is_true(max_time_ms >= 69)
+      assert.is_true(max_time_ms <= 70)
+    end)
+  end)
 end)
