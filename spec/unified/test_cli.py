@@ -278,7 +278,6 @@ class UnifiedCliTests(unittest.TestCase):
     post_v1 = {
       **{index: "CS-007" for index in (5, 6)},
       **{index: "ADV-011" for index in (7, 8)},
-      **{index: "CS-006" for index in (13, 14)},
       **{index: "REL-051" for index in (31, 32)},
     }
     identities = {
