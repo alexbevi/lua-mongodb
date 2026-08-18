@@ -1627,6 +1627,7 @@ end
 local SAVED_RESULT_KINDS = {
   bson = true,
   changeStream = true,
+  collection = true,
   commandCursor = true,
   findCursor = true,
 }

@@ -119,15 +119,15 @@
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 4066,
-      "post_v1_exclusions": 1458
+      "passed_cases": 4067,
+      "post_v1_exclusions": 1457
     },
     "production_core_prerequisites": 71,
     "v0_4_conformance": {
       "classified_cases": 898,
-      "exact_unified_cases": 356,
-      "excluded_cases": 46,
-      "passed_cases": 852,
+      "exact_unified_cases": 357,
+      "excluded_cases": 45,
+      "passed_cases": 853,
       "read_write_concern_passed": 48,
       "target_version_exclusions": 6
     },

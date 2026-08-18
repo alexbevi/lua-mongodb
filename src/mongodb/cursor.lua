@@ -291,6 +291,12 @@ end
 function CURSOR_METHODS:next()
   local state = CURSOR_STATES[self]
 
+  if state.cursor_type ~= "non_tailable" then
+    local document, err = advance_once(self, state)
+
+    return document, err
+  end
+
   while true do
     local document, err, finished = advance_once(self, state)
 
@@ -463,6 +469,7 @@ function M.new(response, options)
     closed = false,
     collection_name = options.collection_name,
     comment = options.comment,
+    cursor_type = options.cursor_type or "non_tailable",
     database_name = options.database_name,
     deadline = options.deadline,
     documents = batch.documents,

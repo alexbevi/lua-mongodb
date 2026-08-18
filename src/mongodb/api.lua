@@ -612,7 +612,11 @@ function DATABASE_METHODS:run_cursor_command(command, options)
       )
     end
 
-    return client_error("tailable command cursors are outside production-core v1")
+    if options.cursor_type == "tailable_await" then
+      return client_error(
+        "tailable await command cursors are outside the supported API"
+      )
+    end
   end
 
   local cursor
@@ -671,6 +675,7 @@ function DATABASE_METHODS:run_cursor_command(command, options)
       client_state = client_state,
       collection_name = collection_name,
       comment = prepared.comment,
+      cursor_type = prepared.cursor_type,
       database_name = state.name,
       deadline = prepared.deadline,
       executor = state.executor,

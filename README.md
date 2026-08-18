@@ -446,7 +446,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | OCSP support | 🔴 | 0.0% |
 | Communication | Wire compression | 🔴 | 0.0% |
 | Communication | SOCKS5 proxy support | 🔴 | 0.0% |
-| Communication | Command execution | 🟡 | 85.7% |
+| Communication | Command execution | 🟡 | 90.5% |
 | Connectivity | Server discovery and monitoring | 🟡 | 96.1% |
 | Connectivity | Connection monitoring and pooling | 🟡 | 82.5% |
 | Connectivity | Load balancer support | 🔴 | 0.0% |

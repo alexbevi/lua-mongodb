@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1782,
-    "runnable": 1782
+    "passed": 1783,
+    "runnable": 1783
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -35126,7 +35126,7 @@
     "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": {
       "activity": "LEG-009",
       "fingerprint": "d45ef83db87ffcf661184b0bc365646283e0fdfdb1c3226f5eef3632f1c78f7b",
-      "reason": "tailable command cursors are outside the v1 public cursor surface",
+      "reason": "tailable command-cursor iteration timeout conformance is deferred with the remaining non-awaitData tailable cursor behavior",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -35175,7 +35175,7 @@
     "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": {
       "activity": "LEG-010",
       "fingerprint": "c02068748ffddf99e0727fddf30dc1ac1d037a2bcb402f011b7bbd6b9a0fdeb3",
-      "reason": "tailable command cursors are outside the v1 public cursor surface",
+      "reason": "tailable awaitData command cursors require the pending awaitData timeout and cancellation behavior",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -69771,7 +69771,6 @@
     "run-command/tests/unified/runCursorCommand.json::test[10]": {
       "activity": "LEG-008",
       "fingerprint": "1c5ec997298379804fea3f3a3085e9e983a723a34f68d0c759e9118b349f0b2e",
-      "reason": "tailable command cursors are outside the v1 public cursor surface",
       "requirements": {
         "arguments": [
           "createCollection.capped",
@@ -69811,7 +69810,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[1]": {
       "activity": "ADV-005",

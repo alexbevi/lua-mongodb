@@ -586,7 +586,7 @@ TEST_OVERRIDES.update({
   ),
   "run-command/tests/unified/runCursorCommand.json::test[10]": (
     "LEG-008",
-    "tailable command cursors are outside the v1 public cursor surface",
+    None,
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": (
     "REL-053",
@@ -594,11 +594,11 @@ TEST_OVERRIDES.update({
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": (
     "LEG-009",
-    "tailable command cursors are outside the v1 public cursor surface",
+    "tailable command-cursor iteration timeout conformance is deferred with the remaining non-awaitData tailable cursor behavior",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
     "LEG-010",
-    "tailable command cursors are outside the v1 public cursor surface",
+    "tailable awaitData command cursors require the pending awaitData timeout and cancellation behavior",
   ),
 })
 

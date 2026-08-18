@@ -5396,6 +5396,10 @@
       "activity": "REL-022",
       "environment": "live-standalone"
     },
+    "run-command/tests/unified/runCursorCommand.json::test[10]": {
+      "activity": "LEG-008",
+      "environment": "live-standalone"
+    },
     "sessions/tests/snapshot-sessions-not-supported-client-error.json::test[1]": {
       "activity": "SES-005",
       "environment": "live-replicaset"

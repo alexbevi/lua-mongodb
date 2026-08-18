@@ -212,6 +212,56 @@ describe("core MongoDB handles", function()
     assert.are.equal(comment, calls[2].command:get("comment"))
   end)
 
+  it("keeps a tailable command cursor open across an empty batch", function()
+    local calls = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(42) },
+          { "ns", "db.items" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(42) },
+          { "ns", "db.items" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "db.items" },
+          { "nextBatch", bson.array({
+            bson.document({ { "_id", 1 } }),
+          }) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command)
+        calls[#calls + 1] = command:keys()[1]
+        return table.remove(responses, 1)
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("db"):run_cursor_command(
+      bson.document({ { "find", "items" }, { "tailable", true } }),
+      { cursor_type = "tailable" }
+    ))
+
+    assert.is_nil(cursor:next())
+    assert.is_false(cursor:is_closed())
+    assert.are.equal(1, assert(cursor:next()):get("_id"))
+    assert.is_true(cursor:is_closed())
+    assert.are.same({ "find", "getMore", "getMore" }, calls)
+  end)
+
   it("rejects incompatible generic command cursor timeout options", function()
     local calls = 0
     local executor = {

@@ -5553,6 +5553,28 @@
       "notes": [],
       "started_at": "2026-08-18T17:48:38+00:00",
       "completed_at": "2026-08-18T17:53:52+00:00"
+    },
+    "LEG-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=keeps.a.tailable.command.cursor.open.across.an.empty.batch spec/unit/api_handles_spec.lua'",
+          "exit_code": 2,
+          "summary": "1 focused unit case failed: run_cursor_command rejected the tailable command cursor before it could preserve a nonzero-id empty batch",
+          "recorded_at": "2026-08-18T18:02:01+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unit/cursor_spec.lua spec/unified/operation_spec.lua' FOCUS_UNIFIED='run-command/tests/unified/runCursorCommand.json::test[[]10]' FOCUS_PYTHON='command cursor classification plus conformance/release/v0.4/v0.5/README contracts' FOCUS_LINT='5 touched Lua files'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "20 focused Lua cases passed; 1 exact command-cursor empty-batch identity executed and passed with 0 environment skips, 0 deferred, and 0 failed; 33 Python contracts passed; 5 touched Lua files linted; complexity, capability, ledger, release scope, v0.4, v0.5, checklist, README, JSON, Python compile, and diff validators passed",
+          "recorded_at": "2026-08-18T18:11:10+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T18:00:57+00:00",
+      "completed_at": "2026-08-18T18:11:14+00:00"
     }
   },
   "verified_references": {
