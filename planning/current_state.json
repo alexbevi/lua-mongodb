@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 207,
+    "completed": 208,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 19
+    "pending": 18
   },
   "active": [],
   "ready": [
@@ -35,7 +35,7 @@
     "SFP-001",
     "BSON-010",
     "ADV-012",
-    "CI-007"
+    "CI-008"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -45,7 +45,7 @@
       "ADV-011"
     ],
     "macos-ci-signal": [
-      "CI-007"
+      "CI-008"
     ]
   },
   "blocked": [],

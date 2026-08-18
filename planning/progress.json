@@ -5267,6 +5267,28 @@
       "notes": [],
       "started_at": "2026-08-18T14:55:41+00:00",
       "completed_at": "2026-08-18T15:00:24+00:00"
+    },
+    "CI-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
+          "exit_code": 2,
+          "summary": "The oversized-fixture contract observed shard sizes [0, 56, 0, 0], proving all runnable mongos-pin-auto identities remained concentrated in one fixture-level shard.",
+          "recorded_at": "2026-08-18T15:05:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
+          "exit_code": 0,
+          "summary": "All 98 unified CLI tests passed; the 56 runnable mongos-pin-auto identities were distributed 14/14/14/14 with exact duplicate-free aggregate coverage.",
+          "recorded_at": "2026-08-18T15:09:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T15:04:35+00:00",
+      "completed_at": "2026-08-18T15:09:40+00:00"
     }
   },
   "verified_references": {

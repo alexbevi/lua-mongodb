@@ -61,6 +61,9 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
 SLOWEST_FIXTURE_GROUP_LIMIT = 10
+IDENTITY_SHARDED_FIXTURES = frozenset({
+  "transactions/tests/unified/mongos-pin-auto.json",
+})
 KNOWN_REQUIREMENT_KEYS = {
   "arguments",
   "entities",
@@ -675,18 +678,38 @@ def fixture_shard(fixture: str, count: int) -> int:
   return int.from_bytes(digest[:8], "big") % count
 
 
+def classification_shard(classification: dict[str, Any], count: int) -> int:
+  """Return a stable shard while splitting measured oversized fixtures."""
+  fixture = classification["fixture"]
+
+  if fixture not in IDENTITY_SHARDED_FIXTURES:
+    return fixture_shard(fixture, count)
+
+  index = classification.get("index")
+
+  if type(index) is not int or index <= 0:
+    raise CapabilityError(
+      f"identity-sharded fixture classification has no valid index: {fixture}"
+    )
+
+  if type(count) is not int or count <= 0:
+    raise CapabilityError("shard count must be a positive integer")
+
+  return (index - 1) % count
+
+
 def select_shard(
   classifications: list[dict[str, Any]],
   count: int,
   index: int,
 ) -> list[dict[str, Any]]:
-  """Select whole fixtures for one deterministic, non-overlapping shard."""
+  """Select one deterministic, non-overlapping conformance shard."""
   if type(index) is not int or index < 0 or index >= count:
     raise CapabilityError("shard index must be between zero and count minus one")
 
   return [
     classification for classification in classifications
-    if fixture_shard(classification["fixture"], count) == index
+    if classification_shard(classification, count) == index
   ]
 
 
@@ -975,7 +998,7 @@ def aggregate_shard_reports(
       if identity in rows:
         raise CapabilityError(f"duplicate shard test identity: {identity}")
 
-      if fixture_shard(classification["fixture"], count) != index:
+      if classification_shard(classification, count) != index:
         raise CapabilityError(f"test identity is assigned to the wrong shard: {identity}")
 
       for field in (

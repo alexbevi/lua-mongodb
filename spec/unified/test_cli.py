@@ -2334,6 +2334,53 @@ class UnifiedCliTests(unittest.TestCase):
       ],
     )
 
+  def test_oversized_mongos_pin_fixture_is_balanced_across_shards(self) -> None:
+    fixture = "transactions/tests/unified/mongos-pin-auto.json"
+    classifications = [
+      {
+        "fixture": fixture,
+        "id": f"{fixture}::test[{index}]",
+        "index": index,
+        "status": "runnable",
+      }
+      for index in range(1, 58)
+      if index != 21
+    ]
+    shards = [
+      run.select_shard(classifications, 4, index)
+      for index in range(4)
+    ]
+    selected_ids = [
+      classification["id"]
+      for shard in shards
+      for classification in shard
+    ]
+
+    self.assertEqual([14, 14, 14, 14], [len(shard) for shard in shards])
+    self.assertEqual(
+      {classification["id"] for classification in classifications},
+      set(selected_ids),
+    )
+    self.assertEqual(len(selected_ids), len(set(selected_ids)))
+
+    reports = []
+
+    for index, shard in enumerate(shards):
+      report = run.build_report(
+        shard,
+        execute=lambda _: ("passed", None),
+      )
+      report["shard"] = {"count": 4, "index": index}
+      reports.append(report)
+
+    aggregate = run.aggregate_shard_reports(
+      classifications,
+      {"classified": 56, "passed": 56, "runnable": 56},
+      reports,
+    )
+    self.assertEqual(56, aggregate["summary"]["executed"])
+    self.assertEqual(56, aggregate["summary"]["passed"])
+
   def test_shard_aggregation_enforces_exact_global_ratchets(self) -> None:
     classifications = [
       {
