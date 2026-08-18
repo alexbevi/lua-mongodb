@@ -25,6 +25,8 @@ describe("collection change streams over OP_MSG", function()
   it("opens an initial stream batch and kills the cursor on close", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())
+    local empty_token = bson.document({ { "token", "empty" } })
+    local post_batch_token = bson.document({ { "token", "post-batch" } })
     local outcome
 
     port = assert(math.tointeger(port))
@@ -84,6 +86,7 @@ describe("collection change streams over OP_MSG", function()
           { "id", bson.int64(51) },
           { "ns", "app.events" },
           { "nextBatch", bson.array({}) },
+          { "postBatchResumeToken", empty_token },
         }) },
       }))
 
@@ -102,6 +105,7 @@ describe("collection change streams over OP_MSG", function()
               { "operationType", "insert" },
             }),
           }) },
+          { "postBatchResumeToken", post_batch_token },
         }) },
       }))
 
@@ -137,7 +141,9 @@ describe("collection change streams over OP_MSG", function()
 
         assert.is_nil(stream:try_next())
         assert.is_false(stream:is_closed())
+        assert.are.equal("empty", stream:resume_token():get("token"))
         assert.are.equal("insert", assert(stream:next()):get("operationType"))
+        assert.are.equal("post-batch", stream:resume_token():get("token"))
         assert.is_true(stream:close())
         assert.is_true(client:close())
       end))

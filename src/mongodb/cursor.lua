@@ -92,10 +92,21 @@ local function response_batch(response, name)
     documents[index] = document
   end
 
+  local post_batch_resume_token = cursor:get("postBatchResumeToken")
+
+  if post_batch_resume_token ~= nil
+      and not bson.is_document(post_batch_resume_token)
+  then
+    return protocol_error(
+      "cursor response contains an invalid postBatchResumeToken"
+    )
+  end
+
   return {
     documents = documents,
     id = id,
     numeric_id = numeric_id,
+    post_batch_resume_token = post_batch_resume_token,
   }
 end
 
@@ -193,6 +204,7 @@ local function get_more(value, state)
   state.documents = batch.documents
   state.id = batch.id
   state.numeric_id = batch.numeric_id
+  state.post_batch_resume_token = batch.post_batch_resume_token
   state.position = 1
 
   if state.numeric_id == 0 then
@@ -380,6 +392,16 @@ function M.try_next(value)
   return document, err
 end
 
+function M.resume_info(value)
+  local state = CURSOR_STATES[value]
+
+  if not state then
+    error("resume information requires a cursor", 2)
+  end
+
+  return state.post_batch_resume_token, state.position <= #state.documents
+end
+
 function M.new(response, options)
   if not bson.is_document(response) then
     error("cursor creation requires a command response", 2)
@@ -420,6 +442,7 @@ function M.new(response, options)
     numeric_id = batch.numeric_id,
     on_close = options.on_close,
     position = 1,
+    post_batch_resume_token = batch.post_batch_resume_token,
     retrieved = 0,
     server_address = options.server_address,
     session = options.session,

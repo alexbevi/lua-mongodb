@@ -1,6 +1,7 @@
 local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
+local errors = require("mongodb.error")
 
 describe("collection change streams", function()
   it("opens, yields from, and closes a collection stream", function()
@@ -264,5 +265,165 @@ describe("collection change streams", function()
     assert.are.equal(change, assert(stream:next()))
     assert.are.equal(4, #commands)
     assert.is_true(stream:is_closed())
+  end)
+
+  it("starts with the configured resume token", function()
+    local initial = bson.document({ { "token", "initial" } })
+    local post_batch = bson.document({ { "token", "post-batch" } })
+    local response
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function()
+        return response
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local collection = assert(client:database("app"):collection("events"))
+
+    for _, option in ipairs({ "start_after", "resume_after" }) do
+      response = bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      })
+      local stream = assert(collection:watch(nil, { [option] = initial }))
+
+      assert.are.equal(initial, stream:resume_token())
+    end
+
+    response = bson.document({
+      { "ok", 1 },
+      { "cursor", bson.document({
+        { "id", bson.int64(0) },
+        { "ns", "app.events" },
+        { "firstBatch", bson.array({}) },
+        { "postBatchResumeToken", post_batch },
+      }) },
+    })
+
+    local stream = assert(collection:watch(nil, { start_after = initial }))
+
+    assert.are.equal(post_batch, stream:resume_token())
+  end)
+
+  it("uses document tokens until the last document in a batch", function()
+    local first_token = bson.document({ { "token", 1 } })
+    local second_token = bson.document({ { "token", 2 } })
+    local post_batch = bson.document({ { "token", 3 } })
+    local first = bson.document({
+      { "_id", first_token },
+      { "operationType", "insert" },
+    })
+    local second = bson.document({
+      { "_id", second_token },
+      { "operationType", "update" },
+    })
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function()
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.events" },
+            { "firstBatch", bson.array({ first, second }) },
+            { "postBatchResumeToken", post_batch },
+          }) },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:database("app"):collection("events"):watch())
+
+    assert.is_nil(stream:resume_token())
+    assert.are.equal(first, assert(stream:next()))
+    assert.are.equal(first_token, stream:resume_token())
+    assert.are.equal(second, assert(stream:next()))
+    assert.are.equal(post_batch, stream:resume_token())
+  end)
+
+  it("uses the post-batch token from an empty live batch", function()
+    local post_batch = bson.document({ { "token", 4 } })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(46) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(46) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({}) },
+          { "postBatchResumeToken", post_batch },
+        }) },
+      }),
+      bson.document({ { "ok", 1 } }),
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function()
+        return table.remove(responses, 1)
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:database("app"):collection("events"):watch())
+
+    assert.is_nil(stream:try_next())
+    assert.are.equal(post_batch, stream:resume_token())
+    assert.is_false(stream:is_closed())
+    assert.is_true(stream:close())
+  end)
+
+  it("closes when a returned change has no resume token", function()
+    local commands = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(47) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({
+            bson.document({ { "operationType", "insert" } }),
+          }) },
+        }) },
+      }),
+      bson.document({ { "ok", 1 } }),
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return table.remove(responses, 1)
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:database("app"):collection("events"):watch())
+    local change, err = stream:next()
+
+    assert.is_nil(change)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.matches("Cannot provide resume functionality", err.message, 1, true)
+    assert.is_true(stream:is_closed())
+    assert.are.equal("killCursors", commands[2]:keys()[1])
   end)
 end)

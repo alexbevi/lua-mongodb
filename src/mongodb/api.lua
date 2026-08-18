@@ -941,7 +941,11 @@ function COLLECTION_METHODS:watch(pipeline, options)
     return nil, err
   end
 
-  return change_stream.new(register_cursor(self, cursor))
+  options = options or {}
+
+  return change_stream.new(register_cursor(self, cursor), {
+    resume_token = options.start_after or options.resume_after,
+  })
 end
 
 function COLLECTION_METHODS:count_documents(filter, options)

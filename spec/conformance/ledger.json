@@ -14329,16 +14329,16 @@
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-errors.json::test[3]": {
-      "activity": "REL-051",
+      "activity": "CS-003",
       "fingerprint": "ceb0a5c10d93a26088e4af12c43a4e98389ce851be6e4a2b5e0f88f4dc188bb1",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "change-streams/tests/unified/change-streams-errors.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams-errors.json::test[4]": {
@@ -15122,16 +15122,16 @@
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[12]": {
-      "activity": "REL-051",
+      "activity": "CS-003",
       "fingerprint": "6059a127b9b69682c074e8c9eb70f7fe88e18994d143186448026899546c7423",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "change-streams/tests/unified/change-streams.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "change-streams"
     },
     "change-streams/tests/unified/change-streams.json::test[13]": {
@@ -86653,9 +86653,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1688,
+      "deferred_unsupported": 1686,
       "excluded_scope": 2,
-      "passed": 3834
+      "passed": 3836
     },
     "suites": {
       "auth": 73,
