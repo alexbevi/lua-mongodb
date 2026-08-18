@@ -83,6 +83,19 @@ describe("collection change streams over OP_MSG", function()
         { "cursor", bson.document({
           { "id", bson.int64(51) },
           { "ns", "app.events" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }))
+
+      local blocking_get_more = receive_frame(peer)
+
+      assert.are.equal("getMore", blocking_get_more.body:keys()[1])
+      assert.are.equal(2, blocking_get_more.body:get("batchSize"):to_number())
+      send_response(peer, blocking_get_more, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(51) },
+          { "ns", "app.events" },
           { "nextBatch", bson.array({
             bson.document({
               { "_id", bson.document({ { "token", 1 } }) },
@@ -122,6 +135,8 @@ describe("collection change streams over OP_MSG", function()
           max_await_time_ms = 250,
         }))
 
+        assert.is_nil(stream:try_next())
+        assert.is_false(stream:is_closed())
         assert.are.equal("insert", assert(stream:next()):get("operationType"))
         assert.is_true(stream:close())
         assert.is_true(client:close())

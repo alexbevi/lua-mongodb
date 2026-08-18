@@ -37,6 +37,10 @@
       "activity": "CS-001",
       "environment": "live-replicaset"
     },
+    "change-streams/tests/unified/change-streams.json::test[8]": {
+      "activity": "CS-002",
+      "environment": "live-replicaset"
+    },
     "client-side-operations-timeout/tests/close-cursors.json::test[1]": {
       "activity": "REL-025",
       "environment": "isolated-replicaset",

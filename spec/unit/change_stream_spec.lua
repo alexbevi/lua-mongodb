@@ -201,4 +201,68 @@ describe("collection change streams", function()
     assert.are.equal(collation, options.collation)
     assert.are.equal(comment, options.comment)
   end)
+
+  it("returns cooperatively after one empty live batch", function()
+    local commands = {}
+    local change = bson.document({
+      { "_id", bson.document({ { "token", 4 } }) },
+      { "operationType", "insert" },
+    })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(44) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(44) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(44) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({ change }) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return table.remove(responses, 1)
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local collection = assert(client:database("app"):collection("events"))
+    local stream = assert(collection:watch())
+
+    assert.is_nil(stream:try_next())
+    assert.are.equal(2, #commands)
+    assert.are.equal("getMore", commands[2]:keys()[1])
+    assert.is_false(stream:is_closed())
+
+    assert.are.equal(change, assert(stream:next()))
+    assert.are.equal(4, #commands)
+    assert.is_true(stream:is_closed())
+  end)
 end)

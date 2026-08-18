@@ -13,10 +13,10 @@
     "CS-007": 19,
     "CS-008": 49,
     "CS-009": 2,
-    "REL-051": 104
+    "REL-051": 103
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1689
+    "post-v1-exclusion": 1688
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -90,9 +90,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1689,
+    "deferred_unsupported": 1688,
     "excluded_scope": 2,
-    "passed": 3833
+    "passed": 3834
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

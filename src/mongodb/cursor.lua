@@ -202,55 +202,88 @@ local function get_more(value, state)
   return true
 end
 
+local function advance_once(value, state)
+  if state.closed then
+    if client_is_closed(state) then
+      local _, err = client_error("client is closed")
+
+      return nil, err, true
+    end
+
+    return nil, nil, true
+  end
+
+  if state.limit > 0 and state.retrieved >= state.limit then
+    local closed, err = value:close()
+
+    if closed == nil then
+      return nil, err, true
+    end
+
+    return nil, nil, true
+  end
+
+  local document = state.documents[state.position]
+
+  if document then
+    state.position = state.position + 1
+    state.retrieved = state.retrieved + 1
+
+    if state.position > #state.documents and state.numeric_id == 0 then
+      mark_closed(value, state)
+    end
+
+    return document, nil, true
+  end
+
+  if state.numeric_id == 0 then
+    mark_closed(value, state)
+    return nil, nil, true
+  end
+
+  if client_is_closed(state) then
+    mark_closed(value, state)
+
+    local _, err = client_error("client is closed")
+
+    return nil, err, true
+  end
+
+  local fetched, err = get_more(value, state)
+
+  if not fetched then
+    return nil, err, true
+  end
+
+  document = state.documents[state.position]
+
+  if document then
+    state.position = state.position + 1
+    state.retrieved = state.retrieved + 1
+
+    if state.position > #state.documents and state.numeric_id == 0 then
+      mark_closed(value, state)
+    end
+
+    return document, nil, true
+  end
+
+  if state.numeric_id == 0 then
+    mark_closed(value, state)
+    return nil, nil, true
+  end
+
+  return nil, nil, false
+end
+
 function CURSOR_METHODS:next()
   local state = CURSOR_STATES[self]
 
-  if state.closed then
-    if client_is_closed(state) then
-      return client_error("client is closed")
-    end
-
-    return nil
-  end
-
   while true do
-    if state.limit > 0 and state.retrieved >= state.limit then
-      local closed, err = self:close()
+    local document, err, finished = advance_once(self, state)
 
-      if closed == nil then
-        return nil, err
-      end
-
-      return nil
-    end
-
-    local document = state.documents[state.position]
-
-    if document then
-      state.position = state.position + 1
-      state.retrieved = state.retrieved + 1
-
-      if state.position > #state.documents and state.numeric_id == 0 then
-        mark_closed(self, state)
-      end
-
-      return document
-    end
-
-    if state.numeric_id == 0 then
-      mark_closed(self, state)
-      return nil
-    end
-
-    if client_is_closed(state) then
-      mark_closed(self, state)
-      return client_error("client is closed")
-    end
-
-    local fetched, err = get_more(self, state)
-
-    if not fetched then
-      return nil, err
+    if finished then
+      return document, err
     end
   end
 end
@@ -333,6 +366,18 @@ function CURSOR_METHODS:close(options)
   end
 
   return true
+end
+
+function M.try_next(value)
+  local state = CURSOR_STATES[value]
+
+  if not state then
+    error("cooperative iteration requires a cursor", 2)
+  end
+
+  local document, err = advance_once(value, state)
+
+  return document, err
 end
 
 function M.new(response, options)

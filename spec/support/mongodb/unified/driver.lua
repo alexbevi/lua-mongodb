@@ -1370,6 +1370,10 @@ local function iterate_cursor(_, cursor)
   return cursor:next()
 end
 
+local function iterate_change_stream_once(_, stream)
+  return stream:try_next()
+end
+
 local function close_cursor(_, cursor, arguments)
   return cursor:close(operation_options(arguments, {}))
 end
@@ -1397,6 +1401,15 @@ local CURSOR_OPERATIONS = {
     arguments = {},
     handler = iterate_cursor,
   },
+}
+
+local CHANGE_STREAM_OPERATIONS = {
+  close = CURSOR_OPERATIONS.close,
+  iterateOnce = {
+    arguments = {},
+    handler = iterate_change_stream_once,
+  },
+  iterateUntilDocumentOrError = CURSOR_OPERATIONS.iterateUntilDocumentOrError,
 }
 
 local function create_change_stream(_, collection, arguments)
@@ -2229,7 +2242,7 @@ function M.new(options)
     },
     internal_client = internal_client_adapter(internal_client, state),
     operations = {
-      changeStream = CURSOR_OPERATIONS,
+      changeStream = CHANGE_STREAM_OPERATIONS,
       client = {
         appendMetadata = {
           arguments = { "driverInfoOptions" },

@@ -1,3 +1,5 @@
+local cursor_model = require("mongodb.cursor")
+
 local M = {}
 
 local STREAM_STATES = setmetatable({}, { __mode = "k" })
@@ -17,6 +19,10 @@ local STREAM_METATABLE = {
 
 function STREAM_METHODS:next()
   return STREAM_STATES[self].cursor:next()
+end
+
+function STREAM_METHODS:try_next()
+  return cursor_model.try_next(STREAM_STATES[self].cursor)
 end
 
 function STREAM_METHODS:iter()
