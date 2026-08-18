@@ -5465,6 +5465,28 @@
       "notes": [],
       "started_at": "2026-08-18T16:49:07+00:00",
       "completed_at": "2026-08-18T16:59:50+00:00"
+    },
+    "LEG-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_legacy_map_reduce_single_attempt_case_is_runnable'",
+          "exit_code": 2,
+          "summary": "The defining pinned mapReduce first-attempt failure case was still deferred_unsupported instead of runnable; 1 focused test ran and failed.",
+          "recorded_at": "2026-08-18T17:11:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/legacy_map_reduce_spec.lua spec/unit/retry_executor_spec.lua spec/unit/api_handles_spec.lua' FOCUS_UNIFIED='retryable-reads/tests/unified/mapReduce.json::test*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='spec/unit/legacy_map_reduce_spec.lua'; make test-complexity; generated --check validators",
+          "exit_code": 0,
+          "summary": "Nineteen defining and directly coupled Lua specs passed; all 3 mapReduce retry-suite cases executed and passed with 0 environment-skipped, 0 deferred, and 0 failed; 133 capability, ledger, scope, release, and README contracts passed; touched-file lint reported 0 warnings and errors; complexity and all generated validators passed at 1,759 runnable cases and 4,043 ledger-passed cases.",
+          "recorded_at": "2026-08-18T17:15:56+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T17:10:45+00:00",
+      "completed_at": "2026-08-18T17:16:03+00:00"
     }
   },
   "verified_references": {

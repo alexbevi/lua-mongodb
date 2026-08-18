@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1756,
-    "runnable": 1756
+    "passed": 1759,
+    "runnable": 1759
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -64413,7 +64413,6 @@
     "retryable-reads/tests/unified/mapReduce.json::test[1]": {
       "activity": "LEG-004",
       "fingerprint": "bc2b7b4726700cfee35e2a98f79a943f6a4a7e663835bb99a8547cb19eb5187a",
-      "reason": "inline mapReduce retry behavior awaits the dedicated legacy read slice",
       "requirements": {
         "arguments": [
           "mapReduce.map",
@@ -64442,12 +64441,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[2]": {
       "activity": "LEG-004",
       "fingerprint": "e1e9d4262af1ef18069322e05fe0dc1184a5c7bfc62c5c2dfb9f37fba2bdf86e",
-      "reason": "inline mapReduce retry behavior awaits the dedicated legacy read slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -64480,12 +64478,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/mapReduce.json::test[3]": {
       "activity": "LEG-004",
       "fingerprint": "dc32ebbe932286f3122afeb1927c5b90be5ea19cf8fb9399f990c07e7eddabeb",
-      "reason": "inline mapReduce retry behavior awaits the dedicated legacy read slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -64520,7 +64517,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/readConcernMajorityNotAvailableYet.json::test[1]": {
       "activity": "RETRY-001",

@@ -456,7 +456,7 @@ TEST_OVERRIDES[
 
 for fixture, count, owner, reason in (
   ("handshakeError", 32, "REL-034", OWNER_REASONS["REL-034"]),
-  ("mapReduce", 3, "LEG-004", OWNER_REASONS["LEG-004"]),
+  ("mapReduce", 3, "LEG-004", None),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[

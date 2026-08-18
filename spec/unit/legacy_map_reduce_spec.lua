@@ -1,6 +1,8 @@
 local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
+local errors = require("mongodb.error")
+local retry_executor = require("mongodb.retry_executor")
 
 describe("legacy collection map reduce", function()
   it("encodes inline output and returns its results", function()
@@ -102,5 +104,46 @@ describe("legacy collection map reduce", function()
     assert.are.equal(2, sent.command:get("writeConcern"):get("w"))
     assert.is_nil(sent.command:get("readConcern"))
     assert.is_false(sent.options.read_operation)
+  end)
+
+  it("keeps inline and collection output single-attempt", function()
+    for _, out in ipairs({
+      bson.document({ { "inline", 1 } }),
+      "summary",
+    }) do
+      local attempts = 0
+      local underlying = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return { max_wire_version = 21 }
+        end,
+        command = function()
+          attempts = attempts + 1
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 10107,
+            message = "not writable primary",
+          })
+        end,
+      }
+      local executor = retry_executor.new(underlying, {
+        enabled_reads = true,
+        enabled_writes = true,
+      })
+      local config = assert(driver_options.normalize(nil, {}))
+      local collection = assert(api.new_client(executor, config)
+        :database("app"):collection("users"))
+      local result, err = collection:map_reduce(
+        "function () { emit(0, this.x); }",
+        "function (key, values) { return values[0]; }",
+        out
+      )
+
+      assert.is_nil(result)
+      assert.are.equal(10107, err.code)
+      assert.are.equal(1, attempts)
+    end
   end)
 end)
