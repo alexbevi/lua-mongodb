@@ -3,6 +3,7 @@ local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
 local retry_executor = require("mongodb.retry_executor")
+local fake_runtime = require("mongodb.runtime.fake")
 
 describe("legacy collection count", function()
   it("encodes the count command and returns n", function()
@@ -120,5 +121,45 @@ describe("legacy collection count", function()
       assert.are.equal(case.code, err.code)
       assert.are.equal(1, attempts)
     end
+  end)
+
+  it("reuses one operation deadline for a retry", function()
+    local runtime = fake_runtime.new({ now = 10 })
+    local deadlines = {}
+    local underlying = {
+      capabilities = function()
+        return { max_wire_version = 27 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, _, options)
+        deadlines[#deadlines + 1] = options.deadline
+
+        if #deadlines == 1 then
+          runtime:advance(0.05)
+          return nil, errors.new({
+            category = errors.CATEGORY.NETWORK,
+            message = "socket timeout",
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 2 } })
+      end,
+    }
+    local executor = retry_executor.new(underlying, { enabled_reads = true })
+    local config = assert(driver_options.normalize(nil, { timeout_ms = 200 }))
+    local collection = assert(api.new_client(
+      executor,
+      config,
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    ):database("app"):collection("users"))
+
+    assert.are.equal(2, assert(collection:count(bson.document({}))))
+    assert.same({ 10.2, 10.2 }, deadlines)
   end)
 end)

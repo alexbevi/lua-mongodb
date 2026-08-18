@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1742,
-    "runnable": 1742
+    "passed": 1755,
+    "runnable": 1755
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -21221,7 +21221,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[19]": {
       "activity": "LEG-002",
       "fingerprint": "b4dfd2d3f41ad26a31bc19038c0a756631e590de2bba7b36d91c35d7aac61ad7",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -21254,7 +21253,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[1]": {
       "activity": "QUA-001",
@@ -21296,7 +21295,6 @@
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[20]": {
       "activity": "LEG-002",
       "fingerprint": "384a56f0931c67aab01b302f8dca71fb6cedb4c34bb4cdc4cf6fffd00d235e94",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -21329,7 +21327,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[21]": {
       "activity": "QUA-001",
@@ -25694,7 +25692,6 @@
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[3]": {
       "activity": "LEG-002",
       "fingerprint": "0f977c03b29d3d9d49562dea003cbd8bfa8bcec1c39e0321e0b30294808756c0",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -25727,7 +25724,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[40]": {
       "activity": "QUA-001",
@@ -26072,7 +26069,6 @@
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[4]": {
       "activity": "LEG-002",
       "fingerprint": "9c97f52714ae3d885b96fd903585f9bba56458b46c6b7be831902078db3eb62b",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26105,7 +26101,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[5]": {
       "activity": "QUA-001",
@@ -26405,7 +26401,6 @@
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[13]": {
       "activity": "LEG-002",
       "fingerprint": "582fac1b4c243b7486b5229d10901457324d1c02f4504d8673af0f9da0d432f2",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26438,12 +26433,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[14]": {
       "activity": "LEG-002",
       "fingerprint": "06538fe5b4984df9826dd2043d2869d30db01cdeb893e8d90a0f0379fcb30804",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -26476,7 +26470,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[15]": {
       "activity": "QUA-001",
@@ -28784,7 +28778,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[19]": {
       "activity": "LEG-002",
       "fingerprint": "3a8dbfeb117710ed6ccc745d215542d17bf29629b886df8cb87c786b3c2311e0",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -28816,7 +28809,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[1]": {
       "activity": "QUA-001",
@@ -28857,7 +28850,6 @@
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[20]": {
       "activity": "LEG-002",
       "fingerprint": "ebdc85f27d0c37aa2dbc17b01d3407c451e29b3be2858b4345da69dacd1fda91",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -28889,7 +28881,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[21]": {
       "activity": "QUA-001",
@@ -31676,7 +31668,6 @@
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[35]": {
       "activity": "LEG-002",
       "fingerprint": "31bc7633378b0a8d351a063449c91286d9f3f301a2a68d25c1e342b7e0d21265",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -31705,12 +31696,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[36]": {
       "activity": "LEG-002",
       "fingerprint": "154b38076c25f65047def0a4871bcc4aab058383382d084627ce66962bb46ba6",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -31739,7 +31729,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[37]": {
       "activity": "REL-006",
@@ -34026,7 +34016,6 @@
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[52]": {
       "activity": "LEG-002",
       "fingerprint": "117536d3f8e6f9d2bcf6ea6758cf2f0f98201a3db4784947789088d328eabc5a",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -34053,12 +34042,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[53]": {
       "activity": "LEG-002",
       "fingerprint": "5dd041e6aeedfb98f206e66fab3114438f2d0d6d7f0bc1ba5921bcc379242c0e",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -34090,12 +34078,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[54]": {
       "activity": "LEG-002",
       "fingerprint": "b74939daf04520f09ba56ef5a1e7ec43c8dfa26702a7a98e99061a639427555d",
-      "reason": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice: count",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -34127,7 +34114,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[55]": {
       "activity": "QUA-001",

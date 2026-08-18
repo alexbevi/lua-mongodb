@@ -185,6 +185,7 @@ MANAGEMENT_OPERATIONS = {
 CSOT_SUPPORTED_OPERATIONS = READ_OPERATIONS | WRITE_OPERATIONS | {
   "abortTransaction",
   "commitTransaction",
+  "count",
   "createCollection",
   "createIndex",
   "dropCollection",
