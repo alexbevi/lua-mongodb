@@ -275,6 +275,23 @@ for index in (2, 4, 5):
     f"change-streams/tests/unified/change-streams.json::test[{index}]"
   ] = ("CS-001", None)
 
+for index in range(2, 18):
+  TEST_OVERRIDES[
+    "change-streams/tests/unified/"
+      f"change-streams-resume-allowlist.json::test[{index}]"
+  ] = (
+    "ADV-011",
+    "the legacy resumable-code fixture is capped at MongoDB 4.2",
+  )
+
+TEST_OVERRIDES[
+  "change-streams/tests/unified/"
+    "change-streams-resume-errorLabels.json::test[13]"
+] = (
+  "ADV-011",
+  "the StaleShardVersion label fixture is capped below MongoDB 7.0",
+)
+
 for index in range(1, 14):
   if index == 8:
     owner = "SES-004"

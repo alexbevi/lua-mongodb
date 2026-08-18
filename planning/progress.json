@@ -4774,6 +4774,35 @@
       "notes": [],
       "started_at": "2026-08-18T01:52:57+00:00",
       "completed_at": "2026-08-18T02:01:15+00:00"
+    },
+    "CS-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 2,
+          "summary": "The modern ResumableChangeStreamError case returned the original getMore error instead of issuing the resume aggregate; 8 successes and 1 failure.",
+          "recorded_at": "2026-08-18T02:06:49+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (exact change-streams-resume-errorLabels tests 1-12 and 14-18; exact resume-allowlist tests 1 and 18)",
+          "exit_code": 0,
+          "summary": "All 19 newly applicable upstream resumability cases executed and passed against the isolated replica set: 19 executed, 19 passed, 0 environment-skipped, 0 deferred-unsupported, and 0 failed. Capability, conformance, release-scope, release-checklist, and README projection validators passed at 1,571 runnable and 3,855 ledger-passed cases.",
+          "recorded_at": "2026-08-18T02:19:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus (resume unit/cursor integration, live change-stream integration, targeted classification/ledger/release Python checks, touched Lua lint)",
+          "exit_code": 0,
+          "summary": "Focused behavior verification passed: 18 unit cases, 1 live integration case, 4 targeted Python checks, and luacheck on 3 touched Lua files; 0 failures, errors, pending cases, or lint findings. Architecture boundaries and the Lua complexity baseline also passed.",
+          "recorded_at": "2026-08-18T02:19:56+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T02:05:34+00:00",
+      "completed_at": "2026-08-18T02:20:00+00:00"
     }
   },
   "verified_references": {

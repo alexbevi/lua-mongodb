@@ -426,4 +426,302 @@ describe("collection change streams", function()
     assert.is_true(stream:is_closed())
     assert.are.equal("killCursors", commands[2]:keys()[1])
   end)
+
+  it("recreates once after a modern resumable error label", function()
+    local commands = {}
+    local sent_options = {}
+    local session = {}
+    local resume_token = bson.document({ { "token", "resume" } })
+    local change = bson.document({
+      { "_id", bson.document({ { "token", 5 } }) },
+      { "operationType", "insert" },
+    })
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(48) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+          { "postBatchResumeToken", resume_token },
+        }) },
+      }),
+      false,
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({ change }) },
+        }) },
+      }),
+    }
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+        sent_options[#sent_options + 1] = options
+        local response = table.remove(responses, 1)
+
+        if response == false then
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 50,
+            labels = { "ResumableChangeStreamError" },
+            message = "temporary getMore failure",
+          })
+        end
+
+        return response
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {
+      read_preference = { mode = "secondary" },
+    }))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:database("app"):collection("events"):watch(
+      nil,
+      { session = session }
+    ))
+
+    assert.are.equal(change, assert(stream:next()))
+    assert.are.same({ "aggregate", "getMore", "aggregate" }, {
+      commands[1]:keys()[1],
+      commands[2]:keys()[1],
+      commands[3]:keys()[1],
+    })
+    assert.are.equal(
+      resume_token,
+      commands[3]:get("pipeline"):get(1):get("$changeStream"):get("resumeAfter")
+    )
+    assert.are.equal(session, sent_options[3].session)
+    assert.are.equal("secondary", sent_options[3].read_preference.mode)
+  end)
+
+  it("classifies network, cursor, legacy, and modern server errors", function()
+    local resumable_codes = {
+      6, 7, 43, 63, 89, 91, 133, 150, 189, 234, 262, 9001,
+      10107, 11600, 11602, 13388, 13435, 13436,
+    }
+
+    local function run_case(max_wire_version, first_error, should_resume)
+      local commands = {}
+      local change = bson.document({
+        { "_id", bson.document({ { "token", 6 } }) },
+        { "operationType", "insert" },
+      })
+      local executor = {
+        capabilities = function()
+          return { max_wire_version = max_wire_version }
+        end,
+        close = function()
+          return true
+        end,
+        command = function(_, _, command)
+          commands[#commands + 1] = command
+
+          if #commands == 1 then
+            return bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(49) },
+                { "ns", "app.events" },
+                { "firstBatch", bson.array({}) },
+              }) },
+            })
+          elseif #commands == 2 then
+            return nil, first_error
+          end
+
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({ change }) },
+            }) },
+          })
+        end,
+      }
+      local config = assert(driver_options.normalize(nil, {}))
+      local client = api.new_client(executor, config)
+      local stream = assert(client:database("app"):collection("events"):watch())
+      local document, err = stream:next()
+
+      if should_resume then
+        assert.are.equal(change, document)
+        assert.is_nil(err)
+        assert.are.equal(3, #commands)
+      else
+        assert.is_nil(document)
+        assert.are.equal(first_error, err)
+        assert.are.equal(2, #commands)
+      end
+    end
+
+    for _, code in ipairs(resumable_codes) do
+      run_case(8, errors.new({
+        category = errors.CATEGORY.SERVER,
+        code = code,
+        message = "legacy resumable failure",
+      }), true)
+    end
+
+    run_case(8, errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 42,
+      message = "legacy terminal failure",
+    }), false)
+    run_case(25, errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 6,
+      message = "modern unlabeled failure",
+    }), false)
+    run_case(25, errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 43,
+      message = "cursor not found",
+    }), true)
+    run_case(25, errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "network interrupted",
+    }), true)
+  end)
+
+  it("does not resume again after recreating the cursor", function()
+    local first_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 50,
+      labels = { "ResumableChangeStreamError" },
+      message = "first interruption",
+    })
+    local second_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 50,
+      labels = { "ResumableChangeStreamError" },
+      message = "second interruption",
+    })
+
+    local function run_case(resume_aggregate_fails)
+      local commands = {}
+      local executor = {
+        capabilities = function()
+          return { max_wire_version = 25 }
+        end,
+        close = function()
+          return true
+        end,
+        command = function(_, _, command)
+          commands[#commands + 1] = command
+
+          if #commands == 1 then
+            return bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(50) },
+                { "ns", "app.events" },
+                { "firstBatch", bson.array({}) },
+              }) },
+            })
+          elseif #commands == 2 then
+            return nil, first_error
+          elseif #commands == 3 and resume_aggregate_fails then
+            return nil, second_error
+          elseif #commands == 3 then
+            return bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(51) },
+                { "ns", "app.events" },
+                { "firstBatch", bson.array({}) },
+              }) },
+            })
+          end
+
+          return nil, second_error
+        end,
+      }
+      local config = assert(driver_options.normalize(nil, {}))
+      local client = api.new_client(executor, config)
+      local stream = assert(client:database("app"):collection("events"):watch())
+      local document, err = stream:next()
+
+      assert.is_nil(document)
+      assert.are.equal(second_error, err)
+      assert.are.equal(resume_aggregate_fails and 3 or 4, #commands)
+    end
+
+    run_case(true)
+    run_case(false)
+  end)
+
+  it("suppresses cleanup errors while recreating", function()
+    local commands = {}
+    local resume_token = bson.document({ { "token", "cleanup" } })
+    local change = bson.document({
+      { "_id", bson.document({ { "token", 7 } }) },
+      { "operationType", "insert" },
+    })
+    local network_error = errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "connection interrupted",
+    })
+    local timeout_error = errors.new({
+      category = errors.CATEGORY.TIMEOUT,
+      cause = network_error,
+      message = "getMore timed out",
+    })
+    local executor = {
+      capabilities = function()
+        return { max_wire_version = 25 }
+      end,
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if #commands == 1 then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(52) },
+              { "ns", "app.events" },
+              { "firstBatch", bson.array({}) },
+              { "postBatchResumeToken", resume_token },
+            }) },
+          })
+        elseif #commands == 2 then
+          return nil, timeout_error
+        elseif #commands == 3 then
+          return nil, network_error
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.events" },
+            { "firstBatch", bson.array({ change }) },
+          }) },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local stream = assert(client:database("app"):collection("events"):watch())
+
+    assert.are.equal(change, assert(stream:next()))
+    assert.are.same({ "aggregate", "getMore", "killCursors", "aggregate" }, {
+      commands[1]:keys()[1],
+      commands[2]:keys()[1],
+      commands[3]:keys()[1],
+      commands[4]:keys()[1],
+    })
+  end)
 end)

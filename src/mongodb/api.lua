@@ -934,6 +934,16 @@ local function watch_collection(state, pipeline, options)
   )
 end
 
+local function copy_change_stream_options(options)
+  local copied = {}
+
+  for key, value in pairs(options or {}) do
+    copied[key] = value
+  end
+
+  return copied
+end
+
 function COLLECTION_METHODS:watch(pipeline, options)
   local cursor, err = collection_operation(self, watch_collection, pipeline, options)
 
@@ -941,9 +951,35 @@ function COLLECTION_METHODS:watch(pipeline, options)
     return nil, err
   end
 
-  options = options or {}
+  options = copy_change_stream_options(options)
+
+  local state = COLLECTION_STATES[self]
+  local function recreate(resume_token)
+    local resume_options = copy_change_stream_options(options)
+
+    if resume_token ~= nil then
+      resume_options.resume_after = resume_token
+      resume_options.start_after = nil
+      resume_options.start_at_operation_time = nil
+    end
+
+    local resumed, resume_err = collection_operation(
+      self,
+      watch_collection,
+      pipeline,
+      resume_options
+    )
+
+    if not resumed then
+      return nil, resume_err
+    end
+
+    return register_cursor(self, resumed)
+  end
 
   return change_stream.new(register_cursor(self, cursor), {
+    max_wire_version = state.max_wire_version,
+    recreate = recreate,
     resume_token = options.start_after or options.resume_after,
   })
 end

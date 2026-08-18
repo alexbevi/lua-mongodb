@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1552,
-    "runnable": 1552
+    "passed": 1571,
+    "runnable": 1571
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -932,9 +932,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[10]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "09aaec38cfaee2ca77eb22844c2edc6f49d72780e6c89bdad52fd7634a4e715a",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -973,9 +973,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[11]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "0d89c12b4f5593ad8733a311d8cdc69a9d444f30c7f089de836b103f6dfa4199",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1014,9 +1014,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[12]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "21895e8e19208949714173d95063b595a76af798171e24e363e3865436b90199",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1055,9 +1055,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[13]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "6b5c13a32add857fb834da77644c1cacc9395402d707cf21da57912b64decf2e",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1096,9 +1096,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[14]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "599a8a02ad01fba91db7bfd84d45b6a00241bb443a3628c2ab87b7ef52f67e0a",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1137,9 +1137,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[15]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "7aa3d6728580ccc045573fb3147d2a40b7f374ddc212e0af58dc8599f5366782",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1178,9 +1178,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[16]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "c29054c9bb299624d9c7721b28ce9f6bf317f5ccf7b8bdc91b41caf62e3eb91f",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1219,9 +1219,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[17]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "c5a76da50b224e79b43b27c705b57cc85068337adf2e8d8b690b55bc00ca41d5",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1260,9 +1260,8 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[18]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "cf47d69b168b1446bfa49cb9872a5fd929c85ce0364f1d073358b0c55a86aa93",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1298,12 +1297,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[1]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "92c26ad754ccc5462a81749a14b8b200a368d007a05756737de215ef37537e4c",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1339,12 +1337,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[2]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "3ae6d9f52f7670ff9c40c2f320e67445269ecfd4ae0fa4a0b5815314172bd2f5",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1383,9 +1381,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[3]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "964bfc132469451f1cc5c0286f6992448493600a94b83050e55f2b52f2aa49c9",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1424,9 +1422,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[4]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "8c6334d6a1fa7e12ba178b4f5a8b1609accfe3777daecb7d12ebae10810b3589",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1465,9 +1463,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[5]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "9fbff9dbdf7431d2241d477de3a60720e129b8e0ff4e8ae2fed9a63fb68e2ac3",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1506,9 +1504,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[6]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "355e82910f71d1a47d7ad3e4651e630cb9a14cb9ce8c5e546256cb1dc7a8a4ef",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1547,9 +1545,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[7]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "fbfd7989867265bcc4d118084d5a586bb3cb19f43e80a897430a2d4b44e1a736",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1588,9 +1586,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[8]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "f3d8b7b7f5ac197895d70bc2d1acafd7ed8b997c376884db11918107de9a9633",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1629,9 +1627,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[9]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "074f31ec6dffb1f8b223166701df4a83401d98a818a2e64422c1c684a5c5e6c1",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the legacy resumable-code fixture is capped at MongoDB 4.2",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1670,9 +1668,8 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[10]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "e64e6eacd2fbbd1f747d947501e5eeca728b6bfa540617b89794da2c2503e25f",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1708,12 +1705,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[11]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "7b75ac6935041d804e8d5cbe2ed9de88f0d3e12a16fe696d55d7aecaf4e1fed9",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1749,12 +1745,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[12]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "bba470949cdbc99496ab8efa1f606f0e8ab64a982fd2fa62ab1c17ad49664c4d",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1790,12 +1785,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[13]": {
-      "activity": "REL-051",
+      "activity": "ADV-011",
       "fingerprint": "82729a08d16aab9e027610cd0a56e3054ab17ba6ff901a589ed7054518afa189",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
+      "reason": "the StaleShardVersion label fixture is capped below MongoDB 7.0",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1834,9 +1829,8 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[14]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "a30d6ce99aae6a72a16a28943569685da1eb410ee15dbddff3d89ab74638d387",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1872,12 +1866,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[15]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "476618125bad1af091d525aa10d382882c8e43f0256f14f76d477aacf72a9e34",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1913,12 +1906,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[16]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "ae53b44c3a723573ffb3ffbae2820b811ab5b78aa85869619333e7c69f2ff5eb",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1954,12 +1946,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[17]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "ec329424774e819ec6c86d3e9198a9e613fbc178aca5069c309bae63ef63c64f",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1995,12 +1986,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[18]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "165b9a97603c5f192a989add9929a971a14c7e22076201bd8e3afd28d33afb58",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2031,12 +2021,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[1]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "bd6ed35dc556068e4dbd330fb49db579b80d1eec53463f71d2015d78df2523a6",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2072,12 +2061,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[2]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "f2f94a2856cebdef1c3036f72735d3bbc9748422cf7654559faf80cb037715bc",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2113,12 +2101,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[3]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "a8f2d7dc53506e0349696bbc5cbef398d11dc492ab7aac76e106fda57de0e8a8",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2154,12 +2141,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[4]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "1e75714ee9b28c9618faeb816aa176639bed124d162a9210b581fd95ed727158",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2195,12 +2181,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[5]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "bedf55f2b0d6fd199b8929ed30c9f1d8c954d2f0109750a9fcdda2eee749088e",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2236,12 +2221,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[6]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "0507fccecc3765fc5492d9c89364ff700ab558525c7ee70dbb2ccd2d4cc28554",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2277,12 +2261,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[7]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "e2bb938670cbe1c44dd215fb89cc4b0ff3f697aa785d1016c79299262aed101e",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2318,12 +2301,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[8]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "37f178cb2154e41f1f01233ef35bee32583a5894808212ea00dac1fd16115c8f",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2359,12 +2341,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[9]": {
-      "activity": "REL-051",
+      "activity": "CS-004",
       "fingerprint": "ba28069e314f66f816143d1090c15ec696815414f169ef18b2503706559a322f",
-      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2400,7 +2381,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[1]": {
       "activity": "REL-051",
