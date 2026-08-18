@@ -121,10 +121,11 @@ jobs:
       - name: Install example verification tools
         run: luarocks install luacheck 1.2.0-1
 
-      - name: Run installed-rock connect and ping example
+      - name: Run installed-rock examples
         env:
           MONGODB_EXAMPLES_LIVE: "1"
         run: >-
           make test-focus
-          FOCUS_PYTHON=spec.examples.test_examples.ConnectAndPingTests
-          FOCUS_LINT=examples/00-connect-and-ping/main.lua
+          FOCUS_PYTHON=spec.examples.test_examples
+          FOCUS_LINT='examples/00-connect-and-ping/main.lua
+          examples/01-luarocks-package-explorer/*.lua'

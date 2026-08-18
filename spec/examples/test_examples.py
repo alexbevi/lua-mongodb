@@ -12,6 +12,7 @@ from spec.package.test_package import local_source_rockspec
 ROOT = Path(__file__).resolve().parents[2]
 EXAMPLES = ROOT / "examples"
 PING = EXAMPLES / "00-connect-and-ping"
+PACKAGES = EXAMPLES / "01-luarocks-package-explorer"
 PINNED_IMAGE = (
   "mongodb/mongodb-community-server:8.2.12-ubuntu2204@sha256:"
   "ed7000edd775a8a7d1010618b72b2c71603efe2ca4f827b7f291110a696b4a41"
@@ -39,6 +40,8 @@ def run_command(
 def rock_environment(tree: Path) -> dict[str, str]:
   environment = os.environ.copy()
   environment["LUA_PATH"] = ";".join((
+    "./?.lua",
+    "./?/init.lua",
     f"{tree}/share/lua/5.4/?.lua",
     f"{tree}/share/lua/5.4/?/init.lua",
   ))
@@ -215,6 +218,122 @@ class ConnectAndPingTests(unittest.TestCase):
         down = run_command(
           [compose, "compose", "-p", project, "down", "-v"],
           cwd=PING,
+          timeout=120,
+        )
+        self.assertEqual(0, down.returncode, down.stderr or down.stdout)
+
+
+class PackageExplorerSeedTests(unittest.TestCase):
+  def test_seed_and_list_artifacts_are_self_contained(self) -> None:
+    for relative in (
+      "README.md",
+      "main.lua",
+      "seed.lua",
+      "packages.lua",
+      ".env.example",
+      "expected-output.txt",
+      "docker-compose.yml",
+    ):
+      self.assertTrue((PACKAGES / relative).is_file(), relative)
+
+    catalog = (EXAMPLES / "README.md").read_text(encoding="utf-8")
+    self.assertIn(
+      "[LuaRocks package explorer](01-luarocks-package-explorer/README.md)",
+      catalog,
+    )
+
+  def test_fixture_models_eight_packages_with_ordered_bson_values(self) -> None:
+    source = (PACKAGES / "packages.lua").read_text(encoding="utf-8")
+    self.assertEqual(8, source.count('{ "name",'))
+    self.assertIn("bson.document", source)
+    self.assertIn("bson.array", source)
+    self.assertNotIn("http", source.lower())
+    self.assertNotIn("luarocks.org", source.lower())
+
+  def test_seed_list_environment_and_output_are_deterministic(self) -> None:
+    seed = (PACKAGES / "seed.lua").read_text(encoding="utf-8")
+    main = (PACKAGES / "main.lua").read_text(encoding="utf-8")
+    environment = (PACKAGES / ".env.example").read_text(encoding="utf-8")
+    compose = (PACKAGES / "docker-compose.yml").read_text(encoding="utf-8")
+    expected = (PACKAGES / "expected-output.txt").read_text(encoding="utf-8")
+
+    self.assertIn("create_index", seed)
+    self.assertIn("delete_many", seed)
+    self.assertIn("insert_many", seed)
+    self.assertIn("package_name_unique", seed)
+    self.assertIn("sort", main)
+    self.assertNotIn("package.path", seed + main)
+    self.assertEqual(
+      "MONGODB_URI=mongodb://127.0.0.1:27018/lua_examples_packages\n",
+      environment,
+    )
+    self.assertIn(PINNED_IMAGE, compose)
+    self.assertEqual(
+      "Created unique index: package_name_unique\n"
+      "Seeded 8 packages\n"
+      "LuaRocks package catalog (8 packages)\n"
+      "1. busted — 2.3.0-1\n"
+      "2. copas — 4.11.0-1\n"
+      "3. dkjson — 2.8-1\n"
+      "4. lpeg — 1.1.0-2\n"
+      "5. luacheck — 1.2.0-1\n"
+      "6. luasec — 1.3.2-1\n"
+      "7. luasocket — 3.1.0-1\n"
+      "8. penlight — 1.14.0-3\n",
+      expected,
+    )
+
+  @unittest.skipUnless(LIVE, "set MONGODB_EXAMPLES_LIVE=1 for live examples")
+  def test_live_seed_and_list_use_public_and_source_rocks(self) -> None:
+    lua = os.environ.get("LUA", "lua")
+    compose = os.environ.get("DOCKER", "docker")
+    project = "lua-mongodb-example-packages"
+    uri = os.environ.get("MONGODB_EXAMPLES_URI")
+
+    if uri is None:
+      up = run_command(
+        [compose, "compose", "-p", project, "up", "-d", "--wait"],
+        cwd=PACKAGES,
+        timeout=120,
+      )
+      self.assertEqual(0, up.returncode, up.stderr or up.stdout)
+      uri = "mongodb://127.0.0.1:27018/lua_examples_packages"
+
+    try:
+      with tempfile.TemporaryDirectory(
+        prefix="lua-mongodb-package-example-"
+      ) as directory:
+        temporary = Path(directory)
+
+        for mode in ("public", "source"):
+          with self.subTest(mode=mode):
+            tree, environment = install_rock(mode, temporary)
+            environment["MONGODB_URI"] = uri
+            assert_installed_rock(self, tree, environment)
+            output = ""
+
+            for script in ("seed.lua", "main.lua"):
+              executed = run_command(
+                [lua, script],
+                cwd=PACKAGES,
+                environment=environment,
+              )
+              self.assertEqual(
+                0,
+                executed.returncode,
+                executed.stderr or executed.stdout,
+              )
+              output += executed.stdout
+
+            self.assertEqual(
+              (PACKAGES / "expected-output.txt").read_text(encoding="utf-8"),
+              output,
+            )
+    finally:
+      if os.environ.get("MONGODB_EXAMPLES_URI") is None:
+        down = run_command(
+          [compose, "compose", "-p", project, "down", "-v"],
+          cwd=PACKAGES,
           timeout=120,
         )
         self.assertEqual(0, down.returncode, down.stderr or down.stdout)

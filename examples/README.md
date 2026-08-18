@@ -26,8 +26,9 @@ an existing MongoDB deployment by setting the example's `MONGODB_URI` instead.
 1. [`00-connect-and-ping`](00-connect-and-ping/README.md) — install the rock,
    connect to a standalone server, run `ping`, handle errors, and close the
    client.
-2. `01-luarocks-package-explorer` — model BSON documents and arrays, then
-   seed, query, update, and aggregate a recognizable package catalog.
+2. [LuaRocks package explorer](01-luarocks-package-explorer/README.md) — model
+   BSON documents and arrays, then seed, query, update, and aggregate a
+   recognizable package catalog.
 3. `02-game-leaderboard-backend` — build a dedicated Lua 5.4 backend with
    rankings, achievements, season reports, and a transaction.
 4. `03-pong-game-using-changestreams` — play a two-window LÖVE game whose

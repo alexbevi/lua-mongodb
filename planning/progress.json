@@ -5961,6 +5961,28 @@
       "notes": [],
       "started_at": "2026-08-18T22:42:06+00:00",
       "completed_at": "2026-08-18T22:47:51+00:00"
+    },
+    "EXM-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.PackageExplorerSeedTests",
+          "exit_code": 2,
+          "summary": "The defining package catalog contract failed because the self-contained fixture, seed, list, Compose, documentation, and output artifacts did not exist; 1 contract failed and 2 errored",
+          "recorded_at": "2026-08-18T22:53:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI=mongodb://127.0.0.1:27018/lua_examples_packages make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON=spec.examples.test_examples.PackageExplorerSeedTests FOCUS_LINT='examples/01-luarocks-package-explorer/*.lua'",
+          "exit_code": 0,
+          "summary": "The deterministic catalog contract and Lua lint passed; live execution against MongoDB 8.0.16 produced exact output with both the published LuaRock and an isolated source rock",
+          "recorded_at": "2026-08-18T23:01:28+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T22:52:33+00:00",
+      "completed_at": "2026-08-18T23:04:25+00:00"
     }
   },
   "verified_references": {
