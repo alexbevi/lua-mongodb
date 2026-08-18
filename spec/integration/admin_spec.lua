@@ -52,6 +52,16 @@ describe("administration commands over OP_MSG", function()
       assert.is_nil(create.body:get("writeConcern"))
       send_response(peer, create, bson.document({ { "ok", 1 } }))
 
+      local modify = receive_frame(peer)
+      assert.are.equal("collMod", modify.body:keys()[1])
+      assert.are.equal("events", modify.body:get("collMod"))
+      assert.is_true(
+        modify.body:get("changeStreamPreAndPostImages"):get("enabled")
+      )
+      assert.is_nil(modify.body:get("readConcern"))
+      assert.is_nil(modify.body:get("writeConcern"))
+      send_response(peer, modify, bson.document({ { "ok", 1 } }))
+
       local create_indexes = receive_frame(peer)
       assert.are.equal("createIndexes", create_indexes.body:keys()[1])
       assert.are.equal("kind_1", create_indexes.body:get("indexes"):get(1):get("name"))
@@ -180,6 +190,11 @@ describe("administration commands over OP_MSG", function()
         ))
         local database = client:database()
         local collection = assert(database:create_collection("events", {
+          change_stream_pre_and_post_images = bson.document({
+            { "enabled", true },
+          }),
+        }))
+        assert(database:modify_collection("events", {
           change_stream_pre_and_post_images = bson.document({
             { "enabled", true },
           }),

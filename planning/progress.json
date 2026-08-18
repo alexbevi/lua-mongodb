@@ -4955,6 +4955,35 @@
       "notes": [],
       "started_at": "2026-08-18T03:43:45+00:00",
       "completed_at": "2026-08-18T03:51:14+00:00"
+    },
+    "CS-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/unified_driver_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining unified modifyCollection adapter case failed with 7 successes and 1 failure: the operation report recorded 0 passes instead of 1 because changeStreamPreAndPostImages was not an accepted/mapped modify argument, so the public database method was never invoked.",
+          "recorded_at": "2026-08-18T03:55:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='collection-management/tests/modifyCollection-pre_and_post_images.json::test[[]1]'",
+          "exit_code": 0,
+          "summary": "The exact newly applicable modifyCollection pre/post-image identity executed on a real standalone: 1 passed, 0 environment-skipped, 0 deferred, and 0 failed. It verified create with images disabled followed by collMod with images enabled.",
+          "recorded_at": "2026-08-18T03:59:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with administration and unified-driver units, administration OP_MSG integration, targeted capability/ledger/release contracts, and touched Lua lint; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: 22 unit, 1 directly coupled loopback integration, and 12 targeted Python cases; touched-file lint reported 0 warnings/errors in 5 files. Complexity remained at 3 baselined hotspots with maximum 47, and all capability, ledger, release, README, JSON, and diff validators passed.",
+          "recorded_at": "2026-08-18T03:59:27+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T03:55:20+00:00",
+      "completed_at": "2026-08-18T03:59:28+00:00"
     }
   },
   "verified_references": {

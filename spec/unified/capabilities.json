@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1654,
-    "runnable": 1654
+    "passed": 1655,
+    "runnable": 1655
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36458,7 +36458,6 @@
     "collection-management/tests/modifyCollection-pre_and_post_images.json::test[1]": {
       "activity": "CS-010",
       "fingerprint": "6588720151e55d1c043cfbfd4d3d9a295051097bfc0148065d0525d889df4de0",
-      "reason": "change stream images on collection modification await the modify option slice",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -36490,7 +36489,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "collection-management/tests/timeseries-collection.json::test[1]": {
       "activity": "REL-019",

@@ -1827,6 +1827,7 @@
     "crud/tests/unified/aggregate-write-readPreference.json::test[3]": {"activity": "REL-016", "environment": "live-replicaset"},
     "crud/tests/unified/aggregate-write-readPreference.json::test[4]": {"activity": "REL-016", "environment": "live-replicaset"},
     "collection-management/tests/createCollection-pre_and_post_images.json::test[1]": {"activity": "CS-009", "environment": "live-standalone"},
+    "collection-management/tests/modifyCollection-pre_and_post_images.json::test[1]": {"activity": "CS-010", "environment": "live-standalone"},
     "collection-management/tests/listCollections-rawdata.json::test[1]": {"activity": "REL-018", "environment": "live-standalone"},
     "collection-management/tests/listCollections-rawdata.json::test[2]": {"activity": "REL-018", "environment": "live-standalone"},
     "collection-management/tests/clustered-indexes.json::test[1]": {"activity": "REL-019", "environment": "live-standalone"},

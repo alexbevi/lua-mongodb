@@ -51,6 +51,7 @@ local CREATE_COLLECTION_OPTIONS = {
 
 local MODIFY_COLLECTION_OPTIONS = {
   cancellation = true,
+  change_stream_pre_and_post_images = true,
   comment = true,
   deadline = true,
   index = true,
@@ -659,6 +660,7 @@ end
 
 function M.modify_collection(state, name, options)
   options = validate_options(options, MODIFY_COLLECTION_OPTIONS, "modify_collection")
+  require_document(options, "change_stream_pre_and_post_images")
   require_document(options, "index")
   require_document(options, "validator")
 
@@ -680,6 +682,7 @@ function M.modify_collection(state, name, options)
   local entries = { { "collMod", name } }
 
   for _, field in ipairs({
+    { "change_stream_pre_and_post_images", "changeStreamPreAndPostImages" },
     { "validator", "validator" },
     { "validation_level", "validationLevel" },
     { "validation_action", "validationAction" },

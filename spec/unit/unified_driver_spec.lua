@@ -24,6 +24,7 @@ local function with_fake_client(callback)
     local client = {
       closed = false,
       created_collections = {},
+      modified_collections = {},
       options = options,
       sessions = {},
       uri = uri,
@@ -105,6 +106,14 @@ local function with_fake_client(callback)
 
       function database.create_collection(_, collection_name, collection_options)
         client.created_collections[#client.created_collections + 1] = {
+          name = collection_name,
+          options = collection_options,
+        }
+        return true
+      end
+
+      function database.modify_collection(_, collection_name, collection_options)
+        client.modified_collections[#client.modified_collections + 1] = {
           name = collection_name,
           options = collection_options,
         }
@@ -203,6 +212,55 @@ describe("unified driver collection management", function()
       assert.are.equal(
         images,
         connections[2].created_collections[1].options
+          .change_stream_pre_and_post_images
+      )
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("forwards change stream images when modifying a collection", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local images = document({ { "enabled", true } })
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "app" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Modify collection change stream images" },
+            { "operations", array({
+              document({
+                { "name", "modifyCollection" },
+                { "object", "database0" },
+                { "arguments", document({
+                  { "collection", "events" },
+                  { "changeStreamPreAndPostImages", images },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "modify-collection-images.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal("events", connections[2].modified_collections[1].name)
+      assert.are.equal(
+        images,
+        connections[2].modified_collections[1].options
           .change_stream_pre_and_post_images
       )
       assert(lifecycle:close())

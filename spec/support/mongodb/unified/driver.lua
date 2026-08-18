@@ -1449,6 +1449,7 @@ local function modify_collection(_, database, arguments)
   return database:modify_collection(arguments:get("collection"), operation_options(
     arguments,
     {
+      changeStreamPreAndPostImages = "change_stream_pre_and_post_images",
       index = "index",
       validationAction = "validation_action",
       validationLevel = "validation_level",
@@ -2523,7 +2524,8 @@ function M.new(options)
         },
         modifyCollection = {
           arguments = {
-            "collection", "index", "validationAction", "validationLevel", "validator",
+            "changeStreamPreAndPostImages", "collection", "index",
+            "validationAction", "validationLevel", "validator",
           },
           handler = modify_collection,
         },

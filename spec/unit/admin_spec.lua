@@ -88,7 +88,9 @@ describe("database and collection management", function()
     local database = assert(api.new_client(executor, config({
       write_concern = { w = "majority" },
     })):database("app"))
+    local images = bson.document({ { "enabled", true } })
     local response = assert(database:modify_collection("events", {
+      change_stream_pre_and_post_images = images,
       index = bson.document({
         { "keyPattern", bson.document({ { "x", 1 } }) },
         { "prepareUnique", true },
@@ -100,6 +102,7 @@ describe("database and collection management", function()
     assert.are.equal("app", sent.database)
     assert.are.equal("collMod", sent.command:keys()[1])
     assert.are.equal("events", sent.command:get("collMod"))
+    assert.are.equal(images, sent.command:get("changeStreamPreAndPostImages"))
     assert.is_true(sent.command:get("index"):get("prepareUnique"))
     assert.are.equal("majority", sent.command:get("writeConcern"):get("w"))
   end)
