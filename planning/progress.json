@@ -5109,43 +5109,67 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
-          "exit_code": 2,
-          "summary": "The defining release-checklist contract expected 0.5.0 but the generated release state still reported 0.4.0, proving the module, rockspec, documentation, checklist, and publication metadata had not yet advanced together.",
-          "recorded_at": "2026-08-18T05:04:51+00:00"
+          "command": "python3 spec/quality/coverage_gate.py --report build/quality/ci-24ccf3b/luacov.report.out --baseline spec/quality/coverage-baseline.json",
+          "exit_code": 1,
+          "summary": "The exact Linux coverage artifact rejected the release candidate because change_stream.lua had no checked-in baseline and cursor.lua regressed from 198/223 to 241/275 covered lines.",
+          "recorded_at": "2026-08-18T05:25:40+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate' && python3 spec/quality/coverage_gate.py --report build/quality/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform darwin && python3 spec/quality/coverage_gate.py --report build/quality/ci-24ccf3b/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
           "exit_code": 0,
-          "summary": "The defining release checklist passed with a consistent 0.5.0 version, all declared v0.5 gates complete, 170 exact passing change-stream cases, and 19 explicit target-version exclusions.",
-          "recorded_at": "2026-08-18T05:13:59+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'",
-          "exit_code": 0,
-          "summary": "Sixteen directly coupled unit cases, four integration cases, and touched-file Lua lint all passed under Lua 5.4.",
-          "recorded_at": "2026-08-18T05:13:59+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_PYTHON='spec.package.test_package'",
-          "exit_code": 0,
-          "summary": "The 0.5.0 source rock built, installed in an isolated LuaRocks tree, exposed the complete public API, and passed the package smoke under Lua 5.4.",
-          "recorded_at": "2026-08-18T05:14:00+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-v05-scope test-release-checklist rockspec && python3 planning/update_readme_compatibility.py --check && python3 spec/release/publish.py metadata --rockspec mongodb-0.5.0-1.rockspec && python3 spec/release/checklist.py --check",
-          "exit_code": 0,
-          "summary": "The generated v0.5 scope and checklist, publication guards, rockspec lint and metadata, and README compatibility projection all passed their artifact-specific validators.",
-          "recorded_at": "2026-08-18T05:14:01+00:00"
+          "summary": "Coverage-gate contracts passed; the canonical macOS report passed at 21752/23988 and the exact Linux CI report passed at 21753/23988 with one explicit LuaSec platform line.",
+          "recorded_at": "2026-08-18T05:36:59+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-18T05:04:20+00:00",
-      "completed_at": "2026-08-18T05:14:06+00:00"
+      "notes": [
+        "Requeued: Exact-commit Full Conformance exposed a stale coverage ratchet for the new change-stream module and expanded cursor surface."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-18T05:14:06+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 2,
+              "summary": "The defining release-checklist contract expected 0.5.0 but the generated release state still reported 0.4.0, proving the module, rockspec, documentation, checklist, and publication metadata had not yet advanced together.",
+              "recorded_at": "2026-08-18T05:04:51+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 0,
+              "summary": "The defining release checklist passed with a consistent 0.5.0 version, all declared v0.5 gates complete, 170 exact passing change-stream cases, and 19 explicit target-version exclusions.",
+              "recorded_at": "2026-08-18T05:13:59+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'",
+              "exit_code": 0,
+              "summary": "Sixteen directly coupled unit cases, four integration cases, and touched-file Lua lint all passed under Lua 5.4.",
+              "recorded_at": "2026-08-18T05:13:59+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_PYTHON='spec.package.test_package'",
+              "exit_code": 0,
+              "summary": "The 0.5.0 source rock built, installed in an isolated LuaRocks tree, exposed the complete public API, and passed the package smoke under Lua 5.4.",
+              "recorded_at": "2026-08-18T05:14:00+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-v05-scope test-release-checklist rockspec && python3 planning/update_readme_compatibility.py --check && python3 spec/release/publish.py metadata --rockspec mongodb-0.5.0-1.rockspec && python3 spec/release/checklist.py --check",
+              "exit_code": 0,
+              "summary": "The generated v0.5 scope and checklist, publication guards, rockspec lint and metadata, and README compatibility projection all passed their artifact-specific validators.",
+              "recorded_at": "2026-08-18T05:14:01+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "24ccf3b56c503a96387e368b8d011e84aafb3f80",
+      "started_at": "2026-08-18T05:25:31+00:00",
+      "completed_at": "2026-08-18T05:37:00+00:00"
     }
   },
   "verified_references": {
