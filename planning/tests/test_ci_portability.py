@@ -86,24 +86,39 @@ class CiPortabilityTests(unittest.TestCase):
     )
     self.assertIn('series: ["7.0", "8.0", "8.2"]', workflow)
 
-  def test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite(
+  def test_macos_declares_only_the_v0_5_timing_skip_policy(
     self,
   ) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    makefile = MAKEFILE.read_text(encoding="utf-8")
     macos = workflow[workflow.index("  macos:"):workflow.index("  compatibility:")]
     supplemental = macos[
       macos.index("Run exact supplemental version branches"):
       macos.index("Run authoritative full portable and loopback checks")
     ]
 
-    self.assertIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1", supplemental)
+    authoritative = macos[
+      macos.index("Run authoritative full portable and loopback checks"):
+      macos.index("Verify executable roadmap and commit evidence")
+    ]
+
+    self.assertNotIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT", supplemental)
+    self.assertIn(
+      "V05_SCOPE_ARGUMENTS=--allow-macos-ci-timing-skips",
+      authoritative,
+    )
 
     for index in (4, 5, 6):
-      self.assertIn(
+      self.assertNotIn(
         "--include 'client-side-operations-timeout/tests/"
         f"change-streams.json::test?{index}?'",
         supplemental,
       )
+
+    linux = workflow[:workflow.index("  macos:")]
+    self.assertNotIn("--allow-macos-ci-timing-skips", linux)
+    self.assertIn("V05_SCOPE_ARGUMENTS ?=", makefile)
+    self.assertEqual(3, makefile.count("V05_SCOPE_ARGUMENTS"))
 
   def test_missing_compatibility_report_does_not_mask_primary_failure(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")

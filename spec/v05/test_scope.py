@@ -49,6 +49,42 @@ class V05ScopeTests(unittest.TestCase):
         {"classified": 1, "passed": 1, "runnable": 1},
       )
 
+  def test_exact_execution_allows_only_declared_macos_timing_skips(
+    self,
+  ) -> None:
+    identity = next(iter(scope.MACOS_CI_TIMING_SKIPS))
+    cases = {
+      identity: {
+        "runner": "spec/unified/execute.lua",
+        "status": "passed",
+      },
+    }
+    ratchets = {"classified": 1, "passed": 1, "runnable": 1}
+
+    self.assertEqual(
+      {"macos_timing_skipped": 1, "passed": 0, "required": 1},
+      scope.validate_execution(
+        cases,
+        self.exact_report(identity, "environment_skipped"),
+        ratchets,
+        allow_macos_ci_timing_skips=True,
+      ),
+    )
+
+    unrelated = "change-streams/tests/unified/change-streams.json::test[1]"
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(unrelated)):
+      scope.validate_execution(
+        {
+          unrelated: {
+            "runner": "spec/unified/execute.lua",
+            "status": "passed",
+          },
+        },
+        self.exact_report(unrelated, "environment_skipped"),
+        ratchets,
+        allow_macos_ci_timing_skips=True,
+      )
+
   def test_exact_execution_rejects_unknown_operation_failure(self) -> None:
     identity = "change-streams/tests/unified/change-streams.json::test[1]"
     cases = {
@@ -111,7 +147,7 @@ class V05ScopeTests(unittest.TestCase):
     }
 
     self.assertEqual(
-      {"passed": 1, "required": 1},
+      {"macos_timing_skipped": 0, "passed": 1, "required": 1},
       scope.validate_execution(
         cases,
         [

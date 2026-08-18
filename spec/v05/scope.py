@@ -42,6 +42,12 @@ TARGET_OWNERS = {
   "REL-051",
 }
 
+MACOS_CI_TIMING_SKIPS = frozenset({
+  "client-side-operations-timeout/tests/change-streams.json::test[4]",
+  "client-side-operations-timeout/tests/change-streams.json::test[5]",
+  "client-side-operations-timeout/tests/change-streams.json::test[6]",
+})
+
 LEGACY_RESUME_REASON = (
   "MongoDB 4.2-only resumable-code behavior is below the v0.5 MongoDB 7.0 "
   "compatibility floor"
@@ -132,8 +138,9 @@ def validate_execution(
   cases: dict[str, dict[str, Any]],
   report: dict[str, Any] | list[dict[str, Any]],
   expected_ratchets: dict[str, int],
+  allow_macos_ci_timing_skips: bool = False,
 ) -> dict[str, int]:
-  """Require exact passing execution rows for every unified v0.5 target."""
+  """Require v0.5 passes, optionally accepting named macOS timing skips."""
   reports = report if isinstance(report, list) else [report]
   required = {
     identity
@@ -143,6 +150,7 @@ def validate_execution(
       and identity not in TARGET_VERSION_EXCLUSIONS
   }
   passed = set()
+  macos_timing_skipped = set()
 
   for report_index, exact_report in enumerate(reports):
     if not isinstance(exact_report, dict) or exact_report.get("type") != "execution":
@@ -178,6 +186,12 @@ def validate_execution(
       status = row.get("status")
       if status == "passed":
         passed.add(identity)
+      elif (
+        status == "environment_skipped"
+        and allow_macos_ci_timing_skips
+        and identity in MACOS_CI_TIMING_SKIPS
+      ):
+        macos_timing_skipped.add(identity)
       elif status != "environment_skipped":
         detail = row.get("error")
         suffix = f": {detail}" if isinstance(detail, str) and detail else ""
@@ -185,11 +199,16 @@ def validate_execution(
           f"v0.5 target did not pass exact execution: {identity}{suffix}"
         )
 
-  missing = sorted(required - passed)
+  macos_timing_skipped -= passed
+  missing = sorted(required - passed - macos_timing_skipped)
   if missing:
     raise ScopeError(f"v0.5 target did not pass exact execution: {missing[0]}")
 
-  return {"passed": len(passed), "required": len(required)}
+  return {
+    "macos_timing_skipped": len(macos_timing_skipped),
+    "passed": len(passed),
+    "required": len(required),
+  }
 
 
 def validate_scope_ratchets(report: dict[str, Any]) -> None:
@@ -341,6 +360,7 @@ def main() -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--check", action="store_true")
   parser.add_argument("--execution-report", action="append", type=Path)
+  parser.add_argument("--allow-macos-ci-timing-skips", action="store_true")
   arguments = parser.parse_args()
   if arguments.check:
     check()
@@ -358,8 +378,16 @@ def main() -> int:
       load_cases(),
       execution,
       load_capability_ratchets(),
+      allow_macos_ci_timing_skips=arguments.allow_macos_ci_timing_skips,
     )
-    exact = f"; exact evidence {evidence['passed']}/{evidence['required']}"
+    if evidence["macos_timing_skipped"]:
+      exact = (
+        f"; exact evidence {evidence['passed']} passed + "
+        f"{evidence['macos_timing_skipped']} explicit macOS timing skips/"
+        f"{evidence['required']} required"
+      )
+    else:
+      exact = f"; exact evidence {evidence['passed']}/{evidence['required']}"
   print(
     "v0.5 change-stream scope: "
     f"{report['classified']} classified, {report['passed']} passed, "

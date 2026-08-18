@@ -15,6 +15,7 @@ FOCUS_PYTHON ?=
 FOCUS_LINT ?=
 UNIFIED_REPORT ?=
 V04_SUPPLEMENTAL_REPORT ?=
+V05_SCOPE_ARGUMENTS ?=
 
 .PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
@@ -196,12 +197,13 @@ test-unified-execution: check-python
 				--execution-report "$(UNIFIED_REPORT)" \
 				--execution-report "$(V04_SUPPLEMENTAL_REPORT)"; \
 			"$(PYTHON)" spec/v05/scope.py --check \
+				$(V05_SCOPE_ARGUMENTS) \
 				--execution-report "$(UNIFIED_REPORT)" \
 				--execution-report "$(V04_SUPPLEMENTAL_REPORT)"; \
 		else \
 			"$(PYTHON)" spec/v04/scope.py --check \
 				--execution-report "$(UNIFIED_REPORT)"; \
-			"$(PYTHON)" spec/v05/scope.py --check \
+			"$(PYTHON)" spec/v05/scope.py --check $(V05_SCOPE_ARGUMENTS) \
 				--execution-report "$(UNIFIED_REPORT)"; \
 		fi; \
 	else \

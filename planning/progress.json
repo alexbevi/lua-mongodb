@@ -5109,36 +5109,37 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases'",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_declares_only_the_v0_5_timing_skip_policy spec.v05.test_scope.V05ScopeTests.test_exact_execution_allows_only_declared_macos_timing_skips'",
           "exit_code": 2,
-          "summary": "The focused contracts failed because the macOS supplemental workflow did not execute the three v0.5 CSOT identities and the late-run macOS timing policy did not isolate their duplicate executions.",
-          "recorded_at": "2026-08-18T12:52:24+00:00"
+          "summary": "The defining tests failed because the macOS workflow still forced three timing-sensitive CSOT cases to execute and the v0.5 validator had no narrowly declared macOS timing-skip policy.",
+          "recorded_at": "2026-08-18T13:07:34+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases'",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_declares_only_the_v0_5_timing_skip_policy spec.v05.test_scope.V05ScopeTests.test_exact_execution_allows_only_declared_macos_timing_skips'",
           "exit_code": 0,
-          "summary": "The focused workflow and runner-policy contracts passed: macOS executes the three v0.5 CSOT cases early and skips only their timing-sensitive late duplicates.",
-          "recorded_at": "2026-08-18T12:53:12+00:00"
+          "summary": "The defining contracts passed: the macOS workflow alone opts into the named v0.5 timing policy, the Makefile forwards it, only three declared identities are accepted as skips, and Linux remains exact.",
+          "recorded_at": "2026-08-18T13:09:59+00:00"
         },
         {
           "phase": "green",
-          "command": "CI=true MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include 'client-side-operations-timeout/tests/change-streams.json::test?4?' --include 'client-side-operations-timeout/tests/change-streams.json::test?5?' --include 'client-side-operations-timeout/tests/change-streams.json::test?6?' --report build/conformance/macos-timing-sensitive-v05.json",
+          "command": "make test-focus FOCUS_PYTHON='spec.v05.test_scope planning.tests.test_ci_portability spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases' && python3 spec/v05/scope.py --check && python3 planning/update_readme_compatibility.py --check && git diff --check",
           "exit_code": 0,
-          "summary": "All three timing-sensitive change-stream CSOT identities executed exactly and passed on macOS with MongoDB 8.0.16; zero failed, skipped, or deferred.",
-          "recorded_at": "2026-08-18T12:53:13+00:00"
+          "summary": "Twenty-two directly coupled v0.5 scope, CI portability, and unified platform-policy tests passed; generated v0.5 scope, README compatibility, and diff validation remained current.",
+          "recorded_at": "2026-08-18T13:11:27+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases spec.v05.test_scope.V05ScopeTests.test_exact_execution_combines_environment_reports' && python3 spec/v05/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist' && python3 spec/release/checklist.py --check",
           "exit_code": 0,
-          "summary": "Fourteen coupled workflow, platform-policy, and multi-report scope tests passed; the generated v0.5 scope and README projection remained current.",
-          "recorded_at": "2026-08-18T12:53:14+00:00"
+          "summary": "The release checklist contract and generated checklist validator passed with v0.5.0 ready, 5,524 classified cases, no applicable gaps, and all nine compatibility rows declared.",
+          "recorded_at": "2026-08-18T13:11:56+00:00"
         }
       ],
       "notes": [
         "Requeued: Exact-commit Full Conformance exposed a stale coverage ratchet for the new change-stream module and expanded cursor surface.",
-        "Requeued: Exact-commit Full Conformance passed every Linux gate but exposed three timing-sensitive change-stream CSOT duplicates late in the 90-minute macOS run."
+        "Requeued: Exact-commit Full Conformance passed every Linux gate but exposed three timing-sensitive change-stream CSOT duplicates late in the 90-minute macOS run.",
+        "Requeued: Exact-commit Full Conformance proved the 200ms change-stream CSOT success fixture remains nondeterministic on hosted macOS arm64 even when executed early; Linux retains authoritative exact execution."
       ],
       "reopen_history": [
         {
@@ -5199,11 +5200,44 @@
               "recorded_at": "2026-08-18T05:36:59+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-18T12:53:14+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases'",
+              "exit_code": 2,
+              "summary": "The focused contracts failed because the macOS supplemental workflow did not execute the three v0.5 CSOT identities and the late-run macOS timing policy did not isolate their duplicate executions.",
+              "recorded_at": "2026-08-18T12:52:24+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_macos_runs_timing_sensitive_v0_5_csot_cases_before_full_suite spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases'",
+              "exit_code": 0,
+              "summary": "The focused workflow and runner-policy contracts passed: macOS executes the three v0.5 CSOT cases early and skips only their timing-sensitive late duplicates.",
+              "recorded_at": "2026-08-18T12:53:12+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "CI=true MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py --lua /opt/homebrew/opt/lua@5.4/bin/lua --include 'client-side-operations-timeout/tests/change-streams.json::test?4?' --include 'client-side-operations-timeout/tests/change-streams.json::test?5?' --include 'client-side-operations-timeout/tests/change-streams.json::test?6?' --report build/conformance/macos-timing-sensitive-v05.json",
+              "exit_code": 0,
+              "summary": "All three timing-sensitive change-stream CSOT identities executed exactly and passed on macOS with MongoDB 8.0.16; zero failed, skipped, or deferred.",
+              "recorded_at": "2026-08-18T12:53:13+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.unified.test_cli.UnifiedCliTests.test_macos_ci_skips_only_timing_sensitive_csot_cases spec.v05.test_scope.V05ScopeTests.test_exact_execution_combines_environment_reports' && python3 spec/v05/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "Fourteen coupled workflow, platform-policy, and multi-report scope tests passed; the generated v0.5 scope and README projection remained current.",
+              "recorded_at": "2026-08-18T12:53:14+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "e425019ab847f65ab3f29f89016c016a383cb870",
-      "started_at": "2026-08-18T12:50:27+00:00",
-      "completed_at": "2026-08-18T12:53:14+00:00"
+      "reopened_after_commit": "fc4b5c2a0a3b4865e5788011f344acec3b10bec8",
+      "started_at": "2026-08-18T13:06:25+00:00",
+      "completed_at": "2026-08-18T13:11:57+00:00"
     }
   },
   "verified_references": {
