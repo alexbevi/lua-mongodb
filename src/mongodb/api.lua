@@ -1083,6 +1083,10 @@ function CLIENT_METHODS:watch(pipeline, options)
   )
 end
 
+function COLLECTION_METHODS:count(filter, options)
+  return collection_operation(self, crud.count, filter, options)
+end
+
 function COLLECTION_METHODS:count_documents(filter, options)
   return collection_operation(self, crud.count_documents, filter, options)
 end

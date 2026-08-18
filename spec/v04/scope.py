@@ -71,6 +71,17 @@ EXCLUSION_REASONS = {
   "ADV-007": "client bulk write remains a separate post-v0.4 capability",
   "ADV-009": "logging and backpressure remain separate post-v0.4 capabilities",
   "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
+  "LEG-001": "deprecated count retries are outside the v0.4 public API",
+  "LEG-002": "deprecated count timeouts are outside the v0.4 public API",
+  "LEG-003": "legacy mapReduce is outside the v0.4 public API",
+  "LEG-004": "legacy mapReduce retries are outside the v0.4 public API",
+  "LEG-005": "database aggregation is outside the v0.4 public API",
+  "LEG-006": "database aggregate retries are outside the v0.4 public API",
+  "LEG-007": "database aggregate timeouts are outside the v0.4 public API",
+  "LEG-008": "advanced command cursors are outside the v0.4 public API",
+  "LEG-009": "tailable cursors are outside the v0.4 public API",
+  "LEG-010": "awaitData cursors are outside the v0.4 public API",
+  "REL-053": "old-server compatibility branches are outside the v0.4 target",
 }
 
 TARGET_VERSION_EXCLUSIONS = {
@@ -255,7 +266,7 @@ def classify(
     if identity in TARGET_VERSION_EXCLUSIONS:
       if status not in {"passed", "deferred_unsupported", "excluded_scope"}:
         raise ScopeError(f"stale v0.4 target-version exclusion: {identity}")
-      if status != "passed" and owner != "ADV-011":
+      if status != "passed" and owner != "LEG-003":
         raise ScopeError(f"target-version exclusion has wrong owner: {identity}")
       seen_target_version_exclusions.add(identity)
 

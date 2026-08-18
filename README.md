@@ -201,6 +201,8 @@ for team in active_users_by_team:iter() do
 end
 ```
 
+For counts, prefer `collection:count_documents(filter, options)` for an exact query count or `collection:estimated_document_count(options)` for a fast metadata estimate. The deprecated `collection:count(filter, options)` method remains available for compatibility and sends the legacy `count` command directly; its result can be inaccurate on a sharded cluster while orphaned documents or chunk migrations are present.
+
 Once the example work is complete, delete the inserted document using its generated identifier:
 
 ```lua
@@ -442,9 +444,9 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Client-side operations timeout | 🟡 | 72.9% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟡 | 94.4% |
-| Resilience | Transactions | 🟡 | 93.8% |
+| Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 71.5% |
+| Programmability | CRUD | 🟡 | 72.9% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟡 | 98.0% |

@@ -1702,6 +1702,21 @@ local function find(_, collection, arguments)
   return collect_cursor(cursor)
 end
 
+local function count(_, collection, arguments)
+  return collection:count(arguments:get("filter"), operation_options(
+    arguments,
+    {
+      collation = "collation",
+      comment = "comment",
+      hint = "hint",
+      limit = "limit",
+      maxTimeMS = "max_time_ms",
+      rawData = "raw_data",
+      skip = "skip",
+    }
+  ))
+end
+
 local function count_documents(_, collection, arguments)
   return collection:count_documents(arguments:get("filter"), operation_options(
     arguments,
@@ -2369,6 +2384,13 @@ function M.new(options)
             "comment", "hint", "let", "maxTimeMS", "pipeline", "rawData",
           },
           handler = aggregate,
+        },
+        count = {
+          arguments = {
+            "collation", "comment", "filter", "hint", "limit", "maxTimeMS",
+            "rawData", "skip",
+          },
+          handler = count,
         },
         countDocuments = {
           arguments = {

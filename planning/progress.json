@@ -5333,6 +5333,28 @@
       "notes": [],
       "started_at": "2026-08-18T15:24:30+00:00",
       "completed_at": "2026-08-18T15:30:08+00:00"
+    },
+    "ADV-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\"; make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=spec/unit/legacy_count_spec.lua",
+          "exit_code": 2,
+          "summary": "The single defining test reached the public API and errored because collection:count is not implemented.",
+          "recorded_at": "2026-08-18T15:44:23+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus for legacy_count/crud unit, exact CRUD and transaction count unified selectors, capability/scope Python tests, and touched Lua lint; make test-complexity; generated --check validators",
+          "exit_code": 0,
+          "summary": "Three unit examples passed; 7 applicable legacy count unified cases passed, 1 mutually exclusive MongoDB 8.2 rawData case was environment-skipped on local 8.0, 0 deferred and 0 failed; 120 capability/scope tests, 4-file Lua lint, complexity, strict planning, and all generated validators passed.",
+          "recorded_at": "2026-08-18T15:57:12+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T15:40:35+00:00",
+      "completed_at": "2026-08-18T15:57:41+00:00"
     }
   },
   "verified_references": {

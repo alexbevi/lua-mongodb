@@ -1080,6 +1080,54 @@ function M.aggregate(state, pipeline, options)
   return cursor_from_response(state, response, options)
 end
 
+function M.count(state, filter, options)
+  require_document("filter", filter)
+  options = validate_options(options, COUNT_OPTIONS, "count")
+  require_document_option(options, "collation")
+  require_boolean_option(options, "raw_data")
+  require_hint(options)
+  require_nonnegative_integer(options, "limit")
+  require_nonnegative_integer(options, "max_time_ms")
+  require_nonnegative_integer(options, "skip")
+  local entries = {
+    { "count", state.name },
+    { "query", filter },
+  }
+
+  for _, field in ipairs({
+    { "collation", "collation" },
+    { "comment", "comment" },
+    { "hint", "hint" },
+    { "limit", "limit" },
+    { "max_time_ms", "maxTimeMS" },
+    { "skip", "skip" },
+  }) do
+    if options[field[1]] ~= nil then
+      entries[#entries + 1] = { field[2], options[field[1]] }
+    end
+  end
+
+  append_raw_data(entries, state, options)
+  append_read_concern(entries, state)
+  local response, err = state.executor:command(
+    state.database_name,
+    bson.document(entries),
+    {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
+      read_preference = state.read_preference,
+      retryable_read = false,
+      session = options.session,
+    }
+  )
+
+  if not response then
+    return nil, err
+  end
+
+  return count_field(response, "n")
+end
+
 function M.count_documents(state, filter, options)
   require_document("filter", filter)
   options = validate_options(options, COUNT_OPTIONS, "count_documents")

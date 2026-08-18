@@ -2249,12 +2249,28 @@
       "activity": "UTF-011",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/count-collation.json::test[2]": {
+      "activity": "ADV-011",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/count-empty.json::test[1]": {
       "activity": "UTF-011",
       "environment": "live-standalone"
     },
     "crud/tests/unified/count-empty.json::test[2]": {
       "activity": "UTF-011",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/count-empty.json::test[3]": {
+      "activity": "ADV-011",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/count-rawdata.json::test[1]": {
+      "activity": "ADV-011",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/count-rawdata.json::test[2]": {
+      "activity": "ADV-011",
       "environment": "live-standalone"
     },
     "crud/tests/unified/count.json::test[1]": {
@@ -2271,6 +2287,18 @@
     },
     "crud/tests/unified/count.json::test[4]": {
       "activity": "UTF-011",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/count.json::test[5]": {
+      "activity": "ADV-011",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/count.json::test[6]": {
+      "activity": "ADV-011",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/count.json::test[7]": {
+      "activity": "ADV-011",
       "environment": "live-standalone"
     },
     "crud/tests/unified/countDocuments-comment.json::test[1]": {
@@ -5636,6 +5664,10 @@
     },
     "transactions/tests/unified/commit.json::test[9]": {
       "activity": "TXN-001",
+      "environment": "live-replicaset"
+    },
+    "transactions/tests/unified/count.json::test[1]": {
+      "activity": "ADV-011",
       "environment": "live-replicaset"
     },
     "transactions/tests/unified/create-collection.json::test[1]": {

@@ -258,7 +258,7 @@ def classify(
     if identity in TARGET_VERSION_EXCLUSIONS:
       if status not in {"passed", "deferred_unsupported", "excluded_scope"}:
         raise ScopeError(f"stale v0.5 target-version exclusion: {identity}")
-      if status != "passed" and owner != "ADV-011":
+      if status != "passed" and owner != "REL-053":
         raise ScopeError(f"target-version exclusion has wrong owner: {identity}")
       seen_target_version_exclusions.add(identity)
 

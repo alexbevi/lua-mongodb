@@ -194,7 +194,7 @@ class V05ScopeTests(unittest.TestCase):
     self.assertEqual(170, generated["evidence"]["exact_unified_cases"])
     self.assertEqual(170, generated["summary"]["supported"])
     self.assertEqual({}, generated["planned_by_activity"])
-    self.assertEqual({"ADV-011": 19}, generated["excluded_by_activity"])
+    self.assertEqual({"REL-053": 19}, generated["excluded_by_activity"])
     self.assertEqual({"passed": 70, "excluded": 19}, generated["suites"]["change-streams"])
     self.assertEqual({"passed": 43}, generated["suites"]["client-side-operations-timeout"])
     self.assertEqual({"passed": 57}, generated["suites"]["retryable-reads"])

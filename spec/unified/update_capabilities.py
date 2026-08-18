@@ -38,6 +38,17 @@ OWNER_REASONS = {
   "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
   "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+  "LEG-001": "deprecated count retry behavior awaits the dedicated legacy read slice",
+  "LEG-002": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice",
+  "LEG-003": "legacy mapReduce command behavior awaits the dedicated collection slice",
+  "LEG-004": "inline mapReduce retry behavior awaits the dedicated legacy read slice",
+  "LEG-005": "database aggregate commands await the dedicated database cursor slice",
+  "LEG-006": "database aggregate retry behavior awaits the dedicated legacy read slice",
+  "LEG-007": "database aggregate timeout behavior awaits the dedicated CSOT slice",
+  "LEG-008": "empty-batch command cursor behavior awaits the dedicated cursor slice",
+  "LEG-009": "tailable cursor behavior awaits the dedicated non-awaitData slice",
+  "LEG-010": "awaitData cursor behavior awaits the dedicated tailable cursor slice",
+  "REL-053": "the legacy API release closure owns exact target-version exclusions",
   "CFG-004": "connectTimeoutMS zero semantics await the v0.4 configuration slice",
   "CMAP-002": "authentication failure pool clearing awaits the v0.4 CMAP slice",
   "CMAP-003": "application error pool-clear ordering awaits the v0.4 CMAP slice",
@@ -204,7 +215,7 @@ TEST_OVERRIDES = {
 TEST_OVERRIDES[
   "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[4]"
 ] = (
-  "ADV-011",
+  "REL-053",
   "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
 )
 TEST_OVERRIDES.update({
@@ -233,31 +244,31 @@ TEST_OVERRIDES.update({
     None,
   ),
   "client-side-operations-timeout/tests/cursors.json::test[3]": (
-    "ADV-011",
+    "LEG-007",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "crud/tests/unified/aggregate-merge-errorResponse.json::test[1]": (
-    "ADV-011",
+    "LEG-005",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "crud/tests/unified/db-aggregate.json::test[1]": (
-    "ADV-011",
+    "LEG-005",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "crud/tests/unified/db-aggregate.json::test[2]": (
-    "ADV-011",
+    "LEG-005",
     "database aggregate is outside the v1 public collection adapter",
   ),
   "read-write-concern/tests/operation/default-write-concern-3.4.json::test[4]": (
-    "ADV-011",
+    "LEG-003",
     "legacy mapReduce is outside the v1 public API",
   ),
   "versioned-api/tests/crud-api-version-1-strict.json::test[2]": (
-    "ADV-011",
+    "LEG-005",
     "database aggregate is outside the v1 public API",
   ),
   "versioned-api/tests/crud-api-version-1.json::test[2]": (
-    "ADV-011",
+    "LEG-005",
     "database aggregate is outside the v1 public API",
   ),
   "versioned-api/tests/crud-api-version-1.json::test[4]": (
@@ -281,7 +292,7 @@ for index in (3, 6):
   TEST_OVERRIDES[
     f"change-streams/tests/unified/change-streams.json::test[{index}]"
   ] = (
-    "ADV-011",
+    "REL-053",
     "the change-stream comment fixture is capped below MongoDB 4.4",
   )
 
@@ -290,7 +301,7 @@ for index in range(2, 18):
     "change-streams/tests/unified/"
       f"change-streams-resume-allowlist.json::test[{index}]"
   ] = (
-    "ADV-011",
+    "REL-053",
     "the legacy resumable-code fixture is capped at MongoDB 4.2",
   )
 
@@ -298,7 +309,7 @@ TEST_OVERRIDES[
   "change-streams/tests/unified/"
     "change-streams-resume-errorLabels.json::test[13]"
 ] = (
-  "ADV-011",
+  "REL-053",
   "the StaleShardVersion label fixture is capped below MongoDB 7.0",
 )
 
@@ -347,12 +358,12 @@ for fixture in (
   "updateOne-comment",
 ):
   TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[3]"] = (
-    "ADV-011",
+    "REL-053",
     "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
   )
 
 TEST_OVERRIDES["crud/tests/unified/find-comment.json::test[5]"] = (
-  "ADV-011",
+  "REL-053",
   "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
 )
 
@@ -374,33 +385,19 @@ for fixture in (
   "updateOne-let",
 ):
   TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[2]"] = (
-    "ADV-011",
+    "REL-053",
     "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
   )
 
 TEST_OVERRIDES["crud/tests/unified/aggregate-let.json::test[4]"] = (
-  "ADV-011",
+  "REL-053",
   "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
 )
 
 for index in (4, 6):
   TEST_OVERRIDES[f"crud/tests/unified/aggregate.json::test[{index}]"] = (
-    "ADV-011",
+    "REL-053",
     "the pre-4.4 server requirement is outside the v1 compatibility matrix",
-  )
-
-for identity in (
-  "crud/tests/unified/count-collation.json::test[2]",
-  "crud/tests/unified/count-empty.json::test[3]",
-  "crud/tests/unified/count-rawdata.json::test[1]",
-  "crud/tests/unified/count-rawdata.json::test[2]",
-  "crud/tests/unified/count.json::test[5]",
-  "crud/tests/unified/count.json::test[6]",
-  "crud/tests/unified/count.json::test[7]",
-):
-  TEST_OVERRIDES[identity] = (
-    "ADV-011",
-    "legacy count is outside the v1 public API",
   )
 
 for fixture in (
@@ -414,7 +411,7 @@ for fixture in (
 ):
   for index in (1, 2):
     TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
-      "ADV-011",
+      "REL-053",
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
@@ -429,12 +426,12 @@ for identity in (
   "crud/tests/unified/replaceOne-dots_and_dollars.json::test[5]",
 ):
   TEST_OVERRIDES[identity] = (
-    "ADV-011",
+    "REL-053",
     "the pre-5.0 server requirement is outside the v1 compatibility matrix",
   )
 
 for fixture, count, owner, reason in (
-  ("count", 17, "ADV-011", "legacy count is outside the v1 public API"),
+  ("count", 17, "LEG-001", OWNER_REASONS["LEG-001"]),
   ("changeStreams-client.watch", 17, "CS-007", OWNER_REASONS["CS-007"]),
   ("changeStreams-db.coll.watch", 17, "REL-051", OWNER_REASONS["REL-051"]),
   ("changeStreams-db.watch", 17, "CS-006", OWNER_REASONS["CS-006"]),
@@ -459,7 +456,7 @@ TEST_OVERRIDES[
 
 for fixture, count, owner, reason in (
   ("handshakeError", 32, "REL-034", OWNER_REASONS["REL-034"]),
-  ("mapReduce", 3, "ADV-011", "legacy mapReduce is outside the v1 public API"),
+  ("mapReduce", 3, "LEG-004", OWNER_REASONS["LEG-004"]),
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[
@@ -491,7 +488,7 @@ for index in (13, 14, 24, 25, 50, 51):
 for index in (7, 8):
   TEST_OVERRIDES[
     f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("ADV-011", "database aggregate is outside the v1 public API")
+  ] = ("LEG-006", OWNER_REASONS["LEG-006"])
 
 for index in (*range(1, 5), *range(9, 13), *range(15, 31)):
   TEST_OVERRIDES[
@@ -588,19 +585,19 @@ TEST_OVERRIDES.update({
     "load-balanced command cursor pinning is outside production-core v1",
   ),
   "run-command/tests/unified/runCursorCommand.json::test[10]": (
-    "ADV-011",
+    "LEG-008",
     "tailable command cursors are outside the v1 public cursor surface",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": (
-    "ADV-011",
+    "REL-053",
     "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": (
-    "ADV-011",
+    "LEG-009",
     "tailable command cursors are outside the v1 public cursor surface",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
-    "ADV-011",
+    "LEG-010",
     "tailable command cursors are outside the v1 public cursor surface",
   ),
 })
@@ -641,11 +638,6 @@ for index in range(1, 4):
   TEST_OVERRIDES[
     f"transactions/tests/unified/client-bulkWrite.json::test[{index}]"
   ] = ("ADV-007", OWNER_REASONS["ADV-007"])
-
-TEST_OVERRIDES["transactions/tests/unified/count.json::test[1]"] = (
-  "ADV-011",
-  "legacy count is outside the v1 public API",
-)
 
 for fixture, count in (
   ("mongos-recovery-token-errorLabels", 1),
@@ -691,7 +683,7 @@ for fixture, count in (
 ):
   for index in range(1, count + 1):
     TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
-      "ADV-011",
+      "LEG-005",
       "database aggregate is outside the v1 public collection adapter",
     )
 
@@ -700,7 +692,7 @@ for operation in ("Delete", "Replace", "Update"):
     TEST_OVERRIDES[
       f"crud/tests/unified/findOneAnd{operation}-hint-unacknowledged.json::test[{index}]"
     ] = (
-      "ADV-011",
+      "REL-053",
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
@@ -712,7 +704,7 @@ for fixture in (
 ):
   for index in (1, 2):
     TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[{index}]"] = (
-      "ADV-011",
+      "REL-053",
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
 
@@ -808,7 +800,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if fixture.startswith("tailable-"):
     return (
-      "ADV-011",
+      "LEG-010" if fixture.startswith("tailable-awaitData") else "LEG-009",
       "tailable cursor unified adapters are outside the v1 public cursor surface",
     )
 
@@ -816,8 +808,8 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if unsupported:
     if "count" in unsupported:
-      owner = "ADV-011"
-      reason = "legacy count is outside the v1 public API"
+      owner = "LEG-002"
+      reason = OWNER_REASONS[owner]
     elif unsupported <= {"dropIndex", "dropIndexes"}:
       owner = "REL-020"
       reason = "index operation timeout coverage awaits v1 administration conformance"
@@ -832,7 +824,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if "aggregate on database" in test["description"]:
     return (
-      "ADV-011",
+      "LEG-007",
       "database aggregate is outside the v1 public API",
     )
 
@@ -914,7 +906,7 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
       "searchIndexIgnoresReadWriteConcern.json": "IDX-006",
       "updateSearchIndex.json": "IDX-004",
     }
-    owner = owners.get(fixture, "ADV-011")
+    owner = owners.get(fixture, "REL-053")
 
     if owner in {
       "IDX-001",
