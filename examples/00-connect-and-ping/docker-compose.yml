@@ -1,0 +1,25 @@
+services:
+  mongodb:
+    image: mongodb/mongodb-community-server:8.2.12-ubuntu2204@sha256:ed7000edd775a8a7d1010618b72b2c71603efe2ca4f827b7f291110a696b4a41
+    command:
+      - mongod
+      - --bind_ip_all
+      - --nounixsocket
+      - --quiet
+    ports:
+      - "127.0.0.1:27017:27017"
+    healthcheck:
+      test:
+        - CMD
+        - mongosh
+        - --quiet
+        - --eval
+        - "quit(db.runCommand({ping: 1}).ok ? 0 : 2)"
+      interval: 1s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - mongodb-data:/data/db
+
+volumes:
+  mongodb-data:

@@ -97,3 +97,34 @@ jobs:
           name: compatibility-smoke-${{ matrix.entry }}
           path: build/compatibility/*.json
           if-no-files-found: warn
+
+  examples:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install example verification tools
+        run: luarocks install luacheck 1.2.0-1
+
+      - name: Run installed-rock connect and ping example
+        env:
+          MONGODB_EXAMPLES_LIVE: "1"
+        run: >-
+          make test-focus
+          FOCUS_PYTHON=spec.examples.test_examples.ConnectAndPingTests
+          FOCUS_LINT=examples/00-connect-and-ping/main.lua

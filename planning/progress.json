@@ -5939,6 +5939,28 @@
       "reopened_after_commit": "df142fdfbbf961316a6b8fa42ed8d64451bde532",
       "started_at": "2026-08-18T22:20:42+00:00",
       "completed_at": "2026-08-18T22:22:43+00:00"
+    },
+    "EXM-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.ConnectAndPingTests",
+          "exit_code": 2,
+          "summary": "The defining example contract failed: examples/00-connect-and-ping and its root catalog links did not exist; 1 contract failed, 2 errored, and the explicit live mode was not enabled",
+          "recorded_at": "2026-08-18T22:43:31+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI=local-standalone make test-focus FOCUS_PYTHON=spec.examples.test_examples.ConnectAndPingTests FOCUS_LINT=examples/00-connect-and-ping/main.lua",
+          "exit_code": 0,
+          "summary": "All 4 example contracts passed in 77.287s against MongoDB 8.0.16; both the latest public rock and an isolated source rock loaded outside the checkout, pinged successfully, matched exact output, and Lua lint reported 0 warnings",
+          "recorded_at": "2026-08-18T22:47:30+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T22:42:06+00:00",
+      "completed_at": "2026-08-18T22:47:51+00:00"
     }
   },
   "verified_references": {
