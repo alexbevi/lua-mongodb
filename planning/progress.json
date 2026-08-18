@@ -5289,6 +5289,28 @@
       "notes": [],
       "started_at": "2026-08-18T15:04:35+00:00",
       "completed_at": "2026-08-18T15:09:40+00:00"
+    },
+    "CI-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'",
+          "exit_code": 2,
+          "summary": "The new workflow contract failed because no macos-platform job existed; Sunday still selected the unbounded complete macOS suite.",
+          "recorded_at": "2026-08-18T15:17:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'",
+          "exit_code": 0,
+          "summary": "All 13 CI portability tests passed; the workflow parsed as YAML and declares a 30-minute weekly platform gate plus a manual-only 120-minute complete macOS gate.",
+          "recorded_at": "2026-08-18T15:19:46+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T15:16:07+00:00",
+      "completed_at": "2026-08-18T15:19:47+00:00"
     }
   },
   "verified_references": {

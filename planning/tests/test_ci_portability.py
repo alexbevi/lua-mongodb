@@ -120,6 +120,38 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("V05_SCOPE_ARGUMENTS ?=", makefile)
     self.assertEqual(3, makefile.count("V05_SCOPE_ARGUMENTS"))
 
+  def test_weekly_macos_verification_is_focused_and_bounded(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    platform = workflow[
+      workflow.index("  macos-platform:"):workflow.index("  macos:")
+    ]
+    complete = workflow[
+      workflow.index("  macos:"):workflow.index("  compatibility:")
+    ]
+
+    self.assertIn("github.event.schedule == '0 4 * * 0'", platform)
+    self.assertIn("inputs.run_macos", platform)
+    self.assertIn("timeout-minutes: 30", platform)
+    self.assertIn("make test-package", platform)
+    self.assertIn("make test-focus", platform)
+    self.assertIn("spec/integration/copas_tcp_spec.lua", platform)
+    self.assertIn("spec/integration/copas_tls_spec.lua", platform)
+    self.assertIn("spec/integration/dns_seedlist_spec.lua", platform)
+
+    for identity in (
+      "crud/tests/unified/aggregate-allowdiskuse.json::test?1?",
+      "transactions/tests/unified/commit.json::test?1?",
+      "transactions-convenient-api/tests/unified/callback-commits.json::test?1?",
+    ):
+      self.assertIn(identity, platform)
+
+    self.assertIn("--report build/conformance/macos-platform.json", platform)
+    self.assertNotIn("github.event.schedule", complete)
+    self.assertIn("github.event_name == 'workflow_dispatch'", complete)
+    self.assertIn("inputs.run_macos", complete)
+    self.assertIn("timeout-minutes: 120", complete)
+    self.assertIn("make check-full", complete)
+
   def test_missing_compatibility_report_does_not_mask_primary_failure(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
 
