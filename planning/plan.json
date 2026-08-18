@@ -68,7 +68,8 @@
     {"id": "lua-hardening", "goal": "Apply the Lua best-practice and architecture audit as independently verifiable maintenance slices.", "entry_activity": "PLN-001", "terminal_activity": "REL-048", "after_activity": "REL-047"},
     {"id": "v0-4-sharded-parity", "goal": "Release v0.4 with snapshot sessions, Search index management, modern read/write-concern conformance, sharded SDAM and command execution, and sharded transaction pinning and recovery coverage.", "entry_activity": "CON-002", "terminal_activity": "REL-050", "after_activity": "REL-048"},
     {"id": "spec-suite-completeness", "goal": "Make every accepted MongoDB specification and prose-only test plan visible, accountable, and accurately summarized in the conformance suite.", "entry_activity": "CON-003", "terminal_activity": "CON-007", "after_activity": "REL-048"},
-    {"id": "v0-5-v0-7-api", "goal": "Release change streams as v0.5, legacy command and cursor APIs as v0.6, and client bulk write as v0.7 with exact conformance and publication gates for each release.", "entry_activity": "ADV-001", "terminal_activity": "REL-056", "after_activity": "REL-050"}
+    {"id": "v0-5-v0-7-api", "goal": "Release change streams as v0.5, legacy command and cursor APIs as v0.6, and client bulk write as v0.7 with exact conformance and publication gates for each release.", "entry_activity": "ADV-001", "terminal_activity": "REL-056", "after_activity": "REL-050"},
+    {"id": "macos-ci-signal", "goal": "Retain focused macOS portability evidence, remove the oversized unified-test bottleneck, and require bounded sharded macOS conformance only for release publication.", "entry_activity": "CI-006", "terminal_activity": "CI-009", "after_activity": "REL-052"}
   ],
   "activities": [
     {
@@ -1096,6 +1097,26 @@
     },
     {
       "id": "ADV-012", "title": "Add proxy transport support", "milestone": "post-v1", "depends_on": ["REL-009"], "references": ["specifications:source"], "test_policy": "red_green", "test_first": "Enable proxy option and SOCKS5 transport fixtures.", "implementation": "Add proxy configuration and a SOCKS5 runtime transport adapter without exposing runtime sockets to core driver code.", "verification": ["make test-unit", "make test-integration", "make lint"], "acceptance": ["Proxy options and authentication are validated", "Proxy networking remains behind the runtime adapter"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "feat(network): add proxy transport adapter"
+    },
+    {
+      "id": "CI-006", "title": "Expose unified batch progress", "milestone": "post-v1", "track": "macos-ci-signal", "depends_on": ["REL-052"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify flushed stderr progress before and after every executable unified fixture batch without contaminating the machine-readable JSON report on stdout.", "implementation": "Emit stable fixture, environment, batch-position, outcome-count, and elapsed-time progress around the existing unified batch executor.",
+      "verification": ["make test-focus FOCUS_PYTHON='spec.unified.test_cli'", "python3 planning/update_plan.py check --strict"], "acceptance": ["A long-running batch is named before execution begins", "Completion progress reports elapsed time and exact outcome counts", "Unified JSON stdout and deterministic conformance identity remain unchanged"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "perf(test-runner): expose unified batch progress"
+    },
+    {
+      "id": "CI-007", "title": "Balance oversized unified fixture shards", "milestone": "post-v1", "track": "macos-ci-signal", "depends_on": ["CI-006"], "references": ["specifications:unified-format"], "test_policy": "red_green",
+      "test_first": "Specify deterministic, complete, non-overlapping distribution of the 56 runnable mongos-pin-auto cases across all four conformance shards while ordinary fixtures remain atomic.", "implementation": "Split only the measured oversized transaction fixture by exact test identity at the sharding boundary and preserve fixture batching within each selected shard.",
+      "verification": ["make test-focus FOCUS_PYTHON='spec.unified.test_cli'", "python3 planning/update_plan.py check --strict"], "acceptance": ["No single shard owns the complete mongos-pin-auto fixture", "Every selected identity appears in exactly one shard and aggregate ratchets remain exact", "All other fixtures retain fixture-level shard affinity"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "perf(test-runner): split oversized fixture shards"
+    },
+    {
+      "id": "CI-008", "title": "Focus scheduled macOS verification", "milestone": "post-v1", "track": "macos-ci-signal", "depends_on": ["CI-007"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify a bounded weekly macOS platform job that installs native dependencies and MongoDB, then exercises package, TLS, TCP, DNS, and representative standalone, replica-set, and sharded operations without running complete conformance.", "implementation": "Add the focused macOS platform gate, stop scheduling the complete macOS suite weekly, retain complete macOS execution behind explicit manual dispatch, and declare job timeouts.",
+      "verification": ["make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'", "python3 planning/update_plan.py check --strict"], "acceptance": ["Weekly macOS verifies the platform-specific install and runtime boundaries", "Complete macOS conformance runs only when explicitly requested", "Focused and complete jobs have explicit bounded timeouts"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "build(ci): focus scheduled macOS verification"
+    },
+    {
+      "id": "CI-009", "title": "Require sharded macOS release evidence", "milestone": "post-v1", "track": "macos-ci-signal", "depends_on": ["CI-008"], "references": [], "test_policy": "red_green",
+      "test_first": "Specify four manual macOS unified shards, an exact supplemental-version job, aggregate validation, retained focused platform evidence, and a publication guard requiring every resulting release job for the selected commit.", "implementation": "Replace the serial manual macOS full job with bounded parallel unified shards and aggregate evidence, then update release checklist and publication validation to require the new exact job set.",
+      "verification": ["make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.release.test_publish spec.release.test_checklist'", "python3 planning/update_plan.py check --strict"], "acceptance": ["Manual complete macOS conformance runs in four parallel shards and aggregates the same exact ratchets", "Release publication requires focused macOS platform evidence plus every successful manual macOS shard, version branch, and aggregate job", "A focused weekly macOS success alone cannot authorize publication"], "docs": ["planning/strategy.md", "docs/ARCHITECTURE.md"], "commit": "build(release): require sharded macOS conformance"
     }
   ]
 }
