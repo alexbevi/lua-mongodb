@@ -8,7 +8,8 @@
     "ADV-010": 777,
     "ADV-012": 15,
     "AUTH-019": 11,
-    "LEG-010": 12,
+    "LEG-011": 5,
+    "LEG-012": 7,
     "REL-053": 94
   },
   "deferred_by_scope": {
@@ -79,6 +80,9 @@
     "LEG-008": "empty-batch command cursor behavior is outside production-core v1",
     "LEG-009": "tailable cursors are outside production-core v1",
     "LEG-010": "awaitData cursors are outside production-core v1",
+    "LEG-011": "awaitData timeout validation is outside production-core v1",
+    "LEG-012": "awaitData wait budgets are outside production-core v1",
+    "LEG-013": "awaitData cancellation is outside production-core v1",
     "REL-051": "complete v0.5 change stream conformance is outside production-core v1",
     "REL-053": "legacy API target-version exclusions are outside production-core v1",
     "SDAM-004": "sharded topology shutdown is outside production-core v1",

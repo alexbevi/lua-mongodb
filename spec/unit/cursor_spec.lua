@@ -61,6 +61,62 @@ describe("find cursor lifecycle", function()
     })
   end)
 
+  it("encodes and polls an awaitData tailable cursor", function()
+    local commands = {}
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(42) },
+          { "ns", "app.events" },
+          { "firstBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(42) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.events" },
+          { "nextBatch", bson.array({
+            bson.document({ { "_id", 1 } }),
+          }) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return table.remove(responses, 1)
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("events"):find(
+      nil,
+      { cursor_type = "tailable_await" }
+    ))
+
+    assert.is_true(commands[1]:get("tailable"))
+    assert.is_true(commands[1]:get("awaitData"))
+    assert.is_nil(cursor:next())
+    assert.is_false(cursor:is_closed())
+    assert.are.equal(1, assert(cursor:next()):get("_id"))
+    assert.is_true(cursor:is_closed())
+    assert.are.same({ "find", "getMore", "getMore" }, {
+      commands[1]:keys()[1],
+      commands[2]:keys()[1],
+      commands[3]:keys()[1],
+    })
+  end)
+
   it("keeps a lifetime deadline and refreshes an iteration deadline", function()
     local runtime = fake_runtime.new({ now = 2 })
     local deadlines = {}

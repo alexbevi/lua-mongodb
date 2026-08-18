@@ -1992,9 +1992,9 @@ class UnifiedCliTests(unittest.TestCase):
       "run-command/tests/unified/runCursorCommand.json::test[10]": "LEG-008",
       "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": "REL-053",
       "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": "REL-053",
-      "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": "LEG-010",
+      "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": "LEG-012",
       **{
-        f"client-side-operations-timeout/tests/tailable-awaitData.json::test[{index}]": "LEG-010"
+        f"client-side-operations-timeout/tests/tailable-awaitData.json::test[{index}]": "LEG-012"
         for index in range(9, 14)
       },
       **{
@@ -2066,6 +2066,29 @@ class UnifiedCliTests(unittest.TestCase):
       "deferred_unsupported",
       manifest["tests"][skipped_reference]["status"],
     )
+
+  def test_await_data_tailable_cases_keep_split_owners(self) -> None:
+    manifest = update_capabilities.generate()
+    prefix = "client-side-operations-timeout/tests/tailable-awaitData.json"
+
+    self.assertEqual(
+      {"LEG-011"},
+      {
+        manifest["tests"][f"{prefix}::test[{index}]"]["activity"]
+        for index in (1, 2, 3, 5, 6)
+      },
+    )
+    self.assertEqual(
+      {"LEG-012"},
+      {
+        manifest["tests"][f"{prefix}::test[{index}]"]["activity"]
+        for index in range(8, 14)
+      },
+    )
+
+    for index in (4, 7):
+      case = manifest["tests"][f"{prefix}::test[{index}]"]
+      self.assertEqual(("CS-008", "runnable"), (case["activity"], case["status"]))
 
   def test_per_test_classification_rejects_completed_owners_and_stale_content(self) -> None:
     discovered = [discovered_test("crud/tests/unified/find.json::test[1]")]

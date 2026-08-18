@@ -48,6 +48,9 @@ OWNER_REASONS = {
   "LEG-008": "empty-batch command cursor behavior awaits the dedicated cursor slice",
   "LEG-009": "tailable cursor behavior awaits the dedicated non-awaitData slice",
   "LEG-010": "awaitData cursor behavior awaits the dedicated tailable cursor slice",
+  "LEG-011": "awaitData cursor option validation awaits the dedicated timeout validation slice",
+  "LEG-012": "awaitData wait budgets await the dedicated cursor timeout slice",
+  "LEG-013": "awaitData cursor cancellation awaits the dedicated runtime cancellation slice",
   "REL-053": "the legacy API release closure owns exact target-version exclusions",
   "CFG-004": "connectTimeoutMS zero semantics await the v0.4 configuration slice",
   "CMAP-002": "authentication failure pool clearing awaits the v0.4 CMAP slice",
@@ -597,10 +600,18 @@ TEST_OVERRIDES.update({
     "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
   ),
   "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": (
-    "LEG-010",
-    "tailable awaitData command cursors require the pending awaitData timeout and cancellation behavior",
+    "LEG-012",
+    "tailable awaitData command cursors require the pending awaitData wait-budget behavior",
   ),
 })
+
+for index in (1, 2, 3, 5, 6):
+  TEST_OVERRIDES[
+    f"client-side-operations-timeout/tests/tailable-awaitData.json::test[{index}]"
+  ] = (
+    "LEG-011",
+    "awaitData cursor timeout option validation awaits its dedicated slice",
+  )
 
 for fixture in (
   "find-network-error",
@@ -809,8 +820,8 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if fixture.startswith("tailable-"):
     return (
-      "LEG-010" if fixture.startswith("tailable-awaitData") else "LEG-009",
-      "tailable awaitData cursors require the pending awaitData timeout and cancellation behavior"
+      "LEG-012" if fixture.startswith("tailable-awaitData") else "LEG-009",
+      "tailable awaitData cursors require the pending wait-budget behavior"
         if fixture.startswith("tailable-awaitData") else None,
     )
 

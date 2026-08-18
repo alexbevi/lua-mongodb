@@ -1144,8 +1144,18 @@ local function tailable_find_options(collection, options)
     return options
   end
 
+  local state = COLLECTION_STATES[collection]
+
   if options.cursor_type == "tailable_await" then
-    return client_error("tailable await cursors are outside the supported API")
+    if options.timeout_mode ~= nil or options.timeout_ms ~= nil
+        or state.timeout_ms ~= nil
+    then
+      return client_error(
+        "tailable await cursor timeouts are outside the supported API"
+      )
+    end
+
+    return options
   end
 
   if options.cursor_type ~= "tailable" then
@@ -1157,8 +1167,6 @@ local function tailable_find_options(collection, options)
       "cursor_lifetime timeout mode is not supported for tailable cursors"
     )
   end
-
-  local state = COLLECTION_STATES[collection]
 
   if options.timeout_mode == nil
       and (options.timeout_ms ~= nil or state.timeout_ms ~= nil)

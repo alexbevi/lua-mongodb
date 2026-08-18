@@ -5597,6 +5597,28 @@
       "notes": [],
       "started_at": "2026-08-18T18:17:26+00:00",
       "completed_at": "2026-08-18T18:29:46+00:00"
+    },
+    "LEG-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=encodes.and.polls.an.awaitData.tailable.cursor spec/unit/cursor_spec.lua'",
+          "exit_code": 2,
+          "summary": "1 focused unit case failed before I/O because collection find rejected tailable_await instead of encoding awaitData and preserving the live cursor across an empty batch",
+          "recorded_at": "2026-08-18T18:44:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/api_handles_spec.lua' FOCUS_PYTHON='awaitData split ownership plus conformance/release/README contracts' FOCUS_LINT='3 touched Lua files'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "17 focused Lua cases passed; 0 newly applicable unified identities were executed because the pinned awaitData fixtures all exercise the pending option-validation or wait-budget slices; 0 environment skips, 0 deferred executions, and 0 failures; 16 Python contracts passed; 3 touched Lua files linted; complexity, capability, ledger, release scope, v0.4, v0.5, checklist, README, JSON, Python compile, and diff validators passed",
+          "recorded_at": "2026-08-18T18:48:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T18:44:01+00:00",
+      "completed_at": "2026-08-18T18:48:09+00:00"
     }
   },
   "verified_references": {

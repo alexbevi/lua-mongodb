@@ -1547,8 +1547,10 @@ function M.find(state, filter, options)
     error("no_cursor_timeout must be a boolean", 2)
   end
 
-  if cursor_type ~= "non_tailable" and cursor_type ~= "tailable" then
-    error("cursor_type must be non_tailable or tailable", 2)
+  if cursor_type ~= "non_tailable" and cursor_type ~= "tailable"
+      and cursor_type ~= "tailable_await"
+  then
+    error("cursor_type must be non_tailable, tailable, or tailable_await", 2)
   end
 
   local single_batch = limit < 0
@@ -1582,8 +1584,12 @@ function M.find(state, filter, options)
     entries[#entries + 1] = { "noCursorTimeout", options.no_cursor_timeout }
   end
 
-  if cursor_type == "tailable" then
+  if cursor_type ~= "non_tailable" then
     entries[#entries + 1] = { "tailable", true }
+  end
+
+  if cursor_type == "tailable_await" then
+    entries[#entries + 1] = { "awaitData", true }
   end
 
   local read_concern = concern_document(state.read_concern, false)
