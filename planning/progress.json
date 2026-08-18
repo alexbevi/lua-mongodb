@@ -5339,21 +5339,22 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "GitHub Actions CI Fast run 32157696206: make check-fast",
+          "command": "GitHub Actions CI Fast run 32158598896: make check-fast",
           "exit_code": 2,
-          "summary": "Both portable jobs passed the implementation and conformance contracts, then failed test-release-checklist because the v0.4 expected totals and generated release checklist were stale by one newly passing legacy count case.",
-          "recorded_at": "2026-08-18T16:02:41+00:00"
+          "summary": "Both portable jobs passed runtime, unified-inventory, release-scope, and release-checklist contracts, then failed the conformance-ledger exact totals because eight newly runnable count cases changed passed from 4,001 to 4,009 and deferred from 1,521 to 1,513.",
+          "recorded_at": "2026-08-18T16:11:45+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish'; release-checklist, release-scope, conformance-ledger, v0.4-scope, plan, and diff validators",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_checklist'; ledger, release-scope, v0.4-scope, release-checklist, Python compile, plan, and diff validators",
           "exit_code": 0,
-          "summary": "All 6 directly coupled release checklist/publication contracts passed; the regenerated checklist reports 4,009 passing ledger cases, 1,513 deferred cases, and v0.4 exact evidence at 852 passed with 46 exclusions. All coupled generated validators passed.",
-          "recorded_at": "2026-08-18T16:03:17+00:00"
+          "summary": "All 6 focused ledger/release contracts passed; exact ledger totals are 4,009 passed and 1,513 deferred, and all directly coupled generated validators passed.",
+          "recorded_at": "2026-08-18T16:12:14+00:00"
         }
       ],
       "notes": [
-        "Requeued: CI Fast run 32157696206 failed on Ubuntu and macOS because the v0.4 release-checklist expectations and generated checklist were stale after one legacy count case entered exact passing evidence."
+        "Requeued: CI Fast run 32157696206 failed on Ubuntu and macOS because the v0.4 release-checklist expectations and generated checklist were stale after one legacy count case entered exact passing evidence.",
+        "Requeued: CI Fast run 32158598896 failed on Ubuntu and macOS because the conformance-ledger exact status-total contract was stale after eight newly runnable legacy count cases."
       ],
       "reopen_history": [
         {
@@ -5374,11 +5375,30 @@
               "recorded_at": "2026-08-18T15:57:12+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-18T16:03:18+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "GitHub Actions CI Fast run 32157696206: make check-fast",
+              "exit_code": 2,
+              "summary": "Both portable jobs passed the implementation and conformance contracts, then failed test-release-checklist because the v0.4 expected totals and generated release checklist were stale by one newly passing legacy count case.",
+              "recorded_at": "2026-08-18T16:02:41+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish'; release-checklist, release-scope, conformance-ledger, v0.4-scope, plan, and diff validators",
+              "exit_code": 0,
+              "summary": "All 6 directly coupled release checklist/publication contracts passed; the regenerated checklist reports 4,009 passing ledger cases, 1,513 deferred cases, and v0.4 exact evidence at 852 passed with 46 exclusions. All coupled generated validators passed.",
+              "recorded_at": "2026-08-18T16:03:17+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "66b67ab84d8443a82a3644cd30e7cacb930b1e5a",
-      "started_at": "2026-08-18T16:02:30+00:00",
-      "completed_at": "2026-08-18T16:03:18+00:00"
+      "reopened_after_commit": "29f0036c77d66a2a46c1dbd0ddc0493d6668f4c7",
+      "started_at": "2026-08-18T16:11:40+00:00",
+      "completed_at": "2026-08-18T16:12:15+00:00"
     }
   },
   "verified_references": {
