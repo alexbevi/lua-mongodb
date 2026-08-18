@@ -51,7 +51,9 @@ class CiPortabilityTests(unittest.TestCase):
     linux = workflow[
       workflow.index("  linux-unified:"):workflow.index("  linux-aggregate:")
     ]
-    macos = workflow[workflow.index("  macos:"):workflow.index("  compatibility:")]
+    macos = workflow[
+      workflow.index("  macos-unified:"):workflow.index("  compatibility:")
+    ]
 
     self.assertLess(
       linux.index("Install MongoDB test tools on Linux"),
@@ -59,7 +61,7 @@ class CiPortabilityTests(unittest.TestCase):
     )
     self.assertLess(
       macos.index("Install MongoDB test tools on macOS"),
-      macos.index("Run authoritative full portable and loopback checks"),
+      macos.index("Run deterministic macOS unified shard"),
     )
     self.assertIn("sudo apt-get install -y mongodb-mongosh", linux)
     self.assertIn("brew install mongosh", macos)
@@ -91,20 +93,22 @@ class CiPortabilityTests(unittest.TestCase):
   ) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
     makefile = MAKEFILE.read_text(encoding="utf-8")
-    macos = workflow[workflow.index("  macos:"):workflow.index("  compatibility:")]
+    macos = workflow[
+      workflow.index("  macos-unified:"):workflow.index("  compatibility:")
+    ]
     supplemental = macos[
-      macos.index("Run exact supplemental version branches"):
-      macos.index("Run authoritative full portable and loopback checks")
+      macos.index("  macos-version-branches:"):
+      macos.index("  macos-aggregate:")
     ]
 
     authoritative = macos[
-      macos.index("Run authoritative full portable and loopback checks"):
-      macos.index("Verify executable roadmap and commit evidence")
+      macos.index("  macos-aggregate:"):
+      macos.index("Upload authoritative macOS conformance evidence")
     ]
 
     self.assertNotIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT", supplemental)
     self.assertIn(
-      "V05_SCOPE_ARGUMENTS=--allow-macos-ci-timing-skips",
+      "--allow-macos-ci-timing-skips",
       authoritative,
     )
 
@@ -115,7 +119,7 @@ class CiPortabilityTests(unittest.TestCase):
         supplemental,
       )
 
-    linux = workflow[:workflow.index("  macos:")]
+    linux = workflow[:workflow.index("  macos-platform:")]
     self.assertNotIn("--allow-macos-ci-timing-skips", linux)
     self.assertIn("V05_SCOPE_ARGUMENTS ?=", makefile)
     self.assertEqual(3, makefile.count("V05_SCOPE_ARGUMENTS"))
@@ -123,10 +127,10 @@ class CiPortabilityTests(unittest.TestCase):
   def test_weekly_macos_verification_is_focused_and_bounded(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
     platform = workflow[
-      workflow.index("  macos-platform:"):workflow.index("  macos:")
+      workflow.index("  macos-platform:"):workflow.index("  macos-unified:")
     ]
     complete = workflow[
-      workflow.index("  macos:"):workflow.index("  compatibility:")
+      workflow.index("  macos-unified:"):workflow.index("  compatibility:")
     ]
 
     self.assertIn("github.event.schedule == '0 4 * * 0'", platform)
@@ -149,8 +153,7 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertNotIn("github.event.schedule", complete)
     self.assertIn("github.event_name == 'workflow_dispatch'", complete)
     self.assertIn("inputs.run_macos", complete)
-    self.assertIn("timeout-minutes: 120", complete)
-    self.assertIn("make check-full", complete)
+    self.assertNotIn("make check-full", complete)
 
   def test_missing_compatibility_report_does_not_mask_primary_failure(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
@@ -179,8 +182,10 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("schedule:", workflow)
     self.assertIn('cron: "0 4 * * 1-6"', workflow)
     self.assertIn('cron: "0 4 * * 0"', workflow)
-    self.assertIn("make check-full", workflow)
-    self.assertIn("UNIFIED_REPORT=build/conformance/unified.json", workflow)
+    self.assertIn("macos-platform:", workflow)
+    self.assertIn("macos-unified:", workflow)
+    self.assertIn("macos-aggregate:", workflow)
+    self.assertNotIn("make check-full", workflow)
 
   def test_fast_compatibility_uses_only_boundary_rows(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -218,10 +223,6 @@ class CiPortabilityTests(unittest.TestCase):
       "unified-pre-8.2.json",
       workflow,
     )
-    self.assertIn(
-      "V04_SUPPLEMENTAL_REPORT=build/conformance/unified-pre-8.2.json",
-      workflow,
-    )
     v05_evidence = workflow[
       workflow.index("Validate exact v0.5 conformance evidence"):
       workflow.index("Upload authoritative Linux conformance evidence")
@@ -231,6 +232,41 @@ class CiPortabilityTests(unittest.TestCase):
       v05_evidence,
     )
     self.assertIn("if-no-files-found: error", workflow)
+
+  def test_manual_macos_full_conformance_is_sharded_and_aggregated(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    macos = workflow[
+      workflow.index("  macos-unified:"):workflow.index("  compatibility:")
+    ]
+    unified = macos[:macos.index("  macos-version-branches:")]
+    version_branches = macos[
+      macos.index("  macos-version-branches:"):
+      macos.index("  macos-aggregate:")
+    ]
+    aggregate = macos[macos.index("  macos-aggregate:"):]
+
+    self.assertNotIn("\n  macos:\n", workflow)
+    self.assertIn("shard: [0, 1, 2, 3]", unified)
+    self.assertIn("timeout-minutes: 75", unified)
+    self.assertIn("--shard-count 4", unified)
+    self.assertIn("--shard-index ${{ matrix.shard }}", unified)
+    self.assertIn("unified-macos-shard-${{ matrix.shard }}.json", unified)
+    self.assertIn("timeout-minutes: 30", version_branches)
+    self.assertIn("unified-macos-pre-8.2.json", version_branches)
+    self.assertIn(
+      "needs: [macos-unified, macos-version-branches]",
+      aggregate,
+    )
+    self.assertIn("timeout-minutes: 10", aggregate)
+    self.assertIn("uses: actions/download-artifact@v8", aggregate)
+    self.assertIn(
+      "--aggregate build/conformance/macos-shards/*.json",
+      aggregate,
+    )
+    self.assertIn("Validate exact macOS v0.4 conformance evidence", aggregate)
+    self.assertIn("Validate exact macOS v0.5 conformance evidence", aggregate)
+    self.assertIn("--allow-macos-ci-timing-skips", aggregate)
+    self.assertIn("full-conformance-macos-${{ github.sha }}", aggregate)
 
 
 if __name__ == "__main__":

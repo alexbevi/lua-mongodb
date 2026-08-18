@@ -5311,6 +5311,28 @@
       "notes": [],
       "started_at": "2026-08-18T15:16:07+00:00",
       "completed_at": "2026-08-18T15:19:47+00:00"
+    },
+    "CI-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.release.test_publish spec.release.test_checklist'",
+          "exit_code": 2,
+          "summary": "The 20-test release contract failed because manual macOS still had one serial job, publication still required only macos, and the checklist still exposed one undifferentiated full-macos gate.",
+          "recorded_at": "2026-08-18T15:26:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.release.test_publish spec.release.test_checklist'",
+          "exit_code": 0,
+          "summary": "All 20 CI/release tests passed; YAML parsing, generated checklist validation, and strict planning validation were green. Publication now rejects focused-only evidence and requires four macOS shards, the version branch, aggregate, and platform job.",
+          "recorded_at": "2026-08-18T15:30:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T15:24:30+00:00",
+      "completed_at": "2026-08-18T15:30:08+00:00"
     }
   },
   "verified_references": {

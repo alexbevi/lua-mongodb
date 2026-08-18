@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       run_macos:
-        description: Run the complete macOS conformance gate
+        description: Run focused and sharded complete macOS release gates
         required: false
         default: false
         type: boolean
@@ -308,10 +308,14 @@ jobs:
           path: build/conformance/macos-platform.json
           if-no-files-found: warn
 
-  macos:
+  macos-unified:
     if: github.event_name == 'workflow_dispatch' && inputs.run_macos
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3]
     runs-on: macos-latest
-    timeout-minutes: 120
+    timeout-minutes: 75
 
     steps:
       - name: Check out repository and pinned references
@@ -337,12 +341,10 @@ jobs:
           echo "OPENSSL_DIR=$openssl_dir" >> "$GITHUB_ENV"
           echo "CRYPTO_DIR=$openssl_dir" >> "$GITHUB_ENV"
 
-      - name: Install development dependencies
-        run: |
-          luarocks install --only-deps mongodb-0.5.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
-          luarocks install busted 2.3.0-1
-          luarocks install luacheck 1.2.0-1
-          luarocks install luacov 0.17.0-1
+      - name: Install driver dependencies
+        run: >-
+          luarocks install --only-deps mongodb-0.5.0-1.rockspec
+          OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
 
       - name: Install MongoDB test tools on macOS
         run: |
@@ -360,42 +362,139 @@ jobs:
           "$mongodb_dir/bin/mongod" --version
           "$mongodb_dir/bin/mongos" --version
 
-      - name: Run exact supplemental version branches
+      - name: Run deterministic macOS unified shard
+        run: >-
+          python3 spec/unified/run.py
+          --shard-count 4
+          --shard-index ${{ matrix.shard }}
+          --report build/conformance/unified-macos-shard-${{ matrix.shard }}.json
+
+      - name: Upload macOS unified shard evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-unified-shard-${{ matrix.shard }}-${{ github.sha }}
+          path: build/conformance/unified-macos-shard-${{ matrix.shard }}.json
+          if-no-files-found: warn
+
+  macos-version-branches:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_macos
+    runs-on: macos-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.8
+        uses: leafo/gh-actions-lua@v13
+        with:
+          luaVersion: "5.4.8"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Configure OpenSSL on macOS
         run: |
+          brew install openssl@3
+          openssl_dir="$(brew --prefix openssl@3)"
+          echo "OPENSSL_DIR=$openssl_dir" >> "$GITHUB_ENV"
+          echo "CRYPTO_DIR=$openssl_dir" >> "$GITHUB_ENV"
+
+      - name: Install driver dependencies
+        run: >-
+          luarocks install --only-deps mongodb-0.5.0-1.rockspec
+          OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
+
+      - name: Install pre-8.2 MongoDB test tools on macOS
+        run: |
+          brew install mongosh
           case "$(uname -m)" in
             arm64) mongodb_arch=arm64 ;;
             x86_64) mongodb_arch=x86_64 ;;
             *) echo "unsupported macOS architecture" >&2; exit 2 ;;
           esac
-          legacy_mongodb_dir="$RUNNER_TEMP/full-conformance-mongodb-pre-8.2"
-          mkdir -p "$legacy_mongodb_dir"
+          mongodb_dir="$RUNNER_TEMP/full-conformance-mongodb-pre-8.2"
+          mkdir -p "$mongodb_dir"
           curl -fsSL "https://fastdl.mongodb.org/osx/mongodb-macos-${mongodb_arch}-${FULL_CONFORMANCE_LEGACY_MONGODB_VERSION}.tgz" \
-            | tar -xz --strip-components=1 -C "$legacy_mongodb_dir"
-          PATH="$legacy_mongodb_dir/bin:$PATH" python3 spec/unified/run.py \
-            --include index-management/tests/index-rawdata.json \
-            --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?' \
-            --report build/conformance/unified-pre-8.2.json
+            | tar -xz --strip-components=1 -C "$mongodb_dir"
+          echo "$mongodb_dir/bin" >> "$GITHUB_PATH"
+          "$mongodb_dir/bin/mongod" --version
 
-      - name: Run authoritative full portable and loopback checks
+      - name: Run exact supplemental version branches
         run: >-
-          make check-full
-          UNIFIED_REPORT=build/conformance/unified.json
-          V04_SUPPLEMENTAL_REPORT=build/conformance/unified-pre-8.2.json
-          V05_SCOPE_ARGUMENTS=--allow-macos-ci-timing-skips
+          python3 spec/unified/run.py
+          --include index-management/tests/index-rawdata.json
+          --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?'
+          --report build/conformance/unified-macos-pre-8.2.json
 
-      - name: Verify executable roadmap and commit evidence
-        run: python3 planning/update_plan.py check --strict
+      - name: Upload macOS pre-8.2 exact evidence
+        uses: actions/upload-artifact@v7
+        with:
+          name: macos-unified-pre-8.2-${{ github.sha }}
+          path: build/conformance/unified-macos-pre-8.2.json
+          if-no-files-found: error
 
-      - name: Upload full macOS evidence
-        if: always()
+  macos-aggregate:
+    if: github.event_name == 'workflow_dispatch' && inputs.run_macos
+    needs: [macos-unified, macos-version-branches]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Download macOS unified shard evidence
+        uses: actions/download-artifact@v8
+        with:
+          pattern: macos-unified-shard-*-${{ github.sha }}
+          path: build/conformance/macos-shards
+          merge-multiple: true
+
+      - name: Download macOS pre-8.2 exact evidence
+        uses: actions/download-artifact@v8
+        with:
+          name: macos-unified-pre-8.2-${{ github.sha }}
+          path: build/conformance/macos-version-branches
+
+      - name: Aggregate exact macOS unified evidence and global ratchets
+        run: >-
+          python3 spec/unified/run.py
+          --aggregate build/conformance/macos-shards/*.json
+          --report build/conformance/unified-macos.json
+
+      - name: Validate exact macOS v0.4 conformance evidence
+        run: >-
+          python3 spec/v04/scope.py
+          --check
+          --execution-report build/conformance/unified-macos.json
+          --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
+
+      - name: Validate exact macOS v0.5 conformance evidence
+        run: >-
+          python3 spec/v05/scope.py
+          --check
+          --allow-macos-ci-timing-skips
+          --execution-report build/conformance/unified-macos.json
+          --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
+
+      - name: Upload authoritative macOS conformance evidence
         uses: actions/upload-artifact@v7
         with:
           name: full-conformance-macos-${{ github.sha }}
           path: |
-            build/conformance/unified.json
-            build/conformance/unified-pre-8.2.json
-            build/quality/luacov.report.out
-          if-no-files-found: warn
+            build/conformance/unified-macos.json
+            build/conformance/macos-version-branches/unified-macos-pre-8.2.json
+          if-no-files-found: error
 
   compatibility:
     strategy:

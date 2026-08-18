@@ -117,7 +117,10 @@ class ReleaseChecklistTests(unittest.TestCase):
         "full-linux-quality",
         "full-linux-unified",
         "full-linux-version-branches",
-        "full-macos",
+        "full-macos-aggregate",
+        "full-macos-platform",
+        "full-macos-unified",
+        "full-macos-version-branches",
       ],
       report["gates"]["ci"],
     )

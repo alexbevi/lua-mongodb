@@ -44,6 +44,18 @@ class PublishTests(unittest.TestCase):
     self,
   ) -> None:
     self.assertIn("linux-version-branches", publish.REQUIRED_FULL_JOBS)
+    for name in (
+      "macos-platform",
+      "macos-unified (0)",
+      "macos-unified (1)",
+      "macos-unified (2)",
+      "macos-unified (3)",
+      "macos-version-branches",
+      "macos-aggregate",
+    ):
+      self.assertIn(name, publish.REQUIRED_FULL_JOBS)
+
+    self.assertNotIn("macos", publish.REQUIRED_FULL_JOBS)
     jobs = [
       {"name": name, "conclusion": "success"}
       for name in publish.REQUIRED_FULL_JOBS
@@ -69,6 +81,17 @@ class PublishTests(unittest.TestCase):
       "no successful Full Conformance run",
     ):
       publish.require_full_conformance(runs, "different")
+
+    focused_only = [{
+      "conclusion": "success",
+      "headSha": "abc123",
+      "jobs": [{"name": "macos-platform", "conclusion": "success"}],
+    }]
+    with self.assertRaisesRegex(
+      publish.PublishError,
+      "does not contain every successful release job",
+    ):
+      publish.require_full_conformance(focused_only, "abc123")
 
   def test_full_conformance_cli_reads_gh_json(self) -> None:
     jobs = [
