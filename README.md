@@ -210,6 +210,20 @@ local deleted = assert(users:delete_one(
 print(deleted.deleted_count)
 ```
 
+### Change Streams
+
+On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection. Its pipeline is appended after the required `$changeStream` stage. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early.
+
+```lua
+local events = assert(users:watch(mongodb.bson.array({
+  doc({ { "$match", doc({ { "operationType", "insert" } }) } }),
+})))
+
+local change = assert(events:next())
+print(change:get("operationType"))
+assert(events:close())
+```
+
 ### Bulk Operations
 
 Bulk writes combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
@@ -406,7 +420,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Server selection | 🟡 | 90.4% |
 | Availability | Max staleness | 🟢 | 100.0% |
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
-| Resilience | Retryable reads | 🟡 | 70.3% |
+| Resilience | Retryable reads | 🟡 | 70.5% |
 | Resilience | Retryable writes | 🟡 | 93.7% |
 | Resilience | Client-side operations timeout | 🟡 | 64.9% |
 | Resilience | Sessions | 🟢 | 100.0% |

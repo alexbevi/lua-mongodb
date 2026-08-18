@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1545,
-    "runnable": 1545
+    "passed": 1546,
+    "runnable": 1546
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -186,9 +186,9 @@
       "status": "runnable"
     },
     "change-streams/tests/unified/change-streams-clusterTime.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "2f7eedc24e5e855d5d1eb7671d753fa647537267d23a95ef8d0c8c3c81608ec8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -220,9 +220,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-disambiguatedPaths.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "a9490a0437e45aafeb4e74c49f6dc4d205c668ddb185fb36716c0c3690533911",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -257,9 +257,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-disambiguatedPaths.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "9c6817834375a7b96167dcaad48b4ada258f8977439af05a50e11f024e3e093d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -295,9 +295,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-disambiguatedPaths.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "a4d4422fd20ac765610dbb51f5ab8c6f3397c52eb799c663adacd3900d3519af",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -334,9 +334,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-errors.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "6984b73665ab5b49cabc0a122322ca1abf652c5914f300e34958f132f0914514",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -361,9 +361,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-errors.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "f0497d8337152e47dfbca7f36212cb7482ac4fc84e11782119fd00d55a88eeae",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -390,9 +390,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-errors.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "ceb0a5c10d93a26088e4af12c43a4e98389ce851be6e4a2b5e0f88f4dc188bb1",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -422,9 +422,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-errors.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "da867cd75cb1ada7e9255a25b1daffede5d2be087387675c771e51438afba067",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -458,9 +458,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-nsType.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "058507df2790ae51a21ecd8390df9fd9f317d57e2c631521a7f64a0543cb14af",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -491,9 +491,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-nsType.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "895cfc1a193c2995b7a3d1b9db0d7d2b8b27a3ea16b03698a3d89a2055edcf86",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -525,9 +525,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "f3ca7ca18851167d44b3ea748d36e772d0460b96e130fe1e836066695e88d795",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -567,9 +567,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "7aa918c6e6662dddef282ba81996cb87411644cf90d49525c21bb768b2d43b6e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -608,9 +608,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "75687d4c9b330937963e72ec0c941a9cc326ba26437392c24277dc5ae9849d77",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -649,9 +649,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "87b7a6482bc9fb51c0a3a2ba8f9fd639cac2e30d404cb2940d1beda48f0edd95",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -690,9 +690,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "00db57c779505d62bd42908e840293d22df8f135c9d1e9f8a1fcf010f6730685",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocument",
@@ -729,9 +729,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "f24340ac87703163035449b7abf59587f19a9ab18b2184dd7aa17bd930f94a71",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -770,9 +770,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "def74c5671ab5b7ca58c42e90d8e212cbbbe8e4c2e2026046f4c4a2b172ac49c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -811,9 +811,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "84d08de2dce23fd2de9f25609fe2c8afa2083db3d4ef2b692c22f4584458a2fd",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -852,9 +852,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "36a51a959482f299aab82877a1d88b027cf18caf3787c3fe9dbefa3ce69f5a9e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -891,9 +891,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-pre_and_post_images.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "acdec4beb72b87d467804c4494125361d50df39b920b26dc0f7eec1300afc1f7",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.fullDocumentBeforeChange",
@@ -933,9 +933,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "09aaec38cfaee2ca77eb22844c2edc6f49d72780e6c89bdad52fd7634a4e715a",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -974,9 +974,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[11]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "0d89c12b4f5593ad8733a311d8cdc69a9d444f30c7f089de836b103f6dfa4199",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1015,9 +1015,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[12]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "21895e8e19208949714173d95063b595a76af798171e24e363e3865436b90199",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1056,9 +1056,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "6b5c13a32add857fb834da77644c1cacc9395402d707cf21da57912b64decf2e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1097,9 +1097,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[14]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "599a8a02ad01fba91db7bfd84d45b6a00241bb443a3628c2ab87b7ef52f67e0a",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1138,9 +1138,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[15]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "7aa3d6728580ccc045573fb3147d2a40b7f374ddc212e0af58dc8599f5366782",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1179,9 +1179,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[16]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "c29054c9bb299624d9c7721b28ce9f6bf317f5ccf7b8bdc91b41caf62e3eb91f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1220,9 +1220,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[17]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "c5a76da50b224e79b43b27c705b57cc85068337adf2e8d8b690b55bc00ca41d5",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1261,9 +1261,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[18]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "cf47d69b168b1446bfa49cb9872a5fd929c85ce0364f1d073358b0c55a86aa93",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1302,9 +1302,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "92c26ad754ccc5462a81749a14b8b200a368d007a05756737de215ef37537e4c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1343,9 +1343,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "3ae6d9f52f7670ff9c40c2f320e67445269ecfd4ae0fa4a0b5815314172bd2f5",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1384,9 +1384,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "964bfc132469451f1cc5c0286f6992448493600a94b83050e55f2b52f2aa49c9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1425,9 +1425,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "8c6334d6a1fa7e12ba178b4f5a8b1609accfe3777daecb7d12ebae10810b3589",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1466,9 +1466,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "9fbff9dbdf7431d2241d477de3a60720e129b8e0ff4e8ae2fed9a63fb68e2ac3",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1507,9 +1507,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "355e82910f71d1a47d7ad3e4651e630cb9a14cb9ce8c5e546256cb1dc7a8a4ef",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1548,9 +1548,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "fbfd7989867265bcc4d118084d5a586bb3cb19f43e80a897430a2d4b44e1a736",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1589,9 +1589,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "f3d8b7b7f5ac197895d70bc2d1acafd7ed8b997c376884db11918107de9a9633",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1630,9 +1630,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-allowlist.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "074f31ec6dffb1f8b223166701df4a83401d98a818a2e64422c1c684a5c5e6c1",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1671,9 +1671,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "e64e6eacd2fbbd1f747d947501e5eeca728b6bfa540617b89794da2c2503e25f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1712,9 +1712,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[11]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "7b75ac6935041d804e8d5cbe2ed9de88f0d3e12a16fe696d55d7aecaf4e1fed9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1753,9 +1753,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[12]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "bba470949cdbc99496ab8efa1f606f0e8ab64a982fd2fa62ab1c17ad49664c4d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1794,9 +1794,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "82729a08d16aab9e027610cd0a56e3054ab17ba6ff901a589ed7054518afa189",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1835,9 +1835,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[14]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "a30d6ce99aae6a72a16a28943569685da1eb410ee15dbddff3d89ab74638d387",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1876,9 +1876,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[15]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "476618125bad1af091d525aa10d382882c8e43f0256f14f76d477aacf72a9e34",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1917,9 +1917,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[16]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "ae53b44c3a723573ffb3ffbae2820b811ab5b78aa85869619333e7c69f2ff5eb",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1958,9 +1958,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[17]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "ec329424774e819ec6c86d3e9198a9e613fbc178aca5069c309bae63ef63c64f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -1999,9 +1999,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[18]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "165b9a97603c5f192a989add9929a971a14c7e22076201bd8e3afd28d33afb58",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2035,9 +2035,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "bd6ed35dc556068e4dbd330fb49db579b80d1eec53463f71d2015d78df2523a6",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2076,9 +2076,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "f2f94a2856cebdef1c3036f72735d3bbc9748422cf7654559faf80cb037715bc",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2117,9 +2117,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "a8f2d7dc53506e0349696bbc5cbef398d11dc492ab7aac76e106fda57de0e8a8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2158,9 +2158,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "1e75714ee9b28c9618faeb816aa176639bed124d162a9210b581fd95ed727158",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2199,9 +2199,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "bedf55f2b0d6fd199b8929ed30c9f1d8c954d2f0109750a9fcdda2eee749088e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2240,9 +2240,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "0507fccecc3765fc5492d9c89364ff700ab558525c7ee70dbb2ccd2d4cc28554",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2281,9 +2281,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "e2bb938670cbe1c44dd215fb89cc4b0ff3f697aa785d1016c79299262aed101e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2322,9 +2322,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "37f178cb2154e41f1f01233ef35bee32583a5894808212ea00dac1fd16115c8f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2363,9 +2363,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "ba28069e314f66f816143d1090c15ec696815414f169ef18b2503706559a322f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2404,9 +2404,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "0189f269662aa0432b3bfa6dbd9603d639e8376910c98a42f75f2945845f90ec",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2435,9 +2435,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "2f1b81b13586d34f22e3b109cf46f1a2829a05f22a49041bc742b1660534f271",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -2467,9 +2467,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "1ed1c833e9f3d3f5ff990534d15f71cce43e35725ce50d8b28cd498911dfec54",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2511,9 +2511,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "b34cdedaffa71e21dbe33c8699930b9056b5603020cfc5228f7c6e9c1d9b03f3",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2544,9 +2544,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "582ea9bcb558c65e071a33d4647815784dceaeabd17599009cf774b036b36d8e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2579,9 +2579,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "cc25e985784866ce4e306e7fbe4e379f44239dddf8a0172761ae5cf299ab9b07",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2613,9 +2613,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "8bc215544868b0fe5dbc112c40ee7bb3841721b804b683e08761e20335c92325",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2648,9 +2648,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "1cb272e838bdcba83c658a295698526af88f51afe7fd81d73fff1e93de6b22b2",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2684,9 +2684,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams-showExpandedEvents.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "17e0d0339a8b7a0340204ab251855e83aa45c92f4130b59c5972d305fd465f67",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2721,9 +2721,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "4d3f55766ae5a15dbaa82411b22e1d5e3fe4b64bbcace784e708262c1c8c7f51",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2751,9 +2751,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[11]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "8f16fa2f30453156d48ef8931102d69231eca2c33c3a6ea8a4a21f957733d9f3",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2781,9 +2781,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[12]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "6059a127b9b69682c074e8c9eb70f7fe88e18994d143186448026899546c7423",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2811,9 +2811,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "a1f16673c576f7c4ae1999f08cb3a0773f89a41d80f917868e9e6c67f4c76f97",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2841,9 +2841,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[14]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "f84cc9ba4c3140cf93e95e8e352385a47c4d5d61d54cd83f4b2961504d19916e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2875,9 +2875,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[15]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "4352c87be1e6c6ea5c2fe6200c4ddc0ab88041bd08fc7b02df0c4c349abf9933",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2907,9 +2907,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[16]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "4ff46dfd6da93b0100f1cb16424220135ab3a2523ea79fb4ecacd5033ad5a2d8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2941,9 +2941,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[17]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "e41cdb07ef03a0df6b36971e9d9b0d7b279908b4bb7431b04a8188540071df68",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -2975,9 +2975,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[18]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "cd070a3dc9401f7ffce6175d8bd5a12145682bf490f30c04f1e1ca67eacf5cb9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3009,9 +3009,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[19]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "04f32230e65b4a7912afe77a694b13ce878e386de9b6248835f2b794b38f9e57",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3043,9 +3043,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "c7b71cc51ca194b84347f71be8950d3914e946082b13dfefd3342b70197fe49e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3079,9 +3079,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[20]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "14a43f2ad1247ea87747dc9a42615258f19d2a800d4dbfc6d3df614a5af806b3",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3122,9 +3122,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[21]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "738c6144f7157c150eee740eefb9b0a001d872516541a6bb8bd012fe8559cd6f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3156,9 +3156,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[22]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "3ff9edc362beb83b9334dd4be5f8d054cf91e5f3ec9d966e0a7c536e518341cf",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3188,9 +3188,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[23]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "fcf5c4663a41a792a96c077fb2f6772aae07a356b145a5cee144693db9866b17",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.batchSize",
@@ -3227,9 +3227,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[24]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "65bd129ca3fadd4809527c9c76de5ccfdd54d5d9f9a99d591bf2e5c893690371",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3259,9 +3259,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "337c15f5a3f1e7a798a47ef1d2d801c6a6f557a4936c0c720683743eb34bd980",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3289,9 +3289,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "2ff5989b0755868c260a95393a62d7a45f9cf7a72d6817efad6724ba614d8dc2",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3319,9 +3319,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "b45f82795a9ce37cf1e90f5d10a2f85c0aac81724aab183915d1987d860f6ddb",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3349,9 +3349,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "11a771aa0903dee778999f0b0e54cfad0afec1aaf2ce5f6913fa651420491a3c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3384,9 +3384,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "ce5e1bfd85891fa5a4325671438547bbf3e9192c038d2cb448e216505cd7dd9e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.comment",
@@ -3420,9 +3420,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "36e2602b087ade34ff8c09422ce73707edaf602bb7ecde0f71f69c5df4313d00",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3452,9 +3452,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "08407d9551d940bd03233999b4916b445e3d9cfeeb0eba207f667eb1be8f16e6",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -3482,9 +3482,9 @@
       "status": "deferred_unsupported"
     },
     "change-streams/tests/unified/change-streams.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "fcf4a37e80f565aaecc92150d116f56966a757321ddf4a559c40c1a855e232db",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -16898,9 +16898,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "8298e3f7f4869cb48a505110de2c2c597378079e3eb2cc6e6a27513a8e774b9c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -16928,9 +16928,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "26d42cd3914caea300ba3b7a598b675990806152f397debf794ee4aae801f066",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -16958,9 +16958,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "25f559b0c6caa008f8d25f44b43109f240462db7183fbd9732cffeca78d5dead",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -16995,9 +16995,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "948fda51d98b2e165eb2481ed6019ce81aa85406bb9fc620f85ad3c9c4251337",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17034,9 +17034,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "e4b316e18b9d418a2e52aaf98c558a1c9ad348a15e2367cce2b310754789b9f2",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.batchSize",
@@ -17074,9 +17074,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "b3bc152a552ab7689cf9690452e2f54125f619e6c2100cb7379a462ce8f4b69d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17113,9 +17113,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "e450b2a56c75e5b7645f6bbee904e634d72bc41b3b756faecb121512695c9cf0",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -17153,9 +17153,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "8d679c021a72159f0afc1b72a6cbc960f6467a9198d7fc8682c32da6ac23d39f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17723,9 +17723,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "e9c41941390cb22c408e0f68719ae3a07e170a16134c8606c631d26d5bb2bf8c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17760,9 +17760,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[14]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "b3845bf3d4736bb229d09eafd52d06c7db925030f6b3a6bf61becb4bf934e764",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -18187,9 +18187,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[24]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "71c04049e3e272e884a885b673bea83d797a4f2cce2607d2979107819d53333a",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -18224,9 +18224,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[25]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "1cd3e8d820ec0a8a1f069ae7a90df0e1c6955d0f8a60245152f57e1555b37416",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -19299,9 +19299,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[50]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "b3265b88369d6cfbe0475fa3b01e2bb7cc39368efeffec49e6e5c33c80619039",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -19336,9 +19336,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[51]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "ea3d3c22e53efc98a7390994e5a5db58ca45eb4c1290e8bd78759686a53d5673",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21149,9 +21149,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[15]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "46bb6566c05731d46c1052487c3f0dbe3eb343f96c9197200477d58c1758f055",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21187,9 +21187,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[16]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "9904a284e1b453b18fbe29806e4477e78678e68cc0ecb2cbcb8ceb0daeae57bb",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -21963,9 +21963,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[35]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "c56227d99f6b77f3b1b19e2ce51920e39246439e864dc4b394adf2a440049a7b",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -22001,9 +22001,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[36]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "af8efab20c84b6bcc1ffd1f81ca453ff3a9fd5e596bb0ca17523fe6b997eea4f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -22973,9 +22973,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "7c612825fe3e41621772dad69dc2e4c427b7de97aa2fea9914f63bbbb1ba050e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -23198,9 +23198,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/global-timeoutMS.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "af09e746b29ca9e7405c7f1d6e6c6b0db3a5f49dc730bac0b308600669f6633e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -24916,9 +24916,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[19]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "42cc3d39d92471cd3ab2ada29129c8b4ac88ed46d1408444b3db72da06c3e0f9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -24991,9 +24991,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-collection-timeoutMS.json::test[20]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "65c2f2f04e4124cf9002cd219d1fa9495a7a6ee89366088aab6fed500cdd403b",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -26378,9 +26378,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "8f38f436820f9056714af65ff39e4c2514ba83fd2034426cf9c838f8b6b3371d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -27118,9 +27118,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[29]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "637ddeb7dd1d31d50aaf69c4c4bf6d07bb23a815748358cca041ea77c20bb835",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -27194,9 +27194,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[30]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "f5a963d7479e8d9b8b4ba9813e2d46085540706373c7f720eb8add59679bdedf",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -28508,9 +28508,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-database-timeoutMS.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "e93bf14fac14ba63b742d5a16841aa0f2a45ab0e385b7f17e4c80b8de0ceae88",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -28728,9 +28728,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[15]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "b6474b2ea089836c2e1239a4a274e3a231e3b7489c25165db7e832352ce7c322",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -28765,9 +28765,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[16]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "9e91efbbd3b89396017a5c4f23e490e806e68dab67599d6785438a16b8cf8432",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -29520,9 +29520,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[35]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "5e50f507ac51c11f3d8cbc9dc144b353dab3336cad5c757607d364e0261a3ebe",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -29557,9 +29557,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[36]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "2058483ccdc6d51d0e23db85680f73cf5aedcaa72aba0877445bf4e02075950b",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -30503,9 +30503,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "98551414864410a57b3a4447ef31561d68069c81f74403c96169ccac79bd237f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -30727,9 +30727,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/override-operation-timeoutMS.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "bc504f77d9366d8d87d4f9a0ab6d02286e45700bc3c1736a55d8f388cd3825c3",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31339,9 +31339,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[23]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "6189a65653b3932537dc806b9761bced39fec5f8559ac581b8994eb2c1f479a0",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31373,9 +31373,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[24]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "c7075c21ad398e6c001aeb025cb6b829442cd5488340c13752fb1eaaaf32fad8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31640,9 +31640,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[31]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "a5561416987a296159ec11aec8d2708f6660e139127267371e2fc7745f0565c7",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -31674,9 +31674,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[32]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "706da543a4cff95e5f36d931a1750cf184929ebdcf66064b7881f48b8b7354a9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32269,9 +32269,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[49]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "f34dad479b4abbc4e10ae7635b8c1eff2f986e5b33d08158e7395c19a0074ff9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -32336,9 +32336,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-legacy-timeouts.json::test[50]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "0de15ecb0ec2460fab2539342b712d801fd72a6a8b4b7cc6e3db42cf3ca30165",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33438,9 +33438,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[34]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "4b82c76a43f6e9370dee8e6c8c0dfd834ffe5887024f61a846b4d4fe856ff67c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33470,9 +33470,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[35]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "e9fb15fa46d96bce67df420f10445c24a29631244b2e7f54198c4832dedd21cc",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33507,9 +33507,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[36]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "74dc0abd7f4475e18430c7ef0522582c6218faa7e27809e12cdc3739ec8773e8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33892,9 +33892,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[46]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "44df099886b20e1a8722e8c1a1fade850e1548f9528b80c71accad9b7143e3d7",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33924,9 +33924,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[47]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "90b9efde35c51a5e3e73c27a27798ef342838e5e5421965cc6ff748bb8f62590",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -33961,9 +33961,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[48]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "7b8573da1af3273bee2b9ba7942049c934b0d3db76d3f956c0d4c2fcf63a21ee",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -34925,9 +34925,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[73]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "3726b041cfa430d4ecba0cad32c2cfd9c5b3e5169212cfa6253aedf1f753703e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -34957,9 +34957,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[74]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "d8e3d2f5f908a7a2ada44b714704441bbe8de8807b4c4df527abbdc8bb1b07fa",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -34994,9 +34994,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/retryability-timeoutMS.json::test[75]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "3eaf76ba663a82f02c36923dc89f34871ee3feabdbb3354625ada36293146632",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -35946,9 +35946,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "8d344294309b7f06d6f1ffbbc75631635c951ed203be124c3d83c054bf6d829f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -36028,9 +36028,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "CS-008",
       "fingerprint": "6b81adc825a3545bf0f98765458e78caadb29963ee1fdeeac36a793e553c8df6",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream timeout behavior awaits the CSOT slice",
       "requirements": {
         "arguments": [
           "createChangeStream.maxAwaitTimeMS",
@@ -36408,9 +36408,9 @@
       "status": "runnable"
     },
     "collection-management/tests/createCollection-pre_and_post_images.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-009",
       "fingerprint": "b0b2272a4f65da575f422f83c2eab5f2a5a77b02f81cc4b050dfb5a14d3c632f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream pre/post images await the collection option slice",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -36526,9 +36526,9 @@
       "status": "runnable"
     },
     "collection-management/tests/modifyCollection-pre_and_post_images.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-009",
       "fingerprint": "6588720151e55d1c043cfbfd4d3d9a295051097bfc0148065d0525d889df4de0",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "change stream pre/post images await the collection option slice",
       "requirements": {
         "arguments": [
           "assertCollectionExists.collectionName",
@@ -52189,9 +52189,9 @@
       "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "8129971c11e7c641f1d67b32602abb85fc4cbe6df7459c0bad5442f4157be20d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52222,9 +52222,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[11]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "926387c51e78545fe44001e9a673f098548f2f1b894ff6bc5483b14dde820216",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52255,9 +52255,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[12]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "a061672db2c5843a919b07d11589c1e1ca165fa23727c0d30ba0901617637cfb",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52288,9 +52288,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "fd87ded50d6089012a476d17d5ac415d4757a38774127024cd5bc4335c7d839d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52323,9 +52323,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "9d93f2e3ca7cc6210ce1b437aca6ceb02c9f946a83c3b5a0f55e0769ac527ae5",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52356,9 +52356,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "a6416d188a6a9a9acf863a51ae05e7253c708deba80b6e88796fe916c84186c5",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52389,9 +52389,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "6a9b9e78848ad946a34900398b58093c6cb6653b3101b4622fb70e16f05276bd",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52422,9 +52422,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "9bd4de280f8ad89f2d49baf6fb8ee0e3c6e96eb92bcc73ae237dcfa254361492",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52455,9 +52455,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "9279703a3c57ad9d804ee0daea5e04a0d980f2c4203c226ec0b66e32ddd93a41",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52488,9 +52488,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "f99148acde946c7a8458f883546bbd72e1875e5697607057180718ca12909544",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52521,9 +52521,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "315a2164cf05c55e552a550191b853327f7707e15a6b0808e8260ef440fda93c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52554,9 +52554,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "4f21976b54249d3c02efc0cc2762e10346516a0e9526afcba60a1f8ecb4414f9",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52587,9 +52587,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch-serverErrors.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "995c25fd663b09ea8346ae756b777076eb26b8e65a3389b48b25666ce5603c7e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52620,9 +52620,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "e8aa8aee4701cab125a799d0cc05395f93fef71122ecffcf591e5e7bee4cff6d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -52649,9 +52649,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "dc0ed16fdd5f1f1ab4c861668019214f0395fe24b01748acfcae5c0dc1348829",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52682,9 +52682,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "9dac33e42203207aafa74bcfdda739c81a3710d3ccbec7fd6f494a5beafc5ae8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52717,9 +52717,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-client.watch.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "ca6970e723c9e784c4a992079a6f9ebf8ce60e33336d17d0bccb942f7e0ecfb8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52750,9 +52750,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "2494540445817e7735ca9ee2628889468dc4c6f138afd355ce4b2f8c2a85be08",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52785,9 +52785,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[11]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "1e9b490c4c6e1a377cd5a214788f671dd6e4740b0268c9e0264f0cc79f0d2d4f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52820,9 +52820,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[12]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "a55c6ce87fff128c2d899f27f863648b9b180370f02d00445811c1b7ac46cf1d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52855,9 +52855,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "7cbee3266c96867a9b8e3c1a803963ced882da2e22b28588a3635d4f272d136d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52892,9 +52892,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "7d8ec36a6e18c635e97628fa420c3aa5f5263145fab529afc5f99f37d965046a",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52927,9 +52927,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "fad2298eeefd84deea01800d4886dc3b5b1f8d8ad4bb666251dc0668a52045a1",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52962,9 +52962,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "3283033acc58a388137ed3a823dee9da48fd4924c18b2cd89b34d26949c60862",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -52997,9 +52997,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "269ece2c0d015e4175b310126a0e45da050fe9178aa53f2ab5f1f5e2ea067838",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53032,9 +53032,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "aa33321c6770e2329237625fddd035d736eec3179dc3490132822e7d56352c9f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53067,9 +53067,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "55a2348556178c6f6a7550f0165bb09abccd4f83ae83cbd83b135f3adf0662ac",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53102,9 +53102,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "72c01fc8633f7d973c4b524d092d922edf942f0a1bd99ca11755147b0ccd6ad3",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53137,9 +53137,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "8f17ea39127626721b55a107a12e34573a60cb86ec0f22b69e903e8c985063f7",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53172,9 +53172,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch-serverErrors.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "feeba2514972e2b178d63814db3b5b9b3073619bc83ea713d5906d95092ca591",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53209,7 +53209,6 @@
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[1]": {
       "activity": "ADV-001",
       "fingerprint": "3d898453f20ba29435a77d76506862e582b021446112a1fd6d72639ff5f15edc",
-      "reason": "change streams are a post-v1 capability",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -53235,12 +53234,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "1e7dd8e633bc2b0ee46d3560316a822156d31458bf9968af10009c5b81b6c8c1",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53273,9 +53272,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "4abcb050bbbd1fbf4c327f386265e66ab9e163f75cc1c9224a1d448c6eb9868c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53310,9 +53309,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "5072449c1cf3c09b57004c624ea11990aa033cbdee9b30e1e573d85d0a800df1",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53345,9 +53344,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[10]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "00ffb8705ee9866b90b984db0d2769c1b94b11e4dd72eb0d8ed0e120b953c052",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53379,9 +53378,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[11]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "85e3481e11a817e82e4d5c7cd0cd41142e8fee34e4941bc6c67cf416048855a8",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53413,9 +53412,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[12]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "8cbfa1fe068f96ab6d5dcbd5e7ca3e387173638b08d9e04c031c2aafe0d2813f",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53447,9 +53446,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "7b13c92ef8609370424e0ded9a4b5e3a5cdee380d2ed16e96326dd80669e7fdc",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53483,9 +53482,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "bfc331bc7a23e4bd43df3805952acb020a4518d8a0e97e5920e6cf0e5df75222",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53517,9 +53516,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "622d73a88142f43816b1d7eeb22181eb8777f2bd62346138b692c09c834c8dc7",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53551,9 +53550,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "ac24e30022d6bdeb4848bb023e2772048e957ce67a4794cbcab0776ac95e5b7d",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53585,9 +53584,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "231025754583ec82855bdd3a2aa28b82838021cb0e13e7162bd549d5f84e7284",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53619,9 +53618,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "eb588adf3fc57cc214592fd6112beac8bdef4c9bfc1c2b83db4ed2f06caefe05",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53653,9 +53652,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "5419da0bf02e588eea69484550844ff2305e9b0328492aca24a19c6171e92422",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53687,9 +53686,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[7]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "f49ff4f9ad51c3afe6009279ab8122b4542c6b3b7b3691166e3d48aa80c3c10e",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53721,9 +53720,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[8]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "b220d82e2e03a4539f6241b463b95eb63b4dc8dc357a55126b28e0c130947638",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53755,9 +53754,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch-serverErrors.json::test[9]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "b43a52b429da775e80bc0e71d386ba05ffbd66659576edd451ed7151df1353c0",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53789,9 +53788,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[1]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "cc5a6d8ac4d48fac1da81c4429aba293bd2d0b5157f21e033764570e1de84376",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline"
@@ -53819,9 +53818,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[2]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "bdd3f9cb35f7ce4c17f46f1535c9783be27a83346b71879faad0c975f4d2db14",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53853,9 +53852,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[3]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "e1487a4bf06b2b505a434570fa7484d75e45ba9d2553618ac5615e5c3b9acf34",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -53889,9 +53888,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/changeStreams-db.watch.json::test[4]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "447bdfc07f0c47c29d1e9d999bc05b133cdb38ef2932ef04f611a799e14cc3cf",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -58996,9 +58995,9 @@
       "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[13]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "cb9230a011a541a179775d1d28fe116572394b669b424d57d187fb30e5969db7",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59037,9 +59036,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[14]": {
-      "activity": "ADV-001",
+      "activity": "CS-006",
       "fingerprint": "dce2630761bd7f3c1d0f3cda86d1c896149c2ba6846d216e6a403387aa080d2c",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "database change streams await the database watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59794,9 +59793,9 @@
       "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[31]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "7478c16d7657d27cc386cc4f5b400a24b57912b183026e7e4fc5c815ecdb35c0",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59835,9 +59834,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[32]": {
-      "activity": "ADV-001",
+      "activity": "REL-051",
       "fingerprint": "af60d15dae6aa74d4953c247c40cc95729e0f715e9a2e97fffb5b0599a0b8a9a",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "the case awaits the v0.5 change stream conformance closure",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59954,9 +59953,9 @@
       "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[5]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "5acc09ec867ecc969899431b5481e85068cc5beb7b52d96afd62f2040ca026dc",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -59995,9 +59994,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[6]": {
-      "activity": "ADV-001",
+      "activity": "CS-007",
       "fingerprint": "e129026e2352436603bc9439c8f8e6f5986e062de3f886b1fa10d9b4b0311bab",
-      "reason": "change streams are a post-v1 capability",
+      "reason": "cluster change streams await the client watch slice",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",

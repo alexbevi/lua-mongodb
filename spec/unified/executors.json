@@ -3131,6 +3131,10 @@
       "environment": "live-standalone",
       "testCommands": true
     },
+    "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[1]": {
+      "activity": "ADV-001",
+      "environment": "live-replicaset"
+    },
     "retryable-reads/tests/unified/countDocuments-serverErrors.json::test[10]": {
       "activity": "RETRY-001",
       "environment": "live-standalone",

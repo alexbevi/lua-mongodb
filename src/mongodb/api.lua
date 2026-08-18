@@ -1,6 +1,7 @@
 local admin = require("mongodb.admin")
 local bson = require("mongodb.bson")
 local bulk = require("mongodb.bulk")
+local change_stream = require("mongodb.change_stream")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
@@ -863,6 +864,39 @@ function COLLECTION_METHODS:aggregate(pipeline, options)
   end
 
   return register_cursor(self, cursor)
+end
+
+local function change_stream_pipeline(pipeline)
+  pipeline = pipeline or bson.array({})
+
+  if not bson.is_array(pipeline) then
+    error("change stream pipeline must be a BSON array", 3)
+  end
+
+  local stages = {
+    bson.document({ { "$changeStream", bson.document({}) } }),
+  }
+
+  for _, stage in pipeline:iter() do
+    stages[#stages + 1] = stage
+  end
+
+  return bson.array(stages)
+end
+
+function COLLECTION_METHODS:watch(pipeline, options)
+  local cursor, err = collection_operation(
+    self,
+    crud.aggregate,
+    change_stream_pipeline(pipeline),
+    options
+  )
+
+  if not cursor then
+    return nil, err
+  end
+
+  return change_stream.new(register_cursor(self, cursor))
 end
 
 function COLLECTION_METHODS:count_documents(filter, options)

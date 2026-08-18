@@ -4658,6 +4658,35 @@
       "notes": [],
       "started_at": "2026-08-17T22:01:37+00:00",
       "completed_at": "2026-08-17T22:08:11+00:00"
+    },
+    "ADV-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua'",
+          "exit_code": 1,
+          "summary": "The defining collection watch test errored at collection:watch because the public watch method does not exist; 0 successes, 1 error.",
+          "recorded_at": "2026-08-18T01:02:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/change_stream_spec.lua' FOCUS_INTEGRATION='spec/integration/change_stream_spec.lua' FOCUS_UNIFIED='retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[[]1]' FOCUS_PYTHON='targeted capability, ledger, and release-scope cases' FOCUS_LINT='touched Lua files'",
+          "exit_code": 0,
+          "summary": "The defining unit and deterministic OP_MSG integration cases each passed; the exact collection createChangeStream unified case passed on a live replica set; five directly coupled capability, ledger, and release-scope assertions passed; touched Lua lint reported zero warnings or errors.",
+          "recorded_at": "2026-08-18T01:17:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted test-architecture test-complexity test-package",
+          "exit_code": 0,
+          "summary": "Architecture boundaries passed, the Lua complexity baseline remained current, and both installed-source-rock package tests passed with Lua 5.4. Generated capability, conformance, release-scope, v0.4-scope, and README projection checks also passed.",
+          "recorded_at": "2026-08-18T01:17:16+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T01:00:57+00:00",
+      "completed_at": "2026-08-18T01:17:17+00:00"
     }
   },
   "verified_references": {

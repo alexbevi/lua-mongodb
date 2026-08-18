@@ -1399,6 +1399,10 @@ local CURSOR_OPERATIONS = {
   },
 }
 
+local function create_change_stream(_, collection, arguments)
+  return collection:watch(arguments:get("pipeline") or bson.array({}))
+end
+
 local function create_collection(_, database, arguments)
   return database:create_collection(arguments:get("collection"), operation_options(
     arguments,
@@ -2198,6 +2202,7 @@ function M.new(options)
     end,
     environment = options.environment,
     entity_finalizers = {
+      changeStream = finalize_cursor,
       client = finalize_client,
       commandCursor = finalize_cursor,
       findCursor = finalize_cursor,
@@ -2210,6 +2215,7 @@ function M.new(options)
     },
     internal_client = internal_client_adapter(internal_client, state),
     operations = {
+      changeStream = CURSOR_OPERATIONS,
       client = {
         appendMetadata = {
           arguments = { "driverInfoOptions" },
@@ -2233,6 +2239,11 @@ function M.new(options)
         },
       },
       collection = {
+        createChangeStream = {
+          arguments = { "pipeline" },
+          handler = create_change_stream,
+          result_kind = "changeStream",
+        },
         createFindCursor = {
           arguments = {
             "allowDiskUse", "batchSize", "collation", "comment", "filter",

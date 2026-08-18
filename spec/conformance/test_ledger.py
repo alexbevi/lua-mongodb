@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1693,
+      "deferred_unsupported": 1692,
       "excluded_scope": 2,
-      "passed": 3829,
+      "passed": 3830,
     }, generated["summary"]["statuses"])
 
     sharded_command_cursor = generated["cases"][
@@ -396,7 +396,7 @@ class ConformanceLedgerTests(unittest.TestCase):
     ]
 
     self.assertEqual(
-      ["ADV-001"] * len(pre_post_images),
+      ["CS-009"] * len(pre_post_images),
       [cases[identity]["activity"] for identity in pre_post_images],
     )
     self.assertEqual(

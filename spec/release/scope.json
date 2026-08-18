@@ -1,6 +1,5 @@
 {
   "deferred_by_activity": {
-    "ADV-001": 197,
     "ADV-002": 169,
     "ADV-004": 5,
     "ADV-006": 61,
@@ -9,10 +8,15 @@
     "ADV-010": 777,
     "ADV-011": 157,
     "ADV-012": 15,
-    "AUTH-019": 11
+    "AUTH-019": 11,
+    "CS-006": 19,
+    "CS-007": 19,
+    "CS-008": 49,
+    "CS-009": 2,
+    "REL-051": 107
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1693
+    "post-v1-exclusion": 1692
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -51,6 +55,15 @@
     "CMAP-002": "authentication failure pool clearing is outside production-core v1",
     "CMAP-003": "application error pool-clear ordering is outside production-core v1",
     "CMAP-004": "interrupting in-use connections is outside production-core v1",
+    "CS-001": "change stream option forwarding is outside production-core v1",
+    "CS-002": "cooperative change stream iteration is outside production-core v1",
+    "CS-003": "change stream resume-token tracking is outside production-core v1",
+    "CS-004": "automatic change stream resume is outside production-core v1",
+    "CS-005": "change stream resume positioning is outside production-core v1",
+    "CS-006": "database change streams are outside production-core v1",
+    "CS-007": "cluster change streams are outside production-core v1",
+    "CS-008": "change stream timeout behavior is outside production-core v1",
+    "CS-009": "change stream pre/post images are outside production-core v1",
     "DNS-001": "sharded SRV host limiting is outside production-core v1",
     "IDX-001": "single Search index creation is outside production-core v1",
     "IDX-002": "multiple Search index creation is outside production-core v1",
@@ -58,6 +71,7 @@
     "IDX-004": "Search index updates are outside production-core v1",
     "IDX-005": "Search index deletion is outside production-core v1",
     "IDX-006": "Search index concern omission is outside production-core v1",
+    "REL-051": "complete v0.5 change stream conformance is outside production-core v1",
     "SDAM-004": "sharded topology shutdown is outside production-core v1",
     "SDAM-005": "server monitoring modes are outside production-core v1",
     "SDAM-006": "monitor error and timeout handling is outside production-core v1",
@@ -76,9 +90,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1693,
+    "deferred_unsupported": 1692,
     "excluded_scope": 2,
-    "passed": 3829
+    "passed": 3830
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

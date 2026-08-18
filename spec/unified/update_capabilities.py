@@ -42,6 +42,13 @@ OWNER_REASONS = {
   "CMAP-002": "authentication failure pool clearing awaits the v0.4 CMAP slice",
   "CMAP-003": "application error pool-clear ordering awaits the v0.4 CMAP slice",
   "CMAP-004": "interrupting in-use connections awaits the v0.4 CMAP slice",
+  "CS-001": "change stream command options await the dedicated option slice",
+  "CS-004": "change stream error recovery awaits the resumability slice",
+  "CS-005": "change stream resume positioning awaits the position slice",
+  "CS-006": "database change streams await the database watch slice",
+  "CS-007": "cluster change streams await the client watch slice",
+  "CS-008": "change stream timeout behavior awaits the CSOT slice",
+  "CS-009": "change stream pre/post images await the collection option slice",
   "IDX-001": "single Search index creation awaits the v0.4 index slice",
   "IDX-002": "multiple Search index creation awaits the v0.4 index slice",
   "IDX-003": "Search index listing awaits the v0.4 index slice",
@@ -96,6 +103,7 @@ OWNER_REASONS = {
   "REL-039": "minimum pools await replenishment after pool clears",
   "REL-040": "replica sets await prompt rediscovery after step-down",
   "REL-041": "topology shutdown awaits final description-change publication",
+  "REL-051": "the case awaits the v0.5 change stream conformance closure",
   "RETRY-001": "retryable-read orchestration is not implemented",
   "RETRY-002": "retryable-write orchestration is not implemented",
   "SDAM-002": "public monitoring, replica-set discovery, and SDAM event execution are not implemented",
@@ -112,7 +120,7 @@ OWNER_REASONS = {
 
 SPECIFICATION_OWNERS = {
   "auth": "AUTH-018",
-  "change-streams": "ADV-001",
+  "change-streams": "REL-051",
   "client-side-encryption": "ADV-010",
   "mongodb-handshake": "REL-031",
   "retryable-reads": "RETRY-001",
@@ -395,9 +403,9 @@ for identity in (
 
 for fixture, count, owner, reason in (
   ("count", 17, "ADV-011", "legacy count is outside the v1 public API"),
-  ("changeStreams-client.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
-  ("changeStreams-db.coll.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
-  ("changeStreams-db.watch", 17, "ADV-001", OWNER_REASONS["ADV-001"]),
+  ("changeStreams-client.watch", 17, "CS-007", OWNER_REASONS["CS-007"]),
+  ("changeStreams-db.coll.watch", 17, "REL-051", OWNER_REASONS["REL-051"]),
+  ("changeStreams-db.watch", 17, "CS-006", OWNER_REASONS["CS-006"]),
   ("gridfs-download", 17, "ADV-002", OWNER_REASONS["ADV-002"]),
   ("gridfs-downloadByName", 17, "ADV-002", OWNER_REASONS["ADV-002"]),
 ):
@@ -413,6 +421,10 @@ for fixture, count, owner, reason in (
       f"retryable-reads/tests/unified/{fixture}-serverErrors.json::test[{index}]"
     ] = (owner, reason)
 
+TEST_OVERRIDES[
+  "retryable-reads/tests/unified/changeStreams-db.coll.watch.json::test[1]"
+] = ("ADV-001", None)
+
 for fixture, count, owner, reason in (
   ("handshakeError", 32, "REL-034", OWNER_REASONS["REL-034"]),
   ("mapReduce", 3, "ADV-011", "legacy mapReduce is outside the v1 public API"),
@@ -422,10 +434,20 @@ for fixture, count, owner, reason in (
       f"retryable-reads/tests/unified/{fixture}.json::test[{index}]"
     ] = (owner, reason)
 
-for index in (5, 6, 13, 14, 31, 32):
+for index in (5, 6):
   TEST_OVERRIDES[
     f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("ADV-001", OWNER_REASONS["ADV-001"])
+  ] = ("CS-007", OWNER_REASONS["CS-007"])
+
+for index in (13, 14):
+  TEST_OVERRIDES[
+    f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("CS-006", OWNER_REASONS["CS-006"])
+
+for index in (31, 32):
+  TEST_OVERRIDES[
+    f"retryable-reads/tests/unified/handshakeError.json::test[{index}]"
+  ] = ("REL-051", OWNER_REASONS["REL-051"])
 
 for index in (7, 8):
   TEST_OVERRIDES[
@@ -737,7 +759,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   entities = set(test["requirements"]["entities"])
 
   if "createChangeStream" in operations:
-    return "ADV-001", OWNER_REASONS["ADV-001"]
+    return "CS-008", OWNER_REASONS["CS-008"]
 
   if "bucket" in entities:
     return (
@@ -797,7 +819,7 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
     )
 
   if fixture == "change-streams.json":
-    return "ADV-001", OWNER_REASONS["ADV-001"]
+    return "CS-008", OWNER_REASONS["CS-008"]
 
   if fixture.startswith("gridfs-") or {"upload", "download", "delete"} & operations:
     return "ADV-002", OWNER_REASONS["ADV-002"]
@@ -830,7 +852,7 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
     fixture = Path(test["fixture"]).name
 
     if "pre_and_post_images" in fixture:
-      return "ADV-001", OWNER_REASONS["ADV-001"]
+      return "CS-009", OWNER_REASONS["CS-009"]
     elif fixture in {"clustered-indexes.json", "timeseries-collection.json"}:
       return "REL-019", OWNER_REASONS["REL-019"]
     elif fixture == "modifyCollection-errorResponse.json":

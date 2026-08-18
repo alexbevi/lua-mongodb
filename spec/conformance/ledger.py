@@ -33,7 +33,7 @@ DEFAULT_OWNERS = {
   "auth": "AUTH-018",
   "bson-binary-vector": "REL-002",
   "causal-consistency": "SES-001",
-  "change-streams": "ADV-001",
+  "change-streams": "REL-051",
   "client-backpressure": "ADV-009",
   "client-side-encryption": "ADV-010",
   "client-side-operations-timeout": "TIME-001",
@@ -511,7 +511,7 @@ def classify_case(
     "createCollection-pre_and_post_images.json",
     "modifyCollection-pre_and_post_images.json",
   }:
-    return _deferred(case, "ADV-001", activities)
+    return _deferred(case, "CS-009", activities)
 
   if suite == "collection-management" and Path(path).name in {
     "listCollections-rawdata.json",
