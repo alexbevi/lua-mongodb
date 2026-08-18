@@ -48,7 +48,9 @@ OWNER_REASONS = {
   "CS-006": "database change streams await the database watch slice",
   "CS-007": "cluster change streams await the client watch slice",
   "CS-008": "change stream timeout behavior awaits the CSOT slice",
-  "CS-009": "change stream pre/post images await the collection option slice",
+  "CS-009": "change stream images on collection creation await the create option slice",
+  "CS-010": "change stream images on collection modification await the modify option slice",
+  "CS-011": "change stream pre/post image events await the image event slice",
   "IDX-001": "single Search index creation awaits the v0.4 index slice",
   "IDX-002": "multiple Search index creation awaits the v0.4 index slice",
   "IDX-003": "Search index listing awaits the v0.4 index slice",
@@ -885,8 +887,10 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
   if specification == "collection-management":
     fixture = Path(test["fixture"]).name
 
-    if "pre_and_post_images" in fixture:
+    if fixture == "createCollection-pre_and_post_images.json":
       return "CS-009", OWNER_REASONS["CS-009"]
+    elif fixture == "modifyCollection-pre_and_post_images.json":
+      return "CS-010", OWNER_REASONS["CS-010"]
     elif fixture in {"clustered-indexes.json", "timeseries-collection.json"}:
       return "REL-019", OWNER_REASONS["REL-019"]
     elif fixture == "modifyCollection-errorResponse.json":

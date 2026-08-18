@@ -33,8 +33,10 @@ describe("database and collection management", function()
     }
     local client = api.new_client(executor, config())
     local database = assert(client:database("app"))
+    local images = bson.document({ { "enabled", true } })
     local collection = assert(database:create_collection("events", {
       capped = true,
+      change_stream_pre_and_post_images = images,
       size = 4096,
     }))
 
@@ -44,6 +46,9 @@ describe("database and collection management", function()
     assert.are.equal("events", sent.command:get("create"))
     assert.is_true(sent.command:get("capped"))
     assert.are.equal(4096, sent.command:get("size"))
+    assert.are.equal(images, sent.command:get("changeStreamPreAndPostImages"))
+    assert.is_nil(sent.command:get("readConcern"))
+    assert.is_nil(sent.command:get("writeConcern"))
   end)
 
   it("emits the server write concern timeout field", function()

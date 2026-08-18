@@ -1435,6 +1435,7 @@ local function create_collection(_, database, arguments)
   return database:create_collection(arguments:get("collection"), operation_options(
     arguments,
     {
+      changeStreamPreAndPostImages = "change_stream_pre_and_post_images",
       clusteredIndex = "clustered_index",
       expireAfterSeconds = "expire_after_seconds",
       pipeline = "pipeline",
@@ -2499,8 +2500,8 @@ function M.new(options)
         },
         createCollection = {
           arguments = {
-            "clusteredIndex", "collection", "expireAfterSeconds", "pipeline",
-            "timeseries", "viewOn",
+            "changeStreamPreAndPostImages", "clusteredIndex", "collection",
+            "expireAfterSeconds", "pipeline", "timeseries", "viewOn",
           },
           handler = create_collection,
         },

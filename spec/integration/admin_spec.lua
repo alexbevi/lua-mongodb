@@ -45,6 +45,11 @@ describe("administration commands over OP_MSG", function()
       local create = receive_frame(peer)
       assert.are.equal("create", create.body:keys()[1])
       assert.are.equal("events", create.body:get("create"))
+      assert.is_true(
+        create.body:get("changeStreamPreAndPostImages"):get("enabled")
+      )
+      assert.is_nil(create.body:get("readConcern"))
+      assert.is_nil(create.body:get("writeConcern"))
       send_response(peer, create, bson.document({ { "ok", 1 } }))
 
       local create_indexes = receive_frame(peer)
@@ -174,7 +179,11 @@ describe("administration commands over OP_MSG", function()
           { runtime = mongodb.runtime.copas() }
         ))
         local database = client:database()
-        local collection = assert(database:create_collection("events"))
+        local collection = assert(database:create_collection("events", {
+          change_stream_pre_and_post_images = bson.document({
+            { "enabled", true },
+          }),
+        }))
 
         assert.are.equal(
           "kind_1",

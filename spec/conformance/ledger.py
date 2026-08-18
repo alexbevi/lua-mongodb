@@ -507,11 +507,17 @@ def classify_case(
       "deterministic-runtime",
     )
 
-  if suite == "collection-management" and Path(path).name in {
-    "createCollection-pre_and_post_images.json",
-    "modifyCollection-pre_and_post_images.json",
-  }:
+  if (
+    suite == "collection-management"
+    and Path(path).name == "createCollection-pre_and_post_images.json"
+  ):
     return _deferred(case, "CS-009", activities)
+
+  if (
+    suite == "collection-management"
+    and Path(path).name == "modifyCollection-pre_and_post_images.json"
+  ):
+    return _deferred(case, "CS-010", activities)
 
   if suite == "collection-management" and Path(path).name in {
     "listCollections-rawdata.json",

@@ -9,11 +9,11 @@
     "ADV-011": 174,
     "ADV-012": 15,
     "AUTH-019": 11,
-    "CS-009": 2,
+    "CS-010": 1,
     "REL-051": 64
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1585
+    "post-v1-exclusion": 1584
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -60,7 +60,9 @@
     "CS-006": "database change streams are outside production-core v1",
     "CS-007": "cluster change streams are outside production-core v1",
     "CS-008": "change stream timeout behavior is outside production-core v1",
-    "CS-009": "change stream pre/post images are outside production-core v1",
+    "CS-009": "change stream images on collection creation are outside production-core v1",
+    "CS-010": "change stream images on collection modification are outside production-core v1",
+    "CS-011": "change stream pre/post image events are outside production-core v1",
     "DNS-001": "sharded SRV host limiting is outside production-core v1",
     "IDX-001": "single Search index creation is outside production-core v1",
     "IDX-002": "multiple Search index creation is outside production-core v1",
@@ -87,9 +89,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1585,
+    "deferred_unsupported": 1584,
     "excluded_scope": 2,
-    "passed": 3937
+    "passed": 3938
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

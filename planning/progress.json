@@ -4926,6 +4926,35 @@
       "notes": [],
       "started_at": "2026-08-18T03:16:41+00:00",
       "completed_at": "2026-08-18T03:33:47+00:00"
+    },
+    "CS-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/unified_driver_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining unified createCollection adapter case failed with 6 successes and 1 failure: the operation report recorded 0 passes instead of 1 because changeStreamPreAndPostImages was not an accepted/mapped argument, so the public database method was never invoked.",
+          "recorded_at": "2026-08-18T03:45:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='collection-management/tests/createCollection-pre_and_post_images.json::test[[]1]'",
+          "exit_code": 0,
+          "summary": "The exact newly applicable createCollection pre/post-image identity executed on a real standalone: 1 passed, 0 environment-skipped, 0 deferred, and 0 failed. The modifyCollection identity remains explicitly deferred to CS-010.",
+          "recorded_at": "2026-08-18T03:51:13+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with administration and unified-driver units, administration OP_MSG integration, targeted capability/ledger/release contracts, and touched Lua lint; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Focused verification passed: 21 unit, 1 directly coupled loopback integration, and 12 targeted Python cases; touched-file lint reported 0 warnings/errors in 4 files. Complexity remained at 3 baselined hotspots with maximum 47, and all capability, ledger, release, README, JSON, and diff validators passed.",
+          "recorded_at": "2026-08-18T03:51:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T03:43:45+00:00",
+      "completed_at": "2026-08-18T03:51:14+00:00"
     }
   },
   "verified_references": {
