@@ -1647,6 +1647,7 @@ local function aggregate(_, collection, arguments)
       comment = "comment",
       hint = "hint",
       let = "let",
+      maxAwaitTimeMS = "max_await_time_ms",
       maxTimeMS = "max_time_ms",
       rawData = "raw_data",
     }
@@ -1680,6 +1681,7 @@ local function create_find_cursor(_, collection, arguments, _, path)
       hint = "hint",
       let = "let",
       limit = "limit",
+      maxAwaitTimeMS = "max_await_time_ms",
       maxTimeMS = "max_time_ms",
       projection = "projection",
       rawData = "raw_data",
@@ -1701,6 +1703,7 @@ local function find(_, collection, arguments)
       hint = "hint",
       let = "let",
       limit = "limit",
+      maxAwaitTimeMS = "max_await_time_ms",
       maxTimeMS = "max_time_ms",
       projection = "projection",
       rawData = "raw_data",
@@ -2371,8 +2374,8 @@ function M.new(options)
         createFindCursor = {
           arguments = {
             "allowDiskUse", "batchSize", "collation", "comment", "filter",
-            "cursorType", "hint", "let", "limit", "maxTimeMS", "projection",
-            "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
+            "cursorType", "hint", "let", "limit", "maxAwaitTimeMS", "maxTimeMS",
+            "projection", "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
           },
           handler = create_find_cursor,
           result_kind = "findCursor",
@@ -2416,7 +2419,8 @@ function M.new(options)
         aggregate = {
           arguments = {
             "allowDiskUse", "batchSize", "bypassDocumentValidation", "collation",
-            "comment", "hint", "let", "maxTimeMS", "pipeline", "rawData",
+            "comment", "hint", "let", "maxAwaitTimeMS", "maxTimeMS",
+            "pipeline", "rawData",
           },
           handler = aggregate,
         },
@@ -2456,8 +2460,8 @@ function M.new(options)
         find = {
           arguments = {
             "allowDiskUse", "batchSize", "collation", "comment", "cursorType",
-            "filter", "hint", "let", "limit", "maxTimeMS", "projection",
-            "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
+            "filter", "hint", "let", "limit", "maxAwaitTimeMS", "maxTimeMS",
+            "projection", "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
           },
           handler = find,
         },

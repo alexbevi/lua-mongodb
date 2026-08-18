@@ -1,6 +1,11 @@
 {
   "schema_version": 1,
   "tests": {
+    "client-side-operations-timeout/tests/tailable-awaitData.json::test[1]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/tailable-awaitData.json::test[2]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/tailable-awaitData.json::test[3]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/tailable-awaitData.json::test[5]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
+    "client-side-operations-timeout/tests/tailable-awaitData.json::test[6]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[1]": {"activity": "LEG-009", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[2]": {"activity": "LEG-009", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]": {"activity": "LEG-009", "environment": "isolated-replicaset", "testCommands": true},

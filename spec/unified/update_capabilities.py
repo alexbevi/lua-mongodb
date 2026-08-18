@@ -610,7 +610,7 @@ for index in (1, 2, 3, 5, 6):
     f"client-side-operations-timeout/tests/tailable-awaitData.json::test[{index}]"
   ] = (
     "LEG-011",
-    "awaitData cursor timeout option validation awaits its dedicated slice",
+    None,
   )
 
 for fixture in (

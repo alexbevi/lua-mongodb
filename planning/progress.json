@@ -5619,6 +5619,28 @@
       "notes": [],
       "started_at": "2026-08-18T18:44:01+00:00",
       "completed_at": "2026-08-18T18:48:09+00:00"
+    },
+    "LEG-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=rejects.an.awaitData.wait.at.the.client.timeout spec/unit/cursor_spec.lua'",
+          "exit_code": 2,
+          "summary": "1 focused unit case failed because an invalid max_await_time_ms combination returned the temporary unsupported-timeout error instead of the normative client validation error",
+          "recorded_at": "2026-08-18T18:55:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/database_aggregate_spec.lua spec/unit/change_stream_spec.lua' FOCUS_UNIFIED='client-side-operations-timeout/tests/tailable-awaitData.json::test[[][1-7]]' FOCUS_PYTHON='awaitData ownership plus conformance/release/v0.4/v0.5/README contracts' FOCUS_LINT='4 touched Lua files'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "35 focused Lua cases passed; 7 exact awaitData validation identities executed and passed with 0 environment skips, 0 deferred, and 0 failed, including 5 newly enabled find/aggregate cases and 2 directly coupled watch cases; 33 Python contracts passed; 4 touched Lua files linted; complexity, capability, ledger, release scope, v0.4, v0.5, checklist, README, JSON, Python compile, and diff validators passed",
+          "recorded_at": "2026-08-18T19:02:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T18:54:22+00:00",
+      "completed_at": "2026-08-18T19:02:41+00:00"
     }
   },
   "verified_references": {

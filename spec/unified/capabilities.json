@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1787,
-    "runnable": 1787
+    "passed": 1792,
+    "runnable": 1792
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -35730,7 +35730,6 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[1]": {
       "activity": "LEG-011",
       "fingerprint": "693bb001a82af1046585aae676f4400054cf21369d84afe4c7b712e8d3cf8218",
-      "reason": "awaitData cursor timeout option validation awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -35752,12 +35751,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[2]": {
       "activity": "LEG-011",
       "fingerprint": "c7dfa36ebc2a224cd5f201d87812754549d627cede39164b97515cb99ae1dbae",
-      "reason": "awaitData cursor timeout option validation awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -35780,12 +35778,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[3]": {
       "activity": "LEG-011",
       "fingerprint": "2c270e84a797aaf5d88fbe01172ce529e187961de5def7556f82d62b484771b7",
-      "reason": "awaitData cursor timeout option validation awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "aggregate.maxAwaitTimeMS",
@@ -35807,7 +35804,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[4]": {
       "activity": "CS-008",
@@ -35838,7 +35835,6 @@
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[5]": {
       "activity": "LEG-011",
       "fingerprint": "3b5526ff463f47c6082a47cc16863aa4259977b841ce7a16c44954484254ce95",
-      "reason": "awaitData cursor timeout option validation awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "find.cursorType",
@@ -35861,12 +35857,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[6]": {
       "activity": "LEG-011",
       "fingerprint": "69bf73d583d17559ed52db8dd1d6c3db0c78c551c7e4d27953e437b7f297a567",
-      "reason": "awaitData cursor timeout option validation awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "aggregate.maxAwaitTimeMS",
@@ -35888,7 +35883,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[7]": {
       "activity": "CS-008",

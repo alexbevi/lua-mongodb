@@ -211,6 +211,7 @@ for name in pairs(FIND_OPTION_FIELDS) do
 end
 
 FIND_OPTIONS.cursor_type = true
+FIND_OPTIONS.max_await_time_ms = true
 
 local function protocol_error(message, details)
   return nil, errors.new({
@@ -1076,6 +1077,19 @@ function M.aggregate(state, pipeline, options)
   require_nonnegative_integer(options, "batch_size")
   require_nonnegative_integer(options, "max_await_time_ms")
   require_nonnegative_integer(options, "max_time_ms")
+  local timeout_context = operation_timeout.capture()
+  local timeout_ms = timeout_context and timeout_context.timeout_ms
+
+  if options.max_await_time_ms ~= nil
+      and timeout_ms ~= nil and timeout_ms > 0
+      and options.max_await_time_ms >= timeout_ms
+  then
+    return nil, errors.new({
+      category = errors.CATEGORY.CLIENT,
+      message = "max_await_time_ms must be less than timeout_ms",
+    })
+  end
+
   options.session_context = options.session == nil
     and type(state.executor.release_session_context) == "function" and {} or nil
   local writes = pipeline_writes(pipeline)
@@ -1529,6 +1543,7 @@ function M.find(state, filter, options)
   end
 
   options = validate_options(options, FIND_OPTIONS, "find")
+  require_nonnegative_integer(options, "max_await_time_ms")
   local cursor_type = options.cursor_type or "non_tailable"
   local session_context = options.session == nil
     and type(state.executor.release_session_context) == "function" and {} or nil

@@ -117,6 +117,31 @@ describe("find cursor lifecycle", function()
     })
   end)
 
+  it("rejects an awaitData wait at the client timeout", function()
+    local calls = 0
+    local executor = {
+      close = function() return true end,
+      command = function()
+        calls = calls + 1
+        error("command execution must not be reached")
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor, err = client:database("app"):collection("events"):find(
+      nil,
+      {
+        cursor_type = "tailable_await",
+        max_await_time_ms = 5,
+        timeout_ms = 5,
+      }
+    )
+
+    assert.is_nil(cursor)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal("max_await_time_ms must be less than timeout_ms", err.message)
+    assert.are.equal(0, calls)
+  end)
+
   it("keeps a lifetime deadline and refreshes an iteration deadline", function()
     local runtime = fake_runtime.new({ now = 2 })
     local deadlines = {}

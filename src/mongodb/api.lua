@@ -1147,12 +1147,25 @@ local function tailable_find_options(collection, options)
   local state = COLLECTION_STATES[collection]
 
   if options.cursor_type == "tailable_await" then
-    if options.timeout_mode ~= nil or options.timeout_ms ~= nil
-        or state.timeout_ms ~= nil
-    then
+    if options.timeout_mode == "cursor_lifetime" then
       return client_error(
-        "tailable await cursor timeouts are outside the supported API"
+        "cursor_lifetime timeout mode is not supported for tailable cursors"
       )
+    end
+
+    local timeout_ms = options.timeout_ms or state.timeout_ms
+
+    if options.max_await_time_ms ~= nil
+        and timeout_ms ~= nil and timeout_ms > 0
+        and options.max_await_time_ms >= timeout_ms
+    then
+      return client_error("max_await_time_ms must be less than timeout_ms")
+    end
+
+    if options.timeout_mode ~= nil or timeout_ms ~= nil
+        or options.max_await_time_ms ~= nil
+    then
+      return client_error("tailable await wait budgets are outside the supported API")
     end
 
     return options
