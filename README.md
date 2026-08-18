@@ -81,16 +81,19 @@ mongodb.run(function()
 end)
 ```
 
-For an LDAP-compatible deployment, select SASL PLAIN explicitly. Its authentication source defaults to the URI database, or `$external` when the URI has no database. Because PLAIN sends the password inside the TLS-protected SASL exchange, enable and validate TLS in production:
+#### Authentication
+
+Select an authentication mechanism with standard MongoDB URI options. Credentials and tokens are kept out of structured errors, and runtime-backed mechanisms resolve workload credentials when a connection authenticates.
+
+**SCRAM.** A username and password use SCRAM automatically: the driver negotiates SCRAM-SHA-256 when the server supports it and otherwise falls back to SCRAM-SHA-1. Use `authMechanism` to require a specific version, and percent-encode reserved characters in credentials.
 
 ```lua
 local client = assert(mongodb.client(
-  "mongodb://user:password@directory.example.com/"
-    .. "?authMechanism=PLAIN&tls=true"
+  "mongodb://app-user:secret@db.example.com/app?authSource=admin"
 ))
 ```
 
-For X.509 authentication, provide a client certificate/private-key PEM through the TLS adapter and select `MONGODB-X509`. The certificate subject is used as the username when the URI omits one:
+**X.509.** Provide a client certificate/private-key PEM through the TLS adapter and select `MONGODB-X509`. The certificate subject is used as the username when the URI omits one.
 
 ```lua
 local client = assert(mongodb.client(
@@ -100,6 +103,34 @@ local client = assert(mongodb.client(
     tls_ca_file = "/path/to/ca.pem",
     tls_certificate_key_file = "/path/to/client.pem",
   }
+))
+```
+
+**OIDC.** `MONGODB-OIDC` supports the `azure`, `gcp`, and `k8s` built-in environments, as well as programmatic machine and human callbacks. This Kubernetes example reads the service-account token through the runtime adapter.
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb://db.example.com/app?authMechanism=MONGODB-OIDC"
+    .. "&authMechanismProperties=ENVIRONMENT:k8s"
+))
+```
+
+For callback-based OIDC, configure exactly one function-valued `OIDC_CALLBACK` or `OIDC_HUMAN_CALLBACK` in the programmatic `auth_mechanism_properties` table. `ALLOWED_HOSTS` is accepted only with a human callback; when omitted, it defaults to the MongoDB service domains and local loopback hosts required by the authentication specification. Azure and GCP environments require `TOKEN_RESOURCE`.
+
+**MONGODB-AWS.** Select `MONGODB-AWS` without embedding credentials in the URI. At authentication time the driver checks `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and optional `AWS_SESSION_TOKEN` first; without them, it uses configured web-identity or ECS credentials, then EC2 metadata.
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb+srv://cluster.example.com/app?authMechanism=MONGODB-AWS"
+))
+```
+
+For an LDAP-compatible deployment, select SASL PLAIN explicitly. Its authentication source defaults to the URI database, or `$external` when the URI has no database. Because PLAIN sends the password inside the TLS-protected SASL exchange, enable and validate TLS in production:
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb://user:password@directory.example.com/"
+    .. "?authMechanism=PLAIN&tls=true"
 ))
 ```
 
@@ -117,8 +148,6 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 | Reads, writes, and retries | `readPreference`, `readPreferenceTags`, `maxStalenessSeconds`, `readConcernLevel`, `w`, `journal`, `wTimeoutMS`, `retryReads`, `retryWrites` |
 
 `serverMonitoringMode=auto` uses streaming monitoring except in a detected FaaS environment, where it uses polling. `stream` requests streaming on servers that support awaitable hello and falls back to polling on older servers; `poll` always waits `heartbeatFrequencyMS` after a successful check.
-
-For `MONGODB-OIDC`, configure exactly one built-in `ENVIRONMENT`, function-valued `OIDC_CALLBACK`, or function-valued `OIDC_HUMAN_CALLBACK` in the programmatic `auth_mechanism_properties` table. `ALLOWED_HOSTS` is a programmatic list accepted only with a human callback; when omitted, it defaults to the MongoDB service domains and local loopback hosts required by the authentication specification. Callbacks and allowed-host lists are rejected from connection strings. Azure and GCP environments require `TOKEN_RESOURCE`; a resource containing a comma must be supplied programmatically because commas delimit URI mechanism properties. OIDC access tokens are cached across a client's connections, cached connections use speculative authentication, and a server reauthentication request transparently refreshes credentials and retries the affected operation once.
 
 For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults. Load-balanced deployment execution remains outside the current scope even though its connection-string option is recognized and validated.
 
