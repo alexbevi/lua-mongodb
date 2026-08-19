@@ -102,4 +102,105 @@ describe("client bulk writes", function()
       written.inserted_count = 4
     end, "client bulk result values are immutable")
   end)
+
+  it("translates update and replacement models without changing their values", function()
+    local captured
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function(_, _, _, options)
+        captured = options
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 0 },
+          { "nMatched", 2 },
+          { "nModified", 1 },
+          { "nUpserted", 1 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local filter = bson.document({ { "name", "Ada" } })
+    local array_filters = bson.array({
+      bson.document({ { "item.active", true } }),
+    })
+    local collation = bson.document({ { "locale", "en" } })
+    local sort = bson.document({ { "created_at", 1 } })
+    local update = bson.document({
+      { "$set", bson.document({ { "active", true } }) },
+      { "later_field_does_not_control_validation", true },
+    })
+    local pipeline = bson.array({
+      bson.document({ { "$set", bson.document({ { "seen", true } }) } }),
+    })
+    local replacement = bson.document({
+      { "name", "Ada Lovelace" },
+      { "$later_field_is_allowed", true },
+    })
+    local written = assert(client:bulk_write({
+      client_bulk.update_one("app.users", filter, update, {
+        array_filters = array_filters,
+        collation = collation,
+        hint = "by_name",
+        sort = sort,
+        upsert = true,
+      }),
+      client_bulk.update_many("app.users", filter, pipeline, {
+        hint = bson.document({ { "name", 1 } }),
+      }),
+      client_bulk.replace_one("audit.users", filter, replacement, {
+        collation = collation,
+        sort = sort,
+        upsert = true,
+      }),
+    }))
+
+    assert.are.equal(2, written.matched_count)
+    assert.are.equal(1, written.modified_count)
+    assert.are.equal(1, written.upserted_count)
+
+    local ops = captured.sequences[1].documents
+
+    assert.are.equal(3, #ops)
+    assert.are.equal(0, ops[1]:get("update"):to_number())
+    assert.are.equal(0, ops[2]:get("update"):to_number())
+    assert.are.equal(1, ops[3]:get("update"):to_number())
+    assert.are.equal(filter, ops[1]:get("filter"))
+    assert.are.equal(update, ops[1]:get("updateMods"))
+    assert.is_false(ops[1]:get("multi"))
+    assert.is_true(ops[1]:get("upsert"))
+    assert.are.equal(array_filters, ops[1]:get("arrayFilters"))
+    assert.are.equal(collation, ops[1]:get("collation"))
+    assert.are.equal("by_name", ops[1]:get("hint"))
+    assert.are.equal(sort, ops[1]:get("sort"))
+    assert.are.equal(pipeline, ops[2]:get("updateMods"))
+    assert.is_true(ops[2]:get("multi"))
+    assert.are.equal(replacement, ops[3]:get("updateMods"))
+    assert.is_false(ops[3]:get("multi"))
+    assert.are.same({ "locale" }, collation:keys())
+    assert.are.same({ "created_at" }, sort:keys())
+    assert.has_error(function()
+      client_bulk.update_one("app.users", filter, replacement)
+    end, "update document must begin with an atomic '$' modifier")
+    assert.has_error(function()
+      client_bulk.replace_one("app.users", filter, update)
+    end, "replacement document must not begin with an atomic modifier")
+  end)
 end)

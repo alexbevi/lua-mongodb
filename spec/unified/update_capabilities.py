@@ -761,9 +761,10 @@ CLIENT_BULK_FIXTURES = {
 
 for fixture, (count, owner) in CLIENT_BULK_FIXTURES.items():
   for index in range(1, count + 1):
-    TEST_OVERRIDES[
-      f"crud/tests/unified/{fixture}.json::test[{index}]"
-    ] = (owner, OWNER_REASONS[owner])
+    identity = f"crud/tests/unified/{fixture}.json::test[{index}]"
+
+    if identity not in EXECUTOR_TESTS:
+      TEST_OVERRIDES[identity] = (owner, OWNER_REASONS[owner])
 
 TEST_OVERRIDES[
   "client-side-operations-timeout/tests/bulkWrite.json::test[1]"

@@ -2028,6 +2028,38 @@ end
 local function client_bulk_write(_, client, arguments)
   return call_driver(function()
     local models = {}
+    local factories = {
+      insertOne = function(model_arguments)
+        return client_bulk.insert_one(
+          model_arguments:get("namespace"),
+          model_arguments:get("document")
+        )
+      end,
+      replaceOne = function(model_arguments)
+        return client_bulk.replace_one(
+          model_arguments:get("namespace"),
+          model_arguments:get("filter"),
+          model_arguments:get("replacement"),
+          operation_options(model_arguments, WRITE_OPTIONS)
+        )
+      end,
+      updateMany = function(model_arguments)
+        return client_bulk.update_many(
+          model_arguments:get("namespace"),
+          model_arguments:get("filter"),
+          model_arguments:get("update"),
+          operation_options(model_arguments, WRITE_OPTIONS)
+        )
+      end,
+      updateOne = function(model_arguments)
+        return client_bulk.update_one(
+          model_arguments:get("namespace"),
+          model_arguments:get("filter"),
+          model_arguments:get("update"),
+          operation_options(model_arguments, WRITE_OPTIONS)
+        )
+      end,
+    }
 
     for index, request in arguments:get("models"):iter() do
       if not bson.is_document(request) or #request ~= 1 then
@@ -2035,15 +2067,13 @@ local function client_bulk_write(_, client, arguments)
       end
 
       local name, model_arguments = request:get_at(1)
+      local factory = factories[name]
 
-      if name ~= "insertOne" then
+      if factory == nil then
         error("unsupported unified clientBulkWrite model: " .. tostring(name), 0)
       end
 
-      models[index] = client_bulk.insert_one(
-        model_arguments:get("namespace"),
-        model_arguments:get("document")
-      )
+      models[index] = factory(model_arguments)
     end
 
     return client:bulk_write(models, operation_options(arguments, {

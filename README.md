@@ -300,7 +300,7 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
-MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The initial API supports acknowledged `insert_one` models and returns immutable summary counts; later model and result forms remain tracked separately in the roadmap.
+MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, and replacement models and returns immutable summary counts; later model and result forms remain tracked separately in the roadmap.
 
 ```lua
 local client_bulk = mongodb.client_bulk
@@ -310,13 +310,20 @@ local written = assert(client:bulk_write({
     "app.users",
     doc({ { "name", "Grace" } })
   ),
-  client_bulk.insert_one(
+  client_bulk.update_one(
+    "app.users",
+    doc({ { "name", "Grace" } }),
+    doc({ { "$set", doc({ { "active", true } }) } })
+  ),
+  client_bulk.replace_one(
     "audit.events",
-    doc({ { "kind", "user-created" } })
+    doc({ { "kind", "user-created" } }),
+    doc({ { "kind", "user-activated" } })
   ),
 }))
 
 print(written.inserted_count)
+print(written.modified_count)
 ```
 
 ### Generic Commands
@@ -507,7 +514,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 74.5% |
+| Programmability | CRUD | 🟡 | 75.6% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |

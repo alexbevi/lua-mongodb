@@ -2372,6 +2372,26 @@
       "activity": "UTF-013",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/client-bulkWrite-replaceOne-sort.json::test[1]": {
+      "activity": "CBW-001",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-update-validation.json::test[1]": {
+      "activity": "CBW-001",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-update-validation.json::test[2]": {
+      "activity": "CBW-001",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-update-validation.json::test[3]": {
+      "activity": "CBW-001",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-updateOne-sort.json::test[1]": {
+      "activity": "CBW-001",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/create-null-ids.json::test[1]": {
       "activity": "UTF-012",
       "environment": "live-standalone"

@@ -6115,6 +6115,28 @@
       "notes": [],
       "started_at": "2026-08-19T12:18:56+00:00",
       "completed_at": "2026-08-19T12:32:38+00:00"
+    },
+    "CBW-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua",
+          "exit_code": 2,
+          "summary": "1 existing test passed; defining update/replacement test errored because client_bulk.update_one is absent",
+          "recorded_at": "2026-08-19T12:44:34+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua FOCUS_INTEGRATION=spec/integration/bulk_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua spec/support/mongodb/unified/driver.lua'; make test-focus FOCUS_UNIFIED='crud/tests/unified/client-bulkWrite-update-validation.json::*'; make test-focus FOCUS_UNIFIED='crud/tests/unified/client-bulkWrite-*sort.json::*'; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "2 unit, 3 loopback integration, 116 focused Python, and 5 exact live unified cases passed; touched Lua lint, complexity, capability, ledger, release scope, v0.4 scope, README compatibility, and release checklist validators passed",
+          "recorded_at": "2026-08-19T12:50:16+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T12:42:37+00:00",
+      "completed_at": "2026-08-19T12:50:23+00:00"
     }
   },
   "verified_references": {

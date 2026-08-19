@@ -178,4 +178,95 @@ describe("collection bulk writes over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("writes updates and replacements across client namespaces", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 100000 },
+      }))
+
+      local request = receive_frame(peer)
+      local ops = request.sequences[1].documents
+      local namespaces = request.sequences[2].documents
+
+      assert.are.equal("bulkWrite", request.body:keys()[1])
+      assert.are.equal(3, #ops)
+      assert.are.equal(2, #namespaces)
+      assert.are.equal(0, ops[1]:get("update"):to_number())
+      assert.is_false(ops[1]:get("multi"))
+      assert.are.equal(-1, ops[1]:get("sort"):get("_id"):to_number())
+      assert.are.equal(0, ops[2]:get("update"):to_number())
+      assert.is_true(ops[2]:get("multi"))
+      assert.are.equal(1, ops[3]:get("update"):to_number())
+      assert.is_false(ops[3]:get("multi"))
+      assert.are.equal("app.events", namespaces[1]:get("ns"))
+      assert.are.equal("audit.events", namespaces[2]:get("ns"))
+      send_response(peer, request, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "firstBatch", bson.array({}) },
+        }) },
+        { "nErrors", 0 },
+        { "nInserted", 0 },
+        { "nMatched", 3 },
+        { "nModified", 2 },
+        { "nUpserted", 0 },
+        { "nDeleted", 0 },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port,
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local filter = bson.document({ { "_id", bson.document({ { "$gt", 1 } }) } })
+        local written = assert(client:bulk_write({
+          mongodb.client_bulk.update_one(
+            "app.events",
+            filter,
+            bson.document({ { "$inc", bson.document({ { "count", 1 } }) } }),
+            { sort = bson.document({ { "_id", -1 } }) }
+          ),
+          mongodb.client_bulk.update_many(
+            "app.events",
+            filter,
+            bson.document({ { "$set", bson.document({ { "active", true } }) } })
+          ),
+          mongodb.client_bulk.replace_one(
+            "audit.events",
+            bson.document({ { "_id", 4 } }),
+            bson.document({ { "archived", true } })
+          ),
+        }))
+
+        assert.are.equal(3, written.matched_count)
+        assert.are.equal(2, written.modified_count)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

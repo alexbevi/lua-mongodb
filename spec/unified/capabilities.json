@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1799,
-    "runnable": 1799
+    "passed": 1804,
+    "runnable": 1804
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -41413,7 +41413,6 @@
     "crud/tests/unified/client-bulkWrite-replaceOne-sort.json::test[1]": {
       "activity": "CBW-001",
       "fingerprint": "b726ff23f056aa6a1cddb8cc249ac05f3c7dd6bde1d4c445b2823921c5c9fb23",
-      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41438,7 +41437,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-results.json::test[1]": {
       "activity": "CBW-003",
@@ -41768,7 +41767,6 @@
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[1]": {
       "activity": "CBW-001",
       "fingerprint": "87bae4550c60ccfb543a26ce78299c5bca0c651103540a4b40ddf675ec56e4c4",
-      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41788,12 +41786,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[2]": {
       "activity": "CBW-001",
       "fingerprint": "fcc8eeeaf3506f11f48e51fcec31406978935e3b491abffb94ca715ed49edd28",
-      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41813,12 +41810,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[3]": {
       "activity": "CBW-001",
       "fingerprint": "a63d86ee14f79bb9352eecc0e8a15276e5a82d008cfb8db04e6d9c899cf54ca8",
-      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41838,12 +41834,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-updateOne-sort.json::test[1]": {
       "activity": "CBW-001",
       "fingerprint": "bf67830bd05bfa6a48be92d3c149da92c0aa37a99a284e12ea2879dfe872a931",
-      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41868,7 +41863,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/count-collation.json::test[1]": {
       "activity": "UTF-011",
