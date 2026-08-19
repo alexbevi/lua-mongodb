@@ -302,7 +302,7 @@ print(written.deleted_count)
 
 Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps. Command options also accept `ordered`, `bypass_document_validation`, `comment`, `let`, and an operation-level `write_concern`; an operation concern overrides the client default.
 
-MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary counts; later result and execution forms remain tracked separately in the roadmap.
+MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary or verbose results.
 
 ```lua
 local client_bulk = mongodb.client_bulk
@@ -332,6 +332,8 @@ print(written.inserted_count)
 print(written.modified_count)
 print(written.deleted_count)
 ```
+
+An individual client bulk failure returns `nil` and a structured write error. Its immutable `details.write_errors` array is ordered by the models' original 1-based positions; each entry exposes the server code, message, optional `errInfo` details, and failed wire operation. Ordered execution reports its first individual failure, while unordered execution reports every observed individual failure.
 
 ### Generic Commands
 

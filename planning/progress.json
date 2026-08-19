@@ -6227,11 +6227,28 @@
       "completed_at": "2026-08-19T13:39:42+00:00"
     },
     "CBW-006": {
-      "status": "pending",
-      "evidence": [],
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua --filter=individual\"",
+          "exit_code": 2,
+          "summary": "The ordered/unordered individual-error matrix failed because ok:0 cursor documents were returned as protocol errors instead of structured client bulk write errors.",
+          "recorded_at": "2026-08-19T14:00:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua\" FOCUS_LINT=\"src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua\" && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Executed 7 focused client-bulk unit cases and passed all 7; lint passed for both touched Lua files, complexity remained at maximum 47, and the README compatibility projection was current. No integration or unified identity became applicable because partial results, write-concern failures, and top-level failures remain owned by CBW-013 through CBW-016.",
+          "recorded_at": "2026-08-19T14:03:08+00:00"
+        }
+      ],
       "notes": [
         "Requeued: Split combined failure fixture families before implementation"
-      ]
+      ],
+      "started_at": "2026-08-19T13:59:19+00:00",
+      "completed_at": "2026-08-19T14:03:16+00:00"
     }
   },
   "verified_references": {

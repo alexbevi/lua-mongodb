@@ -2,6 +2,7 @@ local api = require("mongodb.api")
 local bson = require("mongodb.bson")
 local client_bulk = require("mongodb.client_bulk")
 local driver_options = require("mongodb.config.options")
+local errors = require("mongodb.error")
 
 describe("client bulk writes", function()
   it("inserts across namespaces with deduplicated namespace information", function()
@@ -542,5 +543,89 @@ describe("client bulk writes", function()
     assert(older:bulk_write(models, { raw_data = true }))
     assert.is_true(modern_command():get("rawData"))
     assert.is_nil(older_command():get("rawData"))
+  end)
+
+  it("reports ordered and unordered individual errors at original indexes", function()
+    local error_info = bson.document({ { "expression", "$$missing" } })
+    local function run(ordered, result_documents)
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = 25,
+            max_write_batch_size = 100000,
+          }
+        end,
+        command = function()
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array(result_documents) },
+            }) },
+            { "nErrors", #result_documents },
+            { "nInserted", 0 },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+          })
+        end,
+      }
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, {}))
+      )
+      local filter = bson.document({ { "active", true } })
+      local result, err = client:bulk_write({
+        client_bulk.delete_one("app.users", filter),
+        client_bulk.update_one(
+          "app.users",
+          filter,
+          bson.document({ { "$set", bson.document({ { "seen", true } }) } })
+        ),
+        client_bulk.delete_many("audit.users", filter),
+      }, { ordered = ordered })
+
+      assert.is_nil(result)
+      assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+      return err
+    end
+    local function write_error(index, code, message)
+      return bson.document({
+        { "ok", 0 },
+        { "idx", bson.int32(index) },
+        { "code", bson.int32(code) },
+        { "errmsg", message },
+        { "errInfo", error_info },
+      })
+    end
+    local ordered = run(true, {
+      write_error(1, 17276, "undefined variable"),
+    })
+    local unordered = run(false, {
+      write_error(0, 11000, "duplicate key"),
+      write_error(2, 2, "bad value"),
+    })
+
+    assert.are.equal(17276, ordered.code)
+    assert.are.equal("undefined variable", ordered.message)
+    assert.are.equal(1, #ordered.details.write_errors)
+    assert.are.equal(2, ordered.details.write_errors[1].index)
+    assert.are.equal(error_info, ordered.details.write_errors[1].details)
+    assert.are.equal(
+      "update",
+      ordered.details.write_errors[1].operation:keys()[1]
+    )
+    assert.are.equal(2, #unordered.details.write_errors)
+    assert.are.equal(1, unordered.details.write_errors[1].index)
+    assert.are.equal(11000, unordered.details.write_errors[1].code)
+    assert.are.equal(3, unordered.details.write_errors[2].index)
+    assert.are.equal(2, unordered.details.write_errors[2].code)
   end)
 end)

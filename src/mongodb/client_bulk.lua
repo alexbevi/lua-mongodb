@@ -460,7 +460,10 @@ local function prepare_models(state, models)
     end
 
     operations[index] = wire
-    result_models[index] = { kind = fields.kind }
+    result_models[index] = {
+      kind = fields.kind,
+      operation = wire,
+    }
 
     if fields.kind == "insert" then
       result_models[index].inserted_id = wire:get("document"):get("_id")
@@ -641,7 +644,41 @@ local function operation_detail(model, document)
   return result_value(fields)
 end
 
-local function record_batch(batch, result_models, details, seen)
+local function individual_error(document, model, index)
+  local code = number_value(document:get("code"))
+  local code_name = document:get("codeName")
+  local details = document:get("errInfo")
+  local message = document:get("errmsg")
+
+  if math.type(code) ~= "integer" then
+    return protocol_error("client bulk write error contains an invalid code")
+  end
+
+  if message ~= nil and type(message) ~= "string" then
+    return protocol_error("client bulk write error contains an invalid message")
+  end
+
+  if code_name ~= nil and (type(code_name) ~= "string" or code_name == "") then
+    return protocol_error("client bulk write error contains an invalid code name")
+  end
+
+  if details ~= nil and not bson.is_document(details) then
+    return protocol_error("client bulk write error contains malformed details")
+  end
+
+  return {
+    code = code,
+    code_name = code_name,
+    details = details,
+    index = index + 1,
+    message = (message == nil or message == "")
+      and "client bulk write failed"
+      or message,
+    operation = model.operation,
+  }
+end
+
+local function record_batch(batch, result_models, details, seen, write_errors, ordered)
   for _, document in batch:iter() do
     if not bson.is_document(document) then
       return protocol_error("client bulk result cursor contains a non-document value")
@@ -649,10 +686,6 @@ local function record_batch(batch, result_models, details, seen)
 
     local ok = number_value(document:get("ok"))
     local index = number_value(document:get("idx"))
-
-    if ok ~= 1 then
-      return protocol_error("client bulk response contains unsupported write results")
-    end
 
     if math.type(index) ~= "integer"
         or index < 0
@@ -664,21 +697,38 @@ local function record_batch(batch, result_models, details, seen)
 
     seen[index] = true
     local model = result_models[index + 1]
-    local detail, err = operation_detail(model, document)
 
-    if detail == nil then
-      return nil, err
-    end
+    if ok == 0 then
+      local write_error, err = individual_error(document, model, index)
 
-    if details ~= nil then
-      details[model.kind][index + 1] = detail
+      if write_error == nil then
+        return nil, err
+      end
+
+      write_errors[#write_errors + 1] = write_error
+
+      if ordered then
+        return true, nil, true
+      end
+    elseif ok ~= 1 then
+      return protocol_error("client bulk result contains an invalid ok value")
+    else
+      local detail, err = operation_detail(model, document)
+
+      if detail == nil then
+        return nil, err
+      end
+
+      if details ~= nil then
+        details[model.kind][index + 1] = detail
+      end
     end
   end
 
   return true
 end
 
-local function consume_results(state, response, result_models, details, comment)
+local function consume_results(state, response, result_models, details, options)
   local batch, cursor_id, numeric_id = cursor_batch(response, "firstBatch")
 
   if batch == nil then
@@ -686,16 +736,24 @@ local function consume_results(state, response, result_models, details, comment)
   end
 
   local seen = {}
+  local write_errors = {}
 
   while true do
-    local recorded, err = record_batch(batch, result_models, details, seen)
+    local recorded, err, halted = record_batch(
+      batch,
+      result_models,
+      details,
+      seen,
+      write_errors,
+      options.ordered
+    )
 
     if not recorded then
       return nil, err
     end
 
-    if numeric_id == 0 then
-      return true
+    if halted or numeric_id == 0 then
+      return write_errors
     end
 
     local entries = {
@@ -703,8 +761,8 @@ local function consume_results(state, response, result_models, details, comment)
       { "collection", "$cmd.bulkWrite" },
     }
 
-    if comment ~= nil then
-      entries[#entries + 1] = { "comment", comment }
+    if options.comment ~= nil then
+      entries[#entries + 1] = { "comment", options.comment }
     end
 
     response, err = state.executor:command("admin", bson.document(entries), {})
@@ -721,15 +779,29 @@ local function consume_results(state, response, result_models, details, comment)
   end
 end
 
+local function write_failure(write_errors)
+  table.sort(write_errors, function(left, right)
+    return left.index < right.index
+  end)
+  local first = write_errors[1]
+
+  return nil, errors.new({
+    category = errors.CATEGORY.WRITE,
+    code = first.code,
+    code_name = first.code_name,
+    details = {
+      write_concern_errors = {},
+      write_errors = write_errors,
+    },
+    message = first.message,
+  })
+end
+
 local function result_from(state, response, result_models, options)
   local n_errors, err = count_field(response, "nErrors")
 
   if n_errors == nil then
     return nil, err
-  end
-
-  if n_errors ~= 0 then
-    return protocol_error("client bulk response contains unsupported write results")
   end
 
   local fields = {
@@ -764,17 +836,25 @@ local function result_from(state, response, result_models, options)
     }
   end
 
-  local consumed
-  consumed, err = consume_results(
+  local write_errors
+  write_errors, err = consume_results(
     state,
     response,
     result_models,
     details,
-    options.comment
+    options
   )
 
-  if not consumed then
+  if write_errors == nil then
     return nil, err
+  end
+
+  if #write_errors ~= n_errors then
+    return protocol_error("client bulk response contains an inconsistent error count")
+  end
+
+  if #write_errors > 0 then
+    return write_failure(write_errors)
   end
 
   if options.verbose_results then
