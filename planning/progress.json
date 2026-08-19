@@ -5983,6 +5983,28 @@
       "notes": [],
       "started_at": "2026-08-18T22:52:33+00:00",
       "completed_at": "2026-08-18T23:04:25+00:00"
+    },
+    "EXM-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.PackageExplorerWorkflowTests",
+          "exit_code": 2,
+          "summary": "The defining workflow contracts failed because main.lua had no lookup, nested or array query, update, or aggregation behavior and expected-output.txt ended after the seed listing",
+          "recorded_at": "2026-08-18T23:10:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI=mongodb://127.0.0.1:27018/lua_examples_packages make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON='spec.examples.test_examples.PackageExplorerSeedTests spec.examples.test_examples.PackageExplorerWorkflowTests' FOCUS_LINT='examples/01-luarocks-package-explorer/*.lua'",
+          "exit_code": 0,
+          "summary": "Six package explorer contracts passed, three Lua files linted with zero findings, and the deterministic lookup, nested/array queries, update, BSON count conversion, aggregation, and exact output passed against MongoDB 8.0.16 with both public and isolated source rocks",
+          "recorded_at": "2026-08-18T23:14:56+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-18T23:09:29+00:00",
+      "completed_at": "2026-08-19T02:32:32+00:00"
     }
   },
   "verified_references": {

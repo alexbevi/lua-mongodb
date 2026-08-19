@@ -9,3 +9,14 @@ LuaRocks package catalog (8 packages)
 6. luasec — 1.3.2-1
 7. luasocket — 3.1.0-1
 8. penlight — 1.14.0-3
+Lookup: copas — Coroutine-oriented portable asynchronous services
+Nested release query: luasec contains 1.3.2-1
+Networking label: copas, luasec, luasocket
+Updated copas: 4.11.0-1 -> 4.11.1-1 (1 modified)
+Dependency popularity:
+1. luafilesystem — 2 packages
+2. luasocket — 2 packages
+3. argparse — 1 package
+4. coxpcall — 1 package
+5. lua-term — 1 package
+6. penlight — 1 package

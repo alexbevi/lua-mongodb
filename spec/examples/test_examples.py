@@ -268,7 +268,7 @@ class PackageExplorerSeedTests(unittest.TestCase):
       environment,
     )
     self.assertIn(PINNED_IMAGE, compose)
-    self.assertEqual(
+    self.assertTrue(expected.startswith(
       "Created unique index: package_name_unique\n"
       "Seeded 8 packages\n"
       "LuaRocks package catalog (8 packages)\n"
@@ -280,8 +280,7 @@ class PackageExplorerSeedTests(unittest.TestCase):
       "6. luasec — 1.3.2-1\n"
       "7. luasocket — 3.1.0-1\n"
       "8. penlight — 1.14.0-3\n",
-      expected,
-    )
+    ))
 
   @unittest.skipUnless(LIVE, "set MONGODB_EXAMPLES_LIVE=1 for live examples")
   def test_live_seed_and_list_use_public_and_source_rocks(self) -> None:
@@ -337,6 +336,64 @@ class PackageExplorerSeedTests(unittest.TestCase):
           timeout=120,
         )
         self.assertEqual(0, down.returncode, down.stderr or down.stdout)
+
+
+class PackageExplorerWorkflowTests(unittest.TestCase):
+  def test_program_covers_lookup_queries_update_and_aggregation(self) -> None:
+    source = (PACKAGES / "main.lua").read_text(encoding="utf-8")
+
+    for phrase in (
+      "find_one",
+      '"versions.version"',
+      '"labels"',
+      "update_one",
+      '"$set"',
+      "aggregate",
+      '"$unwind"',
+      '"$group"',
+      '"dependency_count"',
+    ):
+      self.assertIn(phrase, source)
+
+  def test_workflow_output_is_complete_and_deterministic(self) -> None:
+    expected = (PACKAGES / "expected-output.txt").read_text(encoding="utf-8")
+
+    self.assertEqual(
+      "Created unique index: package_name_unique\n"
+      "Seeded 8 packages\n"
+      "LuaRocks package catalog (8 packages)\n"
+      "1. busted — 2.3.0-1\n"
+      "2. copas — 4.11.0-1\n"
+      "3. dkjson — 2.8-1\n"
+      "4. lpeg — 1.1.0-2\n"
+      "5. luacheck — 1.2.0-1\n"
+      "6. luasec — 1.3.2-1\n"
+      "7. luasocket — 3.1.0-1\n"
+      "8. penlight — 1.14.0-3\n"
+      "Lookup: copas — Coroutine-oriented portable asynchronous services\n"
+      "Nested release query: luasec contains 1.3.2-1\n"
+      "Networking label: copas, luasec, luasocket\n"
+      "Updated copas: 4.11.0-1 -> 4.11.1-1 (1 modified)\n"
+      "Dependency popularity:\n"
+      "1. luafilesystem — 2 packages\n"
+      "2. luasocket — 2 packages\n"
+      "3. argparse — 1 package\n"
+      "4. coxpcall — 1 package\n"
+      "5. lua-term — 1 package\n"
+      "6. penlight — 1 package\n",
+      expected,
+    )
+
+    readme = (PACKAGES / "README.md").read_text(encoding="utf-8")
+
+    for phrase in (
+      "lookup",
+      "nested release",
+      "array membership",
+      "aggregation pipeline",
+      "nil, err",
+    ):
+      self.assertIn(phrase, readme.lower())
 
 
 if __name__ == "__main__":
