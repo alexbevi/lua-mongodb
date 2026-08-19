@@ -493,50 +493,147 @@ local function reindex_operation(operation_document, namespace_index)
   return bson.document(entries)
 end
 
-local function count_batches(operations, result_models, limit)
+local function batch_size_error()
+  return errors.new({
+    category = errors.CATEGORY.CLIENT,
+    message = "client bulk operation exceeds maxMessageSizeBytes",
+  })
+end
+
+local function encoded_size(document, limit)
+  local encoded, err = bson.encode(document, {
+    max_binary_size = limit,
+    max_document_size = limit,
+    max_string_size = limit,
+  })
+
+  if encoded ~= nil then
+    return #encoded
+  end
+
+  local details = err.details
+
+  if details ~= nil
+      and (details.max_binary_size == limit
+        or details.max_document_size == limit
+        or details.max_string_size == limit)
+  then
+    return nil, batch_size_error()
+  end
+
+  return nil, err
+end
+
+local function new_batch()
+  return {
+    encoded_size = 0,
+    namespace_indexes = {},
+    namespaces = {},
+    operations = {},
+    original_indexes = {},
+    result_models = {},
+  }
+end
+
+local function batch_candidate(state, batch, operation_document, model)
+  local namespace_index = batch.namespace_indexes[model.namespace]
+  local namespace_document
+
+  if namespace_index == nil then
+    namespace_index = #batch.namespaces
+    namespace_document = bson.document({ { "ns", model.namespace } })
+  end
+
+  local wire = reindex_operation(operation_document, namespace_index)
+  local operation_size, err = encoded_size(wire, state.max_message_size)
+
+  if operation_size == nil then
+    return nil, err
+  end
+
+  local namespace_size = 0
+
+  if namespace_document ~= nil then
+    namespace_size, err = encoded_size(
+      namespace_document,
+      state.max_message_size
+    )
+
+    if namespace_size == nil then
+      return nil, err
+    end
+  end
+
+  return {
+    encoded_size = operation_size + namespace_size,
+    namespace_document = namespace_document,
+    namespace_index = namespace_index,
+    result_model = {
+      inserted_id = model.inserted_id,
+      kind = model.kind,
+      namespace = model.namespace,
+      operation = wire,
+    },
+    wire = wire,
+  }
+end
+
+local function append_candidate(batch, candidate, model, original_index)
+  local local_index = #batch.operations + 1
+
+  if candidate.namespace_document ~= nil then
+    batch.namespace_indexes[model.namespace] = candidate.namespace_index
+    batch.namespaces[#batch.namespaces + 1] = candidate.namespace_document
+  end
+
+  batch.encoded_size = batch.encoded_size + candidate.encoded_size
+  batch.operations[local_index] = candidate.wire
+  batch.original_indexes[local_index] = original_index
+  batch.result_models[local_index] = candidate.result_model
+end
+
+local function create_batches(state, command, operations, result_models)
+  local command_size, err = encoded_size(command, state.max_message_size)
+
+  if command_size == nil then
+    return nil, err
+  end
+
+  local maximum_sequence_size = state.max_message_size - 1000 - command_size
   local batches = {}
   local position = 1
 
   while position <= #operations do
-    local batch = {
-      namespaces = {},
-      operations = {},
-      original_indexes = {},
-      result_models = {},
-    }
-    local namespace_indexes = {}
-    local stop = math.min(#operations, position + limit - 1)
+    local batch = new_batch()
 
-    for original_index = position, stop do
-      local model = result_models[original_index]
-      local namespace_index = namespace_indexes[model.namespace]
+    while position <= #operations
+        and #batch.operations < state.max_write_batch_size
+    do
+      local model = result_models[position]
+      local candidate
+      candidate, err = batch_candidate(
+        state,
+        batch,
+        operations[position],
+        model
+      )
 
-      if namespace_index == nil then
-        namespace_index = #batch.namespaces
-        namespace_indexes[model.namespace] = namespace_index
-        batch.namespaces[#batch.namespaces + 1] = bson.document({
-          { "ns", model.namespace },
-        })
+      if candidate == nil
+          or batch.encoded_size + candidate.encoded_size
+            > maximum_sequence_size
+      then
+        if #batch.operations == 0 then
+          return nil, candidate == nil and err or batch_size_error()
+        end
+
+        break
       end
 
-      local wire = reindex_operation(
-        operations[original_index],
-        namespace_index
-      )
-      local local_index = #batch.operations + 1
-
-      batch.operations[local_index] = wire
-      batch.original_indexes[local_index] = original_index
-      batch.result_models[local_index] = {
-        inserted_id = model.inserted_id,
-        kind = model.kind,
-        namespace = model.namespace,
-        operation = wire,
-      }
+      append_candidate(batch, candidate, model, position)
+      position = position + 1
     end
 
     batches[#batches + 1] = batch
-    position = stop + 1
   end
 
   return batches
@@ -1227,12 +1324,19 @@ function M.execute(state, models, options)
     entries[#entries + 1] = { "writeConcern", write_concern }
   end
 
-  return execute_batches(
+  local command = bson.document(entries)
+  local batches, batch_err = create_batches(
     state,
-    bson.document(entries),
-    count_batches(operations, result_models, state.max_write_batch_size),
-    options
+    command,
+    operations,
+    result_models
   )
+
+  if batches == nil then
+    return nil, batch_err
+  end
+
+  return execute_batches(state, command, batches, options)
 end
 
 return M

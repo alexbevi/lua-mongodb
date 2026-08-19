@@ -6427,6 +6427,28 @@
       "notes": [],
       "started_at": "2026-08-19T16:36:56+00:00",
       "completed_at": "2026-08-19T16:42:35+00:00"
+    },
+    "CBW-017": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='--filter=combined.operation.and.namespace.size spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining message-size matrix failed because adding a new nsInfo document across the combined ops and namespace ceiling still produced one oversized batch instead of two; the cannot-fit client-error branch was also absent.",
+          "recorded_at": "2026-08-19T16:51:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/client_bulk_spec.lua' FOCUS_INTEGRATION='spec/integration/bulk_spec.lua' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua && python3 spec/conformance/catalog.py --check && git diff --check",
+          "exit_code": 0,
+          "summary": "13 client-bulk unit cases and six directly coupled OP_MSG integration cases passed, covering exact-fit, new-namespace split, oversized document and namespace, and no-operation-fit branches; touched lint, complexity, prose catalog, and diff validators pass.",
+          "recorded_at": "2026-08-19T16:56:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T16:49:45+00:00",
+      "completed_at": "2026-08-19T16:56:20+00:00"
     }
   },
   "verified_references": {

@@ -187,6 +187,141 @@ describe("client bulk writes", function()
     assert.are.equal("app.events", second_namespaces[1]:get("ns"))
   end)
 
+  it("bounds batches by combined operation and namespace size", function()
+    local first_document = bson.document({ { "_id", 1 }, { "value", "a" } })
+    local second_document = bson.document({ { "_id", 2 }, { "value", "b" } })
+    local first_namespace = "app.events"
+    local second_namespace = "app." .. string.rep("archive", 8)
+    local command = bson.document({
+      { "bulkWrite", 1 },
+      { "errorsOnly", true },
+      { "ordered", true },
+    })
+    local first_operation = bson.document({
+      { "insert", bson.int32(0) },
+      { "document", first_document },
+    })
+    local second_operation = bson.document({
+      { "insert", bson.int32(0) },
+      { "document", second_document },
+    })
+    local first_ns_info = bson.document({ { "ns", first_namespace } })
+    local second_ns_info = bson.document({ { "ns", second_namespace } })
+    local function encoded_size(document)
+      return #assert(bson.encode(document, {
+        max_binary_size = 100000,
+        max_document_size = 100000,
+        max_string_size = 100000,
+      }))
+    end
+    local message_size = 1000
+      + encoded_size(command)
+      + encoded_size(first_operation)
+      + encoded_size(first_ns_info)
+      + encoded_size(second_operation)
+
+    assert.is_true(
+      encoded_size(second_operation) + encoded_size(second_ns_info)
+        <= message_size - 1000 - encoded_size(command)
+    )
+
+    local function run(namespace, maximum, document)
+      local batches = {}
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = maximum,
+            max_wire_version = 25,
+            max_write_batch_size = 100,
+          }
+        end,
+        command = function(_, _, _, options)
+          local operations = options.sequences[1].documents
+
+          batches[#batches + 1] = options.sequences
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({}) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", #operations },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+          })
+        end,
+      }
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, {}))
+      )
+      local result, err = client:bulk_write({
+        client_bulk.insert_one(first_namespace, first_document),
+        client_bulk.insert_one(namespace, document or second_document),
+      })
+
+      return result, err, batches
+    end
+
+    local result, err, batches = run(second_namespace, message_size)
+
+    assert.is_nil(err)
+    assert.are.equal(2, result.inserted_count)
+    assert.are.equal(2, #batches)
+    assert.are.equal(1, #batches[1][1].documents)
+    assert.are.equal(1, #batches[1][2].documents)
+    assert.are.equal(first_namespace, batches[1][2].documents[1]:get("ns"))
+    assert.are.equal(1, #batches[2][1].documents)
+    assert.are.equal(1, #batches[2][2].documents)
+    assert.are.equal(second_namespace, batches[2][2].documents[1]:get("ns"))
+
+    result, err, batches = run(first_namespace, message_size)
+
+    assert.is_nil(err)
+    assert.are.equal(2, result.inserted_count)
+    assert.are.equal(1, #batches)
+    assert.are.equal(2, #batches[1][1].documents)
+    assert.are.equal(1, #batches[1][2].documents)
+
+    local one_operation_size = 1000
+      + encoded_size(command)
+      + encoded_size(first_operation)
+      + encoded_size(first_ns_info)
+
+    result, err, batches = run(first_namespace, one_operation_size - 1)
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(0, #batches)
+
+    result, err, batches = run(
+      first_namespace,
+      message_size,
+      bson.document({ { "_id", 2 }, { "value", string.rep("x", message_size) } })
+    )
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(0, #batches)
+
+    result, err, batches = run(
+      "app." .. string.rep("namespace", message_size),
+      message_size
+    )
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(0, #batches)
+  end)
+
   it("translates update and replacement models without changing their values", function()
     local captured
     local executor = {

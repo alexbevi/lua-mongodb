@@ -268,6 +268,106 @@ describe("collection bulk writes over OP_MSG", function()
     end
   end)
 
+  it("splits client bulk writes when nsInfo crosses the message limit", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+    local first_namespace = "app.events"
+    local second_namespace = "app." .. string.rep("archive", 8)
+    local first_document = bson.document({ { "_id", 1 }, { "value", "a" } })
+    local second_document = bson.document({ { "_id", 2 }, { "value", "b" } })
+    local command = bson.document({
+      { "bulkWrite", 1 },
+      { "errorsOnly", true },
+      { "ordered", true },
+    })
+    local first_operation = bson.document({
+      { "insert", bson.int32(0) },
+      { "document", first_document },
+    })
+    local second_operation = bson.document({
+      { "insert", bson.int32(0) },
+      { "document", second_document },
+    })
+    local function encoded_size(document)
+      return #assert(bson.encode(document, {
+        max_binary_size = 100000,
+        max_document_size = 100000,
+        max_string_size = 100000,
+      }))
+    end
+    local max_message_size = 1000
+      + encoded_size(command)
+      + encoded_size(first_operation)
+      + encoded_size(bson.document({ { "ns", first_namespace } }))
+      + encoded_size(second_operation)
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", max_message_size },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 100 },
+      }))
+
+      for _, namespace in ipairs({ first_namespace, second_namespace }) do
+        local request = receive_frame(peer)
+
+        assert.are.equal("bulkWrite", request.body:keys()[1])
+        assert.are.equal(1, #request.sequences[1].documents)
+        assert.are.equal(1, #request.sequences[2].documents)
+        assert.are.equal(
+          0,
+          request.sequences[1].documents[1]:get("insert"):to_number()
+        )
+        assert.are.equal(namespace, request.sequences[2].documents[1]:get("ns"))
+        send_response(peer, request, bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        }))
+      end
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port,
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local result = assert(client:bulk_write({
+          mongodb.client_bulk.insert_one(first_namespace, first_document),
+          mongodb.client_bulk.insert_one(second_namespace, second_document),
+        }))
+
+        assert.are.equal(2, result.inserted_count)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
   it("writes updates, replacements, and deletes across client namespaces", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())
