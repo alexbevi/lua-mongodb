@@ -42,6 +42,72 @@ local function fail(client, err)
   return nil, err
 end
 
+local function transaction_error(message)
+  return mongodb.error.new({
+    category = mongodb.error.CATEGORY.WRITE,
+    message = message,
+  })
+end
+
+local function transfer_credits(client, collection)
+  local session, err = client:start_session()
+
+  if not session then
+    return nil, err
+  end
+
+  local transferred
+  transferred, err = session:with_transaction(function(active_session)
+    local debited, debit_err = collection:update_one(
+      doc({
+        { "player_id", "player-ada" },
+        { "credits", doc({ { "$gte", int64(25) } }) },
+      }),
+      doc({ { "$inc", doc({ { "credits", int64(-25) } }) } }),
+      { session = active_session }
+    )
+
+    if not debited then
+      return nil, debit_err
+    end
+
+    if debited.matched_count ~= 1 then
+      return nil, transaction_error("player-ada has insufficient credits")
+    end
+
+    local credited, credit_err = collection:update_one(
+      doc({ { "player_id", "player-lin" } }),
+      doc({ { "$inc", doc({ { "credits", int64(25) } }) } }),
+      { session = active_session }
+    )
+
+    if not credited then
+      return nil, credit_err
+    end
+
+    if credited.matched_count ~= 1 then
+      return nil, transaction_error("player-lin fixture is missing")
+    end
+
+    return true
+  end, {
+    read_concern = doc({ { "level", "snapshot" } }),
+    write_concern = doc({ { "w", "majority" } }),
+  })
+
+  local ended, end_err = session:end_session()
+
+  if not ended then
+    return nil, end_err
+  end
+
+  if not transferred then
+    return nil, err
+  end
+
+  return true
+end
+
 local function run_leaderboard()
   local uri = os.getenv("MONGODB_URI")
     or "mongodb://127.0.0.1:27019/lua_examples_leaderboard?replicaSet=rs0"
@@ -143,6 +209,27 @@ local function run_leaderboard()
       return fail(client, err)
     end
 
+    local transferred
+    transferred, err = transfer_credits(client, collection)
+
+    if not transferred then
+      return fail(client, err)
+    end
+
+    local ada_after
+    ada_after, err = collection:find_one(doc({ { "player_id", "player-ada" } }))
+
+    if not ada_after then
+      return fail(client, err or "player-ada fixture is missing after transfer")
+    end
+
+    local lin_after
+    lin_after, err = collection:find_one(doc({ { "player_id", "player-lin" } }))
+
+    if not lin_after then
+      return fail(client, err or "player-lin fixture is missing after transfer")
+    end
+
     local closed
     closed, err = client:close()
 
@@ -163,6 +250,10 @@ local function run_leaderboard()
     local season = season_rows[1]
     print("Season " .. season.name .. ": " .. season.total_score
       .. " points across " .. season.player_count .. " players")
+    print("Transferred 25 credits: " .. ada_after:get("display_name") .. " "
+      .. ada_after:get("credits"):to_number() .. ", "
+      .. lin_after:get("display_name") .. " "
+      .. lin_after:get("credits"):to_number())
 
     return true
   end)

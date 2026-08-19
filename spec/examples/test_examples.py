@@ -453,7 +453,7 @@ class LeaderboardWorkflowTests(unittest.TestCase):
     self.assertIn("--replSet", compose)
     self.assertIn("rs.initiate", compose)
     self.assertIn("replicaSet=rs0", environment)
-    self.assertEqual(
+    self.assertTrue(expected.startswith(
       "Created unique index: player_id_unique\n"
       "Seeded 5 players\n"
       "Submitted 1320 points for Ada Byte (1 modified)\n"
@@ -463,8 +463,7 @@ class LeaderboardWorkflowTests(unittest.TestCase):
       "2. Lin Loop — 1250\n"
       "3. Noor Node — 1110\n"
       "Season spring-2026: 16970 points across 5 players\n",
-      expected,
-    )
+    ))
 
     for phrase in (
       "stock lua 5.4",
@@ -534,6 +533,35 @@ class LeaderboardWorkflowTests(unittest.TestCase):
           timeout=120,
         )
         self.assertEqual(0, down.returncode, down.stderr or down.stdout)
+
+
+class LeaderboardTransactionTests(unittest.TestCase):
+  def test_credit_transfer_uses_one_callback_transaction(self) -> None:
+    source = (LEADERBOARD / "main.lua").read_text(encoding="utf-8")
+
+    self.assertIn("start_session", source)
+    self.assertIn("with_transaction", source)
+    self.assertEqual(2, source.count("session = active_session"))
+    self.assertIn('"credits", int64(-25)', source)
+    self.assertIn('"credits", int64(25)', source)
+    self.assertIn("end_session", source)
+
+  def test_transfer_output_and_retry_guidance_are_deterministic(self) -> None:
+    expected = (LEADERBOARD / "expected-output.txt").read_text(encoding="utf-8")
+    readme = (LEADERBOARD / "README.md").read_text(encoding="utf-8").lower()
+
+    self.assertTrue(expected.endswith(
+      "Transferred 25 credits: Ada Byte 95, Lin Loop 105\n"
+    ))
+
+    for phrase in (
+      "callback transaction",
+      "safe to run more than once",
+      "active session",
+      "replica set",
+      "end_session",
+    ):
+      self.assertIn(phrase, readme)
 
 
 if __name__ == "__main__":

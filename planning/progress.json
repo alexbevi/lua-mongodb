@@ -6027,6 +6027,28 @@
       "notes": [],
       "started_at": "2026-08-19T02:37:24+00:00",
       "completed_at": "2026-08-19T02:42:42+00:00"
+    },
+    "EXM-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.LeaderboardTransactionTests",
+          "exit_code": 2,
+          "summary": "The defining transaction contracts failed because the leaderboard had no session, callback transaction, session-bound debit and credit, deterministic balance output, or retry-safe transaction guidance",
+          "recorded_at": "2026-08-19T02:47:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI=mongodb://127.0.0.1:27019/lua_examples_leaderboard?replicaSet=rs0 make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON='spec.examples.test_examples.LeaderboardWorkflowTests spec.examples.test_examples.LeaderboardTransactionTests' FOCUS_LINT='examples/02-game-leaderboard-backend/*.lua'",
+          "exit_code": 0,
+          "summary": "Six leaderboard and transaction contracts passed and three Lua files linted with zero findings; both session-bound writes committed atomically to exact 95/105 balances on MongoDB 8.0.16 with published and isolated source rocks",
+          "recorded_at": "2026-08-19T02:51:28+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T02:47:07+00:00",
+      "completed_at": "2026-08-19T02:51:29+00:00"
     }
   },
   "verified_references": {

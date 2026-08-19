@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 230,
+    "completed": 231,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 16
+    "pending": 15
   },
   "active": [],
   "ready": [
@@ -35,7 +35,7 @@
     "SFP-001",
     "BSON-010",
     "ADV-012",
-    "EXM-005"
+    "EXM-006"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -46,7 +46,7 @@
     ],
     "macos-ci-signal": [],
     "driver-examples": [
-      "EXM-005"
+      "EXM-006"
     ]
   },
   "blocked": [],

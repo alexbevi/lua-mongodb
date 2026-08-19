@@ -7,7 +7,7 @@ this one rather than distribute database credentials to players.
 
 The deterministic workflow creates five evolving player profiles, submits a
 score, awards an achievement, reads the top three, and aggregates the current
-season. The next vertical slice adds an atomic credit transfer.
+season, then transfers credits atomically.
 
 ## What it demonstrates
 
@@ -16,6 +16,7 @@ season. The next vertical slice adds an atomic credit transfer.
 - `$max`, `$inc`, `$push`, `$set`, and `$addToSet` profile updates.
 - Stable ranking with a compound sort and limit.
 - Season reporting through `$match` and `$group`.
+- A callback transaction that debits and credits two player profiles.
 - BSON integer conversion through `to_number()`.
 - Explicit `nil, err`, cursor, and client handling.
 - A single-member replica set that becomes ready automatically.
@@ -75,12 +76,31 @@ depend on a game platform or external API.
 [`main.lua`](main.lua) demonstrates this lifecycle:
 
 ```text
-connect → submit score → award achievement → rank → aggregate season → close
+connect → submit score → award → rank → aggregate → transact → close
 ```
 
 The score submission uses `$max` so a lower score cannot replace the player's
 high score, while `$inc` records the season contribution. The ranking adds a
 name tiebreaker, making its output stable even when scores match.
+
+## Transactional credit transfer
+
+The final operation transfers 25 credits from Ada to Lin with
+`session:with_transaction`. Both `update_one` calls receive the callback's
+active session, so the debit and credit commit or abort together. The debit
+filter also requires a sufficient balance.
+
+The callback performs only database operations and is safe to run more than once.
+This matters because the callback transaction API may rerun it after a
+`TransientTransactionError`, while an unknown commit result retries only the
+commit. Do not send email, award an external prize, or perform another
+non-transactional side effect inside such a callback.
+
+`with_transaction` owns commit, abort, and specification-required retries.
+The application still owns cleanup: `main.lua` calls `end_session` whether the
+transaction succeeds or returns an operational error, then closes the client.
+Transactions require a replica set or sharded deployment; they do not work on
+a standalone MongoDB server.
 
 ## Cleanup
 
