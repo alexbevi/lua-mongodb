@@ -6609,31 +6609,32 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_command_execution_csot_cases_use_isolated_lua_processes'",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_runs_every_pre_8_2_v0_7_rawdata_branch'",
           "exit_code": 1,
-          "summary": "The defining harness contract failed because all three timing-sensitive command-execution CSOT identities were grouped into one Lua process, matching the repeated Linux Full Conformance leakage into test 3.",
-          "recorded_at": "2026-08-19T23:18:51+00:00"
+          "summary": "The defining workflow contract failed because the Linux pre-8.2 job omitted all three v0.7 client bulk write rawData test[2] branches; Full Conformance showed the same omission in the macOS aggregate.",
+          "recorded_at": "2026-08-19T23:28:29+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='four directly coupled unified batching and diagnostics contracts' && python3 -m py_compile spec/unified/run.py spec/unified/test_cli.py && git diff --check",
+          "command": "make test-focus FOCUS_PYTHON='three CI workflow contracts plus two v0.7 scope contracts'; python3 spec/v07/scope.py --check; python3 spec/release/checklist.py --check; git diff --check",
           "exit_code": 0,
-          "summary": "Four focused Python contracts passed: command-execution identities isolate, ordinary fixture batching remains stable, one executor still serves ordinary multi-test fixtures, and malformed output retains diagnostics; touched Python compiled and the diff is clean.",
-          "recorded_at": "2026-08-19T23:20:46+00:00"
+          "summary": "Five focused contracts passed: both platform version-branch jobs select every v0.6 and v0.7 pre-8.2 rawData case, manual macOS aggregation remains wired, environment skips cannot replace exact v0.7 evidence, and the 71-case v0.7 scope remains current; the 0.7.0 checklist has 0 gaps.",
+          "recorded_at": "2026-08-19T23:31:14+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='client-side-operations-timeout/tests/command-execution.json'",
+          "command": "MONGOD=/Users/alex/.local/bin/mongod make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='crud/tests/unified/client-bulkWrite-*-rawdata.json::test?2?'",
           "exit_code": 0,
-          "summary": "The live command-execution fixture ran as three isolated exact batches; all 3 passed with 0 failures, environment skips, deferrals, or malformed executor output.",
-          "recorded_at": "2026-08-19T23:20:47+00:00"
+          "summary": "Against MongoDB 8.0.16, all three newly selected pre-8.2 client bulk write rawData branches executed and passed with 0 failures, environment skips, or deferrals.",
+          "recorded_at": "2026-08-19T23:31:15+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance 32295104695 found two exact insertMany error-result coercion failures; the same run also had a transient Docker readiness timeout in the MongoDB 8.0 replica-set compatibility row.",
         "Requeued: Full Conformance 32298388061 failed the same authenticated network-timeout identity on Linux and macOS after SCRAM returned a socket write failure; publication remains blocked pending exact reproduction and a focused portability fix.",
         "Requeued: Full Conformance 32302493311 found missing checked-in coverage baseline rows for src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua; macOS shard 1 also had one isolated 10-second CSOT timeout that passed locally and in prior full evidence.",
-        "Requeued: Full Conformance attempt 32306807196 reproduced Linux CSOT command-execution timeout failures and exposed missing pre-8.2 client bulk write rawData evidence in platform aggregates."
+        "Requeued: Full Conformance attempt 32306807196 reproduced Linux CSOT command-execution timeout failures and exposed missing pre-8.2 client bulk write rawData evidence in platform aggregates.",
+        "Requeued: Full Conformance 32306807196 macOS aggregate proved the pre-8.2 version-branch jobs omit v0.7 client bulk write rawData identities that are environment-skipped on MongoDB 8.2."
       ],
       "reopen_history": [
         {
@@ -6774,11 +6775,37 @@
               "recorded_at": "2026-08-19T21:56:14+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-19T23:21:04+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_command_execution_csot_cases_use_isolated_lua_processes'",
+              "exit_code": 1,
+              "summary": "The defining harness contract failed because all three timing-sensitive command-execution CSOT identities were grouped into one Lua process, matching the repeated Linux Full Conformance leakage into test 3.",
+              "recorded_at": "2026-08-19T23:18:51+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='four directly coupled unified batching and diagnostics contracts' && python3 -m py_compile spec/unified/run.py spec/unified/test_cli.py && git diff --check",
+              "exit_code": 0,
+              "summary": "Four focused Python contracts passed: command-execution identities isolate, ordinary fixture batching remains stable, one executor still serves ordinary multi-test fixtures, and malformed output retains diagnostics; touched Python compiled and the diff is clean.",
+              "recorded_at": "2026-08-19T23:20:46+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='client-side-operations-timeout/tests/command-execution.json'",
+              "exit_code": 0,
+              "summary": "The live command-execution fixture ran as three isolated exact batches; all 3 passed with 0 failures, environment skips, deferrals, or malformed executor output.",
+              "recorded_at": "2026-08-19T23:20:47+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "aa906e9d0805f60eda0bebdeb695ce9b54641d43",
-      "started_at": "2026-08-19T23:14:55+00:00",
-      "completed_at": "2026-08-19T23:21:04+00:00"
+      "reopened_after_commit": "cf2bc7f294647c5527a04d8afb3bb5c8eaf01c13",
+      "started_at": "2026-08-19T23:27:35+00:00",
+      "completed_at": "2026-08-19T23:31:24+00:00"
     }
   },
   "verified_references": {

@@ -279,6 +279,26 @@ class CiPortabilityTests(unittest.TestCase):
         job,
       )
 
+  def test_full_conformance_runs_every_pre_8_2_v0_7_rawdata_branch(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    linux = workflow[
+      workflow.index("  linux-version-branches:"):
+      workflow.index("  linux-aggregate:")
+    ]
+    macos = workflow[
+      workflow.index("  macos-version-branches:"):
+      workflow.index("  macos-aggregate:")
+    ]
+    branches = (
+      "crud/tests/unified/client-bulkWrite-delete-rawdata.json::test?2?",
+      "crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test?2?",
+      "crud/tests/unified/client-bulkWrite-update-rawdata.json::test?2?",
+    )
+
+    for job in (linux, macos):
+      for branch in branches:
+        self.assertIn(branch, job)
+
   def test_manual_macos_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
     macos = workflow[

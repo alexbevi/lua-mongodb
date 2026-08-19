@@ -168,6 +168,9 @@ jobs:
           --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?'
           --include 'crud/tests/unified/count-rawdata.json::test?2?'
           --include 'crud/tests/unified/db-aggregate-rawdata.json::test?2?'
+          --include 'crud/tests/unified/client-bulkWrite-delete-rawdata.json::test?2?'
+          --include 'crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test?2?'
+          --include 'crud/tests/unified/client-bulkWrite-update-rawdata.json::test?2?'
           --report build/conformance/unified-pre-8.2.json
 
       - name: Upload pre-8.2 exact evidence
@@ -449,6 +452,9 @@ jobs:
           --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?'
           --include 'crud/tests/unified/count-rawdata.json::test?2?'
           --include 'crud/tests/unified/db-aggregate-rawdata.json::test?2?'
+          --include 'crud/tests/unified/client-bulkWrite-delete-rawdata.json::test?2?'
+          --include 'crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test?2?'
+          --include 'crud/tests/unified/client-bulkWrite-update-rawdata.json::test?2?'
           --report build/conformance/unified-macos-pre-8.2.json
 
       - name: Upload macOS pre-8.2 exact evidence
