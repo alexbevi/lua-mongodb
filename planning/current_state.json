@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 242,
+    "completed": 243,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 22
+    "pending": 21
   },
   "active": [],
   "ready": [
@@ -35,7 +35,7 @@
     "SFP-001",
     "BSON-010",
     "ADV-012",
-    "LUA-001"
+    "LUA-002"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -47,7 +47,7 @@
     "macos-ci-signal": [],
     "driver-examples": [],
     "lua-5-5-support": [
-      "LUA-001"
+      "LUA-002"
     ]
   },
   "blocked": [],

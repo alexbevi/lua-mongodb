@@ -71,16 +71,35 @@ local function hex(bytes)
 end
 
 describe("SCRAM authentication", function()
-  it("provides OpenSSL digest, HMAC, PBKDF2, and entropy capabilities", function()
+  it("provides digest, HMAC, PBKDF2, and entropy capabilities", function()
     local adapter = openssl.new()
 
+    assert.are.equal(
+      "900150983cd24fb0d6963f7d28e17f72",
+      hex(assert(adapter.crypto:md5("abc")))
+    )
+    assert.are.equal(
+      "a9993e364706816aba3e25717850c26c9cd0d89d",
+      hex(assert(adapter.crypto:sha1("abc")))
+    )
     assert.are.equal(
       "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
       hex(assert(adapter.crypto:sha256("abc")))
     )
     assert.are.equal(
+      "de7c9b85b8b78aa6bc8a7a36f70a90701c9db4d9",
+      hex(assert(adapter.crypto:hmac_sha1("key", "The quick brown fox jumps over the lazy dog")))
+    )
+    assert.are.equal(
       "f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8",
       hex(assert(adapter.crypto:hmac_sha256("key", "The quick brown fox jumps over the lazy dog")))
+    )
+    assert.are.equal(
+      "60e431591ee0b67f0d8a26aacbf5b77f8e0bc6213728c5140546040f0ee37f54",
+      hex(assert(adapter.crypto:hmac_sha256(
+        string.rep("\170", 131),
+        "Test Using Larger Than Block-Size Key - Hash Key First"
+      )))
     )
     assert.are.equal(
       "120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b",

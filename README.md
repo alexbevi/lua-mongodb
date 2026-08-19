@@ -10,8 +10,8 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 - [Copas](https://lunarmodules.github.io/copas/) 4.11.x.
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
-- [luaossl](https://github.com/wahern/luaossl) 20220711 or later.
-- OpenSSL libraries and development headers required by the TLS and cryptography dependencies.
+- `sha1` 0.5, `md5` 1.3, and `lua-cryptorandom` 0.0.6 or compatible releases.
+- OpenSSL libraries and development headers required by the TLS dependency and by `lua-cryptorandom` on supported Unix-like platforms.
 
 LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency; the supported server versions and deployment types are listed under [Scope](#scope).
 

@@ -124,6 +124,21 @@ def local_source_rockspec(directory: Path) -> Path:
 
 
 class PackageTests(unittest.TestCase):
+  def test_runtime_crypto_dependencies_support_the_next_lua_runtime(self) -> None:
+    rockspec = ROCKSPEC.read_text(encoding="utf-8")
+
+    self.assertNotIn('"luaossl ', rockspec)
+
+    for dependency in (
+      '"lua-cryptorandom >= 0.0.6, < 0.1"',
+      '"md5 >= 1.3, < 1.4"',
+      '"sha1 >= 0.5, < 0.6"',
+    ):
+      with self.subTest(dependency=dependency):
+        self.assertIn(dependency, rockspec)
+
+    self.assertIn('"lua >= 5.4, < 5.5"', rockspec)
+
   def test_unified_modules_follow_explicit_package_classification(self) -> None:
     classified = module_classification()
     discovered = discovered_unified_modules()

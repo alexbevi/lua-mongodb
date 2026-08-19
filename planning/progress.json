@@ -6293,6 +6293,28 @@
       "notes": [],
       "started_at": "2026-08-19T14:34:52+00:00",
       "completed_at": "2026-08-19T14:40:33+00:00"
+    },
+    "LUA-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.package.test_package.PackageTests.test_runtime_crypto_dependencies_support_the_next_lua_runtime'",
+          "exit_code": 2,
+          "summary": "release rockspec still depends on luaossl and lacks the Lua 5.5-compatible crypto stack",
+          "recorded_at": "2026-08-19T14:46:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH make test-focus LUA=lua BUSTED=busted LUACHECK=luacheck FOCUS_UNIT='spec/unit/auth_scram_spec.lua spec/unit/auth_aws_spec.lua' FOCUS_PYTHON='spec.package.test_package.PackageTests.test_runtime_crypto_dependencies_support_the_next_lua_runtime' FOCUS_LINT='src/mongodb/runtime/openssl.lua src/mongodb/runtime/sha256.lua spec/unit/auth_scram_spec.lua spec/unit/auth_aws_spec.lua'",
+          "exit_code": 0,
+          "summary": "18 focused crypto/auth tests and the dependency contract pass; isolated Lua 5.4 and 5.5 provider installs also passed exact vectors",
+          "recorded_at": "2026-08-19T14:58:24+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T14:41:53+00:00",
+      "completed_at": "2026-08-19T14:58:25+00:00"
     }
   },
   "verified_references": {
