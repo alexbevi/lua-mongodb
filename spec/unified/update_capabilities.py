@@ -665,9 +665,11 @@ for fixture, count in (
     ] = ("ADV-009", OWNER_REASONS["ADV-009"])
 
 for index in range(1, 4):
-  TEST_OVERRIDES[
-    f"transactions/tests/unified/client-bulkWrite.json::test[{index}]"
-  ] = ("CBW-010", OWNER_REASONS["CBW-010"])
+  identity = f"transactions/tests/unified/client-bulkWrite.json::test[{index}]"
+  TEST_OVERRIDES[identity] = (
+    "CBW-010",
+    None if identity in EXECUTOR_TESTS else OWNER_REASONS["CBW-010"],
+  )
 
 for fixture, count in (
   ("mongos-recovery-token-errorLabels", 1),
@@ -694,18 +696,18 @@ for index in range(8, 10):
   ] = ("TXN-007", None)
 
 for index in range(1, 60):
+  identity = f"transactions/tests/unified/mongos-pin-auto.json::test[{index}]"
+
   if index == 2 or 22 <= index <= 57:
     owner = "TXN-007"
     reason = None
   elif index == 21 or index >= 58:
     owner = "CBW-010"
-    reason = OWNER_REASONS[owner]
+    reason = None if identity in EXECUTOR_TESTS else OWNER_REASONS[owner]
   else:
     owner = "TXN-006"
     reason = None
-  TEST_OVERRIDES[
-    f"transactions/tests/unified/mongos-pin-auto.json::test[{index}]"
-  ] = (owner, reason)
+  TEST_OVERRIDES[identity] = (owner, reason)
 
 for index in range(1, 3):
   TEST_OVERRIDES[

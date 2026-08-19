@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1901,
-    "passed": 1852,
-    "runnable": 1852
+    "passed": 1858,
+    "runnable": 1858
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -75084,7 +75084,6 @@
     "transactions/tests/unified/client-bulkWrite.json::test[1]": {
       "activity": "CBW-010",
       "fingerprint": "11e07788a5d3e7006fee42e4613476ae7ab53af99baddef6a563cf966b549d9f",
-      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -75118,12 +75117,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/client-bulkWrite.json::test[2]": {
       "activity": "CBW-010",
       "fingerprint": "46f260bad722eeda15cb94d55116d1fe26999610cf5e1ba1fffaac2ed52d8a93",
-      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -75158,12 +75156,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/client-bulkWrite.json::test[3]": {
       "activity": "CBW-010",
       "fingerprint": "b93d6ed6bedd847547867d619201c779665dd7cd1ea6abf1572b34964c102a58",
-      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -75191,7 +75188,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/commit.json::test[10]": {
       "activity": "TXN-001",
@@ -77907,7 +77904,6 @@
     "transactions/tests/unified/mongos-pin-auto.json::test[21]": {
       "activity": "CBW-010",
       "fingerprint": "114daacf51564547a5075a4bf32f618e57a1e98692e2a4e3fde60cd06f32ad78",
-      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -77944,7 +77940,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[22]": {
       "activity": "TXN-007",
@@ -79558,7 +79554,6 @@
     "transactions/tests/unified/mongos-pin-auto.json::test[58]": {
       "activity": "CBW-010",
       "fingerprint": "7024eb9ff10c239f64ac6ae53130019f4052d641efe264c70ac8d669b776cd0e",
-      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79595,12 +79590,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[59]": {
       "activity": "CBW-010",
       "fingerprint": "75846525c406eefe176d950e496f8561595045b84144fa00c1c69200f0e7d3ed",
-      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79637,7 +79631,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[5]": {
       "activity": "TXN-006",

@@ -521,7 +521,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Client-side operations timeout | 🟡 | 80.3% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟢 | 100.0% |
-| Resilience | Transactions | 🟡 | 94.2% |
+| Resilience | Transactions | 🟡 | 96.5% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
 | Programmability | CRUD | 🟡 | 85.0% |
 | Programmability | Collection management | 🟢 | 100.0% |

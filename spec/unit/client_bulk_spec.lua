@@ -403,6 +403,66 @@ describe("client bulk writes", function()
     assert.is_nil(implicit_commands[2]:get("readConcern"))
   end)
 
+  it("rejects an operation write concern after a transaction starts", function()
+    local runtime = fake_runtime.new()
+    local sessions = session_module.new({
+      clock = runtime.clock,
+      id_factory = function()
+        return bson.document({
+          { "id", bson.binary(
+            string.rep("t", 16),
+            bson.BINARY_SUBTYPE.UUID
+          ) },
+        })
+      end,
+      runtime = runtime,
+      timeout_minutes = 30,
+    })
+    local command_count = 0
+    local underlying = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function()
+        command_count = command_count + 1
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local client = api.new_client(
+      session_executor.new(underlying, sessions),
+      assert(driver_options.normalize(nil, {}))
+    )
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+
+    local result, err = client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+    }, {
+      session = session,
+      write_concern = { w = 1 },
+    })
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "Cannot set write concern after starting a transaction",
+      err.message
+    )
+    assert.are.equal(0, command_count)
+  end)
+
   it("bounds batches by combined operation and namespace size", function()
     local first_document = bson.document({ { "_id", 1 }, { "value", "a" } })
     local second_document = bson.document({ { "_id", 2 }, { "value", "b" } })

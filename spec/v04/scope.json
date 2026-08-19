@@ -1,12 +1,11 @@
 {
   "evidence": {
-    "exact_unified_cases": 357,
+    "exact_unified_cases": 363,
     "static_passing_cases": 496
   },
   "excluded_by_activity": {
     "ADV-006": 14,
     "ADV-009": 24,
-    "CBW-010": 6,
     "LEG-003": 1
   },
   "exclusion_reasons": {
@@ -61,16 +60,16 @@
       "passed": 39
     },
     "transactions": {
-      "excluded": 15,
-      "passed": 243
+      "excluded": 9,
+      "passed": 249
     }
   },
   "summary": {
     "classified": 898,
-    "excluded": 45,
-    "passed": 853,
+    "excluded": 39,
+    "passed": 859,
     "planned": 0,
-    "supported": 853
+    "supported": 859
   },
   "target_owners": [
     "ADV-005",

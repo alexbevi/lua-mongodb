@@ -32,7 +32,6 @@ describe("collection bulk writes over OP_MSG", function()
     copas.addserver(server, function(peer)
       peer = copas.wrap(peer)
       local handshake = receive_frame(peer)
-
       send_response(peer, handshake, bson.document({
         { "ok", 1 },
         { "helloOk", true },
@@ -437,6 +436,159 @@ describe("collection bulk writes over OP_MSG", function()
 
         assert.are.equal(2, result.inserted_count)
         assert.is_true(verified_session_cursor)
+        assert.is_true(session:end_session())
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
+  it("keeps one transaction across client batches and getMore", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local address = "127.0.0.1:" .. assert(math.tointeger(port))
+    local outcome
+    local verified_transaction_cursor = false
+
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      local hello = bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "setName", "rs" },
+        { "hosts", bson.array({ address }) },
+        { "primary", address },
+        { "logicalSessionTimeoutMinutes", 30 },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 1 },
+      })
+
+      send_response(peer, handshake, hello)
+
+      local session_id
+      local transaction_number
+      local batch_index = 1
+
+      while batch_index <= 2 do
+        local received
+        local request
+        local command_name
+
+        repeat
+          received, request = pcall(receive_frame, peer)
+
+          if not received then
+            peer:close()
+            return
+          end
+
+          command_name = request.body:keys()[1]
+
+          if command_name == "hello" then
+            send_response(peer, request, hello)
+          end
+        until command_name ~= "hello"
+
+        assert.are.equal("bulkWrite", command_name)
+        assert.is_false(request.body:get("autocommit"))
+        assert.is_nil(request.body:get("writeConcern"))
+
+        local encoded_session = assert(bson.encode(request.body:get("lsid")))
+        local encoded_transaction = assert(bson.encode(bson.document({
+          { "txnNumber", request.body:get("txnNumber") },
+        })))
+
+        if batch_index == 1 then
+          session_id = encoded_session
+          transaction_number = encoded_transaction
+          assert.is_true(request.body:get("startTransaction"))
+        else
+          assert.are.equal(session_id, encoded_session)
+          assert.are.equal(transaction_number, encoded_transaction)
+          assert.is_nil(request.body:get("startTransaction"))
+        end
+
+        send_response(peer, request, bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(batch_index == 2 and 42 or 0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        }))
+
+        batch_index = batch_index + 1
+      end
+
+      local get_more = receive_frame(peer)
+
+      assert.are.equal("getMore", get_more.body:keys()[1])
+      assert.are.equal(session_id, assert(bson.encode(get_more.body:get("lsid"))))
+      assert.are.equal(
+        transaction_number,
+        assert(bson.encode(bson.document({
+          { "txnNumber", get_more.body:get("txnNumber") },
+        })))
+      )
+      assert.is_false(get_more.body:get("autocommit"))
+      assert.is_nil(get_more.body:get("startTransaction"))
+      verified_transaction_cursor = true
+      send_response(peer, get_more, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "nextBatch", bson.array({}) },
+        }) },
+      }))
+
+      local abort = receive_frame(peer)
+
+      assert.are.equal("abortTransaction", abort.body:keys()[1])
+      send_response(peer, abort, bson.document({ { "ok", 1 } }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://" .. address
+            .. "/?replicaSet=rs&directConnection=true&w=1",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local session = assert(client:start_session())
+
+        assert(session:start_transaction())
+
+        local result = assert(client:bulk_write({
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 1 } })
+          ),
+          mongodb.client_bulk.insert_one(
+            "audit.events",
+            bson.document({ { "_id", 2 } })
+          ),
+        }, { session = session }))
+
+        assert.are.equal(2, result.inserted_count)
+        assert.is_true(verified_transaction_cursor)
+        assert(session:abort_transaction())
         assert.is_true(session:end_session())
         assert.is_true(client:close())
       end))

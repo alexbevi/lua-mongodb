@@ -6515,6 +6515,28 @@
       "notes": [],
       "started_at": "2026-08-19T17:32:35+00:00",
       "completed_at": "2026-08-19T17:44:36+00:00"
+    },
+    "CBW-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='--filter=operation.write.concern.after.a.transaction.starts spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining transaction unit case reached executor I/O instead of returning the required client error for an operation-level write concern after the transaction started.",
+          "recorded_at": "2026-08-19T17:56:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/client_bulk_spec.lua' FOCUS_INTEGRATION='spec/integration/bulk_spec.lua' FOCUS_UNIFIED='transactions/tests/unified/client-bulkWrite.json::*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua' && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='transactions/tests/unified/mongos-pin-auto.json::test[[]21[]]' && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='transactions/tests/unified/mongos-pin-auto.json::test[[]58[]]' && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='transactions/tests/unified/mongos-pin-auto.json::test[[]59[]]' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck && python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 spec/conformance/catalog.py --check && python3 spec/release/scope.py --check && python3 spec/v04/scope.py --check && python3 spec/v05/scope.py --check && python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check && git diff --check",
+          "exit_code": 0,
+          "summary": "17 client-bulk unit cases, ten directly coupled OP_MSG integration cases, all three replica-set and three exact two-mongos transaction unified identities, and 132 targeted inventory/ledger/v0.4 scope tests passed; touched lint, complexity, capability, conformance, release and versioned scopes, checklist, README projection, and diff validators pass.",
+          "recorded_at": "2026-08-19T18:13:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T17:55:05+00:00",
+      "completed_at": "2026-08-19T18:13:41+00:00"
     }
   },
   "verified_references": {

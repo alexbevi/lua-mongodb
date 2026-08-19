@@ -716,7 +716,17 @@ local function validate_options(state, options)
     write_concern = normalized.write_concern
   end
 
-  local acknowledged = write_concern.w ~= 0
+  local in_transaction = options.session ~= nil
+    and type(options.session.is_in_transaction) == "function"
+    and options.session:is_in_transaction()
+
+  if in_transaction and options.write_concern ~= nil then
+    return client_error(
+      "Cannot set write concern after starting a transaction"
+    )
+  end
+
+  local acknowledged = in_transaction or write_concern.w ~= 0
 
   if not acknowledged and options.verbose_results == true then
     return client_error(
@@ -743,6 +753,7 @@ local function validate_options(state, options)
     bypass_document_validation = options.bypass_document_validation,
     comment = options.comment,
     let = options.let,
+    in_transaction = in_transaction,
     ordered = ordered,
     raw_data = options.raw_data,
     session = options.session,
@@ -1421,7 +1432,8 @@ function M.execute(state, models, options)
     entries[#entries + 1] = { "rawData", options.raw_data }
   end
 
-  local write_concern = concern_document(options.write_concern)
+  local write_concern = not options.in_transaction
+    and concern_document(options.write_concern) or nil
 
   if write_concern ~= nil then
     entries[#entries + 1] = { "writeConcern", write_concern }
