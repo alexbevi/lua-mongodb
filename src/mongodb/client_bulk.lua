@@ -715,11 +715,28 @@ local function validate_options(state, options)
     write_concern = normalized.write_concern
   end
 
+  local acknowledged = write_concern.w ~= 0
+
+  if not acknowledged and options.verbose_results == true then
+    return client_error(
+      "Cannot request unacknowledged write concern and verbose results"
+    )
+  end
+
+  local ordered = options.ordered == nil and true or options.ordered
+
+  if not acknowledged and ordered then
+    return client_error(
+      "Cannot request unacknowledged write concern and ordered writes"
+    )
+  end
+
   return {
+    acknowledged = acknowledged,
     bypass_document_validation = options.bypass_document_validation,
     comment = options.comment,
     let = options.let,
-    ordered = options.ordered == nil and true or options.ordered,
+    ordered = ordered,
     raw_data = options.raw_data,
     verbose_results = options.verbose_results == true,
     write_concern = write_concern,
@@ -1284,6 +1301,7 @@ local function execute_batches(state, command, batches, options)
   for _, batch in ipairs(batches) do
     local response, err = state.executor:command("admin", command, {
       max_sequence_document_size = state.max_message_size,
+      no_response = not options.acknowledged,
       operation_id = bulk_operation_id,
       sequences = {
         { identifier = "ops", documents = batch.operations },
@@ -1295,33 +1313,39 @@ local function execute_batches(state, command, batches, options)
       return nil, command_failure(err)
     end
 
-    local result
-    result, err = result_from(
-      state,
-      response,
-      batch.result_models,
-      options
-    )
+    if options.acknowledged then
+      local result
+      result, err = result_from(
+        state,
+        response,
+        batch.result_models,
+        options
+      )
 
-    if result == nil then
-      local details = err.details
-      local has_write_failures = errors.is(err, errors.CATEGORY.WRITE)
-        and details ~= nil
-        and (#details.write_errors > 0
-          or #details.write_concern_errors > 0)
+      if result == nil then
+        local details = err.details
+        local has_write_failures = errors.is(err, errors.CATEGORY.WRITE)
+          and details ~= nil
+          and (#details.write_errors > 0
+            or #details.write_concern_errors > 0)
 
-      if not has_write_failures then
-        return nil, err
+        if not has_write_failures then
+          return nil, err
+        end
+
+        merge_batch_failure(full, batch, err)
+
+        if options.ordered and #details.write_errors > 0 then
+          break
+        end
+      else
+        merge_successful_batch(full, batch, result)
       end
-
-      merge_batch_failure(full, batch, err)
-
-      if options.ordered and #details.write_errors > 0 then
-        break
-      end
-    else
-      merge_successful_batch(full, batch, result)
     end
+  end
+
+  if not options.acknowledged then
+    return result_value({ acknowledged = false })
   end
 
   if #full.write_errors > 0 or #full.write_concern_errors > 0 then

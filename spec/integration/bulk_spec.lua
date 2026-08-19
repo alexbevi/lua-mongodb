@@ -180,6 +180,78 @@ describe("collection bulk writes over OP_MSG", function()
     end
   end)
 
+  it("sends every unacknowledged client batch with moreToCome", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 1 },
+      }))
+
+      for identifier = 1, 2 do
+        local request = receive_frame(peer)
+
+        assert.are.equal("bulkWrite", request.body:keys()[1])
+        assert.is_true(request.more_to_come)
+        assert.is_false(request.body:get("ordered"))
+        assert.are.equal(
+          0,
+          request.body:get("writeConcern"):get("w"):to_number()
+        )
+        assert.are.equal(1, #request.sequences[1].documents)
+        assert.are.equal(
+          identifier,
+          request.sequences[1].documents[1]
+            :get("document"):get("_id"):to_number()
+        )
+      end
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port,
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local written = assert(client:bulk_write({
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 1 } })
+          ),
+          mongodb.client_bulk.insert_one(
+            "audit.events",
+            bson.document({ { "_id", 2 } })
+          ),
+        }, {
+          ordered = false,
+          write_concern = { w = 0 },
+        }))
+
+        assert.is_false(written.acknowledged)
+        assert.is_nil(written.inserted_count)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
   it("splits client bulk writes at maxWriteBatchSize", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())

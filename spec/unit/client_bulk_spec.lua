@@ -187,6 +187,93 @@ describe("client bulk writes", function()
     assert.are.equal("app.events", second_namespaces[1]:get("ns"))
   end)
 
+  it("sends unacknowledged batches without readable results", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 1,
+        }
+      end,
+      command = function(_, database, command, options)
+        commands[#commands + 1] = {
+          command = command,
+          database = database,
+          options = options,
+        }
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {
+        write_concern = { w = 0 },
+      }))
+    )
+    local models = {
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.insert_one(
+        "audit.events",
+        bson.document({ { "_id", 2 } })
+      ),
+    }
+    local result = assert(client:bulk_write(models, { ordered = false }))
+
+    assert.is_false(result.acknowledged)
+    assert.is_nil(result.has_verbose_results)
+    assert.is_nil(result.inserted_count)
+    assert.is_nil(result.insert_results)
+    assert.are.equal(2, #commands)
+
+    for _, sent in ipairs(commands) do
+      assert.are.equal("admin", sent.database)
+      assert.is_true(sent.options.no_response)
+      assert.are.equal(0, sent.command:get("writeConcern"):get("w"))
+      assert.is_false(sent.command:get("ordered"))
+    end
+
+    assert.are.equal(
+      commands[1].options.operation_id,
+      commands[2].options.operation_id
+    )
+    assert.has_error(function()
+      result.acknowledged = true
+    end, "client bulk result values are immutable")
+
+    local command_count = #commands
+    local invalid, err = client:bulk_write({ models[1] }, {
+      ordered = false,
+      verbose_results = true,
+    })
+
+    assert.is_nil(invalid)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "Cannot request unacknowledged write concern and verbose results",
+      err.message
+    )
+    assert.are.equal(command_count, #commands)
+
+    invalid, err = client:bulk_write({ models[1] })
+
+    assert.is_nil(invalid)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "Cannot request unacknowledged write concern and ordered writes",
+      err.message
+    )
+    assert.are.equal(command_count, #commands)
+  end)
+
   it("bounds batches by combined operation and namespace size", function()
     local first_document = bson.document({ { "_id", 1 }, { "value", "a" } })
     local second_document = bson.document({ { "_id", 2 }, { "value", "b" } })

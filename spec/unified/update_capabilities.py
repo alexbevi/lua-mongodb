@@ -790,7 +790,8 @@ TEST_OVERRIDES[
 
 for index in (8, 9):
   identity = f"crud/tests/unified/client-bulkWrite-errors.json::test[{index}]"
-  TEST_OVERRIDES[identity] = ("CBW-008", OWNER_REASONS["CBW-008"])
+  if identity not in EXECUTOR_TESTS:
+    TEST_OVERRIDES[identity] = ("CBW-008", OWNER_REASONS["CBW-008"])
 
 TEST_OVERRIDES[
   "client-side-operations-timeout/tests/bulkWrite.json::test[1]"
