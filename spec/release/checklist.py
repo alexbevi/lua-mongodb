@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report legacy APIs v0.6 release readiness."""
+"""Validate and report client bulk write v0.7 release readiness."""
 
 from __future__ import annotations
 
@@ -25,12 +25,12 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.6.0-1.rockspec"
-RELEASE_VERSION = "0.6.0"
+ROCKSPEC = ROOT / "mongodb-0.7.0-1.rockspec"
+RELEASE_VERSION = "0.7.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 4082
-MAXIMUM_POST_V1_EXCLUSIONS = 1442
+MINIMUM_PASSED_CASES = 4153
+MAXIMUM_POST_V1_EXCLUSIONS = 1371
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -120,13 +120,13 @@ V07_GATES = [
   "CBW-010",
   "CBW-011",
   "CBW-012",
+  "REL-055",
 ]
-V07_CONFORMANCE_ACTIVITY = "REL-055"
 V07_RELEASE_ACTIVITY = "REL-056"
 
 
 class ChecklistError(ValueError):
-  """Raised when the legacy APIs release is not ready."""
+  """Raised when the client bulk write release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -185,11 +185,11 @@ def release_metadata() -> dict[str, str]:
   require_text(ROOT / "README.md", f"current release is version `{RELEASE_VERSION}`")
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-18",
+    f"## [{RELEASE_VERSION}] - 2026-08-19",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: legacy APIs v0.6 release-ready.",
+    "Status: client bulk write v0.7 release-ready.",
   )
 
   return {
@@ -238,7 +238,6 @@ def generate() -> dict[str, Any]:
   v07_offset = len(v05_prefix) + len(v06_segment)
   v07_segment = [
     *V07_GATES[1:],
-    V07_CONFORMANCE_ACTIVITY,
     V07_RELEASE_ACTIVITY,
   ]
   if api_track[v07_offset:] != v07_segment:
@@ -478,7 +477,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "legacy-api-release-checklist",
+    "type": "client-bulk-write-release-checklist",
   }
 
 

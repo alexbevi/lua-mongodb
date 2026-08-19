@@ -152,7 +152,8 @@
       "CBW-009",
       "CBW-010",
       "CBW-011",
-      "CBW-012"
+      "CBW-012",
+      "REL-055"
     ],
     "conformance": {
       "applicable_gaps": 0,
@@ -195,10 +196,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.6.0-1.rockspec",
-    "rockspec_version": "0.6.0-1",
-    "version": "0.6.0"
+    "rockspec": "mongodb-0.7.0-1.rockspec",
+    "rockspec_version": "0.7.0-1",
+    "version": "0.7.0"
   },
   "schema_version": 1,
-  "type": "legacy-api-release-checklist"
+  "type": "client-bulk-write-release-checklist"
 }

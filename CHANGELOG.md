@@ -2,6 +2,25 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.7.0] - 2026-08-19
+
+Client bulk write release.
+
+### Added
+
+- Added client-level bulk writes across multiple namespaces with insert, update, replace, and delete models.
+- Added ordered and unordered execution, summary and verbose results, individual write and write-concern errors, partial results, and server result-cursor handling.
+- Added command-size and batch-count splitting, sessions, transactions, retryable writes, unacknowledged writes, Stable API, sharded transaction pinning, and client-side operation timeouts.
+
+### Conformance
+
+- All 71 v0.7 client bulk-write cases have exact unified executors across standalone, replica-set, and sharded profiles.
+- The v0.7 surface has no deferred or target-version-excluded identities within its MongoDB 8.0–8.2 feature floor.
+
+### Release engineering
+
+- Added the generated v0.7 conformance projection to Full Conformance and the exact-commit LuaRocks release checklist.
+
 ## [0.6.0] - 2026-08-18
 
 Legacy APIs release.

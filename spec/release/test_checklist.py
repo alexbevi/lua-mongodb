@@ -1,4 +1,4 @@
-"""Contract tests for the legacy APIs v0.6 release checklist."""
+"""Contract tests for the client bulk write v0.7 release checklist."""
 
 import unittest
 
@@ -10,14 +10,14 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("legacy-api-release-checklist", report["type"])
-    self.assertEqual("0.6.0", report["release"]["version"])
+    self.assertEqual("client-bulk-write-release-checklist", report["type"])
+    self.assertEqual("0.7.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 4082)
-    self.assertLessEqual(conformance["post_v1_exclusions"], 1442)
+    self.assertGreaterEqual(conformance["passed_cases"], 4153)
+    self.assertLessEqual(conformance["post_v1_exclusions"], 1371)
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"] + conformance["post_v1_exclusions"],
@@ -158,6 +158,7 @@ class ReleaseChecklistTests(unittest.TestCase):
         "CBW-010",
         "CBW-011",
         "CBW-012",
+        "REL-055",
       ],
       report["gates"]["completed_v0_7_gates"],
     )

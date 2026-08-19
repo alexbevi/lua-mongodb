@@ -6603,6 +6603,35 @@
       "notes": [],
       "started_at": "2026-08-19T19:13:42+00:00",
       "completed_at": "2026-08-19T19:28:07+00:00"
+    },
+    "REL-056": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "Defining release-checklist assertion failed because generated metadata reported 0.6.0 instead of required 0.7.0.",
+          "recorded_at": "2026-08-19T19:36:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUAROCKS=/opt/homebrew/bin/luarocks BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'",
+          "exit_code": 0,
+          "summary": "16 unit, 4 directly coupled client integration, and 26 release, publication, package, and workflow tests passed; the isolated source rock installed and its public API smoke passed; 6 touched Lua files linted with 0 warnings; 0 failed, skipped, pending, or deferred.",
+          "recorded_at": "2026-08-19T19:42:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/release/checklist.py --check; python3 spec/v07/scope.py --check; python3 planning/update_readme_compatibility.py --check; python3 spec/release/publish.py metadata --rockspec mongodb-0.7.0-1.rockspec; luarocks --lua-version=5.4 lint mongodb-0.7.0-1.rockspec; JSON/YAML/Python syntax validators; git diff --check",
+          "exit_code": 0,
+          "summary": "The generated 0.7.0 release checklist is current with 5524 classified cases, 0 gaps, 4153 passes, 1371 exclusions, and 9 compatibility rows; all 71 v0.7 identities pass; publication resolves immutable v0.7.0 artifacts; rockspec, README, JSON, YAML, Python syntax, and diff validators passed.",
+          "recorded_at": "2026-08-19T19:42:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T19:36:18+00:00",
+      "completed_at": "2026-08-19T19:43:10+00:00"
     }
   },
   "verified_references": {

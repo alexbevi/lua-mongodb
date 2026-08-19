@@ -16,13 +16,13 @@ WORKFLOW = ROOT / ".github" / "workflows" / "release.yml"
 
 class PublishTests(unittest.TestCase):
   def test_release_metadata_is_derived_from_the_rockspec(self) -> None:
-    metadata = publish.release_metadata(ROOT / "mongodb-0.6.0-1.rockspec")
+    metadata = publish.release_metadata(ROOT / "mongodb-0.7.0-1.rockspec")
 
     self.assertEqual("mongodb", metadata.package)
-    self.assertEqual("0.6.0", metadata.version)
-    self.assertEqual("0.6.0-1", metadata.rockspec_version)
-    self.assertEqual("v0.6.0", metadata.tag)
-    self.assertEqual("mongodb-0.6.0-1.src.rock", metadata.source_rock)
+    self.assertEqual("0.7.0", metadata.version)
+    self.assertEqual("0.7.0-1", metadata.rockspec_version)
+    self.assertEqual("v0.7.0", metadata.tag)
+    self.assertEqual("mongodb-0.7.0-1.src.rock", metadata.source_rock)
 
   def test_release_metadata_rejects_a_mismatched_source_tag(self) -> None:
     with tempfile.TemporaryDirectory() as directory:

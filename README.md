@@ -1,6 +1,6 @@
 # MongoDB Lua Driver
 
-A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.6.0`; it adds deprecated count and mapReduce commands, database aggregation, and tailable and awaitData cursors. It targets Lua 5.4 and Lua 5.5 without binding or wrapping `libmongoc`.
+A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.7.0`; it adds client-level bulk writes across multiple namespaces with ordered and unordered execution, detailed results, retries, transactions, and operation timeouts. It targets Lua 5.4 and Lua 5.5 without binding or wrapping `libmongoc`.
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
@@ -20,18 +20,18 @@ LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server 
 From a source checkout, build and install the release rock with:
 
 ```sh
-luarocks make mongodb-0.6.0-1.rockspec
+luarocks make mongodb-0.7.0-1.rockspec
 ```
 
 `make test-package` builds a source rock from the current checkout, installs it into an isolated LuaRocks tree, verifies that every production module is packaged, and exercises the documented public API without workspace module paths.
 
-The public LuaRocks rock name is `mongodb`. Install version 0.6.0 with:
+The public LuaRocks rock name is `mongodb`. Install version 0.7.0 with:
 
 ```sh
-luarocks install mongodb 0.6.0-1
+luarocks install mongodb 0.7.0-1
 ```
 
-The release rockspec is built and verified from the immutable `v0.6.0` tag before publication.
+The release rockspec is built and verified from the immutable `v0.7.0` tag before publication.
 
 ## Getting Started
 
@@ -468,7 +468,7 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD and collection bulk writes, including tailable and awaitData finds; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, and session handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout.
 
 ### Errors and resource lifetimes
 
