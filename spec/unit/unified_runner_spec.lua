@@ -102,6 +102,48 @@ describe("unified runner core", function()
     })))
   end)
 
+  it("coerces error partial results independently from success results", function()
+    local runner = assert(unified.new({
+      runtime = fake_runtime.new(),
+      entity_factories = {
+        counter = function()
+          return {}
+        end,
+      },
+      operations = {
+        counter = {
+          fail = {
+            coerce_error_result = function(value)
+              return document({ { "errorCount", value.count } })
+            end,
+            coerce_result = function(value)
+              return document({ { "successCount", value.count } })
+            end,
+            handler = function()
+              return nil, errors.new({
+                category = errors.CATEGORY.WRITE,
+                details = { partial_result = { count = 2 } },
+                message = "write failed",
+              })
+            end,
+          },
+        },
+      },
+    }))
+
+    assert(runner:create_entities(array({
+      document({ { "counter", document({ { "id", "counter0" } }) } }),
+    })))
+    assert(runner:execute(document({
+      { "name", "fail" },
+      { "object", "counter0" },
+      { "expectError", document({
+        { "isError", true },
+        { "expectResult", document({ { "errorCount", 2 } }) },
+      }) },
+    }), "$.operations[1]"))
+  end)
+
   it("supports unified match operators and rejects unknown operators", function()
     local runner = assert(unified.new({ runtime = fake_runtime.new() }))
     assert(runner:add_entity("expected0", "bson", bson.int32(4)))

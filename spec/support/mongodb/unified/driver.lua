@@ -2698,6 +2698,7 @@ function M.new(options)
           arguments = {
             "bypassDocumentValidation", "comment", "documents", "ordered", "rawData",
           },
+          coerce_error_result = bulk_result,
           coerce_result = insert_many_result,
           handler = insert_many,
         },
