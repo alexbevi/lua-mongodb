@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "baaa1315acea0b6221a24a4888cad538bd6b9cb8ae32c1f690af15faab10eb58",
+  "plan_digest": "2e5a81fa997d77d970f74d10880429a290ed4e27bbe747a1e635ba0b045d8f55",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -6271,6 +6271,12 @@
       "notes": [],
       "started_at": "2026-08-19T14:15:22+00:00",
       "completed_at": "2026-08-19T14:27:08+00:00"
+    },
+    "CBW-014": {
+      "status": "in_progress",
+      "evidence": [],
+      "notes": [],
+      "started_at": "2026-08-19T14:34:52+00:00"
     }
   },
   "verified_references": {
