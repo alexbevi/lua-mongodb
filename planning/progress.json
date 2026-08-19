@@ -6609,43 +6609,37 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "GitHub Actions Full Conformance 32298388061, linux-unified (0) job 96215042001 and macos-unified (0) job 96215041971",
+          "command": "GitHub Actions Full Conformance 32302493311, linux-quality job 96227987011 and macos-unified (1) job 96227987234",
           "exit_code": 1,
-          "summary": "The same authenticated standalone identity server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test[1] failed on Linux and macOS: each shard had exactly 1 failure, and the second SCRAM authentication path returned a socket write failure under the fixture 250 ms timeout.",
-          "recorded_at": "2026-08-19T20:55:37+00:00"
+          "summary": "Linux quality ran 537 tests with 0 failures and then rejected missing coverage baselines for client_bulk.lua and runtime/sha256.lua; macOS shard 1 had one isolated 10-second CSOT expiry while 339 of 340 executed cases passed, and that identity passed locally plus in prior full evidence.",
+          "recorded_at": "2026-08-19T21:54:28+00:00"
         },
         {
           "phase": "red",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test?[1]?'",
-          "exit_code": 2,
-          "summary": "The exact authenticated network-timeout identity reproduced locally: 1 executed, 0 passed, 1 failed, 0 environment-skipped, and 0 deferred; the failure is deterministic after the runtime cryptography change.",
-          "recorded_at": "2026-08-19T20:56:18+00:00"
-        },
-        {
-          "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='--filter=renews.the.socket.timeout.for.each.SCRAM.exchange spec/unit/config_credentials_spec.lua'",
-          "exit_code": 2,
-          "summary": "The defining client authentication contract failed because the first SCRAM exchange received no socket deadline; the connection path reused one absolute connect deadline instead of renewing the configured 250 ms socket timeout per exchange.",
-          "recorded_at": "2026-08-19T21:00:55+00:00"
+          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel056-coverage.B8tUsq/luacov.report.out --baseline spec/quality/coverage-baseline.json",
+          "exit_code": 1,
+          "summary": "The authoritative Linux coverage report reproduced exactly two missing checked-in baseline rows: src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua.",
+          "recorded_at": "2026-08-19T21:54:29+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/socket_timeout_executor_spec.lua spec/unit/auth_scram_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-*.json' FOCUS_LINT='src/mongodb/client.lua spec/unit/config_credentials_spec.lua'",
+          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel056-coverage.B8tUsq/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; coverage unit, total, JSON, and diff validators",
           "exit_code": 0,
-          "summary": "All 26 authentication and socket-timeout unit tests passed; all 5 live authenticated error fixtures executed and passed with 0 failures, environment skips, or deferrals; both touched Lua files linted with 0 warnings.",
-          "recorded_at": "2026-08-19T21:04:48+00:00"
+          "summary": "The authoritative 22878/25190-line Linux report passes with no regressions; all 3 coverage-gate contracts pass, the baseline total exactly equals its per-file sum at 22601/24911, and JSON plus diff validation pass.",
+          "recorded_at": "2026-08-19T21:56:13+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-complexity; capability, ledger, release-checklist, v0.7 scope, README, and diff validators",
+          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/deprecated-options.json::test?[1]?' FOCUS_PYTHON='spec.quality.test_coverage_gate'; release-checklist, v0.7 scope, README validators",
           "exit_code": 0,
-          "summary": "Complexity retained 3 hotspots above 40 and maximum 47; the 5524-case ledger remains at 4153 passes and 1274 deferrals, the 0.7.0 checklist has 0 applicable gaps, all 71 v0.7 identities pass, and generated README plus diff checks are current.",
-          "recorded_at": "2026-08-19T21:04:49+00:00"
+          "summary": "The isolated macOS CSOT identity executed locally and passed again with 0 failures, skips, or deferrals; 3 coverage-gate tests pass, the 0.7.0 release checklist has 0 gaps, all 71 v0.7 identities pass, and README compatibility is current.",
+          "recorded_at": "2026-08-19T21:56:14+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance 32295104695 found two exact insertMany error-result coercion failures; the same run also had a transient Docker readiness timeout in the MongoDB 8.0 replica-set compatibility row.",
-        "Requeued: Full Conformance 32298388061 failed the same authenticated network-timeout identity on Linux and macOS after SCRAM returned a socket write failure; publication remains blocked pending exact reproduction and a focused portability fix."
+        "Requeued: Full Conformance 32298388061 failed the same authenticated network-timeout identity on Linux and macOS after SCRAM returned a socket write failure; publication remains blocked pending exact reproduction and a focused portability fix.",
+        "Requeued: Full Conformance 32302493311 found missing checked-in coverage baseline rows for src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua; macOS shard 1 also had one isolated 10-second CSOT timeout that passed locally and in prior full evidence."
       ],
       "reopen_history": [
         {
@@ -6713,11 +6707,51 @@
               "recorded_at": "2026-08-19T20:19:05+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-19T21:05:07+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "GitHub Actions Full Conformance 32298388061, linux-unified (0) job 96215042001 and macos-unified (0) job 96215041971",
+              "exit_code": 1,
+              "summary": "The same authenticated standalone identity server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test[1] failed on Linux and macOS: each shard had exactly 1 failure, and the second SCRAM authentication path returned a socket write failure under the fixture 250 ms timeout.",
+              "recorded_at": "2026-08-19T20:55:37+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test?[1]?'",
+              "exit_code": 2,
+              "summary": "The exact authenticated network-timeout identity reproduced locally: 1 executed, 0 passed, 1 failed, 0 environment-skipped, and 0 deferred; the failure is deterministic after the runtime cryptography change.",
+              "recorded_at": "2026-08-19T20:56:18+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='--filter=renews.the.socket.timeout.for.each.SCRAM.exchange spec/unit/config_credentials_spec.lua'",
+              "exit_code": 2,
+              "summary": "The defining client authentication contract failed because the first SCRAM exchange received no socket deadline; the connection path reused one absolute connect deadline instead of renewing the configured 250 ms socket timeout per exchange.",
+              "recorded_at": "2026-08-19T21:00:55+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/socket_timeout_executor_spec.lua spec/unit/auth_scram_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-*.json' FOCUS_LINT='src/mongodb/client.lua spec/unit/config_credentials_spec.lua'",
+              "exit_code": 0,
+              "summary": "All 26 authentication and socket-timeout unit tests passed; all 5 live authenticated error fixtures executed and passed with 0 failures, environment skips, or deferrals; both touched Lua files linted with 0 warnings.",
+              "recorded_at": "2026-08-19T21:04:48+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-complexity; capability, ledger, release-checklist, v0.7 scope, README, and diff validators",
+              "exit_code": 0,
+              "summary": "Complexity retained 3 hotspots above 40 and maximum 47; the 5524-case ledger remains at 4153 passes and 1274 deferrals, the 0.7.0 checklist has 0 applicable gaps, all 71 v0.7 identities pass, and generated README plus diff checks are current.",
+              "recorded_at": "2026-08-19T21:04:49+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "6aa24c501b13ad241097a7a8fb249d2c58d5f188",
-      "started_at": "2026-08-19T20:55:07+00:00",
-      "completed_at": "2026-08-19T21:05:07+00:00"
+      "reopened_after_commit": "820305a37108ef4d3c1d8942392ce05b8f28a7f9",
+      "started_at": "2026-08-19T21:53:51+00:00",
+      "completed_at": "2026-08-19T21:56:31+00:00"
     }
   },
   "verified_references": {
