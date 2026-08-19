@@ -6609,37 +6609,31 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "GitHub Actions Full Conformance 32302493311, linux-quality job 96227987011 and macos-unified (1) job 96227987234",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_command_execution_csot_cases_use_isolated_lua_processes'",
           "exit_code": 1,
-          "summary": "Linux quality ran 537 tests with 0 failures and then rejected missing coverage baselines for client_bulk.lua and runtime/sha256.lua; macOS shard 1 had one isolated 10-second CSOT expiry while 339 of 340 executed cases passed, and that identity passed locally plus in prior full evidence.",
-          "recorded_at": "2026-08-19T21:54:28+00:00"
-        },
-        {
-          "phase": "red",
-          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel056-coverage.B8tUsq/luacov.report.out --baseline spec/quality/coverage-baseline.json",
-          "exit_code": 1,
-          "summary": "The authoritative Linux coverage report reproduced exactly two missing checked-in baseline rows: src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua.",
-          "recorded_at": "2026-08-19T21:54:29+00:00"
+          "summary": "The defining harness contract failed because all three timing-sensitive command-execution CSOT identities were grouped into one Lua process, matching the repeated Linux Full Conformance leakage into test 3.",
+          "recorded_at": "2026-08-19T23:18:51+00:00"
         },
         {
           "phase": "green",
-          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel056-coverage.B8tUsq/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; coverage unit, total, JSON, and diff validators",
+          "command": "make test-focus FOCUS_PYTHON='four directly coupled unified batching and diagnostics contracts' && python3 -m py_compile spec/unified/run.py spec/unified/test_cli.py && git diff --check",
           "exit_code": 0,
-          "summary": "The authoritative 22878/25190-line Linux report passes with no regressions; all 3 coverage-gate contracts pass, the baseline total exactly equals its per-file sum at 22601/24911, and JSON plus diff validation pass.",
-          "recorded_at": "2026-08-19T21:56:13+00:00"
+          "summary": "Four focused Python contracts passed: command-execution identities isolate, ordinary fixture batching remains stable, one executor still serves ordinary multi-test fixtures, and malformed output retains diagnostics; touched Python compiled and the diff is clean.",
+          "recorded_at": "2026-08-19T23:20:46+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/deprecated-options.json::test?[1]?' FOCUS_PYTHON='spec.quality.test_coverage_gate'; release-checklist, v0.7 scope, README validators",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='client-side-operations-timeout/tests/command-execution.json'",
           "exit_code": 0,
-          "summary": "The isolated macOS CSOT identity executed locally and passed again with 0 failures, skips, or deferrals; 3 coverage-gate tests pass, the 0.7.0 release checklist has 0 gaps, all 71 v0.7 identities pass, and README compatibility is current.",
-          "recorded_at": "2026-08-19T21:56:14+00:00"
+          "summary": "The live command-execution fixture ran as three isolated exact batches; all 3 passed with 0 failures, environment skips, deferrals, or malformed executor output.",
+          "recorded_at": "2026-08-19T23:20:47+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance 32295104695 found two exact insertMany error-result coercion failures; the same run also had a transient Docker readiness timeout in the MongoDB 8.0 replica-set compatibility row.",
         "Requeued: Full Conformance 32298388061 failed the same authenticated network-timeout identity on Linux and macOS after SCRAM returned a socket write failure; publication remains blocked pending exact reproduction and a focused portability fix.",
-        "Requeued: Full Conformance 32302493311 found missing checked-in coverage baseline rows for src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua; macOS shard 1 also had one isolated 10-second CSOT timeout that passed locally and in prior full evidence."
+        "Requeued: Full Conformance 32302493311 found missing checked-in coverage baseline rows for src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua; macOS shard 1 also had one isolated 10-second CSOT timeout that passed locally and in prior full evidence.",
+        "Requeued: Full Conformance attempt 32306807196 reproduced Linux CSOT command-execution timeout failures and exposed missing pre-8.2 client bulk write rawData evidence in platform aggregates."
       ],
       "reopen_history": [
         {
@@ -6747,11 +6741,44 @@
               "recorded_at": "2026-08-19T21:04:49+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-19T21:56:31+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "GitHub Actions Full Conformance 32302493311, linux-quality job 96227987011 and macos-unified (1) job 96227987234",
+              "exit_code": 1,
+              "summary": "Linux quality ran 537 tests with 0 failures and then rejected missing coverage baselines for client_bulk.lua and runtime/sha256.lua; macOS shard 1 had one isolated 10-second CSOT expiry while 339 of 340 executed cases passed, and that identity passed locally plus in prior full evidence.",
+              "recorded_at": "2026-08-19T21:54:28+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel056-coverage.B8tUsq/luacov.report.out --baseline spec/quality/coverage-baseline.json",
+              "exit_code": 1,
+              "summary": "The authoritative Linux coverage report reproduced exactly two missing checked-in baseline rows: src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua.",
+              "recorded_at": "2026-08-19T21:54:29+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel056-coverage.B8tUsq/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; coverage unit, total, JSON, and diff validators",
+              "exit_code": 0,
+              "summary": "The authoritative 22878/25190-line Linux report passes with no regressions; all 3 coverage-gate contracts pass, the baseline total exactly equals its per-file sum at 22601/24911, and JSON plus diff validation pass.",
+              "recorded_at": "2026-08-19T21:56:13+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/deprecated-options.json::test?[1]?' FOCUS_PYTHON='spec.quality.test_coverage_gate'; release-checklist, v0.7 scope, README validators",
+              "exit_code": 0,
+              "summary": "The isolated macOS CSOT identity executed locally and passed again with 0 failures, skips, or deferrals; 3 coverage-gate tests pass, the 0.7.0 release checklist has 0 gaps, all 71 v0.7 identities pass, and README compatibility is current.",
+              "recorded_at": "2026-08-19T21:56:14+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "820305a37108ef4d3c1d8942392ce05b8f28a7f9",
-      "started_at": "2026-08-19T21:53:51+00:00",
-      "completed_at": "2026-08-19T21:56:31+00:00"
+      "reopened_after_commit": "aa906e9d0805f60eda0bebdeb695ce9b54641d43",
+      "started_at": "2026-08-19T23:14:55+00:00",
+      "completed_at": "2026-08-19T23:21:04+00:00"
     }
   },
   "verified_references": {

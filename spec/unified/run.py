@@ -68,6 +68,9 @@ SLOWEST_FIXTURE_GROUP_LIMIT = 10
 IDENTITY_SHARDED_FIXTURES = frozenset({
   "transactions/tests/unified/mongos-pin-auto.json",
 })
+PROCESS_ISOLATED_FIXTURES = frozenset({
+  "client-side-operations-timeout/tests/command-execution.json",
+})
 KNOWN_REQUIREMENT_KEYS = {
   "arguments",
   "entities",
@@ -1198,14 +1201,18 @@ def execution_batches(
   registry: dict[str, Any],
 ) -> list[list[dict[str, Any]]]:
   """Group runnable identities stably by fixture and deployment environment."""
-  grouped: dict[tuple[str, Any], list[dict[str, Any]]] = {}
+  grouped: dict[tuple[str, Any, str | None], list[dict[str, Any]]] = {}
 
   for classification in classifications:
     if classification["status"] != "runnable":
       continue
 
     entry = registry.get(classification["id"], {})
-    key = (classification["fixture"], entry.get("environment"))
+    fixture = classification["fixture"]
+    isolated_identity = (
+      classification["id"] if fixture in PROCESS_ISOLATED_FIXTURES else None
+    )
+    key = (fixture, entry.get("environment"), isolated_identity)
     grouped.setdefault(key, []).append(classification)
 
   return list(grouped.values())

@@ -2736,6 +2736,28 @@ class UnifiedCliTests(unittest.TestCase):
       batches,
     )
 
+  def test_command_execution_csot_cases_use_isolated_lua_processes(self) -> None:
+    fixture = "client-side-operations-timeout/tests/command-execution.json"
+    classifications = [
+      {
+        "fixture": fixture,
+        "id": f"{fixture}::test[{index}]",
+        "status": "runnable",
+      }
+      for index in range(1, 4)
+    ]
+    registry = {
+      classification["id"]: {"environment": "live-replicaset"}
+      for classification in classifications
+    }
+
+    batches = run.execution_batches(classifications, registry)
+
+    self.assertEqual(
+      [[classification] for classification in classifications],
+      batches,
+    )
+
   def test_execution_timings_are_observational_and_report_slowest_groups(
     self,
   ) -> None:
