@@ -864,6 +864,29 @@ local function write_failure(
   })
 end
 
+local function command_failure(cause)
+  local cause_details = cause.details
+  local labels = {}
+
+  for _, label in ipairs(cause.labels) do
+    labels[#labels + 1] = label
+  end
+
+  return errors.new({
+    category = errors.CATEGORY.WRITE,
+    cause = cause,
+    code = cause.code,
+    code_name = cause.code_name,
+    details = {
+      response = cause_details and cause_details.response or nil,
+      write_concern_errors = {},
+      write_errors = {},
+    },
+    labels = labels,
+    message = cause.message,
+  })
+end
+
 local function result_from(state, response, result_models, options)
   local n_errors, err = count_field(response, "nErrors")
 
@@ -1019,7 +1042,7 @@ function M.execute(state, models, options)
   })
 
   if response == nil then
-    return nil, err
+    return nil, command_failure(err)
   end
 
   return result_from(state, response, result_models, options)

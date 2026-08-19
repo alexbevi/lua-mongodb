@@ -834,4 +834,64 @@ describe("client bulk writes", function()
       err.details.partial_result.insert_results[1].inserted_id
     )
   end)
+
+  it("preserves a top-level command failure without cursor work", function()
+    local response = bson.document({
+      { "ok", 0 },
+      { "code", bson.int32(8) },
+      { "codeName", "UnknownError" },
+      { "errmsg", "failpoint command error" },
+      { "errorLabels", bson.array({ "RetryableWriteError" }) },
+    })
+    local command_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 8,
+      code_name = "UnknownError",
+      details = { response = response },
+      labels = { "RetryableWriteError" },
+      message = "failpoint command error",
+    })
+    local commands = 0
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function()
+        commands = commands + 1
+        return nil, command_error
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {}))
+    )
+    local result, err = client:bulk_write({
+      client_bulk.insert_one(
+        "app.users",
+        bson.document({ { "_id", 1 } })
+      ),
+    }, { verbose_results = true })
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+    assert.is_true(errors.is(err.cause, errors.CATEGORY.SERVER))
+    assert.are.equal(command_error, err.cause)
+    assert.are.equal(8, err.code)
+    assert.are.equal("UnknownError", err.code_name)
+    assert.are.equal("failpoint command error", err.message)
+    assert.is_true(err:has_label("RetryableWriteError"))
+    assert.are.equal(response, err.details.response)
+    assert.is_nil(err.details.partial_result)
+    assert.are.equal(0, #err.details.write_errors)
+    assert.are.equal(0, #err.details.write_concern_errors)
+    assert.are.equal(1, commands)
+  end)
 end)

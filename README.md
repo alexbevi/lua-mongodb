@@ -523,7 +523,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 84.2% |
+| Programmability | CRUD | 🟡 | 84.6% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |
