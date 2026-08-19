@@ -1,7 +1,11 @@
 local auth_config_runner = require("spec.support.auth_config_runner")
+local auth = require("mongodb.auth")
+local bson = require("mongodb.bson")
 local client = require("mongodb.client")
+local command_executor = require("mongodb.command.executor")
 local credentials = require("mongodb.config.credentials")
 local errors = require("mongodb.error")
+local network_transport = require("mongodb.network.transport")
 local options = require("mongodb.config.options")
 local fake_runtime = require("mongodb.runtime.fake")
 local uri = require("mongodb.config.uri")
@@ -44,6 +48,66 @@ describe("authentication credential normalization", function()
     assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
     assert.are.equal("username", err.details.option)
     assert.are.same({}, runtime.calls.connect)
+  end)
+
+  it("renews the socket timeout for each SCRAM exchange", function()
+    local runtime = fake_runtime.new({ now = 10 })
+    local socket_deadlines = {}
+    local original_authenticate = auth.authenticate
+    local original_executor_new = command_executor.new
+    local original_transport_connect = network_transport.connect
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, command_options)
+        socket_deadlines[#socket_deadlines + 1] = command_options.socket_deadline
+        return bson.document({ { "ok", 1 } })
+      end,
+      hello = function()
+        return {
+          document = bson.document({ { "ok", 1 } }),
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+          server_type = "standalone",
+        }
+      end,
+    }
+
+    network_transport.connect = function() return {} end
+    command_executor.new = function() return underlying end
+    auth.authenticate = function(commands, _, _, auth_options)
+      assert(commands:command(
+        "admin",
+        bson.document({ { "saslStart", 1 } }),
+        { deadline = auth_options.deadline }
+      ))
+      runtime:advance(1)
+      assert(commands:command(
+        "admin",
+        bson.document({ { "saslContinue", 1 } }),
+        { deadline = auth_options.deadline }
+      ))
+      return true
+    end
+
+    local outcome = table.pack(pcall(function()
+      local connected = assert(client.connect(
+        "mongodb://alice:secret@localhost/"
+          .. "?authMechanism=SCRAM-SHA-256"
+          .. "&connectTimeoutMS=250&socketTimeoutMS=250",
+        { runtime = runtime }
+      ))
+
+      assert(connected:close())
+    end))
+
+    auth.authenticate = original_authenticate
+    command_executor.new = original_executor_new
+    network_transport.connect = original_transport_connect
+    assert(outcome[1], outcome[2])
+    assert.near(10.25, socket_deadlines[1], 0.000001)
+    assert.near(11.25, socket_deadlines[2], 0.000001)
   end)
 
   it("rejects SCRAM mechanism properties without exposing their values", function()

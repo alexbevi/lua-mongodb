@@ -6609,42 +6609,43 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "GitHub Actions Full Conformance 32295104695, linux-unified (3) job 96204488726",
+          "command": "GitHub Actions Full Conformance 32298388061, linux-unified (0) job 96215042001 and macos-unified (0) job 96215041971",
           "exit_code": 1,
-          "summary": "The release gate executed 334 cases in shard 3 and failed exactly the two unordered insertMany partial-result identities because expectResult.deletedCount was missing; 332 passed, 9 environment-skipped, and 94 remained explicit deferred-unsupported.",
-          "recorded_at": "2026-08-19T20:17:42+00:00"
+          "summary": "The same authenticated standalone identity server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test[1] failed on Linux and macOS: each shard had exactly 1 failure, and the second SCRAM authentication path returned a socket write failure under the fixture 250 ms timeout.",
+          "recorded_at": "2026-08-19T20:55:37+00:00"
         },
         {
           "phase": "red",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/unified_runner_spec.lua'",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test?[1]?'",
           "exit_code": 2,
-          "summary": "The defining runner contract produced 5 passes and 1 error because coerce_error_result was rejected as an unknown operation descriptor option.",
-          "recorded_at": "2026-08-19T20:17:43+00:00"
+          "summary": "The exact authenticated network-timeout identity reproduced locally: 1 executed, 0 passed, 1 failed, 0 environment-skipped, and 0 deferred; the failure is deterministic after the runtime cryptography change.",
+          "recorded_at": "2026-08-19T20:56:18+00:00"
         },
         {
           "phase": "red",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='crud/tests/unified/insertMany.json::test?[23]?'",
+          "command": "make test-focus FOCUS_UNIT='--filter=renews.the.socket.timeout.for.each.SCRAM.exchange spec/unit/config_credentials_spec.lua'",
           "exit_code": 2,
-          "summary": "Both exact unordered insertMany error-result identities executed locally and failed; 0 passed, 0 environment-skipped, 0 deferred, and 2 failed.",
-          "recorded_at": "2026-08-19T20:17:45+00:00"
+          "summary": "The defining client authentication contract failed because the first SCRAM exchange received no socket deadline; the connection path reused one absolute connect deadline instead of renewing the configured 250 ms socket timeout per exchange.",
+          "recorded_at": "2026-08-19T21:00:55+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/unified_runner_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='crud/tests/unified/insertMany.json::test?[23]?' FOCUS_LINT='spec/support/mongodb/unified/runner.lua spec/support/mongodb/unified/driver.lua spec/unit/unified_runner_spec.lua'",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/socket_timeout_executor_spec.lua spec/unit/auth_scram_spec.lua' FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/auth-*.json' FOCUS_LINT='src/mongodb/client.lua spec/unit/config_credentials_spec.lua'",
           "exit_code": 0,
-          "summary": "15 unified runner/driver unit tests and both exact unordered insertMany partial-result identities passed; unified evidence was 2 executed, 2 passed, 0 failed, environment-skipped, or deferred; 3 touched Lua files linted with 0 warnings.",
-          "recorded_at": "2026-08-19T20:19:04+00:00"
+          "summary": "All 26 authentication and socket-timeout unit tests passed; all 5 live authenticated error fixtures executed and passed with 0 failures, environment skips, or deferrals; both touched Lua files linted with 0 warnings.",
+          "recorded_at": "2026-08-19T21:04:48+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIFIED='crud/tests/unified/insertMany.json'; capability, ledger, release-checklist, v0.7 scope, README, and diff validators",
+          "command": "make test-complexity; capability, ledger, release-checklist, v0.7 scope, README, and diff validators",
           "exit_code": 0,
-          "summary": "All 3 insertMany fixture identities executed and passed with 0 failures, environment skips, or deferrals; the 5524-case ledger remains at 4153 passes and 1274 deferrals, the 0.7.0 release checklist has 0 gaps, and all 71 v0.7 identities remain passing.",
-          "recorded_at": "2026-08-19T20:19:05+00:00"
+          "summary": "Complexity retained 3 hotspots above 40 and maximum 47; the 5524-case ledger remains at 4153 passes and 1274 deferrals, the 0.7.0 checklist has 0 applicable gaps, all 71 v0.7 identities pass, and generated README plus diff checks are current.",
+          "recorded_at": "2026-08-19T21:04:49+00:00"
         }
       ],
       "notes": [
-        "Requeued: Full Conformance 32295104695 found two exact insertMany error-result coercion failures; the same run also had a transient Docker readiness timeout in the MongoDB 8.0 replica-set compatibility row."
+        "Requeued: Full Conformance 32295104695 found two exact insertMany error-result coercion failures; the same run also had a transient Docker readiness timeout in the MongoDB 8.0 replica-set compatibility row.",
+        "Requeued: Full Conformance 32298388061 failed the same authenticated network-timeout identity on Linux and macOS after SCRAM returned a socket write failure; publication remains blocked pending exact reproduction and a focused portability fix."
       ],
       "reopen_history": [
         {
@@ -6672,11 +6673,51 @@
               "recorded_at": "2026-08-19T19:42:47+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-19T20:20:24+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "GitHub Actions Full Conformance 32295104695, linux-unified (3) job 96204488726",
+              "exit_code": 1,
+              "summary": "The release gate executed 334 cases in shard 3 and failed exactly the two unordered insertMany partial-result identities because expectResult.deletedCount was missing; 332 passed, 9 environment-skipped, and 94 remained explicit deferred-unsupported.",
+              "recorded_at": "2026-08-19T20:17:42+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='spec/unit/unified_runner_spec.lua'",
+              "exit_code": 2,
+              "summary": "The defining runner contract produced 5 passes and 1 error because coerce_error_result was rejected as an unknown operation descriptor option.",
+              "recorded_at": "2026-08-19T20:17:43+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='crud/tests/unified/insertMany.json::test?[23]?'",
+              "exit_code": 2,
+              "summary": "Both exact unordered insertMany error-result identities executed locally and failed; 0 passed, 0 environment-skipped, 0 deferred, and 2 failed.",
+              "recorded_at": "2026-08-19T20:17:45+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/unified_runner_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='crud/tests/unified/insertMany.json::test?[23]?' FOCUS_LINT='spec/support/mongodb/unified/runner.lua spec/support/mongodb/unified/driver.lua spec/unit/unified_runner_spec.lua'",
+              "exit_code": 0,
+              "summary": "15 unified runner/driver unit tests and both exact unordered insertMany partial-result identities passed; unified evidence was 2 executed, 2 passed, 0 failed, environment-skipped, or deferred; 3 touched Lua files linted with 0 warnings.",
+              "recorded_at": "2026-08-19T20:19:04+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIFIED='crud/tests/unified/insertMany.json'; capability, ledger, release-checklist, v0.7 scope, README, and diff validators",
+              "exit_code": 0,
+              "summary": "All 3 insertMany fixture identities executed and passed with 0 failures, environment skips, or deferrals; the 5524-case ledger remains at 4153 passes and 1274 deferrals, the 0.7.0 release checklist has 0 gaps, and all 71 v0.7 identities remain passing.",
+              "recorded_at": "2026-08-19T20:19:05+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "bfaf3a89a31d438a931c8597e97bd39d62d02654",
-      "started_at": "2026-08-19T20:15:44+00:00",
-      "completed_at": "2026-08-19T20:20:24+00:00"
+      "reopened_after_commit": "6aa24c501b13ad241097a7a8fb249d2c58d5f188",
+      "started_at": "2026-08-19T20:55:07+00:00",
+      "completed_at": "2026-08-19T21:05:07+00:00"
     }
   },
   "verified_references": {

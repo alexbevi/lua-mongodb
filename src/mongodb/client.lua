@@ -472,7 +472,7 @@ local function open_executor(
   })
   local hello_options = {
     cancellation = fields.cancellation,
-    deadline = deadline,
+    deadline = connection_deadline(runtime, config, fields.deadline),
     max_await_time_ms = fields.max_await_time_ms,
     topology_version = fields.topology_version,
   }
@@ -514,10 +514,15 @@ local function open_executor(
       return nil, err
     end
 
+    local authentication_commands = socket_timeout_executor.new(
+      executor,
+      runtime,
+      config.socket_timeout_ms
+    )
     local authenticated
-    authenticated, err = auth.authenticate(executor, runtime, credential, {
+    authenticated, err = auth.authenticate(authentication_commands, runtime, credential, {
       cancellation = fields.cancellation,
-      deadline = deadline,
+      deadline = fields.deadline,
       mechanism = mechanism,
       server_host = host.host,
       speculative_response = hello.document:get("speculativeAuthenticate"),
@@ -825,10 +830,6 @@ function M.connect(uri, values)
 
   runtime_contract.validate(runtime)
   local deadline = special.deadline
-
-  if deadline == nil and config.connect_timeout_ms > 0 then
-    deadline = runtime_contract.deadline_after(runtime, config.connect_timeout_ms / 1000)
-  end
 
   local monitor = monitoring.new({
     clock = runtime.clock,
