@@ -502,6 +502,7 @@ local function validate_options(state, options)
         and key ~= "comment"
         and key ~= "let"
         and key ~= "ordered"
+        and key ~= "raw_data"
         and key ~= "verbose_results"
         and key ~= "write_concern"
     then
@@ -517,6 +518,10 @@ local function validate_options(state, options)
 
   if options.ordered ~= nil and type(options.ordered) ~= "boolean" then
     error("ordered must be a boolean", 3)
+  end
+
+  if options.raw_data ~= nil and type(options.raw_data) ~= "boolean" then
+    error("raw_data must be a boolean", 3)
   end
 
   if options.verbose_results ~= nil and type(options.verbose_results) ~= "boolean" then
@@ -546,6 +551,7 @@ local function validate_options(state, options)
     comment = options.comment,
     let = options.let,
     ordered = options.ordered == nil and true or options.ordered,
+    raw_data = options.raw_data,
     verbose_results = options.verbose_results == true,
     write_concern = write_concern,
   }
@@ -817,6 +823,10 @@ function M.execute(state, models, options)
 
   if options.let ~= nil then
     entries[#entries + 1] = { "let", options.let }
+  end
+
+  if options.raw_data ~= nil and state.max_wire_version >= 27 then
+    entries[#entries + 1] = { "rawData", options.raw_data }
   end
 
   local write_concern = concern_document(options.write_concern)

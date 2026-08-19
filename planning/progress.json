@@ -6203,6 +6203,28 @@
       "notes": [],
       "started_at": "2026-08-19T13:22:26+00:00",
       "completed_at": "2026-08-19T13:29:09+00:00"
+    },
+    "CBW-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua",
+          "exit_code": 2,
+          "summary": "5 existing client bulk tests passed; raw-data version-gate test errored because raw_data is not yet accepted",
+          "recorded_at": "2026-08-19T13:36:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/support/mongodb/unified/driver.lua'; make test-focus FOCUS_UNIFIED='crud/tests/unified/client-bulkWrite-*-rawdata.json::*'; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "6 unit and 119 focused Python tests passed; all 6 exact raw-data identities ran with 3 MongoDB 8.2 passes and 3 mutually exclusive 8.0 environment skips, while the unit matrix proved both wire branches; touched lint, complexity, capability, ledger, scopes, README compatibility, and release checklist validators passed",
+          "recorded_at": "2026-08-19T13:39:41+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T13:35:31+00:00",
+      "completed_at": "2026-08-19T13:39:42+00:00"
     }
   },
   "verified_references": {

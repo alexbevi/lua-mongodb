@@ -474,4 +474,73 @@ describe("client bulk writes", function()
     assert.are.same({ "bulk" }, comment:keys())
     assert.are.same({ "tenant" }, variables:keys())
   end)
+
+  it("sends raw data only at the MongoDB 8.2 wire version", function()
+    local function executor_for(max_wire_version)
+      local captured
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = max_wire_version,
+            max_write_batch_size = 100000,
+          }
+        end,
+        command = function(_, _, command)
+          captured = command
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({}) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", 1 },
+            { "nMatched", 2 },
+            { "nModified", 1 },
+            { "nUpserted", 0 },
+            { "nDeleted", 1 },
+          })
+        end,
+      }
+
+      return executor, function()
+        return captured
+      end
+    end
+
+    local config = assert(driver_options.normalize(nil, {}))
+    local filter = bson.document({ { "_id", 1 } })
+    local models = {
+      client_bulk.insert_one(
+        "app.users",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.update_one(
+        "app.users",
+        filter,
+        bson.document({ { "$set", bson.document({ { "seen", true } }) } })
+      ),
+      client_bulk.replace_one(
+        "audit.users",
+        filter,
+        bson.document({ { "seen", true } })
+      ),
+      client_bulk.delete_one("audit.users", filter),
+    }
+    local modern_executor, modern_command = executor_for(27)
+    local older_executor, older_command = executor_for(25)
+    local modern = api.new_client(modern_executor, config)
+    local older = api.new_client(older_executor, config)
+
+    assert(modern:bulk_write(models, { raw_data = true }))
+    assert(older:bulk_write(models, { raw_data = true }))
+    assert.is_true(modern_command():get("rawData"))
+    assert.is_nil(older_command():get("rawData"))
+  end)
 end)

@@ -2380,6 +2380,14 @@
       "activity": "CBW-003",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/client-bulkWrite-delete-rawdata.json::test[1]": {
+      "activity": "CBW-005",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-delete-rawdata.json::test[2]": {
+      "activity": "CBW-005",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/client-bulkWrite-mixed-namespaces.json::test[1]": {
       "activity": "CBW-003",
       "environment": "live-standalone"
@@ -2428,6 +2436,14 @@
       "activity": "CBW-001",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test[1]": {
+      "activity": "CBW-005",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test[2]": {
+      "activity": "CBW-005",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/client-bulkWrite-results.json::test[1]": {
       "activity": "CBW-003",
       "environment": "live-standalone"
@@ -2462,6 +2478,14 @@
     },
     "crud/tests/unified/client-bulkWrite-update-pipeline.json::test[2]": {
       "activity": "CBW-003",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-update-rawdata.json::test[1]": {
+      "activity": "CBW-005",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-update-rawdata.json::test[2]": {
+      "activity": "CBW-005",
       "environment": "live-standalone"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[1]": {
