@@ -6005,6 +6005,28 @@
       "notes": [],
       "started_at": "2026-08-18T23:09:29+00:00",
       "completed_at": "2026-08-19T02:32:32+00:00"
+    },
+    "EXM-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.LeaderboardWorkflowTests",
+          "exit_code": 2,
+          "summary": "The defining leaderboard contract failed because the self-contained replica-set environment, player fixture, seed, ranking backend, documentation, and deterministic output artifacts did not exist; one contract failed and two errored",
+          "recorded_at": "2026-08-19T02:38:49+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI=mongodb://127.0.0.1:27019/lua_examples_leaderboard?replicaSet=rs0 make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON=spec.examples.test_examples.LeaderboardWorkflowTests FOCUS_LINT='examples/02-game-leaderboard-backend/*.lua'",
+          "exit_code": 0,
+          "summary": "Four leaderboard contracts passed and three Lua files linted with zero findings; the deterministic score, achievement, ranking, and season aggregation workflow passed on MongoDB 8.0.16 replica set with both published and isolated source rocks",
+          "recorded_at": "2026-08-19T02:42:34+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T02:37:24+00:00",
+      "completed_at": "2026-08-19T02:42:42+00:00"
     }
   },
   "verified_references": {

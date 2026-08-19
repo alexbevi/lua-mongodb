@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[2]
 EXAMPLES = ROOT / "examples"
 PING = EXAMPLES / "00-connect-and-ping"
 PACKAGES = EXAMPLES / "01-luarocks-package-explorer"
+LEADERBOARD = EXAMPLES / "02-game-leaderboard-backend"
 PINNED_IMAGE = (
   "mongodb/mongodb-community-server:8.2.12-ubuntu2204@sha256:"
   "ed7000edd775a8a7d1010618b72b2c71603efe2ca4f827b7f291110a696b4a41"
@@ -394,6 +395,145 @@ class PackageExplorerWorkflowTests(unittest.TestCase):
       "nil, err",
     ):
       self.assertIn(phrase, readme.lower())
+
+
+class LeaderboardWorkflowTests(unittest.TestCase):
+  def test_artifacts_and_catalog_link_are_self_contained(self) -> None:
+    for relative in (
+      "README.md",
+      "main.lua",
+      "seed.lua",
+      "players.lua",
+      ".env.example",
+      "expected-output.txt",
+      "docker-compose.yml",
+    ):
+      self.assertTrue((LEADERBOARD / relative).is_file(), relative)
+
+    catalog = (EXAMPLES / "README.md").read_text(encoding="utf-8")
+    self.assertIn(
+      "[game leaderboard backend](02-game-leaderboard-backend/readme.md)",
+      catalog.lower(),
+    )
+
+  def test_backend_ranks_players_and_aggregates_the_season(self) -> None:
+    seed = (LEADERBOARD / "seed.lua").read_text(encoding="utf-8")
+    main = (LEADERBOARD / "main.lua").read_text(encoding="utf-8")
+    players = (LEADERBOARD / "players.lua").read_text(encoding="utf-8")
+
+    for phrase in (
+      "player_id_unique",
+      "create_index",
+      "insert_many",
+    ):
+      self.assertIn(phrase, seed)
+
+    for phrase in (
+      "update_one",
+      '"$max"',
+      '"$inc"',
+      '"$addToSet"',
+      "sort",
+      "limit",
+      "aggregate",
+      '"$group"',
+    ):
+      self.assertIn(phrase, main)
+
+    self.assertEqual(5, players.count('{ "player_id",'))
+    self.assertNotIn("package.path", seed + main + players)
+
+  def test_replica_set_and_output_are_ready_without_manual_setup(self) -> None:
+    compose = (LEADERBOARD / "docker-compose.yml").read_text(encoding="utf-8")
+    environment = (LEADERBOARD / ".env.example").read_text(encoding="utf-8")
+    expected = (LEADERBOARD / "expected-output.txt").read_text(encoding="utf-8")
+    readme = (LEADERBOARD / "README.md").read_text(encoding="utf-8")
+
+    self.assertIn(PINNED_IMAGE, compose)
+    self.assertIn("--replSet", compose)
+    self.assertIn("rs.initiate", compose)
+    self.assertIn("replicaSet=rs0", environment)
+    self.assertEqual(
+      "Created unique index: player_id_unique\n"
+      "Seeded 5 players\n"
+      "Submitted 1320 points for Ada Byte (1 modified)\n"
+      "Awarded comeback achievement to Ada Byte (1 modified)\n"
+      "Top players:\n"
+      "1. Ada Byte — 1320\n"
+      "2. Lin Loop — 1250\n"
+      "3. Noor Node — 1110\n"
+      "Season spring-2026: 16970 points across 5 players\n",
+      expected,
+    )
+
+    for phrase in (
+      "stock lua 5.4",
+      "dedicated backend",
+      "docker compose up -d --wait",
+      "luarocks --lua-version=5.4 install mongodb",
+      "docker compose down -v",
+    ):
+      self.assertIn(phrase, readme.lower())
+
+  @unittest.skipUnless(LIVE, "set MONGODB_EXAMPLES_LIVE=1 for live examples")
+  def test_live_workflow_uses_public_and_source_rocks(self) -> None:
+    lua = os.environ.get("LUA", "lua")
+    compose = os.environ.get("DOCKER", "docker")
+    project = "lua-mongodb-example-leaderboard"
+    uri = os.environ.get("MONGODB_EXAMPLES_URI")
+
+    if uri is None:
+      up = run_command(
+        [compose, "compose", "-p", project, "up", "-d", "--wait"],
+        cwd=LEADERBOARD,
+        timeout=120,
+      )
+      self.assertEqual(0, up.returncode, up.stderr or up.stdout)
+      uri = (
+        "mongodb://127.0.0.1:27019/lua_examples_leaderboard"
+        "?replicaSet=rs0"
+      )
+
+    try:
+      with tempfile.TemporaryDirectory(
+        prefix="lua-mongodb-leaderboard-example-"
+      ) as directory:
+        temporary = Path(directory)
+
+        for mode in ("public", "source"):
+          with self.subTest(mode=mode):
+            tree, environment = install_rock(mode, temporary)
+            environment["MONGODB_URI"] = uri
+            assert_installed_rock(self, tree, environment)
+            output = ""
+
+            for script in ("seed.lua", "main.lua"):
+              executed = run_command(
+                [lua, script],
+                cwd=LEADERBOARD,
+                environment=environment,
+              )
+              self.assertEqual(
+                0,
+                executed.returncode,
+                executed.stderr or executed.stdout,
+              )
+              output += executed.stdout
+
+            self.assertEqual(
+              (LEADERBOARD / "expected-output.txt").read_text(
+                encoding="utf-8"
+              ),
+              output,
+            )
+    finally:
+      if os.environ.get("MONGODB_EXAMPLES_URI") is None:
+        down = run_command(
+          [compose, "compose", "-p", project, "down", "-v"],
+          cwd=LEADERBOARD,
+          timeout=120,
+        )
+        self.assertEqual(0, down.returncode, down.stderr or down.stdout)
 
 
 if __name__ == "__main__":

@@ -29,8 +29,9 @@ an existing MongoDB deployment by setting the example's `MONGODB_URI` instead.
 2. [LuaRocks package explorer](01-luarocks-package-explorer/README.md) — model
    BSON documents and arrays, then seed, query, update, and aggregate a
    recognizable package catalog.
-3. `02-game-leaderboard-backend` — build a dedicated Lua 5.4 backend with
-   rankings, achievements, season reports, and a transaction.
+3. [Game leaderboard backend](02-game-leaderboard-backend/README.md) — build a
+   dedicated Lua 5.4 backend with rankings, achievements, season reports, and
+   a transaction.
 4. `03-pong-game-using-changestreams` — play a two-window LÖVE game whose
    stock-Lua bridge processes synchronize state through MongoDB change
    streams.
