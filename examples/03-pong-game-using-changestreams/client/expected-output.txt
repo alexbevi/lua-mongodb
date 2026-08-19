@@ -1,0 +1,6 @@
+Protocol input: seq=1 role=p2
+Fresh snapshot accepted: true
+Stale snapshot accepted: false
+Interpolated remote: p1=220 ball_x=420
+Diagnostics: connected=true events=4 age=0.10 resume=available
+Rejoin snapshot: connected=true seq=3

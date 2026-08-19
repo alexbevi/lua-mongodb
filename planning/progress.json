@@ -6071,6 +6071,28 @@
       "notes": [],
       "started_at": "2026-08-19T02:57:03+00:00",
       "completed_at": "2026-08-19T03:03:04+00:00"
+    },
+    "EXM-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.PongLoveClientTests",
+          "exit_code": 2,
+          "summary": "The defining L\u00d6VE contracts failed because the two-role client, nonblocking 20 Hz UDP loop, authority/interpolation/rejoin state model, headless client proof, diagnostics overlay, launch controls, and educational transport boundary were absent; three contracts failed and one errored",
+          "recorded_at": "2026-08-19T03:08:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI='mongodb://127.0.0.1:27020/pong_demo?replicaSet=rs0' make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON='spec.examples.test_examples.PongBridgeTests spec.examples.test_examples.PongLoveClientTests' FOCUS_LINT='examples/03-pong-game-using-changestreams/*.lua examples/03-pong-game-using-changestreams/client/*.lua'",
+          "exit_code": 0,
+          "summary": "Eight Pong contracts passed against a live replica set using both the published and source-built rocks; headless client state, authority, interpolation, stale snapshot, rejoin diagnostics, exact output, and documentation contracts passed; all ten Lua files linted cleanly. Official L\u00d6VE 11.5 separately loaded p1 and p2 clients with LuaSocket and role arguments.",
+          "recorded_at": "2026-08-19T03:28:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T03:08:23+00:00",
+      "completed_at": "2026-08-19T03:28:09+00:00"
     }
   },
   "verified_references": {

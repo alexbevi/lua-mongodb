@@ -693,5 +693,79 @@ class PongBridgeTests(unittest.TestCase):
         self.assertEqual(0, down.returncode, down.stderr or down.stdout)
 
 
+class PongLoveClientTests(unittest.TestCase):
+  def test_love_client_artifacts_and_runtime_boundary(self) -> None:
+    for relative in (
+      "client/conf.lua",
+      "client/game.lua",
+      "client/main.lua",
+      "client/headless.lua",
+      "client/expected-output.txt",
+    ):
+      self.assertTrue((PONG / relative).is_file(), relative)
+
+    client_sources = "".join(
+      path.read_text(encoding="utf-8")
+      for path in (PONG / "client").glob("*.lua")
+    )
+    self.assertNotIn('require("mongodb")', client_sources)
+
+  def test_client_is_nonblocking_interpolated_and_observable(self) -> None:
+    main = (PONG / "client/main.lua").read_text(encoding="utf-8")
+    game = (PONG / "client/game.lua").read_text(encoding="utf-8")
+
+    for phrase in (
+      'require("socket")',
+      "settimeout(0)",
+      "SEND_INTERVAL = 1 / 20",
+      "love.update",
+      "love.draw",
+      '"Role"',
+      '"Bridge"',
+      '"Change events"',
+      '"Last update"',
+      '"Resume token"',
+    ):
+      self.assertIn(phrase, main)
+
+    for phrase in (
+      'state.role == "p1"',
+      "snapshot.seq <= state.last_snapshot_seq",
+      "lerp",
+      "STALE_AFTER",
+      "M.diagnostics",
+    ):
+      self.assertIn(phrase, game)
+
+  def test_headless_client_state_contract(self) -> None:
+    lua = os.environ.get("LUA", "lua")
+    executed = run_command([lua, "headless.lua"], cwd=PONG / "client")
+
+    self.assertEqual(0, executed.returncode, executed.stderr or executed.stdout)
+    self.assertEqual(
+      (PONG / "client/expected-output.txt").read_text(encoding="utf-8"),
+      executed.stdout,
+    )
+
+  def test_launch_controls_rejoin_and_demo_boundary_are_documented(self) -> None:
+    readme = (PONG / "README.md").read_text(encoding="utf-8").lower()
+    root_readme = (ROOT / "README.md").read_text(encoding="utf-8").lower()
+
+    for phrase in (
+      "löve 11.5",
+      "love client -- p1",
+      "love client -- p2",
+      "w / s",
+      "up / down",
+      "20 hz",
+      "restart the p2 window",
+      "educational",
+      "not a production low-latency transport",
+    ):
+      self.assertIn(phrase, readme)
+
+    self.assertIn("two-window löve pong", root_readme)
+
+
 if __name__ == "__main__":
   unittest.main()

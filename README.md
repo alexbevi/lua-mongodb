@@ -445,8 +445,8 @@ Clients, cursors, and sessions have explicit idempotent close methods. Closing a
 
 The self-contained [`examples`](examples/README.md) learning path installs the
 public LuaRocks driver and covers connection setup, BSON application modeling,
-transactions, and real-time change streams without adding source-checkout
-module paths.
+transactions, and a two-window LÖVE Pong demo driven by real-time change
+streams, without adding source-checkout module paths.
 
 ## Specification compatibility
 

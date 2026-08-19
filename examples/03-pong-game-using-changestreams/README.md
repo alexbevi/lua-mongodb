@@ -14,8 +14,8 @@ and does not load the MongoDB driver. This is the deliberate
 runtime boundary: LÖVE uses LuaJIT, while the driver requires stock Lua 5.4,
 64-bit integers, and its Copas runtime.
 
-This slice provides the bridge and a deterministic headless proof. The next
-slice adds the playable two-window frontend.
+The example includes both a deterministic headless proof and a playable
+two-window LÖVE 11.5 frontend.
 
 ## What the headless proof demonstrates
 
@@ -78,6 +78,49 @@ The bridges listen on `127.0.0.1:27101` and `127.0.0.1:27102` respectively.
 Each one cooperatively polls local UDP and `try_next()` on its filtered change
 stream. Every returned event carries `fullDocument`; the bridge sends that
 snapshot and resume-token availability to its local client.
+
+## Play the two-window demo
+
+Install LÖVE 11.5, keep MongoDB and both bridge terminals running, then open
+two more terminals from this example directory:
+
+```sh
+love client -- p1
+```
+
+```sh
+love client -- p2
+```
+
+On macOS without a `love` shell command, use
+`/Applications/love.app/Contents/MacOS/love client -- p1` and repeat it for
+p2. On Windows, use the full path to `love.exe` when it is not on `PATH`.
+
+- Player 1 moves with **W / S** and owns the authoritative ball simulation.
+- Player 2 moves with **Up / Down** and owns only the right paddle.
+- Escape closes the focused window.
+
+Place the windows side by side. Moving either paddle writes through its local
+stock-Lua bridge; both windows then render the `updateLookup` snapshot returned
+by their MongoDB change stream. The local player is green, the remote player
+is white, and the bottom panel exposes role, bridge connectivity, change event
+count, last update age, resume-token availability, and render rate.
+
+Clients publish at **20 Hz**, while LÖVE renders at the display frame rate and
+interpolates remote state. Player 1 alone publishes ball and score fields; the
+p2 bridge discards those fields even if a modified client sends them.
+Snapshots with an older bridge sequence are ignored.
+
+For the most compelling rejoin demonstration, move and score with both windows,
+close p2, keep playing in p1, then **restart the p2 window** with
+`love client -- p2`. Its first input re-registers the UDP peer, and the next
+change event restores the current paddles, ball, and score without reseeding.
+
+This is an educational visualization of driver coroutines, role-scoped writes,
+change streams, `updateLookup`, and resumable state. It is
+**not a production low-latency transport**: a real competitive game should use
+an authoritative game server and a purpose-built network protocol, then persist
+appropriate state to MongoDB.
 
 ## Cleanup
 
