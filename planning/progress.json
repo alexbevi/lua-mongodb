@@ -6049,6 +6049,28 @@
       "notes": [],
       "started_at": "2026-08-19T02:47:07+00:00",
       "completed_at": "2026-08-19T02:51:29+00:00"
+    },
+    "EXM-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.examples.test_examples.PongBridgeTests",
+          "exit_code": 2,
+          "summary": "The defining Pong bridge contract failed because the replica-set environment, Lua 5.1 UDP protocol, role-scoped bridge, deterministic match, headless change-stream smoke, output, and runtime-boundary documentation did not exist; one contract failed and two errored",
+          "recorded_at": "2026-08-19T02:58:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "MONGODB_EXAMPLES_LIVE=1 MONGODB_EXAMPLES_URI=mongodb://127.0.0.1:27020/pong_demo?replicaSet=rs0 make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON=spec.examples.test_examples.PongBridgeTests FOCUS_LINT='examples/03-pong-game-using-changestreams/*.lua examples/03-pong-game-using-changestreams/client/*.lua'",
+          "exit_code": 0,
+          "summary": "Four Pong bridge contracts passed and six Lua files linted with zero findings; real UDP input updated only p2 fields and an updateLookup change stream returned the exact full snapshot plus resume token on MongoDB 8.0.16 with published and isolated source rocks",
+          "recorded_at": "2026-08-19T03:02:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T02:57:03+00:00",
+      "completed_at": "2026-08-19T03:03:04+00:00"
     }
   },
   "verified_references": {

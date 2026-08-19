@@ -1,0 +1,6 @@
+Seeded match: demo-match
+UDP input: p2 seq=7 paddle_y=310
+MongoDB update paths: players.p2.paddle_y, players.p2.input_seq
+Change stream: update with fullDocument
+Snapshot: left=240 right=310 ball=(400,300) score=0-0
+Resume token: available

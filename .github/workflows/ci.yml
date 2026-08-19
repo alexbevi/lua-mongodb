@@ -129,4 +129,6 @@ jobs:
           FOCUS_PYTHON=spec.examples.test_examples
           FOCUS_LINT='examples/00-connect-and-ping/main.lua
           examples/01-luarocks-package-explorer/*.lua
-          examples/02-game-leaderboard-backend/*.lua'
+          examples/02-game-leaderboard-backend/*.lua
+          examples/03-pong-game-using-changestreams/*.lua
+          examples/03-pong-game-using-changestreams/client/*.lua'

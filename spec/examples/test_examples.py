@@ -14,6 +14,7 @@ EXAMPLES = ROOT / "examples"
 PING = EXAMPLES / "00-connect-and-ping"
 PACKAGES = EXAMPLES / "01-luarocks-package-explorer"
 LEADERBOARD = EXAMPLES / "02-game-leaderboard-backend"
+PONG = EXAMPLES / "03-pong-game-using-changestreams"
 PINNED_IMAGE = (
   "mongodb/mongodb-community-server:8.2.12-ubuntu2204@sha256:"
   "ed7000edd775a8a7d1010618b72b2c71603efe2ca4f827b7f291110a696b4a41"
@@ -562,6 +563,134 @@ class LeaderboardTransactionTests(unittest.TestCase):
       "end_session",
     ):
       self.assertIn(phrase, readme)
+
+
+class PongBridgeTests(unittest.TestCase):
+  def test_headless_bridge_artifacts_are_self_contained(self) -> None:
+    for relative in (
+      "README.md",
+      "bridge.lua",
+      "run_bridge.lua",
+      "match.lua",
+      "seed.lua",
+      "smoke.lua",
+      "client/protocol.lua",
+      ".env.example",
+      "expected-output.txt",
+      "docker-compose.yml",
+    ):
+      self.assertTrue((PONG / relative).is_file(), relative)
+
+    catalog = (EXAMPLES / "README.md").read_text(encoding="utf-8").lower()
+    self.assertIn(
+      "[pong using change streams](03-pong-game-using-changestreams/readme.md)",
+      catalog,
+    )
+
+  def test_protocol_and_bridge_enforce_the_runtime_and_ownership_boundary(
+    self,
+  ) -> None:
+    protocol = (PONG / "client/protocol.lua").read_text(encoding="utf-8")
+    bridge = (PONG / "bridge.lua").read_text(encoding="utf-8")
+    smoke = (PONG / "smoke.lua").read_text(encoding="utf-8")
+
+    self.assertNotIn('require("mongodb")', protocol)
+    self.assertNotIn("//", protocol)
+    self.assertNotIn("goto", protocol)
+    self.assertIn('"players.p1.paddle_y"', bridge)
+    self.assertIn('"players.p2.paddle_y"', bridge)
+    self.assertIn('"ball.x"', bridge)
+    self.assertIn('"score.p1"', bridge)
+    self.assertIn("collection:watch", bridge)
+    self.assertIn('full_document = "updateLookup"', bridge)
+    self.assertIn("resume_token", bridge)
+    self.assertIn("socket.udp", smoke)
+    self.assertIn('bridge.apply_input(collection, "demo-match", "p2"', smoke)
+
+  def test_environment_and_headless_output_are_deterministic(self) -> None:
+    compose = (PONG / "docker-compose.yml").read_text(encoding="utf-8")
+    environment = (PONG / ".env.example").read_text(encoding="utf-8")
+    expected = (PONG / "expected-output.txt").read_text(encoding="utf-8")
+    readme = (PONG / "README.md").read_text(encoding="utf-8").lower()
+
+    self.assertIn(PINNED_IMAGE, compose)
+    self.assertIn("--replSet", compose)
+    self.assertIn("rs.initiate", compose)
+    self.assertIn("replicaSet=rs0", environment)
+    self.assertEqual(
+      "Seeded match: demo-match\n"
+      "UDP input: p2 seq=7 paddle_y=310\n"
+      "MongoDB update paths: players.p2.paddle_y, players.p2.input_seq\n"
+      "Change stream: update with fullDocument\n"
+      "Snapshot: left=240 right=310 ball=(400,300) score=0-0\n"
+      "Resume token: available\n",
+      expected,
+    )
+
+    for phrase in (
+      "stock lua 5.4 bridge",
+      "lua 5.1-compatible",
+      "does not load the mongodb driver",
+      "update_lookup",
+      "docker compose up -d --wait",
+    ):
+      self.assertIn(phrase, readme)
+
+  @unittest.skipUnless(LIVE, "set MONGODB_EXAMPLES_LIVE=1 for live examples")
+  def test_live_headless_bridge_uses_public_and_source_rocks(self) -> None:
+    lua = os.environ.get("LUA", "lua")
+    compose = os.environ.get("DOCKER", "docker")
+    project = "lua-mongodb-example-pong"
+    uri = os.environ.get("MONGODB_EXAMPLES_URI")
+
+    if uri is None:
+      up = run_command(
+        [compose, "compose", "-p", project, "up", "-d", "--wait"],
+        cwd=PONG,
+        timeout=120,
+      )
+      self.assertEqual(0, up.returncode, up.stderr or up.stdout)
+      uri = "mongodb://127.0.0.1:27020/pong_demo?replicaSet=rs0"
+
+    try:
+      with tempfile.TemporaryDirectory(
+        prefix="lua-mongodb-pong-example-"
+      ) as directory:
+        temporary = Path(directory)
+
+        for mode in ("public", "source"):
+          with self.subTest(mode=mode):
+            tree, environment = install_rock(mode, temporary)
+            environment["MONGODB_URI"] = uri
+            assert_installed_rock(self, tree, environment)
+            output = ""
+
+            for script in ("seed.lua", "smoke.lua"):
+              executed = run_command(
+                [lua, script],
+                cwd=PONG,
+                environment=environment,
+                timeout=30,
+              )
+              self.assertEqual(
+                0,
+                executed.returncode,
+                executed.stderr or executed.stdout,
+              )
+              output += executed.stdout
+
+            self.assertEqual(
+              (PONG / "expected-output.txt").read_text(encoding="utf-8"),
+              output,
+            )
+    finally:
+      if os.environ.get("MONGODB_EXAMPLES_URI") is None:
+        down = run_command(
+          [compose, "compose", "-p", project, "down", "-v"],
+          cwd=PONG,
+          timeout=120,
+        )
+        self.assertEqual(0, down.returncode, down.stderr or down.stdout)
 
 
 if __name__ == "__main__":
