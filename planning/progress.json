@@ -6159,6 +6159,28 @@
       "notes": [],
       "started_at": "2026-08-19T12:58:09+00:00",
       "completed_at": "2026-08-19T13:00:47+00:00"
+    },
+    "CBW-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua",
+          "exit_code": 2,
+          "summary": "3 existing client bulk tests passed; defining verbose result-cursor test errored because verbose_results is not yet accepted",
+          "recorded_at": "2026-08-19T13:08:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua FOCUS_INTEGRATION=spec/integration/bulk_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua spec/support/mongodb/unified/driver.lua'; make test-focus for 16 exact client bulk CRUD and Stable API identities; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "4 unit, 3 OP_MSG integration including getMore, 117 focused Python, and all 16 newly runnable live unified cases passed; touched lint, complexity, capability, ledger, scopes, README compatibility, and release checklist validators passed",
+          "recorded_at": "2026-08-19T13:15:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T13:06:30+00:00",
+      "completed_at": "2026-08-19T13:15:52+00:00"
     }
   },
   "verified_references": {

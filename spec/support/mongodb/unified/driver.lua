@@ -2092,6 +2092,7 @@ local function client_bulk_write(_, client, arguments)
 
     return client:bulk_write(models, operation_options(arguments, {
       ordered = "ordered",
+      verboseResults = "verbose_results",
     }))
   end)
 end
@@ -2165,14 +2166,63 @@ local function bulk_result(value)
 end
 
 local function client_bulk_result(value)
-  return bson.document({
+  local entries = {
     { "acknowledged", value.acknowledged },
     { "deletedCount", value.deleted_count },
     { "insertedCount", value.inserted_count },
     { "matchedCount", value.matched_count },
     { "modifiedCount", value.modified_count },
     { "upsertedCount", value.upserted_count },
-  })
+  }
+
+  if value.has_verbose_results then
+    local insert_results = {}
+    local update_results = {}
+    local delete_results = {}
+
+    for index, result in pairs(value.insert_results) do
+      insert_results[#insert_results + 1] = {
+        tostring(index - 1),
+        bson.document({ { "insertedId", result.inserted_id } }),
+      }
+    end
+
+    for index, result in pairs(value.update_results) do
+      local result_entries = {
+        { "matchedCount", result.matched_count },
+        { "modifiedCount", result.modified_count },
+      }
+
+      if result.upserted_id ~= nil then
+        result_entries[#result_entries + 1] = { "upsertedId", result.upserted_id }
+      end
+
+      update_results[#update_results + 1] = {
+        tostring(index - 1),
+        bson.document(result_entries),
+      }
+    end
+
+    for index, result in pairs(value.delete_results) do
+      delete_results[#delete_results + 1] = {
+        tostring(index - 1),
+        bson.document({ { "deletedCount", result.deleted_count } }),
+      }
+    end
+
+    local function sort_results(left, right)
+      return tonumber(left[1]) < tonumber(right[1])
+    end
+
+    table.sort(insert_results, sort_results)
+    table.sort(update_results, sort_results)
+    table.sort(delete_results, sort_results)
+    entries[#entries + 1] = { "insertResults", bson.document(insert_results) }
+    entries[#entries + 1] = { "updateResults", bson.document(update_results) }
+    entries[#entries + 1] = { "deleteResults", bson.document(delete_results) }
+  end
+
+  return bson.document(entries)
 end
 
 local function internal_client_adapter(client, state)
@@ -2433,7 +2483,7 @@ function M.new(options)
           handler = close_client,
         },
         clientBulkWrite = {
-          arguments = { "models", "ordered" },
+          arguments = { "models", "ordered", "verboseResults" },
           coerce_result = client_bulk_result,
           handler = client_bulk_write,
         },

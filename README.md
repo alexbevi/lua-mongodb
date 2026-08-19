@@ -300,6 +300,8 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
+Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps.
+
 MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary counts; later result and execution forms remain tracked separately in the roadmap.
 
 ```lua
@@ -519,13 +521,13 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 75.6% |
+| Programmability | CRUD | 🟡 | 78.6% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |
 | Programmability | Change streams | 🟡 | 78.7% |
 | Programmability | GridFS | 🔴 | 0.0% |
-| Programmability | Stable API | 🟡 | 97.6% |
+| Programmability | Stable API | 🟢 | 100.0% |
 | Programmability | Client-side encryption | 🔴 | 0.0% |
 | Observability | Command logging and monitoring | 🟡 | 13.8% |
 | Observability | Standardized logging | 🔴 | 0.0% |

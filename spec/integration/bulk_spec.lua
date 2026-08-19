@@ -204,6 +204,7 @@ describe("collection bulk writes over OP_MSG", function()
       local namespaces = request.sequences[2].documents
 
       assert.are.equal("bulkWrite", request.body:keys()[1])
+      assert.is_false(request.body:get("errorsOnly"))
       assert.are.equal(5, #ops)
       assert.are.equal(2, #namespaces)
       assert.are.equal(0, ops[1]:get("update"):to_number())
@@ -224,9 +225,19 @@ describe("collection bulk writes over OP_MSG", function()
       send_response(peer, request, bson.document({
         { "ok", 1 },
         { "cursor", bson.document({
-          { "id", bson.int64(0) },
+          { "id", bson.int64(92) },
           { "ns", "admin.$cmd.bulkWrite" },
-          { "firstBatch", bson.array({}) },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "ok", 1 }, { "idx", 0 }, { "n", 1 }, { "nModified", 1 },
+            }),
+            bson.document({
+              { "ok", 1 }, { "idx", 1 }, { "n", 2 }, { "nModified", 1 },
+            }),
+            bson.document({
+              { "ok", 1 }, { "idx", 2 }, { "n", 0 }, { "nModified", 0 },
+            }),
+          }) },
         }) },
         { "nErrors", 0 },
         { "nInserted", 0 },
@@ -234,6 +245,22 @@ describe("collection bulk writes over OP_MSG", function()
         { "nModified", 2 },
         { "nUpserted", 0 },
         { "nDeleted", 3 },
+      }))
+
+      local get_more = receive_frame(peer)
+
+      assert.are.equal(92, get_more.body:get("getMore"):to_number())
+      assert.are.equal("$cmd.bulkWrite", get_more.body:get("collection"))
+      send_response(peer, get_more, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "nextBatch", bson.array({
+            bson.document({ { "ok", 1 }, { "idx", 3 }, { "n", 1 } }),
+            bson.document({ { "ok", 1 }, { "idx", 4 }, { "n", 2 } }),
+          }) },
+        }) },
       }))
       peer:close()
     end)
@@ -272,11 +299,15 @@ describe("collection bulk writes over OP_MSG", function()
             bson.document({ { "archived", false } }),
             { collation = bson.document({ { "locale", "simple" } }) }
           ),
-        }))
+        }, { verbose_results = true }))
 
         assert.are.equal(3, written.matched_count)
         assert.are.equal(2, written.modified_count)
         assert.are.equal(3, written.deleted_count)
+        assert.are.equal(1, written.update_results[1].matched_count)
+        assert.are.equal(2, written.update_results[2].matched_count)
+        assert.are.equal(1, written.delete_results[4].deleted_count)
+        assert.are.equal(2, written.delete_results[5].deleted_count)
         assert.is_true(client:close())
       end))
       copas.removeserver(server)

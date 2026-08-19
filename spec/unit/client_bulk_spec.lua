@@ -60,6 +60,8 @@ describe("client bulk writes", function()
     }))
 
     assert.is_true(written.acknowledged)
+    assert.is_false(written.has_verbose_results)
+    assert.is_nil(written.insert_results)
     assert.are.equal(3, written.inserted_count)
     assert.are.equal(0, written.matched_count)
     assert.are.equal(0, written.modified_count)
@@ -288,5 +290,119 @@ describe("client bulk writes", function()
     assert.are.equal("audit.users", namespaces[3]:get("ns"))
     assert.are.same({ "locale" }, collation:keys())
     assert.are.same({ "active" }, hint:keys())
+  end)
+
+  it("exhausts the result cursor before exposing verbose results", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function(_, database, command, options)
+        commands[#commands + 1] = {
+          command = command,
+          database = database,
+          options = options,
+        }
+
+        if command:get("bulkWrite") ~= nil then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(91) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({
+                bson.document({ { "ok", 1 }, { "idx", 0 }, { "n", 1 } }),
+                bson.document({
+                  { "ok", 1 },
+                  { "idx", 1 },
+                  { "n", 1 },
+                  { "nModified", 1 },
+                }),
+              }) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", 1 },
+            { "nMatched", 2 },
+            { "nModified", 1 },
+            { "nUpserted", 1 },
+            { "nDeleted", 2 },
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "nextBatch", bson.array({
+              bson.document({
+                { "ok", 1 },
+                { "idx", 2 },
+                { "n", 1 },
+                { "nModified", 0 },
+                { "upserted", bson.document({ { "_id", 4 } }) },
+              }),
+              bson.document({ { "ok", 1 }, { "idx", 3 }, { "n", 2 } }),
+            }) },
+          }) },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local filter = bson.document({ { "active", true } })
+    local written = assert(client:bulk_write({
+      client_bulk.insert_one(
+        "app.users",
+        bson.document({ { "_id", 8 }, { "active", true } })
+      ),
+      client_bulk.update_one(
+        "app.users",
+        filter,
+        bson.document({ { "$set", bson.document({ { "seen", true } }) } })
+      ),
+      client_bulk.replace_one(
+        "audit.users",
+        filter,
+        bson.document({ { "active", true } }),
+        { upsert = true }
+      ),
+      client_bulk.delete_many("audit.users", filter),
+    }, { verbose_results = true }))
+
+    assert.is_true(written.has_verbose_results)
+    assert.are.equal(1, written.inserted_count)
+    assert.are.equal(2, written.matched_count)
+    assert.are.equal(1, written.modified_count)
+    assert.are.equal(1, written.upserted_count)
+    assert.are.equal(2, written.deleted_count)
+    assert.are.equal(8, written.insert_results[1].inserted_id)
+    assert.are.equal(1, written.update_results[2].matched_count)
+    assert.are.equal(1, written.update_results[2].modified_count)
+    assert.is_nil(written.update_results[2].upserted_id)
+    assert.are.equal(1, written.update_results[3].matched_count)
+    assert.are.equal(0, written.update_results[3].modified_count)
+    assert.are.equal(4, written.update_results[3].upserted_id)
+    assert.are.equal(2, written.delete_results[4].deleted_count)
+    assert.are.equal(2, #commands)
+    assert.is_false(commands[1].command:get("errorsOnly"))
+    assert.are.equal("admin", commands[2].database)
+    assert.are.equal(91, commands[2].command:get("getMore"):to_number())
+    assert.are.equal("$cmd.bulkWrite", commands[2].command:get("collection"))
+    assert.has_error(function()
+      written.delete_results[4].deleted_count = 3
+    end, "client bulk result values are immutable")
+    assert.has_error(function()
+      written.delete_results[5] = written.delete_results[4]
+    end, "client bulk result maps are immutable")
   end)
 end)

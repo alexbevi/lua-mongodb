@@ -288,8 +288,8 @@ TEST_OVERRIDES.update({
     None,
   ),
   "versioned-api/tests/crud-api-version-1.json::test[4]": (
-    "CBW-004",
-    "client bulk command options await their dedicated slice",
+    "CBW-003",
+    None,
   ),
 })
 
@@ -747,7 +747,7 @@ CLIENT_BULK_FIXTURES = {
   "client-bulkWrite-errors": (9, "CBW-006"),
   "client-bulkWrite-mixed-namespaces": (1, "CBW-003"),
   "client-bulkWrite-options": (7, "CBW-004"),
-  "client-bulkWrite-ordered": (3, "CBW-006"),
+  "client-bulkWrite-ordered": (3, "CBW-003"),
   "client-bulkWrite-partialResults": (9, "CBW-006"),
   "client-bulkWrite-replaceOne-rawdata": (2, "CBW-005"),
   "client-bulkWrite-replaceOne-sort": (1, "CBW-001"),

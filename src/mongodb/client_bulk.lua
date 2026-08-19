@@ -4,6 +4,7 @@ local errors = require("mongodb.error")
 local M = {}
 
 local MODEL_STATES = setmetatable({}, { __mode = "k" })
+local RESULT_MAP_STATES = setmetatable({}, { __mode = "k" })
 local RESULT_STATES = setmetatable({}, { __mode = "k" })
 local next_operation_id = 1
 
@@ -55,6 +56,23 @@ local RESULT_METATABLE = {
   end,
 }
 
+local RESULT_MAP_METATABLE = {
+  __index = function(value, key)
+    local state = RESULT_MAP_STATES[value]
+
+    if state then
+      return state[key]
+    end
+  end,
+  __metatable = "mongodb.client_bulk.result_map",
+  __newindex = function()
+    error("client bulk result maps are immutable", 2)
+  end,
+  __pairs = function(value)
+    return next, RESULT_MAP_STATES[value], nil
+  end,
+}
+
 local function client_error(message)
   return nil, errors.new({
     category = errors.CATEGORY.CLIENT,
@@ -84,6 +102,20 @@ local function operation_id()
 
   next_operation_id = value == 0x7fffffff and 1 or value + 1
   return value
+end
+
+local function result_value(fields)
+  local value = {}
+
+  RESULT_STATES[value] = fields
+  return setmetatable(value, RESULT_METATABLE)
+end
+
+local function result_map(fields)
+  local value = {}
+
+  RESULT_MAP_STATES[value] = fields
+  return setmetatable(value, RESULT_MAP_METATABLE)
 end
 
 local function validate_namespace(namespace)
@@ -401,6 +433,7 @@ local function prepare_models(state, models)
   local namespace_indexes = {}
   local namespaces = {}
   local operations = {}
+  local result_models = {}
 
   for index, model in ipairs(models) do
     local fields = MODEL_STATES[model]
@@ -426,9 +459,14 @@ local function prepare_models(state, models)
     end
 
     operations[index] = wire
+    result_models[index] = { kind = fields.kind }
+
+    if fields.kind == "insert" then
+      result_models[index].inserted_id = wire:get("document"):get("_id")
+    end
   end
 
-  return operations, namespaces
+  return operations, namespaces, result_models
 end
 
 local function validate_options(options)
@@ -439,7 +477,7 @@ local function validate_options(options)
   end
 
   for key in pairs(options) do
-    if key ~= "ordered" then
+    if key ~= "ordered" and key ~= "verbose_results" then
       error("unknown client bulk_write option: " .. tostring(key), 3)
     end
   end
@@ -448,8 +486,13 @@ local function validate_options(options)
     error("ordered must be a boolean", 3)
   end
 
+  if options.verbose_results ~= nil and type(options.verbose_results) ~= "boolean" then
+    error("verbose_results must be a boolean", 3)
+  end
+
   return {
     ordered = options.ordered == nil and true or options.ordered,
+    verbose_results = options.verbose_results == true,
   }
 end
 
@@ -463,37 +506,168 @@ local function count_field(response, name)
   return value
 end
 
-local function result_from(response)
+local function cursor_batch(response, batch_name)
   local cursor = response:get("cursor")
 
   if not bson.is_document(cursor) then
     return protocol_error("client bulk response is missing its cursor")
   end
 
-  local first_batch = cursor:get("firstBatch")
-  local cursor_id = number_value(cursor:get("id"))
+  local batch = cursor:get(batch_name)
+  local cursor_id = cursor:get("id")
+  local numeric_id = number_value(cursor_id)
 
-  if not bson.is_array(first_batch) or math.type(cursor_id) ~= "integer" then
+  if not bson.is_array(batch) or math.type(numeric_id) ~= "integer" or numeric_id < 0 then
     return protocol_error("client bulk response contains a malformed cursor")
   end
 
-  if cursor_id ~= 0 then
-    return protocol_error("client bulk response cursor was not exhausted")
+  return batch, cursor_id, numeric_id
+end
+
+local function detail_count(document, name)
+  local value = number_value(document:get(name))
+
+  if math.type(value) ~= "integer" or value < 0 then
+    return protocol_error("client bulk result contains an invalid " .. name)
   end
 
+  return value
+end
+
+local function operation_detail(model, document)
+  local count, err = detail_count(document, "n")
+
+  if count == nil then
+    return nil, err
+  end
+
+  if model.kind == "insert" then
+    return result_value({
+      acknowledged = true,
+      inserted_id = model.inserted_id,
+    })
+  end
+
+  if model.kind == "delete" then
+    return result_value({
+      acknowledged = true,
+      deleted_count = count,
+    })
+  end
+
+  local modified
+  modified, err = detail_count(document, "nModified")
+
+  if modified == nil then
+    return nil, err
+  end
+
+  local upserted = document:get("upserted")
+  local fields = {
+    acknowledged = true,
+    matched_count = count,
+    modified_count = modified,
+  }
+
+  if upserted ~= nil then
+    if not bson.is_document(upserted) or upserted:get("_id") == nil then
+      return protocol_error("client bulk result contains a malformed upserted value")
+    end
+
+    fields.upserted_id = upserted:get("_id")
+  end
+
+  return result_value(fields)
+end
+
+local function record_batch(batch, result_models, details, seen)
+  for _, document in batch:iter() do
+    if not bson.is_document(document) then
+      return protocol_error("client bulk result cursor contains a non-document value")
+    end
+
+    local ok = number_value(document:get("ok"))
+    local index = number_value(document:get("idx"))
+
+    if ok ~= 1 then
+      return protocol_error("client bulk response contains unsupported write results")
+    end
+
+    if math.type(index) ~= "integer"
+        or index < 0
+        or index >= #result_models
+        or seen[index]
+    then
+      return protocol_error("client bulk result contains an invalid operation index")
+    end
+
+    seen[index] = true
+    local model = result_models[index + 1]
+    local detail, err = operation_detail(model, document)
+
+    if detail == nil then
+      return nil, err
+    end
+
+    if details ~= nil then
+      details[model.kind][index + 1] = detail
+    end
+  end
+
+  return true
+end
+
+local function consume_results(state, response, result_models, details)
+  local batch, cursor_id, numeric_id = cursor_batch(response, "firstBatch")
+
+  if batch == nil then
+    return nil, cursor_id
+  end
+
+  local seen = {}
+
+  while true do
+    local recorded, err = record_batch(batch, result_models, details, seen)
+
+    if not recorded then
+      return nil, err
+    end
+
+    if numeric_id == 0 then
+      return true
+    end
+
+    response, err = state.executor:command("admin", bson.document({
+      { "getMore", cursor_id },
+      { "collection", "$cmd.bulkWrite" },
+    }), {})
+
+    if response == nil then
+      return nil, err
+    end
+
+    batch, cursor_id, numeric_id = cursor_batch(response, "nextBatch")
+
+    if batch == nil then
+      return nil, cursor_id
+    end
+  end
+end
+
+local function result_from(state, response, result_models, verbose_results)
   local n_errors, err = count_field(response, "nErrors")
 
   if n_errors == nil then
     return nil, err
   end
 
-  if n_errors ~= 0 or #first_batch ~= 0 then
+  if n_errors ~= 0 then
     return protocol_error("client bulk response contains unsupported write results")
   end
 
   local fields = {
     acknowledged = true,
-    has_verbose_results = false,
+    has_verbose_results = verbose_results,
   }
 
   for field, response_name in pairs({
@@ -513,10 +687,30 @@ local function result_from(response)
     fields[field] = value
   end
 
-  local result = {}
+  local details
 
-  RESULT_STATES[result] = fields
-  return setmetatable(result, RESULT_METATABLE)
+  if verbose_results then
+    details = {
+      delete = {},
+      insert = {},
+      update = {},
+    }
+  end
+
+  local consumed
+  consumed, err = consume_results(state, response, result_models, details)
+
+  if not consumed then
+    return nil, err
+  end
+
+  if verbose_results then
+    fields.delete_results = result_map(details.delete)
+    fields.insert_results = result_map(details.insert)
+    fields.update_results = result_map(details.update)
+  end
+
+  return result_value(fields)
 end
 
 function M.execute(state, models, options)
@@ -525,16 +719,17 @@ function M.execute(state, models, options)
   end
 
   options = validate_options(options)
-  local operations, namespaces, err = prepare_models(state, models)
+  local operations, namespaces, result_models = prepare_models(state, models)
 
   if operations == nil then
-    return nil, err
+    return nil, result_models
   end
 
+  local err
   local response
   response, err = state.executor:command("admin", bson.document({
     { "bulkWrite", 1 },
-    { "errorsOnly", true },
+    { "errorsOnly", not options.verbose_results },
     { "ordered", options.ordered },
   }), {
     max_sequence_document_size = state.max_message_size,
@@ -549,7 +744,7 @@ function M.execute(state, models, options)
     return nil, err
   end
 
-  return result_from(response)
+  return result_from(state, response, result_models, options.verbose_results)
 end
 
 return M
