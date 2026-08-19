@@ -2,6 +2,7 @@ local admin = require("mongodb.admin")
 local bson = require("mongodb.bson")
 local bulk = require("mongodb.bulk")
 local change_stream = require("mongodb.change_stream")
+local client_bulk = require("mongodb.client_bulk")
 local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
@@ -403,6 +404,19 @@ function CLIENT_METHODS:list_databases(options)
   end
 
   return register_client_cursor(self, cursor)
+end
+
+function CLIENT_METHODS:bulk_write(models, options)
+  local state = CLIENT_STATES[self]
+  local open, err = ensure_open(state)
+
+  if not open then
+    return nil, err
+  end
+
+  return run_operation(state, options, function(prepared)
+    return client_bulk.execute(state, models, prepared)
+  end)
 end
 
 function CLIENT_METHODS:list_database_names(options)

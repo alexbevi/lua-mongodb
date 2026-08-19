@@ -300,6 +300,25 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
+MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The initial API supports acknowledged `insert_one` models and returns immutable summary counts; later model and result forms remain tracked separately in the roadmap.
+
+```lua
+local client_bulk = mongodb.client_bulk
+
+local written = assert(client:bulk_write({
+  client_bulk.insert_one(
+    "app.users",
+    doc({ { "name", "Grace" } })
+  ),
+  client_bulk.insert_one(
+    "audit.events",
+    doc({ { "kind", "user-created" } })
+  ),
+}))
+
+print(written.inserted_count)
+```
+
 ### Generic Commands
 
 `database:run_command` returns one command reply. For a command whose reply owns a server cursor, use `database:run_cursor_command`; it executes the initial command eagerly and returns the same cursor type used by collection reads. Its `batch_size`, `max_await_time_ms`, and `comment` options apply to subsequent `getMore` commands.
@@ -488,7 +507,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 74.3% |
+| Programmability | CRUD | 🟡 | 74.5% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |
@@ -513,7 +532,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, the remaining client bulk-write models and execution modes, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

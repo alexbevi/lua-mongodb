@@ -6093,6 +6093,28 @@
       "notes": [],
       "started_at": "2026-08-19T03:08:23+00:00",
       "completed_at": "2026-08-19T03:28:09+00:00"
+    },
+    "ADV-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua",
+          "exit_code": 2,
+          "summary": "Defining client bulk insert spec failed because mongodb.client_bulk did not exist.",
+          "recorded_at": "2026-08-19T12:20:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua FOCUS_INTEGRATION=spec/integration/bulk_spec.lua FOCUS_UNIFIED='crud/tests/unified/create-null-ids.json::test[[]7[]]' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope' FOCUS_LINT='src/mongodb/client_bulk.lua src/mongodb/api.lua src/mongodb/init.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua spec/support/mongodb/unified/driver.lua'",
+          "exit_code": 0,
+          "summary": "Client insert unit and OP_MSG integration cases passed; exact create-null-id unified case passed live; 128 coupled Python classification tests and touched-file lint passed.",
+          "recorded_at": "2026-08-19T12:32:32+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T12:18:56+00:00",
+      "completed_at": "2026-08-19T12:32:38+00:00"
     }
   },
   "verified_references": {

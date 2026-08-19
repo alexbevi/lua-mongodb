@@ -69,6 +69,7 @@ build = {
     ["mongodb.auth.x509"] = "src/mongodb/auth/x509.lua",
     ["mongodb.change_stream"] = "src/mongodb/change_stream.lua",
     ["mongodb.client"] = "src/mongodb/client.lua",
+    ["mongodb.client_bulk"] = "src/mongodb/client_bulk.lua",
     ["mongodb.crud"] = "src/mongodb/crud.lua",
     ["mongodb.cursor"] = "src/mongodb/cursor.lua",
     ["mongodb.discovery.dns"] = "src/mongodb/discovery/dns.lua",

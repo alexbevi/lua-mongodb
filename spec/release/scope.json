@@ -3,14 +3,22 @@
     "ADV-002": 175,
     "ADV-004": 5,
     "ADV-006": 61,
-    "ADV-007": 71,
     "ADV-009": 230,
     "ADV-010": 777,
     "ADV-012": 15,
-    "AUTH-019": 11
+    "AUTH-019": 11,
+    "CBW-001": 5,
+    "CBW-003": 12,
+    "CBW-004": 8,
+    "CBW-005": 6,
+    "CBW-006": 22,
+    "CBW-009": 1,
+    "CBW-010": 6,
+    "CBW-011": 9,
+    "CBW-012": 1
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1345
+    "post-v1-exclusion": 1344
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -45,6 +53,18 @@
     "AUTH-028": "MONGODB-OIDC human authentication is outside production-core v1",
     "AUTH-029": "MONGODB-OIDC human access-token caching is outside production-core v1",
     "AUTH-030": "MONGODB-OIDC human refresh credential reuse is outside production-core v1",
+    "CBW-001": "client bulk update models are outside production-core v1",
+    "CBW-002": "client bulk delete models are outside production-core v1",
+    "CBW-003": "client bulk verbose results are outside production-core v1",
+    "CBW-004": "client bulk command options are outside production-core v1",
+    "CBW-005": "client bulk raw data is outside production-core v1",
+    "CBW-006": "client bulk failure reporting is outside production-core v1",
+    "CBW-007": "client bulk command batching is outside production-core v1",
+    "CBW-008": "unacknowledged client bulk writes are outside production-core v1",
+    "CBW-009": "client bulk sessions are outside production-core v1",
+    "CBW-010": "client bulk transactions are outside production-core v1",
+    "CBW-011": "retryable client bulk writes are outside production-core v1",
+    "CBW-012": "client bulk timeout behavior is outside production-core v1",
     "CFG-004": "unbounded connection establishment is outside production-core v1",
     "CMAP-002": "authentication failure pool clearing is outside production-core v1",
     "CMAP-003": "application error pool-clear ordering is outside production-core v1",
@@ -100,9 +120,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1345,
+    "deferred_unsupported": 1344,
     "excluded_scope": 97,
-    "passed": 4082
+    "passed": 4083
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

@@ -5,8 +5,8 @@
   },
   "excluded_by_activity": {
     "ADV-006": 14,
-    "ADV-007": 6,
     "ADV-009": 24,
+    "CBW-010": 6,
     "LEG-003": 1
   },
   "exclusion_reasons": {
@@ -14,6 +14,8 @@
     "ADV-007": "client bulk write remains a separate post-v0.4 capability",
     "ADV-009": "logging and backpressure remain separate post-v0.4 capabilities",
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
+    "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",
+    "CBW-010": "client bulk transactions remain a separate post-v0.4 capability",
     "LEG-001": "deprecated count retries are outside the v0.4 public API",
     "LEG-002": "deprecated count timeouts are outside the v0.4 public API",
     "LEG-003": "legacy mapReduce is outside the v0.4 public API",

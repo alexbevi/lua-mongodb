@@ -32,6 +32,18 @@ OWNER_REASONS = {
   "ADV-005": "sharded execution is a post-v1 capability",
   "ADV-006": "load-balanced execution is a post-v1 capability",
   "ADV-007": "client bulkWrite is a post-v1 capability",
+  "CBW-001": "client bulk update models await their dedicated slice",
+  "CBW-002": "client bulk delete models await their dedicated slice",
+  "CBW-003": "client bulk verbose results await their dedicated slice",
+  "CBW-004": "client bulk command options await their dedicated slice",
+  "CBW-005": "client bulk raw data awaits its dedicated slice",
+  "CBW-006": "client bulk failures await their dedicated slice",
+  "CBW-007": "client bulk command batching awaits its dedicated slice",
+  "CBW-008": "unacknowledged client bulk writes await their dedicated slice",
+  "CBW-009": "client bulk sessions await their dedicated slice",
+  "CBW-010": "client bulk transactions await their dedicated slice",
+  "CBW-011": "retryable client bulk writes await their dedicated slice",
+  "CBW-012": "client bulk timeout behavior awaits its dedicated slice",
   "AUTH-011": "the test requires OIDC machine authentication",
   "AUTH-017": "the test requires OIDC speculative authentication",
   "AUTH-018": "the test requires OIDC operation reauthentication",
@@ -276,8 +288,8 @@ TEST_OVERRIDES.update({
     None,
   ),
   "versioned-api/tests/crud-api-version-1.json::test[4]": (
-    "ADV-007",
-    "client bulkWrite is a post-v1 capability",
+    "CBW-004",
+    "client bulk command options await their dedicated slice",
   ),
 })
 
@@ -505,7 +517,7 @@ for fixture, count in (
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"retryable-writes/tests/unified/{fixture}.json::test[{index}]"
-    ] = ("ADV-007", OWNER_REASONS["ADV-007"])
+    ] = ("CBW-011", OWNER_REASONS["CBW-011"])
 
 for index in range(1, 21):
   TEST_OVERRIDES[
@@ -520,7 +532,7 @@ for index in range(3, 21):
 for index in (1, 2):
   TEST_OVERRIDES[
     f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("ADV-007", OWNER_REASONS["ADV-007"])
+  ] = ("CBW-011", OWNER_REASONS["CBW-011"])
 
 for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
   for index in range(1, 3):
@@ -648,7 +660,7 @@ for fixture, count in (
 for index in range(1, 4):
   TEST_OVERRIDES[
     f"transactions/tests/unified/client-bulkWrite.json::test[{index}]"
-  ] = ("ADV-007", OWNER_REASONS["ADV-007"])
+  ] = ("CBW-010", OWNER_REASONS["CBW-010"])
 
 for fixture, count in (
   ("mongos-recovery-token-errorLabels", 1),
@@ -679,7 +691,7 @@ for index in range(1, 60):
     owner = "TXN-007"
     reason = None
   elif index == 21 or index >= 58:
-    owner = "ADV-007"
+    owner = "CBW-010"
     reason = OWNER_REASONS[owner]
   else:
     owner = "TXN-006"
@@ -727,6 +739,38 @@ for fixture in (
       "REL-053",
       "the pre-4.4 server requirement is outside the v1 compatibility matrix",
     )
+
+CLIENT_BULK_FIXTURES = {
+  "client-bulkWrite-delete-options": (2, "CBW-003"),
+  "client-bulkWrite-delete-rawdata": (2, "CBW-005"),
+  "client-bulkWrite-errorResponse": (1, "CBW-006"),
+  "client-bulkWrite-errors": (9, "CBW-006"),
+  "client-bulkWrite-mixed-namespaces": (1, "CBW-003"),
+  "client-bulkWrite-options": (7, "CBW-004"),
+  "client-bulkWrite-ordered": (3, "CBW-006"),
+  "client-bulkWrite-partialResults": (9, "CBW-006"),
+  "client-bulkWrite-replaceOne-rawdata": (2, "CBW-005"),
+  "client-bulkWrite-replaceOne-sort": (1, "CBW-001"),
+  "client-bulkWrite-results": (3, "CBW-003"),
+  "client-bulkWrite-update-options": (4, "CBW-003"),
+  "client-bulkWrite-update-pipeline": (2, "CBW-003"),
+  "client-bulkWrite-update-rawdata": (2, "CBW-005"),
+  "client-bulkWrite-update-validation": (3, "CBW-001"),
+  "client-bulkWrite-updateOne-sort": (1, "CBW-001"),
+}
+
+for fixture, (count, owner) in CLIENT_BULK_FIXTURES.items():
+  for index in range(1, count + 1):
+    TEST_OVERRIDES[
+      f"crud/tests/unified/{fixture}.json::test[{index}]"
+    ] = (owner, OWNER_REASONS[owner])
+
+TEST_OVERRIDES[
+  "client-side-operations-timeout/tests/bulkWrite.json::test[1]"
+] = ("CBW-012", OWNER_REASONS["CBW-012"])
+TEST_OVERRIDES[
+  "crud/tests/unified/create-null-ids.json::test[7]"
+] = ("ADV-007", None)
 
 def classify_crud(test: dict[str, Any]) -> tuple[str, str]:
   requirements = test["requirements"]

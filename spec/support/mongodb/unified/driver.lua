@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local bulk = require("mongodb.bulk")
+local client_bulk = require("mongodb.client_bulk")
 local client_module = require("mongodb.client")
 local cursor_model = require("mongodb.cursor")
 local errors = require("mongodb.error")
@@ -2024,6 +2025,33 @@ local function bulk_write(_, collection, arguments)
   end)
 end
 
+local function client_bulk_write(_, client, arguments)
+  return call_driver(function()
+    local models = {}
+
+    for index, request in arguments:get("models"):iter() do
+      if not bson.is_document(request) or #request ~= 1 then
+        error("clientBulkWrite models must contain exactly one write model", 0)
+      end
+
+      local name, model_arguments = request:get_at(1)
+
+      if name ~= "insertOne" then
+        error("unsupported unified clientBulkWrite model: " .. tostring(name), 0)
+      end
+
+      models[index] = client_bulk.insert_one(
+        model_arguments:get("namespace"),
+        model_arguments:get("document")
+      )
+    end
+
+    return client:bulk_write(models, operation_options(arguments, {
+      ordered = "ordered",
+    }))
+  end)
+end
+
 local function indexed_ids(values)
   local entries = {}
 
@@ -2090,6 +2118,17 @@ local function bulk_result(value)
   end
 
   return bson.document(entries)
+end
+
+local function client_bulk_result(value)
+  return bson.document({
+    { "acknowledged", value.acknowledged },
+    { "deletedCount", value.deleted_count },
+    { "insertedCount", value.inserted_count },
+    { "matchedCount", value.matched_count },
+    { "modifiedCount", value.modified_count },
+    { "upsertedCount", value.upserted_count },
+  })
 end
 
 local function internal_client_adapter(client, state)
@@ -2348,6 +2387,11 @@ function M.new(options)
         close = {
           arguments = {},
           handler = close_client,
+        },
+        clientBulkWrite = {
+          arguments = { "models", "ordered" },
+          coerce_result = client_bulk_result,
+          handler = client_bulk_write,
         },
         createChangeStream = {
           arguments = {

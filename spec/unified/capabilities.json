@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1798,
-    "runnable": 1798
+    "passed": 1799,
+    "runnable": 1799
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -16792,9 +16792,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/bulkWrite.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-012",
       "fingerprint": "8d683bc7a75daa1f1357743ea14b12b634a8b47c07306e03309f49430a1a36b3",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk timeout behavior awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -40383,9 +40383,9 @@
       "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-delete-options.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "291c5cb88748f61b049da3f96d4195389d4a7de80bc3ca6d38c235fbc1766c04",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40411,9 +40411,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-delete-options.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "fabc51ae0350addf115ca99dce8196ba83f4de022a662b85f9f831b281ac6563",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40439,9 +40439,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-delete-rawdata.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-005",
       "fingerprint": "f92a82ee493660cfd5de1de49e7f92c08101333608645e502690b3123d9273c2",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk raw data awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40467,9 +40467,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-delete-rawdata.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-005",
       "fingerprint": "30a4960b7b21717372c2fa2c2b2bf7be025e39dd8b4a92a2fc1144a8593f85ed",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk raw data awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40497,9 +40497,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errorResponse.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "26919451b13ae026c3f440135ba4681530e6acab2276df69658cdb52ead5d227",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40524,9 +40524,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "b2a78a00d4a1912f153ccf075218e577829a72c6a22ae8a24e1788cff088b5b6",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40550,9 +40550,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "8dff2baae7bdffcfbc38942b9f7d89cb531cc792f2c7f80dee28df815a89d18d",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40577,9 +40577,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "e747d0c1d4099d3e846058f64db2bfb19ed1d6c4413f740f695b05f000a0abb0",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40605,9 +40605,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[4]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "0d2d582b994b9ff889866eab99de216ffee61e7b21e91c32de2724c0e0ea3815",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40635,9 +40635,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[5]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "cd0d6539b775ee1512723e3c6e804eead880f46967a134bc9c8cbee5e25bd6bd",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40663,9 +40663,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[6]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "036773e87ba376a8af4518603d45fc45d45ead8a9a5f9d6c2a6e8ada84129148",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40693,9 +40693,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[7]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "ee50bc192a1e4b957c900d68d619f79363e8519277b92e6bc9896ca7b9ea0e6a",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40719,9 +40719,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[8]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "396439ee2d6c3f78c85dcfd6c568cec83195b5992dafaf30b0f4e267f21f8bb1",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40747,9 +40747,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[9]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "1346e8ced67f5ff18e0cc4c1a7338c49e2b41323035db29756de0cbadac5516d",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40773,9 +40773,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-mixed-namespaces.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "bf2ce8387027b5d316dbc2a8445039105928cfc484ece51f88964d48381953eb",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40803,9 +40803,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "d7f78ab12c7bf526f9685a1c7c24941405f08fd5ab707b06c0fe1ea5ab3b84eb",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.comment",
@@ -40832,9 +40832,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "b653b6683ac8e860f4eedbb90f0c87017857df15af1078103ec9060b42b7bddc",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.bypassDocumentValidation",
@@ -40861,9 +40861,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "e3e34e9d488e6cbeb80a00d26cfe33efcf6300a21ca536d650aef2254eec7f95",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.let",
@@ -40892,9 +40892,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[4]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "5db7cb9d77f0e25ab95d0085691111c48f21eca195914a4812a107b29843d8e4",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.bypassDocumentValidation",
@@ -40921,9 +40921,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[5]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "023883392dde269bacf6c34a111bf4d69ab8a06ad7eefb957b73658293300337",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40950,9 +40950,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[6]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "463f935a0c7b521a53cf95a9396c911bd71a5ab90e22bc30c2c7ba70846c1527",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40978,9 +40978,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[7]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "9561cc95fe0b5e5b4598bfda35324e895ecf640bba5646c8f79c3ae52c76ee57",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41007,9 +41007,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-ordered.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "a93c959a7dc060e5430652b5ddae9541f3a6626e223e9ef5f77dd30827e713a0",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41036,9 +41036,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-ordered.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "d572dee470b2de9d2e074079562fd2b689a9cf51eb1ca5ed8759e4420a5a837c",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41065,9 +41065,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-ordered.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "6a19637a606a052ce573a8ad0788230cd87abcd6b20220efd14a5f762e7eecc5",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41093,9 +41093,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "f7102566d6b520151899cc3815d9fd6ef94630881802ae19563fb4fce1bfc432",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41123,9 +41123,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "346e88b6b28e78378ab664d6d9fd51e8c864087a09a525ff6969cf348f5f484b",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41153,9 +41153,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "01b4ceac33ebd6b8b829c739c175fd1086d7651f94a85495e0f8de6d576c4d40",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41180,9 +41180,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[4]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "0f0530a8b0ef1dc02cad7c5bf7e9676b3896b3a6369b21e34598a06de2fed10c",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41209,9 +41209,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[5]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "f6d9b7bbfa36e183127a78b9a222f352aeee0a912d2593a20c0657f5e73ced2d",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41238,9 +41238,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[6]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "3f13fa63ddfbd217e016dec4a968dccab6d72f14f24083b771b05636748f5dd9",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41265,9 +41265,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[7]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "daa38e9a9010de4a08ebdda7faa55294789cd536fc7c10bf7554c48b7b4ebf94",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41294,9 +41294,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[8]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "622ea14fb49cd825a1cf857746e0400b008057be45303c9cb57968adcfcbfbc7",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41321,9 +41321,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-partialResults.json::test[9]": {
-      "activity": "ADV-007",
+      "activity": "CBW-006",
       "fingerprint": "91afe6d0c6bf61544697957d59017c873b2160b291e585af40926f68cd2eadce",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk failures await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41350,9 +41350,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-005",
       "fingerprint": "553d180f920412ddbc9b5d93353f522b90e4d7a5ecbe5a75ab2133d1395aa00f",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk raw data awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41380,9 +41380,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-replaceOne-rawdata.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-005",
       "fingerprint": "2fb42117d10917da8ddb45d7f6a36a87297791a0c70907f9da20021793614b74",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk raw data awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41411,9 +41411,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-replaceOne-sort.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-001",
       "fingerprint": "b726ff23f056aa6a1cddb8cc249ac05f3c7dd6bde1d4c445b2823921c5c9fb23",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41441,9 +41441,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-results.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "e4d64d665f3b7a32cfe96f9e872eded2acf62e30b26bb6706e44041faacae65a",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41471,9 +41471,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-results.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "8230c0a6f99ab615caf7feee9d638b5726d19de50ab7ce518a20453ecdb1a208",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41501,9 +41501,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-results.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "79c267d928904f3075e8563424c366b0490c50238b3ea2822fb899ac640ad720",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41530,9 +41530,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-options.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "d131b20595f2cf4625a0d57a534b353bb323fae5a9eee22e4d289ad784e0a849",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41560,9 +41560,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-options.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "d5f011dd3e4b3d6216cb668a15a27bf634bb27d478d35d07902fa16d6c249a89",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41590,9 +41590,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-options.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "1042a7b22d2837654bdaa304f65b8446dd6c1ff8c64097c0d4b58542bce7f712",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41620,9 +41620,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-options.json::test[4]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "0f58936a0767c81c6e1a602ba40f0b7efc013ecb735aa9fc79a5057869bd5f44",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41648,9 +41648,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-pipeline.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "e250626c6dafe5c4dacf920e2da590014338a7c6c92bdaeb14912511fe5fd740",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41678,9 +41678,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-pipeline.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-003",
       "fingerprint": "3c38a464f9dc55049826f197bc36de0760eb53160f4e12f5aa4caf2e14556eb2",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk verbose results await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41708,9 +41708,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-rawdata.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-005",
       "fingerprint": "b6cd4ee8ef55458354b54642ab58e3c9c840012340e4349cfbefd5e367d2402e",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk raw data awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41736,9 +41736,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-rawdata.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-005",
       "fingerprint": "8384b6b5f6d61f3a70a8a8cb729e4ccff62573cf6423ef7e3a8f0b96663ac2d2",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk raw data awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41766,9 +41766,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-001",
       "fingerprint": "87bae4550c60ccfb543a26ce78299c5bca0c651103540a4b40ddf675ec56e4c4",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41791,9 +41791,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-001",
       "fingerprint": "fcc8eeeaf3506f11f48e51fcec31406978935e3b491abffb94ca715ed49edd28",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41816,9 +41816,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-update-validation.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-001",
       "fingerprint": "a63d86ee14f79bb9352eecc0e8a15276e5a82d008cfb8db04e6d9c899cf54ca8",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -41841,9 +41841,9 @@
       "status": "deferred_unsupported"
     },
     "crud/tests/unified/client-bulkWrite-updateOne-sort.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-001",
       "fingerprint": "bf67830bd05bfa6a48be92d3c149da92c0aa37a99a284e12ea2879dfe872a931",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk update models await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models"
@@ -42519,7 +42519,6 @@
     "crud/tests/unified/create-null-ids.json::test[7]": {
       "activity": "ADV-007",
       "fingerprint": "956a9e7178125fbd71f9dbbbc90e90a029952a6681a39d775f686166eb468353",
-      "reason": "client bulkWrite is a post-v1 capability",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -42541,7 +42540,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/db-aggregate-rawdata.json::test[1]": {
       "activity": "LEG-005",
@@ -65186,9 +65185,9 @@
       "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-clientErrors.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "848d76b311bd82c1055f0c08d94acd9f8b4003359f5e7da5fe2a892ea273ee04",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65224,9 +65223,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/client-bulkWrite-clientErrors.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "339526a910a6a8cd28485926a2584a58d2216547169bf0bbe5b4f71c2a177491",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65262,9 +65261,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "a091fae615f4f775ef8a43a8f72ffa1d3e86d59313d4b9fd96c057c8eb54b2d1",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65300,9 +65299,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "9f2b8f8dff9086115b957187b6462a449f5052a9a52990e626971fc0d80d9c75",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65337,9 +65336,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "b33de9955339b5197a504eee65186326286796b826c153351f793a14d0938899",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65375,9 +65374,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[4]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "3b5a07edef0610cf11261647015dd66a182240d0a552a3035fb1a478b2478e18",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65412,9 +65411,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[5]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "35f692d025297bda6132c2bab6f9aaaece638ef95c511b3cc222447b2a5a046d",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -66943,9 +66942,9 @@
       "status": "runnable"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "1eaca69b9cc03d0796bb53a7ad8dd5f67bcf4a7c86a173f5bc735e708ba2eebc",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -67024,9 +67023,9 @@
       "status": "runnable"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-011",
       "fingerprint": "be45d476aeb013c712947effa4bcfcaee93914ea22055e398b6747c968899d9a",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -75096,9 +75095,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/client-bulkWrite.json::test[1]": {
-      "activity": "ADV-007",
+      "activity": "CBW-010",
       "fingerprint": "11e07788a5d3e7006fee42e4613476ae7ab53af99baddef6a563cf966b549d9f",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -75135,9 +75134,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/client-bulkWrite.json::test[2]": {
-      "activity": "ADV-007",
+      "activity": "CBW-010",
       "fingerprint": "46f260bad722eeda15cb94d55116d1fe26999610cf5e1ba1fffaac2ed52d8a93",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -75175,9 +75174,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/client-bulkWrite.json::test[3]": {
-      "activity": "ADV-007",
+      "activity": "CBW-010",
       "fingerprint": "b93d6ed6bedd847547867d619201c779665dd7cd1ea6abf1572b34964c102a58",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -77919,9 +77918,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[21]": {
-      "activity": "ADV-007",
+      "activity": "CBW-010",
       "fingerprint": "114daacf51564547a5075a4bf32f618e57a1e98692e2a4e3fde60cd06f32ad78",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "assertSessionPinned.session",
@@ -79570,9 +79569,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[58]": {
-      "activity": "ADV-007",
+      "activity": "CBW-010",
       "fingerprint": "7024eb9ff10c239f64ac6ae53130019f4052d641efe264c70ac8d669b776cd0e",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -79612,9 +79611,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/mongos-pin-auto.json::test[59]": {
-      "activity": "ADV-007",
+      "activity": "CBW-010",
       "fingerprint": "75846525c406eefe176d950e496f8561595045b84144fa00c1c69200f0e7d3ed",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk transactions await their dedicated slice",
       "requirements": {
         "arguments": [
           "assertSessionUnpinned.session",
@@ -85560,9 +85559,9 @@
       "status": "runnable"
     },
     "versioned-api/tests/crud-api-version-1.json::test[4]": {
-      "activity": "ADV-007",
+      "activity": "CBW-004",
       "fingerprint": "a8aa08da2e42a2a37ff942e31e05c10d409fa7f5942509f4fe8c26e9865b34d4",
-      "reason": "client bulkWrite is a post-v1 capability",
+      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",

@@ -555,7 +555,7 @@ def classify_case(
     raise LedgerError(f"normative fixture suite has no roadmap owner: {suite}")
 
   if suite == "causal-consistency" and "clientBulkWrite" in path:
-    owner = "ADV-007"
+    owner = "CBW-009"
 
   return _deferred(case, owner, activities)
 

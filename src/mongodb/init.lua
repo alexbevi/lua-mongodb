@@ -12,6 +12,7 @@ local M = {
   _VERSION = handshake_metadata.driver_version(),
   bson = require("mongodb.bson"),
   bulk = require("mongodb.bulk"),
+  client_bulk = require("mongodb.client_bulk"),
   client = require("mongodb.client").connect,
   error = require("mongodb.error"),
   pool = require("mongodb.pool"),

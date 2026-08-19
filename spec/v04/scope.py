@@ -69,6 +69,8 @@ TARGET_OWNERS = {
 EXCLUSION_REASONS = {
   "ADV-006": "load-balanced deployment behavior is outside the v0.4 sharded target",
   "ADV-007": "client bulk write remains a separate post-v0.4 capability",
+  "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",
+  "CBW-010": "client bulk transactions remain a separate post-v0.4 capability",
   "ADV-009": "logging and backpressure remain separate post-v0.4 capabilities",
   "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
   "LEG-001": "deprecated count retries are outside the v0.4 public API",
