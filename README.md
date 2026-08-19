@@ -333,7 +333,7 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
-An individual client bulk failure returns `nil` and a structured write error. Its immutable `details.write_errors` array is ordered by the models' original 1-based positions; each entry exposes the server code, message, optional `errInfo` details, and failed wire operation. Ordered execution reports its first individual failure, while unordered execution reports every observed individual failure.
+An individual client bulk failure returns `nil` and a structured write error. Its immutable `details.write_errors` array is ordered by the models' original 1-based positions; each entry exposes the server code, message, optional `errInfo` details, and failed wire operation. Ordered execution reports its first individual failure, while unordered execution reports every observed individual failure. When at least one model is known to have succeeded, `details.partial_result` exposes the same immutable summary or verbose result shape; it is absent when the first ordered model or every unordered model failed.
 
 ### Generic Commands
 
@@ -523,7 +523,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 81.3% |
+| Programmability | CRUD | 🟡 | 84.0% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |

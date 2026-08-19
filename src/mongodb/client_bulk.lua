@@ -55,6 +55,9 @@ local RESULT_METATABLE = {
   __newindex = function()
     error("client bulk result values are immutable", 2)
   end,
+  __pairs = function(value)
+    return next, RESULT_STATES[value], nil
+  end,
 }
 
 local RESULT_MAP_METATABLE = {
@@ -779,7 +782,7 @@ local function consume_results(state, response, result_models, details, options)
   end
 end
 
-local function write_failure(write_errors)
+local function write_failure(write_errors, partial_result)
   table.sort(write_errors, function(left, right)
     return left.index < right.index
   end)
@@ -790,6 +793,7 @@ local function write_failure(write_errors)
     code = first.code,
     code_name = first.code_name,
     details = {
+      partial_result = partial_result,
       write_concern_errors = {},
       write_errors = write_errors,
     },
@@ -853,14 +857,23 @@ local function result_from(state, response, result_models, options)
     return protocol_error("client bulk response contains an inconsistent error count")
   end
 
-  if #write_errors > 0 then
-    return write_failure(write_errors)
-  end
-
   if options.verbose_results then
     fields.delete_results = result_map(details.delete)
     fields.insert_results = result_map(details.insert)
     fields.update_results = result_map(details.update)
+  end
+
+  if #write_errors > 0 then
+    local has_success
+
+    if options.ordered then
+      has_success = write_errors[1].index > 1
+    else
+      has_success = n_errors < #result_models
+    end
+
+    local partial_result = has_success and result_value(fields) or nil
+    return write_failure(write_errors, partial_result)
   end
 
   return result_value(fields)

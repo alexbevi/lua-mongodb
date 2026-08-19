@@ -6249,6 +6249,28 @@
       ],
       "started_at": "2026-08-19T13:59:19+00:00",
       "completed_at": "2026-08-19T14:03:16+00:00"
+    },
+    "CBW-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua --filter=partial\"",
+          "exit_code": 2,
+          "summary": "The ordered/unordered summary-and-verbose matrix failed when a confirmed success preceded or followed an individual failure because the structured write error had no partial_result.",
+          "recorded_at": "2026-08-19T14:16:38+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua spec/unified/operation_spec.lua\" FOCUS_PYTHON=\"spec.unified.test_cli spec.conformance.test_ledger\" FOCUS_LINT=\"src/mongodb/client_bulk.lua src/mongodb/error.lua spec/unit/client_bulk_spec.lua spec/support/mongodb/unified/runner.lua spec/unified/operation_spec.lua\"; make test-focus FOCUS_UNIFIED=\"crud/tests/unified/client-bulkWrite-errors.json::*\"; make test-focus FOCUS_UNIFIED=\"crud/tests/unified/client-bulkWrite-partialResults.json::*\"; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "15 focused Lua and 120 focused Python tests passed; all 4 newly runnable individual-error partial-result cases and all 9 partialResults cases passed live, with 5 sibling error cases explicitly deferred to later split activities; touched Lua lint, complexity maximum 47, capability, ledger, release and v0.4 scopes, README compatibility, release checklist, and diff validators passed.",
+          "recorded_at": "2026-08-19T14:27:03+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T14:15:22+00:00",
+      "completed_at": "2026-08-19T14:27:08+00:00"
     }
   },
   "verified_references": {

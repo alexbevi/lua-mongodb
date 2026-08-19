@@ -19,6 +19,8 @@ local function readonly_copy(value, seen)
     or protected_type == "mongodb.bson.int32"
     or protected_type == "mongodb.bson.int64"
     or protected_type == "mongodb.bson.double"
+    or protected_type == "mongodb.client_bulk.result"
+    or protected_type == "mongodb.client_bulk.result_map"
   then
     return value
   end

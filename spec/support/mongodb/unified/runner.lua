@@ -950,7 +950,7 @@ local function error_is_client(err)
     and error_response(err) == nil
 end
 
-local function assert_expected_error(runner, err, expected, path)
+local function assert_expected_error(runner, err, expected, path, coerce_result)
   if not errors.is(err) then
     return expectation_mismatch("operation returned an unstructured error", path, "expectError")
   end
@@ -1118,13 +1118,13 @@ local function assert_expected_error(runner, err, expected, path)
   if expected_result then
     local result = err.details and err.details.partial_result
 
-    if result == nil then
-      return expectation_mismatch("error has no partial result", path, "expectResult")
+    if result ~= nil and coerce_result then
+      result = coerce_result(result)
     end
 
     local ok, match_err = runner:match(
       expected_result,
-      table_to_bson(result),
+      coerce_result and result or table_to_bson(result),
       append_path(path, "expectResult")
     )
 
@@ -1262,7 +1262,8 @@ local function execute_regular(runner, operation, path, propagate_callback_error
       runner,
       err,
       expect_error,
-      append_path(path, "expectError")
+      append_path(path, "expectError"),
+      descriptor.coerce_result
     )
 
     if not matched then

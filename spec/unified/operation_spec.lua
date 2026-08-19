@@ -123,6 +123,28 @@ describe("unified operation meta-fixtures", function()
           fail = function()
             return nil, operation_error
           end,
+          failCoerced = {
+            coerce_result = function(value)
+              return document({
+                { "insertedCount", value.inserted_count + 1 },
+              })
+            end,
+            handler = function()
+              return nil, operation_error
+            end,
+          },
+          failEmpty = {
+            coerce_result = function(value)
+              return value
+            end,
+            handler = function()
+              return nil, errors.new({
+                category = errors.CATEGORY.WRITE,
+                details = {},
+                message = "empty bulk failure",
+              })
+            end,
+          },
         },
       },
     }))
@@ -154,6 +176,24 @@ describe("unified operation meta-fixtures", function()
     end
 
     assert(execute(expected))
+    assert(runner:execute(document({
+      { "name", "failCoerced" },
+      { "object", "value0" },
+      { "expectError", document({
+        { "expectResult", document({
+          { "insertedCount", bson.int32(2) },
+        }) },
+      }) },
+    })))
+    assert(runner:execute(document({
+      { "name", "failEmpty" },
+      { "object", "value0" },
+      { "expectError", document({
+        { "expectResult", document({
+          { "$$unsetOrMatches", document({}) },
+        }) },
+      }) },
+    })))
 
     local mismatches = {
       { "isClientError", true },

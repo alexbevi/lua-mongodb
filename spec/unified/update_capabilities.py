@@ -773,7 +773,8 @@ for fixture, (count, owner) in CLIENT_BULK_FIXTURES.items():
 
 for index in (1, 2, 3, 5):
   identity = f"crud/tests/unified/client-bulkWrite-errors.json::test[{index}]"
-  TEST_OVERRIDES[identity] = ("CBW-013", OWNER_REASONS["CBW-013"])
+  if identity not in EXECUTOR_TESTS:
+    TEST_OVERRIDES[identity] = ("CBW-013", OWNER_REASONS["CBW-013"])
 
 TEST_OVERRIDES[
   "crud/tests/unified/client-bulkWrite-errors.json::test[4]"

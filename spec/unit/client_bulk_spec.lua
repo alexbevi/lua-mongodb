@@ -628,4 +628,120 @@ describe("client bulk writes", function()
     assert.are.equal(3, unordered.details.write_errors[2].index)
     assert.are.equal(2, unordered.details.write_errors[2].code)
   end)
+
+  it("returns partial results only after a confirmed successful model", function()
+    local function write_error(index)
+      return bson.document({
+        { "ok", 0 },
+        { "idx", bson.int32(index) },
+        { "code", bson.int32(11000) },
+        { "errmsg", "duplicate key" },
+      })
+    end
+    local function success(index)
+      return bson.document({
+        { "ok", 1 },
+        { "idx", bson.int32(index) },
+        { "n", bson.int32(1) },
+      })
+    end
+    local function run(ordered, verbose, result_documents, n_errors, inserted)
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = 25,
+            max_write_batch_size = 100000,
+          }
+        end,
+        command = function()
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array(result_documents) },
+            }) },
+            { "nErrors", n_errors },
+            { "nInserted", inserted },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+          })
+        end,
+      }
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, {}))
+      )
+      local result, err = client:bulk_write({
+        client_bulk.insert_one(
+          "app.users",
+          bson.document({ { "_id", 1 } })
+        ),
+        client_bulk.insert_one(
+          "app.users",
+          bson.document({ { "_id", 2 } })
+        ),
+      }, {
+        ordered = ordered,
+        verbose_results = verbose,
+      })
+
+      assert.is_nil(result)
+      assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+      return err.details.partial_result
+    end
+
+    assert.is_nil(run(true, true, { write_error(0) }, 1, 0))
+
+    local ordered_verbose = assert(run(
+      true,
+      true,
+      { success(0), write_error(1) },
+      1,
+      1
+    ))
+    local ordered_summary = assert(run(
+      true,
+      false,
+      { write_error(1) },
+      1,
+      1
+    ))
+
+    assert.are.equal(1, ordered_verbose.inserted_count)
+    assert.is_true(ordered_verbose.has_verbose_results)
+    assert.are.equal(1, ordered_verbose.insert_results[1].inserted_id)
+    assert.has_error(function()
+      ordered_verbose.inserted_count = 2
+    end, "client bulk result values are immutable")
+    assert.are.equal(1, ordered_summary.inserted_count)
+    assert.is_false(ordered_summary.has_verbose_results)
+    assert.is_nil(ordered_summary.insert_results)
+    assert.is_nil(run(
+      false,
+      false,
+      { write_error(0), write_error(1) },
+      2,
+      0
+    ))
+
+    local unordered_verbose = assert(run(
+      false,
+      true,
+      { write_error(0), success(1) },
+      1,
+      1
+    ))
+
+    assert.are.equal(1, unordered_verbose.inserted_count)
+    assert.are.equal(2, unordered_verbose.insert_results[2].inserted_id)
+    assert.is_nil(unordered_verbose.insert_results[1])
+  end)
 end)
