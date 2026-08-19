@@ -17,14 +17,16 @@ UNIFIED_REPORT ?=
 V04_SUPPLEMENTAL_REPORT ?=
 V05_SCOPE_ARGUMENTS ?=
 
-.PHONY: check check-fast check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
+.PHONY: check check-fast check-fast-runtime check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-architecture test-generated test-complexity test-quality test-coverage \
 	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-v04-scope test-v05-scope test-v06-scope test-release-checklist lint rockspec planning-check
 
 check: check-full
 
-check-fast: test-unit test-integration test-unified-static test-architecture test-generated test-complexity test-stress test-compatibility test-package lint rockspec planning-check
+check-fast-runtime: test-unit test-integration test-unified-static test-architecture test-generated test-stress test-compatibility test-package rockspec planning-check
+
+check-fast: check-fast-runtime test-complexity lint
 
 check-full: check-fast test-unified-execution test-coverage
 
@@ -58,9 +60,9 @@ test-focus:
 
 check-lua:
 	@command -v "$(LUA)" >/dev/null 2>&1 || { \
-		echo "Lua 5.4 interpreter not found; set LUA=/path/to/lua" >&2; exit 127; \
+		echo "Lua 5.4 or Lua 5.5 interpreter not found; set LUA=/path/to/lua" >&2; exit 127; \
 	}
-	@"$(LUA)" -e 'assert(_VERSION == "Lua 5.4", "lua-mongodb requires Lua 5.4")'
+	@"$(LUA)" -e 'assert(_VERSION == "Lua 5.4" or _VERSION == "Lua 5.5", "lua-mongodb requires Lua 5.4 or Lua 5.5")'
 	@"$(LUA)" -e 'assert(math.maxinteger >= 0x7fffffffffffffff, "lua-mongodb requires 64-bit lua_Integer")'
 
 check-busted: check-lua

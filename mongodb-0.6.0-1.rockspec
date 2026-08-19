@@ -20,7 +20,7 @@ description = {
 }
 
 dependencies = {
-  "lua >= 5.4, < 5.5",
+  "lua >= 5.4, < 5.6",
   "copas >= 4.11, < 4.12",
   "lua-cryptorandom >= 0.0.6, < 0.1",
   "luasocket >= 3.1, < 4",

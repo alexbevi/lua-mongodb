@@ -11,6 +11,31 @@ FULL_WORKFLOW = ROOT / ".github" / "workflows" / "full-conformance.yml"
 
 
 class CiPortabilityTests(unittest.TestCase):
+  def test_portable_matrix_tests_both_supported_lua_versions(self) -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    portable = workflow[
+      workflow.index("  portable:"):workflow.index("  compatibility-smoke:")
+    ]
+
+    self.assertIn('lua-version: ["5.4.8", "5.5.1"]', portable)
+    self.assertIn("Install Lua ${{ matrix.lua-version }}", portable)
+    self.assertIn('luaVersion: "${{ matrix.lua-version }}"', portable)
+    self.assertIn("run: make check-fast-runtime", portable)
+    self.assertIn("if: matrix.lua-version == '5.5.1'", portable)
+
+  def test_luacheck_runs_only_on_its_supported_lua_runtime(self) -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    portable = workflow[
+      workflow.index("  portable:"):workflow.index("  compatibility-smoke:")
+    ]
+    lint_step = portable[
+      portable.index("Install Lua 5.4 lint tools"):
+      portable.index("Run required fast verification")
+    ]
+
+    self.assertIn("if: matrix.lua-version == '5.4.8'", lint_step)
+    self.assertIn("luarocks install luacheck 1.2.0-1", lint_step)
+
   def test_lua_inline_programs_do_not_use_recipe_continuations(self) -> None:
     commands = [
       line for line in MAKEFILE.read_text(encoding="utf-8").splitlines()

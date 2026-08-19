@@ -6,7 +6,7 @@ import subprocess
 import tempfile
 import unittest
 
-from spec.package.test_package import local_source_rockspec
+from spec.package.test_package import local_source_rockspec, runtime_version
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -39,25 +39,32 @@ def run_command(
   )
 
 
-def rock_environment(tree: Path) -> dict[str, str]:
+def rock_environment(tree: Path, lua_version: str) -> dict[str, str]:
   environment = os.environ.copy()
   environment["LUA_PATH"] = ";".join((
     "./?.lua",
     "./?/init.lua",
-    f"{tree}/share/lua/5.4/?.lua",
-    f"{tree}/share/lua/5.4/?/init.lua",
+    f"{tree}/share/lua/{lua_version}/?.lua",
+    f"{tree}/share/lua/{lua_version}/?/init.lua",
   ))
-  environment["LUA_CPATH"] = f"{tree}/lib/lua/5.4/?.so"
+  environment["LUA_CPATH"] = f"{tree}/lib/lua/{lua_version}/?.so"
   environment.pop("LUA_INIT", None)
   return environment
 
 
 def install_rock(mode: str, temporary: Path) -> tuple[Path, dict[str, str]]:
+  lua = os.environ.get("LUA", "lua")
+  lua_version = runtime_version(lua)
   luarocks = os.environ.get("LUAROCKS", "luarocks")
   tree = temporary / f"tree-{mode}"
   run_directory = temporary / f"run-{mode}"
   run_directory.mkdir()
-  command = [luarocks, "--lua-version=5.4", f"--tree={tree}", "install"]
+  command = [
+    luarocks,
+    f"--lua-version={lua_version}",
+    f"--tree={tree}",
+    "install",
+  ]
 
   if mode == "public":
     command.extend(["mongodb", "--deps-mode=one"])
@@ -66,7 +73,7 @@ def install_rock(mode: str, temporary: Path) -> tuple[Path, dict[str, str]]:
     artifacts.mkdir(exist_ok=True)
     rockspec = local_source_rockspec(artifacts)
     packed = run_command(
-      [luarocks, "--lua-version=5.4", "pack", str(rockspec)],
+      [luarocks, f"--lua-version={lua_version}", "pack", str(rockspec)],
       cwd=artifacts,
     )
 
@@ -91,7 +98,7 @@ def install_rock(mode: str, temporary: Path) -> tuple[Path, dict[str, str]]:
   if installed.returncode != 0:
     raise AssertionError(installed.stderr or installed.stdout)
 
-  return tree, rock_environment(tree)
+  return tree, rock_environment(tree, lua_version)
 
 
 def assert_installed_rock(
@@ -165,7 +172,8 @@ class ConnectAndPingTests(unittest.TestCase):
 
     for phrase in (
       "lua -v",
-      "luarocks --lua-version=5.4 install mongodb",
+      "LUA_VERSION=5.5",
+      'luarocks --lua-version="$LUA_VERSION" install mongodb',
       "docker compose up -d --wait",
       "export MONGODB_URI",
       "$env:MONGODB_URI",
@@ -467,10 +475,10 @@ class LeaderboardWorkflowTests(unittest.TestCase):
     ))
 
     for phrase in (
-      "stock lua 5.4",
+      "stock lua 5.4 or lua 5.5",
       "dedicated backend",
       "docker compose up -d --wait",
-      "luarocks --lua-version=5.4 install mongodb",
+      'luarocks --lua-version="$lua_version" install mongodb',
       "docker compose down -v",
     ):
       self.assertIn(phrase, readme.lower())
@@ -628,7 +636,7 @@ class PongBridgeTests(unittest.TestCase):
     )
 
     for phrase in (
-      "stock lua 5.4 bridge",
+      "stock lua 5.4 or lua 5.5 bridge",
       "lua 5.1-compatible",
       "does not load the mongodb driver",
       "update_lookup",

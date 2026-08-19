@@ -1,4 +1,4 @@
-# Build a LuaRocks Package Explorer with Lua 5.4 and MongoDB
+# Build a LuaRocks Package Explorer with Lua 5.4 or Lua 5.5 and MongoDB
 
 This example starts with a deterministic catalog of eight familiar LuaRocks
 packages. It shows why MongoDB values are not arbitrary Lua tables: BSON keeps
@@ -31,9 +31,10 @@ connect → obtain collection → list → lookup → query → update → aggre
 ## Run on macOS or Linux
 
 ```sh
+LUA_VERSION=5.5 # use 5.4 when that is your installed runtime
 lua -v
-luarocks --lua-version=5.4 config lua_version
-luarocks --lua-version=5.4 install mongodb
+luarocks --lua-version="$LUA_VERSION" config lua_version
+luarocks --lua-version="$LUA_VERSION" install mongodb
 docker compose up -d --wait
 export MONGODB_URI="mongodb://127.0.0.1:27018/lua_examples_packages"
 lua seed.lua
@@ -42,16 +43,17 @@ lua main.lua
 diff -u expected-output.txt actual-output.txt
 ```
 
-Use your Lua 5.4 executable name in place of `lua` when necessary. LuaRocks
-installs the compatible Copas 4.11.x dependency; do not upgrade Copas
-separately for this tutorial.
+Use the Lua executable that matches `LUA_VERSION` in place of `lua` when
+necessary. LuaRocks installs the compatible Copas 4.11.x dependency; do not
+upgrade Copas separately for this tutorial.
 
 ## Run on PowerShell
 
 ```powershell
+$env:LUA_VERSION = "5.5" # use 5.4 when that is your installed runtime
 lua -v
-luarocks --lua-version=5.4 config lua_version
-luarocks --lua-version=5.4 install mongodb
+luarocks --lua-version=$env:LUA_VERSION config lua_version
+luarocks --lua-version=$env:LUA_VERSION install mongodb
 docker compose up -d --wait
 $env:MONGODB_URI = "mongodb://127.0.0.1:27018/lua_examples_packages"
 lua .\seed.lua

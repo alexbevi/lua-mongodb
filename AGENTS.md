@@ -28,7 +28,7 @@ Never commit a red test state, silently skip an unknown unified operation, edit 
 
 Follow the Lua Style Guide at <http://lua-users.org/wiki/LuaStyleGuide>: use two-space indentation; declare locals; return a module table named `M`; use `snake_case` for variables/functions and lowercase module paths; use `ALL_CAPS` for constants; avoid `module(...)`, deprecated facilities, and the debug library. Prefer small tables and functions over class emulation. Public object methods use colon syntax.
 
-Target Lua 5.4 and require a 64-bit `lua_Integer`. Treat operational failures as values following the structured error contract; reserve `error()` for programmer errors and violated internal invariants.
+Target Lua 5.4 and Lua 5.5 and require a 64-bit `lua_Integer`. Treat operational failures as values following the structured error contract; reserve `error()` for programmer errors and violated internal invariants.
 
 ## Verification
 

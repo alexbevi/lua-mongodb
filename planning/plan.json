@@ -4,7 +4,7 @@
   "plan_id": "lua-mongodb-driver-v1",
   "title": "Pure-Lua MongoDB driver",
   "target": {
-    "lua": "5.4 with 64-bit lua_Integer",
+    "lua": "5.4 or 5.5 with 64-bit lua_Integer",
     "mongodb_servers": ["7.0", "8.0", "8.2"],
     "runtime": "Coroutine-aware interface; Copas 4.11 default adapter",
     "license": "Apache-2.0",

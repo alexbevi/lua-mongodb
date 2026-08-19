@@ -1,18 +1,18 @@
 # Play Pong through MongoDB Change Streams and Lua Coroutines
 
 This example makes the driver's real-time path visible. Two game clients will
-control separate LÖVE windows, while a **stock Lua 5.4 bridge** beside each
+control separate LÖVE windows, while a **stock Lua 5.4 or Lua 5.5 bridge** beside each
 window owns MongoDB access. Client input crosses local UDP; MongoDB change
 streams carry full match snapshots back to the bridges.
 
 ```text
-LÖVE p1 ⇄ UDP ⇄ Lua 5.4 bridge p1 ⇄ MongoDB ⇄ Lua 5.4 bridge p2 ⇄ UDP ⇄ LÖVE p2
+LÖVE p1 ⇄ UDP ⇄ stock Lua bridge p1 ⇄ MongoDB ⇄ stock Lua bridge p2 ⇄ UDP ⇄ LÖVE p2
 ```
 
 The checked-in [`client/protocol.lua`](client/protocol.lua) is Lua 5.1-compatible
 and does not load the MongoDB driver. This is the deliberate
-runtime boundary: LÖVE uses LuaJIT, while the driver requires stock Lua 5.4,
-64-bit integers, and its Copas runtime.
+runtime boundary: LÖVE uses LuaJIT, while the driver requires stock Lua 5.4 or
+Lua 5.5, 64-bit integers, and its Copas runtime.
 
 The example includes both a deterministic headless proof and a playable
 two-window LÖVE 11.5 frontend.
@@ -32,9 +32,10 @@ two-window LÖVE 11.5 frontend.
 Run from this directory on macOS or Linux:
 
 ```sh
+LUA_VERSION=5.5 # use 5.4 when that is your installed runtime
 lua -v
-luarocks --lua-version=5.4 config lua_version
-luarocks --lua-version=5.4 install mongodb
+luarocks --lua-version="$LUA_VERSION" config lua_version
+luarocks --lua-version="$LUA_VERSION" install mongodb
 docker compose up -d --wait
 export MONGODB_URI="mongodb://127.0.0.1:27020/pong_demo?replicaSet=rs0"
 export PONG_MATCH_ID="demo-match"
@@ -47,9 +48,10 @@ diff -u expected-output.txt actual-output.txt
 PowerShell uses the same programs:
 
 ```powershell
+$env:LUA_VERSION = "5.5" # use 5.4 when that is your installed runtime
 lua -v
-luarocks --lua-version=5.4 config lua_version
-luarocks --lua-version=5.4 install mongodb
+luarocks --lua-version=$env:LUA_VERSION config lua_version
+luarocks --lua-version=$env:LUA_VERSION install mongodb
 docker compose up -d --wait
 $env:MONGODB_URI = "mongodb://127.0.0.1:27020/pong_demo?replicaSet=rs0"
 $env:PONG_MATCH_ID = "demo-match"

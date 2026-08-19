@@ -204,16 +204,18 @@ local function transaction_write_concern(value, retry)
 
   for key, item in (value or bson.document({})):iter() do
     if key ~= "w" then
+      local field = key
+
       if key == "journal" then
-        key = "j"
+        field = "j"
       elseif key == "wtimeoutMS" then
-        key = "wtimeout"
+        field = "wtimeout"
         has_timeout = true
       elseif key == "wtimeout" then
         has_timeout = true
       end
 
-      entries[#entries + 1] = { key, item }
+      entries[#entries + 1] = { field, item }
     end
   end
 

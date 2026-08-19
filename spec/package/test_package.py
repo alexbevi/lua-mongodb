@@ -49,6 +49,23 @@ def expected_modules() -> dict[str, str]:
   return modules
 
 
+def runtime_version(lua: str) -> str:
+  checked = run_command(
+    [lua, "-e", "io.write((_VERSION:gsub('^Lua ', '')))"],
+    cwd=ROOT,
+  )
+
+  if checked.returncode != 0:
+    raise AssertionError(checked.stderr or checked.stdout)
+
+  version = checked.stdout.strip()
+
+  if version not in ("5.4", "5.5"):
+    raise AssertionError(f"unsupported package-test Lua version: {version}")
+
+  return version
+
+
 def rockspec_modules() -> dict[str, str]:
   modules = {}
   pattern = re.compile(
@@ -124,7 +141,7 @@ def local_source_rockspec(directory: Path) -> Path:
 
 
 class PackageTests(unittest.TestCase):
-  def test_runtime_crypto_dependencies_support_the_next_lua_runtime(self) -> None:
+  def test_release_dependencies_support_declared_lua_runtimes(self) -> None:
     rockspec = ROCKSPEC.read_text(encoding="utf-8")
 
     self.assertNotIn('"luaossl ', rockspec)
@@ -137,7 +154,7 @@ class PackageTests(unittest.TestCase):
       with self.subTest(dependency=dependency):
         self.assertIn(dependency, rockspec)
 
-    self.assertIn('"lua >= 5.4, < 5.5"', rockspec)
+    self.assertIn('"lua >= 5.4, < 5.6"', rockspec)
 
   def test_unified_modules_follow_explicit_package_classification(self) -> None:
     classified = module_classification()
@@ -164,6 +181,7 @@ class PackageTests(unittest.TestCase):
   ) -> None:
     lua = os.environ.get("LUA", "lua")
     luarocks = os.environ.get("LUAROCKS", "luarocks")
+    lua_version = runtime_version(lua)
 
     with tempfile.TemporaryDirectory(prefix="lua-mongodb-package-") as directory:
       temporary = Path(directory)
@@ -172,7 +190,7 @@ class PackageTests(unittest.TestCase):
       run_directory = temporary / "run"
       artifacts.mkdir()
       run_directory.mkdir()
-      base = [luarocks, "--lua-version=5.4"]
+      base = [luarocks, f"--lua-version={lua_version}"]
       package_rockspec = local_source_rockspec(artifacts)
 
       packed = run_command(
@@ -207,10 +225,10 @@ class PackageTests(unittest.TestCase):
 
       environment = os.environ.copy()
       environment["LUA_PATH"] = ";".join((
-        f"{install_tree}/share/lua/5.4/?.lua",
-        f"{install_tree}/share/lua/5.4/?/init.lua",
+        f"{install_tree}/share/lua/{lua_version}/?.lua",
+        f"{install_tree}/share/lua/{lua_version}/?/init.lua",
       ))
-      environment["LUA_CPATH"] = f"{install_tree}/lib/lua/5.4/?.so"
+      environment["LUA_CPATH"] = f"{install_tree}/lib/lua/{lua_version}/?.so"
       environment["MONGODB_PACKAGE_TREE"] = str(install_tree)
       environment.pop("LUA_INIT", None)
       self.assertNotIn(str(ROOT), environment["LUA_PATH"])
@@ -224,7 +242,7 @@ class PackageTests(unittest.TestCase):
       self.assertEqual(0, smoked.returncode, smoked.stderr or smoked.stdout)
       self.assertIn("installed mongodb public API smoke passed", smoked.stdout)
 
-      installed_lua = install_tree / "share" / "lua" / "5.4"
+      installed_lua = install_tree / "share" / "lua" / lua_version
 
       for name, entry in module_classification().items():
         if entry["surface"] == "test-only":

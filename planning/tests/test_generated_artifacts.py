@@ -67,11 +67,12 @@ class GeneratedStringprepTests(unittest.TestCase):
 
   def test_fast_gate_runs_the_read_only_artifact_check(self) -> None:
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
-    fast_gate = next(
-      line for line in makefile.splitlines() if line.startswith("check-fast:")
+    runtime_gate = next(
+      line for line in makefile.splitlines()
+      if line.startswith("check-fast-runtime:")
     )
 
-    self.assertIn("test-generated", fast_gate)
+    self.assertIn("test-generated", runtime_gate)
     self.assertIn(
       '"$(PYTHON)" tools/generate_stringprep_tables.py --check',
       makefile,

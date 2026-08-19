@@ -222,7 +222,7 @@ local function draw_diagnostics()
   if protocol_error then
     message = protocol_error
   elseif not connected then
-    message = "Start this player's Lua 5.4 bridge to join"
+    message = "Start this player's stock Lua bridge to join"
   else
     local controls = state.role == "p1" and "W / S" or "UP / DOWN"
     message = controls .. " TO MOVE · ESC TO QUIT"

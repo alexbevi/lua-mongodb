@@ -1,11 +1,14 @@
 local M = {}
 
-local REQUIRED_VERSION = "Lua 5.4"
+local SUPPORTED_VERSIONS = {
+  ["Lua 5.4"] = true,
+  ["Lua 5.5"] = true,
+}
 local MAX_INT64 = 0x7fffffffffffffff
 
 function M.check(lua_version, max_integer)
-  if lua_version ~= REQUIRED_VERSION then
-    return nil, "lua-mongodb requires Lua 5.4"
+  if not SUPPORTED_VERSIONS[lua_version] then
+    return nil, "lua-mongodb requires Lua 5.4 or Lua 5.5"
   end
 
   if type(max_integer) ~= "number" or max_integer < MAX_INT64 then
@@ -16,4 +19,3 @@ function M.check(lua_version, max_integer)
 end
 
 return M
-

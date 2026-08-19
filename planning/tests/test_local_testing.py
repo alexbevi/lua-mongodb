@@ -56,12 +56,17 @@ class LocalTestingTests(unittest.TestCase):
       line for line in makefile.splitlines()
       if line.startswith("check-fast:")
     )
+    runtime_gate = next(
+      line for line in makefile.splitlines()
+      if line.startswith("check-fast-runtime:")
+    )
 
     self.assertIn("check: check-full", makefile)
     self.assertIn(
-      "check-fast: test-unit test-integration test-unified-static",
+      "check-fast-runtime: test-unit test-integration test-unified-static",
       makefile,
     )
+    self.assertIn("check-fast: check-fast-runtime test-complexity lint", makefile)
     self.assertIn(
       "check-full: check-fast test-unified-execution test-coverage",
       makefile,
@@ -79,7 +84,8 @@ class LocalTestingTests(unittest.TestCase):
       makefile.count('--execution-report "$(V04_SUPPLEMENTAL_REPORT)"'),
       "v0.4 through v0.6 must consume supplemental version evidence",
     )
-    self.assertIn("test-package", fast_gate)
+    self.assertIn("test-package", runtime_gate)
+    self.assertIn("test-complexity", fast_gate)
     self.assertEqual(
       makefile.count("spec/unified/validate_fixtures.py --lua"),
       1,

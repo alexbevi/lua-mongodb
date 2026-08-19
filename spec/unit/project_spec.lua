@@ -5,10 +5,11 @@ describe("project bootstrap", function()
     assert.are.equal("0.6.0", mongodb._VERSION)
   end)
 
-  it("accepts the supported Lua runtime", function()
+  it("accepts the supported Lua runtimes", function()
     local runtime_guard = require("mongodb.runtime_guard")
 
     assert.is_true(runtime_guard.check("Lua 5.4", math.maxinteger))
+    assert.is_true(runtime_guard.check("Lua 5.5", math.maxinteger))
   end)
 
   it("rejects unsupported Lua versions", function()
@@ -17,7 +18,12 @@ describe("project bootstrap", function()
     local ok, message = runtime_guard.check("Lua 5.3", math.maxinteger)
 
     assert.is_nil(ok)
-    assert.matches("requires Lua 5%.4", message)
+    assert.matches("requires Lua 5%.4 or Lua 5%.5", message)
+
+    ok, message = runtime_guard.check("Lua 5.6", math.maxinteger)
+
+    assert.is_nil(ok)
+    assert.matches("requires Lua 5%.4 or Lua 5%.5", message)
   end)
 
   it("rejects Lua builds without 64-bit integers", function()

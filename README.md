@@ -1,12 +1,12 @@
 # MongoDB Lua Driver
 
-A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.6.0`; it adds deprecated count and mapReduce commands, database aggregation, and tailable and awaitData cursors. It targets Lua 5.4 without binding or wrapping `libmongoc`.
+A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.6.0`; it adds deprecated count and mapReduce commands, database aggregation, and tailable and awaitData cursors. It targets Lua 5.4 and Lua 5.5 without binding or wrapping `libmongoc`.
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
 ## Dependencies
 
-- Lua 5.4 with a 64-bit `lua_Integer`.
+- Lua 5.4 or Lua 5.5 with a 64-bit `lua_Integer`.
 - [Copas](https://lunarmodules.github.io/copas/) 4.11.x.
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
@@ -543,7 +543,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 
 The `production-core-v1` milestone targets:
 
-- Lua 5.4 with a 64-bit `lua_Integer` and the Copas 4.11 runtime adapter.
+- Lua 5.4 or Lua 5.5 with a 64-bit `lua_Integer` and the Copas 4.11 runtime adapter.
 - MongoDB Community Server 7.0, 8.0, and 8.2.
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.

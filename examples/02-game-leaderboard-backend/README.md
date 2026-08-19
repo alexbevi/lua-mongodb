@@ -1,6 +1,6 @@
 # Build a Server-Side Game Leaderboard with Lua and MongoDB
 
-This example is a **dedicated backend process running stock Lua 5.4**. It is
+This example is a **dedicated backend process running stock Lua 5.4 or Lua 5.5**. It is
 not code that connects directly to MongoDB from LÖVE, Roblox, or another game
 client. A production game would send authenticated requests to a service like
 this one rather than distribute database credentials to players.
@@ -23,8 +23,8 @@ season, then transfers credits atomically.
 
 ## Requirements
 
-- Stock Lua 5.4 with a 64-bit `lua_Integer`.
-- LuaRocks configured for Lua 5.4.
+- Stock Lua 5.4 or Lua 5.5 with a 64-bit `lua_Integer`.
+- LuaRocks configured for the same Lua version as the executable.
 - Docker with Docker Compose v2, or another reachable replica set.
 
 LuaRocks installs the compatible Copas 4.11.x dependency. Do not separately
@@ -35,9 +35,10 @@ upgrade Copas for this example.
 Run from this directory:
 
 ```sh
+LUA_VERSION=5.5 # use 5.4 when that is your installed runtime
 lua -v
-luarocks --lua-version=5.4 config lua_version
-luarocks --lua-version=5.4 install mongodb
+luarocks --lua-version="$LUA_VERSION" config lua_version
+luarocks --lua-version="$LUA_VERSION" install mongodb
 docker compose up -d --wait
 export MONGODB_URI="mongodb://127.0.0.1:27019/lua_examples_leaderboard?replicaSet=rs0"
 lua seed.lua
@@ -47,15 +48,16 @@ diff -u expected-output.txt actual-output.txt
 ```
 
 The Compose health check initiates `rs0` and waits for its primary election;
-there is no manual replica-set command. Use your Lua 5.4 executable name in
-place of `lua` when necessary.
+there is no manual replica-set command. Use the Lua executable that matches
+`LUA_VERSION` in place of `lua` when necessary.
 
 ## Run on PowerShell
 
 ```powershell
+$env:LUA_VERSION = "5.5" # use 5.4 when that is your installed runtime
 lua -v
-luarocks --lua-version=5.4 config lua_version
-luarocks --lua-version=5.4 install mongodb
+luarocks --lua-version=$env:LUA_VERSION config lua_version
+luarocks --lua-version=$env:LUA_VERSION install mongodb
 docker compose up -d --wait
 $env:MONGODB_URI = "mongodb://127.0.0.1:27019/lua_examples_leaderboard?replicaSet=rs0"
 lua .\seed.lua
