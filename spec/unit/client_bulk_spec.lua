@@ -106,6 +106,87 @@ describe("client bulk writes", function()
     end, "client bulk result values are immutable")
   end)
 
+  it("splits successful summary batches at the server count limit", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 2,
+        }
+      end,
+      command = function(_, database, command, options)
+        commands[#commands + 1] = {
+          command = command,
+          database = database,
+          options = options,
+        }
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", #options.sequences[1].documents },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {}))
+    )
+    local result = assert(client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.insert_one(
+        "audit.events",
+        bson.document({ { "_id", 2 } })
+      ),
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 3 } })
+      ),
+    }))
+
+    assert.are.equal(3, result.inserted_count)
+    assert.are.equal(2, #commands)
+    assert.are.equal("admin", commands[1].database)
+    assert.are.equal("admin", commands[2].database)
+    assert.are.equal(
+      commands[1].options.operation_id,
+      commands[2].options.operation_id
+    )
+
+    local first_ops = commands[1].options.sequences[1].documents
+    local first_namespaces = commands[1].options.sequences[2].documents
+    local second_ops = commands[2].options.sequences[1].documents
+    local second_namespaces = commands[2].options.sequences[2].documents
+
+    assert.are.equal(2, #first_ops)
+    assert.are.equal(2, #first_namespaces)
+    assert.are.equal(0, first_ops[1]:get("insert"):to_number())
+    assert.are.equal(1, first_ops[2]:get("insert"):to_number())
+    assert.are.equal("app.events", first_namespaces[1]:get("ns"))
+    assert.are.equal("audit.events", first_namespaces[2]:get("ns"))
+    assert.are.equal(1, #second_ops)
+    assert.are.equal(1, #second_namespaces)
+    assert.are.equal(0, second_ops[1]:get("insert"):to_number())
+    assert.are.equal("app.events", second_namespaces[1]:get("ns"))
+  end)
+
   it("translates update and replacement models without changing their values", function()
     local captured
     local executor = {

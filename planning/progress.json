@@ -6405,6 +6405,28 @@
       "notes": [],
       "started_at": "2026-08-19T16:06:56+00:00",
       "completed_at": "2026-08-19T16:16:39+00:00"
+    },
+    "CBW-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='--filter=server.count.limit spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining count-boundary case failed because three models with maxWriteBatchSize 2 were sent in one command rather than two locally reindexed client bulk batches.",
+          "recorded_at": "2026-08-19T16:38:20+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/client_bulk_spec.lua' FOCUS_INTEGRATION='spec/integration/bulk_spec.lua' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua && python3 spec/conformance/catalog.py --check && git diff --check",
+          "exit_code": 0,
+          "summary": "12 client-bulk unit cases and five directly coupled OP_MSG integration cases passed, including the normative maxWriteBatchSize boundary; three touched Lua files lint cleanly, complexity remains within baseline, and prose catalog and diff validators pass.",
+          "recorded_at": "2026-08-19T16:42:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T16:36:56+00:00",
+      "completed_at": "2026-08-19T16:42:35+00:00"
     }
   },
   "verified_references": {

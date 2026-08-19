@@ -465,6 +465,7 @@ local function prepare_models(state, models)
     operations[index] = wire
     result_models[index] = {
       kind = fields.kind,
+      namespace = fields.namespace,
       operation = wire,
     }
 
@@ -474,6 +475,71 @@ local function prepare_models(state, models)
   end
 
   return operations, namespaces, result_models
+end
+
+local function reindex_operation(operation_document, namespace_index)
+  local entries = {}
+  local first = true
+
+  for key, value in operation_document:iter() do
+    if first then
+      value = bson.int32(namespace_index)
+      first = false
+    end
+
+    entries[#entries + 1] = { key, value }
+  end
+
+  return bson.document(entries)
+end
+
+local function count_batches(operations, result_models, limit)
+  local batches = {}
+  local position = 1
+
+  while position <= #operations do
+    local batch = {
+      namespaces = {},
+      operations = {},
+      original_indexes = {},
+      result_models = {},
+    }
+    local namespace_indexes = {}
+    local stop = math.min(#operations, position + limit - 1)
+
+    for original_index = position, stop do
+      local model = result_models[original_index]
+      local namespace_index = namespace_indexes[model.namespace]
+
+      if namespace_index == nil then
+        namespace_index = #batch.namespaces
+        namespace_indexes[model.namespace] = namespace_index
+        batch.namespaces[#batch.namespaces + 1] = bson.document({
+          { "ns", model.namespace },
+        })
+      end
+
+      local wire = reindex_operation(
+        operations[original_index],
+        namespace_index
+      )
+      local local_index = #batch.operations + 1
+
+      batch.operations[local_index] = wire
+      batch.original_indexes[local_index] = original_index
+      batch.result_models[local_index] = {
+        inserted_id = model.inserted_id,
+        kind = model.kind,
+        namespace = model.namespace,
+        operation = wire,
+      }
+    end
+
+    batches[#batches + 1] = batch
+    position = stop + 1
+  end
+
+  return batches
 end
 
 local function concern_document(concern)
@@ -1010,6 +1076,108 @@ local function result_from(state, response, result_models, options)
   return result_value(fields)
 end
 
+local COUNT_RESULT_FIELDS = {
+  "deleted_count",
+  "inserted_count",
+  "matched_count",
+  "modified_count",
+  "upserted_count",
+}
+
+local VERBOSE_RESULT_FIELDS = {
+  { "delete_results", "delete" },
+  { "insert_results", "insert" },
+  { "update_results", "update" },
+}
+
+local function result_accumulator(options)
+  local full = {
+    fields = {
+      acknowledged = true,
+      deleted_count = 0,
+      has_verbose_results = options.verbose_results,
+      inserted_count = 0,
+      matched_count = 0,
+      modified_count = 0,
+      upserted_count = 0,
+    },
+  }
+
+  if options.verbose_results then
+    full.details = {
+      delete = {},
+      insert = {},
+      update = {},
+    }
+  end
+
+  return full
+end
+
+local function merge_successful_batch(full, batch, result)
+  for _, field in ipairs(COUNT_RESULT_FIELDS) do
+    full.fields[field] = full.fields[field] + result[field]
+  end
+
+  if full.details == nil then
+    return
+  end
+
+  for _, mapping in ipairs(VERBOSE_RESULT_FIELDS) do
+    for local_index, detail in pairs(result[mapping[1]]) do
+      local original_index = batch.original_indexes[local_index]
+
+      full.details[mapping[2]][original_index] = detail
+    end
+  end
+end
+
+local function accumulated_result(full)
+  if full.details ~= nil then
+    full.fields.delete_results = result_map(full.details.delete)
+    full.fields.insert_results = result_map(full.details.insert)
+    full.fields.update_results = result_map(full.details.update)
+  end
+
+  return result_value(full.fields)
+end
+
+local function execute_batches(state, command, batches, options)
+  local full = result_accumulator(options)
+  local bulk_operation_id = operation_id()
+
+  for _, batch in ipairs(batches) do
+    local response, err = state.executor:command("admin", command, {
+      max_sequence_document_size = state.max_message_size,
+      operation_id = bulk_operation_id,
+      sequences = {
+        { identifier = "ops", documents = batch.operations },
+        { identifier = "nsInfo", documents = batch.namespaces },
+      },
+    })
+
+    if response == nil then
+      return nil, command_failure(err)
+    end
+
+    local result
+    result, err = result_from(
+      state,
+      response,
+      batch.result_models,
+      options
+    )
+
+    if result == nil then
+      return nil, err
+    end
+
+    merge_successful_batch(full, batch, result)
+  end
+
+  return accumulated_result(full)
+end
+
 function M.execute(state, models, options)
   if state.max_wire_version < 25 then
     return client_error("client bulk_write requires MongoDB 8.0 or newer")
@@ -1022,7 +1190,7 @@ function M.execute(state, models, options)
     return nil, option_err
   end
 
-  local operations, namespaces, result_models = prepare_models(state, models)
+  local operations, _, result_models = prepare_models(state, models)
 
   if operations == nil then
     return nil, result_models
@@ -1059,22 +1227,12 @@ function M.execute(state, models, options)
     entries[#entries + 1] = { "writeConcern", write_concern }
   end
 
-  local err
-  local response
-  response, err = state.executor:command("admin", bson.document(entries), {
-    max_sequence_document_size = state.max_message_size,
-    operation_id = operation_id(),
-    sequences = {
-      { identifier = "ops", documents = operations },
-      { identifier = "nsInfo", documents = namespaces },
-    },
-  })
-
-  if response == nil then
-    return nil, command_failure(err)
-  end
-
-  return result_from(state, response, result_models, options)
+  return execute_batches(
+    state,
+    bson.document(entries),
+    count_batches(operations, result_models, state.max_write_batch_size),
+    options
+  )
 end
 
 return M
