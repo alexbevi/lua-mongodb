@@ -420,6 +420,7 @@ describe("client bulk writes", function()
       timeout_minutes = 30,
     })
     local commands = {}
+    local deadlines = {}
     local underlying = {
       close = function()
         return true
@@ -434,8 +435,9 @@ describe("client bulk writes", function()
           server_type = "RSPrimary",
         }
       end,
-      command = function(_, _, command)
+      command = function(_, _, command, options)
         commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = options.deadline
 
         if #commands == 1 then
           return nil, errors.new({
@@ -467,14 +469,19 @@ describe("client bulk writes", function()
     )
     local client = api.new_client(
       executor,
-      assert(driver_options.normalize(nil, {}))
+      assert(driver_options.normalize(nil, {})),
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
     )
     local result = assert(client:bulk_write({
       client_bulk.insert_one(
         "app.events",
         bson.document({ { "_id", 1 } })
       ),
-    }))
+    }, { timeout_ms = 100 }))
 
     assert.are.equal(1, result.inserted_count)
     assert.are.equal(2, #commands)
@@ -484,6 +491,8 @@ describe("client bulk writes", function()
       commands[2]:get("txnNumber")
     )
     assert.is_not_nil(commands[1]:get("txnNumber"))
+    assert.is_not_nil(deadlines[1])
+    assert.are.equal(deadlines[1], deadlines[2])
   end)
 
   it("marks only acknowledged single-write batches retryable", function()
@@ -581,6 +590,209 @@ describe("client bulk writes", function()
         end,
       },
     }))
+  end)
+
+  it("shares one timeout deadline across client batches", function()
+    local runtime = fake_runtime.new({ now = 10 })
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 1,
+        }
+      end,
+      command = function(_, _, _, options)
+        deadlines[#deadlines + 1] = options.deadline
+        runtime:advance(0.040)
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {})),
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local result = assert(client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.insert_one(
+        "audit.events",
+        bson.document({ { "_id", 2 } })
+      ),
+    }, { timeout_ms = 100 }))
+
+    assert.are.equal(2, result.inserted_count)
+    assert.are.equal(2, #deadlines)
+    assert.near(10.1, deadlines[1], 0.000001)
+    assert.are.equal(deadlines[1], deadlines[2])
+  end)
+
+  it("returns prior client batches with a timeout failure", function()
+    local runtime = fake_runtime.new({ now = 20 })
+    local command_count = 0
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 1,
+        }
+      end,
+      command = function()
+        command_count = command_count + 1
+
+        if command_count == 2 then
+          return nil, errors.new({
+            category = errors.CATEGORY.TIMEOUT,
+            message = "operation deadline expired",
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {})),
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local result, err = client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.insert_one(
+        "audit.events",
+        bson.document({ { "_id", 2 } })
+      ),
+    }, { timeout_ms = 100 })
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+    assert.is_true(errors.is(err.cause, errors.CATEGORY.WRITE))
+    assert.are.equal(1, err.cause.details.partial_result.inserted_count)
+  end)
+
+  it("cleans a timed-out client result cursor with its deadline", function()
+    local runtime = fake_runtime.new({ now = 30 })
+    local commands = {}
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = name
+        deadlines[#deadlines + 1] = options.deadline
+
+        if name == "getMore" then
+          return nil, errors.new({
+            category = errors.CATEGORY.TIMEOUT,
+            message = "getMore timed out",
+          })
+        elseif name == "killCursors" then
+          return bson.document({ { "ok", 1 } })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(42) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {})),
+      nil,
+      nil,
+      nil,
+      nil,
+      runtime
+    )
+    local result, err = client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 2 } })
+      ),
+    }, { timeout_ms = 100 })
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+    assert.is_true(errors.is(err.cause, errors.CATEGORY.WRITE))
+    assert.are.equal(1, err.cause.details.partial_result.inserted_count)
+    assert.are.same({ "bulkWrite", "getMore", "killCursors" }, commands)
+    assert.are.equal(deadlines[1], deadlines[2])
+    assert.are.equal(deadlines[1], deadlines[3])
   end)
 
   it("rejects an operation write concern after a transaction starts", function()

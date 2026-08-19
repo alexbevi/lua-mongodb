@@ -799,9 +799,11 @@ for index in (8, 9):
   if identity not in EXECUTOR_TESTS:
     TEST_OVERRIDES[identity] = ("CBW-008", OWNER_REASONS["CBW-008"])
 
-TEST_OVERRIDES[
-  "client-side-operations-timeout/tests/bulkWrite.json::test[1]"
-] = ("CBW-012", OWNER_REASONS["CBW-012"])
+identity = "client-side-operations-timeout/tests/bulkWrite.json::test[1]"
+TEST_OVERRIDES[identity] = (
+  "CBW-012",
+  None if identity in EXECUTOR_TESTS else OWNER_REASONS["CBW-012"],
+)
 TEST_OVERRIDES[
   "crud/tests/unified/create-null-ids.json::test[7]"
 ] = ("ADV-007", None)

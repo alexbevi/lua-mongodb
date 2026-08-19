@@ -339,6 +339,95 @@ describe("collection bulk writes over OP_MSG", function()
     end
   end)
 
+  it("uses one timeout budget across client bulk batches", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+    local budgets = {}
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 1 },
+      }))
+
+      for batch_index = 1, 2 do
+        local request = receive_frame(peer)
+        local max_time_ms = request.body:get("maxTimeMS")
+
+        assert.are.equal("bulkWrite", request.body:keys()[1])
+        assert.is_not_nil(max_time_ms)
+        budgets[batch_index] = max_time_ms:to_number()
+
+        if batch_index == 1 then
+          send_response(peer, request, bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({}) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", 1 },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+          }))
+        else
+          send_response(peer, request, bson.document({
+            { "ok", 0 },
+            { "code", bson.int32(50) },
+            { "codeName", "MaxTimeMSExpired" },
+            { "errmsg", "operation exceeded time limit" },
+          }))
+        end
+      end
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port,
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local result, err = client:bulk_write({
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 1 } })
+          ),
+          mongodb.client_bulk.insert_one(
+            "audit.events",
+            bson.document({ { "_id", 2 } })
+          ),
+        }, { timeout_ms = 500 })
+
+        assert.is_nil(result)
+        assert.is_true(errors.is(err, errors.CATEGORY.TIMEOUT))
+        assert.is_true(errors.is(err.cause, errors.CATEGORY.WRITE))
+        assert.are.equal(1, err.cause.details.partial_result.inserted_count)
+        assert.are.equal(2, #budgets)
+        assert.is_true(budgets[2] <= budgets[1])
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
   it("keeps one replica-set session across client batches and getMore", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())

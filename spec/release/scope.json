@@ -7,11 +7,10 @@
     "ADV-010": 777,
     "ADV-012": 15,
     "AUTH-019": 11,
-    "CBW-012": 1,
     "REL-055": 1
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1276
+    "post-v1-exclusion": 1275
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -120,9 +119,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1276,
+    "deferred_unsupported": 1275,
     "excluded_scope": 97,
-    "passed": 4151
+    "passed": 4152
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

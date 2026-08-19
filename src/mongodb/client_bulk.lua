@@ -668,7 +668,9 @@ local function validate_options(state, options)
 
   for key in pairs(options) do
     if key ~= "bypass_document_validation"
+        and key ~= "cancellation"
         and key ~= "comment"
+        and key ~= "deadline"
         and key ~= "let"
         and key ~= "ordered"
         and key ~= "raw_data"
@@ -751,7 +753,9 @@ local function validate_options(state, options)
   return {
     acknowledged = acknowledged,
     bypass_document_validation = options.bypass_document_validation,
+    cancellation = options.cancellation,
     comment = options.comment,
+    deadline = options.deadline,
     let = options.let,
     in_transaction = in_transaction,
     ordered = ordered,
@@ -968,6 +972,8 @@ local function consume_results(state, response, result_models, details, options)
     end
 
     response, err = state.executor:command("admin", bson.document(entries), {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
       session = options.session,
       session_context = options.session_context,
     })
@@ -1160,6 +1166,8 @@ local function result_from(state, response, result_models, options)
           { "cursors", bson.array({ failed_cursor_id }) },
         }),
         {
+          cancellation = options.cancellation,
+          deadline = options.deadline,
           session = options.session,
           session_context = options.session_context,
         }
@@ -1339,6 +1347,8 @@ local function execute_batches(state, command, batches, options)
 
   for _, batch in ipairs(batches) do
     local response, err = state.executor:command("admin", command, {
+      cancellation = options.cancellation,
+      deadline = options.deadline,
       max_sequence_document_size = state.max_message_size,
       no_response = not options.acknowledged,
       operation_id = bulk_operation_id,
@@ -1352,7 +1362,9 @@ local function execute_batches(state, command, batches, options)
     })
 
     if response == nil then
-      return nil, command_failure(err)
+      local partial_result = full.has_success and accumulated_result(full) or nil
+
+      return nil, command_failure(err, partial_result)
     end
 
     if options.acknowledged then

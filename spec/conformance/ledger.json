@@ -26870,13 +26870,13 @@
       "activity": "CBW-012",
       "fingerprint": "8d683bc7a75daa1f1357743ea14b12b634a8b47c07306e03309f49430a1a36b3",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/bulkWrite.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[1]": {
@@ -86748,9 +86748,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1276,
+      "deferred_unsupported": 1275,
       "excluded_scope": 97,
-      "passed": 4151
+      "passed": 4152
     },
     "suites": {
       "auth": 73,

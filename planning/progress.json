@@ -6559,6 +6559,28 @@
       "notes": [],
       "started_at": "2026-08-19T18:29:41+00:00",
       "completed_at": "2026-08-19T18:44:52+00:00"
+    },
+    "CBW-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='--filter=one.timeout.deadline.across.client.batches spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining two-batch client write errored before I/O because client-bulk validation rejected the shared operation_timeout deadline, so no whole-operation budget reached either batch.",
+          "recorded_at": "2026-08-19T18:53:49+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua\" FOCUS_INTEGRATION=\"spec/integration/bulk_spec.lua\" FOCUS_UNIFIED=\"client-side-operations-timeout/tests/bulkWrite.json::test[[]1[]]\" FOCUS_PYTHON=\"spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist\" FOCUS_LINT=\"src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua\" && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck && make test-architecture LUA=/opt/homebrew/opt/lua@5.4/bin/lua && generated artifact validators",
+          "exit_code": 0,
+          "summary": "Twenty-two client-bulk unit cases, twelve directly coupled OP_MSG integration cases, the exact CSOT bulkWrite identity (1 executed, 1 passed, 0 environment-skipped, 0 deferred, 0 failed), and 132 targeted inventory/ledger/release tests passed; touched Lua lint, complexity, architecture, capability, conformance, release and versioned scopes, checklist, README projection, executor JSON, and diff validators pass.",
+          "recorded_at": "2026-08-19T19:04:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T18:52:30+00:00",
+      "completed_at": "2026-08-19T19:04:30+00:00"
     }
   },
   "verified_references": {

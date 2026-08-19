@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1901,
-    "passed": 1867,
-    "runnable": 1867
+    "passed": 1868,
+    "runnable": 1868
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -16832,7 +16832,6 @@
     "client-side-operations-timeout/tests/bulkWrite.json::test[1]": {
       "activity": "CBW-012",
       "fingerprint": "8d683bc7a75daa1f1357743ea14b12b634a8b47c07306e03309f49430a1a36b3",
-      "reason": "client bulk timeout behavior awaits its dedicated slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -16863,7 +16862,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/change-streams.json::test[1]": {
       "activity": "CS-008",

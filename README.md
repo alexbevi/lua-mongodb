@@ -302,7 +302,7 @@ print(written.deleted_count)
 
 Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps. Command options also accept `ordered`, `bypass_document_validation`, `comment`, `let`, and an operation-level `write_concern`; an operation concern overrides the client default.
 
-MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary or verbose results. An unacknowledged `write_concern = { w = 0 }` requires `ordered = false` and no verbose results; its immutable result exposes `acknowledged = false` without count or per-model result fields.
+MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary or verbose results. Set `timeout_ms` to bound the complete client bulk operation, including all batches, one retry, and result-cursor cleanup. An unacknowledged `write_concern = { w = 0 }` requires `ordered = false` and no verbose results; its immutable result exposes `acknowledged = false` without count or per-model result fields.
 
 ```lua
 local client_bulk = mongodb.client_bulk
@@ -518,7 +518,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | Periodic SRV polling | 🟢 | 100.0% |
 | Resilience | Retryable reads | 🟡 | 91.1% |
 | Resilience | Retryable writes | 🟢 | 100.0% |
-| Resilience | Client-side operations timeout | 🟡 | 80.3% |
+| Resilience | Client-side operations timeout | 🟡 | 80.5% |
 | Resilience | Sessions | 🟢 | 100.0% |
 | Resilience | Causal consistency | 🟢 | 100.0% |
 | Resilience | Transactions | 🟡 | 96.5% |
@@ -548,7 +548,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, the remaining client bulk-write timeout behavior, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, remaining client bulk-write error handling and load-balanced cursor pinning, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

@@ -2,6 +2,7 @@
   "schema_version": 1,
   "tests": {
     "causal-consistency/tests/causal-consistency-clientBulkWrite.json::test[1]": {"activity": "CBW-009", "environment": "live-replicaset"},
+    "client-side-operations-timeout/tests/bulkWrite.json::test[1]": {"activity": "CBW-012", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[1]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[2]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/tailable-awaitData.json::test[3]": {"activity": "LEG-011", "environment": "isolated-replicaset", "testCommands": true},
