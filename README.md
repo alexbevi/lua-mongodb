@@ -300,7 +300,7 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
-MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, and replacement models and returns immutable summary counts; later model and result forms remain tracked separately in the roadmap.
+MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary counts; later result and execution forms remain tracked separately in the roadmap.
 
 ```lua
 local client_bulk = mongodb.client_bulk
@@ -320,10 +320,15 @@ local written = assert(client:bulk_write({
     doc({ { "kind", "user-created" } }),
     doc({ { "kind", "user-activated" } })
   ),
+  client_bulk.delete_many(
+    "audit.events",
+    doc({ { "expired", true } })
+  ),
 }))
 
 print(written.inserted_count)
 print(written.modified_count)
+print(written.deleted_count)
 ```
 
 ### Generic Commands

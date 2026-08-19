@@ -22,6 +22,11 @@ local REPLACE_MODEL_OPTIONS = {
   upsert = true,
 }
 
+local DELETE_MODEL_OPTIONS = {
+  collation = true,
+  hint = true,
+}
+
 local MODEL_METATABLE = {
   __index = function(value, key)
     local state = MODEL_STATES[value]
@@ -272,6 +277,32 @@ function M.replace_one(namespace, filter, replacement, options)
   })
 end
 
+local function delete_model(namespace, filter, options, multi)
+  validate_namespace(namespace)
+  require_document("filter", filter)
+  options = validate_model_options(
+    options,
+    DELETE_MODEL_OPTIONS,
+    multi and "delete_many model" or "delete_one model"
+  )
+  require_document_option(options, "collation")
+  require_hint(options)
+  return new_model("delete", {
+    filter = filter,
+    multi = multi,
+    namespace = namespace,
+    options = options,
+  })
+end
+
+function M.delete_one(namespace, filter, options)
+  return delete_model(namespace, filter, options, false)
+end
+
+function M.delete_many(namespace, filter, options)
+  return delete_model(namespace, filter, options, true)
+end
+
 local function with_generated_id(state, document)
   if document:get("_id") ~= nil then
     return document
@@ -319,9 +350,29 @@ local function update_operation(fields, namespace_index)
   return bson.document(entries)
 end
 
+local function delete_operation(fields, namespace_index)
+  local entries = {
+    { "delete", bson.int32(namespace_index) },
+    { "filter", fields.filter },
+    { "multi", fields.multi },
+  }
+
+  for _, name in ipairs({ "collation", "hint" }) do
+    if fields.options[name] ~= nil then
+      entries[#entries + 1] = { name, fields.options[name] }
+    end
+  end
+
+  return bson.document(entries)
+end
+
 local function operation(state, fields, namespace_index)
   if fields.kind == "update" then
     return update_operation(fields, namespace_index)
+  end
+
+  if fields.kind == "delete" then
+    return delete_operation(fields, namespace_index)
   end
 
   local document, err = with_generated_id(state, fields.document)

@@ -6137,6 +6137,28 @@
       "notes": [],
       "started_at": "2026-08-19T12:42:37+00:00",
       "completed_at": "2026-08-19T12:50:23+00:00"
+    },
+    "CBW-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua",
+          "exit_code": 2,
+          "summary": "2 existing client bulk tests passed; defining mixed delete-model test errored because client_bulk.delete_one is absent",
+          "recorded_at": "2026-08-19T12:58:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua FOCUS_INTEGRATION=spec/integration/bulk_spec.lua FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua spec/support/mongodb/unified/driver.lua'; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "3 client bulk unit and 3 OP_MSG integration tests passed; touched Lua lint, complexity, capability, ledger, release scope, v0.4 scope, README compatibility, and release checklist validators passed; exact delete-option fixtures remain classified to CBW-003 because they require verbose results",
+          "recorded_at": "2026-08-19T13:00:46+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T12:58:09+00:00",
+      "completed_at": "2026-08-19T13:00:47+00:00"
     }
   },
   "verified_references": {

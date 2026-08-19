@@ -2029,6 +2029,20 @@ local function client_bulk_write(_, client, arguments)
   return call_driver(function()
     local models = {}
     local factories = {
+      deleteMany = function(model_arguments)
+        return client_bulk.delete_many(
+          model_arguments:get("namespace"),
+          model_arguments:get("filter"),
+          operation_options(model_arguments, WRITE_OPTIONS)
+        )
+      end,
+      deleteOne = function(model_arguments)
+        return client_bulk.delete_one(
+          model_arguments:get("namespace"),
+          model_arguments:get("filter"),
+          operation_options(model_arguments, WRITE_OPTIONS)
+        )
+      end,
       insertOne = function(model_arguments)
         return client_bulk.insert_one(
           model_arguments:get("namespace"),

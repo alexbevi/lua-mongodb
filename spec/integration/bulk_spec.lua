@@ -179,7 +179,7 @@ describe("collection bulk writes over OP_MSG", function()
     end
   end)
 
-  it("writes updates and replacements across client namespaces", function()
+  it("writes updates, replacements, and deletes across client namespaces", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())
     local outcome
@@ -204,7 +204,7 @@ describe("collection bulk writes over OP_MSG", function()
       local namespaces = request.sequences[2].documents
 
       assert.are.equal("bulkWrite", request.body:keys()[1])
-      assert.are.equal(3, #ops)
+      assert.are.equal(5, #ops)
       assert.are.equal(2, #namespaces)
       assert.are.equal(0, ops[1]:get("update"):to_number())
       assert.is_false(ops[1]:get("multi"))
@@ -213,6 +213,12 @@ describe("collection bulk writes over OP_MSG", function()
       assert.is_true(ops[2]:get("multi"))
       assert.are.equal(1, ops[3]:get("update"):to_number())
       assert.is_false(ops[3]:get("multi"))
+      assert.are.equal(0, ops[4]:get("delete"):to_number())
+      assert.is_false(ops[4]:get("multi"))
+      assert.are.equal("_id_", ops[4]:get("hint"))
+      assert.are.equal(1, ops[5]:get("delete"):to_number())
+      assert.is_true(ops[5]:get("multi"))
+      assert.are.equal("simple", ops[5]:get("collation"):get("locale"))
       assert.are.equal("app.events", namespaces[1]:get("ns"))
       assert.are.equal("audit.events", namespaces[2]:get("ns"))
       send_response(peer, request, bson.document({
@@ -227,7 +233,7 @@ describe("collection bulk writes over OP_MSG", function()
         { "nMatched", 3 },
         { "nModified", 2 },
         { "nUpserted", 0 },
-        { "nDeleted", 0 },
+        { "nDeleted", 3 },
       }))
       peer:close()
     end)
@@ -256,10 +262,21 @@ describe("collection bulk writes over OP_MSG", function()
             bson.document({ { "_id", 4 } }),
             bson.document({ { "archived", true } })
           ),
+          mongodb.client_bulk.delete_one(
+            "app.events",
+            bson.document({ { "_id", 5 } }),
+            { hint = "_id_" }
+          ),
+          mongodb.client_bulk.delete_many(
+            "audit.events",
+            bson.document({ { "archived", false } }),
+            { collation = bson.document({ { "locale", "simple" } }) }
+          ),
         }))
 
         assert.are.equal(3, written.matched_count)
         assert.are.equal(2, written.modified_count)
+        assert.are.equal(3, written.deleted_count)
         assert.is_true(client:close())
       end))
       copas.removeserver(server)

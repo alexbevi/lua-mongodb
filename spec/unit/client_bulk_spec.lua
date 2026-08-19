@@ -203,4 +203,90 @@ describe("client bulk writes", function()
       client_bulk.replace_one("app.users", filter, update)
     end, "replacement document must not begin with an atomic modifier")
   end)
+
+  it("translates delete models in their mixed-operation order", function()
+    local captured
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function(_, _, _, options)
+        captured = options
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 2 },
+          { "nModified", 1 },
+          { "nUpserted", 0 },
+          { "nDeleted", 3 },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {}))
+    local client = api.new_client(executor, config)
+    local filter = bson.document({ { "active", false } })
+    local collation = bson.document({ { "locale", "en" } })
+    local hint = bson.document({ { "active", 1 } })
+    local written = assert(client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.delete_one("app.users", filter, {
+        collation = collation,
+        hint = "inactive_users",
+      }),
+      client_bulk.update_one(
+        "audit.users",
+        filter,
+        bson.document({ { "$set", bson.document({ { "seen", true } }) } })
+      ),
+      client_bulk.delete_many("app.users", filter, { hint = hint }),
+      client_bulk.replace_one(
+        "audit.users",
+        filter,
+        bson.document({ { "active", true } })
+      ),
+    }))
+
+    assert.are.equal(3, written.deleted_count)
+
+    local ops = captured.sequences[1].documents
+    local namespaces = captured.sequences[2].documents
+
+    assert.are.equal(5, #ops)
+    assert.are.equal(3, #namespaces)
+    assert.are.equal(0, ops[1]:get("insert"):to_number())
+    assert.are.equal(1, ops[2]:get("delete"):to_number())
+    assert.are.equal(2, ops[3]:get("update"):to_number())
+    assert.are.equal(1, ops[4]:get("delete"):to_number())
+    assert.are.equal(2, ops[5]:get("update"):to_number())
+    assert.are.equal(filter, ops[2]:get("filter"))
+    assert.is_false(ops[2]:get("multi"))
+    assert.are.equal(collation, ops[2]:get("collation"))
+    assert.are.equal("inactive_users", ops[2]:get("hint"))
+    assert.are.equal(filter, ops[4]:get("filter"))
+    assert.is_true(ops[4]:get("multi"))
+    assert.are.equal(hint, ops[4]:get("hint"))
+    assert.is_nil(ops[4]:get("collation"))
+    assert.are.equal("app.events", namespaces[1]:get("ns"))
+    assert.are.equal("app.users", namespaces[2]:get("ns"))
+    assert.are.equal("audit.users", namespaces[3]:get("ns"))
+    assert.are.same({ "locale" }, collation:keys())
+    assert.are.same({ "active" }, hint:keys())
+  end)
 end)
