@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "ff76da611022a75ac494892c69f6679be4b9168cd3bd6526c5145b93dcd7a149",
+  "plan_digest": "1ec17373e96fa52acf529cf9d29088b979cf56fe89a18350d7f7d2f08a20a7ed",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -6225,6 +6225,13 @@
       "notes": [],
       "started_at": "2026-08-19T13:35:31+00:00",
       "completed_at": "2026-08-19T13:39:42+00:00"
+    },
+    "CBW-006": {
+      "status": "pending",
+      "evidence": [],
+      "notes": [
+        "Requeued: Split combined failure fixture families before implementation"
+      ]
     }
   },
   "verified_references": {

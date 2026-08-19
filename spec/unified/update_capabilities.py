@@ -37,13 +37,17 @@ OWNER_REASONS = {
   "CBW-003": "client bulk verbose results await their dedicated slice",
   "CBW-004": "client bulk command options await their dedicated slice",
   "CBW-005": "client bulk raw data awaits its dedicated slice",
-  "CBW-006": "client bulk failures await their dedicated slice",
+  "CBW-006": "individual client bulk write errors await their dedicated slice",
   "CBW-007": "client bulk command batching awaits its dedicated slice",
   "CBW-008": "unacknowledged client bulk writes await their dedicated slice",
   "CBW-009": "client bulk sessions await their dedicated slice",
   "CBW-010": "client bulk transactions await their dedicated slice",
   "CBW-011": "retryable client bulk writes await their dedicated slice",
   "CBW-012": "client bulk timeout behavior awaits its dedicated slice",
+  "CBW-013": "client bulk partial results await their dedicated slice",
+  "CBW-014": "client bulk write concern errors await their dedicated slice",
+  "CBW-015": "client bulk command failures await their dedicated slice",
+  "CBW-016": "client bulk cursor cleanup awaits its dedicated slice",
   "AUTH-011": "the test requires OIDC machine authentication",
   "AUTH-017": "the test requires OIDC speculative authentication",
   "AUTH-018": "the test requires OIDC operation reauthentication",
@@ -64,6 +68,7 @@ OWNER_REASONS = {
   "LEG-012": "awaitData wait budgets await the dedicated cursor timeout slice",
   "LEG-013": "awaitData cursor cancellation awaits the dedicated runtime cancellation slice",
   "REL-053": "the legacy API release closure owns exact target-version exclusions",
+  "REL-055": "the v0.7 conformance closure owns exact evidence for already-supported client validation",
   "CFG-004": "connectTimeoutMS zero semantics await the v0.4 configuration slice",
   "CMAP-002": "authentication failure pool clearing awaits the v0.4 CMAP slice",
   "CMAP-003": "application error pool-clear ordering awaits the v0.4 CMAP slice",
@@ -743,12 +748,12 @@ for fixture in (
 CLIENT_BULK_FIXTURES = {
   "client-bulkWrite-delete-options": (2, "CBW-003"),
   "client-bulkWrite-delete-rawdata": (2, "CBW-005"),
-  "client-bulkWrite-errorResponse": (1, "CBW-006"),
+  "client-bulkWrite-errorResponse": (1, "CBW-015"),
   "client-bulkWrite-errors": (9, "CBW-006"),
   "client-bulkWrite-mixed-namespaces": (1, "CBW-003"),
   "client-bulkWrite-options": (7, "CBW-004"),
   "client-bulkWrite-ordered": (3, "CBW-003"),
-  "client-bulkWrite-partialResults": (9, "CBW-006"),
+  "client-bulkWrite-partialResults": (9, "CBW-013"),
   "client-bulkWrite-replaceOne-rawdata": (2, "CBW-005"),
   "client-bulkWrite-replaceOne-sort": (1, "CBW-001"),
   "client-bulkWrite-results": (3, "CBW-003"),
@@ -765,6 +770,24 @@ for fixture, (count, owner) in CLIENT_BULK_FIXTURES.items():
 
     if identity not in EXECUTOR_TESTS:
       TEST_OVERRIDES[identity] = (owner, OWNER_REASONS[owner])
+
+for index in (1, 2, 3, 5):
+  identity = f"crud/tests/unified/client-bulkWrite-errors.json::test[{index}]"
+  TEST_OVERRIDES[identity] = ("CBW-013", OWNER_REASONS["CBW-013"])
+
+TEST_OVERRIDES[
+  "crud/tests/unified/client-bulkWrite-errors.json::test[4]"
+] = ("CBW-015", OWNER_REASONS["CBW-015"])
+TEST_OVERRIDES[
+  "crud/tests/unified/client-bulkWrite-errors.json::test[6]"
+] = ("CBW-014", OWNER_REASONS["CBW-014"])
+TEST_OVERRIDES[
+  "crud/tests/unified/client-bulkWrite-errors.json::test[7]"
+] = ("REL-055", OWNER_REASONS["REL-055"])
+
+for index in (8, 9):
+  identity = f"crud/tests/unified/client-bulkWrite-errors.json::test[{index}]"
+  TEST_OVERRIDES[identity] = ("CBW-008", OWNER_REASONS["CBW-008"])
 
 TEST_OVERRIDES[
   "client-side-operations-timeout/tests/bulkWrite.json::test[1]"
