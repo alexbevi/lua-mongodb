@@ -35,7 +35,7 @@ jobs:
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@v6
         with:
-          luaRocksVersion: "3.12.2"
+          luaRocksVersion: "3.13.0"
 
       - name: Configure OpenSSL on macOS
         if: runner.os == 'macOS'
@@ -92,7 +92,7 @@ jobs:
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@v6
         with:
-          luaRocksVersion: "3.12.2"
+          luaRocksVersion: "3.13.0"
 
       - name: Install driver dependencies
         run: luarocks install --only-deps mongodb-0.6.0-1.rockspec
@@ -126,7 +126,7 @@ jobs:
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@v6
         with:
-          luaRocksVersion: "3.12.2"
+          luaRocksVersion: "3.13.0"
 
       - name: Install example verification tools
         run: luarocks install luacheck 1.2.0-1

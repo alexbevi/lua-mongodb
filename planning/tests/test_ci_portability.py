@@ -20,6 +20,7 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn('lua-version: ["5.4.8", "5.5.1"]', portable)
     self.assertIn("Install Lua ${{ matrix.lua-version }}", portable)
     self.assertIn('luaVersion: "${{ matrix.lua-version }}"', portable)
+    self.assertIn('luaRocksVersion: "3.13.0"', portable)
     self.assertIn("run: make check-fast-runtime", portable)
     self.assertIn("if: matrix.lua-version == '5.5.1'", portable)
 

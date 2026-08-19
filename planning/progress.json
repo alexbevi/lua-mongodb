@@ -6321,22 +6321,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH make test-focus LUA=lua BUSTED=busted FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='spec.package.test_package.PackageTests.test_release_dependencies_support_declared_lua_runtimes planning.tests.test_ci_portability.CiPortabilityTests.test_portable_matrix_tests_both_supported_lua_versions'",
-          "exit_code": 2,
-          "summary": "runtime guard rejects Lua 5.5, rockspec still caps at 5.4, and CI Fast has no Lua-version matrix",
-          "recorded_at": "2026-08-19T15:06:33+00:00"
+          "command": "CI Fast run 32270005764 portable (ubuntu-latest, 5.5.1) and portable (macos-latest, 5.5.1)",
+          "exit_code": 1,
+          "summary": "both Lua 5.5 jobs failed in the LuaRocks installer because pinned LuaRocks 3.12.2 could not configure against Lua 5.5; driver verification never started",
+          "recorded_at": "2026-08-19T15:29:29+00:00"
         },
         {
           "phase": "green",
-          "command": "Lua 5.4: make test-focus LUA=lua BUSTED=busted LUACHECK=luacheck FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/runtime_guard.lua src/mongodb/client.lua spec/unit/project_spec.lua'; Lua 5.5: make check-fast-runtime LUA=lua BUSTED=busted LUAROCKS=luarocks; python3 -m unittest spec.examples.test_examples -v; make test-complexity; luarocks --lua-version=5.4 lint mongodb-0.6.0-1.rockspec",
+          "command": "python3 -m unittest planning.tests.test_ci_portability -v; luarocks --version",
           "exit_code": 0,
-          "summary": "Lua 5.4 passed 4 bootstrap tests, 20 package/CI tests, isolated source-rock installation, and touched-file lint; Lua 5.5 passed the complete runtime fast gate with 472 unit and 41 integration tests, BSON and Extended JSON corpora, 539 schema-valid unified fixtures, static conformance/architecture/stress/compatibility gates, and an isolated source-rock installation; 24 example tests passed with 4 expected live skips; complexity and rockspec lint passed",
-          "recorded_at": "2026-08-19T15:25:26+00:00"
+          "summary": "17 CI portability tests passed and the locally verified Lua 5.5 package/runtime gate uses LuaRocks 3.13.0, the version now pinned by CI",
+          "recorded_at": "2026-08-19T15:29:56+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-19T15:05:04+00:00",
-      "completed_at": "2026-08-19T15:25:27+00:00"
+      "notes": [
+        "Requeued: Required CI Fast run 32270005764 failed before Lua 5.5 tests because LuaRocks 3.12.2 cannot configure against Lua 5.5 on Ubuntu or macOS"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-19T15:25:27+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:$PATH make test-focus LUA=lua BUSTED=busted FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='spec.package.test_package.PackageTests.test_release_dependencies_support_declared_lua_runtimes planning.tests.test_ci_portability.CiPortabilityTests.test_portable_matrix_tests_both_supported_lua_versions'",
+              "exit_code": 2,
+              "summary": "runtime guard rejects Lua 5.5, rockspec still caps at 5.4, and CI Fast has no Lua-version matrix",
+              "recorded_at": "2026-08-19T15:06:33+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "Lua 5.4: make test-focus LUA=lua BUSTED=busted LUACHECK=luacheck FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/runtime_guard.lua src/mongodb/client.lua spec/unit/project_spec.lua'; Lua 5.5: make check-fast-runtime LUA=lua BUSTED=busted LUAROCKS=luarocks; python3 -m unittest spec.examples.test_examples -v; make test-complexity; luarocks --lua-version=5.4 lint mongodb-0.6.0-1.rockspec",
+              "exit_code": 0,
+              "summary": "Lua 5.4 passed 4 bootstrap tests, 20 package/CI tests, isolated source-rock installation, and touched-file lint; Lua 5.5 passed the complete runtime fast gate with 472 unit and 41 integration tests, BSON and Extended JSON corpora, 539 schema-valid unified fixtures, static conformance/architecture/stress/compatibility gates, and an isolated source-rock installation; 24 example tests passed with 4 expected live skips; complexity and rockspec lint passed",
+              "recorded_at": "2026-08-19T15:25:26+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "c19c9e5e3b2d0ffaabc6cb8532deaad65ec5c408",
+      "started_at": "2026-08-19T15:29:28+00:00",
+      "completed_at": "2026-08-19T15:29:58+00:00"
     }
   },
   "verified_references": {
