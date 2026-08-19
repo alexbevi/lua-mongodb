@@ -21,7 +21,7 @@ OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
 EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 EXECUTOR_TESTS = json.loads(EXECUTORS.read_text(encoding="utf-8"))["tests"]
 RATCHETS = {
-  "classified": 1900,
+  "classified": 1901,
   "passed": len(EXECUTOR_TESTS),
   "runnable": len(EXECUTOR_TESTS),
 }

@@ -361,6 +361,9 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       and parts[:2] == ("sessions", "tests")
       and parts[2].startswith("snapshot-sessions")
     )
+    is_client_bulk_causal_fixture = relative.as_posix() == (
+      "causal-consistency/tests/causal-consistency-clientBulkWrite.json"
+    )
     is_security_monitoring_fixture = relative.as_posix() == (
       "command-logging-and-monitoring/tests/monitoring/redacted-commands.json"
     )
@@ -371,6 +374,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       or is_release_directory
       or is_management_directory
       or is_snapshot_session_fixture
+      or is_client_bulk_causal_fixture
       or is_security_monitoring_fixture
     ):
       continue

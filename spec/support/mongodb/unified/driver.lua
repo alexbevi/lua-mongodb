@@ -2096,6 +2096,7 @@ local function client_bulk_write(_, client, arguments)
       let = "let",
       ordered = "ordered",
       rawData = "raw_data",
+      session = "session",
       verboseResults = "verbose_results",
     })
     local write_concern = arguments:get("writeConcern")
@@ -2508,7 +2509,7 @@ function M.new(options)
         clientBulkWrite = {
           arguments = {
             "bypassDocumentValidation", "comment", "let", "models", "ordered",
-            "rawData", "verboseResults", "writeConcern",
+            "rawData", "session", "verboseResults", "writeConcern",
           },
           coerce_result = client_bulk_result,
           handler = client_bulk_write,

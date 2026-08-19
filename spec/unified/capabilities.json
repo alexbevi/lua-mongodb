@@ -1,8 +1,8 @@
 {
   "ratchets": {
-    "classified": 1900,
-    "passed": 1851,
-    "runnable": 1851
+    "classified": 1901,
+    "passed": 1852,
+    "runnable": 1852
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -182,6 +182,44 @@
           "failPoint"
         ],
         "topologies": []
+      },
+      "status": "runnable"
+    },
+    "causal-consistency/tests/causal-consistency-clientBulkWrite.json::test[1]": {
+      "activity": "CBW-009",
+      "fingerprint": "2126a1ab9ba32f040d4a1d1c9fdeaa0d7d098aae4b3afcae4f286f3601445de0",
+      "requirements": {
+        "arguments": [
+          "clientBulkWrite.models",
+          "clientBulkWrite.session",
+          "find.filter",
+          "find.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [
+          "commandStartedEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$sessionLsid"
+        ],
+        "operations": [
+          "clientBulkWrite",
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced",
+          "replicaset",
+          "sharded"
+        ]
       },
       "status": "runnable"
     },

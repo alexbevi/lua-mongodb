@@ -3,6 +3,9 @@ local bson = require("mongodb.bson")
 local client_bulk = require("mongodb.client_bulk")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local fake_runtime = require("mongodb.runtime.fake")
+local session_executor = require("mongodb.session_executor")
+local session_module = require("mongodb.session")
 
 describe("client bulk writes", function()
   it("inserts across namespaces with deduplicated namespace information", function()
@@ -272,6 +275,132 @@ describe("client bulk writes", function()
       err.message
     )
     assert.are.equal(command_count, #commands)
+
+    invalid, err = client:bulk_write({ models[1] }, {
+      ordered = false,
+      session = {},
+    })
+
+    assert.is_nil(invalid)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "Explicit sessions are incompatible with unacknowledged write concern",
+      err.message
+    )
+    assert.are.equal(command_count, #commands)
+  end)
+
+  it("uses one session across batches and result getMore", function()
+    local next_session_id = 0
+    local runtime = fake_runtime.new()
+    local sessions = session_module.new({
+      clock = runtime.clock,
+      id_factory = function()
+        next_session_id = next_session_id + 1
+        return bson.document({
+          { "id", bson.binary(
+            string.rep(string.char(next_session_id), 16),
+            bson.BINARY_SUBTYPE.UUID
+          ) },
+        })
+      end,
+      runtime = runtime,
+      timeout_minutes = 30,
+    })
+    local operation_time = bson.timestamp(12, 4)
+    local explicit = assert(sessions:start({ causal_consistency = true }))
+
+    assert(explicit:advance_operation_time(operation_time))
+
+    local function execute(session)
+      local bulk_count = 0
+      local commands = {}
+      local underlying = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = 25,
+            max_write_batch_size = 1,
+          }
+        end,
+        command = function(_, _, command)
+          commands[#commands + 1] = command
+
+          if command:keys()[1] == "getMore" then
+            return bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(0) },
+                { "ns", "admin.$cmd.bulkWrite" },
+                { "nextBatch", bson.array({}) },
+              }) },
+            })
+          end
+
+          bulk_count = bulk_count + 1
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(bulk_count == 2 and 42 or 0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({}) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", 1 },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+          })
+        end,
+      }
+      local executor = session_executor.new(underlying, sessions)
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, {}))
+      )
+      local options = session == nil and {} or { session = session }
+      local result = assert(client:bulk_write({
+        client_bulk.insert_one(
+          "app.events",
+          bson.document({ { "_id", 1 } })
+        ),
+        client_bulk.insert_one(
+          "audit.events",
+          bson.document({ { "_id", 2 } })
+        ),
+      }, options))
+
+      assert.are.equal(2, result.inserted_count)
+      assert.are.equal(3, #commands)
+      return commands
+    end
+
+    local explicit_commands = execute(explicit)
+    local explicit_id = explicit_commands[1]:get("lsid")
+
+    assert.are.equal(explicit_id, explicit_commands[2]:get("lsid"))
+    assert.are.equal(explicit_id, explicit_commands[3]:get("lsid"))
+    assert.are.equal(
+      operation_time,
+      explicit_commands[1]:get("readConcern"):get("afterClusterTime")
+    )
+    assert.are.equal(
+      operation_time,
+      explicit_commands[2]:get("readConcern"):get("afterClusterTime")
+    )
+
+    local implicit_commands = execute()
+    local implicit_id = implicit_commands[1]:get("lsid")
+
+    assert.are.equal(implicit_id, implicit_commands[2]:get("lsid"))
+    assert.are.equal(implicit_id, implicit_commands[3]:get("lsid"))
+    assert.is_nil(implicit_commands[1]:get("readConcern"))
+    assert.is_nil(implicit_commands[2]:get("readConcern"))
   end)
 
   it("bounds batches by combined operation and namespace size", function()

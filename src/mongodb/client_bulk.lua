@@ -672,6 +672,7 @@ local function validate_options(state, options)
         and key ~= "let"
         and key ~= "ordered"
         and key ~= "raw_data"
+        and key ~= "session"
         and key ~= "verbose_results"
         and key ~= "write_concern"
     then
@@ -731,6 +732,12 @@ local function validate_options(state, options)
     )
   end
 
+  if not acknowledged and options.session ~= nil then
+    return client_error(
+      "Explicit sessions are incompatible with unacknowledged write concern"
+    )
+  end
+
   return {
     acknowledged = acknowledged,
     bypass_document_validation = options.bypass_document_validation,
@@ -738,6 +745,7 @@ local function validate_options(state, options)
     let = options.let,
     ordered = ordered,
     raw_data = options.raw_data,
+    session = options.session,
     verbose_results = options.verbose_results == true,
     write_concern = write_concern,
   }
@@ -948,7 +956,10 @@ local function consume_results(state, response, result_models, details, options)
       entries[#entries + 1] = { "comment", options.comment }
     end
 
-    response, err = state.executor:command("admin", bson.document(entries), {})
+    response, err = state.executor:command("admin", bson.document(entries), {
+      session = options.session,
+      session_context = options.session_context,
+    })
 
     if response == nil then
       return nil, err, cursor_id, write_errors
@@ -1137,7 +1148,10 @@ local function result_from(state, response, result_models, options)
           { "killCursors", "$cmd.bulkWrite" },
           { "cursors", bson.array({ failed_cursor_id }) },
         }),
-        {}
+        {
+          session = options.session,
+          session_context = options.session_context,
+        }
       )
       local partial_result = n_errors < #result_models
         and result_value(fields)
@@ -1303,6 +1317,8 @@ local function execute_batches(state, command, batches, options)
       max_sequence_document_size = state.max_message_size,
       no_response = not options.acknowledged,
       operation_id = bulk_operation_id,
+      session = options.session,
+      session_context = options.session_context,
       sequences = {
         { identifier = "ops", documents = batch.operations },
         { identifier = "nsInfo", documents = batch.namespaces },
@@ -1423,7 +1439,17 @@ function M.execute(state, models, options)
     return nil, batch_err
   end
 
-  return execute_batches(state, command, batches, options)
+  options.session_context = options.acknowledged
+    and options.session == nil
+    and type(state.executor.release_session_context) == "function" and {} or nil
+  local result
+  result, batch_err = execute_batches(state, command, batches, options)
+
+  if options.session_context ~= nil then
+    state.executor:release_session_context(options.session_context)
+  end
+
+  return result, batch_err
 end
 
 return M

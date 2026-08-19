@@ -6493,6 +6493,28 @@
       "notes": [],
       "started_at": "2026-08-19T17:16:41+00:00",
       "completed_at": "2026-08-19T17:24:53+00:00"
+    },
+    "CBW-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='--filter=one.session.across.batches.and.result.getMore spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining unit case errored before executor I/O because client bulk option validation rejected the explicit session option; session continuity across split commands and getMore was unavailable.",
+          "recorded_at": "2026-08-19T17:33:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/client_bulk_spec.lua' FOCUS_INTEGRATION='spec/integration/bulk_spec.lua' FOCUS_UNIFIED='causal-consistency/tests/causal-consistency-clientBulkWrite.json::*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua spec/support/mongodb/unified/driver.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck && python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 spec/conformance/catalog.py --check && python3 spec/release/scope.py --check && python3 spec/v04/scope.py --check && python3 spec/v05/scope.py --check && python3 spec/v06/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check && git diff --check",
+          "exit_code": 0,
+          "summary": "16 client-bulk unit cases, nine directly coupled OP_MSG integration cases, the exact live replica-set causal-consistency case, and 123 targeted unified inventory/ledger tests passed; touched lint, complexity, capability, conformance, release-scope, checklist, README projection, and diff validators pass.",
+          "recorded_at": "2026-08-19T17:44:35+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T17:32:35+00:00",
+      "completed_at": "2026-08-19T17:44:36+00:00"
     }
   },
   "verified_references": {
