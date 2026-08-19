@@ -6537,6 +6537,28 @@
       "notes": [],
       "started_at": "2026-08-19T17:55:05+00:00",
       "completed_at": "2026-08-19T18:13:41+00:00"
+    },
+    "CBW-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='--filter=eligible.batch.once.without.duplicating.its.result spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining eligible client-bulk insert failed after its first network error instead of retrying; no successful result was returned and no stable retry transaction number could be observed.",
+          "recorded_at": "2026-08-19T18:31:05+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua\" FOCUS_INTEGRATION=\"spec/integration/bulk_spec.lua\" FOCUS_UNIFIED=\"retryable-writes/tests/unified/client-bulkWrite-*Errors.json::*\" FOCUS_PYTHON=\"spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist\" FOCUS_LINT=\"src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED=\"retryable-writes/tests/unified/handshakeError.json::test[[]1[]]\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED=\"retryable-writes/tests/unified/handshakeError.json::test[[]2[]]\" && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua && generated artifact validators",
+          "exit_code": 0,
+          "summary": "Nineteen client-bulk unit cases, eleven directly coupled OP_MSG integration cases, all seven network/top-level/write-concern/eligibility unified cases, both exact authenticated-handshake identities, and 131 targeted inventory/ledger/release tests passed; touched lint, complexity, capability, conformance, release and versioned scopes, checklist, README projection, executor JSON, and diff validators pass.",
+          "recorded_at": "2026-08-19T18:44:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T18:29:41+00:00",
+      "completed_at": "2026-08-19T18:44:52+00:00"
     }
   },
   "verified_references": {

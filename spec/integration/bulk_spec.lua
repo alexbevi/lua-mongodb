@@ -447,6 +447,123 @@ describe("collection bulk writes over OP_MSG", function()
     end
   end)
 
+  it("retries one client bulk command after a dropped connection", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local address = "127.0.0.1:" .. assert(math.tointeger(port))
+    local attempts = 0
+    local first_session
+    local first_transaction
+    local outcome
+    local server_error
+    local verified_retry = false
+    local hello = bson.document({
+      { "ok", 1 },
+      { "helloOk", true },
+      { "isWritablePrimary", true },
+      { "setName", "rs" },
+      { "hosts", bson.array({ address }) },
+      { "primary", address },
+      { "logicalSessionTimeoutMinutes", 30 },
+      { "maxBsonObjectSize", 16777216 },
+      { "maxMessageSizeBytes", 48000000 },
+      { "maxWireVersion", 25 },
+      { "maxWriteBatchSize", 100000 },
+    })
+
+    copas.addserver(server, function(peer)
+      local ok, err = pcall(function()
+        peer = copas.wrap(peer)
+        local handshake = receive_frame(peer)
+
+        send_response(peer, handshake, hello)
+
+        while true do
+          local received, request = pcall(receive_frame, peer)
+
+          if not received then
+            return
+          end
+
+          local command_name = request.body:keys()[1]
+
+          if command_name == "hello" then
+            send_response(peer, request, hello)
+          else
+            assert.are.equal("bulkWrite", command_name)
+            attempts = attempts + 1
+
+            local session = assert(bson.encode(request.body:get("lsid")))
+            local transaction = assert(bson.encode(bson.document({
+              { "txnNumber", request.body:get("txnNumber") },
+            })))
+
+            if attempts == 1 then
+              first_session = session
+              first_transaction = transaction
+              peer:close()
+              return
+            end
+
+            assert.are.equal(2, attempts)
+            assert.are.equal(first_session, session)
+            assert.are.equal(first_transaction, transaction)
+            verified_retry = true
+            send_response(peer, request, bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(0) },
+                { "ns", "admin.$cmd.bulkWrite" },
+                { "firstBatch", bson.array({}) },
+              }) },
+              { "nErrors", 0 },
+              { "nInserted", 1 },
+              { "nMatched", 0 },
+              { "nModified", 0 },
+              { "nUpserted", 0 },
+              { "nDeleted", 0 },
+            }))
+          end
+        end
+      end)
+
+      if not ok then
+        server_error = err
+        pcall(peer.close, peer)
+      end
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://" .. address
+            .. "/?replicaSet=rs&directConnection=true"
+            .. "&serverSelectionTimeoutMS=2000",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local result = assert(client:bulk_write({
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 1 } })
+          ),
+        }))
+
+        assert.are.equal(1, result.inserted_count)
+        assert.is_true(verified_retry)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+
+    if server_error then
+      error(server_error, 0)
+    end
+  end)
+
   it("keeps one transaction across client batches and getMore", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())

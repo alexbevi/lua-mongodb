@@ -4,6 +4,7 @@ local client_bulk = require("mongodb.client_bulk")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
 local fake_runtime = require("mongodb.runtime.fake")
+local retry_executor = require("mongodb.retry_executor")
 local session_executor = require("mongodb.session_executor")
 local session_module = require("mongodb.session")
 
@@ -401,6 +402,185 @@ describe("client bulk writes", function()
     assert.are.equal(implicit_id, implicit_commands[3]:get("lsid"))
     assert.is_nil(implicit_commands[1]:get("readConcern"))
     assert.is_nil(implicit_commands[2]:get("readConcern"))
+  end)
+
+  it("retries an eligible batch once without duplicating its result", function()
+    local runtime = fake_runtime.new()
+    local sessions = session_module.new({
+      clock = runtime.clock,
+      id_factory = function()
+        return bson.document({
+          { "id", bson.binary(
+            string.rep("r", 16),
+            bson.BINARY_SUBTYPE.UUID
+          ) },
+        })
+      end,
+      runtime = runtime,
+      timeout_minutes = 30,
+    })
+    local commands = {}
+    local underlying = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          logical_session_timeout_minutes = 30,
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+          server_type = "RSPrimary",
+        }
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if #commands == 1 then
+          return nil, errors.new({
+            category = errors.CATEGORY.NETWORK,
+            message = "connection reset",
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local executor = session_executor.new(
+      retry_executor.new(underlying, { enabled_writes = true }),
+      sessions,
+      { max_wire_version = 25, retryable_writes = true }
+    )
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {}))
+    )
+    local result = assert(client:bulk_write({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+    }))
+
+    assert.are.equal(1, result.inserted_count)
+    assert.are.equal(2, #commands)
+    assert.are.equal(commands[1]:get("lsid"), commands[2]:get("lsid"))
+    assert.are.equal(
+      commands[1]:get("txnNumber"),
+      commands[2]:get("txnNumber")
+    )
+    assert.is_not_nil(commands[1]:get("txnNumber"))
+  end)
+
+  it("marks only acknowledged single-write batches retryable", function()
+    local filter = bson.document({ { "_id", 1 } })
+    local update = bson.document({
+      { "$set", bson.document({ { "active", true } }) },
+    })
+    local function is_retryable(models, client_options, bulk_options)
+      local captured
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = 25,
+            max_write_batch_size = 100000,
+          }
+        end,
+        command = function(_, _, _, options)
+          captured = options
+
+          if options.no_response then
+            return bson.document({ { "ok", 1 } })
+          end
+
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({}) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", 0 },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+          })
+        end,
+      }
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, client_options or {}))
+      )
+
+      assert(client:bulk_write(models, bulk_options))
+      return captured.retryable_write
+    end
+
+    assert.is_true(is_retryable({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 1 } })
+      ),
+      client_bulk.update_one("app.events", filter, update),
+      client_bulk.replace_one(
+        "app.events",
+        filter,
+        bson.document({ { "active", true } })
+      ),
+      client_bulk.delete_one("app.events", filter),
+    }))
+    assert.is_false(is_retryable({
+      client_bulk.update_many("app.events", filter, update),
+    }))
+    assert.is_false(is_retryable({
+      client_bulk.delete_many("app.events", filter),
+    }))
+    assert.is_false(is_retryable({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 2 } })
+      ),
+      client_bulk.delete_many("app.events", filter),
+    }))
+    assert.is_false(is_retryable({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 3 } })
+      ),
+    }, { write_concern = { w = 0 } }, { ordered = false }))
+    assert.is_false(is_retryable({
+      client_bulk.insert_one(
+        "app.events",
+        bson.document({ { "_id", 4 } })
+      ),
+    }, nil, {
+      session = {
+        is_in_transaction = function()
+          return true
+        end,
+      },
+    }))
   end)
 
   it("rejects an operation write concern after a transaction starts", function()

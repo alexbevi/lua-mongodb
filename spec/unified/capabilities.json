@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1901,
-    "passed": 1858,
-    "runnable": 1858
+    "passed": 1867,
+    "runnable": 1867
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -65174,7 +65174,6 @@
     "retryable-writes/tests/unified/client-bulkWrite-clientErrors.json::test[1]": {
       "activity": "CBW-011",
       "fingerprint": "848d76b311bd82c1055f0c08d94acd9f8b4003359f5e7da5fe2a892ea273ee04",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65207,12 +65206,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-clientErrors.json::test[2]": {
       "activity": "CBW-011",
       "fingerprint": "339526a910a6a8cd28485926a2584a58d2216547169bf0bbe5b4f71c2a177491",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65245,12 +65243,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[1]": {
       "activity": "CBW-011",
       "fingerprint": "a091fae615f4f775ef8a43a8f72ffa1d3e86d59313d4b9fd96c057c8eb54b2d1",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65283,12 +65280,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[2]": {
       "activity": "CBW-011",
       "fingerprint": "9f2b8f8dff9086115b957187b6462a449f5052a9a52990e626971fc0d80d9c75",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65320,12 +65316,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[3]": {
       "activity": "CBW-011",
       "fingerprint": "b33de9955339b5197a504eee65186326286796b826c153351f793a14d0938899",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65358,12 +65353,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[4]": {
       "activity": "CBW-011",
       "fingerprint": "3b5a07edef0610cf11261647015dd66a182240d0a552a3035fb1a478b2478e18",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65395,12 +65389,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/client-bulkWrite-serverErrors.json::test[5]": {
       "activity": "CBW-011",
       "fingerprint": "35f692d025297bda6132c2bab6f9aaaece638ef95c511b3cc222447b2a5a046d",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -65432,7 +65425,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/deleteMany.json::test[1]": {
       "activity": "RETRY-002",
@@ -66931,7 +66924,6 @@
     "retryable-writes/tests/unified/handshakeError.json::test[1]": {
       "activity": "CBW-011",
       "fingerprint": "1eaca69b9cc03d0796bb53a7ad8dd5f67bcf4a7c86a173f5bc735e708ba2eebc",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -66967,7 +66959,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[20]": {
       "activity": "REL-035",
@@ -67012,7 +67004,6 @@
     "retryable-writes/tests/unified/handshakeError.json::test[2]": {
       "activity": "CBW-011",
       "fingerprint": "be45d476aeb013c712947effa4bcfcaee93914ea22055e398b6747c968899d9a",
-      "reason": "retryable client bulk writes await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -67048,7 +67039,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-writes/tests/unified/handshakeError.json::test[3]": {
       "activity": "REL-035",

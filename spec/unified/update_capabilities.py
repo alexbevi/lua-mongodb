@@ -522,9 +522,11 @@ for fixture, count in (
   ("client-bulkWrite-serverErrors", 5),
 ):
   for index in range(1, count + 1):
-    TEST_OVERRIDES[
-      f"retryable-writes/tests/unified/{fixture}.json::test[{index}]"
-    ] = ("CBW-011", OWNER_REASONS["CBW-011"])
+    identity = f"retryable-writes/tests/unified/{fixture}.json::test[{index}]"
+    TEST_OVERRIDES[identity] = (
+      "CBW-011",
+      None if identity in EXECUTOR_TESTS else OWNER_REASONS["CBW-011"],
+    )
 
 for index in range(1, 21):
   TEST_OVERRIDES[
@@ -537,9 +539,11 @@ for index in range(3, 21):
   ] = ("REL-035", None)
 
 for index in (1, 2):
-  TEST_OVERRIDES[
-    f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
-  ] = ("CBW-011", OWNER_REASONS["CBW-011"])
+  identity = f"retryable-writes/tests/unified/handshakeError.json::test[{index}]"
+  TEST_OVERRIDES[identity] = (
+    "CBW-011",
+    None if identity in EXECUTOR_TESTS else OWNER_REASONS["CBW-011"],
+  )
 
 for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
   for index in range(1, 3):

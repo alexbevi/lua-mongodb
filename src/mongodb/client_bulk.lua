@@ -1319,6 +1319,20 @@ local function accumulated_result(full)
   return result_value(full.fields)
 end
 
+local function batch_is_retryable(batch, options)
+  if not options.acknowledged or options.in_transaction then
+    return false
+  end
+
+  for _, operation_document in ipairs(batch.operations) do
+    if operation_document:get("multi") == true then
+      return false
+    end
+  end
+
+  return true
+end
+
 local function execute_batches(state, command, batches, options)
   local full = result_accumulator(options)
   local bulk_operation_id = operation_id()
@@ -1328,6 +1342,7 @@ local function execute_batches(state, command, batches, options)
       max_sequence_document_size = state.max_message_size,
       no_response = not options.acknowledged,
       operation_id = bulk_operation_id,
+      retryable_write = batch_is_retryable(batch, options),
       session = options.session,
       session_context = options.session_context,
       sequences = {
