@@ -38475,13 +38475,13 @@
       "activity": "CBW-014",
       "fingerprint": "036773e87ba376a8af4518603d45fc45d45ead8a9a5f9d6c2a6e8ada84129148",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-standalone",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "crud/tests/unified/client-bulkWrite-errors.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "crud"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[7]": {
@@ -86748,9 +86748,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1297,
+      "deferred_unsupported": 1296,
       "excluded_scope": 97,
-      "passed": 4130
+      "passed": 4131
     },
     "suites": {
       "auth": 73,

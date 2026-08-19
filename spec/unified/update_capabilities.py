@@ -779,9 +779,9 @@ for index in (1, 2, 3, 5):
 TEST_OVERRIDES[
   "crud/tests/unified/client-bulkWrite-errors.json::test[4]"
 ] = ("CBW-015", OWNER_REASONS["CBW-015"])
-TEST_OVERRIDES[
-  "crud/tests/unified/client-bulkWrite-errors.json::test[6]"
-] = ("CBW-014", OWNER_REASONS["CBW-014"])
+identity = "crud/tests/unified/client-bulkWrite-errors.json::test[6]"
+if identity not in EXECUTOR_TESTS:
+  TEST_OVERRIDES[identity] = ("CBW-014", OWNER_REASONS["CBW-014"])
 TEST_OVERRIDES[
   "crud/tests/unified/client-bulkWrite-errors.json::test[7]"
 ] = ("REL-055", OWNER_REASONS["REL-055"])

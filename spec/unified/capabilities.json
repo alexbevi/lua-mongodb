@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1846,
-    "runnable": 1846
+    "passed": 1847,
+    "runnable": 1847
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -40657,7 +40657,6 @@
     "crud/tests/unified/client-bulkWrite-errors.json::test[6]": {
       "activity": "CBW-014",
       "fingerprint": "036773e87ba376a8af4518603d45fc45d45ead8a9a5f9d6c2a6e8ada84129148",
-      "reason": "client bulk write concern errors await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40682,7 +40681,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[7]": {
       "activity": "REL-055",

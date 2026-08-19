@@ -6273,10 +6273,26 @@
       "completed_at": "2026-08-19T14:27:08+00:00"
     },
     "CBW-014": {
-      "status": "in_progress",
-      "evidence": [],
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua --filter=concern\"",
+          "exit_code": 2,
+          "summary": "The defining cursor-exhaustion case returned a successful client bulk result instead of a structured write error when the acknowledged command response carried writeConcernError.",
+          "recorded_at": "2026-08-19T14:36:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=\"spec/unit/client_bulk_spec.lua\" FOCUS_PYTHON=\"spec.unified.test_cli spec.conformance.test_ledger\" FOCUS_LINT=\"src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua\"; make test-focus FOCUS_UNIFIED=\"crud/tests/unified/client-bulkWrite-errors.json::*\"; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "All 9 focused client-bulk unit tests and 121 focused Python tests passed; the exact live write-concern failpoint case passed within the 5 runnable error cases, with 4 sibling cases explicitly deferred; touched Lua lint, complexity maximum 47, capability, ledger, release and v0.4 scopes, README compatibility, release checklist, and diff validators passed.",
+          "recorded_at": "2026-08-19T14:40:33+00:00"
+        }
+      ],
       "notes": [],
-      "started_at": "2026-08-19T14:34:52+00:00"
+      "started_at": "2026-08-19T14:34:52+00:00",
+      "completed_at": "2026-08-19T14:40:33+00:00"
     }
   },
   "verified_references": {

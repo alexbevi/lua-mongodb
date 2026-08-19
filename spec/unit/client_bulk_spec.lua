@@ -744,4 +744,94 @@ describe("client bulk writes", function()
     assert.are.equal(2, unordered_verbose.insert_results[2].inserted_id)
     assert.is_nil(unordered_verbose.insert_results[1])
   end)
+
+  it("reports a write concern error after exhausting successful results", function()
+    local commands = {}
+    local error_info = bson.document({
+      { "writeConcern", bson.document({ { "w", "majority" } }) },
+    })
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if #commands == 1 then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(44) },
+              { "ns", "admin.$cmd.bulkWrite" },
+              { "firstBatch", bson.array({
+                bson.document({
+                  { "ok", 1 },
+                  { "idx", bson.int32(0) },
+                  { "n", bson.int32(1) },
+                }),
+              }) },
+            }) },
+            { "nErrors", 0 },
+            { "nInserted", 1 },
+            { "nMatched", 0 },
+            { "nModified", 0 },
+            { "nUpserted", 0 },
+            { "nDeleted", 0 },
+            { "writeConcernError", bson.document({
+              { "code", bson.int32(91) },
+              { "codeName", "ShutdownInProgress" },
+              { "errmsg", "replication is shutting down" },
+              { "errInfo", error_info },
+            }) },
+            { "errorLabels", bson.array({ "RetryableWriteError" }) },
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "nextBatch", bson.array({}) },
+          }) },
+        })
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {}))
+    )
+    local result, err = client:bulk_write({
+      client_bulk.insert_one(
+        "app.users",
+        bson.document({ { "_id", 1 } })
+      ),
+    }, { verbose_results = true })
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+    assert.are.equal(91, err.code)
+    assert.are.equal("ShutdownInProgress", err.code_name)
+    assert.are.equal("replication is shutting down", err.message)
+    assert.is_true(err:has_label("RetryableWriteError"))
+    assert.are.equal(2, #commands)
+    assert.are.equal(44, commands[2]:get("getMore"):to_number())
+    assert.are.equal(0, #err.details.write_errors)
+    assert.are.equal(1, #err.details.write_concern_errors)
+    assert.are.equal(91, err.details.write_concern_errors[1].code)
+    assert.are.equal(error_info, err.details.write_concern_errors[1].details)
+    assert.are.equal(1, err.details.partial_result.inserted_count)
+    assert.are.equal(
+      1,
+      err.details.partial_result.insert_results[1].inserted_id
+    )
+  end)
 end)

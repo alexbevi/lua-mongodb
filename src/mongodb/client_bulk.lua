@@ -782,11 +782,73 @@ local function consume_results(state, response, result_models, details, options)
   end
 end
 
-local function write_failure(write_errors, partial_result)
+local function labels_from(response)
+  local labels = {}
+  local value = response:get("errorLabels")
+
+  if bson.is_array(value) then
+    for _, label in value:iter() do
+      if type(label) == "string" and label ~= "" then
+        labels[#labels + 1] = label
+      end
+    end
+  end
+
+  return labels
+end
+
+local function write_concern_error(response)
+  local item = response:get("writeConcernError")
+
+  if item == nil then
+    return nil
+  end
+
+  if not bson.is_document(item) then
+    return protocol_error("client bulk response contains a malformed write concern error")
+  end
+
+  local code = number_value(item:get("code"))
+  local code_name = item:get("codeName")
+  local details = item:get("errInfo")
+  local message = item:get("errmsg")
+
+  if math.type(code) ~= "integer" then
+    return protocol_error("client bulk write concern error contains an invalid code")
+  end
+
+  if message ~= nil and type(message) ~= "string" then
+    return protocol_error("client bulk write concern error contains an invalid message")
+  end
+
+  if code_name ~= nil and (type(code_name) ~= "string" or code_name == "") then
+    return protocol_error("client bulk write concern error contains an invalid code name")
+  end
+
+  if details ~= nil and not bson.is_document(details) then
+    return protocol_error("client bulk write concern error contains malformed details")
+  end
+
+  return {
+    code = code,
+    code_name = code_name,
+    details = details,
+    message = (message == nil or message == "")
+      and "client bulk write concern failed"
+      or message,
+  }
+end
+
+local function write_failure(
+  write_errors,
+  write_concern_errors,
+  partial_result,
+  labels
+)
   table.sort(write_errors, function(left, right)
     return left.index < right.index
   end)
-  local first = write_errors[1]
+  local first = write_errors[1] or write_concern_errors[1]
 
   return nil, errors.new({
     category = errors.CATEGORY.WRITE,
@@ -794,9 +856,10 @@ local function write_failure(write_errors, partial_result)
     code_name = first.code_name,
     details = {
       partial_result = partial_result,
-      write_concern_errors = {},
+      write_concern_errors = write_concern_errors,
       write_errors = write_errors,
     },
+    labels = labels,
     message = first.message,
   })
 end
@@ -863,17 +926,33 @@ local function result_from(state, response, result_models, options)
     fields.update_results = result_map(details.update)
   end
 
-  if #write_errors > 0 then
+  local concern_error
+  concern_error, err = write_concern_error(response)
+
+  if err then
+    return nil, err
+  end
+
+  if #write_errors > 0 or concern_error ~= nil then
     local has_success
 
-    if options.ordered then
+    if #write_errors == 0 then
+      has_success = n_errors < #result_models
+    elseif options.ordered then
       has_success = write_errors[1].index > 1
     else
       has_success = n_errors < #result_models
     end
 
     local partial_result = has_success and result_value(fields) or nil
-    return write_failure(write_errors, partial_result)
+    local concern_errors = concern_error and { concern_error } or {}
+
+    return write_failure(
+      write_errors,
+      concern_errors,
+      partial_result,
+      labels_from(response)
+    )
   end
 
   return result_value(fields)

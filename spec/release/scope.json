@@ -12,12 +12,11 @@
     "CBW-010": 6,
     "CBW-011": 9,
     "CBW-012": 1,
-    "CBW-014": 1,
     "CBW-015": 2,
     "REL-055": 1
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1297
+    "post-v1-exclusion": 1296
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -124,9 +123,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1297,
+    "deferred_unsupported": 1296,
     "excluded_scope": 97,
-    "passed": 4130
+    "passed": 4131
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"
