@@ -2418,6 +2418,10 @@
       "activity": "CBW-014",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/client-bulkWrite-errors.json::test[7]": {
+      "activity": "REL-055",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/client-bulkWrite-errors.json::test[8]": {
       "activity": "CBW-008",
       "environment": "live-standalone"

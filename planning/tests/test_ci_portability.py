@@ -236,6 +236,8 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("--aggregate build/conformance/shards/*.json", workflow)
     self.assertIn("Validate exact v0.4 conformance evidence", workflow)
     self.assertIn("Validate exact v0.5 conformance evidence", workflow)
+    self.assertIn("Validate exact v0.6 conformance evidence", workflow)
+    self.assertIn("Validate exact v0.7 conformance evidence", workflow)
     self.assertIn(
       "change-streams-disambiguatedPaths.json::test?1?",
       workflow,
@@ -309,6 +311,8 @@ class CiPortabilityTests(unittest.TestCase):
     )
     self.assertIn("Validate exact macOS v0.4 conformance evidence", aggregate)
     self.assertIn("Validate exact macOS v0.5 conformance evidence", aggregate)
+    self.assertIn("Validate exact macOS v0.6 conformance evidence", aggregate)
+    self.assertIn("Validate exact macOS v0.7 conformance evidence", aggregate)
     self.assertIn("--allow-macos-ci-timing-skips", aggregate)
     self.assertIn("full-conformance-macos-${{ github.sha }}", aggregate)
 

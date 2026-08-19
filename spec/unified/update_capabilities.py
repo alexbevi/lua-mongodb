@@ -790,9 +790,11 @@ if identity not in EXECUTOR_TESTS:
 identity = "crud/tests/unified/client-bulkWrite-errors.json::test[6]"
 if identity not in EXECUTOR_TESTS:
   TEST_OVERRIDES[identity] = ("CBW-014", OWNER_REASONS["CBW-014"])
-TEST_OVERRIDES[
-  "crud/tests/unified/client-bulkWrite-errors.json::test[7]"
-] = ("REL-055", OWNER_REASONS["REL-055"])
+identity = "crud/tests/unified/client-bulkWrite-errors.json::test[7]"
+TEST_OVERRIDES[identity] = (
+  "REL-055",
+  None if identity in EXECUTOR_TESTS else OWNER_REASONS["REL-055"],
+)
 
 for index in (8, 9):
   identity = f"crud/tests/unified/client-bulkWrite-errors.json::test[{index}]"

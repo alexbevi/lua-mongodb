@@ -228,6 +228,13 @@ jobs:
           --execution-report build/conformance/unified.json
           --execution-report build/conformance/version-branches/unified-pre-8.2.json
 
+      - name: Validate exact v0.7 conformance evidence
+        run: >-
+          python3 spec/v07/scope.py
+          --check
+          --execution-report build/conformance/unified.json
+          --execution-report build/conformance/version-branches/unified-pre-8.2.json
+
       - name: Upload authoritative Linux conformance evidence
         uses: actions/upload-artifact@v7
         with:
@@ -503,6 +510,13 @@ jobs:
           python3 spec/v06/scope.py
           --check
           --allow-macos-ci-timing-skips
+          --execution-report build/conformance/unified-macos.json
+          --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
+
+      - name: Validate exact macOS v0.7 conformance evidence
+        run: >-
+          python3 spec/v07/scope.py
+          --check
           --execution-report build/conformance/unified-macos.json
           --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
 

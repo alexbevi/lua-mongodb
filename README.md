@@ -523,7 +523,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟢 | 100.0% |
 | Resilience | Transactions | 🟡 | 96.5% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 85.0% |
+| Programmability | CRUD | 🟡 | 85.2% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |
@@ -548,7 +548,7 @@ The `production-core-v1` milestone targets:
 - Standalone and replica-set deployments.
 - TLS, SCRAM, SDAM, CMAP, server selection, CRUD, monitoring, sessions, retries, transactions, and client-side operation timeout.
 
-The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments, remaining client bulk-write error handling and load-balanced cursor pinning, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
+The v0.5 conformance surface retains the complete v0.4 sharded-parity boundary and adds collection, database, and cluster change streams. All 170 change-stream cases within the MongoDB 7.0–8.2 release floor have exact unified execution. The closed v0.6 conformance surface adds deprecated collection count, legacy mapReduce, database aggregation, and tailable and awaitData cursors: all 81 applicable cases have exact unified execution, 92 old-server-only cases have identity-specific compatibility exclusions, and three command-cursor timeout cases are excluded because they conflict with the pinned PyMongo runner contract. The closed v0.7 conformance surface covers all 71 client bulk-write CRUD, retry, causal-consistency, transaction, timeout, Stable API, and sharded-pinning identities with exact unified execution and no version exclusions. Other post-v1 scope includes GridFS, wire compression, load-balanced deployments and client-bulk cursor pinning, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption.
 
 ## Development
 

@@ -18,6 +18,7 @@ from spec.release import scope  # noqa: E402
 from spec.v04 import scope as v04_scope  # noqa: E402
 from spec.v05 import scope as v05_scope  # noqa: E402
 from spec.v06 import scope as v06_scope  # noqa: E402
+from spec.v07 import scope as v07_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -99,6 +100,29 @@ V06_GATES = [
   "REL-053",
 ]
 V06_RELEASE_ACTIVITY = "REL-054"
+V07_GATES = [
+  "ADV-007",
+  "CBW-001",
+  "CBW-002",
+  "CBW-003",
+  "CBW-004",
+  "CBW-005",
+  "CBW-006",
+  "CBW-013",
+  "CBW-014",
+  "CBW-015",
+  "CBW-016",
+  "CBW-007",
+  "CBW-017",
+  "CBW-018",
+  "CBW-008",
+  "CBW-009",
+  "CBW-010",
+  "CBW-011",
+  "CBW-012",
+]
+V07_CONFORMANCE_ACTIVITY = "REL-055"
+V07_RELEASE_ACTIVITY = "REL-056"
 
 
 class ChecklistError(ValueError):
@@ -211,6 +235,15 @@ def generate() -> dict[str, Any]:
   if api_track[len(v05_prefix):len(v05_prefix) + len(v06_segment)] != v06_segment:
     raise ChecklistError("v0.6 release gate inventory does not match the track")
 
+  v07_offset = len(v05_prefix) + len(v06_segment)
+  v07_segment = [
+    *V07_GATES[1:],
+    V07_CONFORMANCE_ACTIVITY,
+    V07_RELEASE_ACTIVITY,
+  ]
+  if api_track[v07_offset:] != v07_segment:
+    raise ChecklistError("v0.7 release gate inventory does not match the track")
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -251,6 +284,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in V07_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.7 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   for activity_ids in AUDITS.values():
     for activity_id in activity_ids:
       if activity_id not in activities:
@@ -262,6 +301,7 @@ def generate() -> dict[str, Any]:
   v04_report = v04_scope.generate()
   v05_report = v05_scope.generate()
   v06_report = v06_scope.generate()
+  v07_report = v07_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -311,6 +351,10 @@ def generate() -> dict[str, Any]:
   if v06_summary["planned"] != 0:
     raise ChecklistError("v0.6 conformance still has planned cases")
 
+  v07_summary = v07_report["summary"]
+  if v07_summary["planned"] != 0:
+    raise ChecklistError("v0.7 conformance still has planned cases")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -341,6 +385,7 @@ def generate() -> dict[str, Any]:
     "spec/v04/scope.py",
     "spec/v05/scope.py",
     "spec/v06/scope.py",
+    "spec/v07/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-pre-8.2.json",
   ):
@@ -371,6 +416,7 @@ def generate() -> dict[str, Any]:
       "completed_v0_4_gates": V04_GATES,
       "completed_v0_5_gates": V05_GATES,
       "completed_v0_6_gates": V06_GATES,
+      "completed_v0_7_gates": V07_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -417,6 +463,17 @@ def generate() -> dict[str, Any]:
           v06_report["target_version_exclusions"]
         ),
       },
+      "v0_7_conformance": {
+        "classified_cases": v07_summary["classified"],
+        "excluded_cases": v07_summary["excluded"],
+        "exact_unified_cases": v07_report["evidence"][
+          "exact_unified_cases"
+        ],
+        "passed_cases": v07_summary["passed"],
+        "target_version_exclusions": len(
+          v07_report["target_version_exclusions"]
+        ),
+      },
     },
     "ready": True,
     "release": release_metadata(),
@@ -439,6 +496,7 @@ def main(argv: list[str] | None = None) -> int:
     v04_scope.ScopeError,
     v05_scope.ScopeError,
     v06_scope.ScopeError,
+    v07_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

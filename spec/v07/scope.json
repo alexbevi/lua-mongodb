@@ -1,0 +1,79 @@
+{
+  "evidence": {
+    "exact_unified_cases": 71
+  },
+  "passed_by_activity": {
+    "ADV-007": 1,
+    "CBW-001": 5,
+    "CBW-003": 16,
+    "CBW-004": 7,
+    "CBW-005": 6,
+    "CBW-008": 2,
+    "CBW-009": 1,
+    "CBW-010": 6,
+    "CBW-011": 9,
+    "CBW-012": 1,
+    "CBW-013": 13,
+    "CBW-014": 1,
+    "CBW-015": 2,
+    "REL-055": 1
+  },
+  "ratchets": {
+    "classified": 71,
+    "exact_unified": 71,
+    "passed": 71,
+    "supported": 71
+  },
+  "schema_version": 1,
+  "suites": {
+    "causal-consistency": {
+      "passed": 1
+    },
+    "client-side-operations-timeout": {
+      "passed": 1
+    },
+    "crud": {
+      "passed": 53
+    },
+    "retryable-writes": {
+      "passed": 9
+    },
+    "transactions": {
+      "passed": 6
+    },
+    "versioned-api": {
+      "passed": 1
+    }
+  },
+  "summary": {
+    "classified": 71,
+    "excluded": 0,
+    "passed": 71,
+    "planned": 0,
+    "supported": 71
+  },
+  "target_owners": [
+    "ADV-007",
+    "CBW-001",
+    "CBW-002",
+    "CBW-003",
+    "CBW-004",
+    "CBW-005",
+    "CBW-006",
+    "CBW-007",
+    "CBW-008",
+    "CBW-009",
+    "CBW-010",
+    "CBW-011",
+    "CBW-012",
+    "CBW-013",
+    "CBW-014",
+    "CBW-015",
+    "CBW-016",
+    "CBW-017",
+    "CBW-018",
+    "REL-055"
+  ],
+  "target_version_exclusions": {},
+  "type": "v0.7-client-bulk-write-scope"
+}

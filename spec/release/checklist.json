@@ -133,11 +133,32 @@
       "LEG-013",
       "REL-053"
     ],
+    "completed_v0_7_gates": [
+      "ADV-007",
+      "CBW-001",
+      "CBW-002",
+      "CBW-003",
+      "CBW-004",
+      "CBW-005",
+      "CBW-006",
+      "CBW-013",
+      "CBW-014",
+      "CBW-015",
+      "CBW-016",
+      "CBW-007",
+      "CBW-017",
+      "CBW-018",
+      "CBW-008",
+      "CBW-009",
+      "CBW-010",
+      "CBW-011",
+      "CBW-012"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 4152,
-      "post_v1_exclusions": 1372
+      "passed_cases": 4153,
+      "post_v1_exclusions": 1371
     },
     "production_core_prerequisites": 71,
     "v0_4_conformance": {
@@ -162,6 +183,13 @@
       "passed_cases": 81,
       "reference_behavior_exclusions": 3,
       "target_version_exclusions": 92
+    },
+    "v0_7_conformance": {
+      "classified_cases": 71,
+      "exact_unified_cases": 71,
+      "excluded_cases": 0,
+      "passed_cases": 71,
+      "target_version_exclusions": 0
     }
   },
   "ready": true,

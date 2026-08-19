@@ -20,7 +20,7 @@ V05_SCOPE_ARGUMENTS ?=
 .PHONY: check check-fast check-fast-runtime check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-architecture test-generated test-complexity test-quality test-coverage \
-	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-v04-scope test-v05-scope test-v06-scope test-release-checklist lint rockspec planning-check
+	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-v04-scope test-v05-scope test-v06-scope test-v07-scope test-release-checklist lint rockspec planning-check
 
 check: check-full
 
@@ -115,7 +115,7 @@ test-unified-inventory: check-python check-lua
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
 	@$(MAKE) --no-print-directory test-conformance
 
-test-conformance: check-python test-release-scope test-v04-scope test-v05-scope test-v06-scope test-release-checklist
+test-conformance: check-python test-release-scope test-v04-scope test-v05-scope test-v06-scope test-v07-scope test-release-checklist
 	@"$(PYTHON)" -m unittest spec.conformance.test_catalog -v
 	@"$(PYTHON)" spec/conformance/catalog.py --check
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
@@ -147,6 +147,10 @@ test-v05-scope: check-python
 test-v06-scope: check-python
 	@"$(PYTHON)" -m unittest spec.v06.test_scope -v
 	@"$(PYTHON)" spec/v06/scope.py --check
+
+test-v07-scope: check-python
+	@"$(PYTHON)" -m unittest spec.v07.test_scope -v
+	@"$(PYTHON)" spec/v07/scope.py --check
 
 test-release-checklist: check-python
 	@"$(PYTHON)" -m unittest spec.release.test_checklist spec.release.test_publish -v
@@ -209,12 +213,17 @@ test-unified-execution: check-python
 			"$(PYTHON)" spec/v06/scope.py --check \
 				--execution-report "$(UNIFIED_REPORT)" \
 				--execution-report "$(V04_SUPPLEMENTAL_REPORT)"; \
+			"$(PYTHON)" spec/v07/scope.py --check \
+				--execution-report "$(UNIFIED_REPORT)" \
+				--execution-report "$(V04_SUPPLEMENTAL_REPORT)"; \
 		else \
 			"$(PYTHON)" spec/v04/scope.py --check \
 				--execution-report "$(UNIFIED_REPORT)"; \
 			"$(PYTHON)" spec/v05/scope.py --check $(V05_SCOPE_ARGUMENTS) \
 				--execution-report "$(UNIFIED_REPORT)"; \
 			"$(PYTHON)" spec/v06/scope.py --check \
+				--execution-report "$(UNIFIED_REPORT)"; \
+			"$(PYTHON)" spec/v07/scope.py --check \
 				--execution-report "$(UNIFIED_REPORT)"; \
 		fi; \
 	else \

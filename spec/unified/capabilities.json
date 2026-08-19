@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1901,
-    "passed": 1868,
-    "runnable": 1868
+    "passed": 1869,
+    "runnable": 1869
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -40721,7 +40721,6 @@
     "crud/tests/unified/client-bulkWrite-errors.json::test[7]": {
       "activity": "REL-055",
       "fingerprint": "ee50bc192a1e4b957c900d68d619f79363e8519277b92e6bc9896ca7b9ea0e6a",
-      "reason": "the v0.7 conformance closure owns exact evidence for already-supported client validation",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40742,7 +40741,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-errors.json::test[8]": {
       "activity": "CBW-008",
