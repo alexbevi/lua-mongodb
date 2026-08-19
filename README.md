@@ -300,7 +300,7 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
-Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps.
+Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps. Command options also accept `ordered`, `bypass_document_validation`, `comment`, `let`, and an operation-level `write_concern`; an operation concern overrides the client default.
 
 MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The acknowledged API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary counts; later result and execution forms remain tracked separately in the roadmap.
 
@@ -521,7 +521,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Resilience | Causal consistency | 🟡 | 94.4% |
 | Resilience | Transactions | 🟡 | 94.2% |
 | Resilience | Convenient transactions API | 🟢 | 100.0% |
-| Programmability | CRUD | 🟡 | 78.6% |
+| Programmability | CRUD | 🟡 | 80.1% |
 | Programmability | Collection management | 🟢 | 100.0% |
 | Programmability | Index management | 🟢 | 100.0% |
 | Programmability | Read/write concern | 🟢 | 100.0% |

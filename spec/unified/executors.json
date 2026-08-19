@@ -2384,6 +2384,34 @@
       "activity": "CBW-003",
       "environment": "live-standalone"
     },
+    "crud/tests/unified/client-bulkWrite-options.json::test[1]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-options.json::test[2]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-options.json::test[3]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-options.json::test[4]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-options.json::test[5]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-options.json::test[6]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
+    "crud/tests/unified/client-bulkWrite-options.json::test[7]": {
+      "activity": "CBW-004",
+      "environment": "live-standalone"
+    },
     "crud/tests/unified/client-bulkWrite-ordered.json::test[1]": {
       "activity": "CBW-003",
       "environment": "live-standalone"

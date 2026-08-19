@@ -1,4 +1,5 @@
 local bson = require("mongodb.bson")
+local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
 
 local M = {}
@@ -469,7 +470,27 @@ local function prepare_models(state, models)
   return operations, namespaces, result_models
 end
 
-local function validate_options(options)
+local function concern_document(concern)
+  local entries = {}
+
+  if concern.journal ~= nil then
+    entries[#entries + 1] = { "j", concern.journal }
+  end
+
+  if concern.w ~= nil then
+    entries[#entries + 1] = { "w", concern.w }
+  end
+
+  if concern.w_timeout_ms ~= nil then
+    entries[#entries + 1] = { "wtimeout", concern.w_timeout_ms }
+  end
+
+  if #entries > 0 then
+    return bson.document(entries)
+  end
+end
+
+local function validate_options(state, options)
   options = options or {}
 
   if type(options) ~= "table" then
@@ -477,9 +498,21 @@ local function validate_options(options)
   end
 
   for key in pairs(options) do
-    if key ~= "ordered" and key ~= "verbose_results" then
+    if key ~= "bypass_document_validation"
+        and key ~= "comment"
+        and key ~= "let"
+        and key ~= "ordered"
+        and key ~= "verbose_results"
+        and key ~= "write_concern"
+    then
       error("unknown client bulk_write option: " .. tostring(key), 3)
     end
+  end
+
+  if options.bypass_document_validation ~= nil
+      and type(options.bypass_document_validation) ~= "boolean"
+  then
+    error("bypass_document_validation must be a boolean", 3)
   end
 
   if options.ordered ~= nil and type(options.ordered) ~= "boolean" then
@@ -490,9 +523,31 @@ local function validate_options(options)
     error("verbose_results must be a boolean", 3)
   end
 
+  if options.let ~= nil and not bson.is_document(options.let) then
+    error("let must be a BSON document", 3)
+  end
+
+  local write_concern = state.write_concern
+
+  if options.write_concern ~= nil then
+    local normalized, err = driver_options.normalize(nil, {
+      write_concern = options.write_concern,
+    })
+
+    if normalized == nil then
+      return nil, err
+    end
+
+    write_concern = normalized.write_concern
+  end
+
   return {
+    bypass_document_validation = options.bypass_document_validation,
+    comment = options.comment,
+    let = options.let,
     ordered = options.ordered == nil and true or options.ordered,
     verbose_results = options.verbose_results == true,
+    write_concern = write_concern,
   }
 end
 
@@ -617,7 +672,7 @@ local function record_batch(batch, result_models, details, seen)
   return true
 end
 
-local function consume_results(state, response, result_models, details)
+local function consume_results(state, response, result_models, details, comment)
   local batch, cursor_id, numeric_id = cursor_batch(response, "firstBatch")
 
   if batch == nil then
@@ -637,10 +692,16 @@ local function consume_results(state, response, result_models, details)
       return true
     end
 
-    response, err = state.executor:command("admin", bson.document({
+    local entries = {
       { "getMore", cursor_id },
       { "collection", "$cmd.bulkWrite" },
-    }), {})
+    }
+
+    if comment ~= nil then
+      entries[#entries + 1] = { "comment", comment }
+    end
+
+    response, err = state.executor:command("admin", bson.document(entries), {})
 
     if response == nil then
       return nil, err
@@ -654,7 +715,7 @@ local function consume_results(state, response, result_models, details)
   end
 end
 
-local function result_from(state, response, result_models, verbose_results)
+local function result_from(state, response, result_models, options)
   local n_errors, err = count_field(response, "nErrors")
 
   if n_errors == nil then
@@ -667,7 +728,7 @@ local function result_from(state, response, result_models, verbose_results)
 
   local fields = {
     acknowledged = true,
-    has_verbose_results = verbose_results,
+    has_verbose_results = options.verbose_results,
   }
 
   for field, response_name in pairs({
@@ -689,7 +750,7 @@ local function result_from(state, response, result_models, verbose_results)
 
   local details
 
-  if verbose_results then
+  if options.verbose_results then
     details = {
       delete = {},
       insert = {},
@@ -698,13 +759,19 @@ local function result_from(state, response, result_models, verbose_results)
   end
 
   local consumed
-  consumed, err = consume_results(state, response, result_models, details)
+  consumed, err = consume_results(
+    state,
+    response,
+    result_models,
+    details,
+    options.comment
+  )
 
   if not consumed then
     return nil, err
   end
 
-  if verbose_results then
+  if options.verbose_results then
     fields.delete_results = result_map(details.delete)
     fields.insert_results = result_map(details.insert)
     fields.update_results = result_map(details.update)
@@ -718,20 +785,49 @@ function M.execute(state, models, options)
     return client_error("client bulk_write requires MongoDB 8.0 or newer")
   end
 
-  options = validate_options(options)
+  local option_err
+  options, option_err = validate_options(state, options)
+
+  if options == nil then
+    return nil, option_err
+  end
+
   local operations, namespaces, result_models = prepare_models(state, models)
 
   if operations == nil then
     return nil, result_models
   end
 
-  local err
-  local response
-  response, err = state.executor:command("admin", bson.document({
+  local entries = {
     { "bulkWrite", 1 },
     { "errorsOnly", not options.verbose_results },
     { "ordered", options.ordered },
-  }), {
+  }
+
+  if options.bypass_document_validation ~= nil then
+    entries[#entries + 1] = {
+      "bypassDocumentValidation",
+      options.bypass_document_validation,
+    }
+  end
+
+  if options.comment ~= nil then
+    entries[#entries + 1] = { "comment", options.comment }
+  end
+
+  if options.let ~= nil then
+    entries[#entries + 1] = { "let", options.let }
+  end
+
+  local write_concern = concern_document(options.write_concern)
+
+  if write_concern ~= nil then
+    entries[#entries + 1] = { "writeConcern", write_concern }
+  end
+
+  local err
+  local response
+  response, err = state.executor:command("admin", bson.document(entries), {
     max_sequence_document_size = state.max_message_size,
     operation_id = operation_id(),
     sequences = {
@@ -744,7 +840,7 @@ function M.execute(state, models, options)
     return nil, err
   end
 
-  return result_from(state, response, result_models, options.verbose_results)
+  return result_from(state, response, result_models, options)
 end
 
 return M

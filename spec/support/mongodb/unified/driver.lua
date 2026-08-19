@@ -2090,10 +2090,32 @@ local function client_bulk_write(_, client, arguments)
       models[index] = factory(model_arguments)
     end
 
-    return client:bulk_write(models, operation_options(arguments, {
+    local options = operation_options(arguments, {
+      bypassDocumentValidation = "bypass_document_validation",
+      comment = "comment",
+      let = "let",
       ordered = "ordered",
       verboseResults = "verbose_results",
-    }))
+    })
+    local write_concern = arguments:get("writeConcern")
+
+    if write_concern ~= nil then
+      local w = write_concern:get("w")
+      local timeout = write_concern:get("wtimeoutMS")
+      local journal = write_concern:get("journal")
+
+      if journal == nil then
+        journal = write_concern:get("j")
+      end
+
+      options.write_concern = {
+        journal = journal,
+        w = bson.is_exact(w) and w:to_number() or w,
+        w_timeout_ms = bson.is_exact(timeout) and timeout:to_number() or timeout,
+      }
+    end
+
+    return client:bulk_write(models, options)
   end)
 end
 
@@ -2483,7 +2505,10 @@ function M.new(options)
           handler = close_client,
         },
         clientBulkWrite = {
-          arguments = { "models", "ordered", "verboseResults" },
+          arguments = {
+            "bypassDocumentValidation", "comment", "let", "models", "ordered",
+            "verboseResults", "writeConcern",
+          },
           coerce_result = client_bulk_result,
           handler = client_bulk_write,
         },

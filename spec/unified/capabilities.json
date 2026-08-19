@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1900,
-    "passed": 1820,
-    "runnable": 1820
+    "passed": 1827,
+    "runnable": 1827
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -40802,7 +40802,6 @@
     "crud/tests/unified/client-bulkWrite-options.json::test[1]": {
       "activity": "CBW-004",
       "fingerprint": "d7f78ab12c7bf526f9685a1c7c24941405f08fd5ab707b06c0fe1ea5ab3b84eb",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.comment",
@@ -40826,12 +40825,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[2]": {
       "activity": "CBW-004",
       "fingerprint": "b653b6683ac8e860f4eedbb90f0c87017857df15af1078103ec9060b42b7bddc",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.bypassDocumentValidation",
@@ -40855,12 +40853,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[3]": {
       "activity": "CBW-004",
       "fingerprint": "e3e34e9d488e6cbeb80a00d26cfe33efcf6300a21ca536d650aef2254eec7f95",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.let",
@@ -40886,12 +40883,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[4]": {
       "activity": "CBW-004",
       "fingerprint": "5db7cb9d77f0e25ab95d0085691111c48f21eca195914a4812a107b29843d8e4",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.bypassDocumentValidation",
@@ -40915,12 +40911,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[5]": {
       "activity": "CBW-004",
       "fingerprint": "023883392dde269bacf6c34a111bf4d69ab8a06ad7eefb957b73658293300337",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40944,12 +40939,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[6]": {
       "activity": "CBW-004",
       "fingerprint": "463f935a0c7b521a53cf95a9396c911bd71a5ab90e22bc30c2c7ba70846c1527",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -40972,12 +40966,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-options.json::test[7]": {
       "activity": "CBW-004",
       "fingerprint": "9561cc95fe0b5e5b4598bfda35324e895ecf640bba5646c8f79c3ae52c76ee57",
-      "reason": "client bulk command options await their dedicated slice",
       "requirements": {
         "arguments": [
           "clientBulkWrite.models",
@@ -41001,7 +40994,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "crud/tests/unified/client-bulkWrite-ordered.json::test[1]": {
       "activity": "CBW-003",

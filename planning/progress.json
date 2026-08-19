@@ -6181,6 +6181,28 @@
       "notes": [],
       "started_at": "2026-08-19T13:06:30+00:00",
       "completed_at": "2026-08-19T13:15:52+00:00"
+    },
+    "CBW-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua",
+          "exit_code": 2,
+          "summary": "4 existing client bulk tests passed; defining command-option matrix errored because comment is not yet accepted",
+          "recorded_at": "2026-08-19T13:24:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/client_bulk_spec.lua FOCUS_INTEGRATION=spec/integration/bulk_spec.lua FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua spec/support/mongodb/unified/driver.lua'; make test-focus for 7 exact option, 3 ordered, and 1 Stable API live cases; make test-architecture; make test-complexity; generated artifact --check commands",
+          "exit_code": 0,
+          "summary": "5 unit, 3 OP_MSG integration, 118 focused Python, 7 newly runnable option cases, and ordered/Stable API regressions passed; touched lint, architecture, complexity, capability, ledger, scopes, README compatibility, and release checklist validators passed",
+          "recorded_at": "2026-08-19T13:29:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T13:22:26+00:00",
+      "completed_at": "2026-08-19T13:29:09+00:00"
     }
   },
   "verified_references": {

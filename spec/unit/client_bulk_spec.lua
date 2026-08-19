@@ -405,4 +405,73 @@ describe("client bulk writes", function()
       written.delete_results[5] = written.delete_results[4]
     end, "client bulk result maps are immutable")
   end)
+
+  it("forwards command options and overrides the inherited write concern", function()
+    local captured = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 25,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function(_, _, command, options)
+        captured[#captured + 1] = { command = command, options = options }
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "admin.$cmd.bulkWrite" },
+            { "firstBatch", bson.array({}) },
+          }) },
+          { "nErrors", 0 },
+          { "nInserted", 1 },
+          { "nMatched", 0 },
+          { "nModified", 0 },
+          { "nUpserted", 0 },
+          { "nDeleted", 0 },
+        })
+      end,
+    }
+    local config = assert(driver_options.normalize(nil, {
+      write_concern = { w = 2 },
+    }))
+    local client = api.new_client(executor, config)
+    local comment = bson.document({ { "bulk", "write" } })
+    local variables = bson.document({ { "tenant", 14 } })
+    local model = client_bulk.insert_one(
+      "app.users",
+      bson.document({ { "_id", 1 } })
+    )
+
+    assert(client:bulk_write({ model }, {
+      bypass_document_validation = false,
+      comment = comment,
+      let = variables,
+      ordered = false,
+      verbose_results = false,
+      write_concern = { journal = true, w = "majority", w_timeout_ms = 250 },
+    }))
+    assert(client:bulk_write({ model }))
+
+    local explicit = captured[1].command
+    local inherited = captured[2].command
+
+    assert.is_true(explicit:get("errorsOnly"))
+    assert.is_false(explicit:get("ordered"))
+    assert.is_false(explicit:get("bypassDocumentValidation"))
+    assert.are.equal(comment, explicit:get("comment"))
+    assert.are.equal(variables, explicit:get("let"))
+    assert.is_true(explicit:get("writeConcern"):get("j"))
+    assert.are.equal("majority", explicit:get("writeConcern"):get("w"))
+    assert.are.equal(250, explicit:get("writeConcern"):get("wtimeout"))
+    assert.are.equal(2, inherited:get("writeConcern"):get("w"))
+    assert.are.same({ "bulk" }, comment:keys())
+    assert.are.same({ "tenant" }, variables:keys())
+  end)
 end)
