@@ -771,7 +771,7 @@ local function consume_results(state, response, result_models, details, options)
     response, err = state.executor:command("admin", bson.document(entries), {})
 
     if response == nil then
-      return nil, err
+      return nil, err, cursor_id, write_errors
     end
 
     batch, cursor_id, numeric_id = cursor_batch(response, "nextBatch")
@@ -864,7 +864,12 @@ local function write_failure(
   })
 end
 
-local function command_failure(cause)
+local function command_failure(
+  cause,
+  partial_result,
+  write_errors,
+  cleanup_error
+)
   local cause_details = cause.details
   local labels = {}
 
@@ -872,15 +877,19 @@ local function command_failure(cause)
     labels[#labels + 1] = label
   end
 
+  write_errors = write_errors or {}
+
   return errors.new({
     category = errors.CATEGORY.WRITE,
     cause = cause,
     code = cause.code,
     code_name = cause.code_name,
     details = {
+      cleanup_error = cleanup_error,
+      partial_result = partial_result,
       response = cause_details and cause_details.response or nil,
       write_concern_errors = {},
-      write_errors = {},
+      write_errors = write_errors,
     },
     labels = labels,
     message = cause.message,
@@ -924,10 +933,15 @@ local function result_from(state, response, result_models, options)
       insert = {},
       update = {},
     }
+    fields.delete_results = result_map(details.delete)
+    fields.insert_results = result_map(details.insert)
+    fields.update_results = result_map(details.update)
   end
 
   local write_errors
-  write_errors, err = consume_results(
+  local observed_write_errors
+  local failed_cursor_id
+  write_errors, err, failed_cursor_id, observed_write_errors = consume_results(
     state,
     response,
     result_models,
@@ -936,17 +950,32 @@ local function result_from(state, response, result_models, options)
   )
 
   if write_errors == nil then
+    if failed_cursor_id ~= nil then
+      local _, cleanup_error = state.executor:command(
+        "admin",
+        bson.document({
+          { "killCursors", "$cmd.bulkWrite" },
+          { "cursors", bson.array({ failed_cursor_id }) },
+        }),
+        {}
+      )
+      local partial_result = n_errors < #result_models
+        and result_value(fields)
+        or nil
+
+      return nil, command_failure(
+        err,
+        partial_result,
+        observed_write_errors,
+        cleanup_error
+      )
+    end
+
     return nil, err
   end
 
   if #write_errors ~= n_errors then
     return protocol_error("client bulk response contains an inconsistent error count")
-  end
-
-  if options.verbose_results then
-    fields.delete_results = result_map(details.delete)
-    fields.insert_results = result_map(details.insert)
-    fields.update_results = result_map(details.update)
   end
 
   local concern_error

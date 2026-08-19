@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local copas = require("copas")
+local errors = require("mongodb.error")
 local mongodb = require("mongodb")
 local op_msg = require("mongodb.wire.op_msg")
 local socket = require("socket")
@@ -308,6 +309,105 @@ describe("collection bulk writes over OP_MSG", function()
         assert.are.equal(2, written.update_results[2].matched_count)
         assert.are.equal(1, written.delete_results[4].deleted_count)
         assert.are.equal(2, written.delete_results[5].deleted_count)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
+  it("closes a client result cursor after a getMore failure", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 100000 },
+      }))
+
+      local request = receive_frame(peer)
+
+      assert.are.equal("bulkWrite", request.body:keys()[1])
+      send_response(peer, request, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(93) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "firstBatch", bson.array({
+            bson.document({ { "ok", 1 }, { "idx", 0 }, { "n", 1 } }),
+          }) },
+        }) },
+        { "nErrors", 0 },
+        { "nInserted", 2 },
+        { "nMatched", 0 },
+        { "nModified", 0 },
+        { "nUpserted", 0 },
+        { "nDeleted", 0 },
+      }))
+
+      local get_more = receive_frame(peer)
+
+      assert.are.equal(93, get_more.body:get("getMore"):to_number())
+      send_response(peer, get_more, bson.document({
+        { "ok", 0 },
+        { "code", bson.int32(8) },
+        { "codeName", "UnknownError" },
+        { "errmsg", "failpoint getMore error" },
+        { "errorLabels", bson.array({ "RetryableWriteError" }) },
+      }))
+
+      local kill = receive_frame(peer)
+
+      assert.are.equal("killCursors", kill.body:keys()[1])
+      assert.are.equal("$cmd.bulkWrite", kill.body:get("killCursors"))
+      assert.are.equal(93, kill.body:get("cursors"):get(1):to_number())
+      send_response(peer, kill, bson.document({
+        { "ok", 1 },
+        { "cursorsKilled", bson.array({ bson.int64(93) }) },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port,
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local result, err = client:bulk_write({
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 1 } })
+          ),
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 2 } })
+          ),
+        }, { verbose_results = true })
+
+        assert.is_nil(result)
+        assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+        assert.is_true(errors.is(err.cause, errors.CATEGORY.SERVER))
+        assert.are.equal(8, err.cause.code)
+        assert.are.equal(2, err.details.partial_result.inserted_count)
+        assert.are.equal(
+          1,
+          err.details.partial_result.insert_results[1].inserted_id
+        )
         assert.is_true(client:close())
       end))
       copas.removeserver(server)

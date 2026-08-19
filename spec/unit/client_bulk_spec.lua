@@ -894,4 +894,125 @@ describe("client bulk writes", function()
     assert.are.equal(0, #err.details.write_concern_errors)
     assert.are.equal(1, commands)
   end)
+
+  it("closes a failed result cursor with checked cleanup", function()
+    local response = bson.document({
+      { "ok", 0 },
+      { "code", bson.int32(8) },
+      { "codeName", "UnknownError" },
+      { "errmsg", "failpoint getMore error" },
+      { "errorLabels", bson.array({ "RetryableWriteError" }) },
+    })
+    local get_more_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 8,
+      code_name = "UnknownError",
+      details = { response = response },
+      labels = { "RetryableWriteError" },
+      message = "failpoint getMore error",
+    })
+
+    local function run(cleanup_error)
+      local commands = {}
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = 25,
+            max_write_batch_size = 100000,
+          }
+        end,
+        command = function(_, _, command)
+          commands[#commands + 1] = command
+
+          if #commands == 1 then
+            return bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(44) },
+                { "ns", "admin.$cmd.bulkWrite" },
+                { "firstBatch", bson.array({
+                  bson.document({
+                    { "ok", 1 },
+                    { "idx", bson.int32(0) },
+                    { "n", bson.int32(1) },
+                  }),
+                }) },
+              }) },
+              { "nErrors", 0 },
+              { "nInserted", 2 },
+              { "nMatched", 0 },
+              { "nModified", 0 },
+              { "nUpserted", 0 },
+              { "nDeleted", 0 },
+            })
+          end
+
+          if #commands == 2 then
+            return nil, get_more_error
+          end
+
+          if cleanup_error ~= nil then
+            return nil, cleanup_error
+          end
+
+          return bson.document({
+            { "ok", 1 },
+            { "cursorsKilled", bson.array({ bson.int64(44) }) },
+          })
+        end,
+      }
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, {}))
+      )
+      local result, err = client:bulk_write({
+        client_bulk.insert_one(
+          "app.users",
+          bson.document({ { "_id", 1 } })
+        ),
+        client_bulk.insert_one(
+          "app.users",
+          bson.document({ { "_id", 2 } })
+        ),
+      }, { verbose_results = true })
+
+      assert.is_nil(result)
+      assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+      assert.are.equal(get_more_error, err.cause)
+      assert.are.equal(8, err.code)
+      assert.are.equal("UnknownError", err.code_name)
+      assert.are.equal("failpoint getMore error", err.message)
+      assert.is_true(err:has_label("RetryableWriteError"))
+      assert.are.equal(response, err.details.response)
+      assert.are.equal(cleanup_error, err.details.cleanup_error)
+      assert.are.equal(2, err.details.partial_result.inserted_count)
+      assert.are.equal(
+        1,
+        err.details.partial_result.insert_results[1].inserted_id
+      )
+      assert.is_nil(err.details.partial_result.insert_results[2])
+      assert.are.equal(0, #err.details.write_errors)
+      assert.are.equal(0, #err.details.write_concern_errors)
+      assert.are.equal(3, #commands)
+      assert.are.equal("getMore", commands[2]:keys()[1])
+      assert.are.equal(44, commands[2]:get("getMore"):to_number())
+      assert.are.equal("killCursors", commands[3]:keys()[1])
+      assert.are.equal("$cmd.bulkWrite", commands[3]:get("killCursors"))
+      assert.are.equal(
+        44,
+        commands[3]:get("cursors"):get(1):to_number()
+      )
+    end
+
+    run()
+    run(errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "killCursors failed",
+    }))
+  end)
 end)

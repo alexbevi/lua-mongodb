@@ -6383,6 +6383,28 @@
       "notes": [],
       "started_at": "2026-08-19T15:54:53+00:00",
       "completed_at": "2026-08-19T15:58:41+00:00"
+    },
+    "CBW-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='--filter=checked.cleanup spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining checked-cleanup matrix failed because getMore returned the raw server error rather than a client-bulk write envelope; no killCursors cleanup or partial result was produced.",
+          "recorded_at": "2026-08-19T16:11:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/client_bulk_spec.lua spec/unit/error_spec.lua' FOCUS_INTEGRATION='--filter=getMore.failure spec/integration/bulk_spec.lua' FOCUS_LINT='src/mongodb/client_bulk.lua src/mongodb/error.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua && git diff --check",
+          "exit_code": 0,
+          "summary": "19 directly coupled unit cases and the focused OP_MSG getMore-failure integration case passed; successful and failed killCursors branches retain the getMore cause and confirmed partial result, cleanup failure remains structured, four touched Lua files lint cleanly, and the complexity baseline and diff checks pass.",
+          "recorded_at": "2026-08-19T16:16:28+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T16:06:56+00:00",
+      "completed_at": "2026-08-19T16:16:39+00:00"
     }
   },
   "verified_references": {
