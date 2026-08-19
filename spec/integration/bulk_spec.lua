@@ -368,6 +368,119 @@ describe("collection bulk writes over OP_MSG", function()
     end
   end)
 
+  it("merges client bulk failures across transport batches", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxBsonObjectSize", 16777216 },
+        { "maxMessageSizeBytes", 48000000 },
+        { "maxWireVersion", 25 },
+        { "maxWriteBatchSize", 1 },
+      }))
+
+      local first = receive_frame(peer)
+
+      assert.are.equal("bulkWrite", first.body:keys()[1])
+      assert.are.equal(1, #first.sequences[1].documents)
+      send_response(peer, first, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "firstBatch", bson.array({
+            bson.document({ { "ok", 1 }, { "idx", 0 }, { "n", 1 } }),
+          }) },
+        }) },
+        { "nErrors", 0 },
+        { "nInserted", 1 },
+        { "nMatched", 0 },
+        { "nModified", 0 },
+        { "nUpserted", 0 },
+        { "nDeleted", 0 },
+        { "writeConcernError", bson.document({
+          { "code", 91 },
+          { "errmsg", "first batch concern" },
+        }) },
+      }))
+
+      local second = receive_frame(peer)
+
+      assert.are.equal("bulkWrite", second.body:keys()[1])
+      assert.are.equal(1, #second.sequences[1].documents)
+      send_response(peer, second, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "ok", 0 },
+              { "idx", 0 },
+              { "code", 11000 },
+              { "errmsg", "second batch duplicate" },
+            }),
+          }) },
+        }) },
+        { "nErrors", 1 },
+        { "nInserted", 0 },
+        { "nMatched", 0 },
+        { "nModified", 0 },
+        { "nUpserted", 0 },
+        { "nDeleted", 0 },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port,
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local result, err = client:bulk_write({
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 1 } })
+          ),
+          mongodb.client_bulk.insert_one(
+            "app.events",
+            bson.document({ { "_id", 2 } })
+          ),
+        }, { ordered = false, verbose_results = true })
+
+        assert.is_nil(result)
+        assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+        assert.are.equal(1, #err.details.write_errors)
+        assert.are.equal(2, err.details.write_errors[1].index)
+        assert.are.equal(11000, err.details.write_errors[1].code)
+        assert.are.equal(1, #err.details.write_concern_errors)
+        assert.are.equal(91, err.details.write_concern_errors[1].code)
+        assert.are.equal(1, err.details.partial_result.inserted_count)
+        assert.are.equal(
+          1,
+          err.details.partial_result.insert_results[1].inserted_id
+        )
+        assert.is_nil(err.details.partial_result.insert_results[2])
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
   it("writes updates, replacements, and deletes across client namespaces", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())

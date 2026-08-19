@@ -6449,6 +6449,28 @@
       "notes": [],
       "started_at": "2026-08-19T16:49:45+00:00",
       "completed_at": "2026-08-19T16:56:20+00:00"
+    },
+    "CBW-018": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted FOCUS_UNIT='--filter=failures.and.concerns.across.client.batches spec/unit/client_bulk_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining multi-batch outcome matrix failed because the first unordered write error returned after one command instead of continuing and remapping both batch-local failures; ordered partial results and multi-batch concern accumulation were also absent.",
+          "recorded_at": "2026-08-19T17:05:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(/opt/homebrew/bin/luarocks --lua-version=5.4 --lua-dir=/opt/homebrew/opt/lua@5.4 path)\" && make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/client_bulk_spec.lua' FOCUS_INTEGRATION='spec/integration/bulk_spec.lua' FOCUS_LINT='src/mongodb/client_bulk.lua spec/unit/client_bulk_spec.lua spec/integration/bulk_spec.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua && python3 spec/conformance/catalog.py --check && git diff --check",
+          "exit_code": 0,
+          "summary": "14 client-bulk unit cases and seven directly coupled OP_MSG integration cases passed, including unordered write-error continuation, ordered stopping with prior partial results, and multi-batch write-concern accumulation; touched lint, complexity, prose catalog, and diff validators pass.",
+          "recorded_at": "2026-08-19T17:08:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-19T17:03:53+00:00",
+      "completed_at": "2026-08-19T17:09:26+00:00"
     }
   },
   "verified_references": {

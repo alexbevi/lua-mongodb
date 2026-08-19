@@ -1198,6 +1198,10 @@ local function result_accumulator(options)
       modified_count = 0,
       upserted_count = 0,
     },
+    has_success = false,
+    labels = {},
+    write_concern_errors = {},
+    write_errors = {},
   }
 
   if options.verbose_results then
@@ -1212,6 +1216,8 @@ local function result_accumulator(options)
 end
 
 local function merge_successful_batch(full, batch, result)
+  full.has_success = true
+
   for _, field in ipairs(COUNT_RESULT_FIELDS) do
     full.fields[field] = full.fields[field] + result[field]
   end
@@ -1226,6 +1232,38 @@ local function merge_successful_batch(full, batch, result)
 
       full.details[mapping[2]][original_index] = detail
     end
+  end
+end
+
+local function merge_batch_failure(full, batch, err)
+  local details = err.details
+
+  if details.partial_result ~= nil then
+    merge_successful_batch(full, batch, details.partial_result)
+  end
+
+  for _, item in ipairs(details.write_errors) do
+    full.write_errors[#full.write_errors + 1] = {
+      code = item.code,
+      code_name = item.code_name,
+      details = item.details,
+      index = batch.original_indexes[item.index],
+      message = item.message,
+      operation = item.operation,
+    }
+  end
+
+  for _, item in ipairs(details.write_concern_errors) do
+    full.write_concern_errors[#full.write_concern_errors + 1] = {
+      code = item.code,
+      code_name = item.code_name,
+      details = item.details,
+      message = item.message,
+    }
+  end
+
+  for _, label in ipairs(err.labels) do
+    full.labels[#full.labels + 1] = label
   end
 end
 
@@ -1266,10 +1304,35 @@ local function execute_batches(state, command, batches, options)
     )
 
     if result == nil then
-      return nil, err
-    end
+      local details = err.details
+      local has_write_failures = errors.is(err, errors.CATEGORY.WRITE)
+        and details ~= nil
+        and (#details.write_errors > 0
+          or #details.write_concern_errors > 0)
 
-    merge_successful_batch(full, batch, result)
+      if not has_write_failures then
+        return nil, err
+      end
+
+      merge_batch_failure(full, batch, err)
+
+      if options.ordered and #details.write_errors > 0 then
+        break
+      end
+    else
+      merge_successful_batch(full, batch, result)
+    end
+  end
+
+  if #full.write_errors > 0 or #full.write_concern_errors > 0 then
+    local partial_result = full.has_success and accumulated_result(full) or nil
+
+    return write_failure(
+      full.write_errors,
+      full.write_concern_errors,
+      partial_result,
+      full.labels
+    )
   end
 
   return accumulated_result(full)

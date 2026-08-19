@@ -322,6 +322,150 @@ describe("client bulk writes", function()
     assert.are.equal(0, #batches)
   end)
 
+  it("merges write failures and concerns across client batches", function()
+    local function success_response(inserted, concern_code)
+      local entries = {
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "firstBatch", bson.array({
+            bson.document({ { "ok", 1 }, { "idx", 0 }, { "n", 1 } }),
+          }) },
+        }) },
+        { "nErrors", 0 },
+        { "nInserted", inserted },
+        { "nMatched", 0 },
+        { "nModified", 0 },
+        { "nUpserted", 0 },
+        { "nDeleted", 0 },
+      }
+
+      if concern_code ~= nil then
+        entries[#entries + 1] = {
+          "writeConcernError",
+          bson.document({
+            { "code", concern_code },
+            { "errmsg", "write concern " .. tostring(concern_code) },
+          }),
+        }
+      end
+
+      return bson.document(entries)
+    end
+
+    local function error_response(code)
+      return bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "admin.$cmd.bulkWrite" },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "ok", 0 },
+              { "idx", 0 },
+              { "code", code },
+              { "errmsg", "write error " .. tostring(code) },
+            }),
+          }) },
+        }) },
+        { "nErrors", 1 },
+        { "nInserted", 0 },
+        { "nMatched", 0 },
+        { "nModified", 0 },
+        { "nUpserted", 0 },
+        { "nDeleted", 0 },
+      })
+    end
+
+    local function run(ordered, responses, model_count, verbose)
+      local command_count = 0
+      local executor = {
+        close = function()
+          return true
+        end,
+        capabilities = function()
+          return {
+            max_bson_size = 16777216,
+            max_message_size = 48000000,
+            max_wire_version = 25,
+            max_write_batch_size = 1,
+          }
+        end,
+        command = function()
+          command_count = command_count + 1
+          return responses[command_count]
+        end,
+      }
+      local client = api.new_client(
+        executor,
+        assert(driver_options.normalize(nil, {}))
+      )
+      local models = {}
+
+      for index = 1, model_count do
+        models[index] = client_bulk.insert_one(
+          "app.events",
+          bson.document({ { "_id", index } })
+        )
+      end
+
+      local result, err = client:bulk_write(models, {
+        ordered = ordered,
+        verbose_results = verbose == true,
+      })
+
+      return result, err, command_count
+    end
+
+    local result, err, command_count = run(false, {
+      error_response(101),
+      error_response(102),
+    }, 2, true)
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+    assert.are.equal(2, command_count)
+    assert.are.equal(2, #err.details.write_errors)
+    assert.are.equal(1, err.details.write_errors[1].index)
+    assert.are.equal(101, err.details.write_errors[1].code)
+    assert.are.equal(2, err.details.write_errors[2].index)
+    assert.are.equal(102, err.details.write_errors[2].code)
+    assert.is_nil(err.details.partial_result)
+
+    result, err, command_count = run(true, {
+      success_response(1),
+      error_response(103),
+      success_response(1),
+    }, 3, true)
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+    assert.are.equal(2, command_count)
+    assert.are.equal(1, #err.details.write_errors)
+    assert.are.equal(2, err.details.write_errors[1].index)
+    assert.are.equal(1, err.details.partial_result.inserted_count)
+    assert.are.equal(
+      1,
+      err.details.partial_result.insert_results[1].inserted_id
+    )
+    assert.is_nil(err.details.partial_result.insert_results[2])
+
+    result, err, command_count = run(true, {
+      success_response(1, 91),
+      success_response(1, 92),
+    }, 2)
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
+    assert.are.equal(2, command_count)
+    assert.are.equal(0, #err.details.write_errors)
+    assert.are.equal(2, #err.details.write_concern_errors)
+    assert.are.equal(91, err.details.write_concern_errors[1].code)
+    assert.are.equal(92, err.details.write_concern_errors[2].code)
+    assert.are.equal(2, err.details.partial_result.inserted_count)
+  end)
+
   it("translates update and replacement models without changing their values", function()
     local captured
     local executor = {
