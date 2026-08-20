@@ -423,6 +423,7 @@ local function default_compression()
   local providers = {}
   local snappy = require("mongodb.runtime.snappy").load()
   local zlib = require("mongodb.runtime.zlib").load()
+  local zstandard = require("mongodb.runtime.zstandard").load()
 
   if snappy ~= nil then
     providers.snappy = snappy
@@ -430,6 +431,10 @@ local function default_compression()
 
   if zlib ~= nil then
     providers.zlib = zlib
+  end
+
+  if zstandard ~= nil then
+    providers.zstd = zstandard
   end
 
   return providers

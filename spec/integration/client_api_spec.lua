@@ -44,6 +44,59 @@ local function send_response(client, request, body)
   }))))
 end
 
+local function assert_unavailable_compressor_warning(name, package_name, display_name)
+  local server = assert(socket.bind("127.0.0.1", 0))
+  local _, port = assert(server:getsockname())
+  local outcome
+  local server_error
+
+  port = assert(math.tointeger(port))
+  copas.addserver(server, function(peer)
+    local ok, err = pcall(function()
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      assert.are.same({}, handshake.body:get("compression"):values())
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+    end)
+
+    if not ok then
+      server_error = err
+    end
+
+    peer:close()
+  end)
+
+  copas.loop(function()
+    outcome = table.pack(pcall(function()
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?compressors=" .. name,
+        { runtime = mongodb.runtime.copas({ compression = {} }) }
+      ))
+
+      assert.are.equal(1, #client.warnings)
+      assert.are.equal(
+        "wire protocol compression with " .. name .. " is not available; "
+          .. "install " .. package_name .. " for " .. display_name .. " support",
+        client.warnings[1]
+      )
+      assert(client:close())
+    end))
+    copas.removeserver(server)
+  end)
+
+  if server_error then
+    error(server_error, 0)
+  elseif not outcome[1] then
+    error(outcome[2], 0)
+  end
+end
+
 describe("public standalone client API", function()
   it("connects, runs ping on the URI database, and closes predictably", function()
     local server = assert(socket.bind("127.0.0.1", 0))
@@ -98,56 +151,11 @@ describe("public standalone client API", function()
   end)
 
   it("omits unavailable configured Snappy and reports a client warning", function()
-    local server = assert(socket.bind("127.0.0.1", 0))
-    local _, port = assert(server:getsockname())
-    local outcome
-    local server_error
+    assert_unavailable_compressor_warning("snappy", "lua-csnappy", "Snappy")
+  end)
 
-    port = assert(math.tointeger(port))
-    copas.addserver(server, function(peer)
-      local ok, err = pcall(function()
-        peer = copas.wrap(peer)
-        local handshake = receive_frame(peer)
-
-        assert.are.same({}, handshake.body:get("compression"):values())
-        send_response(peer, handshake, bson.document({
-          { "ok", 1 },
-          { "helloOk", true },
-          { "isWritablePrimary", true },
-          { "maxWireVersion", 25 },
-        }))
-      end)
-
-      if not ok then
-        server_error = err
-      end
-
-      peer:close()
-    end)
-
-    copas.loop(function()
-      outcome = table.pack(pcall(function()
-        local client = assert(mongodb.client(
-          "mongodb://127.0.0.1:" .. port .. "/app?compressors=snappy",
-          { runtime = mongodb.runtime.copas({ compression = {} }) }
-        ))
-
-        assert.are.equal(1, #client.warnings)
-        assert.are.equal(
-          "wire protocol compression with snappy is not available; "
-            .. "install lua-csnappy for Snappy support",
-          client.warnings[1]
-        )
-        assert(client:close())
-      end))
-      copas.removeserver(server)
-    end)
-
-    if server_error then
-      error(server_error, 0)
-    elseif not outcome[1] then
-      error(outcome[2], 0)
-    end
+  it("omits unavailable configured Zstandard and reports a client warning", function()
+    assert_unavailable_compressor_warning("zstd", "lua-zstd", "Zstandard")
   end)
 
   it("applies appended wrapper metadata only to new connections", function()

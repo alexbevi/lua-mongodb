@@ -44,11 +44,15 @@ jobs:
         with:
           luaRocksVersion: "3.12.2"
 
+      - name: Install Zstandard development library
+        run: sudo apt-get update && sudo apt-get install -y libzstd-dev
+
       - name: Install development dependencies
         run: |
           luarocks install --only-deps mongodb-0.7.0-1.rockspec
           luarocks install busted 2.3.0-1
           luarocks install lua-csnappy 0.1.5-2
+          luarocks install lua-zstd 0.2.0-1
           luarocks install luacheck 1.2.0-1
           luarocks install luacov 0.17.0-1
 
@@ -273,18 +277,21 @@ jobs:
         with:
           luaRocksVersion: "3.12.2"
 
-      - name: Configure OpenSSL on macOS
+      - name: Configure native libraries on macOS
         run: |
-          brew install openssl@3
+          brew install openssl@3 zstd
           openssl_dir="$(brew --prefix openssl@3)"
+          zstd_dir="$(brew --prefix zstd)"
           echo "OPENSSL_DIR=$openssl_dir" >> "$GITHUB_ENV"
           echo "CRYPTO_DIR=$openssl_dir" >> "$GITHUB_ENV"
+          echo "ZSTD_DIR=$zstd_dir" >> "$GITHUB_ENV"
 
       - name: Install focused test dependencies
         run: |
           luarocks install --only-deps mongodb-0.7.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
           luarocks install busted 2.3.0-1
           luarocks install lua-csnappy 0.1.5-2
+          luarocks install lua-zstd 0.2.0-1 ZSTD_DIR="$ZSTD_DIR"
 
       - name: Install MongoDB test tools on macOS
         run: |

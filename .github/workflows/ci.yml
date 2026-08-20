@@ -37,13 +37,19 @@ jobs:
         with:
           luaRocksVersion: "3.13.0"
 
-      - name: Configure OpenSSL on macOS
+      - name: Configure native libraries on macOS
         if: runner.os == 'macOS'
         run: |
-          brew install openssl@3
+          brew install openssl@3 zstd
           openssl_dir="$(brew --prefix openssl@3)"
+          zstd_dir="$(brew --prefix zstd)"
           echo "OPENSSL_DIR=$openssl_dir" >> "$GITHUB_ENV"
           echo "CRYPTO_DIR=$openssl_dir" >> "$GITHUB_ENV"
+          echo "ZSTD_DIR=$zstd_dir" >> "$GITHUB_ENV"
+
+      - name: Install Zstandard development library on Linux
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y libzstd-dev
 
       - name: Install development dependencies
         run: |
@@ -54,6 +60,11 @@ jobs:
           fi
           luarocks install busted 2.3.0-1
           luarocks install lua-csnappy 0.1.5-2
+          if test -n "${ZSTD_DIR:-}"; then
+            luarocks install lua-zstd 0.2.0-1 ZSTD_DIR="$ZSTD_DIR"
+          else
+            luarocks install lua-zstd 0.2.0-1
+          fi
 
       - name: Install Lua 5.4 lint tools
         if: matrix.lua-version == '5.4.8'

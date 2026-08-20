@@ -147,7 +147,9 @@ class PackageTests(unittest.TestCase):
 
     self.assertNotIn('"luaossl ', rockspec)
     self.assertNotIn('"lua-csnappy ', runtime_dependencies)
+    self.assertNotIn('"lua-zstd ', runtime_dependencies)
     self.assertIn('"lua-csnappy == 0.1.5-2"', rockspec)
+    self.assertIn('"lua-zstd == 0.2.0-1"', rockspec)
 
     for dependency in (
       '"lua-cryptorandom >= 0.0.6, < 0.1"',

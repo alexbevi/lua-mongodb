@@ -108,9 +108,14 @@ local function append_compression_warnings(warnings, config, compression)
   compression = compression or {}
 
   for _, name in ipairs(config.compressors) do
-    if name == "snappy" and compression[name] == nil then
-      warnings[#warnings + 1] = "wire protocol compression with snappy is not available; "
-        .. "install lua-csnappy for Snappy support"
+    if compression[name] == nil then
+      if name == "snappy" then
+        warnings[#warnings + 1] = "wire protocol compression with snappy is not available; "
+          .. "install lua-csnappy for Snappy support"
+      elseif name == "zstd" then
+        warnings[#warnings + 1] = "wire protocol compression with zstd is not available; "
+          .. "install lua-zstd for Zstandard support"
+      end
     end
   end
 end

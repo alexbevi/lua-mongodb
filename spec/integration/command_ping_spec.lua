@@ -6,6 +6,7 @@ local op_msg = require("mongodb.wire.op_msg")
 local runtime = require("mongodb.runtime")
 local runtime_snappy = require("mongodb.runtime.snappy")
 local runtime_zlib = require("mongodb.runtime.zlib")
+local runtime_zstandard = require("mongodb.runtime.zstandard")
 local socket = require("socket")
 local transport = require("mongodb.network.transport")
 
@@ -174,5 +175,12 @@ describe("standalone command execution", function()
 
     assert.are.equal(1, provider.compressor_id)
     assert_compressed_ping("snappy", provider)
+  end)
+
+  it("negotiates Zstandard and sends an eligible ping with compressor id 3", function()
+    local provider = assert(runtime_zstandard.load())
+
+    assert.are.equal(3, provider.compressor_id)
+    assert_compressed_ping("zstd", provider)
   end)
 end)

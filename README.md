@@ -11,15 +11,16 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
 - `sha1` 0.5, `md5` 1.3, `lua-cryptorandom` 0.0.6, and `lua-zlib` 1.4 or compatible releases.
-- Optional Snappy wire compression uses `lua-csnappy` 0.1.5 or a compatible release.
+- Optional Snappy and Zstandard wire compression use `lua-csnappy` 0.1.5 and `lua-zstd` 0.2 or compatible releases; `lua-zstd` also requires the Zstandard library and development headers.
 - OpenSSL libraries and development headers required by the TLS dependency and by `lua-cryptorandom` on supported Unix-like platforms.
 
 LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency.
 
-Install the optional Snappy provider separately when needed:
+Install either optional provider separately when needed:
 
 ```sh
 luarocks install lua-csnappy
+luarocks install lua-zstd
 ```
 
 ## Building and Installing
@@ -86,11 +87,11 @@ mongodb.run(function()
 end)
 ```
 
-Wire compression is opt-in and negotiated independently on every connection. Enable Snappy or zlib with the `compressors` option; when several compressors are listed, their order defines client preference. Snappy is advertised only when the optional provider is installed, and an unavailable configured provider is reported in `client.warnings`. `zlibCompressionLevel` accepts `-1` (the default) through `9`. A server with no common compressor remains usable without compression, while handshake, authentication, and user-management commands always remain uncompressed.
+Wire compression is opt-in and negotiated independently on every connection. Enable Zstandard, Snappy, or zlib with the `compressors` option; when several compressors are listed, their order defines client preference. Zstandard and Snappy are advertised only when their optional providers are installed, and an unavailable configured provider is reported in `client.warnings`. `zlibCompressionLevel` accepts `-1` (the default) through `9`. A server with no common compressor remains usable without compression, while handshake, authentication, and user-management commands always remain uncompressed.
 
 ```lua
 local client = assert(mongodb.client(
-  "mongodb://db.example.com/app?compressors=snappy,zlib&zlibCompressionLevel=6"
+  "mongodb://db.example.com/app?compressors=zstd,snappy,zlib&zlibCompressionLevel=6"
 ))
 ```
 
