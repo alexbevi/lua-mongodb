@@ -48,6 +48,7 @@ jobs:
         run: |
           luarocks install --only-deps mongodb-0.7.0-1.rockspec
           luarocks install busted 2.3.0-1
+          luarocks install lua-csnappy 0.1.5-2
           luarocks install luacheck 1.2.0-1
           luarocks install luacov 0.17.0-1
 
@@ -283,6 +284,7 @@ jobs:
         run: |
           luarocks install --only-deps mongodb-0.7.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
           luarocks install busted 2.3.0-1
+          luarocks install lua-csnappy 0.1.5-2
 
       - name: Install MongoDB test tools on macOS
         run: |

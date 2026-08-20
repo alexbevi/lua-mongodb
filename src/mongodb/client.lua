@@ -104,6 +104,17 @@ local function combine_warnings(parsed, normalized)
   return result
 end
 
+local function append_compression_warnings(warnings, config, compression)
+  compression = compression or {}
+
+  for _, name in ipairs(config.compressors) do
+    if name == "snappy" and compression[name] == nil then
+      warnings[#warnings + 1] = "wire protocol compression with snappy is not available; "
+        .. "install lua-csnappy for Snappy support"
+    end
+  end
+end
+
 local function shallow_copy(value)
   if type(value) ~= "table" then
     return value
@@ -873,6 +884,8 @@ function M.connect(uri, values)
     return true
   end
   local warnings = combine_warnings(parsed, option_warnings)
+
+  append_compression_warnings(warnings, config, runtime.compression)
 
   if parsed.is_srv or config.replica_set ~= nil or config.min_pool_size > 0
       or special.pool_listeners ~= nil or special.sdam_listeners ~= nil

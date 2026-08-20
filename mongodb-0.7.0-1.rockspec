@@ -32,6 +32,7 @@ dependencies = {
 
 test_dependencies = {
   "busted == 2.3.0-1",
+  "lua-csnappy == 0.1.5-2",
   "luacheck == 1.2.0-1",
   "luacov == 0.17.0-1",
 }
@@ -90,6 +91,7 @@ build = {
     ["mongodb.runtime.luasec"] = "src/mongodb/runtime/luasec.lua",
     ["mongodb.runtime.openssl"] = "src/mongodb/runtime/openssl.lua",
     ["mongodb.runtime.sha256"] = "src/mongodb/runtime/sha256.lua",
+    ["mongodb.runtime.snappy"] = "src/mongodb/runtime/snappy.lua",
     ["mongodb.runtime.zlib"] = "src/mongodb/runtime/zlib.lua",
     ["mongodb.runtime"] = "src/mongodb/runtime/init.lua",
     ["mongodb.runtime.fake"] = "src/mongodb/runtime/fake.lua",

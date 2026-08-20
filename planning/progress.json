@@ -7011,6 +7011,28 @@
       "reopened_after_commit": "9426008890c0671049d741a8cf3ef335c9f7a24c",
       "started_at": "2026-08-20T17:48:27+00:00",
       "completed_at": "2026-08-20T17:51:02+00:00"
+    },
+    "WIRE-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:/usr/bin:/bin LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/snappy_runtime_spec.lua'",
+          "exit_code": 2,
+          "summary": "0 passed, 1 error: mongodb.runtime.snappy was absent, so the exact-vector capability contract could not load.",
+          "recorded_at": "2026-08-20T18:05:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Lua 5.4: make test-focus FOCUS_UNIT='spec/unit/snappy_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.package.test_package.PackageTests.test_release_dependencies_support_declared_lua_runtimes' FOCUS_LINT='src/mongodb/runtime/snappy.lua src/mongodb/runtime/copas.lua src/mongodb/client.lua spec/unit/snappy_runtime_spec.lua spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua'; Lua 5.5: make test-focus FOCUS_UNIT='spec/unit/snappy_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua'; make test-package; make rockspec; make test-architecture; make test-complexity; python3 planning/update_readme_compatibility.py --check; git diff --check",
+          "exit_code": 0,
+          "summary": "Lua 5.4 and 5.5 each passed 4 Snappy unit and 8 directly coupled TCP/client cases with 0 failed, errored, or pending; 1 focused package dependency case and all 3 isolated source-rock cases passed; 6 touched Lua files lint clean; rockspec, architecture, complexity, README projection, and diff validators passed; the prose-only compression specification has 0 unified fixtures and remains assigned to CON-008 for final accounting.",
+          "recorded_at": "2026-08-20T18:13:16+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T18:00:44+00:00",
+      "completed_at": "2026-08-20T18:13:17+00:00"
     }
   },
   "verified_references": {

@@ -143,8 +143,11 @@ def local_source_rockspec(directory: Path) -> Path:
 class PackageTests(unittest.TestCase):
   def test_release_dependencies_support_declared_lua_runtimes(self) -> None:
     rockspec = ROCKSPEC.read_text(encoding="utf-8")
+    runtime_dependencies = rockspec.split("dependencies = {", 1)[1].split("}", 1)[0]
 
     self.assertNotIn('"luaossl ', rockspec)
+    self.assertNotIn('"lua-csnappy ', runtime_dependencies)
+    self.assertIn('"lua-csnappy == 0.1.5-2"', rockspec)
 
     for dependency in (
       '"lua-cryptorandom >= 0.0.6, < 0.1"',

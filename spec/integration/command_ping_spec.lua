@@ -4,6 +4,7 @@ local copas = require("copas")
 local op_compressed = require("mongodb.wire.op_compressed")
 local op_msg = require("mongodb.wire.op_msg")
 local runtime = require("mongodb.runtime")
+local runtime_snappy = require("mongodb.runtime.snappy")
 local runtime_zlib = require("mongodb.runtime.zlib")
 local socket = require("socket")
 local transport = require("mongodb.network.transport")
@@ -30,6 +31,82 @@ local function send_response(client, request, body)
   }))
 
   assert(client:send(response))
+end
+
+local function assert_compressed_ping(name, provider, command_options)
+  local compression = { [name] = provider }
+  local server = assert(socket.bind("127.0.0.1", 0))
+  local _, port = assert(server:getsockname())
+  local outcome
+  local server_error
+
+  port = assert(math.tointeger(port))
+  copas.addserver(server, function(client)
+    local ok, err = pcall(function()
+      client = copas.wrap(client)
+      local handshake_bytes, handshake_op_code = receive_frame(client, compression)
+      local handshake = assert(op_msg.decode(handshake_bytes, {
+        direction = "request",
+      }))
+
+      assert.are.equal(op_msg.OP_CODE, handshake_op_code)
+      assert.are.same({ name }, handshake.body:get("compression"):values())
+      send_response(client, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+        { "compression", bson.array({ name }) },
+      }))
+
+      local ping_bytes, ping_op_code = receive_frame(client, compression)
+      local ping = assert(op_msg.decode(ping_bytes, { direction = "request" }))
+
+      assert.are.equal(op_compressed.OP_CODE, ping_op_code)
+      assert.are.equal("ping", ping.body:keys()[1])
+      send_response(client, ping, bson.document({ { "ok", 1 } }))
+      client:close()
+    end)
+
+    if not ok then
+      server_error = err
+      pcall(client.close, client)
+    end
+  end)
+
+  copas.loop(function()
+    outcome = table.pack(pcall(function()
+      local adapter = runtime.copas({ compression = compression })
+      local deadline = runtime.deadline_after(adapter, 2)
+      local connection = assert(transport.connect(adapter, "127.0.0.1", port, {
+        deadline = deadline,
+      }))
+      local options = {
+        compression = compression,
+        compressors = { name },
+        server = "127.0.0.1:" .. port,
+      }
+
+      for key, value in pairs(command_options or {}) do
+        options[key] = value
+      end
+
+      local commands = command_executor.new(connection, options)
+
+      assert(commands:hello({ deadline = deadline }))
+      assert(commands:command("admin", bson.document({ { "ping", 1 } }), {
+        deadline = deadline,
+      }))
+      assert.is_true(commands:close())
+    end))
+    copas.removeserver(server)
+  end)
+
+  if server_error then
+    error(server_error, 0)
+  elseif not outcome[1] then
+    error(outcome[2], 0)
+  end
 end
 
 describe("standalone command execution", function()
@@ -88,73 +165,14 @@ describe("standalone command execution", function()
 
   it("negotiates zlib and sends an eligible ping as OP_COMPRESSED", function()
     local provider = assert(runtime_zlib.load())
-    local compression = { zlib = provider }
-    local server = assert(socket.bind("127.0.0.1", 0))
-    local _, port = assert(server:getsockname())
-    local outcome
-    local server_error
 
-    port = assert(math.tointeger(port))
-    copas.addserver(server, function(client)
-      local ok, err = pcall(function()
-        client = copas.wrap(client)
-        local handshake_bytes, handshake_op_code = receive_frame(client, compression)
-        local handshake = assert(op_msg.decode(handshake_bytes, {
-          direction = "request",
-        }))
+    assert_compressed_ping("zlib", provider, { zlib_compression_level = 6 })
+  end)
 
-        assert.are.equal(op_msg.OP_CODE, handshake_op_code)
-        assert.are.same({ "zlib" }, handshake.body:get("compression"):values())
-        send_response(client, handshake, bson.document({
-          { "ok", 1 },
-          { "helloOk", true },
-          { "isWritablePrimary", true },
-          { "maxWireVersion", 25 },
-          { "compression", bson.array({ "zlib" }) },
-        }))
+  it("negotiates Snappy and sends an eligible ping with compressor id 1", function()
+    local provider = assert(runtime_snappy.load())
 
-        local ping_bytes, ping_op_code = receive_frame(client, compression)
-        local ping = assert(op_msg.decode(ping_bytes, { direction = "request" }))
-
-        assert.are.equal(op_compressed.OP_CODE, ping_op_code)
-        assert.are.equal("ping", ping.body:keys()[1])
-        send_response(client, ping, bson.document({ { "ok", 1 } }))
-        client:close()
-      end)
-
-      if not ok then
-        server_error = err
-        pcall(client.close, client)
-      end
-    end)
-
-    copas.loop(function()
-      outcome = table.pack(pcall(function()
-        local adapter = runtime.copas({ compression = compression })
-        local deadline = runtime.deadline_after(adapter, 2)
-        local connection = assert(transport.connect(adapter, "127.0.0.1", port, {
-          deadline = deadline,
-        }))
-        local commands = command_executor.new(connection, {
-          compression = compression,
-          compressors = { "zlib" },
-          server = "127.0.0.1:" .. port,
-          zlib_compression_level = 6,
-        })
-
-        assert(commands:hello({ deadline = deadline }))
-        assert(commands:command("admin", bson.document({ { "ping", 1 } }), {
-          deadline = deadline,
-        }))
-        assert.is_true(commands:close())
-      end))
-      copas.removeserver(server)
-    end)
-
-    if server_error then
-      error(server_error, 0)
-    elseif not outcome[1] then
-      error(outcome[2], 0)
-    end
+    assert.are.equal(1, provider.compressor_id)
+    assert_compressed_ping("snappy", provider)
   end)
 end)
