@@ -356,6 +356,7 @@ local function execute(state, database, command, options)
   local request_id = state.request_ids:next()
   local io_deadline = options.socket_deadline or options.deadline
   local body = envelope(command, database, state.server_api)
+  local command_name = command:get_at(1)
   local flags = 0
 
   if options.no_response then
@@ -381,8 +382,24 @@ local function execute(state, database, command, options)
     return nil, err
   end
 
+  local compressor = compressor_for(state, command_name)
+
+  if compressor then
+    bytes, err = op_compressed.encode({
+      body = bytes:sub(17),
+      compression_level = state.zlib_compression_level,
+      compressor = compressor,
+      max_message_size = state.max_message_size,
+      original_opcode = op_msg.OP_CODE,
+      request_id = request_id,
+    })
+
+    if not bytes then
+      return nil, err
+    end
+  end
+
   local span
-  local command_name = command:get_at(1)
   local sensitive = command_security.is_sensitive(command_name, command)
 
   if options.monitor ~= false and state.monitoring and state.monitoring:has_listeners() then
@@ -640,6 +657,15 @@ function M.new(connection, options)
     error("command executor compression capabilities must be a table", 2)
   end
 
+  local zlib_compression_level = options.zlib_compression_level or -1
+
+  if math.type(zlib_compression_level) ~= "integer"
+      or zlib_compression_level < -1
+      or zlib_compression_level > 9
+  then
+    error("command executor zlib compression level must be an integer from -1 through 9", 2)
+  end
+
   local compression = options.compression or {}
   local value = {}
 
@@ -662,6 +688,7 @@ function M.new(connection, options)
     server_connection_id = nil,
     server_api = options.server_api,
     service_id = nil,
+    zlib_compression_level = zlib_compression_level,
   }
 
   return setmetatable(value, EXECUTOR_METATABLE)

@@ -6965,6 +6965,28 @@
       "notes": [],
       "started_at": "2026-08-20T17:23:37+00:00",
       "completed_at": "2026-08-20T17:25:32+00:00"
+    },
+    "WIRE-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+          "exit_code": 2,
+          "summary": "10 successes, 1 failure: a negotiated eligible ping still used OP_MSG 2013 instead of OP_COMPRESSED 2012",
+          "recorded_at": "2026-08-20T17:36:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/op_compressed_spec.lua spec/unit/command_monitoring_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/command/executor.lua src/mongodb/client.lua spec/unit/command_executor_spec.lua spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua'",
+          "exit_code": 0,
+          "summary": "28 executed and passed (22 unit, 6 standalone/sharded TCP integration), 0 failed/error/pending; touched lint 5 files with 0 warnings/errors; 0 unified cases exist for the prose-only compression spec; architecture, complexity, and README projection validators passed",
+          "recorded_at": "2026-08-20T17:41:02+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T17:34:37+00:00",
+      "completed_at": "2026-08-20T17:41:04+00:00"
     }
   },
   "verified_references": {

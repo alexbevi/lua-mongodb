@@ -471,6 +471,7 @@ local function open_executor(
     monitoring = monitor,
     server = server_address,
     server_api = config.server_api,
+    zlib_compression_level = config.zlib_compression_level,
   })
   local hello_options = {
     cancellation = fields.cancellation,

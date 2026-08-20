@@ -2,18 +2,28 @@ local bson = require("mongodb.bson")
 local copas = require("copas")
 local errors = require("mongodb.error")
 local mongodb = require("mongodb")
+local op_compressed = require("mongodb.wire.op_compressed")
 local op_msg = require("mongodb.wire.op_msg")
+local runtime_zlib = require("mongodb.runtime.zlib")
 local socket = require("socket")
 
-local function receive_frame(client)
-  local header = assert(client:receive(4))
-  local size = string.unpack("<i4", header)
-  return assert(op_msg.decode(header .. assert(client:receive(size - 4)), {
-    direction = "request",
-  }))
+local function decode_request(bytes, compression)
+  local op_code = string.unpack("<i4", bytes, 13)
+
+  if op_code == op_compressed.OP_CODE then
+    bytes = assert(op_compressed.decode(bytes, { compression = compression }))
+  end
+
+  return assert(op_msg.decode(bytes, { direction = "request" })), op_code
 end
 
-local function receive_frame_or_closed(client)
+local function receive_frame(client, compression)
+  local header = assert(client:receive(4))
+  local size = string.unpack("<i4", header)
+  return decode_request(header .. assert(client:receive(size - 4)), compression)
+end
+
+local function receive_frame_or_closed(client, compression)
   local header, err = client:receive(4)
 
   if header == nil and err == "closed" then
@@ -22,9 +32,7 @@ local function receive_frame_or_closed(client)
 
   assert(header, err)
   local size = string.unpack("<i4", header)
-  return assert(op_msg.decode(header .. assert(client:receive(size - 4)), {
-    direction = "request",
-  }))
+  return decode_request(header .. assert(client:receive(size - 4)), compression)
 end
 
 local function send_response(client, request, body)
@@ -334,9 +342,13 @@ describe("public standalone client API", function()
 end)
 
 describe("public sharded client API", function()
-  it("discovers mongos and executes an ordinary command through it", function()
+  it("discovers mongos and executes a zlib-compressed command through it", function()
+    local provider = assert(runtime_zlib.load())
+    local compression = { zlib = provider }
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())
+    local compression_offers = 0
+    local compressed_pings = 0
     local handshakes = 0
     local pings = 0
     local outcome
@@ -348,7 +360,7 @@ describe("public sharded client API", function()
         peer = copas.wrap(peer)
 
         while true do
-          local request = receive_frame_or_closed(peer)
+          local request, op_code = receive_frame_or_closed(peer, compression)
 
           if request == nil then
             break
@@ -358,15 +370,32 @@ describe("public sharded client API", function()
 
           if name == "hello" or name == "ismaster" then
             handshakes = handshakes + 1
-            send_response(peer, request, bson.document({
+            local entries = {
               { "ok", 1 },
               { "helloOk", true },
               { "isWritablePrimary", true },
               { "logicalSessionTimeoutMinutes", 30 },
               { "maxWireVersion", 25 },
               { "msg", "isdbgrid" },
-            }))
+            }
+
+            if request.body:get("compression") ~= nil then
+              assert.are.equal(op_msg.OP_CODE, op_code)
+              assert.are.same(
+                { "zlib" },
+                request.body:get("compression"):values()
+              )
+              entries[#entries + 1] = {
+                "compression",
+                bson.array({ "zlib" }),
+              }
+              compression_offers = compression_offers + 1
+            end
+
+            send_response(peer, request, bson.document(entries))
           elseif name == "ping" then
+            assert.are.equal(op_compressed.OP_CODE, op_code)
+            compressed_pings = compressed_pings + 1
             pings = pings + 1
             send_response(peer, request, bson.document({ { "ok", 1 } }))
           elseif name == "endSessions" then
@@ -387,10 +416,11 @@ describe("public sharded client API", function()
     copas.loop(function()
       outcome = table.pack(pcall(function()
         local client = assert(mongodb.client(
-          "mongodb://127.0.0.1:" .. port .. "/app",
+          "mongodb://127.0.0.1:" .. port
+            .. "/app?compressors=zlib&zlibCompressionLevel=6",
           {
             heartbeat_frequency_ms = 500,
-            runtime = mongodb.runtime.copas(),
+            runtime = mongodb.runtime.copas({ compression = compression }),
             server_selection_timeout_ms = 2000,
           }
         ))
@@ -409,6 +439,8 @@ describe("public sharded client API", function()
     end
 
     assert.is_true(handshakes >= 3)
+    assert.is_true(compression_offers >= 3)
+    assert.are.equal(1, compressed_pings)
     assert.are.equal(1, pings)
   end)
 end)

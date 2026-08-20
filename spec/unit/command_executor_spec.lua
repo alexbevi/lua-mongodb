@@ -3,6 +3,7 @@ local errors = require("mongodb.error")
 local executor = require("mongodb.command.executor")
 local handshake_metadata = require("mongodb.handshake.metadata")
 local monitoring = require("mongodb.monitoring")
+local op_compressed = require("mongodb.wire.op_compressed")
 local op_msg = require("mongodb.wire.op_msg")
 
 local function fake_connection(responses)
@@ -40,6 +41,146 @@ local function fake_connection(responses)
 end
 
 describe("single-connection command executor", function()
+  it("compresses eligible commands and accepts either reply framing", function()
+    local compression_levels = {}
+    local provider = {
+      compressor_id = 2,
+      compress = function(_, body, level)
+        compression_levels[#compression_levels + 1] = level
+        return "z" .. body
+      end,
+      decompress = function(_, body)
+        assert.are.equal("z", body:sub(1, 1))
+        return body:sub(2)
+      end,
+      name = "zlib",
+    }
+    local requests = {}
+    local connection = {}
+
+    function connection.write_all(_, bytes)
+      local op_code = string.unpack("<i4", bytes, 13)
+      local decoded = bytes
+
+      if op_code == op_compressed.OP_CODE then
+        decoded = assert(op_compressed.decode(bytes, {
+          compression = { zlib = provider },
+        }))
+      end
+
+      local request = assert(op_msg.decode(decoded, { direction = "request" }))
+
+      requests[#requests + 1] = {
+        body = request.body,
+        op_code = op_code,
+        request_id = request.request_id,
+      }
+      return true
+    end
+
+    function connection.read_frame()
+      local index = #requests
+      local body
+
+      if index == 1 then
+        body = bson.document({
+          { "ok", 1 },
+          { "helloOk", true },
+          { "maxWireVersion", 25 },
+          { "compression", bson.array({ "zlib" }) },
+        })
+      elseif index == 2 then
+        body = bson.document({ { "ok", 1 }, { "value", "compressed" } })
+      elseif index == 3 then
+        body = bson.document({ { "ok", 1 }, { "value", "ordinary" } })
+      else
+        body = bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } })
+      end
+
+      local response = assert(op_msg.encode({
+        body = body,
+        direction = "response",
+        request_id = 900 + index,
+        response_to = requests[index].request_id,
+      }))
+
+      if index ~= 2 then
+        return response
+      end
+
+      local response_body = response:sub(17)
+      local compressed = "z" .. response_body
+
+      return string.pack(
+        "<i4i4i4i4i4i4B",
+        25 + #compressed,
+        900 + index,
+        requests[index].request_id,
+        op_compressed.OP_CODE,
+        op_msg.OP_CODE,
+        #response_body,
+        provider.compressor_id
+      ) .. compressed
+    end
+
+    function connection.close()
+      return true
+    end
+
+    local observed = {}
+    local current_time = 0
+    local events = monitoring.new({
+      clock = {
+        now = function()
+          current_time = current_time + 1
+          return current_time
+        end,
+      },
+      listeners = {
+        {
+          started = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          succeeded = function(_, event)
+            observed[#observed + 1] = event
+          end,
+        },
+      },
+    })
+    local commands = assert(executor.new(connection, {
+      compression = { zlib = provider },
+      compressors = { "zlib" },
+      monitoring = events,
+      zlib_compression_level = 6,
+    }))
+
+    assert(commands:hello())
+    local compressed_reply = assert(commands:command(
+      "admin",
+      bson.document({ { "ping", 1 } })
+    ))
+    local ordinary_reply = assert(commands:command(
+      "admin",
+      bson.document({ { "ping", 1 } })
+    ))
+
+    assert(commands:hello())
+    assert.are.equal(op_msg.OP_CODE, requests[1].op_code)
+    assert.are.equal(op_compressed.OP_CODE, requests[2].op_code)
+    assert.are.equal(op_compressed.OP_CODE, requests[3].op_code)
+    assert.are.equal(op_msg.OP_CODE, requests[4].op_code)
+    assert.are.same({ 6, 6 }, compression_levels)
+    assert.are.equal("compressed", compressed_reply:get("value"))
+    assert.are.equal("ordinary", ordinary_reply:get("value"))
+    assert.are.same(
+      { "command_started", "command_succeeded", "command_started", "command_succeeded" },
+      { observed[1].type, observed[2].type, observed[3].type, observed[4].type }
+    )
+    assert.are.equal("ping", observed[1].command_name)
+    assert.are.equal("ping", observed[1].command:keys()[1])
+    assert.are.equal(requests[2].request_id, observed[1].request_id)
+  end)
+
   it("excludes every prohibited command from negotiated compression", function()
     local provider = { name = "zlib" }
     local connection = fake_connection({

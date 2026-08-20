@@ -10,7 +10,7 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 - [Copas](https://lunarmodules.github.io/copas/) 4.11.x.
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
-- `sha1` 0.5, `md5` 1.3, and `lua-cryptorandom` 0.0.6 or compatible releases.
+- `sha1` 0.5, `md5` 1.3, `lua-cryptorandom` 0.0.6, and `lua-zlib` 1.4 or compatible releases.
 - OpenSSL libraries and development headers required by the TLS dependency and by `lua-cryptorandom` on supported Unix-like platforms.
 
 LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency; the supported server versions and deployment types are listed under [Scope](#scope).
@@ -79,6 +79,14 @@ mongodb.run(function()
 end)
 ```
 
+Wire compression is opt-in and negotiated independently on every connection. Enable zlib with the `compressors` option; when several compressors are listed, their order defines client preference. `zlibCompressionLevel` accepts `-1` (the default) through `9`. A server with no common compressor remains usable without compression, while handshake, authentication, and user-management commands always remain uncompressed.
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb://db.example.com/app?compressors=zlib&zlibCompressionLevel=6"
+))
+```
+
 #### Authentication
 
 Select an authentication mechanism with standard MongoDB URI options. Credentials and tokens are kept out of structured errors, and runtime-backed mechanisms resolve workload credentials when a connection authenticates.
@@ -142,6 +150,7 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 | TLS | `tls`/`ssl`, `tlsCAFile`, `tlsCertificateKeyFile`, `tlsCertificateKeyFilePassword`, `tlsInsecure`, `tlsAllowInvalidCertificates`, `tlsAllowInvalidHostnames`, `tlsDisableCertificateRevocationCheck`, `tlsDisableOCSPEndpointCheck` |
 | Authentication and metadata | `appName`, `authSource`, `authMechanism`, `authMechanismProperties` |
 | Connection and selection | `connectTimeoutMS`, `socketTimeoutMS`, `serverSelectionTimeoutMS`, `serverSelectionTryOnce`, `timeoutMS`, `localThresholdMS`, `heartbeatFrequencyMS`, `serverMonitoringMode`, `directConnection`, `replicaSet`, `loadBalanced` |
+| Wire compression | `compressors`, `zlibCompressionLevel` |
 | Pooling | `maxPoolSize`, `minPoolSize`, `maxConnecting`, `maxIdleTimeMS`, `waitQueueTimeoutMS` |
 | Reads, writes, and retries | `readPreference`, `readPreferenceTags`, `maxStalenessSeconds`, `readConcernLevel`, `w`, `journal`, `wTimeoutMS`, `retryReads`, `retryWrites` |
 

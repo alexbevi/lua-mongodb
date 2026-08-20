@@ -17,15 +17,15 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 262,
+    "completed": 263,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 14
+    "pending": 13
   },
   "active": [],
   "ready": [
     "ADV-002",
-    "WIRE-007",
+    "WIRE-008",
     "ADV-006",
     "AUTH-019",
     "ADV-009",
@@ -41,7 +41,7 @@
     "spec-suite-completeness": [],
     "v0-5-v0-7-api": [],
     "v0-8-wire-compression": [
-      "WIRE-007"
+      "WIRE-008"
     ],
     "macos-ci-signal": [],
     "driver-examples": [],
