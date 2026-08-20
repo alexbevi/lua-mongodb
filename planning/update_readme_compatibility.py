@@ -17,6 +17,7 @@ DEFAULT_CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 DEFAULT_README = ROOT / "README.md"
 BEGIN = "<!-- BEGIN SPEC CONFORMANCE -->"
 END = "<!-- END SPEC CONFORMANCE -->"
+SPECIFICATIONS_URL = "https://alexbevi.com/specifications/"
 
 DRIVER_LAYERS = (
   ("Serialization", (
@@ -73,12 +74,67 @@ DRIVER_LAYERS = (
   )),
   ("Testability", (
     ("unified-test-format", "Unified test format"),
-    ("atlas-sfp-testing", "Atlas SFP testing"),
   )),
 )
 
+SPECIFICATION_DOCUMENTS = {
+  "auth": "auth/auth.md",
+  "bson-binary-vector": "bson-binary-vector/bson-binary-vector.md",
+  "bson-corpus": "bson-corpus/bson-corpus.md",
+  "causal-consistency": "causal-consistency/causal-consistency.md",
+  "change-streams": "change-streams/change-streams.md",
+  "client-backpressure": (
+    "connection-monitoring-and-pooling/connection-monitoring-and-pooling.md"
+  ),
+  "client-side-encryption": "client-side-encryption/client-side-encryption.md",
+  "client-side-operations-timeout": (
+    "client-side-operations-timeout/client-side-operations-timeout.md"
+  ),
+  "collection-management": "enumerate-collections/enumerate-collections.md",
+  "command-logging-and-monitoring": (
+    "command-logging-and-monitoring/command-logging-and-monitoring.md"
+  ),
+  "compression": "compression/OP_COMPRESSED.md",
+  "connection-monitoring-and-pooling": (
+    "connection-monitoring-and-pooling/connection-monitoring-and-pooling.md"
+  ),
+  "connection-string": "connection-string/connection-string-spec.md",
+  "crud": "crud/crud.md",
+  "gridfs": "gridfs/gridfs-spec.md",
+  "index-management": "index-management/index-management.md",
+  "initial-dns-seedlist-discovery": (
+    "initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.md"
+  ),
+  "load-balancers": "load-balancers/load-balancers.md",
+  "logging": "logging/logging.md",
+  "max-staleness": "max-staleness/max-staleness.md",
+  "mongodb-handshake": "mongodb-handshake/handshake.md",
+  "ocsp-support": "ocsp-support/ocsp-support.md",
+  "open-telemetry": "open-telemetry/open-telemetry.md",
+  "polling-srv-records-for-mongos-discovery": (
+    "polling-srv-records-for-mongos-discovery/"
+    "polling-srv-records-for-mongos-discovery.md"
+  ),
+  "read-write-concern": "read-write-concern/read-write-concern.md",
+  "retryable-reads": "retryable-reads/retryable-reads.md",
+  "retryable-writes": "retryable-writes/retryable-writes.md",
+  "run-command": "run-command/run-command.md",
+  "server-discovery-and-monitoring": (
+    "server-discovery-and-monitoring/server-discovery-and-monitoring.md"
+  ),
+  "server-selection": "server-selection/server-selection.md",
+  "sessions": "sessions/driver-sessions.md",
+  "socks5-support": "socks5-support/socks5.md",
+  "transactions": "transactions/transactions.md",
+  "transactions-convenient-api": (
+    "transactions-convenient-api/transactions-convenient-api.md"
+  ),
+  "unified-test-format": "unified-test-format/unified-test-format.md",
+  "uri-options": "uri-options/uri-options.md",
+  "versioned-api": "versioned-api/versioned-api.md",
+}
+
 CATALOG_PROSE_SUITES = frozenset({
-  "atlas-sfp-testing",
   "compression",
   "logging",
   "ocsp-support",
@@ -225,6 +281,17 @@ def supported_percentage(counts: dict[str, int]) -> str:
   return f"{counts.get('passed', 0) / total * 100:.1f}%"
 
 
+def specification_url(suite: str) -> str:
+  document = SPECIFICATION_DOCUMENTS[suite]
+
+  if not document.endswith(".md"):
+    raise ReadmeCompatibilityError(
+      f"specification document is not Markdown: {document}"
+    )
+
+  return f"{SPECIFICATIONS_URL}{document[:-3]}.html"
+
+
 def render_table(
   path: Path = DEFAULT_LEDGER,
   catalog_path: Path = DEFAULT_CATALOG,
@@ -254,6 +321,28 @@ def render_table(
       "accepted specification catalog suites must be an object"
     )
 
+  if set(SPECIFICATION_DOCUMENTS) != mapped:
+    missing = sorted(mapped - set(SPECIFICATION_DOCUMENTS))
+    stale = sorted(set(SPECIFICATION_DOCUMENTS) - mapped)
+    raise ReadmeCompatibilityError(
+      f"specification links differ from onion rows; "
+      f"missing={missing}, stale={stale}"
+    )
+
+  catalog_documents = {
+    document
+    for metadata in catalog_suites.values()
+    if isinstance(metadata, dict)
+    for document in metadata.get("documents", [])
+    if isinstance(document, str)
+  }
+  unknown_documents = sorted(set(SPECIFICATION_DOCUMENTS.values()) - catalog_documents)
+
+  if unknown_documents:
+    raise ReadmeCompatibilityError(
+      f"specification links are absent from the accepted catalog: {unknown_documents}"
+    )
+
   mismatched_layers = sorted(
     suite for suite in CATALOG_PROSE_SUITES
     if not isinstance(catalog_suites.get(suite), dict)
@@ -269,13 +358,20 @@ def render_table(
     "| Driver layer | Specification suite | Status | Tracked support % |",
     "| --- | --- | :---: | ---: |",
   ]
+  total_counts: Counter[str] = Counter()
 
   for layer, entries in DRIVER_LAYERS:
     for suite, label in entries:
+      total_counts.update(counts[suite])
       lines.append(
-        f"| {layer} | {label} | {status_marker(counts[suite])} | "
+        f"| {layer} | [{label}]({specification_url(suite)}) | "
+        f"{status_marker(counts[suite])} | "
         f"{supported_percentage(counts[suite])} |"
       )
+
+  lines.append(
+    f"|  | **Total** |  | **{supported_percentage(total_counts)}** |"
+  )
 
   return "\n".join(lines)
 

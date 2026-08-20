@@ -65,7 +65,6 @@ class ReadmeCompatibilityTests(unittest.TestCase):
 
     self.assertEqual(set(readme_compatibility.suite_counts()), suites)
     self.assertTrue({
-      "atlas-sfp-testing",
       "compression",
       "logging",
       "ocsp-support",
@@ -85,22 +84,35 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       table,
     )
     self.assertNotIn("Tests Passing", table)
-    self.assertIn("| Serialization | BSON corpus | 🟢 | 100.0% |", table)
     self.assertIn(
-      "| Authentication | Authentication options and additional mechanisms | "
-      "🟡 | 83.6% |",
+      "| Serialization | [BSON corpus](https://alexbevi.com/specifications/"
+      "bson-corpus/bson-corpus.html) | 🟢 | 100.0% |",
+      table,
+    )
+    self.assertIn(
+      "| Authentication | [Authentication options and additional mechanisms]"
+      "(https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 83.6% |",
       table,
     )
     self.assertRegex(
       table,
-      r"\| Resilience \| Client-side operations timeout \| 🟡 \| \d+\.\d% \|",
+      r"\| Resilience \| \[Client-side operations timeout\]"
+      r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
+      r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
+    self.assertIn("|  | **Total** |  | **75.1%** |", table)
+    self.assertIn(
+      "| Observability | [Client backpressure](https://alexbevi.com/"
+      "specifications/connection-monitoring-and-pooling/"
+      "connection-monitoring-and-pooling.html) | 🔴 | 0.0% |",
+      table,
+    )
+    self.assertNotIn("Atlas SFP testing", table)
 
   def test_prose_only_rows_use_catalog_requirement_outcomes(self) -> None:
     counts = readme_compatibility.suite_counts()
 
     for suite in (
-      "atlas-sfp-testing",
       "compression",
       "logging",
       "ocsp-support",
@@ -114,12 +126,12 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
 
     table = readme_compatibility.render_table()
-    self.assertIn("| Communication | OCSP support | 🔴 | 0.0% |", table)
-    self.assertIn("| Communication | Wire compression | 🔴 | 0.0% |", table)
-    self.assertIn("| Communication | SOCKS5 proxy support | 🔴 | 0.0% |", table)
-    self.assertIn("| Observability | Standardized logging | 🔴 | 0.0% |", table)
-    self.assertIn("| Availability | Periodic SRV polling | 🟢 | 100.0% |", table)
-    self.assertIn("| Testability | Atlas SFP testing | 🔴 | 0.0% |", table)
+    self.assertIn("[OCSP support]", table)
+    self.assertIn("[Wire compression]", table)
+    self.assertIn("[SOCKS5 proxy support]", table)
+    self.assertIn("[Standardized logging]", table)
+    self.assertIn("[Periodic SRV polling]", table)
+    self.assertNotIn("Atlas SFP testing", table)
 
 
 if __name__ == "__main__":
