@@ -10,6 +10,7 @@ local SOURCE = ROOT .. "/planning/specifications/source/"
 
 local URI_FIXTURES = {
   "auth-options.json",
+  "compression-options.json",
   "concern-options.json",
   "connection-options.json",
   "connection-pool-options.json",
@@ -26,6 +27,7 @@ local OPTION_PATHS = {
   authMechanismProperties = { "auth_mechanism_properties" },
   authSource = { "auth_source" },
   connectTimeoutMS = { "connect_timeout_ms" },
+  compressors = { "compressors" },
   directConnection = { "direct_connection" },
   heartbeatFrequencyMS = { "heartbeat_frequency_ms" },
   journal = { "write_concern", "journal" },
@@ -61,6 +63,7 @@ local OPTION_PATHS = {
   tlsInsecure = { "tls_insecure" },
   w = { "write_concern", "w" },
   wTimeoutMS = { "write_concern", "w_timeout_ms" },
+  zlibCompressionLevel = { "zlib_compression_level" },
 }
 
 local READ_PREFERENCE_MODES = {

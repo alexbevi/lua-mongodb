@@ -1,7 +1,6 @@
 {
   "deferred_by_activity": {
     "ADV-002": 175,
-    "ADV-004": 5,
     "ADV-006": 61,
     "ADV-009": 230,
     "ADV-010": 777,
@@ -9,7 +8,7 @@
     "AUTH-019": 11
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1274
+    "post-v1-exclusion": 1269
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -118,9 +117,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1274,
+    "deferred_unsupported": 1269,
     "excluded_scope": 97,
-    "passed": 4153
+    "passed": 4158
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

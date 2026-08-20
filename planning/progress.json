@@ -6833,6 +6833,28 @@
       "reopened_after_commit": "04fecbe1d64fa91c66e6b60f611e821b50806d54",
       "started_at": "2026-08-20T00:17:52+00:00",
       "completed_at": "2026-08-20T00:21:16+00:00"
+    },
+    "ADV-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/config_fixtures_spec.lua",
+          "exit_code": 2,
+          "summary": "Pinned compression URI fixture failed because compressors and zlibCompressionLevel were unsupported and emitted an unexpected warning",
+          "recorded_at": "2026-08-20T16:01:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=<lua54-toolchain> make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua spec/unit/config_options_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.conformance.test_catalog spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<4 touched Lua files>'; make test-complexity; run capability, ledger, catalog, release-scope, README, checklist, JSON, Python compile, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "All five pinned compression URI cases and programmatic normalization passed; 20 coupled Python contracts, touched-file lint, complexity, and all generated artifact validators passed",
+          "recorded_at": "2026-08-20T16:09:15+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T16:00:40+00:00",
+      "completed_at": "2026-08-20T16:09:27+00:00"
     }
   },
   "verified_references": {

@@ -79,11 +79,11 @@
       "status": "passed"
     },
     "compression/OP_COMPRESSED.md": {
-      "activity": "ADV-004",
+      "activity": "WIRE-007",
       "last_execution": null,
-      "reason": "OP_COMPRESSED negotiation, framing, and codecs remain a declared post-v1 feature.",
+      "reason": "Compression options are normalized, while OP_COMPRESSED negotiation, framing, and command execution remain assigned to WIRE-007.",
       "required_environment": "live-mongodb",
-      "runner": "pending:ADV-004",
+      "runner": "pending:WIRE-007",
       "status": "deferred_unsupported"
     },
     "dbref/dbref.md": {

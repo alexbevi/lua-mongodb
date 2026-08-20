@@ -414,13 +414,13 @@
       "suite": "collation"
     },
     "compression/OP_COMPRESSED.md::document": {
-      "activity": "ADV-004",
+      "activity": "WIRE-007",
       "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
       "format": "prose",
       "last_execution": null,
-      "reason": "OP_COMPRESSED negotiation, framing, and codecs remain a declared post-v1 feature.",
+      "reason": "Compression options are normalized, while OP_COMPRESSED negotiation, framing, and command execution remain assigned to WIRE-007.",
       "required_environment": "live-mongodb",
-      "runner": "pending:ADV-004",
+      "runner": "pending:WIRE-007",
       "scope": "post-v1",
       "source": "compression/OP_COMPRESSED.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",

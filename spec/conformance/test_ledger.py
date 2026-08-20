@@ -81,10 +81,22 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1274,
+      "deferred_unsupported": 1269,
       "excluded_scope": 97,
-      "passed": 4153,
+      "passed": 4158,
     }, generated["summary"]["statuses"])
+
+    compression_options = [
+      case for case in generated["cases"].values()
+      if case["source"] == "uri-options/tests/compression-options.json"
+    ]
+    self.assertEqual(5, len(compression_options))
+    self.assertTrue(all(
+      case["activity"] == "ADV-004"
+      and case["status"] == "passed"
+      and case["runner"] == "spec/support/config_runner.lua"
+      for case in compression_options
+    ))
 
     sharded_command_cursor = generated["cases"][
       "run-command/tests/unified/runCursorCommand.json::test[1]"

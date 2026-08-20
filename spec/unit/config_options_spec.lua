@@ -105,6 +105,42 @@ describe("driver option normalization", function()
     assert.is_false(config.server_selection_try_once)
   end)
 
+  it("normalizes ordered wire compression options before connection I/O", function()
+    local parsed = assert(uri.parse(
+      "mongodb://localhost/?compressors=snappy,unknown,zlib"
+        .. "&zlibCompressionLevel=9"
+    ))
+    local config, err, warnings = options.normalize(parsed.options)
+
+    assert.is_nil(err)
+    assert.are.same({ "snappy", "zlib" }, config.compressors)
+    assert.are.equal(9, config.zlib_compression_level)
+    assert.are.equal(1, #warnings)
+
+    local overridden = assert(options.normalize(parsed.options, {
+      compressors = { "zstd", "zlib" },
+      zlib_compression_level = -1,
+    }))
+
+    assert.are.same({ "zstd", "zlib" }, overridden.compressors)
+    assert.are.equal(-1, overridden.zlib_compression_level)
+    assert.has_error(function()
+      overridden.compressors[1] = "zlib"
+    end, "driver options are immutable")
+
+    for _, values in ipairs({
+      { compressors = "zlib" },
+      { compressors = { "zlib", "unknown" } },
+      { zlib_compression_level = -2 },
+      { zlib_compression_level = 10 },
+    }) do
+      local invalid, invalid_err = options.normalize(nil, values)
+
+      assert.is_nil(invalid)
+      assert.is_true(errors.is(invalid_err, errors.CATEGORY.CONFIGURATION))
+    end
+  end)
+
   it("normalizes SRV-only client options and the implicit TLS default", function()
     local parsed = assert(uri.parse(
       "mongodb+srv://cluster.example.com/?srvMaxHosts=2&loadBalanced=false"

@@ -399,6 +399,14 @@ def classify_case(
     }
     owner = owner_by_file.get(Path(path).name, "REL-003")
 
+    if owner == "ADV-004":
+      return _passed(
+        case,
+        owner,
+        "spec/support/config_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      )
+
     if owner != "REL-003":
       return _deferred(case, owner, activities)
 

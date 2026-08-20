@@ -26,6 +26,7 @@ local URI_NAMES = {
   authmechanism = "auth_mechanism",
   authmechanismproperties = "auth_mechanism_properties",
   authsource = "auth_source",
+  compressors = "compressors",
   connecttimeoutms = "connect_timeout_ms",
   directconnection = "direct_connection",
   heartbeatfrequencyms = "heartbeat_frequency_ms",
@@ -64,6 +65,7 @@ local URI_NAMES = {
   waitqueuetimeoutms = "wait_queue_timeout_ms",
   wtimeout = "w_timeout_ms",
   wtimeoutms = "w_timeout_ms",
+  zlibcompressionlevel = "zlib_compression_level",
 }
 
 local PROGRAMMATIC_NAMES = {
@@ -71,6 +73,7 @@ local PROGRAMMATIC_NAMES = {
   auth_mechanism = true,
   auth_mechanism_properties = true,
   auth_source = true,
+  compressors = true,
   connect_timeout_ms = true,
   direct_connection = true,
   heartbeat_frequency_ms = true,
@@ -100,6 +103,13 @@ local PROGRAMMATIC_NAMES = {
   tls_disable_ocsp_endpoint_check = true,
   tls_insecure = true,
   wait_queue_timeout_ms = true,
+  zlib_compression_level = true,
+}
+
+local SUPPORTED_COMPRESSORS = {
+  snappy = true,
+  zlib = true,
+  zstd = true,
 }
 
 local READ_PREFERENCE_MODES = {
@@ -123,6 +133,7 @@ local TLS_CONFLICTS = {
 }
 
 local DEFAULTS = {
+  compressors = {},
   connect_timeout_ms = 10000,
   direct_connection = false,
   heartbeat_frequency_ms = 10000,
@@ -137,6 +148,7 @@ local DEFAULTS = {
   server_selection_timeout_ms = 30000,
   server_selection_try_once = true,
   tls = false,
+  zlib_compression_level = -1,
 }
 
 local function config_error(option, message)
@@ -405,6 +417,64 @@ local function normalize_heartbeat_frequency(option, value, from_uri)
   return normalize_integer(option, value, from_uri, 500)
 end
 
+local function normalize_compressors(option, value, from_uri)
+  local source = value
+
+  if from_uri then
+    source = {}
+
+    for compressor in (value .. ","):gmatch("(.-),") do
+      source[#source + 1] = compressor
+    end
+  elseif type(value) ~= "table" then
+    return config_error(option, option .. " must be an array of compressor names")
+  end
+
+  local result = {}
+  local warnings = {}
+
+  for index = 1, #source do
+    local compressor = source[index]
+
+    if type(compressor) ~= "string" or not SUPPORTED_COMPRESSORS[compressor] then
+      if not from_uri then
+        return config_error(option, "unsupported compressor at index " .. index)
+      end
+
+      warnings[#warnings + 1] = "unsupported compressor at index " .. index
+    else
+      result[#result + 1] = compressor
+    end
+  end
+
+  if not from_uri then
+    for key in pairs(source) do
+      if math.type(key) ~= "integer" or key < 1 or key > #source then
+        return config_error(option, option .. " must be a dense array")
+      end
+    end
+  end
+
+  return result, nil, warnings
+end
+
+local function normalize_zlib_compression_level(option, value, from_uri)
+  local normalized = value
+  local err
+
+  if from_uri then
+    normalized, err = parse_uri_integer(option, value, true)
+  end
+
+  if normalized == nil then
+    return nil, err
+  elseif math.type(normalized) ~= "integer" or normalized < -1 or normalized > 9 then
+    return config_error(option, option .. " must be an integer between -1 and 9")
+  end
+
+  return normalized
+end
+
 local function normalize_max_staleness(option, value, from_uri)
   local normalized = value
   local err
@@ -507,6 +577,7 @@ local OPTION_DESCRIPTORS = immutable_descriptor({
   auth_mechanism = STRING_DESCRIPTOR,
   auth_mechanism_properties = option_descriptor(normalize_auth_mechanism_properties),
   auth_source = STRING_DESCRIPTOR,
+  compressors = option_descriptor(normalize_compressors),
   connect_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
   direct_connection = BOOLEAN_DESCRIPTOR,
   heartbeat_frequency_ms = option_descriptor(normalize_heartbeat_frequency),
@@ -543,6 +614,7 @@ local OPTION_DESCRIPTORS = immutable_descriptor({
   w = option_descriptor(normalize_w),
   wait_queue_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
   w_timeout_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
+  zlib_compression_level = option_descriptor(normalize_zlib_compression_level),
 })
 
 local function apply_option(state, option, value, from_uri)
@@ -552,7 +624,7 @@ local function apply_option(state, option, value, from_uri)
     return config_error(option, "unsupported driver option")
   end
 
-  local normalized, normalization_err = descriptor.normalize(
+  local normalized, normalization_err, normalization_warnings = descriptor.normalize(
     option,
     value,
     from_uri
@@ -564,6 +636,11 @@ local function apply_option(state, option, value, from_uri)
 
   state.values[option] = normalized
   state.seen[option] = true
+
+  for _, warning in ipairs(normalization_warnings or {}) do
+    state.warnings[#state.warnings + 1] = warning
+  end
+
   return true
 end
 
