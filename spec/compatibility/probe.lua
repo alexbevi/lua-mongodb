@@ -14,6 +14,7 @@ local outcome
 copas.loop(function()
   outcome = table.pack(pcall(function()
     local client = assert(mongodb.client(uri, {
+      compressors = { "zlib" },
       runtime = mongodb.runtime.copas(),
       server_selection_timeout_ms = 5000,
     }))

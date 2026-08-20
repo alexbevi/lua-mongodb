@@ -78,14 +78,107 @@
       "runner": "spec/unit/crud_mutations_spec.lua",
       "status": "passed"
     },
-    "compression/OP_COMPRESSED.md": {
-      "activity": "CON-008",
-      "last_execution": null,
-      "reason": "Zlib negotiation, framing, prohibited-command handling, malformed-frame rejection, and standalone and sharded round trips have focused evidence; Snappy, Zstandard, and final prose accounting remain in the pending v0.8 activities.",
-      "required_environment": "live-mongodb",
-      "runner": "pending:CON-008",
-      "status": "deferred_unsupported"
-    },
+    "compression/OP_COMPRESSED.md": [
+      {
+        "id": "client-options",
+        "activity": "ADV-004",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua spec/unit/config_options_spec.lua'",
+        "reason": "The five pinned URI-option cases and deterministic programmatic vectors cover ordered compressors, unknown-name warnings, defaults, and every zlib compression level from -1 through 9.",
+        "required_environment": "none",
+        "runner": "spec/support/config_runner.lua",
+        "status": "passed"
+      },
+      {
+        "id": "zlib-codec",
+        "activity": "WIRE-002",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/zlib_runtime_spec.lua'",
+        "reason": "Exact vectors cover compressor ID 2 and every supported zlib compression level, while invalid input returns a structured protocol failure.",
+        "required_environment": "none",
+        "runner": "spec/unit/zlib_runtime_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "framing-and-malformed-messages",
+        "activity": "WIRE-003",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/op_compressed_spec.lua'",
+        "reason": "Byte-exact vectors cover opcode 2012, the original opcode, the header-excluding uncompressed size, compressor ID, and compression failures.",
+        "required_environment": "none",
+        "runner": "spec/unit/op_compressed_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "response-decompression",
+        "activity": "WIRE-004",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/op_compressed_spec.lua spec/unit/command_executor_spec.lua'",
+        "reason": "Deterministic vectors select each response provider by envelope ID, accept ordinary or compressed replies including the initial hello, and reject unknown IDs, malformed sizes, oversized frames, and provider failures.",
+        "required_environment": "none",
+        "runner": "spec/unit/op_compressed_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "handshake-and-negotiation",
+        "activity": "WIRE-005",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/handshake_spec.lua'",
+        "reason": "Each connection advertises only available configured compressors in client order, selects the first client-preferred overlap, tolerates no overlap, and does not renegotiate after its initial handshake.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/command_executor_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "prohibited-commands",
+        "activity": "WIRE-006",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+        "reason": "The exact case-insensitive command matrix keeps hello, legacy hello, authentication, user-management, and copydb authentication commands uncompressed while allowing ordinary commands.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/command_executor_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "sharded-round-trip",
+        "activity": "CON-008",
+        "last_execution": "make test-compatibility-live COMPATIBILITY_ENTRY=mongodb-8.2-sharded",
+        "reason": "Every sharded compatibility row enables zlib on the public client before exercising commands, indexes, sessions, and transactions through a real mongos.",
+        "required_environment": "live-sharded",
+        "runner": "spec/compatibility/sharded_probe.lua",
+        "status": "passed"
+      },
+      {
+        "id": "standalone-round-trips",
+        "activity": "CON-008",
+        "last_execution": "make test-compatibility-live COMPATIBILITY_ENTRY=mongodb-8.2-standalone",
+        "reason": "Every standalone and replica-set compatibility row enables zlib before a public-client ping against its pinned live MongoDB server.",
+        "required_environment": "live-mongodb",
+        "runner": "spec/compatibility/probe.lua",
+        "status": "passed"
+      },
+      {
+        "id": "snappy-codec",
+        "activity": "WIRE-008",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/snappy_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua'",
+        "reason": "An exact raw Snappy vector covers compressor ID 1 and a TCP integration round trip verifies negotiated OP_COMPRESSED framing.",
+        "required_environment": "none",
+        "runner": "spec/unit/snappy_runtime_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "unavailable-codec-warnings",
+        "activity": "WIRE-009",
+        "last_execution": "make test-focus FOCUS_INTEGRATION='spec/integration/client_api_spec.lua'",
+        "reason": "Public-client integration cases omit unavailable Snappy and Zstandard providers from the handshake and expose one credential-free warning for each configured codec.",
+        "required_environment": "loopback-tcp",
+        "runner": "spec/integration/client_api_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "zstandard-codec",
+        "activity": "WIRE-009",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/zstandard_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua'",
+        "reason": "An exact Zstandard frame vector covers compressor ID 3 and a TCP integration round trip verifies negotiated OP_COMPRESSED framing.",
+        "required_environment": "none",
+        "runner": "spec/unit/zstandard_runtime_spec.lua",
+        "status": "passed"
+      }
+    ],
     "dbref/dbref.md": {
       "activity": "CON-005",
       "last_execution": null,

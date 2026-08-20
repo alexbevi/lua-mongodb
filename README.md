@@ -521,7 +521,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
 | Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟡 | 83.0% |
 | Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | 🔴 | 0.0% |
-| Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🔴 | 0.0% |
+| Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
 | Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | 🔴 | 0.0% |
 | Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟡 | 90.5% |
 | Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.1% |
@@ -551,7 +551,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **75.2%** |
+|  | **Total** |  | **75.3%** |
 <!-- END SPEC CONFORMANCE -->
 
 ## Development

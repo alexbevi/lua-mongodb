@@ -155,6 +155,17 @@
       "CBW-012",
       "REL-055"
     ],
+    "completed_v0_8_gates": [
+      "ADV-004",
+      "WIRE-002",
+      "WIRE-003",
+      "WIRE-004",
+      "WIRE-005",
+      "WIRE-006",
+      "WIRE-007",
+      "WIRE-008",
+      "WIRE-009"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
@@ -191,6 +202,12 @@
       "excluded_cases": 0,
       "passed_cases": 71,
       "target_version_exclusions": 0
+    },
+    "v0_8_conformance": {
+      "classified_requirements": 16,
+      "configuration_cases": 5,
+      "passed_requirements": 16,
+      "prose_requirements": 11
     }
   },
   "ready": true,

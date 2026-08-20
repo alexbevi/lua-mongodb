@@ -29,6 +29,7 @@ python3 spec/v04/scope.py [--check]
 python3 spec/v05/scope.py [--check]
 python3 spec/v06/scope.py [--check]
 python3 spec/v07/scope.py [--check]
+python3 spec/v08/scope.py [--check]
 make test-focus FOCUS_UNIT=spec/unit/example_spec.lua FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
 make test-focus FOCUS_INTEGRATION=spec/integration/example_spec.lua
 make test-focus FOCUS_UNIFIED='crud/tests/unified/example.json::test?1?'
@@ -55,6 +56,8 @@ Starting post-v1 work requires `start ID --track TRACK`. The track must be decla
 `spec/v06/scope.py` projects the exact deprecated-count, mapReduce, database-aggregate, and tailable-cursor cases owned by the v0.6 legacy API activities. It requires exact executor and execution evidence for all 81 applicable identities, classifies 92 pre-MongoDB-7.0 identities as exact target-version exclusions, and records three command-cursor timeout identities as pinned-PyMongo behavioral exclusions. Every exclusion is identity- and reason-matched, while any ordinary deferral, incomplete passing owner, unknown operation, missing report row, or ratchet reduction fails the gate. `make test-v06-scope` runs its contract and stale-generation checks; Full Conformance validates the MongoDB 8.2 aggregate together with exact MongoDB 8.0.16 supplemental passes for the mutually exclusive deprecated-count and database-aggregate `rawData` branches.
 
 `spec/v07/scope.py` projects the 71 exact client bulk-write identities owned by the v0.7 activities across CRUD, retryable writes, causal consistency, transactions, client-side operation timeout, Stable API, and sharded transaction pinning. Every identity must have a passing ledger record, a matching executor environment, and exact execution evidence; v0.7 has no target-version exclusions. A deferral, skipped or missing Full Conformance row, failed or unknown operation, incomplete implementation owner, or ratchet reduction fails the gate. `make test-v07-scope` runs its contract and stale-generation checks, while Linux and manual macOS Full Conformance validate the complete aggregate report.
+
+`spec/v08/scope.py` projects all five pinned compression-option cases and eleven explicit normative OP_COMPRESSED requirements for configuration, codec identifiers, framing, response decoding, negotiation, prohibited commands, unavailable-provider warnings, and live round trips. Each record must pass with its exact runner and environment, every implementation owner must be complete, and the closure owner must be active or complete. Any deferred v0.8 evidence, missing runner, stale classification, or ratchet reduction fails `make test-v08-scope`. The compatibility probes enable zlib on every standalone, replica-set, and sharded row, so Full Conformance supplies live wire-compression evidence across the complete server/profile matrix.
 
 Activity implementation follows red-green vertical slices. A `red_green` activity cannot complete without a recorded nonzero red command and successful green command. A `validation` activity requires successful green evidence. Only one activity may be `in_progress`.
 

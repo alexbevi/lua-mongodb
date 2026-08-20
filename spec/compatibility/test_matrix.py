@@ -1,6 +1,7 @@
 """Contract tests for the live MongoDB compatibility matrix."""
 
 from contextlib import contextmanager
+from pathlib import Path
 import unittest
 from copy import deepcopy
 from unittest import mock
@@ -11,6 +12,14 @@ from spec.unified import run as unified_run
 
 
 class CompatibilityMatrixTests(unittest.TestCase):
+  def test_live_probes_enable_zlib_wire_compression(self):
+    for probe in (run.PROBE, run.SHARDED_PROBE):
+      with self.subTest(probe=Path(probe).name):
+        self.assertIn(
+          'compressors = { "zlib" }',
+          Path(probe).read_text(encoding="utf-8"),
+        )
+
   def test_smoke_tests_match_the_matrix_topology(self):
     registry = unified_run.load_executor_registry()
     environments = {

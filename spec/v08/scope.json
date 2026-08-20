@@ -1,0 +1,264 @@
+{
+  "configuration_cases": {
+    "uri-options/tests/compression-options.json::test[1]": {
+      "activity": "ADV-004",
+      "fingerprint": "8e27f6f5b25f2123dcc547e904c76b64f1a5515c6919bad94531ac19368385bd",
+      "format": "legacy-list",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      "required_environment": "none",
+      "runner": "spec/support/config_runner.lua",
+      "scope": "production-core-v1",
+      "source": "uri-options/tests/compression-options.json",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "uri-options"
+    },
+    "uri-options/tests/compression-options.json::test[2]": {
+      "activity": "ADV-004",
+      "fingerprint": "50552191b9020f90f50a07d3ab6e55aabd96d17e1a3b8c317d214ba5e51b16ba",
+      "format": "legacy-list",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      "required_environment": "none",
+      "runner": "spec/support/config_runner.lua",
+      "scope": "production-core-v1",
+      "source": "uri-options/tests/compression-options.json",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "uri-options"
+    },
+    "uri-options/tests/compression-options.json::test[3]": {
+      "activity": "ADV-004",
+      "fingerprint": "87b24639e6f35dc34dcd5379a1666df82d7fdb2c2ee632cbad55b6ec6cb23943",
+      "format": "legacy-list",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      "required_environment": "none",
+      "runner": "spec/support/config_runner.lua",
+      "scope": "production-core-v1",
+      "source": "uri-options/tests/compression-options.json",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "uri-options"
+    },
+    "uri-options/tests/compression-options.json::test[4]": {
+      "activity": "ADV-004",
+      "fingerprint": "e80c2b81593d24aeb930568f96a2c2247b5838b5b50312b51728d1e68bbd80ba",
+      "format": "legacy-list",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      "required_environment": "none",
+      "runner": "spec/support/config_runner.lua",
+      "scope": "production-core-v1",
+      "source": "uri-options/tests/compression-options.json",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "uri-options"
+    },
+    "uri-options/tests/compression-options.json::test[5]": {
+      "activity": "ADV-004",
+      "fingerprint": "485c4c52f87498ad569f372f781e4fd9b12734ce9846fb73a3d57911dbde1064",
+      "format": "legacy-list",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      "required_environment": "none",
+      "runner": "spec/support/config_runner.lua",
+      "scope": "production-core-v1",
+      "source": "uri-options/tests/compression-options.json",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "uri-options"
+    }
+  },
+  "evidence": {
+    "configuration_cases": 5,
+    "prose_requirements": 11
+  },
+  "prose_requirements": {
+    "compression/OP_COMPRESSED.md::client-options": {
+      "activity": "ADV-004",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua spec/unit/config_options_spec.lua'",
+      "reason": "The five pinned URI-option cases and deterministic programmatic vectors cover ordered compressors, unknown-name warnings, defaults, and every zlib compression level from -1 through 9.",
+      "required_environment": "none",
+      "runner": "spec/support/config_runner.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::framing-and-malformed-messages": {
+      "activity": "WIRE-003",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/op_compressed_spec.lua'",
+      "reason": "Byte-exact vectors cover opcode 2012, the original opcode, the header-excluding uncompressed size, compressor ID, and compression failures.",
+      "required_environment": "none",
+      "runner": "spec/unit/op_compressed_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::handshake-and-negotiation": {
+      "activity": "WIRE-005",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/handshake_spec.lua'",
+      "reason": "Each connection advertises only available configured compressors in client order, selects the first client-preferred overlap, tolerates no overlap, and does not renegotiate after its initial handshake.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/command_executor_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::prohibited-commands": {
+      "activity": "WIRE-006",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+      "reason": "The exact case-insensitive command matrix keeps hello, legacy hello, authentication, user-management, and copydb authentication commands uncompressed while allowing ordinary commands.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/command_executor_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::response-decompression": {
+      "activity": "WIRE-004",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/op_compressed_spec.lua spec/unit/command_executor_spec.lua'",
+      "reason": "Deterministic vectors select each response provider by envelope ID, accept ordinary or compressed replies including the initial hello, and reject unknown IDs, malformed sizes, oversized frames, and provider failures.",
+      "required_environment": "none",
+      "runner": "spec/unit/op_compressed_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::sharded-round-trip": {
+      "activity": "CON-008",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-compatibility-live COMPATIBILITY_ENTRY=mongodb-8.2-sharded",
+      "reason": "Every sharded compatibility row enables zlib on the public client before exercising commands, indexes, sessions, and transactions through a real mongos.",
+      "required_environment": "live-sharded",
+      "runner": "spec/compatibility/sharded_probe.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::snappy-codec": {
+      "activity": "WIRE-008",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/snappy_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua'",
+      "reason": "An exact raw Snappy vector covers compressor ID 1 and a TCP integration round trip verifies negotiated OP_COMPRESSED framing.",
+      "required_environment": "none",
+      "runner": "spec/unit/snappy_runtime_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::standalone-round-trips": {
+      "activity": "CON-008",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-compatibility-live COMPATIBILITY_ENTRY=mongodb-8.2-standalone",
+      "reason": "Every standalone and replica-set compatibility row enables zlib before a public-client ping against its pinned live MongoDB server.",
+      "required_environment": "live-mongodb",
+      "runner": "spec/compatibility/probe.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::unavailable-codec-warnings": {
+      "activity": "WIRE-009",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_INTEGRATION='spec/integration/client_api_spec.lua'",
+      "reason": "Public-client integration cases omit unavailable Snappy and Zstandard providers from the handshake and expose one credential-free warning for each configured codec.",
+      "required_environment": "loopback-tcp",
+      "runner": "spec/integration/client_api_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::zlib-codec": {
+      "activity": "WIRE-002",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/zlib_runtime_spec.lua'",
+      "reason": "Exact vectors cover compressor ID 2 and every supported zlib compression level, while invalid input returns a structured protocol failure.",
+      "required_environment": "none",
+      "runner": "spec/unit/zlib_runtime_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    },
+    "compression/OP_COMPRESSED.md::zstandard-codec": {
+      "activity": "WIRE-009",
+      "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/zstandard_runtime_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua'",
+      "reason": "An exact Zstandard frame vector covers compressor ID 3 and a TCP integration round trip verifies negotiated OP_COMPRESSED framing.",
+      "required_environment": "none",
+      "runner": "spec/unit/zstandard_runtime_spec.lua",
+      "scope": "post-v1",
+      "source": "compression/OP_COMPRESSED.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "compression"
+    }
+  },
+  "ratchets": {
+    "classified": 16,
+    "configuration_cases": 5,
+    "passed": 16,
+    "prose_requirements": 11,
+    "supported": 16
+  },
+  "schema_version": 1,
+  "suites": {
+    "compression": {
+      "passed": 11
+    },
+    "uri-options": {
+      "passed": 5
+    }
+  },
+  "summary": {
+    "classified": 16,
+    "passed": 16,
+    "planned": 0,
+    "supported": 16
+  },
+  "target_owners": [
+    "ADV-004",
+    "CON-008",
+    "WIRE-002",
+    "WIRE-003",
+    "WIRE-004",
+    "WIRE-005",
+    "WIRE-006",
+    "WIRE-007",
+    "WIRE-008",
+    "WIRE-009"
+  ],
+  "type": "v0.8-wire-compression-scope"
+}

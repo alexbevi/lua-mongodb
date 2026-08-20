@@ -53,13 +53,14 @@ class CiPortabilityTests(unittest.TestCase):
 
   def test_macos_openssl_is_configured_before_luarocks_dependencies(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
-    openssl = workflow.index("Configure OpenSSL on macOS")
+    openssl = workflow.index("Configure native libraries on macOS")
     dependencies = workflow.index("Install development dependencies")
 
     self.assertLess(openssl, dependencies)
-    self.assertIn("brew install openssl@3", workflow[openssl:dependencies])
+    self.assertIn("brew install openssl@3 zstd", workflow[openssl:dependencies])
     self.assertIn("OPENSSL_DIR=", workflow[openssl:dependencies])
     self.assertIn("CRYPTO_DIR=", workflow[openssl:dependencies])
+    self.assertIn("ZSTD_DIR=", workflow[openssl:dependencies])
     self.assertIn("GITHUB_ENV", workflow[openssl:dependencies])
     self.assertIn(
       'luarocks install --only-deps mongodb-0.7.0-1.rockspec '

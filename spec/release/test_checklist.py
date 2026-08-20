@@ -70,6 +70,15 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
+        "classified_requirements": 16,
+        "configuration_cases": 5,
+        "passed_requirements": 16,
+        "prose_requirements": 11,
+      },
+      report["gates"]["v0_8_conformance"],
+    )
+    self.assertEqual(
+      {
         "cleanup": ["REL-042", "REL-043"],
         "packaging": ["REL-007"],
         "security": ["REL-008"],
@@ -161,6 +170,13 @@ class ReleaseChecklistTests(unittest.TestCase):
         "REL-055",
       ],
       report["gates"]["completed_v0_7_gates"],
+    )
+    self.assertEqual(
+      [
+        "ADV-004",
+        *[f"WIRE-{index:03d}" for index in range(2, 10)],
+      ],
+      report["gates"]["completed_v0_8_gates"],
     )
     self.assertEqual(
       [

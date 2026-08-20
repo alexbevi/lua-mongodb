@@ -7055,6 +7055,35 @@
       "notes": [],
       "started_at": "2026-08-20T18:22:10+00:00",
       "completed_at": "2026-08-20T18:28:04+00:00"
+    },
+    "CON-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.v08.test_scope -v",
+          "exit_code": 1,
+          "summary": "2 defining v0.8 scope contracts could not load because spec.v08.scope does not exist, so the five pinned configuration cases and eleven normative OP_COMPRESSED behavior records have no closure gate.",
+          "recorded_at": "2026-08-20T18:41:26+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.compatibility.test_matrix.CompatibilityMatrixTests.test_live_probes_enable_zlib_wire_compression'",
+          "exit_code": 2,
+          "summary": "The defining live-boundary contract failed for both standalone/replica-set and sharded probes because neither enabled zlib wire compression.",
+          "recorded_at": "2026-08-20T18:43:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='<7 compression files>' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_PYTHON='<v0.8 scope, compatibility, catalog, ledger, release, README, and CI contracts>' FOCUS_LINT='spec/compatibility/probe.lua spec/compatibility/sharded_probe.lua'; run local-testing contract separately; run catalog, v0.8 scope, release-checklist, README, JSON, workflow-YAML, Python-compile, strict-plan, and diff validators",
+          "exit_code": 0,
+          "summary": "39 unit and 10 directly coupled integration cases passed; 58 distinct Python conformance, compatibility, release, README, CI, and local-testing contracts passed; 2 live-probe Lua files linted cleanly; catalog, 16/16 v0.8 scope, release checklist, README projection, workflow YAML, JSON, Python compilation, strict plan, and diff validators passed.",
+          "recorded_at": "2026-08-20T20:07:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T18:39:34+00:00",
+      "completed_at": "2026-08-20T20:07:16+00:00"
     }
   },
   "verified_references": {
