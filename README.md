@@ -1,6 +1,6 @@
 # MongoDB Lua Driver
 
-A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. The current release is version `0.7.0`; it adds client-level bulk writes across multiple namespaces with ordered and unordered execution, detailed results, retries, transactions, and operation timeouts. It targets Lua 5.4 and Lua 5.5 without binding or wrapping `libmongoc`.
+A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. It supports client-level bulk writes across multiple namespaces with ordered and unordered execution, detailed results, retries, transactions, and operation timeouts. It targets Lua 5.4 and Lua 5.5 without binding or wrapping `libmongoc`.
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
@@ -14,24 +14,6 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 - OpenSSL libraries and development headers required by the TLS dependency and by `lua-cryptorandom` on supported Unix-like platforms.
 
 LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency; the supported server versions and deployment types are listed under [Scope](#scope).
-
-## Building and Installing
-
-From a source checkout, build and install the release rock with:
-
-```sh
-luarocks make mongodb-0.7.0-1.rockspec
-```
-
-`make test-package` builds a source rock from the current checkout, installs it into an isolated LuaRocks tree, verifies that every production module is packaged, and exercises the documented public API without workspace module paths.
-
-The public LuaRocks rock name is `mongodb`. Install version 0.7.0 with:
-
-```sh
-luarocks install mongodb 0.7.0-1
-```
-
-The release rockspec is built and verified from the immutable `v0.7.0` tag before publication.
 
 ## Getting Started
 
