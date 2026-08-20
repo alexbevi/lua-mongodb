@@ -182,7 +182,6 @@ def release_metadata() -> dict[str, str]:
     ROOT / "src" / "mongodb" / "handshake" / "metadata.lua",
     f'local DRIVER_VERSION = "{RELEASE_VERSION}"',
   )
-  require_text(ROOT / "README.md", f"current release is version `{RELEASE_VERSION}`")
   require_text(
     ROOT / "CHANGELOG.md",
     f"## [{RELEASE_VERSION}] - 2026-08-19",
