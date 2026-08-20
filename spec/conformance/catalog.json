@@ -414,13 +414,13 @@
       "suite": "collation"
     },
     "compression/OP_COMPRESSED.md::document": {
-      "activity": "WIRE-007",
+      "activity": "CON-008",
       "fingerprint": "7c9f943a19c7e3e8cc5f2488f3f9319798c3465480f0d312c9a6e05674419286",
       "format": "prose",
       "last_execution": null,
-      "reason": "Compression options are normalized, while OP_COMPRESSED negotiation, framing, and command execution remain assigned to WIRE-007.",
+      "reason": "Zlib negotiation, framing, prohibited-command handling, malformed-frame rejection, and standalone and sharded round trips have focused evidence; Snappy, Zstandard, and final prose accounting remain in the pending v0.8 activities.",
       "required_environment": "live-mongodb",
-      "runner": "pending:WIRE-007",
+      "runner": "pending:CON-008",
       "scope": "post-v1",
       "source": "compression/OP_COMPRESSED.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",

@@ -79,11 +79,11 @@
       "status": "passed"
     },
     "compression/OP_COMPRESSED.md": {
-      "activity": "WIRE-007",
+      "activity": "CON-008",
       "last_execution": null,
-      "reason": "Compression options are normalized, while OP_COMPRESSED negotiation, framing, and command execution remain assigned to WIRE-007.",
+      "reason": "Zlib negotiation, framing, prohibited-command handling, malformed-frame rejection, and standalone and sharded round trips have focused evidence; Snappy, Zstandard, and final prose accounting remain in the pending v0.8 activities.",
       "required_environment": "live-mongodb",
-      "runner": "pending:WIRE-007",
+      "runner": "pending:CON-008",
       "status": "deferred_unsupported"
     },
     "dbref/dbref.md": {

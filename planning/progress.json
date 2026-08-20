@@ -6971,22 +6971,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+          "command": "GitHub Actions CI Fast run 32399020435: make check-fast",
           "exit_code": 2,
-          "summary": "10 successes, 1 failure: a negotiated eligible ping still used OP_MSG 2013 instead of OP_COMPRESSED 2012",
-          "recorded_at": "2026-08-20T17:36:14+00:00"
+          "summary": "Portable Lua 5.4 and 5.5 failed: compression/OP_COMPRESSED.md prose requirement remained deferred to completed owner WIRE-007",
+          "recorded_at": "2026-08-20T17:48:29+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/op_compressed_spec.lua spec/unit/command_monitoring_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/command/executor.lua src/mongodb/client.lua spec/unit/command_executor_spec.lua spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua'",
+          "command": "env PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:/usr/bin:/bin LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/op_compressed_spec.lua spec/unit/command_monitoring_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.conformance.test_catalog' FOCUS_LINT='src/mongodb/command/executor.lua src/mongodb/client.lua spec/unit/command_executor_spec.lua spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua'; python3 spec/conformance/catalog.py --check; make test-architecture; env PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:/usr/bin:/bin LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 make test-complexity; python3 planning/update_readme_compatibility.py --check; git diff --check",
           "exit_code": 0,
-          "summary": "28 executed and passed (22 unit, 6 standalone/sharded TCP integration), 0 failed/error/pending; touched lint 5 files with 0 warnings/errors; 0 unified cases exist for the prose-only compression spec; architecture, complexity, and README projection validators passed",
-          "recorded_at": "2026-08-20T17:41:02+00:00"
+          "summary": "22 command/framing/monitoring unit cases, 6 standalone and sharded integration cases, and 5 conformance-catalog cases passed; 5 touched Lua files lint clean; catalog, architecture, Lua 5.4 complexity, README projection, and diff validators passed.",
+          "recorded_at": "2026-08-20T17:51:00+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-20T17:34:37+00:00",
-      "completed_at": "2026-08-20T17:41:04+00:00"
+      "notes": [
+        "Requeued: CI Fast found compression prose conformance still deferred to completed WIRE-007"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-20T17:41:04+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+              "exit_code": 2,
+              "summary": "10 successes, 1 failure: a negotiated eligible ping still used OP_MSG 2013 instead of OP_COMPRESSED 2012",
+              "recorded_at": "2026-08-20T17:36:14+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/op_compressed_spec.lua spec/unit/command_monitoring_spec.lua' FOCUS_INTEGRATION='spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua' FOCUS_LINT='src/mongodb/command/executor.lua src/mongodb/client.lua spec/unit/command_executor_spec.lua spec/integration/command_ping_spec.lua spec/integration/client_api_spec.lua'",
+              "exit_code": 0,
+              "summary": "28 executed and passed (22 unit, 6 standalone/sharded TCP integration), 0 failed/error/pending; touched lint 5 files with 0 warnings/errors; 0 unified cases exist for the prose-only compression spec; architecture, complexity, and README projection validators passed",
+              "recorded_at": "2026-08-20T17:41:02+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "9426008890c0671049d741a8cf3ef335c9f7a24c",
+      "started_at": "2026-08-20T17:48:27+00:00",
+      "completed_at": "2026-08-20T17:51:02+00:00"
     }
   },
   "verified_references": {
