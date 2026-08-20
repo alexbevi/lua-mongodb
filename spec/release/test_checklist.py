@@ -1,4 +1,4 @@
-"""Contract tests for the client bulk write v0.7 release checklist."""
+"""Contract tests for the wire compression v0.8 release checklist."""
 
 import unittest
 
@@ -10,8 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("client-bulk-write-release-checklist", report["type"])
-    self.assertEqual("0.7.0", report["release"]["version"])
+    self.assertEqual("wire-compression-release-checklist", report["type"])
+    self.assertEqual("0.8.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
@@ -175,6 +175,7 @@ class ReleaseChecklistTests(unittest.TestCase):
       [
         "ADV-004",
         *[f"WIRE-{index:03d}" for index in range(2, 10)],
+        "CON-008",
       ],
       report["gates"]["completed_v0_8_gates"],
     )

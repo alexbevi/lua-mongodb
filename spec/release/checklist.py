@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report client bulk write v0.7 release readiness."""
+"""Validate and report wire compression v0.8 release readiness."""
 
 from __future__ import annotations
 
@@ -26,8 +26,8 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.7.0-1.rockspec"
-RELEASE_VERSION = "0.7.0"
+ROCKSPEC = ROOT / "mongodb-0.8.0-1.rockspec"
+RELEASE_VERSION = "0.8.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
@@ -127,13 +127,13 @@ V07_RELEASE_ACTIVITY = "REL-056"
 V08_GATES = [
   "ADV-004",
   *(f"WIRE-{index:03d}" for index in range(2, 10)),
+  "CON-008",
 ]
-V08_CONFORMANCE_ACTIVITY = "CON-008"
 V08_RELEASE_ACTIVITY = "REL-057"
 
 
 class ChecklistError(ValueError):
-  """Raised when the client bulk write release is not ready."""
+  """Raised when the wire compression release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -191,11 +191,11 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-19",
+    f"## [{RELEASE_VERSION}] - 2026-08-20",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: client bulk write v0.7 release-ready.",
+    "Status: wire compression v0.8 release-ready.",
   )
 
   return {
@@ -256,7 +256,6 @@ def generate() -> dict[str, Any]:
   ]
   if compression_track != [
     *V08_GATES,
-    V08_CONFORMANCE_ACTIVITY,
     V08_RELEASE_ACTIVITY,
   ]:
     raise ChecklistError("v0.8 release gate inventory does not match the track")
@@ -518,7 +517,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "client-bulk-write-release-checklist",
+    "type": "wire-compression-release-checklist",
   }
 
 

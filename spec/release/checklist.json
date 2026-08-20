@@ -164,7 +164,8 @@
       "WIRE-006",
       "WIRE-007",
       "WIRE-008",
-      "WIRE-009"
+      "WIRE-009",
+      "CON-008"
     ],
     "conformance": {
       "applicable_gaps": 0,
@@ -213,10 +214,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.7.0-1.rockspec",
-    "rockspec_version": "0.7.0-1",
-    "version": "0.7.0"
+    "rockspec": "mongodb-0.8.0-1.rockspec",
+    "rockspec_version": "0.8.0-1",
+    "version": "0.8.0"
   },
   "schema_version": 1,
-  "type": "client-bulk-write-release-checklist"
+  "type": "wire-compression-release-checklist"
 }

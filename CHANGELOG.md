@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.8.0] - 2026-08-20
+
+Wire compression release.
+
+### Added
+
+- Added ordered `snappy`, `zlib`, and `zstd` compressor configuration, including zlib levels from `-1` through `9` and warnings for unavailable optional providers.
+- Added pure-Lua OP_COMPRESSED framing and validation around runtime codec adapters, with compressor-specific identifiers, response-envelope decoding, and structured protocol errors for malformed messages.
+- Added per-connection compressor negotiation and command execution with the specification-required uncompressed authentication, handshake, and user-management commands.
+
+### Conformance
+
+- All five pinned compression option cases and all eleven normative OP_COMPRESSED requirements have exact passing evidence.
+- Zlib-compressed live round trips pass across the MongoDB 7.0, 8.0, and 8.2 standalone, replica-set, and sharded compatibility matrix.
+
+### Release engineering
+
+- Added optional Snappy and Zstandard package-test providers while retaining zlib as the required runtime codec.
+- Added the generated v0.8 conformance projection to Full Conformance and the exact-commit LuaRocks release checklist.
+
 ## [0.7.0] - 2026-08-19
 
 Client bulk write release.

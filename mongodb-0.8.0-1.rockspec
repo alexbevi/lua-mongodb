@@ -1,19 +1,19 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.7.0-1"
+version = "0.8.0-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.7.0",
+  tag = "v0.8.0",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.7.0 adds client-level bulk writes across multiple
-    namespaces with retries, transactions, and operation timeouts.
+    libmongoc. Version 0.8.0 adds negotiated zlib, Snappy, and Zstandard
+    wire compression with per-connection codec selection.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",
