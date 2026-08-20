@@ -40,6 +40,67 @@ local function fake_connection(responses)
 end
 
 describe("single-connection command executor", function()
+  it("negotiates available compressors independently for each connection", function()
+    local providers = {
+      snappy = { name = "snappy" },
+      zlib = { name = "zlib" },
+    }
+    local configured = { "zstd", "snappy", "zlib" }
+    local monitor_connection = fake_connection({
+      bson.document({
+        { "ok", 1 },
+        { "maxWireVersion", 25 },
+        { "compression", bson.array({ "zlib", "snappy" }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "maxWireVersion", 25 },
+        { "compression", bson.array({ "zlib" }) },
+      }),
+    })
+    local monitor = assert(executor.new(monitor_connection, {
+      compression = providers,
+      compressors = configured,
+    }))
+
+    assert(monitor:hello())
+    assert.are.same(
+      { "snappy", "zlib" },
+      monitor_connection.requests[1].body:get("compression"):values()
+    )
+    assert.are.equal("snappy", assert(monitor:compressor()).name)
+    assert(monitor:hello())
+    assert.is_nil(monitor_connection.requests[2].body:get("compression"))
+    assert.are.equal("snappy", assert(monitor:compressor()).name)
+
+    local application_connection = fake_connection({
+      bson.document({
+        { "ok", 1 },
+        { "maxWireVersion", 25 },
+        { "compression", bson.array({ "zlib" }) },
+      }),
+    })
+    local application = assert(executor.new(application_connection, {
+      compression = providers,
+      compressors = configured,
+    }))
+
+    assert(application:hello())
+    assert.are.equal("zlib", assert(application:compressor()).name)
+    assert.are.equal("snappy", assert(monitor:compressor()).name)
+
+    local ordinary_connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+    })
+    local ordinary = assert(executor.new(ordinary_connection, {
+      compression = providers,
+      compressors = configured,
+    }))
+
+    assert(ordinary:hello())
+    assert.is_nil(ordinary:compressor())
+  end)
+
   it("negotiates hello metadata and sends a cloned command envelope", function()
     local connection = fake_connection({
       bson.document({
@@ -78,7 +139,11 @@ describe("single-connection command executor", function()
     local hello = assert(commands:hello())
     local handshake = connection.requests[1].body
 
-    assert.are.same({ "ismaster", "helloOk", "backpressure", "client", "$db" }, handshake:keys())
+    assert.are.same(
+      { "ismaster", "helloOk", "backpressure", "client", "compression", "$db" },
+      handshake:keys()
+    )
+    assert.are.same({}, handshake:get("compression"):values())
     assert.are.equal("2", handshake:get("backpressure"))
     assert.are.equal("command-spec", handshake:get("client"):get("application"):get("name"))
     assert.are.equal("lua-mongodb", handshake:get("client"):get("driver"):get("name"))
@@ -144,7 +209,7 @@ describe("single-connection command executor", function()
     assert(commands:hello())
     assert.are.same(
       {
-        "hello", "backpressure", "client", "apiVersion",
+        "hello", "backpressure", "client", "compression", "apiVersion",
         "apiStrict", "apiDeprecationErrors", "$db",
       },
       connection.requests[1].body:keys()

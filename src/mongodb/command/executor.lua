@@ -29,6 +29,71 @@ local function protocol_error(message, details)
   })
 end
 
+local function available_compressors(values, compression)
+  if values == nil then
+    return {}
+  end
+
+  if type(values) ~= "table" then
+    error("command executor compressors must be an array", 3)
+  end
+
+  local length = #values
+  local available = {}
+
+  for key in pairs(values) do
+    if math.type(key) ~= "integer" or key < 1 or key > length then
+      error("command executor compressors must be a dense array", 3)
+    end
+  end
+
+  for index = 1, length do
+    local name = values[index]
+
+    if type(name) ~= "string" or name == "" then
+      error("command executor compressors must contain non-empty strings", 3)
+    end
+
+    if compression[name] ~= nil then
+      available[#available + 1] = name
+    end
+  end
+
+  return available
+end
+
+local function negotiated_compressor(state, response)
+  local values = response:get("compression")
+
+  if values == nil then
+    return nil
+  end
+
+  if not bson.is_array(values) then
+    return nil, protocol_error("hello response contains an invalid compression field", {
+      field = "compression",
+    })
+  end
+
+  local supported = {}
+
+  for _, name in values:iter() do
+    if type(name) ~= "string" or name == "" then
+      return nil, protocol_error("hello response contains an invalid compression field", {
+        field = "compression",
+      })
+    end
+
+    supported[name] = true
+  end
+
+  for _, name in ipairs(state.compressors) do
+    if supported[name] then
+      return state.compression[name]
+    end
+  end
+end
+
 local function number_value(value)
   if type(value) == "number" then
     return value
@@ -351,6 +416,7 @@ function EXECUTOR_METHODS:hello(options)
 
   if not state.handshake_complete then
     entries[#entries + 1] = { "client", state.metadata }
+    entries[#entries + 1] = { "compression", bson.array(state.compressors) }
   end
 
   options = options or {}
@@ -445,6 +511,14 @@ function EXECUTOR_METHODS:hello(options)
     return close_with(state, err)
   end
 
+  if not state.handshake_complete then
+    state.compressor, err = negotiated_compressor(state, response)
+
+    if err then
+      return close_with(state, err)
+    end
+  end
+
   state.handshake_complete = true
   state.hello_ok = state.hello_ok or hello.hello_ok
   state.max_bson_size = hello.max_bson_size
@@ -517,6 +591,10 @@ function EXECUTOR_METHODS:capabilities()
   return EXECUTOR_STATES[self].hello
 end
 
+function EXECUTOR_METHODS:compressor()
+  return EXECUTOR_STATES[self].compressor
+end
+
 function EXECUTOR_METHODS:close()
   return EXECUTOR_STATES[self].connection:close()
 end
@@ -542,10 +620,13 @@ function M.new(connection, options)
     error("command executor compression capabilities must be a table", 2)
   end
 
+  local compression = options.compression or {}
   local value = {}
 
   EXECUTOR_STATES[value] = {
-    compression = options.compression or {},
+    compression = compression,
+    compressor = nil,
+    compressors = available_compressors(options.compressors, compression),
     connection = connection,
     handshake_complete = false,
     hello = nil,

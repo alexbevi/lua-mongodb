@@ -466,6 +466,7 @@ local function open_executor(
 
   local executor = command_executor.new(connection, {
     compression = runtime.compression,
+    compressors = config.compressors,
     metadata = metadata,
     monitoring = monitor,
     server = server_address,

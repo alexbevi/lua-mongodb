@@ -6921,6 +6921,28 @@
       "notes": [],
       "started_at": "2026-08-20T16:55:41+00:00",
       "completed_at": "2026-08-20T17:01:46+00:00"
+    },
+    "WIRE-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+          "exit_code": 2,
+          "summary": "8 successes, 1 error: initial hello omitted the compression array, so the negotiation assertion indexed nil",
+          "recorded_at": "2026-08-20T17:13:05+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/handshake_spec.lua spec/unit/command_monitoring_spec.lua' FOCUS_LINT='src/mongodb/command/executor.lua src/mongodb/client.lua spec/unit/command_executor_spec.lua'",
+          "exit_code": 0,
+          "summary": "16 executed and passed, 0 failed/error/pending; touched lint 3 files with 0 warnings/errors; 0 integration or unified cases newly applicable; architecture and complexity validators passed",
+          "recorded_at": "2026-08-20T17:15:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T17:09:24+00:00",
+      "completed_at": "2026-08-20T17:15:18+00:00"
     }
   },
   "verified_references": {
