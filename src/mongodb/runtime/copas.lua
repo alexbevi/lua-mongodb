@@ -6,6 +6,7 @@ local M = {}
 
 local ALLOWED_OPTIONS = {
   copas = true,
+  compression = true,
   crypto = true,
   dns = true,
   dns_nameservers = true,
@@ -418,6 +419,17 @@ local function new_lock_capability(adapter, copas_lock, poll_interval)
   }
 end
 
+local function default_compression()
+  local providers = {}
+  local zlib = require("mongodb.runtime.zlib").load()
+
+  if zlib ~= nil then
+    providers.zlib = zlib
+  end
+
+  return providers
+end
+
 function M.new(options)
   options = options or {}
   validate_options(options)
@@ -474,6 +486,12 @@ function M.new(options)
   adapter.tls = options.tls or require("mongodb.runtime.luasec").new(adapter)
   adapter.entropy = options.entropy or openssl.entropy
   adapter.crypto = options.crypto or openssl.crypto
+  adapter.compression = options.compression
+
+  if adapter.compression == nil then
+    adapter.compression = default_compression()
+  end
+
   adapter.file = options.file or new_file_capability(adapter)
   adapter.http = options.http or require("mongodb.runtime.http").new(adapter)
   adapter.metadata = options.metadata or default_metadata(raw_getenv)

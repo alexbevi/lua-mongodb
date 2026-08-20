@@ -148,6 +148,7 @@ class PackageTests(unittest.TestCase):
 
     for dependency in (
       '"lua-cryptorandom >= 0.0.6, < 0.1"',
+      '"lua-zlib >= 1.4, < 1.5"',
       '"md5 >= 1.3, < 1.4"',
       '"sha1 >= 0.5, < 0.6"',
     ):

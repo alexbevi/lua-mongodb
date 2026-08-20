@@ -19,6 +19,7 @@ RUNTIME_IMPORT_PREFIXES = (
   "resty.openssl",
   "socket",
   "ssl",
+  "zlib",
 )
 RUNTIME_GLOBALS = ("io", "os", "package")
 

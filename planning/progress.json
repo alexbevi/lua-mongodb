@@ -6855,6 +6855,28 @@
       "notes": [],
       "started_at": "2026-08-20T16:00:40+00:00",
       "completed_at": "2026-08-20T16:09:27+00:00"
+    },
+    "WIRE-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/zlib_runtime_spec.lua",
+          "exit_code": 2,
+          "summary": "0 successes; defining zlib runtime test errors because module 'mongodb.runtime.zlib' is absent",
+          "recorded_at": "2026-08-20T16:22:39+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "eval \"$(luarocks --lua-version=5.5 path)\" && make test-focus FOCUS_UNIT='spec/unit/zlib_runtime_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_PYTHON='planning.tests.test_architecture_boundaries spec.package.test_package.PackageTests.test_release_dependencies_support_declared_lua_runtimes' FOCUS_LINT='src/mongodb/runtime/zlib.lua src/mongodb/runtime/contract.lua src/mongodb/runtime/copas.lua src/mongodb/runtime/fake.lua spec/unit/zlib_runtime_spec.lua'",
+          "exit_code": 0,
+          "summary": "27 focused Lua cases, 6 Python architecture/package cases, and touched-file lint passed; exact zlib vectors passed for levels -1 through 9",
+          "recorded_at": "2026-08-20T16:29:38+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T16:17:26+00:00",
+      "completed_at": "2026-08-20T16:30:00+00:00"
     }
   },
   "verified_references": {

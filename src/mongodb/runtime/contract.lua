@@ -48,6 +48,39 @@ local function capability(runtime, path)
   return value
 end
 
+local function validate_compression(runtime)
+  if runtime.compression == nil then
+    return
+  end
+
+  if type(runtime.compression) ~= "table" then
+    error("runtime compression capabilities must be a table", 3)
+  end
+
+  local compressor_ids = {}
+
+  for name, provider in pairs(runtime.compression) do
+    if type(name) ~= "string" or name == "" or type(provider) ~= "table" then
+      error("runtime compression providers must use non-empty string names", 3)
+    end
+
+    if provider.name ~= name
+        or math.type(provider.compressor_id) ~= "integer"
+        or provider.compressor_id < 1
+        or provider.compressor_id > 255
+        or type(provider.compress) ~= "function"
+        or type(provider.decompress) ~= "function" then
+      error("runtime compression provider " .. name .. " is invalid", 3)
+    end
+
+    if compressor_ids[provider.compressor_id] then
+      error("runtime compression provider ids must be unique", 3)
+    end
+
+    compressor_ids[provider.compressor_id] = true
+  end
+end
+
 function M.validate(runtime)
   if type(runtime) ~= "table" then
     error("runtime must be a table", 2)
@@ -62,6 +95,8 @@ function M.validate(runtime)
   if runtime.metadata ~= nil and type(runtime.metadata) ~= "table" then
     error("runtime metadata facts must be a table", 2)
   end
+
+  validate_compression(runtime)
 
   return runtime
 end

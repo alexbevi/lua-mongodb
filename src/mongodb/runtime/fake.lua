@@ -817,6 +817,12 @@ function M.new(options)
   fake.tls = new_tls_capability(fake)
   fake.entropy = new_entropy_capability(fake)
   fake.crypto = new_crypto_capability(fake)
+  fake.compression = options.compression
+
+  if fake.compression == nil then
+    fake.compression = {}
+  end
+
   fake.metadata = options.metadata
 
   return runtime_contract.validate(fake)

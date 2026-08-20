@@ -44,9 +44,10 @@ class ArchitectureBoundaryTests(unittest.TestCase):
         'local socket = require("socket")\n'
         'local ssl = require("ssl")\n'
         'local digest = require("openssl.digest")\n'
+        'local compression = require("zlib")\n'
         'local home = os.getenv("HOME")\n'
         'local file = io.open("facts", "rb")\n'
-        "return { socket, ssl, digest, home, file }\n"
+        "return { socket, ssl, digest, compression, home, file }\n"
       ),
     }) as temporary:
       issues = check_architecture.check_source(Path(temporary))
@@ -55,8 +56,9 @@ class ArchitectureBoundaryTests(unittest.TestCase):
       "core.lua:1: mongodb.core imports runtime-owned module 'socket'",
       "core.lua:2: mongodb.core imports runtime-owned module 'ssl'",
       "core.lua:3: mongodb.core imports runtime-owned module 'openssl.digest'",
-      "core.lua:4: mongodb.core accesses runtime-owned global 'os.getenv'",
-      "core.lua:5: mongodb.core accesses runtime-owned global 'io.open'",
+      "core.lua:4: mongodb.core imports runtime-owned module 'zlib'",
+      "core.lua:5: mongodb.core accesses runtime-owned global 'os.getenv'",
+      "core.lua:6: mongodb.core accesses runtime-owned global 'io.open'",
     ], issues)
 
   def test_allows_runtime_adapters_to_own_platform_access(self) -> None:
@@ -65,9 +67,10 @@ class ArchitectureBoundaryTests(unittest.TestCase):
         'local socket = require("socket")\n'
         'local ssl = require("ssl")\n'
         'local digest = require("openssl.digest")\n'
+        'local compression = require("zlib")\n'
         'local home = os.getenv("HOME")\n'
         'local file = io.open("facts", "rb")\n'
-        "return { socket, ssl, digest, home, file }\n"
+        "return { socket, ssl, digest, compression, home, file }\n"
       ),
     }) as temporary:
       self.assertEqual([], check_architecture.check_source(Path(temporary)))
