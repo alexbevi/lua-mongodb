@@ -6943,6 +6943,28 @@
       "notes": [],
       "started_at": "2026-08-20T17:09:24+00:00",
       "completed_at": "2026-08-20T17:15:18+00:00"
+    },
+    "WIRE-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua'",
+          "exit_code": 2,
+          "summary": "9 successes, 1 error: the command executor had no compressor_for classification boundary",
+          "recorded_at": "2026-08-20T17:24:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/command_monitoring_spec.lua spec/unit/auth_scram_spec.lua spec/unit/auth_oidc_machine_spec.lua spec/unit/auth_aws_spec.lua spec/unit/auth_x509_spec.lua' FOCUS_LINT='src/mongodb/command/executor.lua spec/unit/command_executor_spec.lua'",
+          "exit_code": 0,
+          "summary": "41 executed and passed, 0 failed/error/pending; touched lint 2 files with 0 warnings/errors; 0 integration or unified cases newly applicable; complexity validator passed",
+          "recorded_at": "2026-08-20T17:25:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T17:23:37+00:00",
+      "completed_at": "2026-08-20T17:25:32+00:00"
     }
   },
   "verified_references": {

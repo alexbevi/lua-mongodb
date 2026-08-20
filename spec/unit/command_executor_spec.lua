@@ -40,6 +40,42 @@ local function fake_connection(responses)
 end
 
 describe("single-connection command executor", function()
+  it("excludes every prohibited command from negotiated compression", function()
+    local provider = { name = "zlib" }
+    local connection = fake_connection({
+      bson.document({
+        { "ok", 1 },
+        { "maxWireVersion", 25 },
+        { "compression", bson.array({ "zlib" }) },
+      }),
+    })
+    local commands = assert(executor.new(connection, {
+      compression = { zlib = provider },
+      compressors = { "zlib" },
+    }))
+
+    assert(commands:hello())
+
+    for _, name in ipairs({
+      "hello",
+      "ismaster",
+      "saslStart",
+      "saslContinue",
+      "getnonce",
+      "authenticate",
+      "createUser",
+      "updateUser",
+      "copydbSaslStart",
+      "copydbgetnonce",
+      "copydb",
+    }) do
+      assert.is_nil(commands:compressor_for(name), name)
+    end
+
+    assert.are.equal(provider, commands:compressor_for("ping"))
+    assert.is_nil(commands:compressor_for("SaSlStArT"))
+  end)
+
   it("negotiates available compressors independently for each connection", function()
     local providers = {
       snappy = { name = "snappy" },

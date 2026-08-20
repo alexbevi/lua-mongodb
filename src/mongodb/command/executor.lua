@@ -94,6 +94,18 @@ local function negotiated_compressor(state, response)
   end
 end
 
+local function compressor_for(state, command_name)
+  local lower_name = command_name:lower()
+
+  if lower_name == "hello" or lower_name == "ismaster"
+      or command_security.is_always_sensitive(lower_name)
+  then
+    return nil
+  end
+
+  return state.compressor
+end
+
 local function number_value(value)
   if type(value) == "number" then
     return value
@@ -593,6 +605,14 @@ end
 
 function EXECUTOR_METHODS:compressor()
   return EXECUTOR_STATES[self].compressor
+end
+
+function EXECUTOR_METHODS:compressor_for(command_name)
+  if type(command_name) ~= "string" or command_name == "" then
+    error("command name must be a non-empty string", 2)
+  end
+
+  return compressor_for(EXECUTOR_STATES[self], command_name)
 end
 
 function EXECUTOR_METHODS:close()
