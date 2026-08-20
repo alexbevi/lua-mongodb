@@ -299,6 +299,19 @@ class CiPortabilityTests(unittest.TestCase):
       for branch in branches:
         self.assertIn(branch, job)
 
+  def test_linux_runs_short_circuit_csot_as_focused_exact_evidence(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    linux = workflow[
+      workflow.index("  linux-version-branches:"):
+      workflow.index("  linux-aggregate:")
+    ]
+
+    self.assertIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1", linux)
+    self.assertIn(
+      "client-side-operations-timeout/tests/command-execution.json::test?3?",
+      linux,
+    )
+
   def test_manual_macos_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
     macos = workflow[

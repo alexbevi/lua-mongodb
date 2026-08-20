@@ -163,7 +163,8 @@ jobs:
 
       - name: Run exact supplemental version branches
         run: >-
-          python3 spec/unified/run.py
+          MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py
+          --include 'client-side-operations-timeout/tests/command-execution.json::test?3?'
           --include index-management/tests/index-rawdata.json
           --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?'
           --include 'crud/tests/unified/count-rawdata.json::test?2?'

@@ -6609,24 +6609,24 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_runs_every_pre_8_2_v0_7_rawdata_branch'",
+          "command": "make test-focus FOCUS_PYTHON='Linux short-circuit CSOT policy and focused-evidence workflow contracts'",
           "exit_code": 1,
-          "summary": "The defining workflow contract failed because the Linux pre-8.2 job omitted all three v0.7 client bulk write rawData test[2] branches; Full Conformance showed the same omission in the macOS aggregate.",
-          "recorded_at": "2026-08-19T23:28:29+00:00"
+          "summary": "Both defining contracts failed: hosted Linux did not defer the repeatedly unstable command-execution test[3], and the focused Linux supplemental job neither forced nor selected that exact identity.",
+          "recorded_at": "2026-08-20T00:18:44+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='three CI workflow contracts plus two v0.7 scope contracts'; python3 spec/v07/scope.py --check; python3 spec/release/checklist.py --check; git diff --check",
+          "command": "make test-focus FOCUS_PYTHON='five Linux/macOS timing-placement, workflow, and aggregation contracts'; python3 spec/v07/scope.py --check; python3 spec/release/checklist.py --check; git diff --check",
           "exit_code": 0,
-          "summary": "Five focused contracts passed: both platform version-branch jobs select every v0.6 and v0.7 pre-8.2 rawData case, manual macOS aggregation remains wired, environment skips cannot replace exact v0.7 evidence, and the 71-case v0.7 scope remains current; the 0.7.0 checklist has 0 gaps.",
-          "recorded_at": "2026-08-19T23:31:14+00:00"
+          "summary": "Five focused contracts passed: Linux CI defers only command-execution test[3], macOS timing policy is unchanged, the focused Linux job forces exact execution, v0.7 version branches remain present, and aggregation wiring remains intact; v0.7 scope and the 0.7.0 checklist are current.",
+          "recorded_at": "2026-08-20T00:21:06+00:00"
         },
         {
           "phase": "green",
-          "command": "MONGOD=/Users/alex/.local/bin/mongod make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='crud/tests/unified/client-bulkWrite-*-rawdata.json::test?2?'",
+          "command": "CI=true MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 MONGOD=/Users/alex/.local/bin/mongod make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='client-side-operations-timeout/tests/command-execution.json::test?3?'",
           "exit_code": 0,
-          "summary": "Against MongoDB 8.0.16, all three newly selected pre-8.2 client bulk write rawData branches executed and passed with 0 failures, environment skips, or deferrals.",
-          "recorded_at": "2026-08-19T23:31:15+00:00"
+          "summary": "The forced focused Linux-authoritative identity executed against MongoDB 8.0.16 and passed with 0 failures, environment skips, or deferrals.",
+          "recorded_at": "2026-08-20T00:21:07+00:00"
         }
       ],
       "notes": [
@@ -6634,7 +6634,8 @@
         "Requeued: Full Conformance 32298388061 failed the same authenticated network-timeout identity on Linux and macOS after SCRAM returned a socket write failure; publication remains blocked pending exact reproduction and a focused portability fix.",
         "Requeued: Full Conformance 32302493311 found missing checked-in coverage baseline rows for src/mongodb/client_bulk.lua and src/mongodb/runtime/sha256.lua; macOS shard 1 also had one isolated 10-second CSOT timeout that passed locally and in prior full evidence.",
         "Requeued: Full Conformance attempt 32306807196 reproduced Linux CSOT command-execution timeout failures and exposed missing pre-8.2 client bulk write rawData evidence in platform aggregates.",
-        "Requeued: Full Conformance 32306807196 macOS aggregate proved the pre-8.2 version-branch jobs omit v0.7 client bulk write rawData identities that are environment-skipped on MongoDB 8.2."
+        "Requeued: Full Conformance 32306807196 macOS aggregate proved the pre-8.2 version-branch jobs omit v0.7 client bulk write rawData identities that are environment-skipped on MongoDB 8.2.",
+        "Requeued: Full Conformance 32313966536 proved process isolation narrows Linux shard failure to command-execution test[3], whose 90 ms budget failed a third hosted shard run while focused execution passes; move that exact Linux case to focused supplemental evidence."
       ],
       "reopen_history": [
         {
@@ -6801,11 +6802,37 @@
               "recorded_at": "2026-08-19T23:20:47+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-19T23:31:24+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_runs_every_pre_8_2_v0_7_rawdata_branch'",
+              "exit_code": 1,
+              "summary": "The defining workflow contract failed because the Linux pre-8.2 job omitted all three v0.7 client bulk write rawData test[2] branches; Full Conformance showed the same omission in the macOS aggregate.",
+              "recorded_at": "2026-08-19T23:28:29+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='three CI workflow contracts plus two v0.7 scope contracts'; python3 spec/v07/scope.py --check; python3 spec/release/checklist.py --check; git diff --check",
+              "exit_code": 0,
+              "summary": "Five focused contracts passed: both platform version-branch jobs select every v0.6 and v0.7 pre-8.2 rawData case, manual macOS aggregation remains wired, environment skips cannot replace exact v0.7 evidence, and the 71-case v0.7 scope remains current; the 0.7.0 checklist has 0 gaps.",
+              "recorded_at": "2026-08-19T23:31:14+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "MONGOD=/Users/alex/.local/bin/mongod make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua FOCUS_UNIFIED='crud/tests/unified/client-bulkWrite-*-rawdata.json::test?2?'",
+              "exit_code": 0,
+              "summary": "Against MongoDB 8.0.16, all three newly selected pre-8.2 client bulk write rawData branches executed and passed with 0 failures, environment skips, or deferrals.",
+              "recorded_at": "2026-08-19T23:31:15+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "cf2bc7f294647c5527a04d8afb3bb5c8eaf01c13",
-      "started_at": "2026-08-19T23:27:35+00:00",
-      "completed_at": "2026-08-19T23:31:24+00:00"
+      "reopened_after_commit": "04fecbe1d64fa91c66e6b60f611e821b50806d54",
+      "started_at": "2026-08-20T00:17:52+00:00",
+      "completed_at": "2026-08-20T00:21:16+00:00"
     }
   },
   "verified_references": {

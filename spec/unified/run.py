@@ -62,6 +62,9 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/tailable-awaitData.json::test[12]",
   "client-side-operations-timeout/tests/tailable-non-awaitData.json::test[3]",
 })
+LINUX_CI_FOCUSED_CSOT = frozenset({
+  "client-side-operations-timeout/tests/command-execution.json::test[3]",
+})
 VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
 REPORT_VERSION = 2
 SLOWEST_FIXTURE_GROUP_LIMIT = 10
@@ -1264,6 +1267,17 @@ def platform_environment_skip(
     return (
       "millisecond-scale CSOT failpoint timing is unreliable on macOS CI; "
       "the case remains authoritative on portable Linux"
+    )
+
+  if (
+    environment.get("CI")
+    and not environment.get("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT")
+    and platform == "linux"
+    and identity in LINUX_CI_FOCUSED_CSOT
+  ):
+    return (
+      "the 90 ms CSOT short-circuit case runs as focused Linux CI evidence "
+      "outside the loaded unified shard"
     )
 
   return None

@@ -3379,6 +3379,29 @@ class UnifiedCliTests(unittest.TestCase):
       "darwin",
     ))
 
+  def test_linux_ci_defers_only_short_circuit_csot_to_focused_evidence(
+    self,
+  ) -> None:
+    short_circuit = (
+      "client-side-operations-timeout/tests/command-execution.json::test[3]"
+    )
+    other_case = (
+      "client-side-operations-timeout/tests/command-execution.json::test[2]"
+    )
+
+    self.assertIsNotNone(
+      run.platform_environment_skip(short_circuit, {"CI": "true"}, "linux")
+    )
+    self.assertIsNone(
+      run.platform_environment_skip(other_case, {"CI": "true"}, "linux")
+    )
+    self.assertIsNone(run.platform_environment_skip(short_circuit, {}, "linux"))
+    self.assertIsNone(run.platform_environment_skip(
+      short_circuit,
+      {"CI": "true", "MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT": "1"},
+      "linux",
+    ))
+
 
 if __name__ == "__main__":
   unittest.main()
