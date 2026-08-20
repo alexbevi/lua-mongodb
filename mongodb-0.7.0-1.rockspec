@@ -104,6 +104,7 @@ build = {
     ["mongodb.selection"] = "src/mongodb/selection.lua",
     ["mongodb.topology"] = "src/mongodb/topology.lua",
     ["mongodb.topology_executor"] = "src/mongodb/topology_executor.lua",
+    ["mongodb.wire.op_compressed"] = "src/mongodb/wire/op_compressed.lua",
     ["mongodb.wire.op_msg"] = "src/mongodb/wire/op_msg.lua",
   },
 }

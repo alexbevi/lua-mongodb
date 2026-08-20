@@ -6877,6 +6877,28 @@
       "notes": [],
       "started_at": "2026-08-20T16:17:26+00:00",
       "completed_at": "2026-08-20T16:30:00+00:00"
+    },
+    "WIRE-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/op_compressed_spec.lua",
+          "exit_code": 2,
+          "summary": "0 successes; defining OP_COMPRESSED encoder test errors because module 'mongodb.wire.op_compressed' is absent",
+          "recorded_at": "2026-08-20T16:41:19+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:/usr/bin:/bin LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/op_compressed_spec.lua spec/unit/op_msg_spec.lua' FOCUS_LINT='src/mongodb/wire/op_compressed.lua spec/unit/op_compressed_spec.lua'",
+          "exit_code": 0,
+          "summary": "5 focused OP_COMPRESSED and OP_MSG cases passed with touched-file lint; architecture, complexity, rockspec, and isolated source-package validators also passed",
+          "recorded_at": "2026-08-20T16:43:24+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T16:39:35+00:00",
+      "completed_at": "2026-08-20T16:44:50+00:00"
     }
   },
   "verified_references": {

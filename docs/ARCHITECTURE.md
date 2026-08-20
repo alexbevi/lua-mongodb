@@ -166,6 +166,8 @@ Normalized defaults follow the specifications: 100-entry maximum and zero-entry 
 
 `mongodb.wire.op_msg` is the pure-Lua message boundary for opcode 2013. It encodes and decodes the 16-byte little-endian message header, flags, exactly one kind-0 BSON command body, and any number of uniquely named kind-1 document sequences in arbitrary section order. A deterministic request-ID generator assigns positive signed 32-bit IDs and wraps without using platform randomness; response decoding may require an exact `responseTo` match before exposing the body.
 
+`mongodb.wire.op_compressed` is the codec-neutral encoder for opcode 2012. It accepts an already encoded message body without its 16-byte standard header, passes those exact bytes and any compressor-specific level to an injected runtime provider, and emits a new request header followed by the original opcode, uncompressed body size, compressor ID, and compressed bytes. Provider failures become structured protocol errors, and neither the encoder nor any other core wire module imports a native compression library.
+
 The codec rejects checksum-bearing messages because CRC-32C support is intentionally absent, rejects unknown required flag bits and response-only misuse, and ignores unknown optional high bits as the specification requires. Declared frame/section/BSON lengths are checked before slicing or decoding, and negotiated `maxMessageSizeBytes` and `maxBsonObjectSize` limits are enforced on both paths. The size-accounting API uses the same encoding preparation as the wire writer, so later bulk batching can make decisions without maintaining a second overhead formula.
 
 ### Hello and single-connection commands
