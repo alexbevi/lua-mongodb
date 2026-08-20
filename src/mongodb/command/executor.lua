@@ -4,6 +4,7 @@ local errors = require("mongodb.error")
 local handshake_metadata = require("mongodb.handshake.metadata")
 local hello_model = require("mongodb.command.hello")
 local operation_timeout = require("mongodb.operation_timeout")
+local op_compressed = require("mongodb.wire.op_compressed")
 local op_msg = require("mongodb.wire.op_msg")
 
 local M = {}
@@ -164,6 +165,22 @@ local function receive_response(state, expected_response_to, options, span, sens
   end
 
   local response
+
+  if string.unpack("<i4", response_bytes, 13) == op_compressed.OP_CODE then
+    response_bytes, err = op_compressed.decode(response_bytes, {
+      compression = state.compression,
+      max_message_size = state.max_message_size,
+    })
+
+    if not response_bytes then
+      if span then
+        span:failed(err)
+      end
+
+      return close_with(state, err)
+    end
+  end
+
   response, err = op_msg.decode(response_bytes, {
     direction = "response",
     expected_response_to = expected_response_to,
@@ -521,9 +538,14 @@ function M.new(connection, options)
     error("command executor metadata must be a BSON document", 2)
   end
 
+  if options.compression ~= nil and type(options.compression) ~= "table" then
+    error("command executor compression capabilities must be a table", 2)
+  end
+
   local value = {}
 
   EXECUTOR_STATES[value] = {
+    compression = options.compression or {},
     connection = connection,
     handshake_complete = false,
     hello = nil,

@@ -6899,6 +6899,28 @@
       "notes": [],
       "started_at": "2026-08-20T16:39:35+00:00",
       "completed_at": "2026-08-20T16:44:50+00:00"
+    },
+    "WIRE-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "env PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:/usr/bin:/bin LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT=spec/unit/op_compressed_spec.lua",
+          "exit_code": 2,
+          "summary": "2 encoder cases passed; 2 defining reply cases error because mongodb.wire.op_compressed.decode is absent",
+          "recorded_at": "2026-08-20T16:57:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env PATH=/opt/homebrew/opt/lua@5.4/bin:/Users/alex/.luarocks/bin:/usr/bin:/bin LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUA_PATH='/Users/alex/.luarocks/share/lua/5.4/?.lua;/Users/alex/.luarocks/share/lua/5.4/?/init.lua;;' LUA_CPATH='/Users/alex/.luarocks/lib/lua/5.4/?.so;;' make test-focus FOCUS_UNIT='spec/unit/op_compressed_spec.lua spec/unit/command_executor_spec.lua spec/unit/network_transport_spec.lua' FOCUS_LINT='src/mongodb/wire/op_compressed.lua src/mongodb/command/executor.lua src/mongodb/client.lua spec/unit/op_compressed_spec.lua'",
+          "exit_code": 0,
+          "summary": "16 focused compressed-reply, executor, and transport cases passed with touched-file lint; architecture and complexity validators passed",
+          "recorded_at": "2026-08-20T17:00:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-20T16:55:41+00:00",
+      "completed_at": "2026-08-20T17:01:46+00:00"
     }
   },
   "verified_references": {
