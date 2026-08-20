@@ -15,6 +15,24 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 
 LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency; the supported server versions and deployment types are listed under [Scope](#scope).
 
+## Building and Installing
+
+Install the latest public release from LuaRocks with:
+
+```sh
+luarocks install mongodb
+```
+
+From a source checkout, build and install the checked-in rockspec with:
+
+```sh
+luarocks make
+```
+
+`make test-package` builds a source rock from the current checkout, installs it into an isolated LuaRocks tree, verifies that every production module is packaged, and exercises the documented public API without workspace module paths.
+
+Release rockspecs are built and verified from immutable release tags before publication.
+
 ## Getting Started
 
 The driver runs network operations through a coroutine-aware runtime. For standalone programs, `mongodb.run` starts the default Copas scheduler and runs the application callback inside it. Applications that already own a Copas loop may create clients directly inside that loop instead. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.
