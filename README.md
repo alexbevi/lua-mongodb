@@ -59,8 +59,6 @@ end)
 
 Set the optional handshake application name with the URI `appName` option or the idiomatic `app_name` client option. Names are limited to 128 bytes. The driver sends that name with its fixed driver identity and runtime OS/platform facts only in the initial handshake on each newly established socket.
 
-A library wrapping this driver may supply `driver_info = { name = "library", version = "1.2", platform = "Library Platform" }` when creating a client. It may later call `client:append_metadata()` with the same fields; each distinct tuple is appended to handshakes for new connections, while exact duplicates are ignored and established connections are unchanged.
-
 For a DNS seedlist, use a `mongodb+srv` URI. Before opening a MongoDB socket, the driver resolves the URI hostname's SRV records and optional TXT defaults, validates every returned hostname against the URI's parent domain, and enables TLS unless the URI explicitly sets `tls=false` (or its `ssl` alias). Unknown and sharded topologies continue polling SRV records at the DNS TTL cadence, with a 60-second minimum, so mongos additions and removals do not require a client restart.
 
 An ordinary one-seed URI may also point to mongos. The client discovers the sharded topology and executes ordinary and cursor commands through the monitored mongos pool.
