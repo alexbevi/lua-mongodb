@@ -1209,6 +1209,73 @@ describe("GridFS buckets", function()
     end
   end)
 
+  it("deletes a files document before its chunks under one deadline", function()
+    local runtime = fake_runtime.new({ now = 30 })
+    local commands = {}
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        runtime:advance(0.005)
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      nil,
+      runtime
+    )
+
+    assert.is_true(assert(bucket:delete(
+      "delete-id",
+      { timeout_ms = 1000 }
+    )))
+    assert.are.equal("fs.files", commands[1]:get("delete"))
+    assert.are.equal(
+      "delete-id",
+      commands[1]:get("deletes"):get(1):get("q"):get("_id")
+    )
+    assert.are.equal("fs.chunks", commands[2]:get("delete"))
+    assert.are.equal(
+      "delete-id",
+      commands[2]:get("deletes"):get(1):get("q"):get("files_id")
+    )
+
+    for _, deadline in ipairs(deadlines) do
+      assert.is_true(math.abs(deadline - 31) < 0.000001)
+    end
+  end)
+
+  it("cleans orphan chunks before reporting a missing file", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return bson.document({ { "ok", 1 }, { "n", 0 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local deleted, err = bucket:delete("missing-id")
+
+    assert.is_nil(deleted)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal("file_not_found", err.details.gridfs)
+    assert.are.equal("missing-id", err.details.id)
+    assert.are.equal("fs.files", commands[1]:get("delete"))
+    assert.are.equal("fs.chunks", commands[2]:get("delete"))
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

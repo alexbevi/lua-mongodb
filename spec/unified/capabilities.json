@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2018,
-    "runnable": 2018
+    "passed": 2027,
+    "runnable": 2027
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -23417,7 +23417,6 @@
     "client-side-operations-timeout/tests/gridfs-delete.json::test[1]": {
       "activity": "GFS-009",
       "fingerprint": "77c4c7049124e23d657e67718a7a3bcebd115336f7f5229e9358fc937b224738",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23443,12 +23442,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[2]": {
       "activity": "GFS-009",
       "fingerprint": "83b3cc58a0f1774d07932c92c5a68f3b8f9a9a14fbdad9b0febb4c4d8fcb9390",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23477,12 +23475,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[3]": {
       "activity": "GFS-009",
       "fingerprint": "b58c4f16dea5eba6a39abe181b2521714cbd0c0560b62a498c88469079d0b378",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23507,12 +23504,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[4]": {
       "activity": "GFS-009",
       "fingerprint": "ab88e2bedc338cacccac5fd29a966d2c47ae20c9bdda9c469e69ed5c7c0bf30b",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23537,7 +23533,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[1]": {
       "activity": "GFS-005",
@@ -50313,7 +50309,6 @@
     "gridfs/tests/delete.json::test[1]": {
       "activity": "GFS-009",
       "fingerprint": "125ac27e6301307abdcac19ae58a11cd30b7a72fc1c8df88bca1cc602a959fff",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id"
@@ -50334,12 +50329,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/delete.json::test[2]": {
       "activity": "GFS-009",
       "fingerprint": "a97808c9b739823cd3533b383b8b9343e78dc83f7858446850d8d748ceb92b9b",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id"
@@ -50360,12 +50354,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/delete.json::test[3]": {
       "activity": "GFS-009",
       "fingerprint": "39c374060465b01c407c256ff7ba476920eb7fa52fef14517fda4759febd66ec",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id"
@@ -50386,12 +50379,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/delete.json::test[4]": {
       "activity": "GFS-009",
       "fingerprint": "6b84c51fc01483e60177abc988604857c68ec0a721d4e188d02e4efe57cb6e3b",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id"
@@ -50412,12 +50404,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/delete.json::test[5]": {
       "activity": "GFS-009",
       "fingerprint": "349253c69573806d40f602f2599245511429b90db9f594198afef8387ff5c887",
-      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -50440,7 +50431,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/deleteByName.json::test[1]": {
       "activity": "GFS-010",

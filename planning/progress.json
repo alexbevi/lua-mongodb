@@ -7461,6 +7461,28 @@
       "notes": [],
       "started_at": "2026-08-21T15:11:44+00:00",
       "completed_at": "2026-08-21T15:14:41+00:00"
+    },
+    "GFS-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "23 unit cases passed and the defining files-before-chunks case errored because bucket delete was absent",
+          "recorded_at": "2026-08-21T15:23:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with focused GridFS and unified-driver units, GridFS OP_MSG integration, all nine exact delete and GridFS-delete CSOT identities, 140 focused Python artifact cases, and five touched-file lint targets; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "194 focused tests executed and passed (38 unit, 7 integration, 9 exact unified, 140 Python artifact tests); 0 environment-skipped, 0 deferred, 0 failed; 5 touched Lua files lint-clean; complexity and all generated capability, conformance, README, release, and JSON validators passed",
+          "recorded_at": "2026-08-21T15:30:25+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T15:22:46+00:00",
+      "completed_at": "2026-08-21T15:30:32+00:00"
     }
   },
   "verified_references": {

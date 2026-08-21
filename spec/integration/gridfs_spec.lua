@@ -567,4 +567,66 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("deletes files documents before their chunks", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local files_delete = receive_frame(peer)
+
+      assert.are.equal("fs.files", files_delete.body:get("delete"))
+      assert.are.equal(
+        "delete-id",
+        files_delete.body:get("deletes"):get(1):get("q"):get("_id")
+      )
+      send_response(peer, files_delete, bson.document({
+        { "ok", 1 },
+        { "n", 1 },
+      }))
+
+      local chunks_delete = receive_frame(peer)
+
+      assert.are.equal("fs.chunks", chunks_delete.body:get("delete"))
+      assert.are.equal(
+        "delete-id",
+        chunks_delete.body:get("deletes"):get(1):get("q"):get("files_id")
+      )
+      send_response(peer, chunks_delete, bson.document({
+        { "ok", 1 },
+        { "n", 2 },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket())
+
+        assert.is_true(assert(bucket:delete("delete-id")))
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

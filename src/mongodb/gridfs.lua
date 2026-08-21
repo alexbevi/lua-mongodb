@@ -356,6 +356,22 @@ local function download_by_name_options(options)
   return options, revision
 end
 
+local function delete_options(options)
+  if options == nil then
+    return {}
+  elseif type(options) ~= "table" then
+    error("GridFS delete options must be a table", 3)
+  end
+
+  for key in pairs(options) do
+    if key ~= "timeout_ms" then
+      error("unknown GridFS delete option: " .. tostring(key), 3)
+    end
+  end
+
+  return options
+end
+
 local function file_metadata(document)
   local length = integer_value(document:get("length"))
   local chunk_size_bytes = integer_value(document:get("chunkSize"))
@@ -854,6 +870,48 @@ function BUCKET_METHODS:download_to_stream_by_name(
       end
 
       return copy_download(download, destination)
+    end
+  )
+end
+
+function BUCKET_METHODS:delete(identifier, options)
+  if identifier == nil then
+    error("GridFS delete id must not be nil", 2)
+  end
+
+  local state = BUCKET_STATES[self]
+
+  options = delete_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local files_result, err = state.files_collection:delete_one(
+        bson.document({ { "_id", identifier } })
+      )
+
+      if not files_result then
+        return nil, err
+      end
+
+      local chunks_result
+      chunks_result, err = state.chunks_collection:delete_many(
+        bson.document({ { "files_id", identifier } })
+      )
+
+      if not chunks_result then
+        return nil, err
+      elseif files_result.deleted_count == 0 then
+        return gridfs_error(
+          "file_not_found",
+          "GridFS file was not found",
+          { id = identifier }
+        )
+      end
+
+      return true
     end
   )
 end
