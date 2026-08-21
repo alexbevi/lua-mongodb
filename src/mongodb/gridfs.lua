@@ -9,6 +9,14 @@ local BUCKET_STATES = setmetatable({}, { __mode = "k" })
 local BUCKET_METHODS = {}
 local UPLOAD_STATES = setmetatable({}, { __mode = "k" })
 local UPLOAD_METHODS = {}
+local UPLOAD_PROPERTIES = {
+  chunk_size_bytes = true,
+  closed = true,
+  filename = true,
+  id = true,
+  length = true,
+  upload_date = true,
+}
 
 local FILES_INDEX_KEYS = bson.document({
   { "filename", 1 },
@@ -49,7 +57,7 @@ local UPLOAD_METATABLE = {
 
     local state = UPLOAD_STATES[value]
 
-    if state then
+    if state and UPLOAD_PROPERTIES[key] then
       return state[key]
     end
   end,
@@ -63,6 +71,13 @@ local function configuration_error(message, option)
   return nil, errors.new({
     category = errors.CATEGORY.CONFIGURATION,
     details = { option = option },
+    message = message,
+  })
+end
+
+local function client_error(message)
+  return nil, errors.new({
+    category = errors.CATEGORY.CLIENT,
     message = message,
   })
 end
@@ -250,14 +265,24 @@ local function new_upload(state, identifier, filename, options)
     return nil, err
   end
 
+  local metadata = options and options.metadata
+
+  if metadata ~= nil and not bson.is_document(metadata) then
+    error("GridFS upload metadata must be a BSON document", 3)
+  end
+
   local value = {}
 
   UPLOAD_STATES[value] = {
+    buffer = "",
     bucket_state = state,
     chunk_size_bytes = chunk_size_bytes,
+    chunk_number = 0,
     closed = false,
     filename = filename,
     id = identifier,
+    length = 0,
+    metadata = metadata,
   }
 
   return setmetatable(value, UPLOAD_METATABLE)
@@ -288,14 +313,100 @@ function BUCKET_METHODS:open_upload_stream_with_id(identifier, filename, options
   return new_upload(BUCKET_STATES[self], identifier, filename, options)
 end
 
+local function flush_chunk(state)
+  if #state.buffer == 0 then
+    return true
+  end
+
+  local ready, err = ensure_required_indexes(state.bucket_state)
+
+  if not ready then
+    state.failure = err
+    return nil, err
+  end
+
+  local result
+  result, err = state.bucket_state.chunks_collection:insert_one(bson.document({
+    { "files_id", state.id },
+    { "n", state.chunk_number },
+    { "data", bson.binary(state.buffer) },
+  }))
+
+  if not result then
+    state.failure = err
+    return nil, err
+  end
+
+  state.buffer = ""
+  state.chunk_number = state.chunk_number + 1
+  return true
+end
+
+function UPLOAD_METHODS:write(data)
+  local state = UPLOAD_STATES[self]
+
+  if state.closed then
+    return client_error("cannot write to a closed GridFS upload stream")
+  elseif state.failure then
+    return nil, state.failure
+  elseif type(data) ~= "string" then
+    error("GridFS upload data must be a string", 2)
+  end
+
+  local position = 1
+
+  while position <= #data do
+    local available = state.chunk_size_bytes - #state.buffer
+    local count = math.min(available, #data - position + 1)
+
+    state.buffer = state.buffer .. data:sub(position, position + count - 1)
+    position = position + count
+
+    if #state.buffer == state.chunk_size_bytes then
+      local written, err = flush_chunk(state)
+
+      if not written then
+        return nil, err
+      end
+    end
+  end
+
+  state.length = state.length + #data
+  return true
+end
+
+local function file_document(state, upload_date)
+  local entries = {
+    { "_id", state.id },
+    { "length", bson.int64(state.length) },
+    { "chunkSize", state.chunk_size_bytes },
+    { "uploadDate", upload_date },
+    { "filename", state.filename },
+  }
+
+  if state.metadata ~= nil then
+    entries[#entries + 1] = { "metadata", state.metadata }
+  end
+
+  return bson.document(entries)
+end
+
 function UPLOAD_METHODS:close()
   local state = UPLOAD_STATES[self]
 
   if state.closed then
     return true
+  elseif state.failure then
+    return nil, state.failure
   end
 
-  local ready, err = ensure_required_indexes(state.bucket_state)
+  local ready, err = flush_chunk(state)
+
+  if not ready then
+    return nil, err
+  end
+
+  ready, err = ensure_required_indexes(state.bucket_state)
 
   if not ready then
     return nil, err
@@ -304,13 +415,9 @@ function UPLOAD_METHODS:close()
   local runtime = state.bucket_state.files_collection.runtime
   local upload_date = bson.datetime(math.floor(runtime.clock:wall_time() * 1000))
   local result
-  result, err = state.bucket_state.files_collection:insert_one(bson.document({
-    { "_id", state.id },
-    { "length", bson.int64(0) },
-    { "chunkSize", state.chunk_size_bytes },
-    { "uploadDate", upload_date },
-    { "filename", state.filename },
-  }))
+  result, err = state.bucket_state.files_collection:insert_one(
+    file_document(state, upload_date)
+  )
 
   if not result then
     return nil, err

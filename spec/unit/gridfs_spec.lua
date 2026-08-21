@@ -320,4 +320,133 @@ describe("GridFS buckets", function()
     assert.is_false(insert_upload.closed)
     assert.are.equal(2, insert_commands)
   end)
+
+  it("writes exact and partial chunks before committing file metadata", function()
+    local identifier = "custom-file-id"
+    local metadata = bson.document({ { "contentType", "text/plain" } })
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:keys()[1] == "find" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local upload = assert(upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    ):open_upload_stream_with_id(identifier, "chunks.txt", {
+      chunk_size_bytes = 4,
+      ignored = true,
+      metadata = metadata,
+    }))
+
+    assert.is_true(assert(upload:write("ab")))
+    assert.are.equal(0, #commands)
+    assert.is_true(assert(upload:write("cdefgh")))
+    assert.are.equal(3, #commands)
+    assert.is_true(assert(upload:write("ij")))
+    assert.are.equal(3, #commands)
+    assert.is_true(assert(upload:close()))
+    assert.are.equal(5, #commands)
+
+    for number, data in ipairs({ "abcd", "efgh", "ij" }) do
+      local insert = commands[number + 1]
+      local chunk = insert:get("documents"):get(1)
+
+      assert.are.equal("fs.chunks", insert:get("insert"))
+      assert.are.equal(identifier, chunk:get("files_id"))
+      assert.are.equal(number - 1, chunk:get("n"))
+      assert.are.equal(bson.binary(data), chunk:get("data"))
+    end
+
+    local file_insert = commands[5]
+    local file = file_insert:get("documents"):get(1)
+
+    assert.are.equal("fs.files", file_insert:get("insert"))
+    assert.are.equal(identifier, file:get("_id"))
+    assert.are.equal(10, file:get("length"):to_number())
+    assert.are.equal(4, file:get("chunkSize"))
+    assert.are.equal("chunks.txt", file:get("filename"))
+    assert.are.equal(metadata, file:get("metadata"))
+    assert.is_nil(file:get("md5"))
+
+    local written, err = upload:write("more")
+
+    assert.is_nil(written)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(5, #commands)
+  end)
+
+  it("preserves chunk insert failures without cleaning up orphan chunks", function()
+    local identifier = "failed-file-id"
+    local failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "chunk write failed",
+    })
+    local commands = {}
+    local chunk_inserts = 0
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        local name = command:keys()[1]
+
+        if name == "find" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        elseif name == "insert" and command:get("insert") == "fs.chunks" then
+          chunk_inserts = chunk_inserts + 1
+
+          if chunk_inserts == 2 then
+            return nil, failure
+          end
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local upload = assert(upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    ):open_upload_stream_with_id(identifier, "failed", {
+      chunk_size_bytes = 4,
+    }))
+    local written, err = upload:write("abcdefgh")
+
+    assert.is_nil(written)
+    assert.are.equal(failure, err)
+    assert.is_false(upload.closed)
+    assert.are.equal(3, #commands)
+
+    written, err = upload:write("more")
+    assert.is_nil(written)
+    assert.are.equal(failure, err)
+    assert.are.equal(3, #commands)
+
+    local closed
+    closed, err = upload:close()
+    assert.is_nil(closed)
+    assert.are.equal(failure, err)
+    assert.are.equal(3, #commands)
+
+    for _, command in ipairs(commands) do
+      local name = command:keys()[1]
+
+      assert.is_not.equal("delete", name)
+      assert.is_not.equal("filemd5", name)
+    end
+  end)
 end)
