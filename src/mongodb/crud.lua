@@ -1621,6 +1621,7 @@ function M.find(state, filter, options)
       cancellation = options.cancellation,
       deadline = options.deadline,
       on_server_selected = function(address) server_address = address end,
+      read_preference = state.read_preference,
       retryable_read = true,
       session = options.session,
       session_context = session_context,
@@ -1685,6 +1686,7 @@ function M.find_one(state, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      read_preference = state.read_preference,
       retryable_read = true,
       session = options.session,
     }

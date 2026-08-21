@@ -1,3 +1,4 @@
+local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 
 local M = {}
@@ -6,6 +7,17 @@ local DEFAULT_CHUNK_SIZE_BYTES = 255 * 1024
 local MAX_INT32 = 0x7fffffff
 local BUCKET_STATES = setmetatable({}, { __mode = "k" })
 local BUCKET_METHODS = {}
+local UPLOAD_STATES = setmetatable({}, { __mode = "k" })
+local UPLOAD_METHODS = {}
+
+local FILES_INDEX_KEYS = bson.document({
+  { "filename", 1 },
+  { "uploadDate", 1 },
+})
+local CHUNKS_INDEX_KEYS = bson.document({
+  { "files_id", 1 },
+  { "n", 1 },
+})
 
 local BUCKET_METATABLE = {
   __index = function(value, key)
@@ -16,11 +28,34 @@ local BUCKET_METATABLE = {
     end
 
     local state = BUCKET_STATES[value]
-    return state and state[key] or nil
+
+    if state then
+      return state[key]
+    end
   end,
   __metatable = "mongodb.gridfs_bucket",
   __newindex = function()
     error("MongoDB GridFS bucket handles are immutable", 2)
+  end,
+}
+
+local UPLOAD_METATABLE = {
+  __index = function(value, key)
+    local method = UPLOAD_METHODS[key]
+
+    if method then
+      return method
+    end
+
+    local state = UPLOAD_STATES[value]
+
+    if state then
+      return state[key]
+    end
+  end,
+  __metatable = "mongodb.gridfs_upload_stream",
+  __newindex = function()
+    error("MongoDB GridFS upload streams are immutable", 2)
   end,
 }
 
@@ -60,6 +95,230 @@ local function validate_options(options)
   end
 
   return options
+end
+
+local function numeric_value(value)
+  if type(value) == "number" then
+    return value
+  elseif type(value) == "table" and type(value.to_number) == "function" then
+    return value:to_number()
+  end
+end
+
+local function index_keys_equal(left, right)
+  if not bson.is_document(left) or not bson.is_document(right) then
+    return false
+  end
+
+  local left_keys = left:keys()
+  local right_keys = right:keys()
+
+  if #left_keys ~= #right_keys then
+    return false
+  end
+
+  for index, key in ipairs(left_keys) do
+    if right_keys[index] ~= key then
+      return false
+    end
+
+    local left_value = left:get(key)
+    local right_value = right:get(key)
+    local left_number = numeric_value(left_value)
+    local right_number = numeric_value(right_value)
+
+    if left_number == nil or right_number == nil
+        or left_number ~= right_number
+    then
+      return false
+    end
+  end
+
+  return true
+end
+
+local function ensure_index(collection, keys, unique)
+  local cursor, err = collection:list_indexes()
+
+  if not cursor then
+    return nil, err
+  end
+
+  local exists = false
+
+  while true do
+    local index
+    index, err = cursor:next()
+
+    if not index then
+      if err then
+        return nil, err
+      end
+
+      break
+    end
+
+    if index_keys_equal(index:get("key"), keys) then
+      exists = true
+    end
+  end
+
+  if exists then
+    return true
+  end
+
+  local name
+  name, err = collection:create_index(keys, unique and { unique = true } or nil)
+
+  if not name then
+    return nil, err
+  end
+
+  return true
+end
+
+local function ensure_required_indexes(state)
+  if state.indexes_checked then
+    return true
+  end
+
+  local existing, err = state.primary_files_collection:find_one(
+    bson.document({}),
+    { projection = bson.document({ { "_id", 1 } }) }
+  )
+
+  if err then
+    return nil, err
+  elseif existing then
+    state.indexes_checked = true
+    return true
+  end
+
+  local ready
+  ready, err = ensure_index(state.files_collection, FILES_INDEX_KEYS, false)
+
+  if not ready then
+    return nil, err
+  end
+
+  ready, err = ensure_index(state.chunks_collection, CHUNKS_INDEX_KEYS, true)
+
+  if not ready then
+    return nil, err
+  end
+
+  state.indexes_checked = true
+  return true
+end
+
+local function validate_filename(filename)
+  if type(filename) ~= "string" then
+    error("GridFS upload filename must be a string", 3)
+  elseif utf8.len(filename) == nil then
+    error("GridFS upload filename must be valid UTF-8", 3)
+  end
+end
+
+local function upload_chunk_size(state, options)
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("GridFS upload options must be a table", 3)
+  end
+
+  local chunk_size_bytes = options.chunk_size_bytes or state.chunk_size_bytes
+
+  if math.type(chunk_size_bytes) ~= "integer"
+      or chunk_size_bytes <= 0
+      or chunk_size_bytes > MAX_INT32
+  then
+    return configuration_error(
+      "chunk_size_bytes must be a positive 32-bit integer",
+      "chunk_size_bytes"
+    )
+  end
+
+  return chunk_size_bytes
+end
+
+local function new_upload(state, identifier, filename, options)
+  validate_filename(filename)
+
+  local chunk_size_bytes, err = upload_chunk_size(state, options)
+
+  if not chunk_size_bytes then
+    return nil, err
+  end
+
+  local value = {}
+
+  UPLOAD_STATES[value] = {
+    bucket_state = state,
+    chunk_size_bytes = chunk_size_bytes,
+    closed = false,
+    filename = filename,
+    id = identifier,
+  }
+
+  return setmetatable(value, UPLOAD_METATABLE)
+end
+
+function BUCKET_METHODS:open_upload_stream(filename, options)
+  local state = BUCKET_STATES[self]
+  local generator = state.files_collection.object_ids
+
+  if type(generator) ~= "table" or type(generator.new) ~= "function" then
+    error("GridFS bucket is missing its ObjectId generator", 2)
+  end
+
+  local identifier, err = generator:new()
+
+  if not identifier then
+    return nil, err
+  end
+
+  return new_upload(state, identifier, filename, options)
+end
+
+function BUCKET_METHODS:open_upload_stream_with_id(identifier, filename, options)
+  if identifier == nil then
+    error("GridFS upload id must not be nil", 2)
+  end
+
+  return new_upload(BUCKET_STATES[self], identifier, filename, options)
+end
+
+function UPLOAD_METHODS:close()
+  local state = UPLOAD_STATES[self]
+
+  if state.closed then
+    return true
+  end
+
+  local ready, err = ensure_required_indexes(state.bucket_state)
+
+  if not ready then
+    return nil, err
+  end
+
+  local runtime = state.bucket_state.files_collection.runtime
+  local upload_date = bson.datetime(math.floor(runtime.clock:wall_time() * 1000))
+  local result
+  result, err = state.bucket_state.files_collection:insert_one(bson.document({
+    { "_id", state.id },
+    { "length", bson.int64(0) },
+    { "chunkSize", state.chunk_size_bytes },
+    { "uploadDate", upload_date },
+    { "filename", state.filename },
+  }))
+
+  if not result then
+    return nil, err
+  end
+
+  state.closed = true
+  state.upload_date = upload_date
+  return true
 end
 
 function M.new(database, options)
@@ -128,6 +387,22 @@ function M.new(database, options)
     return nil, err
   end
 
+  local primary_collection_options = {
+    read_concern = validated.read_concern,
+    read_preference = { mode = "primary" },
+    timeout_ms = validated.timeout_ms,
+    write_concern = validated.write_concern,
+  }
+  local primary_files_collection
+  primary_files_collection, err = database:collection(
+    bucket_name .. ".files",
+    primary_collection_options
+  )
+
+  if not primary_files_collection then
+    return nil, err
+  end
+
   local value = {}
 
   BUCKET_STATES[value] = {
@@ -137,6 +412,8 @@ function M.new(database, options)
     database = database,
     disable_md5 = validated.disable_md5 == true,
     files_collection = files_collection,
+    indexes_checked = false,
+    primary_files_collection = primary_files_collection,
     read_concern = files_collection.read_concern,
     read_preference = files_collection.read_preference,
     timeout_ms = files_collection.timeout_ms,
