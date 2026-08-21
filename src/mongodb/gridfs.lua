@@ -819,6 +819,45 @@ function BUCKET_METHODS:download_to_stream(identifier, destination, options)
   )
 end
 
+function BUCKET_METHODS:download_to_stream_by_name(
+    filename,
+    destination,
+    options
+)
+  validate_filename(filename, "download")
+
+  local destination_type = type(destination)
+
+  if (destination_type ~= "table" and destination_type ~= "userdata")
+      or type(destination.write) ~= "function"
+  then
+    error("GridFS download destination must be a writable value", 2)
+  end
+
+  local state = BUCKET_STATES[self]
+  local revision
+
+  options, revision = download_by_name_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local download, err = self:open_download_stream_by_name(
+        filename,
+        { revision = revision }
+      )
+
+      if not download then
+        return nil, err
+      end
+
+      return copy_download(download, destination)
+    end
+  )
+end
+
 local function new_upload(state, identifier, filename, options)
   validate_filename(filename)
 

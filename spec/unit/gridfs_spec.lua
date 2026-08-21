@@ -1137,6 +1137,78 @@ describe("GridFS buckets", function()
     assert.are.equal(999, revision_err.details.revision)
   end)
 
+  it("copies a selected filename revision without closing the destination", function()
+    local runtime = fake_runtime.new({ now = 20 })
+    local commands = {}
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        runtime:advance(0.005)
+
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({
+              { "_id", "named-copy-id" },
+              { "length", 5 },
+              { "chunkSize", 4 },
+              { "filename", "report" },
+            }),
+          })
+        end
+
+        return cursor_response("assets.fs.chunks", {
+          bson.document({
+            { "files_id", "named-copy-id" },
+            { "n", 0 },
+            { "data", bson.binary("abcd") },
+          }),
+          bson.document({
+            { "files_id", "named-copy-id" },
+            { "n", 1 },
+            { "data", bson.binary("e") },
+          }),
+        })
+      end,
+    }
+    local destination = {
+      bytes = {},
+      closed = false,
+      close = function(self)
+        self.closed = true
+      end,
+      write = function(self, data)
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        self.bytes[#self.bytes + 1] = data
+        return true
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      nil,
+      runtime
+    )
+
+    assert.is_true(assert(bucket:download_to_stream_by_name(
+      "report",
+      destination,
+      { revision = 1, timeout_ms = 1000 }
+    )))
+    assert.are.equal("abcde", table.concat(destination.bytes))
+    assert.is_false(destination.closed)
+    assert.are.equal(1, commands[1]:get("sort"):get("uploadDate"))
+    assert.are.equal(1, commands[1]:get("skip"))
+
+    for _, deadline in ipairs(deadlines) do
+      assert.is_true(math.abs(deadline - 21) < 0.000001)
+    end
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

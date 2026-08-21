@@ -7432,6 +7432,35 @@
       "notes": [],
       "started_at": "2026-08-21T14:46:52+00:00",
       "completed_at": "2026-08-21T15:01:26+00:00"
+    },
+    "GFS-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "22 unit cases passed and the defining named-copy case errored because download_to_stream_by_name was absent",
+          "recorded_at": "2026-08-21T15:11:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/Users/alex/.luarocks/bin:\\u0024PATH make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua FOCUS_INTEGRATION=spec/integration/gridfs_spec.lua FOCUS_LINT='src/mongodb/gridfs.lua spec/unit/gridfs_spec.lua spec/integration/gridfs_spec.lua'; PATH=/Users/alex/.luarocks/bin:\\u0024PATH make test-complexity",
+          "exit_code": 0,
+          "summary": "29 focused tests executed and passed (23 unit, 6 integration); 0 environment-skipped, 0 deferred, 0 failed; 3 touched Lua files lint-clean; complexity baseline current with maximum 47",
+          "recorded_at": "2026-08-21T15:14:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "PATH=/Users/alex/.luarocks/bin:$PATH make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua FOCUS_INTEGRATION=spec/integration/gridfs_spec.lua FOCUS_LINT=\"src/mongodb/gridfs.lua spec/unit/gridfs_spec.lua spec/integration/gridfs_spec.lua\"; PATH=/Users/alex/.luarocks/bin:$PATH make test-complexity",
+          "exit_code": 0,
+          "summary": "29 focused tests executed and passed (23 unit, 6 integration); 0 environment-skipped, 0 deferred, 0 failed; 3 touched Lua files lint-clean; complexity baseline current with maximum 47",
+          "recorded_at": "2026-08-21T15:14:34+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T15:11:44+00:00",
+      "completed_at": "2026-08-21T15:14:41+00:00"
     }
   },
   "verified_references": {

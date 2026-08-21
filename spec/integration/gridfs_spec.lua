@@ -461,4 +461,110 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("copies selected filename revisions into caller-owned destinations", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local files_find = receive_frame(peer)
+
+      assert.are.equal("fs.files", files_find.body:get("find"))
+      assert.are.equal(
+        "report",
+        files_find.body:get("filter"):get("filename")
+      )
+      assert.are.equal(
+        1,
+        files_find.body:get("sort"):get("uploadDate"):to_number()
+      )
+      assert.are.equal(1, files_find.body:get("skip"):to_number())
+      send_response(peer, files_find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.files" },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "_id", "named-copy-id" },
+              { "length", 5 },
+              { "chunkSize", 4 },
+              { "filename", "report" },
+            }),
+          }) },
+        }) },
+      }))
+
+      local chunks_find = receive_frame(peer)
+
+      assert.are.equal("fs.chunks", chunks_find.body:get("find"))
+      send_response(peer, chunks_find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.chunks" },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "files_id", "named-copy-id" },
+              { "n", 0 },
+              { "data", bson.binary("abcd") },
+            }),
+            bson.document({
+              { "files_id", "named-copy-id" },
+              { "n", 1 },
+              { "data", bson.binary("e") },
+            }),
+          }) },
+        }) },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket())
+        local destination = {
+          bytes = {},
+          closed = false,
+          close = function(self)
+            self.closed = true
+          end,
+          write = function(self, data)
+            self.bytes[#self.bytes + 1] = data
+            return true
+          end,
+        }
+
+        assert.is_true(assert(bucket:download_to_stream_by_name(
+          "report",
+          destination,
+          { revision = 1 }
+        )))
+        assert.are.equal("abcde", table.concat(destination.bytes))
+        assert.is_false(destination.closed)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)
