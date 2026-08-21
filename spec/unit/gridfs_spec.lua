@@ -449,4 +449,103 @@ describe("GridFS buckets", function()
       assert.is_not.equal("filemd5", name)
     end
   end)
+
+  it("aborts uploads by deleting stored chunks and closing the stream", function()
+    local identifier = "aborted-file-id"
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:keys()[1] == "find" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local upload = assert(upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    ):open_upload_stream_with_id(identifier, "aborted", {
+      chunk_size_bytes = 4,
+    }))
+
+    assert.is_true(assert(upload:write("abcd")))
+    assert.are.equal(2, #commands)
+    assert.is_true(assert(upload:abort()))
+    assert.is_true(upload.aborted)
+    assert.is_true(upload.closed)
+    assert.are.equal(4, #commands)
+
+    local chunks_delete = commands[3]:get("deletes"):get(1)
+    local files_delete = commands[4]:get("deletes"):get(1)
+
+    assert.are.equal("fs.chunks", commands[3]:get("delete"))
+    assert.are.equal(identifier, chunks_delete:get("q"):get("files_id"))
+    assert.are.equal(0, chunks_delete:get("limit"))
+    assert.are.equal("fs.files", commands[4]:get("delete"))
+    assert.are.equal(identifier, files_delete:get("q"):get("_id"))
+    assert.are.equal(1, files_delete:get("limit"))
+
+    local value, err = upload:write("more")
+
+    assert.is_nil(value)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    value, err = upload:close()
+    assert.is_nil(value)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(4, #commands)
+
+    for _, command in ipairs(commands) do
+      if command:keys()[1] == "insert" then
+        assert.are.equal("fs.chunks", command:get("insert"))
+      end
+    end
+  end)
+
+  it("preserves abort cleanup failures in a terminal stream", function()
+    local failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "cleanup failed",
+    })
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        return nil, failure
+      end,
+    }
+    local upload = assert(upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    ):open_upload_stream_with_id("failed-abort", "failed"))
+    local aborted, err = upload:abort()
+
+    assert.is_nil(aborted)
+    assert.are.equal(failure, err)
+    assert.is_true(upload.aborted)
+    assert.is_true(upload.closed)
+    assert.are.equal(1, #commands)
+    assert.are.equal("fs.chunks", commands[1]:get("delete"))
+
+    aborted, err = upload:abort()
+    assert.is_nil(aborted)
+    assert.are.equal(failure, err)
+    assert.are.equal(1, #commands)
+
+    local closed
+    closed, err = upload:close()
+    assert.is_nil(closed)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(1, #commands)
+  end)
 end)

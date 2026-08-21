@@ -10,6 +10,7 @@ local BUCKET_METHODS = {}
 local UPLOAD_STATES = setmetatable({}, { __mode = "k" })
 local UPLOAD_METHODS = {}
 local UPLOAD_PROPERTIES = {
+  aborted = true,
   chunk_size_bytes = true,
   closed = true,
   filename = true,
@@ -274,6 +275,7 @@ local function new_upload(state, identifier, filename, options)
   local value = {}
 
   UPLOAD_STATES[value] = {
+    aborted = false,
     buffer = "",
     bucket_state = state,
     chunk_size_bytes = chunk_size_bytes,
@@ -345,7 +347,9 @@ end
 function UPLOAD_METHODS:write(data)
   local state = UPLOAD_STATES[self]
 
-  if state.closed then
+  if state.aborted then
+    return client_error("cannot write to an aborted GridFS upload stream")
+  elseif state.closed then
     return client_error("cannot write to a closed GridFS upload stream")
   elseif state.failure then
     return nil, state.failure
@@ -391,10 +395,49 @@ local function file_document(state, upload_date)
   return bson.document(entries)
 end
 
+function UPLOAD_METHODS:abort()
+  local state = UPLOAD_STATES[self]
+
+  if state.aborted then
+    if state.abort_failure then
+      return nil, state.abort_failure
+    end
+
+    return client_error("GridFS upload stream is already aborted")
+  elseif state.closed then
+    return client_error("cannot abort a closed GridFS upload stream")
+  end
+
+  state.aborted = true
+  state.buffer = ""
+  state.closed = true
+  local result, err = state.bucket_state.chunks_collection:delete_many(
+    bson.document({ { "files_id", state.id } })
+  )
+
+  if not result then
+    state.abort_failure = err
+    return nil, err
+  end
+
+  result, err = state.bucket_state.files_collection:delete_one(
+    bson.document({ { "_id", state.id } })
+  )
+
+  if not result then
+    state.abort_failure = err
+    return nil, err
+  end
+
+  return true
+end
+
 function UPLOAD_METHODS:close()
   local state = UPLOAD_STATES[self]
 
-  if state.closed then
+  if state.aborted then
+    return client_error("cannot close an aborted GridFS upload stream")
+  elseif state.closed then
     return true
   elseif state.failure then
     return nil, state.failure

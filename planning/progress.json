@@ -7259,6 +7259,42 @@
       "notes": [],
       "started_at": "2026-08-21T12:51:48+00:00",
       "completed_at": "2026-08-21T12:56:27+00:00"
+    },
+    "GFS-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "9 successes and 1 error: GridFS upload streams do not implement abort",
+          "recorded_at": "2026-08-21T13:06:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua FOCUS_INTEGRATION=spec/integration/gridfs_spec.lua",
+          "exit_code": 0,
+          "summary": "11 GridFS unit and 3 OP_MSG integration cases passed",
+          "recorded_at": "2026-08-21T13:08:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_LINT='src/mongodb/gridfs.lua spec/unit/gridfs_spec.lua spec/integration/gridfs_spec.lua'",
+          "exit_code": 0,
+          "summary": "touched-file lint passed with 0 warnings and 0 errors",
+          "recorded_at": "2026-08-21T13:08:38+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-complexity LUACHECK=/Users/alex/.luarocks/bin/luacheck",
+          "exit_code": 0,
+          "summary": "complexity baseline remained current with maximum 47",
+          "recorded_at": "2026-08-21T13:08:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T13:05:57+00:00",
+      "completed_at": "2026-08-21T13:08:41+00:00"
     }
   },
   "verified_references": {

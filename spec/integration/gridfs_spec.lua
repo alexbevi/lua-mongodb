@@ -201,4 +201,80 @@ describe("GridFS uploads over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("deletes upload documents when aborting", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local find = receive_frame(peer)
+
+      send_response(peer, find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.files" },
+          { "firstBatch", bson.array({
+            bson.document({ { "_id", "existing" } }),
+          }) },
+        }) },
+      }))
+
+      local chunk_insert = receive_frame(peer)
+
+      assert.are.equal("fs.chunks", chunk_insert.body:get("insert"))
+      send_response(peer, chunk_insert, bson.document({ { "ok", 1 }, { "n", 1 } }))
+
+      local chunks_delete = receive_frame(peer)
+      local chunks_filter = chunks_delete.body:get("deletes"):get(1):get("q")
+
+      assert.are.equal("fs.chunks", chunks_delete.body:get("delete"))
+      assert.are.equal("abort-id", chunks_filter:get("files_id"))
+      send_response(peer, chunks_delete, bson.document({ { "ok", 1 }, { "n", 1 } }))
+
+      local files_delete = receive_frame(peer)
+      local files_filter = files_delete.body:get("deletes"):get(1):get("q")
+
+      assert.are.equal("fs.files", files_delete.body:get("delete"))
+      assert.are.equal("abort-id", files_filter:get("_id"))
+      send_response(peer, files_delete, bson.document({ { "ok", 1 }, { "n", 0 } }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local upload = assert(assert(client:database():gridfs_bucket())
+          :open_upload_stream_with_id("abort-id", "aborted", {
+            chunk_size_bytes = 4,
+          }))
+
+        assert.is_true(assert(upload:write("abcd")))
+        assert.is_true(assert(upload:abort()))
+        assert.is_true(upload.aborted)
+        assert.is_true(upload.closed)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)
