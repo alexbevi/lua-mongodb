@@ -7381,6 +7381,28 @@
       "notes": [],
       "started_at": "2026-08-21T13:53:29+00:00",
       "completed_at": "2026-08-21T14:15:54+00:00"
+    },
+    "GFS-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "17 passed; defining download-to-stream case errored because bucket:download_to_stream was absent",
+          "recorded_at": "2026-08-21T14:33:50+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT=spec/unit/gridfs_spec.lua FOCUS_INTEGRATION=spec/integration/gridfs_spec.lua FOCUS_LINT='src/mongodb/gridfs.lua spec/unit/gridfs_spec.lua spec/integration/gridfs_spec.lua' && make test-complexity LUACHECK=/Users/alex/.luarocks/bin/luacheck",
+          "exit_code": 0,
+          "summary": "24 executed and passed (19 unit, 5 OP_MSG integration); 0 environment-skipped, 0 deferred, 0 failed; 3 touched Lua files lint-clean; complexity baseline current; 0 newly applicable unified identities because the unified format excludes downloadToStream",
+          "recorded_at": "2026-08-21T14:38:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T14:32:44+00:00",
+      "completed_at": "2026-08-21T14:38:46+00:00"
     }
   },
   "verified_references": {

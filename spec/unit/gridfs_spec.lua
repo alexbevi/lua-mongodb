@@ -820,6 +820,194 @@ describe("GridFS buckets", function()
     end
   end)
 
+  it("copies downloads exactly without closing the destination", function()
+    local runtime = fake_runtime.new({ now = 10 })
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        runtime:advance(0.005)
+
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({
+              { "_id", "copy-id" },
+              { "length", 5 },
+              { "chunkSize", 4 },
+            }),
+          })
+        end
+
+        return cursor_response("assets.fs.chunks", {
+          bson.document({
+            { "files_id", "copy-id" },
+            { "n", 0 },
+            { "data", bson.binary("abcd") },
+          }),
+          bson.document({
+            { "files_id", "copy-id" },
+            { "n", 1 },
+            { "data", bson.binary("e") },
+          }),
+        })
+      end,
+    }
+    local destination = {
+      bytes = {},
+      closed = false,
+      close = function(self)
+        self.closed = true
+      end,
+      write = function(self, data)
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        self.bytes[#self.bytes + 1] = data
+        return true
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      nil,
+      runtime
+    )
+
+    assert.is_true(assert(bucket:download_to_stream(
+      "copy-id",
+      destination,
+      { timeout_ms = 1000 }
+    )))
+    assert.are.equal("abcde", table.concat(destination.bytes))
+    assert.is_false(destination.closed)
+
+    for _, deadline in ipairs(deadlines) do
+      assert.is_true(math.abs(deadline - 11) < 0.000001)
+    end
+  end)
+
+  it("preserves the first download, destination, or close error", function()
+    local read_failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "download read failed",
+    })
+    local read_executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({
+              { "_id", "read-failure" },
+              { "length", 4 },
+              { "chunkSize", 4 },
+            }),
+          })
+        end
+
+        return nil, read_failure
+      end,
+    }
+    local untouched = {
+      closed = false,
+      close = function(self)
+        self.closed = true
+      end,
+      write = function()
+        error("failed reads must not write to the destination")
+      end,
+    }
+    local copied, err = upload_bucket(
+      read_executor,
+      bson.object_id("010203041011121314151617")
+    ):download_to_stream("read-failure", untouched)
+
+    assert.is_nil(copied)
+    assert.are.equal(read_failure, err)
+    assert.is_false(untouched.closed)
+
+    local write_failure = errors.new({
+      category = errors.CATEGORY.CLIENT,
+      message = "destination write failed",
+    })
+    local close_failure = errors.new({
+      category = errors.CATEGORY.SERVER,
+      message = "download close failed",
+    })
+    local function failure_executor()
+      return {
+        close = function()
+          return true
+        end,
+        command = function(_, _, command)
+          if command:get("find") == "fs.files" then
+            return cursor_response("assets.fs.files", {
+              bson.document({
+                { "_id", "copy-failure" },
+                { "length", 4 },
+                { "chunkSize", 4 },
+              }),
+            })
+          elseif command:get("find") == "fs.chunks" then
+            return bson.document({
+              { "ok", 1 },
+              { "cursor", bson.document({
+                { "id", bson.int64(42) },
+                { "ns", "assets.fs.chunks" },
+                { "firstBatch", bson.array({
+                  bson.document({
+                    { "files_id", "copy-failure" },
+                    { "n", 0 },
+                    { "data", bson.binary("data") },
+                  }),
+                }) },
+              }) },
+            })
+          end
+
+          return nil, close_failure
+        end,
+      }
+    end
+    local rejected_destination = {
+      closed = false,
+      close = function(self)
+        self.closed = true
+      end,
+      write = function()
+        return nil, write_failure
+      end,
+    }
+
+    copied, err = upload_bucket(
+      failure_executor(),
+      bson.object_id("010203041011121314151617")
+    ):download_to_stream("copy-failure", rejected_destination)
+    assert.is_nil(copied)
+    assert.are.equal(write_failure, err)
+    assert.is_false(rejected_destination.closed)
+
+    local accepted_destination = {
+      closed = false,
+      close = function(self)
+        self.closed = true
+      end,
+      write = function()
+        return true
+      end,
+    }
+
+    copied, err = upload_bucket(
+      failure_executor(),
+      bson.object_id("010203041011121314151617")
+    ):download_to_stream("copy-failure", accepted_destination)
+    assert.is_nil(copied)
+    assert.are.equal(close_failure, err)
+    assert.is_false(accepted_destination.closed)
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

@@ -5,6 +5,7 @@ local operation_timeout = require("mongodb.operation_timeout")
 local M = {}
 
 local DEFAULT_CHUNK_SIZE_BYTES = 255 * 1024
+local DOWNLOAD_BUFFER_SIZE = 64 * 1024
 local MAX_INT32 = 0x7fffffff
 local BUCKET_STATES = setmetatable({}, { __mode = "k" })
 local BUCKET_METHODS = {}
@@ -635,6 +636,92 @@ function BUCKET_METHODS:open_download_stream(identifier, options)
       end
 
       return new_download(state, document, operation_timeout.capture())
+    end
+  )
+end
+
+local function destination_failure(err)
+  if errors.is(err) then
+    return err
+  end
+
+  return errors.new({
+    category = errors.CATEGORY.CLIENT,
+    message = "GridFS download destination write failed: " .. tostring(err),
+  })
+end
+
+local function write_destination(destination, data)
+  local outcome = table.pack(pcall(destination.write, destination, data))
+
+  if not outcome[1] then
+    return nil, destination_failure(outcome[2])
+  elseif not outcome[2] then
+    return nil, destination_failure(outcome[3] or "write returned nil")
+  end
+
+  return true
+end
+
+local function copy_download(download, destination)
+  local first_error
+
+  while download:tell() < download.length do
+    local size = math.min(
+      DOWNLOAD_BUFFER_SIZE,
+      download.length - download:tell()
+    )
+    local data, err = download:read(size)
+
+    if data == nil then
+      first_error = err
+      break
+    end
+
+    local written
+    written, err = write_destination(destination, data)
+
+    if not written then
+      first_error = err
+      break
+    end
+  end
+
+  local closed, close_error = download:close()
+
+  if first_error then
+    return nil, first_error
+  elseif not closed then
+    return nil, close_error
+  end
+
+  return true
+end
+
+function BUCKET_METHODS:download_to_stream(identifier, destination, options)
+  local destination_type = type(destination)
+
+  if (destination_type ~= "table" and destination_type ~= "userdata")
+      or type(destination.write) ~= "function"
+  then
+    error("GridFS download destination must be a writable value", 2)
+  end
+
+  local state = BUCKET_STATES[self]
+  options = download_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local download, err = self:open_download_stream(identifier)
+
+      if not download then
+        return nil, err
+      end
+
+      return copy_download(download, destination)
     end
   )
 end
