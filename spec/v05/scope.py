@@ -19,10 +19,10 @@ EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 OUTPUT = ROOT / "spec" / "v05" / "scope.json"
 
 RATCHETS = {
-  "classified": 189,
-  "exact_unified": 170,
-  "passed": 170,
-  "supported": 170,
+  "classified": 195,
+  "exact_unified": 176,
+  "passed": 176,
+  "supported": 176,
 }
 
 TARGET_OWNERS = {

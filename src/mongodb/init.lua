@@ -24,5 +24,6 @@ local M = {
 }
 
 M.index_model = require("mongodb.admin").index_model
+M.gridfs_bucket = require("mongodb.gridfs").new
 
 return M

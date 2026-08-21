@@ -21,7 +21,7 @@ OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
 EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 EXECUTOR_TESTS = json.loads(EXECUTORS.read_text(encoding="utf-8"))["tests"]
 RATCHETS = {
-  "classified": 1901,
+  "classified": 1940,
   "passed": len(EXECUTOR_TESTS),
   "runnable": len(EXECUTOR_TESTS),
 }
@@ -78,6 +78,16 @@ OWNER_REASONS = {
   "CS-001": "change stream command options await the dedicated option slice",
   "CS-004": "change stream error recovery awaits the resumability slice",
   "CS-005": "change stream resume positioning awaits the position slice",
+  "CSOT-001": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
+  "GFS-004": "GridFS upload operations await the readable-stream slice",
+  "GFS-005": "GridFS download-by-id operations await the download-stream slice",
+  "GFS-007": "GridFS filename downloads await the revision-selection slice",
+  "GFS-009": "GridFS delete-by-id operations await the delete slice",
+  "GFS-010": "GridFS delete-by-name operations await the revision-delete slice",
+  "GFS-011": "GridFS file discovery awaits the find slice",
+  "GFS-012": "GridFS rename-by-id operations await the rename slice",
+  "GFS-013": "GridFS rename-by-name operations await the revision-rename slice",
+  "GFS-014": "GridFS bucket drops await the drop slice",
   "CS-006": "database change streams await the database watch slice",
   "CS-007": "cluster change streams await the client watch slice",
   "CS-008": "change stream timeout behavior awaits the CSOT slice",
@@ -235,6 +245,10 @@ TEST_OVERRIDES = {
   identity: (value["activity"], None)
   for identity, value in EXECUTOR_TESTS.items()
 }
+for index in (79, 82, 85):
+  TEST_OVERRIDES[
+    f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
+  ] = ("CSOT-001", OWNER_REASONS["CSOT-001"])
 TEST_OVERRIDES[
   "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[4]"
 ] = (
@@ -457,8 +471,8 @@ for fixture, count, owner, reason in (
   ("changeStreams-client.watch", 17, "CS-007", OWNER_REASONS["CS-007"]),
   ("changeStreams-db.coll.watch", 17, "REL-051", OWNER_REASONS["REL-051"]),
   ("changeStreams-db.watch", 17, "CS-006", OWNER_REASONS["CS-006"]),
-  ("gridfs-download", 17, "ADV-002", OWNER_REASONS["ADV-002"]),
-  ("gridfs-downloadByName", 17, "ADV-002", OWNER_REASONS["ADV-002"]),
+  ("gridfs-download", 17, "GFS-005", OWNER_REASONS["GFS-005"]),
+  ("gridfs-downloadByName", 17, "GFS-007", OWNER_REASONS["GFS-007"]),
 ):
   base_count = min(count, 4)
 
@@ -498,14 +512,6 @@ for index in (13, 14):
 for identity, value in EXECUTOR_TESTS.items():
   if value["activity"] in {"CS-006", "CS-007", "CS-008", "REL-051"}:
     TEST_OVERRIDES[identity] = (value["activity"], None)
-
-for index in (13, 14, 24, 25, 50, 51):
-  TEST_OVERRIDES[
-    f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
-  ] = (
-    "ADV-002",
-    "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
-  )
 
 for index in (7, 8):
   TEST_OVERRIDES[
@@ -889,16 +895,22 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
 def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   fixture = Path(test["fixture"]).name
   operations = set(test["requirements"]["operations"])
-  entities = set(test["requirements"]["entities"])
-
   if "createChangeStream" in operations:
     return "CS-008", OWNER_REASONS["CS-008"]
 
-  if "bucket" in entities:
-    return (
-      "ADV-002",
-      "the CSOT case requires the post-v1 GridFS bucket entity adapter",
-    )
+  gridfs_owners = {
+    "delete": "GFS-009",
+    "download": "GFS-005",
+    "drop": "GFS-014",
+    "find": "GFS-011",
+    "rename": "GFS-012",
+    "upload": "GFS-004",
+  }
+
+  if fixture.startswith("gridfs-"):
+    for operation, owner in gridfs_owners.items():
+      if operation in operations:
+        return owner, OWNER_REASONS[owner]
 
   if fixture.startswith("tailable-"):
     return (
@@ -950,9 +962,6 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if fixture == "change-streams.json":
     return "CS-008", OWNER_REASONS["CS-008"]
-
-  if fixture.startswith("gridfs-") or {"upload", "download", "delete"} & operations:
-    return "ADV-002", OWNER_REASONS["ADV-002"]
 
   if fixture == "bulkWrite.json" or "clientBulkWrite" in operations:
     return "ADV-007", OWNER_REASONS["ADV-007"]
@@ -1016,6 +1025,24 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
       "IDX-006",
     }:
       return owner, None
+
+    return owner, OWNER_REASONS[owner]
+
+  if specification == "gridfs":
+    owners = {
+      "delete.json": "GFS-009",
+      "deleteByName.json": "GFS-010",
+      "download.json": "GFS-005",
+      "downloadByName.json": "GFS-007",
+      "rename.json": "GFS-012",
+      "renameByName.json": "GFS-013",
+      "upload-disableMD5.json": "GFS-004",
+      "upload.json": "GFS-004",
+    }
+    owner = owners.get(Path(test["fixture"]).name)
+
+    if owner is None:
+      raise run.CapabilityError(f"unknown GridFS fixture: {test['id']}")
 
     return owner, OWNER_REASONS[owner]
 

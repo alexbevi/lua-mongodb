@@ -19,10 +19,10 @@ EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 OUTPUT = ROOT / "spec" / "v06" / "scope.json"
 
 RATCHETS = {
-  "classified": 176,
-  "exact_unified": 81,
-  "passed": 81,
-  "supported": 81,
+  "classified": 179,
+  "exact_unified": 84,
+  "passed": 84,
+  "supported": 84,
 }
 
 MACOS_CI_TIMING_SKIPS = frozenset({

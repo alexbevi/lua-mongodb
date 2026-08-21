@@ -1,16 +1,16 @@
 {
   "evidence": {
-    "exact_unified_cases": 170
+    "exact_unified_cases": 176
   },
   "excluded_by_activity": {
     "REL-053": 19
   },
   "planned_by_activity": {},
   "ratchets": {
-    "classified": 189,
-    "exact_unified": 170,
-    "passed": 170,
-    "supported": 170
+    "classified": 195,
+    "exact_unified": 176,
+    "passed": 176,
+    "supported": 176
   },
   "schema_version": 2,
   "suites": {
@@ -19,18 +19,18 @@
       "passed": 70
     },
     "client-side-operations-timeout": {
-      "passed": 43
+      "passed": 49
     },
     "retryable-reads": {
       "passed": 57
     }
   },
   "summary": {
-    "classified": 189,
+    "classified": 195,
     "excluded": 19,
-    "passed": 170,
+    "passed": 176,
     "planned": 0,
-    "supported": 170
+    "supported": 176
   },
   "target_owners": [
     "ADV-001",

@@ -366,6 +366,167 @@ local function database_factory(runner, specification)
   return client:database(specification:get("databaseName"), options)
 end
 
+local function exact_number(value)
+  if bson.is_exact(value) then
+    return value:to_number()
+  end
+
+  return value
+end
+
+local function bucket_tag_sets(value, path)
+  if value == nil then
+    return nil
+  elseif not bson.is_array(value) then
+    return configuration_error("tagSets must be an array", path)
+  end
+
+  local tag_sets = {}
+
+  for index, document in value:iter() do
+    if not bson.is_document(document) then
+      return configuration_error(
+        "each tagSets entry must be an object",
+        path .. "[" .. index .. "]"
+      )
+    end
+
+    local tags = {}
+
+    for key, item in document:iter() do
+      tags[key] = item
+    end
+
+    tag_sets[index] = tags
+  end
+
+  return tag_sets
+end
+
+local function bucket_factory(runner, specification)
+  local valid, err = validate_fields(specification, {
+    bucketOptions = true,
+    database = true,
+    id = true,
+  }, "$.bucket")
+
+  if not valid then
+    return nil, err
+  end
+
+  local database
+  database, err = runner:get_entity(
+    specification:get("database"),
+    "database",
+    "$.bucket.database"
+  )
+
+  if not database then
+    return nil, err
+  end
+
+  local options = {}
+  local bucket_options = specification:get("bucketOptions")
+
+  if bucket_options then
+    valid, err = validate_fields(bucket_options, {
+      bucketName = true,
+      chunkSizeBytes = true,
+      disableMD5 = true,
+      readConcern = true,
+      readPreference = true,
+      timeoutMS = true,
+      writeConcern = true,
+    }, "$.bucket.bucketOptions")
+
+    if not valid then
+      return nil, err
+    end
+
+    options.bucket_name = bucket_options:get("bucketName")
+    options.chunk_size_bytes = exact_number(bucket_options:get("chunkSizeBytes"))
+    options.disable_md5 = bucket_options:get("disableMD5")
+    options.timeout_ms = exact_number(bucket_options:get("timeoutMS"))
+
+    local read_concern = bucket_options:get("readConcern")
+
+    if read_concern then
+      valid, err = validate_fields(
+        read_concern,
+        { level = true },
+        "$.bucket.bucketOptions.readConcern"
+      )
+
+      if not valid then
+        return nil, err
+      end
+
+      options.read_concern = { level = read_concern:get("level") }
+    end
+
+    local read_preference = bucket_options:get("readPreference")
+
+    if read_preference then
+      valid, err = validate_fields(read_preference, {
+        maxStalenessSeconds = true,
+        mode = true,
+        tagSets = true,
+      }, "$.bucket.bucketOptions.readPreference")
+
+      if not valid then
+        return nil, err
+      end
+
+      local tag_sets
+      tag_sets, err = bucket_tag_sets(
+        read_preference:get("tagSets"),
+        "$.bucket.bucketOptions.readPreference.tagSets"
+      )
+
+      if err then
+        return nil, err
+      end
+
+      options.read_preference = {
+        max_staleness_seconds = exact_number(
+          read_preference:get("maxStalenessSeconds")
+        ),
+        mode = read_preference:get("mode"),
+        tag_sets = tag_sets,
+      }
+    end
+
+    local write_concern = bucket_options:get("writeConcern")
+
+    if write_concern then
+      valid, err = validate_fields(write_concern, {
+        j = true,
+        journal = true,
+        w = true,
+        wtimeoutMS = true,
+      }, "$.bucket.bucketOptions.writeConcern")
+
+      if not valid then
+        return nil, err
+      end
+
+      local journal = write_concern:get("journal")
+
+      if journal == nil then
+        journal = write_concern:get("j")
+      end
+
+      options.write_concern = {
+        journal = journal,
+        w = exact_number(write_concern:get("w")),
+        w_timeout_ms = exact_number(write_concern:get("wtimeoutMS")),
+      }
+    end
+  end
+
+  return database:gridfs_bucket(options)
+end
+
 local function collection_factory(runner, specification)
   local valid, err = validate_fields(specification, {
     collectionName = true,
@@ -2489,6 +2650,7 @@ function M.new(options)
       findCursor = finalize_cursor,
     },
     entity_factories = {
+      bucket = bucket_factory,
       client = client_factory(state),
       collection = collection_factory,
       database = database_factory,

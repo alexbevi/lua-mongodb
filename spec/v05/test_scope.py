@@ -187,16 +187,16 @@ class V05ScopeTests(unittest.TestCase):
     committed = json.loads(scope.OUTPUT.read_text(encoding="utf-8"))
 
     self.assertEqual(committed, generated)
-    self.assertEqual(189, generated["summary"]["classified"])
-    self.assertEqual(170, generated["summary"]["passed"])
+    self.assertEqual(195, generated["summary"]["classified"])
+    self.assertEqual(176, generated["summary"]["passed"])
     self.assertEqual(0, generated["summary"]["planned"])
     self.assertEqual(19, generated["summary"]["excluded"])
-    self.assertEqual(170, generated["evidence"]["exact_unified_cases"])
-    self.assertEqual(170, generated["summary"]["supported"])
+    self.assertEqual(176, generated["evidence"]["exact_unified_cases"])
+    self.assertEqual(176, generated["summary"]["supported"])
     self.assertEqual({}, generated["planned_by_activity"])
     self.assertEqual({"REL-053": 19}, generated["excluded_by_activity"])
     self.assertEqual({"passed": 70, "excluded": 19}, generated["suites"]["change-streams"])
-    self.assertEqual({"passed": 43}, generated["suites"]["client-side-operations-timeout"])
+    self.assertEqual({"passed": 49}, generated["suites"]["client-side-operations-timeout"])
     self.assertEqual({"passed": 57}, generated["suites"]["retryable-reads"])
     self.assertEqual(19, len(generated["target_version_exclusions"]))
     self.assertEqual(scope.RATCHETS, generated["ratchets"])
@@ -204,7 +204,7 @@ class V05ScopeTests(unittest.TestCase):
   def test_target_selector_excludes_unrelated_retryable_reads(self) -> None:
     cases = scope.load_cases()
 
-    self.assertEqual(189, len(cases))
+    self.assertEqual(195, len(cases))
     self.assertNotIn(
       "retryable-reads/tests/unified/find-serverErrors.json::test[1]",
       cases,

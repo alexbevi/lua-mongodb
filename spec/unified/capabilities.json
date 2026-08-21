@@ -1,8 +1,8 @@
 {
   "ratchets": {
-    "classified": 1901,
-    "passed": 1869,
-    "runnable": 1869
+    "classified": 1940,
+    "passed": 1943,
+    "runnable": 1943
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -17568,9 +17568,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[10]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "74ed50b89fcef6667efb4b39d2adddba83da50ad9d4d5cdeec45012c97b4b452",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -17604,12 +17603,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[11]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "bf954abc183b154daf07c0bf1b0746d54b58b542f5db06bd35bd7c327050aecb",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -17640,12 +17638,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[12]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "2e6862cebf756e1851361efbdc61bc0e3a397cd0372a46fa0039339a07cd136a",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -17678,12 +17675,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[13]": {
-      "activity": "ADV-002",
+      "activity": "CS-008",
       "fingerprint": "e9c41941390cb22c408e0f68719ae3a07e170a16134c8606c631d26d5bb2bf8c",
-      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17715,12 +17711,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[14]": {
-      "activity": "ADV-002",
+      "activity": "CS-008",
       "fingerprint": "b3845bf3d4736bb229d09eafd52d06c7db925030f6b3a6bf61becb4bf934e764",
-      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -17754,12 +17749,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[15]": {
-      "activity": "ADV-002",
+      "activity": "LEG-007",
       "fingerprint": "44fb5c165aa560c7b527e57c0b822cef3b259342e485ecc12257b95b0bc856a6",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -17791,12 +17785,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[16]": {
-      "activity": "ADV-002",
+      "activity": "LEG-007",
       "fingerprint": "c6f22c3663f7ddcd34bd73654f710b46a01097b3919337637d7a91fd20e9be2b",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -17830,12 +17823,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[17]": {
-      "activity": "ADV-002",
+      "activity": "LEG-007",
       "fingerprint": "9c9857d8ee62772874b2ae16ec2eb246c1f9c316b9a6891a68bd92168202f59e",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "aggregate.maxTimeMS",
@@ -17869,12 +17861,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[18]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "b9e541d3032a00c13070ba621600640aea5b5208bf8974f9fa690ce29788379c",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -17906,12 +17897,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[19]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "1a030e3a3748a2a3734743dc634bc9d2d0ec282b9bbe17ea8b894f1f2683a55c",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -17945,7 +17935,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[1]": {
       "activity": "QUA-001",
@@ -17991,9 +17981,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[20]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "6b336579088f4e32243955bd255a5a3a1b8a9eee9bb93b4edb623e3084b8ca92",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18025,12 +18014,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[21]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "27d726c8e1988a9864ad1ae183779dfc47d9220ce7fbc0eb863c104fb160931b",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18064,12 +18052,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[22]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "237a3189547ec0c6485a277d9092d1b78d25c946c009b43b8a4403b3afdccb98",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18102,12 +18089,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[23]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "adb209b6dc8916bcc89fd97134df5e02987bcdebdc1e4ce78b2499ea9b8393f2",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18142,12 +18128,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[24]": {
-      "activity": "ADV-002",
+      "activity": "CS-008",
       "fingerprint": "71c04049e3e272e884a885b673bea83d797a4f2cce2607d2979107819d53333a",
-      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -18179,12 +18164,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[25]": {
-      "activity": "ADV-002",
+      "activity": "CS-008",
       "fingerprint": "1cd3e8d820ec0a8a1f069ae7a90df0e1c6955d0f8a60245152f57e1555b37416",
-      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -18218,12 +18202,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[26]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "6a988d0c6c8a3ca34a2f3a118329d0c5435504592027af73e0dc0776d56dfea7",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -18255,12 +18238,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[27]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "f0a5605baf36d2e6d62232387345103fe5cfcd0c11a40c22e552ec599ab4407c",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "aggregate.pipeline",
@@ -18294,12 +18276,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[28]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "32b755c54f981c356fb0ff899aee809eb58155c8ee559c1ad442c129f01b1748",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "aggregate.maxTimeMS",
@@ -18333,12 +18314,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[29]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "49e796bdc0c27524941f2a577d1b1d8d585ffcfbe99f62e032efcaa672e12ba4",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -18370,7 +18350,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[2]": {
       "activity": "QUA-001",
@@ -18413,9 +18393,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[30]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "bbc37bd9b2bfa0e4ddab6b5340771b5f19d2b9f0e688200cf224975dd311c164",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -18449,12 +18428,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[31]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "8fd803337c8398701240e07408f0f37998dd8f57b4234f1e0dbc2fc2d580558d",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "count.filter",
@@ -18488,12 +18466,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[32]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "1ea0e6821e8fc18afe8b12236af6d2a3c59a4a4d17a39507926cf7f6b1f27e0d",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -18525,12 +18502,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[33]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "33599a8fd8d0eca010e21e8af7cb3f47f9816ae5da3db5a67e1cdccd280c9774",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "countDocuments.filter",
@@ -18564,12 +18540,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[34]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "2d3ab07224060df9721945c857d3d9803194829483f4f2bae7e5db345a237a28",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18600,12 +18575,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[35]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "ad8b649bc957a03ed3976b8ee6e8e662d576c80b5defe13588f01726e53c00c5",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18638,12 +18612,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[36]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "4e3449515961faf21f3836180481b379db6ba3b9a93c45785142a41460a9b608",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18676,12 +18649,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[37]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "50baca9082a2da33ec50dd61f8d7987c8ba7cf62bad8ebcb0b450b4d6249cbec",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18714,12 +18686,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[38]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "019bc85b106965c714ac9c05be683a38b393e876a40ac6b59965c64165ef0e96",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18754,12 +18725,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[39]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "32944bacd1a71f7e8e61025bd9799bbb4527c73cdb7b62f4e8e9c7db52e3ddc2",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18794,7 +18764,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[3]": {
       "activity": "QUA-001",
@@ -18836,9 +18806,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[40]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "12736e30148a7821a8bfa1ae1fd2372c6a1237db88c86f375466367441d231bb",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18870,12 +18839,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[41]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "105a877af87d72c56337cd8c3f6d269459f81862176117609afa705fabf5daf3",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18909,12 +18877,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[42]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "c25329ef44d24c8282a9cdd2b2f91dfc3d97bacb26d662d7358a6b7b05b2afdd",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18948,12 +18915,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[43]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "d1a6076cb25ca85c79245e26d096ed9d2c022af3f956506057a8d76f2fe1f22d",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -18985,12 +18951,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[44]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "7352bcaefe27cb1eb5c34cb5d76da207d3f5b2b7298751399f2dab7b6ac21c65",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19024,12 +18989,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[45]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "7c85981026c63a87418968e79671cc03e8eb927938ba88321d6b77450f393a5f",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19063,12 +19027,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[46]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "e6b0b2582ee4043ead4246a64f49bc99330eb79806a474f89579c4f15f11c0cb",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19099,12 +19062,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[47]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "8db6923201a4e77c8de218d369d4b5c6f126730c9aa3ad88b445ce82e7439b72",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19137,12 +19099,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[48]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "dda39ae85b8a910f84e168e9013089aa584ab14a7cfb9b58d5e60124d0e97707",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19173,12 +19134,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[49]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "f146135a12eb5b4951b2a32a4b3b4320454e2c18f1496d0ad355319dc94526ee",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19211,7 +19171,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[4]": {
       "activity": "QUA-001",
@@ -19257,9 +19217,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[50]": {
-      "activity": "ADV-002",
+      "activity": "CS-008",
       "fingerprint": "b3265b88369d6cfbe0475fa3b01e2bb7cc39368efeffec49e6e5c33c80619039",
-      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -19291,12 +19250,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[51]": {
-      "activity": "ADV-002",
+      "activity": "CS-008",
       "fingerprint": "ea3d3c22e53efc98a7390994e5a5db58ca45eb4c1290e8bd78759686a53d5673",
-      "reason": "the deprecated change-stream option case creates an unsupported GridFS bucket entity",
       "requirements": {
         "arguments": [
           "createChangeStream.pipeline",
@@ -19330,12 +19288,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[52]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "4f98e65e8b67bebd23366a4f71eb7c0faa5d1655df262833ad1be08003413a8e",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19367,12 +19324,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[53]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "37d6dc44dea39b1cb33ea0fa4c0fc81e570f72f16e68c441ed04571905e356f1",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19406,12 +19362,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[54]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "7817c62badd948a9127caf4ab580f66c20a1741a74f83e4ba9550cbbf0ebfa18",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19443,12 +19398,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[55]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "d0e18dc6251da2b1f44216c100251a93d47cd1f81cb486c4c70712fc0e11a1c8",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19482,12 +19436,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[56]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "1674be7614e05d7604ccb0e5eda2f0309846c44b742bcf2ec75c77dc3b102627",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19519,12 +19472,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[57]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "4b9acb432d8381335c51b54959897aa39555ae91ba9880f0debef414fec010d8",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19558,12 +19510,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[58]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "b3c955207cbfa4a3132cf85060f3b0edaa30b93afa77f255090013443e1eb2bb",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19595,12 +19546,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[59]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "3dfbc0e9a258fe5c579d6f44aa847b1896f5c806232ad4eb1b5d44de3ece6ca6",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19634,7 +19584,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[5]": {
       "activity": "QUA-001",
@@ -19677,9 +19627,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[60]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "d997e82b0ce9dc083d06f535d811d4968aebb058443a6bb0fa18a776c9095387",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19712,12 +19661,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[61]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "a087bc63ddeaec59f3c78fa3b1279271a44e952886c4ae6b3e2995daa61b3ae5",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19752,12 +19700,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[62]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "e36dd59686585a166e6b5ae5b0b0e6d3dbf5f8a90622ba50a6a7451a0fe3ab3f",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19790,12 +19737,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[63]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "f3a0a39444fd606692491ab5970c0df30843a928d7d7db04a35e62582f42d19f",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19830,12 +19776,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[64]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "a5dd5c3eb2ed083f1573ce3163a7638d9056d3c63829b5065d42ff6d7e6e15ff",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19868,12 +19813,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[65]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "6340b7891d9839b4655257a97097f97eb6bc646503ad188079569c2f8ac3a5bc",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19908,12 +19852,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[66]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "7a8d32525d2b24f36bd5e56a451ebe4c1d6c2a6d08f22f52f8e54428d80e3ebe",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19945,12 +19888,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[67]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "aae131e10ef9b16c1294804023c171715c219b57ebd3b53cdf8a7bc28ed19c78",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -19984,12 +19926,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[68]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "d74ca8c9c00cc4f1934a377b5e09d23ed0ad952dc98a9126676e329611323dc0",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20023,12 +19964,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[69]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "b9ac214ac4ea7f2fe4895bc9ef4d8581c0f4be0ceebdad312e3c0cf47daddebd",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20061,7 +20001,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[6]": {
       "activity": "QUA-001",
@@ -20104,9 +20044,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[70]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "5eb34319d3487f5359d57ba43090d1183e95a580dca6491c2e7aae94c5d31c91",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20141,12 +20080,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[71]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "fe14b4227dd2d118d58590491854d6393264bdfc83e8feccefa9a6c0f3d868c5",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20181,12 +20119,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[72]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "86fa25e6f839d6f8e298e7a911a806aafb488e7fa6ad20b3d6a9129963432228",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20219,12 +20156,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[73]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "d7013eb0e5aef8f81b84e411e42feb4a5716e4c3fe279edd951147a9c169bda8",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20259,12 +20195,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[74]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "319ea3d2e650fa977343c8c275ca8d945310f9adc4a41f663730d0f25bb52d15",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20299,12 +20234,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[75]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "8e69c40b35a9cde4fdf5023810faa5f7a4293359803a839e822fb9e6c5970b78",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -20336,12 +20270,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[76]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "e192f8da9d715b662cf9afec8ab13b5451fc23d4a736e546b12f6815194f4c9a",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -20375,12 +20308,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[77]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "1bc90265e79f4131527e6d8b2c1870a7e23cc0234f64e0ae9e13bdd3fd1df5a2",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20413,12 +20345,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[78]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "9b635b55e767fdc4bbc12884e4bdab8344d5e46dc34b68c6336a26483e3e811d",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20453,12 +20384,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[79]": {
-      "activity": "ADV-002",
+      "activity": "CSOT-001",
       "fingerprint": "671cadf5fd8e50939028df8ac91848aa8b719fed7f409df16fc5706048c18873",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20533,9 +20464,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[80]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "8a4d21ea720ea75f90ba95139044fcb041fc3ce50738cccae36ead23824720ac",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20571,12 +20501,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[81]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "d8517a27e591c7316240914dfbe15fb98aa510eff87ff64ee3423c1c8b13c6f3",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20614,12 +20543,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[82]": {
-      "activity": "ADV-002",
+      "activity": "CSOT-001",
       "fingerprint": "8a542397dbaf16511d0647785cc065225b8a9e7a97e7577392b00057f05b770c",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20659,9 +20588,8 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[83]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "b26951388db63e9d4eb00a5b70e36d706d4e06d7a3f52ad1d33ad42bd7a46fb6",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20696,12 +20624,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[84]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "a20a56f4711b454a40d2e084805a2fa1832ac3f12091f63bb5221737470ddfca",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20734,12 +20661,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[85]": {
-      "activity": "ADV-002",
+      "activity": "CSOT-001",
       "fingerprint": "2bbe878843cb99d4a64c6d35b601a79f2b90ddf77197544833501e609ce25bb9",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20813,9 +20740,8 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[9]": {
-      "activity": "ADV-002",
+      "activity": "QUA-001",
       "fingerprint": "b008215e6837c795ce9ee3b447e08dca7826145e4310abb2b6639f71e685d823",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20847,7 +20773,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/error-transformations.json::test[1]": {
       "activity": "TIME-001",
@@ -23297,9 +23223,9 @@
       "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-012",
       "fingerprint": "855652e30c3769536dc0123eb15a1b83e0c7ddbe7e4e065f106a8c684f8f48c2",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS rename-by-id operations await the rename slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23333,9 +23259,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-012",
       "fingerprint": "2fee797bf19b9c0114835a036c1f4a54f3538581482a46b3bc034bc92b34c0d1",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS rename-by-id operations await the rename slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23368,9 +23294,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-014",
       "fingerprint": "a52202ad1221f6a18fb519bd83c01066504d52c50ae13368f4c819af0ccf9c74",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "drop.timeoutMS",
@@ -23398,9 +23324,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-014",
       "fingerprint": "19a222d6a83962db7965fb87bcd91ba57ea4057cd2e247d84f640a0f026663af",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23431,9 +23357,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[5]": {
-      "activity": "ADV-002",
+      "activity": "GFS-014",
       "fingerprint": "badec3b61bfa5001e3d01962bde9c63f7c3223df553ed9a5dbf82f527f36491c",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23460,9 +23386,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[6]": {
-      "activity": "ADV-002",
+      "activity": "GFS-014",
       "fingerprint": "31cc1b7cc7c9546a398fd5f002ddf1194aff74df07777f4a4bbb21f9f83ac97f",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23489,9 +23415,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-009",
       "fingerprint": "77c4c7049124e23d657e67718a7a3bcebd115336f7f5229e9358fc937b224738",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23520,9 +23446,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-009",
       "fingerprint": "83b3cc58a0f1774d07932c92c5a68f3b8f9a9a14fbdad9b0febb4c4d8fcb9390",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23554,9 +23480,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-009",
       "fingerprint": "b58c4f16dea5eba6a39abe181b2521714cbd0c0560b62a498c88469079d0b378",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23584,9 +23510,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-009",
       "fingerprint": "ab88e2bedc338cacccac5fd29a966d2c47ae20c9bdda9c469e69ed5c7c0bf30b",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS delete-by-id operations await the delete slice",
       "requirements": {
         "arguments": [
           "delete.id",
@@ -23614,9 +23540,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "a46445f942abd712ed47ca037fc05026960e7a8f5348f76438e76efb8b0c9608",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23645,9 +23571,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "493dbae7e90244bdddf4b9b51aafa3f2bbe2f526fbf49332b0d1bdb51ab02322",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23679,9 +23605,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "2102c5f4459b8590ea1ab97a82c8f981b711cd1a323a0e6b7c54d81030ca0081",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23713,9 +23639,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "f7adadd021fc9206a6f2eaf6b7deab3ee073036d436387dd10ad84b70a28ea04",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23747,9 +23673,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-find.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-011",
       "fingerprint": "fea02ec98e1a35f2771d76fba59bed246a9d37d2847944fd82fbd6670b440e96",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS file discovery awaits the find slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23782,9 +23708,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-find.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-011",
       "fingerprint": "d6b92e54f846244fab710a17f44f10f93cb0aa921b473eae8d44e4935c84164c",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS file discovery awaits the find slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23816,9 +23742,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "24998ed98fc4383d02742a92a853faa3fed24c8bc15bd0471588fe7b73e72215",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23850,9 +23776,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "b06eae8cc4b2835ce44c5fa8027390b1b9889cb4d593e9f54cf06be0bc993be0",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23883,9 +23809,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "89405fb946aff5cf469d732117438b42c37c78e1afc7eb3bbb23844f99ec3379",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23916,9 +23842,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "48bd15e51395f793dfa8f1da7b7e17ef9be3029f4b418c3908fb2c195401b9f5",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23949,9 +23875,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[5]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "ad6020808505355b7b9e2e91e1f7e72754dea9efec7a38e0237e69f8d662514e",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23982,9 +23908,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[6]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "f0fa6b4c2c78eb474145847371f730f00861db249527da8ead40c04dfc8d81e2",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24015,9 +23941,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[7]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "3ad09652a5f7367e3a2fd7fc19c2ebd51c5836f55b414b03d4fc1ad82ad70a60",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24048,9 +23974,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[8]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "344cd7eb39932964bebe562e2d8890b8f91b8741beaa1a1f3d007f90f0bae385",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24081,9 +24007,9 @@
       "status": "deferred_unsupported"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[9]": {
-      "activity": "ADV-002",
+      "activity": "GFS-004",
       "fingerprint": "4f506aafe5c9d6c510c88dfff0094b4dbee5dd6a390ea9de9986cfab665b584f",
-      "reason": "the CSOT case requires the post-v1 GridFS bucket entity adapter",
+      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -50397,6 +50323,1151 @@
       },
       "status": "runnable"
     },
+    "gridfs/tests/delete.json::test[1]": {
+      "activity": "GFS-009",
+      "fingerprint": "125ac27e6301307abdcac19ae58a11cd30b7a72fc1c8df88bca1cc602a959fff",
+      "reason": "GridFS delete-by-id operations await the delete slice",
+      "requirements": {
+        "arguments": [
+          "delete.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "delete"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/delete.json::test[2]": {
+      "activity": "GFS-009",
+      "fingerprint": "a97808c9b739823cd3533b383b8b9343e78dc83f7858446850d8d748ceb92b9b",
+      "reason": "GridFS delete-by-id operations await the delete slice",
+      "requirements": {
+        "arguments": [
+          "delete.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "delete"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/delete.json::test[3]": {
+      "activity": "GFS-009",
+      "fingerprint": "39c374060465b01c407c256ff7ba476920eb7fa52fef14517fda4759febd66ec",
+      "reason": "GridFS delete-by-id operations await the delete slice",
+      "requirements": {
+        "arguments": [
+          "delete.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "delete"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/delete.json::test[4]": {
+      "activity": "GFS-009",
+      "fingerprint": "6b84c51fc01483e60177abc988604857c68ec0a721d4e188d02e4efe57cb6e3b",
+      "reason": "GridFS delete-by-id operations await the delete slice",
+      "requirements": {
+        "arguments": [
+          "delete.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "delete"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/delete.json::test[5]": {
+      "activity": "GFS-009",
+      "fingerprint": "349253c69573806d40f602f2599245511429b90db9f594198afef8387ff5c887",
+      "reason": "GridFS delete-by-id operations await the delete slice",
+      "requirements": {
+        "arguments": [
+          "delete.id",
+          "deleteOne.filter"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "delete",
+          "deleteOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/deleteByName.json::test[1]": {
+      "activity": "GFS-010",
+      "fingerprint": "ed96a8c94032720277a54a17cc2475d299e311e40321d43bc621dd5169666a19",
+      "reason": "GridFS delete-by-name operations await the revision-delete slice",
+      "requirements": {
+        "arguments": [
+          "deleteByName.filename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "deleteByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/deleteByName.json::test[2]": {
+      "activity": "GFS-010",
+      "fingerprint": "950aef4f3bd00e8412c86fd0a78557e9a8c56230c1c7f15543d7c7d337d91b19",
+      "reason": "GridFS delete-by-name operations await the revision-delete slice",
+      "requirements": {
+        "arguments": [
+          "deleteByName.filename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "deleteByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[10]": {
+      "activity": "GFS-005",
+      "fingerprint": "15e24b4a77db6846b8aa360424d472e997bc51c7e17568a0a5906ac0e79dd726",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id",
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "download",
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[11]": {
+      "activity": "GFS-005",
+      "fingerprint": "8a98b40f7e915258f17ae18ddcd7040b07d6ba0807f54863d9d3aaeb08909812",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[1]": {
+      "activity": "GFS-005",
+      "fingerprint": "e5ef1e270e7cc277cd4be378f4fc01203a08023fa8755555553d2f236f1b8134",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[2]": {
+      "activity": "GFS-005",
+      "fingerprint": "1a623163a33294242d806a6a5e45c09ca9ed913bedcf2154f1991bd107d8a207",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[3]": {
+      "activity": "GFS-005",
+      "fingerprint": "a9558f96301a294acfcfd1a4980e71800c739048aabe57c00d785cf78964682e",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[4]": {
+      "activity": "GFS-005",
+      "fingerprint": "f02a9fc669db20c00e213ddd7a70a7f145a59c56bcfade0ee6fec2f21337b942",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[5]": {
+      "activity": "GFS-005",
+      "fingerprint": "4da5797be87f480d3a6a8cb321c074d78e26120c2b21c29c8b250feff640b18a",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[6]": {
+      "activity": "GFS-005",
+      "fingerprint": "a5b380f39727f85744471ef7cbdac4110b9c2a6e83b7da27505fb2fa4c974644",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[7]": {
+      "activity": "GFS-005",
+      "fingerprint": "daefa641279d5529b227022ee98bfeac66390de8932868ec19ef9deb3bcb1369",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "deleteOne.filter",
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "deleteOne",
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[8]": {
+      "activity": "GFS-005",
+      "fingerprint": "3f9101896d75089797de473c341a598793d46fcdaf1f26b4ee2cbff5864422ee",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "deleteOne.filter",
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "deleteOne",
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/download.json::test[9]": {
+      "activity": "GFS-005",
+      "fingerprint": "f04914c1773ff7ef90db282fb2803fe821de209b927d707b6efce81f6395c4b6",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.requests",
+          "download.id"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "bulkWrite",
+          "download"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[1]": {
+      "activity": "GFS-007",
+      "fingerprint": "2c80d624a0313724d9f30b880f9192265e27b95328cb7e72c877b49f3b0cbee7",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[2]": {
+      "activity": "GFS-007",
+      "fingerprint": "c8903e5a476880b28b55a690bfdab52492c5169a4098d469ecfa2a195d9d20dd",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename",
+          "downloadByName.revision"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[3]": {
+      "activity": "GFS-007",
+      "fingerprint": "ec1b20ad54a38dd6b765c600ae525b40fdc77a2f3fb7ebb4a00949124cea62f0",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename",
+          "downloadByName.revision"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[4]": {
+      "activity": "GFS-007",
+      "fingerprint": "de0f5ebc11283e9774edaaa0b511f5cc2f60e6a31bc08f8cc706c0c5e455bd19",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename",
+          "downloadByName.revision"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[5]": {
+      "activity": "GFS-007",
+      "fingerprint": "31dd25a6ab0f5b5a3535e0915400a0e47be691518740655e6c5979363b9e8cab",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename",
+          "downloadByName.revision"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[6]": {
+      "activity": "GFS-007",
+      "fingerprint": "ea206b506456ecba161aab3b42ea9c89014b59e7e5f5e0d88f46ad9966fa81cb",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename",
+          "downloadByName.revision"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$matchesHexBytes"
+        ],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[7]": {
+      "activity": "GFS-007",
+      "fingerprint": "26aeaeeecae991a5f25222bc87ae05d834599dee7ee8987eedf5f06d85fdcd31",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/downloadByName.json::test[8]": {
+      "activity": "GFS-007",
+      "fingerprint": "cccbb5c71c6bed145fda3aadfd5cadf885ecc66fd760196bc62477b31113bf05",
+      "reason": "GridFS filename downloads await the revision-selection slice",
+      "requirements": {
+        "arguments": [
+          "downloadByName.filename",
+          "downloadByName.revision"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "downloadByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/rename.json::test[1]": {
+      "activity": "GFS-012",
+      "fingerprint": "6042c5963afb94091beae8e1a1e11600367baea2fa6c04933bb70b568007bbff",
+      "reason": "GridFS rename-by-id operations await the rename slice",
+      "requirements": {
+        "arguments": [
+          "rename.id",
+          "rename.newFilename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "rename"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/rename.json::test[2]": {
+      "activity": "GFS-012",
+      "fingerprint": "a4d009d51b5077c233a434a36c999726dddf021367499976a20308aaa68f1675",
+      "reason": "GridFS rename-by-id operations await the rename slice",
+      "requirements": {
+        "arguments": [
+          "rename.id",
+          "rename.newFilename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "rename"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/renameByName.json::test[1]": {
+      "activity": "GFS-013",
+      "fingerprint": "1a7891cae17a9a720227b18c49d3010133cc50aaa8508338ac8752e2ca56eaf6",
+      "reason": "GridFS rename-by-name operations await the revision-rename slice",
+      "requirements": {
+        "arguments": [
+          "renameByName.filename",
+          "renameByName.newFilename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": true,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "renameByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/renameByName.json::test[2]": {
+      "activity": "GFS-013",
+      "fingerprint": "f8c7606d86763bbec83cf96e970b3d0205e63ab6b736f6788114dc2ea401f784",
+      "reason": "GridFS rename-by-name operations await the revision-rename slice",
+      "requirements": {
+        "arguments": [
+          "renameByName.filename",
+          "renameByName.newFilename"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "renameByName"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload-disableMD5.json::test[1]": {
+      "activity": "GFS-004",
+      "fingerprint": "ca8bbaea81c259232d6478fc374211f26ea62d6861cd6b941b6fc4095f9c77ef",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.disableMD5",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload-disableMD5.json::test[2]": {
+      "activity": "GFS-004",
+      "fingerprint": "990f0f68acc06fbb99a58fabafd5c9168f90288bc03544754aafbbe08bbd7d6b",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.disableMD5",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists",
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[1]": {
+      "activity": "GFS-004",
+      "fingerprint": "146bf2241bc989a23d9e08fdb9135fe1379e83a915ef3ebc545efa47a338eb47",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[2]": {
+      "activity": "GFS-004",
+      "fingerprint": "0007244b4095c8e9c16d2fc9acbd48d643a6f93edcc3522796d6f9442f1af3d0",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[3]": {
+      "activity": "GFS-004",
+      "fingerprint": "c7aa405c6aaf937aa98239e24714700b91d530899609937a45f3c2bade150a5c",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[4]": {
+      "activity": "GFS-004",
+      "fingerprint": "ba81e20d03cc163a2f8fcdbf6ed1667e07fc3abccf48cb7c585a6e4b96e5b695",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[5]": {
+      "activity": "GFS-004",
+      "fingerprint": "62226c7427dab499476ef483814d430aa5dbbf5a5e74b02dc341c39223595a7e",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.sort",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[6]": {
+      "activity": "GFS-004",
+      "fingerprint": "0591882ea7d711e141ed68b4784d01f7fd671cdc31518156dd9a2ebca5bf9ed8",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "find.sort",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
+    "gridfs/tests/upload.json::test[7]": {
+      "activity": "GFS-004",
+      "fingerprint": "3699c595619bd18515aa77f6fa78601aea3a712ae6e60878bcd673c80c5179b0",
+      "reason": "GridFS upload operations await the readable-stream slice",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "upload.chunkSizeBytes",
+          "upload.filename",
+          "upload.metadata",
+          "upload.source"
+        ],
+        "entities": [
+          "bucket",
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$hexBytes",
+          "$$matchesEntity",
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "find",
+          "upload"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "deferred_unsupported"
+    },
     "index-management/tests/createSearchIndex.json::test[1]": {
       "activity": "IDX-001",
       "fingerprint": "13b9e941ea663486c93b5088c45ae4e2bf35bb6e32a77113f85168098dbcbc14",
@@ -57346,9 +58417,9 @@
       "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[10]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "8f09c741c5bf748b9b07ff86f3268af3ca44f8d144e9828fc4f514ed33c57704",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57384,9 +58455,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[11]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "7e8ceec5a82942004977b6d14e82d32818fcbf6ef2dcdbe46c177c0dc863e2aa",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57422,9 +58493,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[12]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "e9947c48c65345d53f368e9da6c47763ce409dba19c5d2da5cf03b7fe2a6ba82",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57458,9 +58529,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[13]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "4ca47b4caf62bc7e44ddb10eeeed6608045892541d09871787a5198f5b060e86",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -57496,9 +58567,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "55ac40481a09cd3a22c164b9d8af732170c72dc032cf32de2ac6481cfc8b4f5a",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57534,9 +58605,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "6ec51560c9f5827502d80dc3a55636ba3445f72454906bdae00900f313c7cde0",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57572,9 +58643,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "179ac5b580abdf86547176be283b139bf5ab0d3c93d5e1f09d4116096a5f777f",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57610,9 +58681,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "dec464080a251bb3a1e411a2eee1690c366afb235208e753a6048c4b17365b88",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57648,9 +58719,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[5]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "c774da5b72a1673782bd41d35ff9bcb202208703264f4b2f49054085d8b1f5f3",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57686,9 +58757,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[6]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "fa18e77b2cf7c3769acb4e04d04edbb7ae369428b7029b63481d5d1a66d874c1",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57724,9 +58795,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[7]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "93e5cc2fded2456c100b576cceac19aa473e77e764d700ddc5b2c0880e0f38ce",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57762,9 +58833,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[8]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "247e0b8612f30aefcf94c5af90f416be474dc73add5ac9ef8c6ad02bd6503301",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57800,9 +58871,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[9]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "33f71ae2dae7edc5db2a03c05c2e3f6885e4d4a4b808f045f1b0d1e9716ff979",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57838,9 +58909,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "de326b9c7987ddd394ea190e50426f5fff19b8ea87b52f7ed910d66c04b15035",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -57872,9 +58943,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "633de3f2c2f56984c05295af30a2f3c0e50eb84994cdc55fbcff3ea435e209af",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57910,9 +58981,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "cc402340a612c9fe44904fe132298f45f79bb29307bcdd1056b45be39d92892e",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -57948,9 +59019,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-005",
       "fingerprint": "9c6372d16e7ad763723c181967634ccf6fc8c04765730002846e10b144f7277c",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -57984,9 +59055,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[10]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "505871821a27897174eae9389e2617caac64b918772704b45e9bfabcffb9724f",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58022,9 +59093,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[11]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "2ca7cdc71c49d554024fc3cfe548e3fa99023812d53faab23a6204edee24351b",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58060,9 +59131,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[12]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "c4e40f55e0b5bf5c560fa337fb40a703abaa01d6fc23687028261f93cc5d6502",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58096,9 +59167,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[13]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "ac3885685d4a6d69714835ed3c26c57fcee6736c0c7601d9f494169533628dff",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -58134,9 +59205,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "b54de47e42754541f6e6a6465cd9c5e1ea45d37b58dab3fb1fad701b18b7e2d6",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58172,9 +59243,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "ba7cbd305e39704d5d05c5beac5dad532d219038f25ffacee49a478c695c561c",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58210,9 +59281,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "ccd014370977eb5cced0457ba1be680587b04afb91febe18eeb1f4baf9623373",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58248,9 +59319,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "b94d05a49e07709bfc425ef974c1db4025f0f6d85d4e6dad358f75773b1088b7",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58286,9 +59357,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[5]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "046a4a4a2efe8618791827136c3e7902e48527b72862eae07846dbf9e5464d30",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58324,9 +59395,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[6]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "a5630b014ab60052f6470b67818a035c29af7581681b721ee37e8a8147d2389d",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58362,9 +59433,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[7]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "5e18b371a920347f78764b465573081628c0ba606ab3f72792b54ae754da09b3",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58400,9 +59471,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[8]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "6f06e04ef1570a7752e18a4ae95000e704b00e653343e99493f924e300441e39",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58438,9 +59509,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[9]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "3ff026815b33099d37bd5fd441911e3e465b665902ec27b86d3b8f910b52c3da",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58476,9 +59547,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[1]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "c32e66ced483965d921fb4c6cac27ca174dbcf7bfd636d169aebf7f3ad47eabc",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename"
@@ -58510,9 +59581,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[2]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "076a752d85b71f447d9d19cc645b52ccc6720b786fec4a3ea2c497d5886081f8",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -58548,9 +59619,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[3]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "6ad57eccf244a3dd46eff07302b49a74ff4c54d85001a95e69117977d5f4628a",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -58586,9 +59657,9 @@
       "status": "deferred_unsupported"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[4]": {
-      "activity": "ADV-002",
+      "activity": "GFS-007",
       "fingerprint": "cdee59be076a4674cfd6b32722c11649997d91f522d19bb609dc9a85534a3314",
-      "reason": "GridFS is a post-v1 capability",
+      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",

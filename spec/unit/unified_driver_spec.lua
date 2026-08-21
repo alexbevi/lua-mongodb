@@ -24,6 +24,7 @@ local function with_fake_client(callback)
     local client = {
       closed = false,
       created_collections = {},
+      gridfs_buckets = {},
       modified_collections = {},
       options = options,
       sessions = {},
@@ -99,6 +100,17 @@ local function with_fake_client(callback)
 
     function client.database(_, name)
       local database = {}
+
+      function database.gridfs_bucket(_, bucket_options)
+        local bucket = { options = bucket_options }
+
+        client.gridfs_buckets[#client.gridfs_buckets + 1] = {
+          database_name = name,
+          options = bucket_options,
+          value = bucket,
+        }
+        return bucket
+      end
 
       function database.drop_collection()
         return true
@@ -281,6 +293,80 @@ describe("unified driver collection management", function()
         connections[2].modified_collections[1].options
           .change_stream_pre_and_post_images
       )
+      assert(lifecycle:close())
+    end)
+  end)
+end)
+
+describe("unified driver GridFS buckets", function()
+  it("creates configured bucket entities and rejects unknown operations", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "assets" },
+            }) },
+          }),
+          document({
+            { "bucket", document({
+              { "id", "bucket0" },
+              { "database", "database0" },
+              { "bucketOptions", document({
+                { "bucketName", "media" },
+                { "chunkSizeBytes", bson.int32(4096) },
+                { "disableMD5", true },
+                { "readConcern", document({ { "level", "majority" } }) },
+                { "readPreference", document({ { "mode", "secondary" } }) },
+                { "timeoutMS", bson.int64(250) },
+                { "writeConcern", document({ { "w", "majority" } }) },
+              }) },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Unknown bucket operation" },
+            { "operations", array({
+              document({
+                { "name", "notARealGridFSOperation" },
+                { "object", "bucket0" },
+                { "arguments", document({}) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "gridfs-bucket-entity.json"))
+
+      assert.are.equal(1, report.summary.failed)
+      assert.is_true(errors.is(
+        report.tests[1].error,
+        errors.CATEGORY.CONFIGURATION
+      ))
+      assert.are.equal(1, #connections[2].gridfs_buckets)
+      assert.are.equal(
+        "assets",
+        connections[2].gridfs_buckets[1].database_name
+      )
+      local options = connections[2].gridfs_buckets[1].options
+
+      assert.are.equal("media", options.bucket_name)
+      assert.are.equal(4096, options.chunk_size_bytes)
+      assert.is_true(options.disable_md5)
+      assert.are.equal("majority", options.read_concern.level)
+      assert.are.equal("secondary", options.read_preference.mode)
+      assert.are.equal(250, options.timeout_ms)
+      assert.are.equal("majority", options.write_concern.w)
       assert(lifecycle:close())
     end)
   end)

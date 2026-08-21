@@ -31,15 +31,15 @@ class V06ScopeTests(unittest.TestCase):
     self.assertEqual(committed, generated)
     self.assertEqual(
       {
-        "classified": 176,
+        "classified": 179,
         "excluded": 95,
-        "passed": 81,
+        "passed": 84,
         "planned": 0,
-        "supported": 81,
+        "supported": 84,
       },
       generated["summary"],
     )
-    self.assertEqual(81, generated["evidence"]["exact_unified_cases"])
+    self.assertEqual(84, generated["evidence"]["exact_unified_cases"])
     self.assertEqual(92, len(generated["target_version_exclusions"]))
     self.assertEqual(3, len(generated["reference_behavior_exclusions"]))
     self.assertEqual(
@@ -51,7 +51,7 @@ class V06ScopeTests(unittest.TestCase):
       generated["suites"]["crud"],
     )
     self.assertEqual(
-      {"excluded": 3, "passed": 40},
+      {"excluded": 3, "passed": 43},
       generated["suites"]["client-side-operations-timeout"],
     )
 

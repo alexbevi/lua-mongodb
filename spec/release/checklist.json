@@ -170,8 +170,8 @@
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 4158,
-      "post_v1_exclusions": 1366
+      "passed_cases": 4232,
+      "post_v1_exclusions": 1292
     },
     "production_core_prerequisites": 71,
     "v0_4_conformance": {
@@ -183,17 +183,17 @@
       "target_version_exclusions": 6
     },
     "v0_5_conformance": {
-      "classified_cases": 189,
-      "exact_unified_cases": 170,
+      "classified_cases": 195,
+      "exact_unified_cases": 176,
       "excluded_cases": 19,
-      "passed_cases": 170,
+      "passed_cases": 176,
       "target_version_exclusions": 19
     },
     "v0_6_conformance": {
-      "classified_cases": 176,
-      "exact_unified_cases": 81,
+      "classified_cases": 179,
+      "exact_unified_cases": 84,
       "excluded_cases": 95,
-      "passed_cases": 81,
+      "passed_cases": 84,
       "reference_behavior_exclusions": 3,
       "target_version_exclusions": 92
     },

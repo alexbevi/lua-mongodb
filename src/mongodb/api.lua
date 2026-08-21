@@ -7,6 +7,7 @@ local errors = require("mongodb.error")
 local driver_options = require("mongodb.config.options")
 local crud = require("mongodb.crud")
 local cursor_model = require("mongodb.cursor")
+local gridfs = require("mongodb.gridfs")
 local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
@@ -486,6 +487,10 @@ function DATABASE_METHODS:collection(name, options)
     write_concern = concerns.write_concern,
   }
   return setmetatable(value, COLLECTION_METATABLE)
+end
+
+function DATABASE_METHODS:gridfs_bucket(options)
+  return gridfs.new(self, options)
 end
 
 function DATABASE_METHODS:create_collection(name, options)

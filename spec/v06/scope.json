@@ -1,6 +1,6 @@
 {
   "evidence": {
-    "exact_unified_cases": 81
+    "exact_unified_cases": 84
   },
   "excluded_by_reason": {
     "reference-behavior": 3,
@@ -14,17 +14,17 @@
     "LEG-004": 3,
     "LEG-005": 9,
     "LEG-006": 2,
-    "LEG-007": 12,
+    "LEG-007": 15,
     "LEG-008": 1,
     "LEG-009": 4,
     "LEG-011": 5,
     "LEG-012": 6
   },
   "ratchets": {
-    "classified": 176,
-    "exact_unified": 81,
-    "passed": 81,
-    "supported": 81
+    "classified": 179,
+    "exact_unified": 84,
+    "passed": 84,
+    "supported": 84
   },
   "reference_behavior_exclusions": {
     "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": "the fixture expects a timeout from a 60ms block under a refreshed 100ms iteration budget while the pinned behavioral reference skips timeoutMode",
@@ -38,7 +38,7 @@
     },
     "client-side-operations-timeout": {
       "excluded": 3,
-      "passed": 40
+      "passed": 43
     },
     "command-logging-and-monitoring": {
       "excluded": 1
@@ -64,11 +64,11 @@
     }
   },
   "summary": {
-    "classified": 176,
+    "classified": 179,
     "excluded": 95,
-    "passed": 81,
+    "passed": 84,
     "planned": 0,
-    "supported": 81
+    "supported": 84
   },
   "target_owners": [
     "ADV-011",

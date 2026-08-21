@@ -39,20 +39,20 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
-        "classified_cases": 189,
+        "classified_cases": 195,
         "excluded_cases": 19,
-        "exact_unified_cases": 170,
-        "passed_cases": 170,
+        "exact_unified_cases": 176,
+        "passed_cases": 176,
         "target_version_exclusions": 19,
       },
       report["gates"]["v0_5_conformance"],
     )
     self.assertEqual(
       {
-        "classified_cases": 176,
+        "classified_cases": 179,
         "excluded_cases": 95,
-        "exact_unified_cases": 81,
-        "passed_cases": 81,
+        "exact_unified_cases": 84,
+        "passed_cases": 84,
         "reference_behavior_exclusions": 3,
         "target_version_exclusions": 92,
       },

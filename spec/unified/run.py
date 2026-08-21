@@ -112,7 +112,7 @@ KNOWN_OPERATIONS = {
   "countDocuments", "createChangeStream", "createCollection",
   "createCommandCursor", "createDataKey", "createFindCursor", "createIndex",
   "createSearchIndex", "createSearchIndexes", "decrypt",
-  "delete", "deleteKey", "deleteMany", "deleteOne", "distinct", "download",
+  "delete", "deleteByName", "deleteKey", "deleteMany", "deleteOne", "distinct", "download",
   "downloadByName", "drop", "dropCollection", "dropIndex", "dropIndexes",
   "dropSearchIndex", "encrypt", "endSession",
   "estimatedDocumentCount", "find", "findOne", "findOneAndDelete",
@@ -122,7 +122,7 @@ KNOWN_OPERATIONS = {
   "listCollectionObjects", "listCollections", "listDatabaseNames",
   "listDatabaseObjects", "listDatabases", "listIndexNames", "listIndexes",
   "listSearchIndexes",
-  "mapReduce", "modifyCollection", "removeKeyAltName", "rename",
+  "mapReduce", "modifyCollection", "removeKeyAltName", "rename", "renameByName",
   "replaceOne", "rewrapManyDataKey", "runCommand", "runCursorCommand",
   "startTransaction", "updateMany", "updateOne", "updateSearchIndex", "upload",
   "withTransaction",
@@ -362,6 +362,10 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       and parts[0] in {"collection-management", "index-management"}
       and parts[1] == "tests"
     )
+    is_gridfs_directory = (
+      len(parts) == 3
+      and parts[:2] == ("gridfs", "tests")
+    )
     is_snapshot_session_fixture = (
       len(parts) == 3
       and parts[:2] == ("sessions", "tests")
@@ -379,6 +383,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       or is_csot_directory
       or is_release_directory
       or is_management_directory
+      or is_gridfs_directory
       or is_snapshot_session_fixture
       or is_client_bulk_causal_fixture
       or is_security_monitoring_fixture

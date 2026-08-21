@@ -100,7 +100,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **75.3%** |", table)
+    self.assertIn("|  | **Total** |  | **76.6%** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"

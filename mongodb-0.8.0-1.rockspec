@@ -79,6 +79,7 @@ build = {
     ["mongodb.cursor"] = "src/mongodb/cursor.lua",
     ["mongodb.discovery.dns"] = "src/mongodb/discovery/dns.lua",
     ["mongodb.error"] = "src/mongodb/error.lua",
+    ["mongodb.gridfs"] = "src/mongodb/gridfs.lua",
     ["mongodb.handshake.metadata"] = "src/mongodb/handshake/metadata.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.operation_timeout"] = "src/mongodb/operation_timeout.lua",

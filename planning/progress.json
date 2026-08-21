@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "701c8d9af4b3c90f02e60b16c084b786c1b1b9d5e845779fd33716328fa4fe87",
+  "plan_digest": "9f9e87e3bb9f11262a6e5b9b47d43ea8d9bb4b708d9a3a5aabaeed4d3ec23379",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -7137,6 +7137,49 @@
       "reopened_after_commit": "a0a9dd7af5c3e2ac9bc1a17b30e9a2861c86ca70",
       "started_at": "2026-08-21T00:48:21+00:00",
       "completed_at": "2026-08-21T00:50:34+00:00"
+    },
+    "ADV-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua'",
+          "exit_code": 2,
+          "summary": "0 successes, 0 failures, 1 error: database:gridfs_bucket is missing at spec/unit/gridfs_spec.lua:22 before database I/O",
+          "recorded_at": "2026-08-21T11:54:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' and touched-file FOCUS_LINT under Lua 5.4",
+          "exit_code": 0,
+          "summary": "14 focused unit successes; touched production, unified adapter, and test files have 0 lint warnings or errors",
+          "recorded_at": "2026-08-21T12:23:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/deprecated-options.json'",
+          "exit_code": 0,
+          "summary": "82 newly reachable identities executed and passed; 3 unrelated deprecated index maxTimeMS identities remain explicitly deferred to CSOT-001",
+          "recorded_at": "2026-08-21T12:23:58+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.conformance.test_catalog planning.tests.test_readme_compatibility' plus v0.5, v0.6, release-scope, and checklist contracts",
+          "exit_code": 0,
+          "summary": "Unified capability, conformance, README projection, v0.5/v0.6 scope, and release projection contract tests pass",
+          "recorded_at": "2026-08-21T12:23:59+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-architecture; make test-complexity; make test-package; generated --check validators; luarocks lint",
+          "exit_code": 0,
+          "summary": "Architecture valid, complexity baseline current, 3 package tests pass, generated artifacts are current, and rockspec lint passes",
+          "recorded_at": "2026-08-21T12:24:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T11:52:23+00:00",
+      "completed_at": "2026-08-21T12:24:13+00:00"
     }
   },
   "verified_references": {
