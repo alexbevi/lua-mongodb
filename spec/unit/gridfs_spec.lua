@@ -705,4 +705,182 @@ describe("GridFS buckets", function()
     assert.are.equal("fs.chunks", commands[3]:get("delete"))
     assert.are.equal("fs.files", commands[4]:get("delete"))
   end)
+
+  it("reads zero-length downloads by id without querying chunks", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({
+              { "_id", "empty-file-id" },
+              { "length", bson.int64(0) },
+              { "chunkSize", bson.int64(4) },
+              { "filename", "empty.txt" },
+            }),
+          })
+        end
+
+        error("zero-length downloads must not query GridFS chunks")
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local download = assert(bucket:open_download_stream("empty-file-id"))
+
+    assert.are.equal("empty-file-id", download.id)
+    assert.are.equal(0, download.length)
+    assert.are.equal(4, download.chunk_size_bytes)
+    assert.are.equal("", assert(download:read()))
+    assert.are.equal(0, download:tell())
+    assert.is_true(assert(download:close()))
+    assert.are.equal(1, #commands)
+  end)
+
+  it("supports bounded download reads and Lua seek positions", function()
+    local runtime = fake_runtime.new({ now = 5 })
+    local deadlines = {}
+    local commands = {}
+    local chunks = {
+      bson.document({
+        { "files_id", "file-id" },
+        { "n", bson.int64(0) },
+        { "data", bson.binary("abcd") },
+      }),
+      bson.document({
+        { "files_id", "file-id" },
+        { "n", bson.double(1) },
+        { "data", bson.binary("e") },
+      }),
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        runtime:advance(0.005)
+
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({
+              { "_id", "file-id" },
+              { "length", bson.double(5) },
+              { "chunkSize", bson.int64(4) },
+              { "filename", "letters.txt" },
+              { "metadata", bson.document({ { "kind", "text" } }) },
+            }),
+          })
+        end
+
+        local filter = command:get("filter")
+
+        if bson.is_document(filter:get("n")) then
+          return cursor_response("assets.fs.chunks", { chunks[2] })
+        end
+
+        return cursor_response("assets.fs.chunks", chunks)
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      { timeout_ms = 75 },
+      runtime
+    )
+    local download = assert(bucket:open_download_stream(
+      "file-id",
+      { timeout_ms = 1000 }
+    ))
+
+    assert.are.equal("letters.txt", download.filename)
+    assert.are.equal("text", download.metadata:get("kind"))
+    assert.are.equal("ab", assert(download:read(2)))
+    assert.are.equal(2, download:tell())
+    assert.are.equal(4, assert(download:seek("set", 4)))
+    assert.are.equal("e", assert(download:read(1)))
+    assert.are.equal(1, assert(download:seek("end", -4)))
+    assert.are.equal("bcd", assert(download:read(3)))
+    assert.are.equal(5, assert(download:seek("end")))
+    assert.are.equal("", assert(download:read()))
+    assert.is_true(assert(download:close()))
+    assert.are.equal(4, #commands)
+    assert.are.equal(1, commands[3]:get("filter"):get("n"):get("$gte"))
+
+    for _, deadline in ipairs(deadlines) do
+      assert.is_true(math.abs(deadline - 6) < 0.000001)
+    end
+  end)
+
+  it("distinguishes missing files from corrupt required chunks", function()
+    local function bucket_for(file, chunks)
+      local executor = {
+        close = function()
+          return true
+        end,
+        command = function(_, _, command)
+          if command:get("find") == "fs.files" then
+            return cursor_response(
+              "assets.fs.files",
+              file and { file } or {}
+            )
+          end
+
+          return cursor_response("assets.fs.chunks", chunks or {})
+        end,
+      }
+
+      return upload_bucket(
+        executor,
+        bson.object_id("010203041011121314151617")
+      )
+    end
+
+    local missing, missing_err = bucket_for(nil):open_download_stream("lost")
+
+    assert.is_nil(missing)
+    assert.is_true(errors.is(missing_err, errors.CATEGORY.CLIENT))
+    assert.are.equal("file_not_found", missing_err.details.gridfs)
+
+    local file = bson.document({
+      { "_id", "broken" },
+      { "length", bson.int64(8) },
+      { "chunkSize", 4 },
+    })
+    local download = assert(bucket_for(file, {
+      bson.document({
+        { "files_id", "broken" },
+        { "n", 0 },
+        { "data", bson.binary("abcd") },
+      }),
+    }):open_download_stream("broken"))
+    local bytes, corrupt_err = download:read()
+
+    assert.is_nil(bytes)
+    assert.is_true(errors.is(corrupt_err, errors.CATEGORY.CLIENT))
+    assert.are.equal("corrupt_file", corrupt_err.details.gridfs)
+    assert.are.equal(1, corrupt_err.details.chunk)
+    assert.is_true(assert(download:close()))
+
+    local malformed = assert(bucket_for(file, {
+      bson.document({
+        { "files_id", "broken" },
+        { "n", 1 },
+        { "data", bson.binary("abcd") },
+      }),
+    }):open_download_stream("broken"))
+    local _, malformed_err = malformed:read(1)
+
+    assert.are.equal("corrupt_file", malformed_err.details.gridfs)
+    assert.are.equal(0, malformed_err.details.chunk)
+    assert.are.equal(1, malformed_err.details.actual_chunk)
+  end)
 end)

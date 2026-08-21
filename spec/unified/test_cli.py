@@ -72,8 +72,8 @@ class UnifiedCliTests(unittest.TestCase):
     identity = "crud/tests/unified/insertOne.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_client_bulk_insert_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -331,8 +331,8 @@ class UnifiedCliTests(unittest.TestCase):
     identity = "crud/tests/unified/find.json::test[2]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_all_oidc_no_retry_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -349,8 +349,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["AUTH-011", "AUTH-011", "AUTH-018", "AUTH-018", "AUTH-017", "AUTH-017"],
       [manifest["tests"][identity]["activity"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
     registry = run.load_executor_registry()
 
@@ -362,16 +362,16 @@ class UnifiedCliTests(unittest.TestCase):
     identity = "crud/tests/unified/insertMany.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_first_standalone_command_event_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/find.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_sensitive_command_redaction_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -392,8 +392,8 @@ class UnifiedCliTests(unittest.TestCase):
     )
     self.assertEqual("excluded_scope", manifest["tests"][pre_v1]["status"])
     self.assertEqual("REL-053", manifest["tests"][pre_v1]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
     registry = run.load_executor_registry()
 
@@ -408,16 +408,16 @@ class UnifiedCliTests(unittest.TestCase):
     identity = "crud/tests/unified/insertOne-errorResponse.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_handshake_metadata_lifecycle_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "mongodb-handshake/tests/unified/metadata-not-propagated.json::test[1]"
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_generic_command_cursor_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -430,8 +430,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["runnable"] * len(identities),
       [manifest["tests"][identity]["status"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_command_cursor_timeout_validation_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -444,8 +444,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["runnable"] * len(identities),
       [manifest["tests"][identity]["status"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_command_cursor_pool_event_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -453,8 +453,8 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("REL-024", manifest["tests"][identity]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_sharded_command_cursor_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -482,8 +482,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["REL-025"] * len(identities),
       [manifest["tests"][identity]["activity"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_legacy_write_timeout_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -491,8 +491,8 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("REL-026", manifest["tests"][identity]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_legacy_retry_timeout_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -516,8 +516,8 @@ class UnifiedCliTests(unittest.TestCase):
       {"REL-006"},
       {manifest["tests"][identity]["activity"] for identity in identities},
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_retryable_read_handshake_error_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -572,8 +572,8 @@ class UnifiedCliTests(unittest.TestCase):
         for index in change_streams
       },
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_database_aggregate_handshake_retry_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -947,8 +947,8 @@ class UnifiedCliTests(unittest.TestCase):
       {"live-replicaset"},
       {registry[identity]["environment"] for identity in identities},
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_change_stream_rename_event_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -974,8 +974,8 @@ class UnifiedCliTests(unittest.TestCase):
       {"live-replicaset"},
       {registry[identity]["environment"] for identity in identities},
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_change_stream_release_surface_is_exactly_classified(self) -> None:
     manifest = update_capabilities.generate()
@@ -1098,10 +1098,13 @@ class UnifiedCliTests(unittest.TestCase):
     self.assertEqual(9, sum(
       value["activity"] == "GFS-004" for value in base.values()
     ))
+    self.assertEqual(11, sum(
+      value["activity"] == "GFS-005" for value in base.values()
+    ))
 
     for value in base.values():
       expected = (
-        "runnable" if value["activity"] == "GFS-004"
+        "runnable" if value["activity"] in {"GFS-004", "GFS-005"}
         else "deferred_unsupported"
       )
       self.assertEqual(expected, value["status"])
@@ -1123,6 +1126,39 @@ class UnifiedCliTests(unittest.TestCase):
       registry[identity]["environment"] == "isolated-replicaset"
       and registry[identity]["testCommands"]
       for identity in csot_uploads
+    ))
+
+    download_cases = [
+      "gridfs/tests/download.json::test[{}]".format(index)
+      for index in range(1, 12)
+    ]
+    csot_downloads = [
+      "client-side-operations-timeout/tests/"
+      f"gridfs-download.json::test[{index}]"
+      for index in range(1, 5)
+    ]
+    retryable_downloads = [
+      "retryable-reads/tests/unified/"
+      f"gridfs-download.json::test[{index}]"
+      for index in range(1, 5)
+    ] + [
+      "retryable-reads/tests/unified/"
+      f"gridfs-download-serverErrors.json::test[{index}]"
+      for index in range(1, 14)
+    ]
+
+    self.assertEqual(
+      {("GFS-005", "runnable")},
+      {
+        (tests[identity]["activity"], tests[identity]["status"])
+        for identity in download_cases + csot_downloads + retryable_downloads
+      },
+    )
+    self.assertTrue(all(identity in registry for identity in download_cases))
+    self.assertTrue(all(
+      registry[identity]["environment"] == "isolated-replicaset"
+      and registry[identity]["testCommands"]
+      for identity in csot_downloads + retryable_downloads
     ))
 
     for index in (79, 82, 85):
@@ -1179,8 +1215,8 @@ class UnifiedCliTests(unittest.TestCase):
       )
       self.assertTrue(registry[identity]["testCommands"])
 
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_transaction_abort_handshake_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -1190,8 +1226,8 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("REL-036", manifest["tests"][identity]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
     self.assertEqual(
       {
         "activity": "REL-036",
@@ -1210,8 +1246,8 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("REL-037", manifest["tests"][identity]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
     self.assertEqual(
       {
         "activity": "REL-037",
@@ -1231,8 +1267,8 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("REL-038", manifest["tests"][identity]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
     self.assertEqual(
       {
         "activity": "REL-038",
@@ -1258,8 +1294,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["REL-039"] * len(identities),
       [manifest["tests"][identity]["activity"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
     for index, identity in enumerate(identities, start=1):
       self.assertEqual(
@@ -1283,8 +1319,8 @@ class UnifiedCliTests(unittest.TestCase):
 
     self.assertEqual("runnable", manifest["tests"][identity]["status"])
     self.assertEqual("REL-040", manifest["tests"][identity]["activity"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
     self.assertEqual(
       {
         "activity": "REL-040",
@@ -1316,8 +1352,8 @@ class UnifiedCliTests(unittest.TestCase):
         registry[identity],
       )
 
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_sharded_topology_close_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -1654,8 +1690,8 @@ class UnifiedCliTests(unittest.TestCase):
         ]["activity"],
       ),
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
     for identity in identities:
       self.assertEqual("live-sharded", registry[identity]["environment"])
@@ -1686,8 +1722,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["TXN-007"] * len(identities),
       [manifest["tests"][identity]["activity"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
     for identity in automatic:
       self.assertEqual("live-sharded", registry[identity]["environment"])
@@ -2016,8 +2052,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["runnable"] * len(identities),
       [manifest["tests"][identity]["status"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_single_search_index_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -2196,8 +2232,8 @@ class UnifiedCliTests(unittest.TestCase):
       self.assertEqual("live-standalone", registry[case]["environment"])
     for case in server_errors[3:]:
       self.assertEqual("live-replicaset", registry[case]["environment"])
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_collection_option_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -2216,8 +2252,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["runnable"] * len(identities),
       [manifest["tests"][identity]["status"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_collection_image_management_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -2266,8 +2302,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["runnable"] * len(identities),
       [manifest["tests"][identity]["status"] for identity in identities],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_modify_collection_error_cases_are_runnable(self) -> None:
     manifest = update_capabilities.generate()
@@ -2333,8 +2369,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["runnable"] * len(generic_commands),
       [manifest["tests"][identity]["status"] for identity in generic_commands],
     )
-    self.assertEqual(1961, manifest["ratchets"]["runnable"])
-    self.assertEqual(1961, manifest["ratchets"]["passed"])
+    self.assertEqual(1993, manifest["ratchets"]["runnable"])
+    self.assertEqual(1993, manifest["ratchets"]["passed"])
 
   def test_command_cursor_empty_batch_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()

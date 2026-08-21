@@ -7359,6 +7359,28 @@
       "notes": [],
       "started_at": "2026-08-21T13:18:38+00:00",
       "completed_at": "2026-08-21T13:38:17+00:00"
+    },
+    "GFS-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=downloads spec/unit/gridfs_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining zero-length download case failed because GridFS bucket handles did not provide open_download_stream.",
+          "recorded_at": "2026-08-21T13:57:31+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua' FOCUS_UNIFIED='<11 download-by-id, 17 retryable-read, 4 CSOT exact identities>' FOCUS_PYTHON='spec.unified.test_cli planning.tests.test_readme_compatibility spec.examples.test_examples' FOCUS_LINT='<5 touched Lua files>'; make test-complexity; capability, conformance, README, release, JSON, Python, and diff validators",
+          "exit_code": 0,
+          "summary": "29 focused unit and 4 OP_MSG integration examples passed; all 11 GridFS download-by-id, 17 retryable-read, and 4 CSOT identities executed and passed with no skips; 153 artifact tests passed with 4 expected opt-in live example skips; touched-file lint reported 0 warnings/errors; complexity and all generated validators passed.",
+          "recorded_at": "2026-08-21T14:15:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T13:53:29+00:00",
+      "completed_at": "2026-08-21T14:15:54+00:00"
     }
   },
   "verified_references": {

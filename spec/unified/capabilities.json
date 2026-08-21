@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 1961,
-    "runnable": 1961
+    "passed": 1993,
+    "runnable": 1993
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -23542,7 +23542,6 @@
     "client-side-operations-timeout/tests/gridfs-download.json::test[1]": {
       "activity": "GFS-005",
       "fingerprint": "a46445f942abd712ed47ca037fc05026960e7a8f5348f76438e76efb8b0c9608",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23568,12 +23567,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[2]": {
       "activity": "GFS-005",
       "fingerprint": "493dbae7e90244bdddf4b9b51aafa3f2bbe2f526fbf49332b0d1bdb51ab02322",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23602,12 +23600,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[3]": {
       "activity": "GFS-005",
       "fingerprint": "2102c5f4459b8590ea1ab97a82c8f981b711cd1a323a0e6b7c54d81030ca0081",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23636,12 +23633,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-download.json::test[4]": {
       "activity": "GFS-005",
       "fingerprint": "f7adadd021fc9206a6f2eaf6b7deab3ee073036d436387dd10ad84b70a28ea04",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -23670,7 +23666,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-find.json::test[1]": {
       "activity": "GFS-011",
@@ -50501,7 +50497,6 @@
     "gridfs/tests/download.json::test[10]": {
       "activity": "GFS-005",
       "fingerprint": "15e24b4a77db6846b8aa360424d472e997bc51c7e17568a0a5906ac0e79dd726",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -50525,12 +50520,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[11]": {
       "activity": "GFS-005",
       "fingerprint": "8a98b40f7e915258f17ae18ddcd7040b07d6ba0807f54863d9d3aaeb08909812",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50553,12 +50547,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[1]": {
       "activity": "GFS-005",
       "fingerprint": "e5ef1e270e7cc277cd4be378f4fc01203a08023fa8755555553d2f236f1b8134",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50581,12 +50574,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[2]": {
       "activity": "GFS-005",
       "fingerprint": "1a623163a33294242d806a6a5e45c09ca9ed913bedcf2154f1991bd107d8a207",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50609,12 +50601,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[3]": {
       "activity": "GFS-005",
       "fingerprint": "a9558f96301a294acfcfd1a4980e71800c739048aabe57c00d785cf78964682e",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50637,12 +50628,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[4]": {
       "activity": "GFS-005",
       "fingerprint": "f02a9fc669db20c00e213ddd7a70a7f145a59c56bcfade0ee6fec2f21337b942",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50665,12 +50655,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[5]": {
       "activity": "GFS-005",
       "fingerprint": "4da5797be87f480d3a6a8cb321c074d78e26120c2b21c29c8b250feff640b18a",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50693,12 +50682,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[6]": {
       "activity": "GFS-005",
       "fingerprint": "a5b380f39727f85744471ef7cbdac4110b9c2a6e83b7da27505fb2fa4c974644",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -50719,12 +50707,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[7]": {
       "activity": "GFS-005",
       "fingerprint": "daefa641279d5529b227022ee98bfeac66390de8932868ec19ef9deb3bcb1369",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -50747,12 +50734,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[8]": {
       "activity": "GFS-005",
       "fingerprint": "3f9101896d75089797de473c341a598793d46fcdaf1f26b4ee2cbff5864422ee",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -50775,12 +50761,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[9]": {
       "activity": "GFS-005",
       "fingerprint": "f04914c1773ff7ef90db282fb2803fe821de209b927d707b6efce81f6395c4b6",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "bulkWrite.requests",
@@ -50803,7 +50788,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[1]": {
       "activity": "GFS-007",
@@ -58401,7 +58386,6 @@
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[10]": {
       "activity": "GFS-005",
       "fingerprint": "8f09c741c5bf748b9b07ff86f3268af3ca44f8d144e9828fc4f514ed33c57704",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58434,12 +58418,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[11]": {
       "activity": "GFS-005",
       "fingerprint": "7e8ceec5a82942004977b6d14e82d32818fcbf6ef2dcdbe46c177c0dc863e2aa",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58472,12 +58455,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[12]": {
       "activity": "GFS-005",
       "fingerprint": "e9947c48c65345d53f368e9da6c47763ce409dba19c5d2da5cf03b7fe2a6ba82",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58508,12 +58490,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[13]": {
       "activity": "GFS-005",
       "fingerprint": "4ca47b4caf62bc7e44ddb10eeeed6608045892541d09871787a5198f5b060e86",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -58546,12 +58527,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[1]": {
       "activity": "GFS-005",
       "fingerprint": "55ac40481a09cd3a22c164b9d8af732170c72dc032cf32de2ac6481cfc8b4f5a",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58584,12 +58564,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[2]": {
       "activity": "GFS-005",
       "fingerprint": "6ec51560c9f5827502d80dc3a55636ba3445f72454906bdae00900f313c7cde0",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58622,12 +58601,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[3]": {
       "activity": "GFS-005",
       "fingerprint": "179ac5b580abdf86547176be283b139bf5ab0d3c93d5e1f09d4116096a5f777f",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58660,12 +58638,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[4]": {
       "activity": "GFS-005",
       "fingerprint": "dec464080a251bb3a1e411a2eee1690c366afb235208e753a6048c4b17365b88",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58698,12 +58675,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[5]": {
       "activity": "GFS-005",
       "fingerprint": "c774da5b72a1673782bd41d35ff9bcb202208703264f4b2f49054085d8b1f5f3",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58736,12 +58712,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[6]": {
       "activity": "GFS-005",
       "fingerprint": "fa18e77b2cf7c3769acb4e04d04edbb7ae369428b7029b63481d5d1a66d874c1",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58774,12 +58749,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[7]": {
       "activity": "GFS-005",
       "fingerprint": "93e5cc2fded2456c100b576cceac19aa473e77e764d700ddc5b2c0880e0f38ce",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58812,12 +58786,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[8]": {
       "activity": "GFS-005",
       "fingerprint": "247e0b8612f30aefcf94c5af90f416be474dc73add5ac9ef8c6ad02bd6503301",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58850,12 +58823,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download-serverErrors.json::test[9]": {
       "activity": "GFS-005",
       "fingerprint": "33f71ae2dae7edc5db2a03c05c2e3f6885e4d4a4b808f045f1b0d1e9716ff979",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58888,12 +58860,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[1]": {
       "activity": "GFS-005",
       "fingerprint": "de326b9c7987ddd394ea190e50426f5fff19b8ea87b52f7ed910d66c04b15035",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id"
@@ -58922,12 +58893,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[2]": {
       "activity": "GFS-005",
       "fingerprint": "633de3f2c2f56984c05295af30a2f3c0e50eb84994cdc55fbcff3ea435e209af",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -58960,12 +58930,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[3]": {
       "activity": "GFS-005",
       "fingerprint": "cc402340a612c9fe44904fe132298f45f79bb29307bcdd1056b45be39d92892e",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -58998,12 +58967,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-download.json::test[4]": {
       "activity": "GFS-005",
       "fingerprint": "9c6372d16e7ad763723c181967634ccf6fc8c04765730002846e10b144f7277c",
-      "reason": "GridFS download-by-id operations await the download-stream slice",
       "requirements": {
         "arguments": [
           "download.id",
@@ -59034,7 +59002,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[10]": {
       "activity": "GFS-007",

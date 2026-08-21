@@ -32,7 +32,7 @@ local function empty_cursor(namespace)
   })
 end
 
-describe("GridFS uploads over OP_MSG", function()
+describe("GridFS streams over OP_MSG", function()
   it("creates required indexes before inserting the files document", function()
     local server = assert(socket.bind("127.0.0.1", 0))
     local _, port = assert(server:getsockname())
@@ -268,6 +268,95 @@ describe("GridFS uploads over OP_MSG", function()
         assert.is_true(assert(upload:abort()))
         assert.is_true(upload.aborted)
         assert.is_true(upload.closed)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
+
+  it("reads validated chunks through a bounded download stream", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local files_find = receive_frame(peer)
+
+      assert.are.equal("fs.files", files_find.body:get("find"))
+      assert.are.equal("download-id", files_find.body:get("filter"):get("_id"))
+      send_response(peer, files_find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.files" },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "_id", "download-id" },
+              { "length", bson.int64(5) },
+              { "chunkSize", 4 },
+              { "filename", "letters.txt" },
+            }),
+          }) },
+        }) },
+      }))
+
+      local chunks_find = receive_frame(peer)
+
+      assert.are.equal("fs.chunks", chunks_find.body:get("find"))
+      assert.are.equal(
+        "download-id",
+        chunks_find.body:get("filter"):get("files_id")
+      )
+      assert.are.equal(1, chunks_find.body:get("sort"):get("n"):to_number())
+      send_response(peer, chunks_find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.chunks" },
+          { "firstBatch", bson.array({
+            bson.document({
+              { "files_id", "download-id" },
+              { "n", 0 },
+              { "data", bson.binary("abcd") },
+            }),
+            bson.document({
+              { "files_id", "download-id" },
+              { "n", 1 },
+              { "data", bson.binary("e") },
+            }),
+          }) },
+        }) },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local download = assert(assert(client:database():gridfs_bucket())
+          :open_download_stream("download-id"))
+
+        assert.are.equal("ab", assert(download:read(2)))
+        assert.are.equal("cde", assert(download:read()))
+        assert.is_true(assert(download:close()))
         assert.is_true(client:close())
       end))
       copas.removeserver(server)

@@ -8,6 +8,17 @@ local DEFAULT_CHUNK_SIZE_BYTES = 255 * 1024
 local MAX_INT32 = 0x7fffffff
 local BUCKET_STATES = setmetatable({}, { __mode = "k" })
 local BUCKET_METHODS = {}
+local DOWNLOAD_STATES = setmetatable({}, { __mode = "k" })
+local DOWNLOAD_METHODS = {}
+local DOWNLOAD_PROPERTIES = {
+  chunk_size_bytes = true,
+  closed = true,
+  filename = true,
+  id = true,
+  length = true,
+  metadata = true,
+  upload_date = true,
+}
 local UPLOAD_STATES = setmetatable({}, { __mode = "k" })
 local UPLOAD_METHODS = {}
 local UPLOAD_PROPERTIES = {
@@ -69,6 +80,26 @@ local UPLOAD_METATABLE = {
   end,
 }
 
+local DOWNLOAD_METATABLE = {
+  __index = function(value, key)
+    local method = DOWNLOAD_METHODS[key]
+
+    if method then
+      return method
+    end
+
+    local state = DOWNLOAD_STATES[value]
+
+    if state and DOWNLOAD_PROPERTIES[key] then
+      return state[key]
+    end
+  end,
+  __metatable = "mongodb.gridfs_download_stream",
+  __newindex = function()
+    error("MongoDB GridFS download streams are immutable", 2)
+  end,
+}
+
 local function configuration_error(message, option)
   return nil, errors.new({
     category = errors.CATEGORY.CONFIGURATION,
@@ -80,6 +111,17 @@ end
 local function client_error(message)
   return nil, errors.new({
     category = errors.CATEGORY.CLIENT,
+    message = message,
+  })
+end
+
+local function gridfs_error(kind, message, details)
+  details = details or {}
+  details.gridfs = kind
+
+  return nil, errors.new({
+    category = errors.CATEGORY.CLIENT,
+    details = details,
     message = message,
   })
 end
@@ -120,6 +162,16 @@ local function numeric_value(value)
   elseif type(value) == "table" and type(value.to_number) == "function" then
     return value:to_number()
   end
+end
+
+local function integer_value(value)
+  local numeric = numeric_value(value)
+
+  if numeric == nil then
+    return nil
+  end
+
+  return math.tointeger(numeric)
 end
 
 local function index_keys_equal(left, right)
@@ -256,6 +308,335 @@ local function upload_chunk_size(state, options)
   end
 
   return chunk_size_bytes
+end
+
+local function download_options(options)
+  if options == nil then
+    return {}
+  elseif type(options) ~= "table" then
+    error("GridFS download options must be a table", 3)
+  end
+
+  for key in pairs(options) do
+    if key ~= "timeout_ms" then
+      error("unknown GridFS download option: " .. tostring(key), 3)
+    end
+  end
+
+  return options
+end
+
+local function file_metadata(document)
+  local length = integer_value(document:get("length"))
+  local chunk_size_bytes = integer_value(document:get("chunkSize"))
+
+  if length == nil or length < 0 then
+    return gridfs_error(
+      "corrupt_file",
+      "GridFS file has an invalid length",
+      { field = "length" }
+    )
+  elseif chunk_size_bytes == nil or chunk_size_bytes <= 0
+      or chunk_size_bytes > MAX_INT32
+  then
+    return gridfs_error(
+      "corrupt_file",
+      "GridFS file has an invalid chunkSize",
+      { field = "chunkSize" }
+    )
+  end
+
+  return {
+    chunk_size_bytes = chunk_size_bytes,
+    filename = document:get("filename"),
+    id = document:get("_id"),
+    length = length,
+    metadata = document:get("metadata"),
+    upload_date = document:get("uploadDate"),
+  }
+end
+
+local function close_download_cursor(state)
+  local cursor = state.cursor
+
+  if cursor == nil then
+    return true
+  end
+
+  state.cursor = nil
+  local closed, err = cursor:close()
+
+  if closed == nil then
+    return nil, err
+  end
+
+  return true
+end
+
+local function corrupt_chunk(state, message, details)
+  close_download_cursor(state)
+  local _, err = gridfs_error("corrupt_file", message, details)
+
+  state.failure = err
+  return nil, err
+end
+
+local function open_chunk_cursor(state)
+  local chunk_number = state.position // state.chunk_size_bytes
+  local chunk_match = state.id
+  local filter_entries = { { "files_id", chunk_match } }
+
+  if chunk_number > 0 then
+    filter_entries[#filter_entries + 1] = {
+      "n",
+      bson.document({ { "$gte", chunk_number } }),
+    }
+  end
+
+  local cursor, err = state.bucket_state.chunks_collection:find(
+    bson.document(filter_entries),
+    { sort = bson.document({ { "n", 1 } }) }
+  )
+
+  if not cursor then
+    state.failure = err
+    return nil, err
+  end
+
+  state.cursor = cursor
+  return true
+end
+
+local function expected_chunk_length(state, chunk_number)
+  local chunk_start = chunk_number * state.chunk_size_bytes
+
+  return math.min(state.chunk_size_bytes, state.length - chunk_start)
+end
+
+local function load_chunk(state)
+  if state.cursor == nil then
+    local opened, err = open_chunk_cursor(state)
+
+    if not opened then
+      return nil, err
+    end
+  end
+
+  local chunk, err = state.cursor:next()
+  local expected_number = state.position // state.chunk_size_bytes
+
+  if not chunk then
+    if err then
+      state.failure = err
+      return nil, err
+    end
+
+    return corrupt_chunk(state, "GridFS file is missing a required chunk", {
+      chunk = expected_number,
+    })
+  end
+
+  local number = integer_value(chunk:get("n"))
+
+  if number ~= expected_number then
+    return corrupt_chunk(state, "GridFS file has an out-of-order chunk", {
+      actual_chunk = number,
+      chunk = expected_number,
+    })
+  end
+
+  local data = chunk:get("data")
+  local expected_length = expected_chunk_length(state, expected_number)
+
+  if not bson.is_binary(data) or #data.data ~= expected_length then
+    return corrupt_chunk(state, "GridFS file has an invalid chunk length", {
+      actual_length = bson.is_binary(data) and #data.data or nil,
+      chunk = expected_number,
+      expected_length = expected_length,
+    })
+  end
+
+  state.chunk_data = data.data
+  state.chunk_offset = state.position % state.chunk_size_bytes + 1
+  return true
+end
+
+local function read_download(state, size)
+  local remaining = math.min(size, math.max(0, state.length - state.position))
+  local parts = {}
+
+  while remaining > 0 do
+    if state.chunk_data == nil then
+      local loaded, err = load_chunk(state)
+
+      if not loaded then
+        return nil, err
+      end
+    end
+
+    local available = #state.chunk_data - state.chunk_offset + 1
+    local count = math.min(remaining, available)
+
+    parts[#parts + 1] = state.chunk_data:sub(
+      state.chunk_offset,
+      state.chunk_offset + count - 1
+    )
+    state.chunk_offset = state.chunk_offset + count
+    state.position = state.position + count
+    remaining = remaining - count
+
+    if state.chunk_offset > #state.chunk_data then
+      state.chunk_data = nil
+      state.chunk_offset = nil
+    end
+  end
+
+  return table.concat(parts)
+end
+
+function DOWNLOAD_METHODS:read(size)
+  local state = DOWNLOAD_STATES[self]
+
+  if state.closed then
+    return client_error("cannot read from a closed GridFS download stream")
+  elseif state.failure then
+    return nil, state.failure
+  elseif size == nil or size == -1 then
+    size = math.max(0, state.length - state.position)
+  elseif math.type(size) ~= "integer" or size < 0 then
+    error("GridFS download read size must be a non-negative integer", 2)
+  end
+
+  return operation_timeout.resume(state.timeout_context, false, function()
+    return read_download(state, size)
+  end)
+end
+
+function DOWNLOAD_METHODS:tell()
+  return DOWNLOAD_STATES[self].position
+end
+
+local function seek_position(state, whence, offset)
+  if whence == "set" then
+    return offset
+  elseif whence == "cur" then
+    return state.position + offset
+  elseif whence == "end" then
+    return state.length + offset
+  end
+
+  error("GridFS download seek mode must be 'set', 'cur', or 'end'", 3)
+end
+
+function DOWNLOAD_METHODS:seek(whence, offset)
+  local state = DOWNLOAD_STATES[self]
+
+  if state.closed then
+    return client_error("cannot seek a closed GridFS download stream")
+  elseif state.failure then
+    return nil, state.failure
+  end
+
+  whence = whence or "cur"
+  offset = offset or 0
+
+  if math.type(offset) ~= "integer" then
+    error("GridFS download seek offset must be an integer", 2)
+  end
+
+  local position = seek_position(state, whence, offset)
+
+  if position < 0 then
+    error("GridFS download seek position must not be negative", 2)
+  elseif position == state.position then
+    return position
+  end
+
+  return operation_timeout.resume(state.timeout_context, false, function()
+    local closed, err = close_download_cursor(state)
+
+    if not closed then
+      return nil, err
+    end
+
+    state.chunk_data = nil
+    state.chunk_offset = nil
+    state.position = position
+    return position
+  end)
+end
+
+function DOWNLOAD_METHODS:close()
+  local state = DOWNLOAD_STATES[self]
+
+  if state.closed then
+    return true
+  end
+
+  return operation_timeout.resume(state.timeout_context, false, function()
+    local closed, err = close_download_cursor(state)
+
+    if not closed then
+      return nil, err
+    end
+
+    state.closed = true
+    state.chunk_data = nil
+    return true
+  end)
+end
+
+local function new_download(state, document, timeout_context)
+  local metadata, err = file_metadata(document)
+
+  if not metadata then
+    return nil, err
+  end
+
+  local value = {}
+
+  metadata.bucket_state = state
+  metadata.chunk_data = nil
+  metadata.chunk_offset = nil
+  metadata.closed = false
+  metadata.cursor = nil
+  metadata.failure = nil
+  metadata.position = 0
+  metadata.timeout_context = timeout_context
+  DOWNLOAD_STATES[value] = metadata
+  return setmetatable(value, DOWNLOAD_METATABLE)
+end
+
+function BUCKET_METHODS:open_download_stream(identifier, options)
+  if identifier == nil then
+    error("GridFS download id must not be nil", 2)
+  end
+
+  local state = BUCKET_STATES[self]
+  options = download_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local document, err = state.files_collection:find_one(
+        bson.document({ { "_id", identifier } })
+      )
+
+      if err then
+        return nil, err
+      elseif document == nil then
+        return gridfs_error(
+          "file_not_found",
+          "GridFS file was not found",
+          { id = identifier }
+        )
+      end
+
+      return new_download(state, document, operation_timeout.capture())
+    end
+  )
 end
 
 local function new_upload(state, identifier, filename, options)

@@ -399,6 +399,26 @@ local search_name = assert(users:create_search_index(doc({
 })))
 ```
 
+### GridFS
+
+GridFS stores files in bounded BSON chunks. Upload from a byte string, then open
+an immutable download stream by the returned id. Download streams support
+bounded `read` calls plus the standard Lua `seek`, `tell`, and `close` methods.
+
+```lua
+local bucket = assert(client:database("app"):gridfs_bucket())
+local file_id = assert(bucket:upload_from_stream(
+  "greeting.txt",
+  "Hello from GridFS!"
+))
+local download = assert(bucket:open_download_stream(file_id))
+
+assert(download:seek("set", 6) == 6)
+local greeting = assert(download:read())
+assert(download:close())
+print(greeting) -- from GridFS!
+```
+
 ### Transactions
 
 Transactions require a replica-set-backed deployment, reached directly with a URI such as `mongodb://localhost:27017/bank?replicaSet=rs0` or through one or more mongos routers. The driver provides both APIs described in the [MongoDB transaction API guide](https://www.mongodb.com/docs/manual/core/transactions-in-applications/):
@@ -483,7 +503,7 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket and upload handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. Remaining GridFS file operations are being added incrementally for v0.9.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket, upload, and download handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. Remaining GridFS file operations are being added incrementally for v0.9.
 
 ### Errors and resource lifetimes
 
@@ -531,9 +551,9 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟡 | 90.4% |
 | Availability | [Max staleness](https://alexbevi.com/specifications/max-staleness/max-staleness.html) | 🟢 | 100.0% |
 | Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
-| Resilience | [Retryable reads](https://alexbevi.com/specifications/retryable-reads/retryable-reads.html) | 🟡 | 91.1% |
+| Resilience | [Retryable reads](https://alexbevi.com/specifications/retryable-reads/retryable-reads.html) | 🟡 | 95.5% |
 | Resilience | [Retryable writes](https://alexbevi.com/specifications/retryable-writes/retryable-writes.html) | 🟢 | 100.0% |
-| Resilience | [Client-side operations timeout](https://alexbevi.com/specifications/client-side-operations-timeout/client-side-operations-timeout.html) | 🟡 | 95.9% |
+| Resilience | [Client-side operations timeout](https://alexbevi.com/specifications/client-side-operations-timeout/client-side-operations-timeout.html) | 🟡 | 96.7% |
 | Resilience | [Sessions](https://alexbevi.com/specifications/sessions/driver-sessions.html) | 🟢 | 100.0% |
 | Resilience | [Causal consistency](https://alexbevi.com/specifications/causal-consistency/causal-consistency.html) | 🟢 | 100.0% |
 | Resilience | [Transactions](https://alexbevi.com/specifications/transactions/transactions.html) | 🟡 | 96.5% |
@@ -543,7 +563,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | [Index management](https://alexbevi.com/specifications/index-management/index-management.html) | 🟢 | 100.0% |
 | Programmability | [Read/write concern](https://alexbevi.com/specifications/read-write-concern/read-write-concern.html) | 🟢 | 100.0% |
 | Programmability | [Change streams](https://alexbevi.com/specifications/change-streams/change-streams.html) | 🟡 | 78.7% |
-| Programmability | [GridFS](https://alexbevi.com/specifications/gridfs/gridfs-spec.html) | 🟡 | 23.1% |
+| Programmability | [GridFS](https://alexbevi.com/specifications/gridfs/gridfs-spec.html) | 🟡 | 51.3% |
 | Programmability | [Stable API](https://alexbevi.com/specifications/versioned-api/versioned-api.html) | 🟢 | 100.0% |
 | Programmability | [Client-side encryption](https://alexbevi.com/specifications/client-side-encryption/client-side-encryption.html) | 🔴 | 0.0% |
 | Observability | [Command logging and monitoring](https://alexbevi.com/specifications/command-logging-and-monitoring/command-logging-and-monitoring.html) | 🟡 | 13.8% |
@@ -551,7 +571,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **76.9%** |
+|  | **Total** |  | **77.5%** |
 <!-- END SPEC CONFORMANCE -->
 
 ## Development

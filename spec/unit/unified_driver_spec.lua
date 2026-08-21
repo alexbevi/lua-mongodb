@@ -102,7 +102,7 @@ local function with_fake_client(callback)
       local database = {}
 
       function database.gridfs_bucket(_, bucket_options)
-        local bucket = { options = bucket_options, uploads = {} }
+        local bucket = { downloads = {}, options = bucket_options, uploads = {} }
 
         local function read_source(source)
           local parts = {}
@@ -145,6 +145,29 @@ local function with_fake_client(callback)
             source = read_source(source),
           }
           return true
+        end
+
+        function bucket.open_download_stream(
+          bucket_value,
+          identifier,
+          download_options
+        )
+          bucket_value.downloads[#bucket_value.downloads + 1] = {
+            identifier = identifier,
+            options = download_options,
+          }
+          local stream = { closed = false }
+
+          function stream.read()
+            return string.char(0x12, 0xab)
+          end
+
+          function stream.close(stream_value)
+            stream_value.closed = true
+            return true
+          end
+
+          return stream
         end
 
         client.gridfs_buckets[#client.gridfs_buckets + 1] = {
@@ -504,6 +527,63 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal("test", bucket.uploads[1].options.metadata:get("kind"))
       assert.are.equal("custom-id", bucket.uploads[2].identifier)
       assert.are.equal("", bucket.uploads[2].source)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("maps download ids, timeout options, and exact byte results", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "assets" },
+            }) },
+          }),
+          document({
+            { "bucket", document({
+              { "id", "bucket0" },
+              { "database", "database0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Download exact bytes" },
+            { "operations", array({
+              document({
+                { "name", "download" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "id", "download-id" },
+                  { "timeoutMS", bson.int64(75) },
+                }) },
+                { "expectResult", document({
+                  { "$$matchesHexBytes", "12ab" },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "gridfs-download.json"))
+
+      assert.is_nil(report.tests[1].error)
+      assert.are.equal(1, report.summary.passed)
+      local bucket = connections[2].gridfs_buckets[1].value
+
+      assert.are.equal(1, #bucket.downloads)
+      assert.are.equal("download-id", bucket.downloads[1].identifier)
+      assert.are.equal(75, bucket.downloads[1].options.timeout_ms)
       assert(lifecycle:close())
     end)
   end)

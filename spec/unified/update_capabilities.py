@@ -512,6 +512,8 @@ for index in (13, 14):
 for identity, value in EXECUTOR_TESTS.items():
   if value["activity"] in {"CS-006", "CS-007", "CS-008", "REL-051"}:
     TEST_OVERRIDES[identity] = (value["activity"], None)
+  elif value["activity"].startswith("GFS-"):
+    TEST_OVERRIDES[identity] = (value["activity"], None)
 
 for index in (7, 8):
   TEST_OVERRIDES[
