@@ -2084,19 +2084,10 @@ local function gridfs_upload_options(arguments)
   })
 end
 
-local function download_gridfs(_, bucket, arguments)
-  local stream, err = call_driver(function()
-    return bucket:open_download_stream(
-      arguments:get("id"),
-      operation_options(arguments, {})
-    )
-  end)
-
-  if not stream then
-    return nil, err
-  end
-
+local function read_gridfs_download(stream)
+  local err
   local bytes
+
   bytes, err = call_driver(function()
     return stream:read()
   end)
@@ -2111,6 +2102,36 @@ local function download_gridfs(_, bucket, arguments)
   end
 
   return bytes
+end
+
+local function download_gridfs(_, bucket, arguments)
+  local stream, err = call_driver(function()
+    return bucket:open_download_stream(
+      arguments:get("id"),
+      operation_options(arguments, {})
+    )
+  end)
+
+  if not stream then
+    return nil, err
+  end
+
+  return read_gridfs_download(stream)
+end
+
+local function download_gridfs_by_name(_, bucket, arguments)
+  local stream, err = call_driver(function()
+    return bucket:open_download_stream_by_name(
+      arguments:get("filename"),
+      operation_options(arguments, { revision = "revision" })
+    )
+  end)
+
+  if not stream then
+    return nil, err
+  end
+
+  return read_gridfs_download(stream)
 end
 
 local function upload_gridfs(_, bucket, arguments, _, path)
@@ -2163,6 +2184,11 @@ local BUCKET_OPERATIONS = {
   download = {
     arguments = { "id", "timeoutMS" },
     handler = download_gridfs,
+    result_kind = "bson",
+  },
+  downloadByName = {
+    arguments = { "filename", "revision", "timeoutMS" },
+    handler = download_gridfs_by_name,
     result_kind = "bson",
   },
   upload = {

@@ -6,7 +6,6 @@
     "ADV-012": 15,
     "AUTH-019": 11,
     "CSOT-001": 3,
-    "GFS-007": 25,
     "GFS-009": 9,
     "GFS-010": 2,
     "GFS-011": 2,
@@ -15,7 +14,7 @@
     "GFS-014": 4
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1145
+    "post-v1-exclusion": 1120
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -139,9 +138,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1145,
+    "deferred_unsupported": 1120,
     "excluded_scope": 97,
-    "passed": 4282
+    "passed": 4307
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

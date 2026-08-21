@@ -7403,6 +7403,35 @@
       "notes": [],
       "started_at": "2026-08-21T14:32:44+00:00",
       "completed_at": "2026-08-21T14:38:46+00:00"
+    },
+    "GFS-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "19 passed; defining newest-by-name case errored because bucket:open_download_stream_by_name was absent",
+          "recorded_at": "2026-08-21T14:48:28+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_UNIFIED='*downloadByName*' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger planning.tests.test_readme_compatibility spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/gridfs.lua spec/support/mongodb/unified/driver.lua spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua'; make test-complexity and generated artifact validators",
+          "exit_code": 0,
+          "summary": "200 executed and passed (35 Lua unit, 25 exact unified, 140 Python artifact tests); 0 environment-skipped, 0 deferred, 0 failed; 4 touched Lua files lint-clean; complexity and capability, conformance, README, release-scope, and release-checklist validators passed",
+          "recorded_at": "2026-08-21T14:58:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with 34 focused Lua unit cases, all 25 exact downloadByName unified identities, 140 focused Python artifact cases, and four touched-file lint targets; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "199 executed and passed (34 Lua unit, 25 exact unified, 140 Python artifact tests); 0 environment-skipped, 0 deferred, 0 failed; 4 touched Lua files lint-clean; complexity and all generated capability, conformance, README, and release validators passed after removing GFS-008 named-copy behavior from this slice",
+          "recorded_at": "2026-08-21T15:01:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T14:46:52+00:00",
+      "completed_at": "2026-08-21T15:01:26+00:00"
     }
   },
   "verified_references": {

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 1993,
-    "runnable": 1993
+    "passed": 2018,
+    "runnable": 2018
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50793,7 +50793,6 @@
     "gridfs/tests/downloadByName.json::test[1]": {
       "activity": "GFS-007",
       "fingerprint": "2c80d624a0313724d9f30b880f9192265e27b95328cb7e72c877b49f3b0cbee7",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename"
@@ -50816,12 +50815,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[2]": {
       "activity": "GFS-007",
       "fingerprint": "c8903e5a476880b28b55a690bfdab52492c5169a4098d469ecfa2a195d9d20dd",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -50845,12 +50843,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[3]": {
       "activity": "GFS-007",
       "fingerprint": "ec1b20ad54a38dd6b765c600ae525b40fdc77a2f3fb7ebb4a00949124cea62f0",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -50874,12 +50871,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[4]": {
       "activity": "GFS-007",
       "fingerprint": "de0f5ebc11283e9774edaaa0b511f5cc2f60e6a31bc08f8cc706c0c5e455bd19",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -50903,12 +50899,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[5]": {
       "activity": "GFS-007",
       "fingerprint": "31dd25a6ab0f5b5a3535e0915400a0e47be691518740655e6c5979363b9e8cab",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -50932,12 +50927,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[6]": {
       "activity": "GFS-007",
       "fingerprint": "ea206b506456ecba161aab3b42ea9c89014b59e7e5f5e0d88f46ad9966fa81cb",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -50961,12 +50955,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[7]": {
       "activity": "GFS-007",
       "fingerprint": "26aeaeeecae991a5f25222bc87ae05d834599dee7ee8987eedf5f06d85fdcd31",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename"
@@ -50987,12 +50980,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/downloadByName.json::test[8]": {
       "activity": "GFS-007",
       "fingerprint": "cccbb5c71c6bed145fda3aadfd5cadf885ecc66fd760196bc62477b31113bf05",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -51014,7 +51006,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/rename.json::test[1]": {
       "activity": "GFS-012",
@@ -59007,7 +58999,6 @@
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[10]": {
       "activity": "GFS-007",
       "fingerprint": "505871821a27897174eae9389e2617caac64b918772704b45e9bfabcffb9724f",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59040,12 +59031,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[11]": {
       "activity": "GFS-007",
       "fingerprint": "2ca7cdc71c49d554024fc3cfe548e3fa99023812d53faab23a6204edee24351b",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59078,12 +59068,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[12]": {
       "activity": "GFS-007",
       "fingerprint": "c4e40f55e0b5bf5c560fa337fb40a703abaa01d6fc23687028261f93cc5d6502",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59114,12 +59103,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[13]": {
       "activity": "GFS-007",
       "fingerprint": "ac3885685d4a6d69714835ed3c26c57fcee6736c0c7601d9f494169533628dff",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -59152,12 +59140,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[1]": {
       "activity": "GFS-007",
       "fingerprint": "b54de47e42754541f6e6a6465cd9c5e1ea45d37b58dab3fb1fad701b18b7e2d6",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59190,12 +59177,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[2]": {
       "activity": "GFS-007",
       "fingerprint": "ba7cbd305e39704d5d05c5beac5dad532d219038f25ffacee49a478c695c561c",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59228,12 +59214,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[3]": {
       "activity": "GFS-007",
       "fingerprint": "ccd014370977eb5cced0457ba1be680587b04afb91febe18eeb1f4baf9623373",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59266,12 +59251,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[4]": {
       "activity": "GFS-007",
       "fingerprint": "b94d05a49e07709bfc425ef974c1db4025f0f6d85d4e6dad358f75773b1088b7",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59304,12 +59288,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[5]": {
       "activity": "GFS-007",
       "fingerprint": "046a4a4a2efe8618791827136c3e7902e48527b72862eae07846dbf9e5464d30",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59342,12 +59325,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[6]": {
       "activity": "GFS-007",
       "fingerprint": "a5630b014ab60052f6470b67818a035c29af7581681b721ee37e8a8147d2389d",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59380,12 +59362,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[7]": {
       "activity": "GFS-007",
       "fingerprint": "5e18b371a920347f78764b465573081628c0ba606ab3f72792b54ae754da09b3",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59418,12 +59399,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[8]": {
       "activity": "GFS-007",
       "fingerprint": "6f06e04ef1570a7752e18a4ae95000e704b00e653343e99493f924e300441e39",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59456,12 +59436,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json::test[9]": {
       "activity": "GFS-007",
       "fingerprint": "3ff026815b33099d37bd5fd441911e3e465b665902ec27b86d3b8f910b52c3da",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59494,12 +59473,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[1]": {
       "activity": "GFS-007",
       "fingerprint": "c32e66ced483965d921fb4c6cac27ca174dbcf7bfd636d169aebf7f3ad47eabc",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename"
@@ -59528,12 +59506,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[2]": {
       "activity": "GFS-007",
       "fingerprint": "076a752d85b71f447d9d19cc645b52ccc6720b786fec4a3ea2c497d5886081f8",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59566,12 +59543,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[3]": {
       "activity": "GFS-007",
       "fingerprint": "6ad57eccf244a3dd46eff07302b49a74ff4c54d85001a95e69117977d5f4628a",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -59604,12 +59580,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/gridfs-downloadByName.json::test[4]": {
       "activity": "GFS-007",
       "fingerprint": "cdee59be076a4674cfd6b32722c11649997d91f522d19bb609dc9a85534a3314",
-      "reason": "GridFS filename downloads await the revision-selection slice",
       "requirements": {
         "arguments": [
           "downloadByName.filename",
@@ -59640,7 +59615,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "retryable-reads/tests/unified/handshakeError.json::test[10]": {
       "activity": "REL-034",

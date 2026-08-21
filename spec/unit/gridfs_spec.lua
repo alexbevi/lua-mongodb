@@ -1008,6 +1008,135 @@ describe("GridFS buckets", function()
     assert.is_false(accepted_destination.closed)
   end)
 
+  it("downloads the newest filename revision by default", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({
+              { "_id", "newest-id" },
+              { "length", 1 },
+              { "chunkSize", 4 },
+              { "filename", "report" },
+            }),
+          })
+        end
+
+        return cursor_response("assets.fs.chunks", {
+          bson.document({
+            { "files_id", "newest-id" },
+            { "n", 0 },
+            { "data", bson.binary("z") },
+          }),
+        })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local download = assert(bucket:open_download_stream_by_name("report"))
+
+    assert.are.equal("z", assert(download:read()))
+    assert.is_true(assert(download:close()))
+    assert.are.equal("report", commands[1]:get("filter"):get("filename"))
+    assert.are.equal(-1, commands[1]:get("sort"):get("uploadDate"))
+    assert.are.equal(0, commands[1]:get("skip"))
+  end)
+
+  it("selects positive and negative filename revisions", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        return cursor_response("assets.fs.files", {
+          bson.document({
+            { "_id", "revision-" .. #commands },
+            { "length", 0 },
+            { "chunkSize", 4 },
+            { "filename", "report" },
+          }),
+        })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local cases = {
+      { revision = 0, sort = 1, skip = 0 },
+      { revision = 1, sort = 1, skip = 1 },
+      { revision = 2, sort = 1, skip = 2 },
+      { revision = -2, sort = -1, skip = 1 },
+      { revision = -1, sort = -1, skip = 0 },
+    }
+
+    for index, case in ipairs(cases) do
+      local download = assert(bucket:open_download_stream_by_name(
+        "report",
+        { revision = case.revision }
+      ))
+
+      assert.are.equal("revision-" .. index, download.id)
+      assert.is_true(assert(download:close()))
+      assert.are.equal(
+        case.sort,
+        commands[index]:get("sort"):get("uploadDate")
+      )
+      assert.are.equal(case.skip, commands[index]:get("skip"))
+    end
+  end)
+
+  it("distinguishes missing filenames from missing revisions", function()
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        local filename = command:get("filter"):get("filename")
+
+        if filename == "report" and command:get("skip") == nil then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        end
+
+        return cursor_response("assets.fs.files", {})
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local missing, missing_err = bucket:open_download_stream_by_name("absent")
+
+    assert.is_nil(missing)
+    assert.is_true(errors.is(missing_err, errors.CATEGORY.CLIENT))
+    assert.are.equal("file_not_found", missing_err.details.gridfs)
+    assert.are.equal("absent", missing_err.details.filename)
+
+    local revision, revision_err = bucket:open_download_stream_by_name(
+      "report",
+      { revision = 999 }
+    )
+
+    assert.is_nil(revision)
+    assert.is_true(errors.is(revision_err, errors.CATEGORY.CLIENT))
+    assert.are.equal("revision_not_found", revision_err.details.gridfs)
+    assert.are.equal("report", revision_err.details.filename)
+    assert.are.equal(999, revision_err.details.revision)
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

@@ -7,6 +7,7 @@ local M = {}
 local DEFAULT_CHUNK_SIZE_BYTES = 255 * 1024
 local DOWNLOAD_BUFFER_SIZE = 64 * 1024
 local MAX_INT32 = 0x7fffffff
+local MIN_INT32 = -0x80000000
 local BUCKET_STATES = setmetatable({}, { __mode = "k" })
 local BUCKET_METHODS = {}
 local DOWNLOAD_STATES = setmetatable({}, { __mode = "k" })
@@ -281,11 +282,13 @@ local function ensure_required_indexes(state)
   return true
 end
 
-local function validate_filename(filename)
+local function validate_filename(filename, action)
+  action = action or "upload"
+
   if type(filename) ~= "string" then
-    error("GridFS upload filename must be a string", 3)
+    error("GridFS " .. action .. " filename must be a string", 3)
   elseif utf8.len(filename) == nil then
-    error("GridFS upload filename must be valid UTF-8", 3)
+    error("GridFS " .. action .. " filename must be valid UTF-8", 3)
   end
 end
 
@@ -325,6 +328,32 @@ local function download_options(options)
   end
 
   return options
+end
+
+local function download_by_name_options(options)
+  if options == nil then
+    options = {}
+  elseif type(options) ~= "table" then
+    error("GridFS download-by-name options must be a table", 3)
+  end
+
+  for key in pairs(options) do
+    if key ~= "revision" and key ~= "timeout_ms" then
+      error("unknown GridFS download-by-name option: " .. tostring(key), 3)
+    end
+  end
+
+  local revision = options.revision
+
+  if revision == nil then
+    revision = -1
+  elseif math.type(revision) ~= "integer"
+      or revision < MIN_INT32 or revision > MAX_INT32
+  then
+    error("GridFS download revision must be a 32-bit integer", 3)
+  end
+
+  return options, revision
 end
 
 local function file_metadata(document)
@@ -633,6 +662,70 @@ function BUCKET_METHODS:open_download_stream(identifier, options)
           "GridFS file was not found",
           { id = identifier }
         )
+      end
+
+      return new_download(state, document, operation_timeout.capture())
+    end
+  )
+end
+
+local function revision_selection(revision)
+  if revision < 0 then
+    return -1, -revision - 1
+  end
+
+  return 1, revision
+end
+
+local function missing_filename_or_revision(state, filename, revision)
+  local existing, err = state.files_collection:find_one(
+    bson.document({ { "filename", filename } }),
+    { projection = bson.document({ { "_id", 1 } }) }
+  )
+
+  if err then
+    return nil, err
+  elseif existing == nil then
+    return gridfs_error(
+      "file_not_found",
+      "GridFS file was not found",
+      { filename = filename }
+    )
+  end
+
+  return gridfs_error(
+    "revision_not_found",
+    "GridFS file revision was not found",
+    { filename = filename, revision = revision }
+  )
+end
+
+function BUCKET_METHODS:open_download_stream_by_name(filename, options)
+  validate_filename(filename, "download")
+
+  local state = BUCKET_STATES[self]
+  local revision
+
+  options, revision = download_by_name_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local direction, skip = revision_selection(revision)
+      local document, err = state.files_collection:find_one(
+        bson.document({ { "filename", filename } }),
+        {
+          skip = skip,
+          sort = bson.document({ { "uploadDate", direction } }),
+        }
+      )
+
+      if err then
+        return nil, err
+      elseif document == nil then
+        return missing_filename_or_revision(state, filename, revision)
       end
 
       return new_download(state, document, operation_timeout.capture())
