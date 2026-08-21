@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2027,
-    "runnable": 2027
+    "passed": 2029,
+    "runnable": 2029
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -50436,7 +50436,6 @@
     "gridfs/tests/deleteByName.json::test[1]": {
       "activity": "GFS-010",
       "fingerprint": "ed96a8c94032720277a54a17cc2475d299e311e40321d43bc621dd5169666a19",
-      "reason": "GridFS delete-by-name operations await the revision-delete slice",
       "requirements": {
         "arguments": [
           "deleteByName.filename"
@@ -50457,12 +50456,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/deleteByName.json::test[2]": {
       "activity": "GFS-010",
       "fingerprint": "950aef4f3bd00e8412c86fd0a78557e9a8c56230c1c7f15543d7c7d337d91b19",
-      "reason": "GridFS delete-by-name operations await the revision-delete slice",
       "requirements": {
         "arguments": [
           "deleteByName.filename"
@@ -50483,7 +50481,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/download.json::test[10]": {
       "activity": "GFS-005",

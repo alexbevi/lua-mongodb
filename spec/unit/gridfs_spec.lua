@@ -1276,6 +1276,47 @@ describe("GridFS buckets", function()
     assert.are.equal("fs.chunks", commands[2]:get("delete"))
   end)
 
+  it("deletes every filename revision before only their chunks", function()
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:get("find") == "fs.files" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "revision-a" } }),
+            bson.document({ { "_id", "revision-b" } }),
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 2 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+
+    assert.is_true(assert(bucket:delete_by_name("report")))
+    assert.are.equal("report", commands[1]:get("filter"):get("filename"))
+    assert.are.equal(1, commands[1]:get("projection"):get("_id"))
+    assert.are.equal("fs.files", commands[2]:get("delete"))
+    assert.are.equal("fs.chunks", commands[3]:get("delete"))
+
+    local file_ids = commands[2]:get("deletes"):get(1):get("q")
+      :get("_id"):get("$in")
+    local chunk_ids = commands[3]:get("deletes"):get(1):get("q")
+      :get("files_id"):get("$in")
+
+    assert.are.equal("revision-a", file_ids:get(1))
+    assert.are.equal("revision-b", file_ids:get(2))
+    assert.are.equal("revision-a", chunk_ids:get(1))
+    assert.are.equal("revision-b", chunk_ids:get(2))
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

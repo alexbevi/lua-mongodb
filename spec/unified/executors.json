@@ -25,6 +25,8 @@
     "gridfs/tests/delete.json::test[3]": {"activity": "GFS-009", "environment": "live-replicaset"},
     "gridfs/tests/delete.json::test[4]": {"activity": "GFS-009", "environment": "live-replicaset"},
     "gridfs/tests/delete.json::test[5]": {"activity": "GFS-009", "environment": "live-replicaset"},
+    "gridfs/tests/deleteByName.json::test[1]": {"activity": "GFS-010", "environment": "live-replicaset"},
+    "gridfs/tests/deleteByName.json::test[2]": {"activity": "GFS-010", "environment": "live-replicaset"},
     "gridfs/tests/download.json::test[1]": {"activity": "GFS-005", "environment": "live-replicaset"},
     "gridfs/tests/download.json::test[2]": {"activity": "GFS-005", "environment": "live-replicaset"},
     "gridfs/tests/download.json::test[3]": {"activity": "GFS-005", "environment": "live-replicaset"},

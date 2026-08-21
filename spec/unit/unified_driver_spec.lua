@@ -206,6 +206,11 @@ local function with_fake_client(callback)
           return true
         end
 
+        function bucket:delete_by_name(filename)
+          self.deletions[#self.deletions + 1] = { filename = filename }
+          return true
+        end
+
         client.gridfs_buckets[#client.gridfs_buckets + 1] = {
           database_name = name,
           options = bucket_options,
@@ -639,7 +644,7 @@ describe("unified driver GridFS buckets", function()
     end)
   end)
 
-  it("maps GridFS delete ids and timeout options", function()
+  it("maps GridFS delete selectors and timeout options", function()
     with_fake_client(function(driver, connections)
       local lifecycle = assert(driver.new({
         environment = { topology = "replicaset" },
@@ -677,6 +682,11 @@ describe("unified driver GridFS buckets", function()
                   { "timeoutMS", bson.int64(75) },
                 }) },
               }),
+              document({
+                { "name", "deleteByName" },
+                { "object", "bucket0" },
+                { "arguments", document({ { "filename", "report" } }) },
+              }),
             }) },
           }),
         }) },
@@ -685,9 +695,10 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal(1, report.summary.passed)
       local bucket = connections[2].gridfs_buckets[1].value
 
-      assert.are.equal(1, #bucket.deletions)
+      assert.are.equal(2, #bucket.deletions)
       assert.are.equal("delete-id", bucket.deletions[1].identifier)
       assert.are.equal(75, bucket.deletions[1].options.timeout_ms)
+      assert.are.equal("report", bucket.deletions[2].filename)
       assert(lifecycle:close())
     end)
   end)

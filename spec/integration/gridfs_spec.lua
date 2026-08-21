@@ -629,4 +629,82 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("deletes matching filename revisions before only their chunks", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local files_find = receive_frame(peer)
+
+      assert.are.equal("fs.files", files_find.body:get("find"))
+      assert.are.equal("report", files_find.body:get("filter"):get("filename"))
+      send_response(peer, files_find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.files" },
+          { "firstBatch", bson.array({
+            bson.document({ { "_id", "revision-a" } }),
+            bson.document({ { "_id", "revision-b" } }),
+          }) },
+        }) },
+      }))
+
+      local files_delete = receive_frame(peer)
+      local file_ids = files_delete.body:get("deletes"):get(1):get("q")
+        :get("_id"):get("$in")
+
+      assert.are.equal("fs.files", files_delete.body:get("delete"))
+      assert.are.equal("revision-a", file_ids:get(1))
+      assert.are.equal("revision-b", file_ids:get(2))
+      send_response(peer, files_delete, bson.document({
+        { "ok", 1 },
+        { "n", 2 },
+      }))
+
+      local chunks_delete = receive_frame(peer)
+      local chunk_ids = chunks_delete.body:get("deletes"):get(1):get("q")
+        :get("files_id"):get("$in")
+
+      assert.are.equal("fs.chunks", chunks_delete.body:get("delete"))
+      assert.are.equal("revision-a", chunk_ids:get(1))
+      assert.are.equal("revision-b", chunk_ids:get(2))
+      send_response(peer, chunks_delete, bson.document({
+        { "ok", 1 },
+        { "n", 3 },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket())
+
+        assert.is_true(assert(bucket:delete_by_name("report")))
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

@@ -916,6 +916,96 @@ function BUCKET_METHODS:delete(identifier, options)
   )
 end
 
+local function file_ids_by_name(state, filename)
+  local cursor, err = state.files_collection:find(
+    bson.document({ { "filename", filename } }),
+    { projection = bson.document({ { "_id", 1 } }) }
+  )
+
+  if not cursor then
+    return nil, err
+  end
+
+  local identifiers = {}
+
+  while true do
+    local document
+    document, err = cursor:next()
+
+    if not document then
+      break
+    end
+
+    identifiers[#identifiers + 1] = document:get("_id")
+  end
+
+  if not cursor:is_closed() then
+    local closed, close_err = cursor:close()
+
+    if closed == nil and err == nil then
+      err = close_err
+    end
+  end
+
+  if err then
+    return nil, err
+  end
+
+  return identifiers
+end
+
+function BUCKET_METHODS:delete_by_name(filename, options)
+  validate_filename(filename, "delete")
+
+  local state = BUCKET_STATES[self]
+
+  options = delete_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local identifiers, err = file_ids_by_name(state, filename)
+
+      if not identifiers then
+        return nil, err
+      end
+
+      local matches = bson.array(identifiers)
+      local files_result
+      files_result, err = state.files_collection:delete_many(
+        bson.document({
+          { "_id", bson.document({ { "$in", matches } }) },
+        })
+      )
+
+      if not files_result then
+        return nil, err
+      end
+
+      local chunks_result
+      chunks_result, err = state.chunks_collection:delete_many(
+        bson.document({
+          { "files_id", bson.document({ { "$in", matches } }) },
+        })
+      )
+
+      if not chunks_result then
+        return nil, err
+      elseif files_result.deleted_count == 0 then
+        return gridfs_error(
+          "file_not_found",
+          "GridFS file was not found",
+          { filename = filename }
+        )
+      end
+
+      return true
+    end
+  )
+end
+
 local function new_upload(state, identifier, filename, options)
   validate_filename(filename)
 

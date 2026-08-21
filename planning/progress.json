@@ -7483,6 +7483,28 @@
       "notes": [],
       "started_at": "2026-08-21T15:22:46+00:00",
       "completed_at": "2026-08-21T15:30:32+00:00"
+    },
+    "GFS-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "25 unit cases passed and the defining multi-revision case errored because delete_by_name was absent",
+          "recorded_at": "2026-08-21T15:40:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with focused GridFS and unified-driver units, GridFS OP_MSG integration, both exact deleteByName identities, 140 focused Python artifact cases, and five touched-file lint targets; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "189 focused tests executed and passed (39 unit, 8 integration, 2 exact unified, 140 Python artifact tests); 0 environment-skipped, 0 deferred, 0 failed; 5 touched Lua files lint-clean; complexity and all generated capability, conformance, README, release, and JSON validators passed",
+          "recorded_at": "2026-08-21T15:43:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T15:39:33+00:00",
+      "completed_at": "2026-08-21T15:43:52+00:00"
     }
   },
   "verified_references": {

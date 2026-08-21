@@ -2149,6 +2149,18 @@ local function delete_gridfs(_, bucket, arguments)
   return nil
 end
 
+local function delete_gridfs_by_name(_, bucket, arguments)
+  local deleted, err = call_driver(function()
+    return bucket:delete_by_name(arguments:get("filename"))
+  end)
+
+  if not deleted then
+    return nil, err
+  end
+
+  return nil
+end
+
 local function upload_gridfs(_, bucket, arguments, _, path)
   local source, err = gridfs_source(
     arguments:get("source"),
@@ -2199,6 +2211,10 @@ local BUCKET_OPERATIONS = {
   delete = {
     arguments = { "id", "timeoutMS" },
     handler = delete_gridfs,
+  },
+  deleteByName = {
+    arguments = { "filename" },
+    handler = delete_gridfs_by_name,
   },
   download = {
     arguments = { "id", "timeoutMS" },
