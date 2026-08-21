@@ -3,6 +3,7 @@ local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
 local mongodb = require("mongodb")
+local operation_timeout = require("mongodb.operation_timeout")
 local fake_runtime = require("mongodb.runtime.fake")
 
 local function database_with_options(options)
@@ -35,13 +36,13 @@ local function cursor_response(namespace, documents)
   })
 end
 
-local function upload_bucket(executor, identifier, options)
+local function upload_bucket(executor, identifier, options, runtime)
   local object_ids = {
     new = function()
       return identifier
     end,
   }
-  local runtime = fake_runtime.new({ wall_time = 1234.567 })
+  runtime = runtime or fake_runtime.new({ wall_time = 1234.567 })
   local config = assert(driver_options.normalize(nil, options or {}))
   local client = api.new_client(
     executor,
@@ -547,5 +548,161 @@ describe("GridFS buckets", function()
     assert.is_nil(closed)
     assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
     assert.are.equal(1, #commands)
+  end)
+
+  it("uploads a readable source without closing it", function()
+    local identifier = "readable-file-id"
+    local commands = {}
+    local reads = {}
+    local source = {
+      closed = false,
+      parts = { "ab", "cd", "e" },
+      read = function(self, size)
+        reads[#reads + 1] = size
+        return table.remove(self.parts, 1)
+      end,
+      close = function(self)
+        self.closed = true
+      end,
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:keys()[1] == "find" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+
+    assert.is_true(assert(bucket:upload_from_stream_with_id(
+      identifier,
+      "readable.txt",
+      source,
+      { chunk_size_bytes = 4 }
+    )))
+    assert.is_false(source.closed)
+    assert.are.same({ 4, 4, 4, 4 }, reads)
+    assert.are.equal(4, #commands)
+    assert.are.equal("find", commands[1]:keys()[1])
+    assert.are.equal(
+      bson.binary("abcd"),
+      commands[2]:get("documents"):get(1):get("data")
+    )
+    assert.are.equal(
+      bson.binary("e"),
+      commands[3]:get("documents"):get(1):get("data")
+    )
+    assert.are.equal("readable.txt", commands[4]:get("documents"):get(1):get("filename"))
+  end)
+
+  it("returns generated ids for string sources under one timeout deadline", function()
+    local identifier = bson.object_id("010203041011121314151617")
+    local runtime = fake_runtime.new({ now = 5, wall_time = 1234.567 })
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        runtime:advance(0.005)
+
+        if command:keys()[1] == "find" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      identifier,
+      { timeout_ms = 75 },
+      runtime
+    )
+
+    assert.are.equal(identifier, assert(bucket:upload_from_stream(
+      "string.txt",
+      "abc",
+      { chunk_size_bytes = 2, timeout_ms = 1000 }
+    )))
+    assert.are.equal(4, #deadlines)
+
+    for _, deadline in ipairs(deadlines) do
+      assert.is_true(math.abs(deadline - 6) < 0.000001)
+    end
+  end)
+
+  it("aborts on readable source errors and preserves the original error", function()
+    local failure = errors.new({
+      category = errors.CATEGORY.CLIENT,
+      message = "source failed",
+    })
+    local source = {
+      closed = false,
+      reads = 0,
+      read = function(self)
+        self.reads = self.reads + 1
+
+        if self.reads == 1 then
+          return "abcd"
+        end
+
+        error(failure, 0)
+      end,
+      close = function(self)
+        self.closed = true
+      end,
+    }
+    local commands = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+
+        if command:keys()[1] == "find" then
+          return cursor_response("assets.fs.files", {
+            bson.document({ { "_id", "existing" } }),
+          })
+        end
+
+        return bson.document({ { "ok", 1 }, { "n", 1 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local uploaded, err = bucket:upload_from_stream_with_id(
+      "failed-source-id",
+      "failed.txt",
+      source,
+      { chunk_size_bytes = 4 }
+    )
+
+    assert.is_nil(uploaded)
+    assert.are.equal(failure, err)
+    assert.is_false(source.closed)
+    assert.are.equal(4, #commands)
+    assert.are.equal("insert", commands[2]:keys()[1])
+    assert.are.equal("delete", commands[3]:keys()[1])
+    assert.are.equal("fs.chunks", commands[3]:get("delete"))
+    assert.are.equal("fs.files", commands[4]:get("delete"))
   end)
 end)

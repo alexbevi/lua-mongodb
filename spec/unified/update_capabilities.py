@@ -910,7 +910,10 @@ def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:
   if fixture.startswith("gridfs-"):
     for operation, owner in gridfs_owners.items():
       if operation in operations:
-        return owner, OWNER_REASONS[owner]
+        return (
+          owner,
+          None if test["id"] in EXECUTOR_TESTS else OWNER_REASONS[owner],
+        )
 
   if fixture.startswith("tailable-"):
     return (
@@ -982,7 +985,10 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
 
   if specification in SPECIFICATION_OWNERS:
     owner = SPECIFICATION_OWNERS[specification]
-    return owner, OWNER_REASONS[owner]
+    return (
+      owner,
+      None if test["id"] in EXECUTOR_TESTS else OWNER_REASONS[owner],
+    )
 
   if specification == "crud":
     return classify_crud(test)

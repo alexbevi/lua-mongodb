@@ -102,7 +102,50 @@ local function with_fake_client(callback)
       local database = {}
 
       function database.gridfs_bucket(_, bucket_options)
-        local bucket = { options = bucket_options }
+        local bucket = { options = bucket_options, uploads = {} }
+
+        local function read_source(source)
+          local parts = {}
+
+          while true do
+            local part = source:read(2)
+
+            if part == nil then
+              break
+            end
+
+            parts[#parts + 1] = part
+          end
+
+          return table.concat(parts)
+        end
+
+        function bucket:upload_from_stream(filename, source, upload_options)
+          local identifier = bson.object_id("010203041011121314151617")
+
+          self.uploads[#self.uploads + 1] = {
+            filename = filename,
+            identifier = identifier,
+            options = upload_options,
+            source = read_source(source),
+          }
+          return identifier
+        end
+
+        function bucket:upload_from_stream_with_id(
+          identifier,
+          filename,
+          source,
+          upload_options
+        )
+          self.uploads[#self.uploads + 1] = {
+            filename = filename,
+            identifier = identifier,
+            options = upload_options,
+            source = read_source(source),
+          }
+          return true
+        end
 
         client.gridfs_buckets[#client.gridfs_buckets + 1] = {
           database_name = name,
@@ -367,6 +410,100 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal("secondary", options.read_preference.mode)
       assert.are.equal(250, options.timeout_ms)
       assert.are.equal("majority", options.write_concern.w)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("maps upload hex streams and options without hiding invalid sources", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "assets" },
+            }) },
+          }),
+          document({
+            { "bucket", document({
+              { "id", "bucket0" },
+              { "database", "database0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Upload readable hex streams" },
+            { "operations", array({
+              document({
+                { "name", "upload" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "filename", "generated" },
+                  { "source", document({ { "$$hexBytes", "12aB" } }) },
+                  { "chunkSizeBytes", bson.int32(4) },
+                  { "disableMD5", true },
+                  { "metadata", document({ { "kind", "test" } }) },
+                  { "timeoutMS", bson.int64(75) },
+                }) },
+                { "expectResult", document({ { "$$type", "objectId" } }) },
+              }),
+              document({
+                { "name", "uploadWithId" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "id", "custom-id" },
+                  { "filename", "custom" },
+                  { "source", document({ { "$$hexBytes", "" } }) },
+                }) },
+              }),
+            }) },
+          }),
+          document({
+            { "description", "Reject malformed upload hex" },
+            { "operations", array({
+              document({
+                { "name", "upload" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "filename", "invalid" },
+                  { "source", document({ { "$$hexBytes", "123" } }) },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "gridfs-upload.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal(1, report.summary.failed)
+      assert.is_true(errors.is(
+        report.tests[2].error,
+        errors.CATEGORY.CONFIGURATION
+      ))
+      assert.are.equal(
+        "$.tests[2].operations[1].arguments.source.$$hexBytes",
+        report.tests[2].error.details.path
+      )
+      local bucket = connections[2].gridfs_buckets[1].value
+
+      assert.are.equal(2, #bucket.uploads)
+      assert.are.equal(string.char(0x12, 0xab), bucket.uploads[1].source)
+      assert.are.equal(4, bucket.uploads[1].options.chunk_size_bytes)
+      assert.is_true(bucket.uploads[1].options.disable_md5)
+      assert.are.equal(75, bucket.uploads[1].options.timeout_ms)
+      assert.are.equal("test", bucket.uploads[1].options.metadata:get("kind"))
+      assert.are.equal("custom-id", bucket.uploads[2].identifier)
+      assert.are.equal("", bucket.uploads[2].source)
       assert(lifecycle:close())
     end)
   end)

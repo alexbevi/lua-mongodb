@@ -162,6 +162,14 @@ function M.run(runtime, inherited_timeout_ms, options, callback)
 
   local timeout_mode = options.timeout_mode
 
+  if parent_context and options.timeout_ms == nil then
+    timeout_ms = parent_context.timeout_ms
+
+    if timeout_mode == nil then
+      timeout_mode = parent_context.timeout_mode
+    end
+  end
+
   if timeout_mode ~= nil and timeout_mode ~= "cursor_lifetime"
       and timeout_mode ~= "iteration"
   then
@@ -195,10 +203,10 @@ function M.run(runtime, inherited_timeout_ms, options, callback)
     deadline = runtime_contract.deadline_after(runtime, timeout_ms / 1000)
   end
 
-  if parent and parent.deadline and deadline then
-    deadline = math.min(parent.deadline, deadline)
-  elseif parent and parent.deadline and options.timeout_ms == nil then
+  if parent and options.timeout_ms == nil then
     deadline = parent.deadline
+  elseif parent and parent.deadline and deadline then
+    deadline = math.min(parent.deadline, deadline)
   end
 
   local context = {

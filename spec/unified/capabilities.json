@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 1943,
-    "runnable": 1943
+    "passed": 1961,
+    "runnable": 1961
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -23744,7 +23744,6 @@
     "client-side-operations-timeout/tests/gridfs-upload.json::test[1]": {
       "activity": "GFS-004",
       "fingerprint": "24998ed98fc4383d02742a92a853faa3fed24c8bc15bd0471588fe7b73e72215",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23773,12 +23772,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[2]": {
       "activity": "GFS-004",
       "fingerprint": "b06eae8cc4b2835ce44c5fa8027390b1b9889cb4d593e9f54cf06be0bc993be0",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23806,12 +23804,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[3]": {
       "activity": "GFS-004",
       "fingerprint": "89405fb946aff5cf469d732117438b42c37c78e1afc7eb3bbb23844f99ec3379",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23839,12 +23836,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[4]": {
       "activity": "GFS-004",
       "fingerprint": "48bd15e51395f793dfa8f1da7b7e17ef9be3029f4b418c3908fb2c195401b9f5",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23872,12 +23868,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[5]": {
       "activity": "GFS-004",
       "fingerprint": "ad6020808505355b7b9e2e91e1f7e72754dea9efec7a38e0237e69f8d662514e",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23905,12 +23900,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[6]": {
       "activity": "GFS-004",
       "fingerprint": "f0fa6b4c2c78eb474145847371f730f00861db249527da8ead40c04dfc8d81e2",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23938,12 +23932,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[7]": {
       "activity": "GFS-004",
       "fingerprint": "3ad09652a5f7367e3a2fd7fc19c2ebd51c5836f55b414b03d4fc1ad82ad70a60",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23971,12 +23964,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[8]": {
       "activity": "GFS-004",
       "fingerprint": "344cd7eb39932964bebe562e2d8890b8f91b8741beaa1a1f3d007f90f0bae385",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24004,12 +23996,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[9]": {
       "activity": "GFS-004",
       "fingerprint": "4f506aafe5c9d6c510c88dfff0094b4dbee5dd6a390ea9de9986cfab665b584f",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -24037,7 +24028,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/legacy-timeouts.json::test[1]": {
       "activity": "QUA-001",
@@ -51151,7 +51142,6 @@
     "gridfs/tests/upload-disableMD5.json::test[1]": {
       "activity": "GFS-004",
       "fingerprint": "ca8bbaea81c259232d6478fc374211f26ea62d6861cd6b941b6fc4095f9c77ef",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51182,12 +51172,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload-disableMD5.json::test[2]": {
       "activity": "GFS-004",
       "fingerprint": "990f0f68acc06fbb99a58fabafd5c9168f90288bc03544754aafbbe08bbd7d6b",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51218,12 +51207,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[1]": {
       "activity": "GFS-004",
       "fingerprint": "146bf2241bc989a23d9e08fdb9135fe1379e83a915ef3ebc545efa47a338eb47",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51253,12 +51241,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[2]": {
       "activity": "GFS-004",
       "fingerprint": "0007244b4095c8e9c16d2fc9acbd48d643a6f93edcc3522796d6f9442f1af3d0",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51288,12 +51275,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[3]": {
       "activity": "GFS-004",
       "fingerprint": "c7aa405c6aaf937aa98239e24714700b91d530899609937a45f3c2bade150a5c",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51323,12 +51309,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[4]": {
       "activity": "GFS-004",
       "fingerprint": "ba81e20d03cc163a2f8fcdbf6ed1667e07fc3abccf48cb7c585a6e4b96e5b695",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51358,12 +51343,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[5]": {
       "activity": "GFS-004",
       "fingerprint": "62226c7427dab499476ef483814d430aa5dbbf5a5e74b02dc341c39223595a7e",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51394,12 +51378,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[6]": {
       "activity": "GFS-004",
       "fingerprint": "0591882ea7d711e141ed68b4784d01f7fd671cdc31518156dd9a2ebca5bf9ed8",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51430,12 +51413,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload.json::test[7]": {
       "activity": "GFS-004",
       "fingerprint": "3699c595619bd18515aa77f6fa78601aea3a712ae6e60878bcd673c80c5179b0",
-      "reason": "GridFS upload operations await the readable-stream slice",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -51466,7 +51448,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "index-management/tests/createSearchIndex.json::test[1]": {
       "activity": "IDX-001",

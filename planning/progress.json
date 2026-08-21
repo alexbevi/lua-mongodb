@@ -7295,6 +7295,70 @@
       "notes": [],
       "started_at": "2026-08-21T13:05:57+00:00",
       "completed_at": "2026-08-21T13:08:41+00:00"
+    },
+    "GFS-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=\"--filter=uploads.a.readable spec/unit/gridfs_spec.lua\"",
+          "exit_code": 2,
+          "summary": "Defining readable-source upload test failed because bucket:upload_from_stream_with_id was not implemented.",
+          "recorded_at": "2026-08-21T13:23:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_driver_spec.lua spec/unit/gridfs_spec.lua spec/unit/operation_timeout_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+          "exit_code": 0,
+          "summary": "31 focused unit cases and 3 directly coupled GridFS OP_MSG integration cases passed.",
+          "recorded_at": "2026-08-21T13:37:58+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='gridfs/tests/upload*.json'",
+          "exit_code": 0,
+          "summary": "All nine pinned GridFS upload and disableMD5 unified identities passed.",
+          "recorded_at": "2026-08-21T13:37:59+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/gridfs-upload.json'",
+          "exit_code": 0,
+          "summary": "All nine directly coupled GridFS upload CSOT identities passed.",
+          "recorded_at": "2026-08-21T13:38:01+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_LINT='src/mongodb/gridfs.lua src/mongodb/operation_timeout.lua spec/support/mongodb/unified/driver.lua spec/unit/gridfs_spec.lua spec/unit/operation_timeout_spec.lua spec/unit/unified_driver_spec.lua'",
+          "exit_code": 0,
+          "summary": "Touched Lua files passed lint with 0 warnings and 0 errors.",
+          "recorded_at": "2026-08-21T13:38:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-architecture",
+          "exit_code": 0,
+          "summary": "Production dependency and runtime-adapter architecture checks passed.",
+          "recorded_at": "2026-08-21T13:38:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-complexity LUACHECK=/Users/alex/.luarocks/bin/luacheck",
+          "exit_code": 0,
+          "summary": "Complexity baseline remained current with maximum 47.",
+          "recorded_at": "2026-08-21T13:38:05+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' && python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "All 130 focused capability and ledger tests passed; capability, ledger, and README projections are current.",
+          "recorded_at": "2026-08-21T13:38:06+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-21T13:18:38+00:00",
+      "completed_at": "2026-08-21T13:38:17+00:00"
     }
   },
   "verified_references": {

@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_timeout = require("mongodb.operation_timeout")
 
 local M = {}
 
@@ -313,6 +314,129 @@ function BUCKET_METHODS:open_upload_stream_with_id(identifier, filename, options
   end
 
   return new_upload(BUCKET_STATES[self], identifier, filename, options)
+end
+
+local function source_failure(err)
+  if errors.is(err) then
+    return err
+  end
+
+  return errors.new({
+    category = errors.CATEGORY.CLIENT,
+    message = "GridFS upload source read failed: " .. tostring(err),
+  })
+end
+
+local function abort_after_source_failure(upload, err)
+  upload:abort()
+  return nil, source_failure(err)
+end
+
+local function consume_source(upload, source)
+  if type(source) == "string" then
+    return upload:write(source)
+  end
+
+  local source_type = type(source)
+
+  if (source_type ~= "table" and source_type ~= "userdata")
+      or type(source.read) ~= "function"
+  then
+    error("GridFS upload source must be a string or readable value", 3)
+  end
+
+  while true do
+    local outcome = table.pack(pcall(
+      source.read,
+      source,
+      upload.chunk_size_bytes
+    ))
+
+    if not outcome[1] then
+      return abort_after_source_failure(upload, outcome[2])
+    end
+
+    local data = outcome[2]
+    local err = outcome[3]
+
+    if err ~= nil then
+      return abort_after_source_failure(upload, err)
+    elseif data == nil or data == "" then
+      return true
+    elseif type(data) ~= "string" then
+      return abort_after_source_failure(
+        upload,
+        "readable source returned a non-string value"
+      )
+    end
+
+    local written
+    written, err = upload:write(data)
+
+    if not written then
+      return nil, err
+    end
+  end
+end
+
+local function upload_from_source(bucket, identifier, filename, source, options)
+  local state = BUCKET_STATES[bucket]
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function(prepared)
+      local upload, err
+
+      if identifier == nil then
+        upload, err = bucket:open_upload_stream(filename, prepared)
+      else
+        upload, err = bucket:open_upload_stream_with_id(
+          identifier,
+          filename,
+          prepared
+        )
+      end
+
+      if not upload then
+        return nil, err
+      end
+
+      local consumed
+      consumed, err = consume_source(upload, source)
+
+      if not consumed then
+        return nil, err
+      end
+
+      local closed
+      closed, err = upload:close()
+
+      if not closed then
+        return nil, err
+      end
+
+      return identifier == nil and upload.id or true
+    end
+  )
+end
+
+function BUCKET_METHODS:upload_from_stream(filename, source, options)
+  return upload_from_source(self, nil, filename, source, options)
+end
+
+function BUCKET_METHODS:upload_from_stream_with_id(
+  identifier,
+  filename,
+  source,
+  options
+)
+  if identifier == nil then
+    error("GridFS upload id must not be nil", 2)
+  end
+
+  return upload_from_source(self, identifier, filename, source, options)
 end
 
 local function flush_chunk(state)

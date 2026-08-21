@@ -34,6 +34,28 @@ describe("client-side operation timeout", function()
     end)
   end)
 
+  it("inherits an explicit infinite timeout and iteration mode", function()
+    local runtime = fake_runtime.new({ now = 4 })
+
+    operation_timeout.run(runtime, 75, {
+      timeout_mode = "iteration",
+      timeout_ms = 0,
+    }, function()
+      operation_timeout.run(runtime, 75, {}, function()
+        local context = operation_timeout.current()
+        local command = assert(operation_timeout.prepare_command(
+          bson.document({ { "find", "items" } }),
+          0
+        ))
+
+        assert.is_nil(context.deadline)
+        assert.are.equal(0, context.timeout_ms)
+        assert.are.equal("iteration", context.timeout_mode)
+        assert.is_nil(command:get("maxTimeMS"))
+      end)
+    end)
+  end)
+
   it("turns deadline and server max-time failures into CSOT errors", function()
     local runtime = fake_runtime.new({ now = 1 })
     local cause = errors.new({

@@ -2035,6 +2035,119 @@ call_driver = function(callback)
   return table.unpack(outcome, 2, outcome.n)
 end
 
+local function gridfs_source(value, path)
+  if not bson.is_document(value) then
+    return configuration_error("GridFS source must be an object", path)
+  end
+
+  local valid, err = validate_fields(value, { ["$$hexBytes"] = true }, path)
+
+  if not valid then
+    return nil, err
+  end
+
+  local hex_bytes = value:get("$$hexBytes")
+
+  if type(hex_bytes) ~= "string" or #hex_bytes % 2 ~= 0
+      or not hex_bytes:match("^[0-9a-fA-F]*$")
+  then
+    return configuration_error(
+      "GridFS $$hexBytes must be an even-length hexadecimal string",
+      path .. ".$$hexBytes"
+    )
+  end
+
+  local bytes = (hex_bytes:gsub("..", function(pair)
+    return string.char(tonumber(pair, 16))
+  end))
+  local position = 1
+
+  return {
+    read = function(_, size)
+      if position > #bytes then
+        return nil
+      end
+
+      local data = bytes:sub(position, position + size - 1)
+
+      position = position + #data
+      return data
+    end,
+  }
+end
+
+local function gridfs_upload_options(arguments)
+  return operation_options(arguments, {
+    chunkSizeBytes = "chunk_size_bytes",
+    disableMD5 = "disable_md5",
+    metadata = "metadata",
+  })
+end
+
+local function upload_gridfs(_, bucket, arguments, _, path)
+  local source, err = gridfs_source(
+    arguments:get("source"),
+    path .. ".arguments.source"
+  )
+
+  if not source then
+    return nil, err
+  end
+
+  return call_driver(function()
+    return bucket:upload_from_stream(
+      arguments:get("filename"),
+      source,
+      gridfs_upload_options(arguments)
+    )
+  end)
+end
+
+local function upload_gridfs_with_id(_, bucket, arguments, _, path)
+  local source, err = gridfs_source(
+    arguments:get("source"),
+    path .. ".arguments.source"
+  )
+
+  if not source then
+    return nil, err
+  end
+
+  local uploaded
+  uploaded, err = call_driver(function()
+    return bucket:upload_from_stream_with_id(
+      arguments:get("id"),
+      arguments:get("filename"),
+      source,
+      gridfs_upload_options(arguments)
+    )
+  end)
+
+  if not uploaded then
+    return nil, err
+  end
+
+  return nil
+end
+
+local BUCKET_OPERATIONS = {
+  upload = {
+    arguments = {
+      "chunkSizeBytes", "disableMD5", "filename", "metadata", "source",
+      "timeoutMS",
+    },
+    handler = upload_gridfs,
+    result_kind = "bson",
+  },
+  uploadWithId = {
+    arguments = {
+      "chunkSizeBytes", "disableMD5", "filename", "id", "metadata", "source",
+      "timeoutMS",
+    },
+    handler = upload_gridfs_with_id,
+  },
+}
+
 local function array_values(value)
   local values = {}
 
@@ -2658,6 +2771,7 @@ function M.new(options)
     },
     internal_client = internal_client_adapter(internal_client, state),
     operations = {
+      bucket = BUCKET_OPERATIONS,
       changeStream = CHANGE_STREAM_OPERATIONS,
       client = {
         appendMetadata = {
