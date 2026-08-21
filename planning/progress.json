@@ -7090,22 +7090,53 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "GitHub Actions Full Conformance run 32431315538, linux-quality job 96623274570: make check-fast test-coverage",
           "exit_code": 2,
-          "summary": "The defining release contract expected 0.8.0, but generated release metadata still reported 0.7.0.",
-          "recorded_at": "2026-08-20T21:49:04+00:00"
+          "summary": "All 562 coverage-instrumented tests passed, then the coverage ratchet rejected changed command executor and runtime contract ratios plus missing Snappy, zlib, Zstandard, and OP_COMPRESSED module rows.",
+          "recorded_at": "2026-08-21T00:50:09+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "python3 spec/quality/coverage_gate.py --report build/rel057-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json",
+          "exit_code": 1,
+          "summary": "The downloaded authoritative Linux report reproduced exactly the two stale ratios and four missing wire-compression coverage rows.",
+          "recorded_at": "2026-08-21T00:50:10+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'; make test-release-checklist test-v08-scope rockspec; generated release, README, publication, JSON, YAML, Python, and diff validators",
+          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate'; python3 spec/quality/coverage_gate.py --report build/rel057-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; coverage total, JSON, release checklist, v0.8 scope, README, and diff validators",
           "exit_code": 0,
-          "summary": "Focused release verification passed 19 unit, 6 integration, and 28 Python contracts with 0 lint errors; the 16-requirement v0.8 scope, 0.8.0 checklist with 0 gaps and 9 compatibility rows, versionless README projection, rockspec, immutable publication metadata, workflow syntax, generated artifacts, and diff checks are current.",
-          "recorded_at": "2026-08-20T23:55:38+00:00"
+          "summary": "All 3 coverage-gate contracts passed; the authoritative Linux report passes at 23264/25627 lines with no regressions; the conservative baseline is sorted and internally consistent at 22913/25274; release checklist, all 16 v0.8 requirements, README projection, JSON, and diff checks are current.",
+          "recorded_at": "2026-08-21T00:50:33+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-20T21:18:55+00:00",
-      "completed_at": "2026-08-20T23:55:39+00:00"
+      "notes": [
+        "Requeued: Full Conformance run 32431315538 showed the checked coverage ratchet omitted four wire-compression modules and retained pre-compression executor/runtime counts."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-20T23:55:39+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 2,
+              "summary": "The defining release contract expected 0.8.0, but generated release metadata still reported 0.7.0.",
+              "recorded_at": "2026-08-20T21:49:04+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.package.test_package planning.tests.test_ci_portability' FOCUS_LINT='src/mongodb/handshake/metadata.lua spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua spec/integration/client_api_spec.lua spec/package/smoke.lua'; make test-release-checklist test-v08-scope rockspec; generated release, README, publication, JSON, YAML, Python, and diff validators",
+              "exit_code": 0,
+              "summary": "Focused release verification passed 19 unit, 6 integration, and 28 Python contracts with 0 lint errors; the 16-requirement v0.8 scope, 0.8.0 checklist with 0 gaps and 9 compatibility rows, versionless README projection, rockspec, immutable publication metadata, workflow syntax, generated artifacts, and diff checks are current.",
+              "recorded_at": "2026-08-20T23:55:38+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "a0a9dd7af5c3e2ac9bc1a17b30e9a2861c86ca70",
+      "started_at": "2026-08-21T00:48:21+00:00",
+      "completed_at": "2026-08-21T00:50:34+00:00"
     }
   },
   "verified_references": {

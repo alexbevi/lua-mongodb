@@ -109,8 +109,8 @@
       "covered": 774
     },
     "src/mongodb/command/executor.lua": {
-      "active": 310,
-      "covered": 277
+      "active": 389,
+      "covered": 343
     },
     "src/mongodb/command/hello.lua": {
       "active": 112,
@@ -181,8 +181,8 @@
       "covered": 32
     },
     "src/mongodb/runtime/contract.lua": {
-      "active": 76,
-      "covered": 68
+      "active": 95,
+      "covered": 82
     },
     "src/mongodb/runtime/copas.lua": {
       "active": 278,
@@ -220,6 +220,18 @@
       "active": 76,
       "covered": 75
     },
+    "src/mongodb/runtime/snappy.lua": {
+      "active": 48,
+      "covered": 44
+    },
+    "src/mongodb/runtime/zlib.lua": {
+      "active": 62,
+      "covered": 53
+    },
+    "src/mongodb/runtime/zstandard.lua": {
+      "active": 48,
+      "covered": 44
+    },
     "src/mongodb/runtime_guard.lua": {
       "active": 10,
       "covered": 10
@@ -256,6 +268,10 @@
       "active": 234,
       "covered": 201
     },
+    "src/mongodb/wire/op_compressed.lua": {
+      "active": 107,
+      "covered": 91
+    },
     "src/mongodb/wire/op_msg.lua": {
       "active": 299,
       "covered": 255
@@ -277,7 +293,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 24911,
-    "covered": 22601
+    "active": 25274,
+    "covered": 22913
   }
 }
