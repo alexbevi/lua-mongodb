@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "8bdf98d155e907e60c14baa2cf03143c4cc2c24c20fd0f64c03b3ac95383a3e1",
+  "plan_digest": "701c8d9af4b3c90f02e60b16c084b786c1b1b9d5e845779fd33716328fa4fe87",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
@@ -20,7 +20,7 @@
     "completed": 267,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 9
+    "pending": 25
   },
   "active": [],
   "ready": [
@@ -40,6 +40,9 @@
     "spec-suite-completeness": [],
     "v0-5-v0-7-api": [],
     "v0-8-wire-compression": [],
+    "v0-9-gridfs": [
+      "ADV-002"
+    ],
     "macos-ci-signal": [],
     "driver-examples": [],
     "lua-5-5-support": []
