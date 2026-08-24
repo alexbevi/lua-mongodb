@@ -7621,23 +7621,24 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-linux-quality.hLk46l/luacov.report.out --baseline spec/quality/coverage-baseline.json",
-          "exit_code": 1,
-          "summary": "Before the baseline correction, the authoritative Linux report rejected GridFS coverage: expected 702/794, observed 774/877.",
-          "recorded_at": "2026-08-24T16:36:17+00:00"
+          "command": "make test-focus FOCUS_PYTHON=spec.release.test_publish.PublishTests.test_workflow_recovers_a_partial_luarocks_publication",
+          "exit_code": 2,
+          "summary": "The publication workflow could not detect or recover a rockspec-only LuaRocks version; it had no source-artifact probe or existing-version upload_rock path.",
+          "recorded_at": "2026-08-24T17:42:37+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.release.test_checklist spec.release.test_publish spec.v09.test_scope'; python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-linux-quality.hLk46l/luacov.report.out --baseline spec/quality/coverage-baseline.json; python3 -m json.tool spec/quality/coverage-baseline.json; python3 spec/release/checklist.py --check; python3 spec/v09/scope.py --check",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_publish spec.release.test_checklist planning.tests.test_ci_portability'; python3 -m py_compile spec/release/test_publish.py; ruby -e 'require yaml; YAML.load_file(.github/workflows/release.yml)'; python3 spec/release/checklist.py --check; git diff --check",
           "exit_code": 0,
-          "summary": "15 focused Python tests passed; authoritative Linux coverage passed at 24059/26514 (90.74%); JSON, v0.9 scope (113/113), and release checklist validators passed.",
-          "recorded_at": "2026-08-24T16:36:44+00:00"
+          "summary": "26 focused release and workflow-portability tests passed; Python compilation, workflow YAML parsing, the 0.9.0 release checklist (5524 classified cases, 0 applicable gaps, 9 compatibility rows), and diff validation passed.",
+          "recorded_at": "2026-08-24T17:45:17+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance release qualification exposed that the checked coverage ratchet has no src/mongodb/gridfs.lua baseline row; the Linux supplemental 90 ms CSOT identity also produced a documented hosted-runner timing flake that passed the two intervening Linux runs and 10 focused local repetitions.",
         "Requeued: Full Conformance 32744710748 reproduced the hosted Linux command-execution test[3] failure after 240 seconds: the focused Lua process still shared its Python invocation and replica-set deployment with the preceding change-stream branch, so release qualification requires deployment-level isolation.",
-        "Requeued: Full Conformance run 32746961796 reported authoritative GridFS coverage 774/877 against the conservative 702/794 release baseline."
+        "Requeued: Full Conformance run 32746961796 reported authoritative GridFS coverage 774/877 against the conservative 702/794 release baseline.",
+        "Requeued: LuaRocks publication run 32757189130 committed the immutable 0.9.0-1 rockspec but its paired source-rock upload failed, requiring safe partial-publication recovery."
       ],
       "reopen_history": [
         {
@@ -7696,11 +7697,30 @@
               "recorded_at": "2026-08-24T15:41:02+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-24T16:36:45+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-linux-quality.hLk46l/luacov.report.out --baseline spec/quality/coverage-baseline.json",
+              "exit_code": 1,
+              "summary": "Before the baseline correction, the authoritative Linux report rejected GridFS coverage: expected 702/794, observed 774/877.",
+              "recorded_at": "2026-08-24T16:36:17+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.release.test_checklist spec.release.test_publish spec.v09.test_scope'; python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-linux-quality.hLk46l/luacov.report.out --baseline spec/quality/coverage-baseline.json; python3 -m json.tool spec/quality/coverage-baseline.json; python3 spec/release/checklist.py --check; python3 spec/v09/scope.py --check",
+              "exit_code": 0,
+              "summary": "15 focused Python tests passed; authoritative Linux coverage passed at 24059/26514 (90.74%); JSON, v0.9 scope (113/113), and release checklist validators passed.",
+              "recorded_at": "2026-08-24T16:36:44+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "224f2b982018d4e60f3ed9d44f76558cc5da2bc4",
-      "started_at": "2026-08-24T16:32:33+00:00",
-      "completed_at": "2026-08-24T16:36:45+00:00"
+      "reopened_after_commit": "5835f5db04b0d5a3810a1db1096bcbaeb3d7a41e",
+      "started_at": "2026-08-24T17:41:38+00:00",
+      "completed_at": "2026-08-24T17:45:18+00:00"
     }
   },
   "verified_references": {

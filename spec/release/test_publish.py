@@ -151,6 +151,24 @@ class PublishTests(unittest.TestCase):
     self.assertIn("gh release create", workflow)
     self.assertIn("install mongodb \"$ROCKSPEC_VERSION\"", workflow)
 
+  def test_workflow_recovers_a_partial_luarocks_publication(self) -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    self.assertIn(
+      'luarocks download --source "$PACKAGE" "$ROCKSPEC_VERSION"',
+      workflow,
+    )
+    self.assertIn(
+      'version_id="$(jq -er \'.version.id\' <<< "$state")"',
+      workflow,
+    )
+    self.assertIn('--form "rock_file=@$SOURCE_ROCK"', workflow)
+    self.assertIn(
+      'https://luarocks.org/api/1/bearer/upload_rock/$version_id',
+      workflow,
+    )
+    self.assertNotIn("--force", workflow)
+
 
 if __name__ == "__main__":
   unittest.main()

@@ -219,6 +219,31 @@ jobs:
               luarocks download --rockspec "$PACKAGE" "$ROCKSPEC_VERSION"
             )
             cmp "$ROCKSPEC" "published-rockspec/$ROCKSPEC"
+
+            mkdir published-source
+            if ! (
+              cd published-source
+              luarocks download --source "$PACKAGE" "$ROCKSPEC_VERSION"
+            ); then
+              version_id="$(jq -er '.version.id' <<< "$state")"
+              curl --fail --silent --show-error \
+                --request POST \
+                --header "Authorization: Bearer $LUAROCKS_API_KEY" \
+                --form "rock_file=@$SOURCE_ROCK" \
+                "https://luarocks.org/api/1/bearer/upload_rock/$version_id" \
+                > /dev/null
+              for attempt in $(seq 1 12); do
+                if (
+                  cd published-source
+                  luarocks download --source "$PACKAGE" "$ROCKSPEC_VERSION"
+                ); then
+                  break
+                fi
+                test "$attempt" -lt 12
+                sleep 10
+              done
+            fi
+            cmp "$SOURCE_ROCK" "published-source/$SOURCE_ROCK"
           else
             luarocks upload "$ROCKSPEC" "$SOURCE_ROCK" \
               --temp-key="$LUAROCKS_API_KEY"
