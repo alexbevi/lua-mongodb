@@ -1189,6 +1189,16 @@ function M.new(options)
     error("timeout_minutes must be a non-negative integer", 2)
   end
 
+  if options.load_balanced ~= nil and type(options.load_balanced) ~= "boolean" then
+    error("load_balanced must be a boolean", 2)
+  end
+
+  local timeout_minutes = options.timeout_minutes
+
+  if options.load_balanced then
+    timeout_minutes = nil
+  end
+
   local manager = {}
 
   MANAGER_STATES[manager] = {
@@ -1201,7 +1211,7 @@ function M.new(options)
     id_factory = options.id_factory,
     pool = {},
     runtime = options.runtime,
-    timeout_minutes = options.timeout_minutes,
+    timeout_minutes = timeout_minutes,
     transaction_command = options.transaction_command,
     transaction_jitter = options.transaction_jitter or function()
       return 0

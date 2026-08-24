@@ -194,6 +194,7 @@ describe("monitored topology", function()
       manager.description:server("load-balancer:27017").type
     )
     assert.is_true(manager.description.compatible)
+    assert.is_true(manager.description.sessions_supported)
     assert.are.equal(0, checks)
     assert.are.equal(0, #runtime._task_queue)
 
@@ -249,6 +250,13 @@ describe("monitored topology", function()
           address = address,
           connect = function()
             return {
+              capabilities = function()
+                return {
+                  logical_session_timeout_minutes = nil,
+                  max_wire_version = 25,
+                  server_type = "load_balancer",
+                }
+              end,
               close = function() return true end,
               command = function(_, database_name, command)
                 sent_database = database_name
@@ -294,6 +302,7 @@ describe("monitored topology", function()
       assert(bson.json.encode(expected_command, { mode = "canonical" })),
       assert(bson.json.encode(sent_command, { mode = "canonical" }))
     )
+    assert.is_true(assert(commands:capabilities()).sessions_supported)
     assert(commands:close())
   end)
 

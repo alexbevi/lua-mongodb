@@ -11,6 +11,17 @@ local fake_runtime = require("mongodb.runtime.fake")
 local socket_timeout_executor = require("mongodb.socket_timeout_executor")
 local standalone_executor = require("mongodb.standalone_executor")
 
+local FIXTURE_ROOT = (os.getenv("PWD") or ".")
+  .. "/planning/specifications/source/"
+
+local function read_fixture(relative)
+  local file = assert(io.open(FIXTURE_ROOT .. relative, "rb"))
+  local content = file:read("*a")
+
+  file:close()
+  return assert(bson.json.decode(content))
+end
+
 local function identifiers()
   local next_id = 0
 
@@ -448,6 +459,67 @@ describe("client sessions", function()
     local replacement = assert(sessions:start())
 
     assert.are_not.equal(first_lsid, assert(replacement:get_lsid()))
+  end)
+
+  it("runs the exact load-balanced implicit-session reuse case", function()
+    local fixture = read_fixture("load-balancers/tests/transactions.json")
+    local database = fixture:get("createEntities"):get(3):get("database")
+    local collection = fixture:get("createEntities"):get(4):get("collection")
+    local case = fixture:get("tests"):get(1)
+    local current_time = 10
+    local commands = {}
+    local underlying = {}
+
+    function underlying.command(_, database_name, command)
+      commands[#commands + 1] = {
+        command = command,
+        database = database_name,
+      }
+      return bson.document({ { "ok", 1 } })
+    end
+
+    function underlying.close(_)
+      return true
+    end
+
+    local sessions = new_session_manager({
+      clock = {
+        now = function() return current_time end,
+      },
+      id_factory = identifiers(),
+      load_balanced = true,
+      timeout_minutes = 1,
+    })
+    local executor = session_executor.new(underlying, sessions)
+
+    for _, operation in case:get("operations"):iter() do
+      if operation:get("name") == "insertOne" then
+        assert(executor:command(
+          database:get("databaseName"),
+          bson.document({
+            { "insert", collection:get("collectionName") },
+            { "documents", bson.array({
+              operation:get("arguments"):get("document"),
+            }) },
+          })
+        ))
+        current_time = current_time + 1000000
+      else
+        assert.are.equal("assertSameLsidOnLastTwoCommands", operation:get("name"))
+      end
+    end
+
+    assert.are.equal(2, #commands)
+    assert.are.equal(database:get("databaseName"), commands[1].database)
+    assert.are.equal(
+      assert(bson.json.encode(commands[1].command:get("lsid"), {
+        mode = "canonical",
+      })),
+      assert(bson.json.encode(commands[2].command:get("lsid"), {
+        mode = "canonical",
+      }))
+    )
+    assert(executor:close())
   end)
 
   it("rejects session bookkeeping without a runtime clock", function()

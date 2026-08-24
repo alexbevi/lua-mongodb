@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1063,
+      "deferred_unsupported": 1062,
       "excluded_scope": 97,
-      "passed": 4349,
+      "passed": 4350,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -388,6 +388,13 @@ class ConformanceLedgerTests(unittest.TestCase):
       {"spec/unit/selection_spec.lua", "spec/unit/topology_spec.lua"},
       {case["runner"] for case in load_balanced_selection},
     )
+
+    load_balanced_session = generated["cases"][
+      "load-balancers/tests/transactions.json::test[1]"
+    ]
+    self.assertEqual("LB-002", load_balanced_session["activity"])
+    self.assertEqual("passed", load_balanced_session["status"])
+    self.assertEqual("spec/unit/session_spec.lua", load_balanced_session["runner"])
 
   def test_unknown_runnable_unified_case_has_no_implicit_executor(self) -> None:
     identity = "crud/tests/unified/insertOne.json::test[2]"

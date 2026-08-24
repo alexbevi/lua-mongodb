@@ -560,7 +560,13 @@ def classify_case(
       )
     elif fixture == "transactions.json":
       if index == 1:
-        owner = "LB-002"
+        return _passed(
+          case,
+          "LB-002",
+          "spec/unit/session_spec.lua",
+          "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua'",
+          "deterministic-runtime",
+        )
       elif index <= 3:
         owner = "LB-011"
       elif index <= 6:

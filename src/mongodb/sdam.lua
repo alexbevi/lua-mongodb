@@ -719,6 +719,8 @@ local function new_topology(state)
   state.compatible = compatible
   state.compatibility_error = compatibility_error
   state.logical_session_timeout_minutes = logical_session_timeout(state.servers)
+  state.sessions_supported = state.type == TOPOLOGY_TYPE.LOAD_BALANCED
+    or state.logical_session_timeout_minutes ~= nil
   state.servers_view = readonly_table(public_servers, "servers")
   local value = {}
 

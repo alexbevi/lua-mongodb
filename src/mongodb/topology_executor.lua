@@ -332,7 +332,19 @@ function METHODS:capabilities()
     return nil, err
   end
 
-  state.capabilities = selected.executor:capabilities()
+  local capabilities = selected.executor:capabilities()
+
+  if capabilities ~= nil then
+    state.capabilities = {}
+
+    for key, value in pairs(capabilities) do
+      state.capabilities[key] = value
+    end
+
+    state.capabilities.sessions_supported =
+      state.topology.description.sessions_supported
+  end
+
   finish_connection(state, selected)
   return state.capabilities
 end

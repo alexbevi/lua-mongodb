@@ -7912,6 +7912,35 @@
       "notes": [],
       "started_at": "2026-08-24T21:05:08+00:00",
       "completed_at": "2026-08-24T21:12:04+00:00"
+    },
+    "LB-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/session_spec.lua'",
+          "exit_code": 2,
+          "summary": "52 session and topology cases passed; the load-balanced description alone failed because it did not report sessions_supported=true without logicalSessionTimeoutMinutes",
+          "recorded_at": "2026-08-24T21:24:40+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/session_spec.lua'",
+          "exit_code": 2,
+          "summary": "51 cases passed; load-balanced topology support was unset and a pooled server session expired when load_balanced=true supplied a logical timeout that must be ignored",
+          "recorded_at": "2026-08-24T21:25:38+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/topology_spec.lua spec/unit/resource_cleanup_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/client.lua src/mongodb/sdam.lua src/mongodb/session.lua src/mongodb/topology_executor.lua spec/unit/session_spec.lua spec/unit/topology_spec.lua' plus ledger, release scope, checklist, README, complexity, and whitespace validators",
+          "exit_code": 0,
+          "summary": "54 focused Lua cases and 15 conformance/release tests passed; six touched Lua files linted cleanly; exact session-reuse fixture and generated validators passed",
+          "recorded_at": "2026-08-24T21:29:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T21:21:47+00:00",
+      "completed_at": "2026-08-24T21:29:44+00:00"
     }
   },
   "verified_references": {

@@ -269,8 +269,10 @@ local function public_client(
   end
 
   local sessions
+  local sessions_supported = config.load_balanced
+    or capabilities.logical_session_timeout_minutes ~= nil
   local retryable_writes = config.retry_writes
-    and capabilities.logical_session_timeout_minutes ~= nil
+    and sessions_supported
     and capabilities.max_wire_version >= 6
     and capabilities.server_type ~= "standalone"
 
@@ -281,7 +283,7 @@ local function public_client(
   })
   local decorated
 
-  if capabilities.logical_session_timeout_minutes ~= nil then
+  if sessions_supported then
     sessions = session_module.new({
       clock = runtime.clock,
       default_timeout_ms = config.timeout_ms,
@@ -291,6 +293,7 @@ local function public_client(
         write_concern = transaction_concern(config.write_concern, true),
       },
       id_factory = session_id_factory(runtime),
+      load_balanced = config.load_balanced,
       runtime = runtime,
       timeout_minutes = capabilities.logical_session_timeout_minutes,
       transaction_jitter = transaction_jitter(runtime),
