@@ -105,6 +105,7 @@ local function with_fake_client(callback)
         local bucket = {
           deletions = {},
           downloads = {},
+          drops = {},
           finds = {},
           options = bucket_options,
           renames = {},
@@ -210,6 +211,11 @@ local function with_fake_client(callback)
 
         function bucket:delete_by_name(filename)
           self.deletions[#self.deletions + 1] = { filename = filename }
+          return true
+        end
+
+        function bucket:drop(drop_options)
+          self.drops[#self.drops + 1] = drop_options
           return true
         end
 
@@ -813,6 +819,56 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal(1, find.options.skip)
       assert.are.equal(sort, find.options.sort)
       assert.are.equal(1000, find.options.timeout_ms)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("maps GridFS drop timeout options", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "assets" },
+            }) },
+          }),
+          document({
+            { "bucket", document({
+              { "id", "bucket0" },
+              { "database", "database0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Drop a bucket" },
+            { "operations", array({
+              document({
+                { "name", "drop" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "timeoutMS", bson.int64(1000) },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "gridfs-drop.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      local drop = connections[2].gridfs_buckets[1].value.drops[1]
+
+      assert.are.equal(1000, drop.timeout_ms)
       assert(lifecycle:close())
     end)
   end)

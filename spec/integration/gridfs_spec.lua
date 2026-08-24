@@ -905,4 +905,58 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("drops only the configured bucket collections in order", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      for _, expected_collection in ipairs({
+        "media.files",
+        "media.chunks",
+      }) do
+        local drop = receive_frame(peer)
+        local max_time_ms = drop.body:get("maxTimeMS")
+
+        assert.are.equal(expected_collection, drop.body:get("drop"))
+        assert.is_true(max_time_ms:to_number() > 0)
+        assert.is_true(max_time_ms:to_number() <= 1000)
+        send_response(peer, drop, bson.document({ { "ok", 1 } }))
+      end
+
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket({
+          bucket_name = "media",
+        }))
+
+        assert.is_true(assert(bucket:drop({ timeout_ms = 1000 })))
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

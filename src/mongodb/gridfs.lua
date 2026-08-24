@@ -415,6 +415,22 @@ local function rename_options(options)
   return options
 end
 
+local function drop_options(options)
+  if options == nil then
+    return {}
+  elseif type(options) ~= "table" then
+    error("GridFS drop options must be a table", 3)
+  end
+
+  for key in pairs(options) do
+    if key ~= "timeout_ms" then
+      error("unknown GridFS drop option: " .. tostring(key), 3)
+    end
+  end
+
+  return options
+end
+
 local function file_metadata(document)
   local length = integer_value(document:get("length"))
   local chunk_size_bytes = integer_value(document:get("chunkSize"))
@@ -1107,6 +1123,27 @@ function BUCKET_METHODS:rename_by_name(filename, new_filename, options)
   end
 
   return true
+end
+
+function BUCKET_METHODS:drop(options)
+  local state = BUCKET_STATES[self]
+
+  options = drop_options(options)
+
+  return operation_timeout.run(
+    state.files_collection.runtime,
+    state.timeout_ms,
+    options,
+    function()
+      local dropped, err = state.files_collection:drop()
+
+      if not dropped then
+        return nil, err
+      end
+
+      return state.chunks_collection:drop()
+    end
+  )
 end
 
 local function new_upload(state, identifier, filename, options)

@@ -2161,6 +2161,18 @@ local function delete_gridfs_by_name(_, bucket, arguments)
   return nil
 end
 
+local function drop_gridfs(_, bucket, arguments)
+  local dropped, err = call_driver(function()
+    return bucket:drop(operation_options(arguments, {}))
+  end)
+
+  if not dropped then
+    return nil, err
+  end
+
+  return nil
+end
+
 local function find_gridfs(_, bucket, arguments)
   local cursor, err = call_driver(function()
     return bucket:find(arguments:get("filter"), operation_options(arguments, {
@@ -2276,6 +2288,10 @@ local BUCKET_OPERATIONS = {
     arguments = { "filename", "revision", "timeoutMS" },
     handler = download_gridfs_by_name,
     result_kind = "bson",
+  },
+  drop = {
+    arguments = { "timeoutMS" },
+    handler = drop_gridfs,
   },
   find = {
     arguments = {

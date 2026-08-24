@@ -514,7 +514,7 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket, upload, and download handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. Remaining GridFS management operations are being added incrementally for v0.9.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket, upload, and download handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. The v0.9 GridFS surface includes file discovery, rename and deletion by id or filename, and whole-bucket drop.
 
 ### Errors and resource lifetimes
 
@@ -564,7 +564,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
 | Resilience | [Retryable reads](https://alexbevi.com/specifications/retryable-reads/retryable-reads.html) | 🟢 | 100.0% |
 | Resilience | [Retryable writes](https://alexbevi.com/specifications/retryable-writes/retryable-writes.html) | 🟢 | 100.0% |
-| Resilience | [Client-side operations timeout](https://alexbevi.com/specifications/client-side-operations-timeout/client-side-operations-timeout.html) | 🟡 | 98.1% |
+| Resilience | [Client-side operations timeout](https://alexbevi.com/specifications/client-side-operations-timeout/client-side-operations-timeout.html) | 🟡 | 98.9% |
 | Resilience | [Sessions](https://alexbevi.com/specifications/sessions/driver-sessions.html) | 🟢 | 100.0% |
 | Resilience | [Causal consistency](https://alexbevi.com/specifications/causal-consistency/causal-consistency.html) | 🟢 | 100.0% |
 | Resilience | [Transactions](https://alexbevi.com/specifications/transactions/transactions.html) | 🟡 | 96.5% |
@@ -582,7 +582,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **78.3%** |
+|  | **Total** |  | **78.4%** |
 <!-- END SPEC CONFORMANCE -->
 
 ## Development

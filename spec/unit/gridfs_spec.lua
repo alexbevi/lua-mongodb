@@ -1560,6 +1560,35 @@ describe("GridFS buckets", function()
     assert.are.equal("missing", err.details.filename)
   end)
 
+  it("drops files before chunks under one timeout deadline", function()
+    local runtime = fake_runtime.new({ now = 70 })
+    local commands = {}
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      nil,
+      runtime
+    )
+
+    assert.is_true(assert(bucket:drop({ timeout_ms = 1000 })))
+    assert.are.equal(2, #commands)
+    assert.are.equal("fs.files", commands[1]:get("drop"))
+    assert.are.equal("fs.chunks", commands[2]:get("drop"))
+    assert.are.equal(71, deadlines[1])
+    assert.are.equal(71, deadlines[2])
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

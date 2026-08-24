@@ -7571,6 +7571,28 @@
       "notes": [],
       "started_at": "2026-08-24T13:44:08+00:00",
       "completed_at": "2026-08-24T13:51:30+00:00"
+    },
+    "GFS-014": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "32 passed; defining ordered single-deadline bucket drop test errored because bucket:drop was absent; 0 failed and 0 pending",
+          "recorded_at": "2026-08-24T14:01:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION=spec/integration/gridfs_spec.lua FOCUS_UNIFIED='client-side-operations-timeout/tests/gridfs-advanced.json::*' FOCUS_LINT='src/mongodb/gridfs.lua spec/support/mongodb/unified/driver.lua spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua spec/integration/gridfs_spec.lua'; make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger planning.tests.test_readme_compatibility'; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "201 focused cases passed: 49 unit, 12 integration, 6 exact live unified (4 newly applicable drop identities and 2 coupled rename controls), and 134 Python artifact/ratchet tests; 0 failed, 0 environment-skipped, 0 deferred; 5 touched Lua files lint clean; complexity and generated capability, ledger, release-scope, checklist, and README validators passed",
+          "recorded_at": "2026-08-24T14:07:10+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T14:00:45+00:00",
+      "completed_at": "2026-08-24T14:07:18+00:00"
     }
   },
   "verified_references": {

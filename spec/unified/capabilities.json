@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2037,
-    "runnable": 2037
+    "passed": 2041,
+    "runnable": 2041
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -23294,7 +23294,6 @@
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[3]": {
       "activity": "GFS-014",
       "fingerprint": "a52202ad1221f6a18fb519bd83c01066504d52c50ae13368f4c819af0ccf9c74",
-      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "drop.timeoutMS",
@@ -23319,12 +23318,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[4]": {
       "activity": "GFS-014",
       "fingerprint": "19a222d6a83962db7965fb87bcd91ba57ea4057cd2e247d84f640a0f026663af",
-      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23352,12 +23350,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[5]": {
       "activity": "GFS-014",
       "fingerprint": "badec3b61bfa5001e3d01962bde9c63f7c3223df553ed9a5dbf82f527f36491c",
-      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23381,12 +23378,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[6]": {
       "activity": "GFS-014",
       "fingerprint": "31cc1b7cc7c9546a398fd5f002ddf1194aff74df07777f4a4bbb21f9f83ac97f",
-      "reason": "GridFS bucket drops await the drop slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23410,7 +23406,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-delete.json::test[1]": {
       "activity": "GFS-009",
