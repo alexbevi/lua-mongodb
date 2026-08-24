@@ -148,6 +148,10 @@
       "active": 206,
       "covered": 191
     },
+    "src/mongodb/gridfs.lua": {
+      "active": 794,
+      "covered": 702
+    },
     "src/mongodb/handshake/metadata.lua": {
       "active": 254,
       "covered": 236
@@ -293,7 +297,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 25274,
-    "covered": 22913
+    "active": 26068,
+    "covered": 23615
   }
 }

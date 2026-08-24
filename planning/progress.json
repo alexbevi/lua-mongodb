@@ -7621,22 +7621,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON=spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready",
-          "exit_code": 2,
-          "summary": "the defining release checklist expected 0.9.0 but generated metadata remained 0.8.0",
-          "recorded_at": "2026-08-24T14:44:03+00:00"
+          "command": "python3 spec/quality/coverage_gate.py --report build/rel058-red-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
+          "exit_code": 1,
+          "summary": "The downloaded authoritative Linux Full Conformance report reproduced the release blocker: src/mongodb/gridfs.lua has no checked-in coverage baseline.",
+          "recorded_at": "2026-08-24T15:17:16+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus for version metadata, handshake, client API, release checklist, publication guards, package install, CI portability, v0.9 scope, and touched Lua lint; make rockspec; release, metadata, scope, README, workflow, JSON, diff, and strict validators",
+          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.release.test_checklist spec.v09.test_scope'; python3 spec/quality/coverage_gate.py --report build/rel058-red-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; release, v0.9, README, JSON, plan, and diff validators",
           "exit_code": 0,
-          "summary": "19 focused unit, 6 integration, and 34 Python release/package/workflow/conformance tests passed; isolated v0.9 source-rock GridFS smoke passed; 6 touched Lua files lint-clean; rockspec, 0-gap release checklist, immutable publication metadata, v0.9 scope, versionless README, YAML/JSON, diff, and strict plan validators passed with 0 skips, deferrals, or final failures",
-          "recorded_at": "2026-08-24T14:53:41+00:00"
+          "summary": "All 10 focused coverage, release-checklist, and v0.9 scope contracts passed; the authoritative Linux report passes at 23985/26431 lines with no regressions; the conservative checked baseline is sorted and internally consistent at 23615/26068; the 0.9.0 checklist has 0 gaps, all 113 v0.9 requirements pass, and README, JSON, plan, and diff validators are current. No Lua file changed, so touched-file Lua lint, complexity, and architecture checks are not applicable.",
+          "recorded_at": "2026-08-24T15:19:21+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-24T14:43:42+00:00",
-      "completed_at": "2026-08-24T14:53:51+00:00"
+      "notes": [
+        "Requeued: Full Conformance release qualification exposed that the checked coverage ratchet has no src/mongodb/gridfs.lua baseline row; the Linux supplemental 90 ms CSOT identity also produced a documented hosted-runner timing flake that passed the two intervening Linux runs and 10 focused local repetitions."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-24T14:53:51+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON=spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready",
+              "exit_code": 2,
+              "summary": "the defining release checklist expected 0.9.0 but generated metadata remained 0.8.0",
+              "recorded_at": "2026-08-24T14:44:03+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus for version metadata, handshake, client API, release checklist, publication guards, package install, CI portability, v0.9 scope, and touched Lua lint; make rockspec; release, metadata, scope, README, workflow, JSON, diff, and strict validators",
+              "exit_code": 0,
+              "summary": "19 focused unit, 6 integration, and 34 Python release/package/workflow/conformance tests passed; isolated v0.9 source-rock GridFS smoke passed; 6 touched Lua files lint-clean; rockspec, 0-gap release checklist, immutable publication metadata, v0.9 scope, versionless README, YAML/JSON, diff, and strict plan validators passed with 0 skips, deferrals, or final failures",
+              "recorded_at": "2026-08-24T14:53:41+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "0e023ada65fb63ed39bd955794653e7122e12a20",
+      "started_at": "2026-08-24T15:16:07+00:00",
+      "completed_at": "2026-08-24T15:19:22+00:00"
     }
   },
   "verified_references": {
