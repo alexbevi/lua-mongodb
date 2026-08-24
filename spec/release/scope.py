@@ -179,7 +179,12 @@ def classify(
     status = case.get("status")
     owner = case.get("activity")
 
-    if status not in {"deferred_unsupported", "excluded_scope", "passed"}:
+    if status not in {
+      "deferred_unsupported",
+      "excluded_scope",
+      "passed",
+      "unsupported",
+    }:
       raise ScopeError(f"unknown conformance status for {identity}: {status}")
 
     if owner not in activities:
@@ -187,11 +192,11 @@ def classify(
 
     statuses[status] += 1
 
-    if status == "excluded_scope":
+    if status in {"excluded_scope", "unsupported"}:
       reason = case.get("reason")
 
       if not isinstance(reason, str) or not reason.strip():
-        raise ScopeError(f"excluded conformance case has no reason: {identity}")
+        raise ScopeError(f"terminal conformance case has no reason: {identity}")
 
       continue
 

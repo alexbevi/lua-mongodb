@@ -81,9 +81,10 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1097,
+      "deferred_unsupported": 1082,
       "excluded_scope": 97,
       "passed": 4330,
+      "unsupported": 15,
     }, generated["summary"]["statuses"])
 
     compression_options = [
@@ -96,6 +97,20 @@ class ConformanceLedgerTests(unittest.TestCase):
       and case["status"] == "passed"
       and case["runner"] == "spec/support/config_runner.lua"
       for case in compression_options
+    ))
+
+    proxy_options = [
+      case for case in generated["cases"].values()
+      if case["source"] == "uri-options/tests/proxy-options.json"
+    ]
+    self.assertEqual(15, len(proxy_options))
+    self.assertTrue(all(
+      case["activity"] == "ADV-012"
+      and case["status"] == "unsupported"
+      and case["runner"] == "none:unsupported"
+      and case["required_environment"] == "none"
+      and case["last_execution"] is None
+      for case in proxy_options
     ))
 
     sharded_command_cursor = generated["cases"][

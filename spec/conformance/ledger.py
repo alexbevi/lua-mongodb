@@ -19,7 +19,12 @@ PROGRESS = ROOT / "planning" / "progress.json"
 CAPABILITIES = ROOT / "spec" / "unified" / "capabilities.json"
 EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
 OUTPUT = ROOT / "spec" / "conformance" / "ledger.json"
-VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "passed"}
+VALID_STATUSES = {
+  "deferred_unsupported",
+  "excluded_scope",
+  "passed",
+  "unsupported",
+}
 RUNNABLE_CASES = {
   identity: {
     "environment": value["environment"],
@@ -255,6 +260,27 @@ def _excluded(
   }
 
 
+def _unsupported(
+  case: dict[str, Any],
+  activity: str,
+  activities: dict[str, dict[str, str]],
+  reason: str,
+) -> dict[str, Any]:
+  if activity not in activities:
+    raise LedgerError(f"normative fixture has unknown roadmap owner: {activity}")
+
+  return {
+    **case,
+    "activity": activity,
+    "last_execution": None,
+    "reason": reason,
+    "required_environment": "none",
+    "runner": "none:unsupported",
+    "scope": activities[activity]["milestone"],
+    "status": "unsupported",
+  }
+
+
 def classify_case(
   identity: str,
   case: dict[str, Any],
@@ -405,6 +431,14 @@ def classify_case(
         owner,
         "spec/support/config_runner.lua",
         "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      )
+
+    if owner == "ADV-012":
+      return _unsupported(
+        case,
+        owner,
+        activities,
+        "SOCKS5 proxy options and transport are not supported",
       )
 
     if owner != "REL-003":
@@ -598,7 +632,11 @@ def validate_cases(
       if value.get(key) != source[key]:
         raise LedgerError(f"conformance {key} is stale for {identity}")
 
-    expected_fields = required | ({"reason"} if value.get("status") == "excluded_scope" else set())
+    expected_fields = required | (
+      {"reason"}
+      if value.get("status") in {"excluded_scope", "unsupported"}
+      else set()
+    )
 
     if set(value) != expected_fields:
       raise LedgerError(f"conformance record has malformed fields for {identity}")
@@ -627,6 +665,22 @@ def validate_cases(
     if value["status"] == "excluded_scope":
       if not isinstance(value["reason"], str) or not value["reason"].strip():
         raise LedgerError(f"excluded case has no reason: {identity}")
+
+    if value["status"] == "unsupported":
+      if activity_states[activity] not in {"completed", "in_progress"}:
+        raise LedgerError(f"unsupported case has inactive owner {activity}: {identity}")
+
+      if value["runner"] != "none:unsupported":
+        raise LedgerError(f"unsupported case has a runner: {identity}")
+
+      if value["required_environment"] != "none":
+        raise LedgerError(f"unsupported case requires an environment: {identity}")
+
+      if value["last_execution"] is not None:
+        raise LedgerError(f"unsupported case claims execution evidence: {identity}")
+
+      if not isinstance(value["reason"], str) or not value["reason"].strip():
+        raise LedgerError(f"unsupported case has no reason: {identity}")
 
 
 def validate_files(
