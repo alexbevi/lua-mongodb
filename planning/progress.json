@@ -7769,28 +7769,23 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger'",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
           "exit_code": 2,
-          "summary": "1 failure: all 15 proxy-option fixtures remained deferred_unsupported instead of terminal unsupported",
-          "recorded_at": "2026-08-24T19:59:43+00:00"
+          "summary": "Release checklist inventory conservation omitted 15 terminal unsupported SOCKS5 cases: 5524 != 5509",
+          "recorded_at": "2026-08-24T20:10:26+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility spec.conformance.test_catalog' && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope spec.conformance.test_ledger' && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/release/checklist.py --check && git diff --check",
           "exit_code": 0,
-          "summary": "21 executed and passed; 0 skipped, deferred, or failed; all 15 proxy-option cases terminal unsupported; generated artifacts current",
-          "recorded_at": "2026-08-24T20:00:30+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility spec.conformance.test_catalog' && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check",
-          "exit_code": 0,
-          "summary": "21 executed and passed; 0 skipped, deferred, or failed; all 15 proxy-option cases terminal unsupported without execution evidence; generated artifacts current",
-          "recorded_at": "2026-08-24T20:01:25+00:00"
+          "summary": "17 focused release, scope, and ledger tests passed; generated ledger, scope, and checklist validators plus whitespace check passed",
+          "recorded_at": "2026-08-24T20:10:39+00:00"
         }
       ],
       "notes": [
-        "Requeued: CI Fast exposed 15 proxy-option fixtures still deferred to the completed SOCKS5 activity"
+        "Requeued: CI Fast exposed 15 proxy-option fixtures still deferred to the completed SOCKS5 activity",
+        "Requeued: CI Fast showed release checklist inventory accounting omitted the 15 terminal unsupported SOCKS5 cases",
+        "Requeued: Reset reopened evidence ordering after concurrent planner state update dropped the original red record"
       ],
       "reopen_history": [
         {
@@ -7811,11 +7806,37 @@
               "recorded_at": "2026-08-24T19:52:28+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-24T20:01:37+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger'",
+              "exit_code": 2,
+              "summary": "1 failure: all 15 proxy-option fixtures remained deferred_unsupported instead of terminal unsupported",
+              "recorded_at": "2026-08-24T19:59:43+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility spec.conformance.test_catalog' && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "21 executed and passed; 0 skipped, deferred, or failed; all 15 proxy-option cases terminal unsupported; generated artifacts current",
+              "recorded_at": "2026-08-24T20:00:30+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility spec.conformance.test_catalog' && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "21 executed and passed; 0 skipped, deferred, or failed; all 15 proxy-option cases terminal unsupported without execution evidence; generated artifacts current",
+              "recorded_at": "2026-08-24T20:01:25+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "b571877c2e88ce36cb43c23c32ade868deceb680",
-      "started_at": "2026-08-24T19:59:03+00:00",
-      "completed_at": "2026-08-24T20:01:37+00:00"
+      "reopened_after_commit": "7eb38f0d460e3d05a5d1d583c969e2b872b4a965",
+      "started_at": "2026-08-24T20:13:27+00:00",
+      "completed_at": "2026-08-24T20:13:57+00:00"
     }
   },
   "verified_references": {

@@ -360,6 +360,7 @@ def generate() -> dict[str, Any]:
     "post-v1-exclusion",
     0,
   ) + statuses.get("excluded_scope", 0)
+  unsupported_cases = statuses.get("unsupported", 0)
   ledger_summary = ledger.get("summary", {})
 
   if applicable_gaps != 0:
@@ -483,6 +484,7 @@ def generate() -> dict[str, Any]:
         "classified_cases": classified,
         "passed_cases": statuses.get("passed", 0),
         "post_v1_exclusions": post_v1_exclusions,
+        "unsupported_cases": unsupported_cases,
       },
       "production_core_prerequisites": len(production_core),
       "v0_4_conformance": {
