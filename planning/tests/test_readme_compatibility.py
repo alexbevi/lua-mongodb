@@ -120,9 +120,12 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     self.assertEqual({"passed": 54}, dict(counts["gridfs"]))
 
     self.assertEqual({"unsupported": 1}, dict(counts["ocsp-support"]))
+    self.assertEqual({"unsupported": 1}, dict(counts["socks5-support"]))
 
-    for suite in ("logging", "socks5-support"):
-      self.assertEqual({"deferred_unsupported": 1}, dict(counts[suite]))
+    self.assertEqual(
+      {"deferred_unsupported": 1},
+      dict(counts["logging"]),
+    )
 
     self.assertEqual(
       {"passed": 1},
@@ -136,7 +139,11 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       table,
     )
     self.assertIn("[Wire compression]", table)
-    self.assertIn("[SOCKS5 proxy support]", table)
+    self.assertIn(
+      "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
+      "specifications/socks5-support/socks5.html) | 🔴 Not supported | 0.0% |",
+      table,
+    )
     self.assertIn("[Standardized logging]", table)
     self.assertIn("[Periodic SRV polling]", table)
     self.assertNotIn("Atlas SFP testing", table)

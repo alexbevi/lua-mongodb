@@ -922,13 +922,13 @@
       "fingerprint": "390e7684f4e8c56d6db49e93d83956ad23011115037bb4d3af2d38fa2e3b81f7",
       "format": "prose",
       "last_execution": null,
-      "reason": "SOCKS5 proxy options and transport behavior remain a declared post-v1 runtime-adapter feature.",
-      "required_environment": "socks5-proxy",
-      "runner": "pending:ADV-012",
+      "reason": "This driver will not implement SOCKS5 proxy options, authentication, or transport forwarding.",
+      "required_environment": "none",
+      "runner": "none:unsupported",
       "scope": "post-v1",
       "source": "socks5-support/socks5.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "unsupported",
       "suite": "socks5-support"
     }
   },
@@ -1298,11 +1298,11 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 5,
+      "deferred_unsupported": 4,
       "no_machine_cases": 1,
       "not_applicable": 2,
       "passed": 37,
-      "unsupported": 1
+      "unsupported": 2
     },
     "requirements": 46,
     "suites": 50
