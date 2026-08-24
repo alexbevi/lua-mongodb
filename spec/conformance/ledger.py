@@ -481,7 +481,12 @@ def classify_case(
     suite == "server-selection"
     and "/tests/server_selection/LoadBalanced/" in path
   ):
-    return _deferred(case, "LB-001", activities)
+    return _passed(
+      case,
+      "LB-001",
+      "spec/unit/selection_spec.lua",
+      "make test-focus FOCUS_UNIT='spec/unit/selection_spec.lua'",
+    )
 
   if suite == "max-staleness" or (
     suite == "server-selection"
@@ -546,7 +551,13 @@ def classify_case(
     elif fixture == "sdam-error-handling.json":
       owner = "LB-004" if index in {1, 4} else "LB-005"
     elif fixture == "server-selection.json":
-      owner = "LB-001"
+      return _passed(
+        case,
+        "LB-001",
+        "spec/unit/topology_spec.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'",
+        "deterministic-runtime",
+      )
     elif fixture == "transactions.json":
       if index == 1:
         owner = "LB-002"

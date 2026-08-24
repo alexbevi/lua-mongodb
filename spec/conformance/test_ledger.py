@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1074,
+      "deferred_unsupported": 1063,
       "excluded_scope": 97,
-      "passed": 4338,
+      "passed": 4349,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -374,6 +374,20 @@ class ConformanceLedgerTests(unittest.TestCase):
       case["activity"] == "ADV-006" and case["status"] == "passed"
       for case in dns
     ))
+
+    load_balanced_selection = [
+      case for case in generated["cases"].values()
+      if case["activity"] == "LB-001"
+    ]
+    self.assertEqual(11, len(load_balanced_selection))
+    self.assertTrue(all(
+      case["status"] == "passed"
+      for case in load_balanced_selection
+    ))
+    self.assertEqual(
+      {"spec/unit/selection_spec.lua", "spec/unit/topology_spec.lua"},
+      {case["runner"] for case in load_balanced_selection},
+    )
 
   def test_unknown_runnable_unified_case_has_no_implicit_executor(self) -> None:
     identity = "crud/tests/unified/insertOne.json::test[2]"

@@ -746,6 +746,11 @@ function M.evaluate(topology, operation, preference, options)
   end
 
   local all_servers = known_servers(topology)
+
+  if topology.type == sdam.TOPOLOGY_TYPE.LOAD_BALANCED then
+    return selection_result(all_servers, all_servers)
+  end
+
   local deprioritized = deprioritized_set(options.deprioritized_servers)
   local preferred = without_deprioritized(all_servers, deprioritized)
   local suitable = topology_candidates(

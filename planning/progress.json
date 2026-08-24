@@ -7890,6 +7890,28 @@
       "reopened_after_commit": "115d387868ccd1292c4f37ec0f6b1c650dd0c823",
       "started_at": "2026-08-24T20:48:25+00:00",
       "completed_at": "2026-08-24T20:54:41+00:00"
+    },
+    "LB-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/selection_spec.lua'",
+          "exit_code": 2,
+          "summary": "6 selection cases passed and the exact LoadBalanced Nearest fixture failed because generic latency-window validation required an RTT for the synthetic server",
+          "recorded_at": "2026-08-24T21:06:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/selection_spec.lua spec/unit/topology_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/selection.lua spec/unit/selection_spec.lua spec/unit/topology_spec.lua' plus ledger, release scope, checklist, README, complexity, and whitespace validators",
+          "exit_code": 0,
+          "summary": "31 focused Lua cases and 15 conformance/release tests passed; three touched Lua files linted cleanly; exact fixture, generated artifacts, and complexity checks passed",
+          "recorded_at": "2026-08-24T21:12:03+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T21:05:08+00:00",
+      "completed_at": "2026-08-24T21:12:04+00:00"
     }
   },
   "verified_references": {

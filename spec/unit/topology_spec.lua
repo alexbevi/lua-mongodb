@@ -9,6 +9,17 @@ local socket_timeout_executor = require("mongodb.socket_timeout_executor")
 local topology = require("mongodb.topology")
 local topology_executor = require("mongodb.topology_executor")
 
+local FIXTURE_ROOT = (os.getenv("PWD") or ".")
+  .. "/planning/specifications/source/"
+
+local function read_fixture(relative)
+  local file = assert(io.open(FIXTURE_ROOT .. relative, "rb"))
+  local content = file:read("*a")
+
+  file:close()
+  return assert(bson.json.decode(content))
+end
+
 local function hello(primary, topology_version)
   local entries = {
     { "ok", 1 },
@@ -215,6 +226,75 @@ describe("monitored topology", function()
     })))
     assert.are.equal(static_description, manager.description)
     assert(manager:close())
+  end)
+
+  it("runs the exact load-balanced server-selection fixture", function()
+    local fixture = read_fixture("load-balancers/tests/server-selection.json")
+    local database = fixture:get("createEntities"):get(2):get("database")
+    local collection = fixture:get("createEntities"):get(3):get("collection")
+    local case = fixture:get("tests"):get(1)
+    local operation = case:get("operations"):get(1)
+    local expected = case:get("expectEvents"):get(1):get("events")
+      :get(1):get("commandStartedEvent")
+    local expected_command = expected:get("command")
+    local wire_mode = collection:get("collectionOptions")
+      :get("readPreference"):get("mode")
+    local runtime = fake_runtime.new()
+    local sent_database
+    local sent_command
+    local selected_type
+    local manager = topology.new({
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            return {
+              close = function() return true end,
+              command = function(_, database_name, command)
+                sent_database = database_name
+                sent_command = command
+                return bson.document({ { "ok", 1 } })
+              end,
+            }
+          end,
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "load-balancer:27017" },
+      topology_id = "42",
+      type = "LoadBalanced",
+    })
+
+    assert(manager:open({ background = false }))
+    local commands = topology_executor.new(manager, {
+      read_preference = {
+        max_staleness_seconds = -1,
+        mode = assert(({ secondaryPreferred = "secondary_preferred" })[wire_mode]),
+        tag_sets = { {} },
+      },
+    })
+
+    assert(commands:command(
+      database:get("databaseName"),
+      bson.document({
+        { assert(operation:get("name")), collection:get("collectionName") },
+        { "filter", operation:get("arguments"):get("filter") },
+      }),
+      {
+        on_server_selected = function(_, server_type)
+          selected_type = server_type
+        end,
+      }
+    ))
+    assert.are.equal("LoadBalancer", selected_type)
+    assert.are.equal(expected:get("databaseName"), sent_database)
+    assert.are.equal(expected:get("commandName"), sent_command:keys()[1])
+    assert.are.equal(
+      assert(bson.json.encode(expected_command, { mode = "canonical" })),
+      assert(bson.json.encode(sent_command, { mode = "canonical" }))
+    )
+    assert(commands:close())
   end)
 
   it("runs every applicable pinned SDAM monitoring event fixture", function()
