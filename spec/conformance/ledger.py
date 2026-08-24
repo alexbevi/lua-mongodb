@@ -569,7 +569,13 @@ def classify_case(
           "deterministic-runtime",
         )
 
-      owner = "LB-005"
+      return _passed(
+        case,
+        "LB-005",
+        "spec/unit/topology_spec.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua'",
+        "deterministic-runtime",
+      )
     elif fixture == "server-selection.json":
       return _passed(
         case,

@@ -244,6 +244,27 @@ local function connection_matches_service(connection_state, service_id)
     or service_key(connection_state.service_id) == service_key(service_id)
 end
 
+local function connection_service_id(connection_info)
+  if connection_info ~= nil and type(connection_info) ~= "table" then
+    error("pool connection metadata must be a table", 3)
+  end
+
+  local service_id = connection_info and connection_info.service_id or nil
+
+  require_service_id(service_id, 3)
+  return service_id
+end
+
+local function apply_connection_info(state, connection_state, service_id, handshake_complete)
+  connection_state.service_id = service_id
+  connection_state.generation = generation_for(state, service_id)
+  return {
+    generation = connection_state.generation,
+    handshake_complete = handshake_complete,
+    service_id = service_id,
+  }
+end
+
 local function close_resource(resource)
   if resource and type(resource.close) == "function" then
     pcall(resource.close, resource)
@@ -363,9 +384,17 @@ local function establish(
     error("pool connection adapter resource must be a table", 3)
   end
 
+  local service_id = connection_service_id(connection_info)
+
   if not resource then
     connect_err = add_backpressure_labels(connect_err)
     assert(acquire(state))
+    local connection_details = apply_connection_info(
+      state,
+      connection_state,
+      service_id,
+      connection_info ~= nil
+    )
     local detached = detach_locked(state, connection)
     local reported = false
 
@@ -375,7 +404,11 @@ local function establish(
       if errors.is(connect_err, errors.CATEGORY.AUTHENTICATION)
           and state.on_connection_error
       then
-        local callback_ok, decision = pcall(state.on_connection_error, connect_err)
+        local callback_ok, decision = pcall(
+          state.on_connection_error,
+          connect_err,
+          connection_details
+        )
 
         reported = callback_ok and type(decision) == "boolean"
       end
@@ -386,18 +419,9 @@ local function establish(
     return nil, connect_err, detached, reported
   end
 
-  if connection_info ~= nil and type(connection_info) ~= "table" then
-    close_resource(resource)
-    error("pool connection metadata must be a table", 3)
-  end
-
-  local service_id = connection_info and connection_info.service_id or nil
-
-  require_service_id(service_id, 3)
   connection_state.resource = resource
   assert(acquire(state))
-  connection_state.service_id = service_id
-  connection_state.generation = generation_for(state, service_id)
+  apply_connection_info(state, connection_state, service_id, true)
   state.pending_count = state.pending_count - 1
   state.pending[connection] = nil
   local usable = state.state == "ready"

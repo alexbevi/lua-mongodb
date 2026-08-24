@@ -7985,6 +7985,28 @@
       "notes": [],
       "started_at": "2026-08-24T22:10:06+00:00",
       "completed_at": "2026-08-24T22:19:52+00:00"
+    },
+    "LB-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua --filter=targeted.clear'",
+          "exit_code": 1,
+          "summary": "The exact load-balanced state-change case cleared the service pool but replaced the synthetic LoadBalancer topology description instead of preserving it.",
+          "recorded_at": "2026-08-24T22:33:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua spec/integration/auth_ping_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger planning.tests.test_readme_compatibility spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/client.lua src/mongodb/pool.lua src/mongodb/topology.lua spec/unit/pool_spec.lua spec/unit/topology_spec.lua'",
+          "exit_code": 0,
+          "summary": "36 focused pool and topology unit cases covering all four exact load-balancer error fixtures, 3 directly coupled load-balancer and authentication integration cases, 15 conformance artifact tests, and touched-file lint passed; complexity and all conformance projections also passed.",
+          "recorded_at": "2026-08-24T22:38:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T22:32:30+00:00",
+      "completed_at": "2026-08-24T22:38:14+00:00"
     }
   },
   "verified_references": {

@@ -1267,26 +1267,33 @@ local function apply_application_error(
   decision
 )
   assert(state.lock:acquire())
+  local load_balanced = state.description.type
+    == sdam.TOPOLOGY_TYPE.LOAD_BALANCED
   local failure_response = decision.response
 
   if not bson.is_document(failure_response) then
     failure_response = bson.document({})
   end
 
-  process_description(state, address, failure_response, {
-    error = decision.error,
-    generation = generation,
-    last_update_time = state.runtime.clock:now(),
-  })
+  if not load_balanced then
+    process_description(state, address, failure_response, {
+      error = decision.error,
+      generation = generation,
+      last_update_time = state.runtime.clock:now(),
+    })
+  end
 
   local pool = server.pool
 
   if decision.clear_pool and state.servers[address] then
     pool:clear(false, service_id)
-    state.description = state.description:with_generation(
-      address,
-      pool.generation or 0
-    )
+
+    if not load_balanced then
+      state.description = state.description:with_generation(
+        address,
+        pool.generation or 0
+      )
+    end
   end
 
   manager:request_check(address)
@@ -1313,6 +1320,13 @@ function MANAGER_METHODS:handle_application_error(address, fields)
   local server = state.servers[normalized]
   local pool = server.pool
   local generation = application_error_generation(fields, pool)
+
+  if state.description.type == sdam.TOPOLOGY_TYPE.LOAD_BALANCED
+      and fields.when == "beforeHandshakeCompletes"
+      and fields.service_id == nil
+  then
+    return false
+  end
 
   if application_error_is_stale(state, normalized, fields, generation, pool) then
     return false

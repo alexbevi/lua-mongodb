@@ -309,6 +309,8 @@ describe("monitored topology", function()
   it("runs the exact load-balanced targeted-clear and stale-generation cases", function()
     local fixture = read_fixture("load-balancers/tests/sdam-error-handling.json")
     local targeted_case = fixture:get("tests"):get(1)
+    local initial_handshake_case = fixture:get("tests"):get(2)
+    local authentication_case = fixture:get("tests"):get(3)
     local stale_case = fixture:get("tests"):get(4)
     local runtime = fake_runtime.new()
     local service_a = bson.object_id("000000000000000000000001")
@@ -344,14 +346,30 @@ describe("monitored topology", function()
       "only connections for a specific serviceId are closed when pools are cleared",
       targeted_case:get("description")
     )
+    assert.are.equal(
+      "errors during the initial connection hello are ignored",
+      initial_handshake_case:get("description")
+    )
+    assert.are.equal(
+      "errors during authentication are processed",
+      authentication_case:get("description")
+    )
     assert.are.equal("stale errors are ignored", stale_case:get("description"))
     assert(manager:open({ background = false }))
     local connection_pool = manager:pool("load-balancer:27017")
     local first = assert(connection_pool:check_out())
     local second = assert(connection_pool:check_out())
+    local stable_description = manager.description
 
     assert(connection_pool:check_in(first))
     assert(connection_pool:check_in(second))
+    assert.is_false(manager:handle_application_error("load-balancer:27017", {
+      generation = 0,
+      type = "handshake",
+      when = "beforeHandshakeCompletes",
+    }))
+    assert.are.equal(stable_description, manager.description)
+    assert.are.equal("ready", connection_pool.state)
     assert(manager:handle_application_error("load-balancer:27017", {
       generation = 0,
       response = bson.document({
@@ -363,6 +381,12 @@ describe("monitored topology", function()
       type = "command",
       when = "afterHandshakeCompletes",
     }))
+    assert.are.equal(stable_description, manager.description)
+    assert.are.equal("LoadBalanced", manager.description.type)
+    assert.are.equal(
+      "LoadBalancer",
+      manager.description:server("load-balancer:27017").type
+    )
     assert.are.equal(1, connection_pool:generation_for(service_a))
     assert.are.equal(0, connection_pool:generation_for(service_b))
     assert.is_true(resources[1].closed)
@@ -379,6 +403,15 @@ describe("monitored topology", function()
 
     assert.are.equal(second.id, reused.id)
     assert(connection_pool:check_in(reused))
+    assert(manager:handle_application_error("load-balancer:27017", {
+      generation = 0,
+      service_id = service_b,
+      type = "handshake",
+      when = "afterHandshakeCompletes",
+    }))
+    assert.are.equal(stable_description, manager.description)
+    assert.are.equal(1, connection_pool:generation_for(service_b))
+    assert.is_true(resources[2].closed)
     assert(manager:close())
   end)
 

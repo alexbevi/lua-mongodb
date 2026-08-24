@@ -235,6 +235,42 @@ describe("CMAP connection pools", function()
     }, event_types)
   end)
 
+  it("reports load-balanced authentication failures with service generation", function()
+    local runtime = fake_runtime.new()
+    local service_id = bson.object_id("000000000000000000000001")
+    local reported
+    local connection_pool
+
+    connection_pool = pool.new({
+      address = "load-balancer:27017",
+      connect = function()
+        return nil, errors.new({
+          category = errors.CATEGORY.AUTHENTICATION,
+          message = "authentication failed",
+        }), { service_id = service_id }
+      end,
+      on_connection_error = function(err, details)
+        assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+        reported = details
+        assert(connection_pool:clear(false, details.service_id))
+        return true
+      end,
+      runtime = runtime,
+    })
+
+    assert(connection_pool:ready())
+    local connection, err = connection_pool:check_out()
+
+    assert.is_nil(connection)
+    assert.is_true(errors.is(err, errors.CATEGORY.AUTHENTICATION))
+    assert.is_true(reported.handshake_complete)
+    assert.are.equal(service_id, reported.service_id)
+    assert.are.equal(0, reported.generation)
+    assert.are.equal(1, connection_pool:generation_for(service_id))
+    assert.are.equal("ready", connection_pool.state)
+    assert(connection_pool:close())
+  end)
+
   it("replenishes minPoolSize after a background connection error", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

@@ -534,7 +534,7 @@ local function open_executor(
 
     if not mechanism then
       executor:close()
-      return nil, err
+      return nil, err, hello
     end
 
     local authentication_commands = socket_timeout_executor.new(
@@ -553,7 +553,7 @@ local function open_executor(
 
     if not authenticated then
       executor:close()
-      return nil, err
+      return nil, err, hello
     end
 
     if credential.mechanism == "MONGODB-OIDC" then
@@ -713,12 +713,15 @@ local function connect_topology(
       max_idle_time_ms = config.max_idle_time_ms,
       max_pool_size = config.max_pool_size,
       min_pool_size = config.min_pool_size,
-      on_connection_error = function(connection_err)
+      on_connection_error = function(connection_err, connection_details)
         if manager then
           return manager:handle_application_error(server_address, {
             error = connection_err,
+            generation = connection_details and connection_details.generation,
+            service_id = connection_details and connection_details.service_id,
             type = "handshake",
-            when = "beforeHandshakeCompletes",
+            when = connection_details and connection_details.handshake_complete
+              and "afterHandshakeCompletes" or "beforeHandshakeCompletes",
           })
         end
       end,

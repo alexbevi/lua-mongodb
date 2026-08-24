@@ -44731,26 +44731,26 @@
       "activity": "LB-005",
       "fingerprint": "dfe6e0d6ac855bdf9754f6b703c097fdb81d30916e4ad4ed6114915c660f69df",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "pending:LB-005",
-      "scope": "post-v1",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua'",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/topology_spec.lua",
+      "scope": "production-core-v1",
       "source": "load-balancers/tests/sdam-error-handling.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "load-balancers"
     },
     "load-balancers/tests/sdam-error-handling.json::test[3]": {
       "activity": "LB-005",
       "fingerprint": "fe41d59f722d32480359f5e14ca83bf2ea8df6b5627ef471ddcc05ee408978e6",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "pending:LB-005",
-      "scope": "post-v1",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua'",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/topology_spec.lua",
+      "scope": "production-core-v1",
       "source": "load-balancers/tests/sdam-error-handling.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "load-balancers"
     },
     "load-balancers/tests/sdam-error-handling.json::test[4]": {
@@ -86764,9 +86764,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1057,
+      "deferred_unsupported": 1055,
       "excluded_scope": 98,
-      "passed": 4354,
+      "passed": 4356,
       "unsupported": 15
     },
     "suites": {
