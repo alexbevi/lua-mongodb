@@ -8029,6 +8029,28 @@
       "notes": [],
       "started_at": "2026-08-24T22:46:32+00:00",
       "completed_at": "2026-08-24T22:51:23+00:00"
+    },
+    "LB-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua --filter=pins.load.balanced.find.and.getMore.until.exhaustion'",
+          "exit_code": 1,
+          "summary": "Defining cursor lifecycle test failed because find did not request a pinned connection (options.pin_connection was nil).",
+          "recorded_at": "2026-08-24T23:02:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua spec/unit/crud_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<6 touched Lua files>'; make test-complexity; make test-architecture; run conformance, release-scope, checklist, README, Python, JSON, and diff validators",
+          "exit_code": 0,
+          "summary": "42 focused unit cases, three directly coupled endpoint integration cases, and 15 conformance/release/README contracts passed; six touched Lua files linted cleanly; complexity, architecture, generated artifacts, JSON, Python, and whitespace validators passed. The endpoint proved an intervening ping used a second socket while getMore reused the find socket, and cursor exhaustion/close released the pin once.",
+          "recorded_at": "2026-08-24T23:25:20+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T22:59:13+00:00",
+      "completed_at": "2026-08-24T23:25:32+00:00"
     }
   },
   "verified_references": {

@@ -536,7 +536,13 @@ def classify_case(
 
     if fixture == "cursors.json":
       if index <= 3:
-        owner = "LB-007"
+        return _passed(
+          case,
+          "LB-007",
+          "spec/unit/cursor_spec.lua",
+          "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+          "directly-coupled-endpoint",
+        )
       elif index <= 6:
         owner = "LB-008"
       else:

@@ -1613,6 +1613,7 @@ function M.find(state, filter, options)
     entries[#entries + 1] = { "readConcern", read_concern }
   end
 
+  local pinned_connection
   local server_address
   local response, err = state.executor:command(
     state.database_name,
@@ -1620,7 +1621,9 @@ function M.find(state, filter, options)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_connection_pinned = function(pin) pinned_connection = pin end,
       on_server_selected = function(address) server_address = address end,
+      pin_connection = true,
       read_preference = state.read_preference,
       retryable_read = true,
       session = options.session,
@@ -1649,6 +1652,7 @@ function M.find(state, filter, options)
     limit = absolute_limit,
     max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
+    pinned_connection = pinned_connection,
     server_address = server_address,
     session = options.session,
     session_context = session_context,

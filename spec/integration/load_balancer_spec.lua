@@ -27,7 +27,7 @@ local function send_response(peer, request, body)
   }))))
 end
 
-local function run_endpoint(load_balanced, service_id, callback)
+local function run_endpoint(load_balanced, service_id, callback, handle_command)
   local server = assert(socket.bind("127.0.0.1", 0))
   local _, port = assert(server:getsockname())
   local outcome
@@ -75,8 +75,16 @@ local function run_endpoint(load_balanced, service_id, callback)
 
           local command_name = request.body:keys()[1]
 
-          assert.is_true(command_name == "ping" or command_name == "endSessions")
-          send_response(peer, request, bson.document({ { "ok", 1 } }))
+          local command_response
+
+          if handle_command then
+            command_response = handle_command(peer, request)
+          else
+            assert.is_true(command_name == "ping" or command_name == "endSessions")
+            command_response = bson.document({ { "ok", 1 } })
+          end
+
+          send_response(peer, request, command_response)
         end
       end
     end)
@@ -135,6 +143,68 @@ describe("load-balanced connection establishment", function()
       assert.are.equal(1, reply:get("ok"):to_number())
       assert(client:close())
     end)
+  end)
+
+  it("keeps find and getMore on one checked-out connection", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local find_peer
+    local ping_peer
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local collection = client:database():collection("users")
+      local cursor = assert(collection:find(nil, { batch_size = 1 }))
+
+      assert.are.equal(1, assert(cursor:next()):get("n"):to_number())
+      assert(client:database():run_command("ping"))
+      assert.are.equal(2, assert(cursor:next()):get("n"):to_number())
+      assert.is_true(cursor:is_closed())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      if name == "find" then
+        find_peer = peer
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(41) },
+            { "ns", "app.users" },
+            { "firstBatch", bson.array({
+              bson.document({ { "n", 1 } }),
+            }) },
+          }) },
+        })
+      elseif name == "ping" then
+        ping_peer = peer
+        assert.are_not.equal(find_peer, ping_peer)
+        return bson.document({ { "ok", 1 } })
+      elseif name == "endSessions" then
+        return bson.document({ { "ok", 1 } })
+      end
+
+      assert.are.equal("getMore", name)
+      assert.are.equal(find_peer, peer)
+      return bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.users" },
+          { "nextBatch", bson.array({
+            bson.document({ { "n", 2 } }),
+          }) },
+        }) },
+      })
+    end)
+
+    assert.is_not_nil(find_peer)
+    assert.is_not_nil(ping_peer)
   end)
 
   it("runs the exact non-load-balanced connection-establishment cases", function()

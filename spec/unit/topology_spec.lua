@@ -306,6 +306,68 @@ describe("monitored topology", function()
     assert(commands:close())
   end)
 
+  it("keeps load-balanced commands on an active connection pin", function()
+    local runtime = fake_runtime.new()
+    local resource_count = 0
+    local resource_ids = {}
+    local service_id = bson.object_id("000000000000000000000001")
+    local manager = topology.new({
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            resource_count = resource_count + 1
+            local resource_id = resource_count
+
+            return {
+              close = function() return true end,
+              command = function()
+                resource_ids[#resource_ids + 1] = resource_id
+                return bson.document({ { "ok", 1 } })
+              end,
+            }, nil, { service_id = service_id }
+          end,
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "load-balancer:27017" },
+      type = "LoadBalanced",
+    })
+
+    assert(manager:open({ background = false }))
+    local commands = topology_executor.new(manager)
+    local pin
+
+    assert(commands:command(
+      "app",
+      bson.document({ { "find", "users" } }),
+      {
+        on_connection_pinned = function(value) pin = value end,
+        pin_connection = true,
+      }
+    ))
+    local connection_pool = manager:pool("load-balancer:27017")
+
+    assert.is_not_nil(pin)
+    assert.are.equal(1, connection_pool.operation_count)
+    assert(commands:command(
+      "app",
+      bson.document({
+        { "getMore", bson.int64(41) },
+        { "collection", "users" },
+      }),
+      { pinned_connection = pin }
+    ))
+    assert.same({ 1, 1 }, resource_ids)
+    assert.are.equal(1, connection_pool.operation_count)
+    assert.is_true(pin:release())
+    assert.is_false(pin:release())
+    assert.are.equal(0, connection_pool.operation_count)
+    assert.are.equal(1, resource_count)
+    assert(commands:close())
+  end)
+
   it("runs the exact load-balanced targeted-clear and stale-generation cases", function()
     local fixture = read_fixture("load-balancers/tests/sdam-error-handling.json")
     local targeted_case = fixture:get("tests"):get(1)

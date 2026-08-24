@@ -7,6 +7,137 @@ local runtime_contract = require("mongodb.runtime")
 local fake_runtime = require("mongodb.runtime.fake")
 
 describe("find cursor lifecycle", function()
+  it("pins load-balanced find and getMore until exhaustion", function()
+    local pinned_connection = {}
+    local release_count = 0
+
+    function pinned_connection.release()
+      release_count = release_count + 1
+      return true
+    end
+
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        if name == "find" then
+          assert.is_true(options.pin_connection)
+          assert.is_function(options.on_connection_pinned)
+          options.on_connection_pinned(pinned_connection)
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(41) },
+              { "ns", "app.users" },
+              { "firstBatch", bson.array({
+                bson.document({ { "n", 1 } }),
+              }) },
+            }) },
+          })
+        end
+
+        assert.are.equal("getMore", name)
+        assert.are.equal(pinned_connection, options.pinned_connection)
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.users" },
+            { "nextBatch", bson.array({
+              bson.document({ { "n", 2 } }),
+            }) },
+          }) },
+        })
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("users"):find())
+
+    assert.are.equal(0, release_count)
+    assert.are.equal(1, assert(cursor:next()):get("n"))
+    assert.are.equal(0, release_count)
+    assert.are.equal(2, assert(cursor:next()):get("n"))
+    assert.are.equal(1, release_count)
+    assert.is_true(cursor:is_closed())
+    assert.is_false(cursor:close())
+    assert.are.equal(1, release_count)
+  end)
+
+  it("returns an initial zero-id cursor pin immediately", function()
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        assert.are.equal("find", command:keys()[1])
+        options.on_connection_pinned(pin)
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "app.users" },
+            { "firstBatch", bson.array({
+              bson.document({ { "n", 1 } }),
+            }) },
+          }) },
+        })
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("users"):find())
+
+    assert.are.equal(1, release_count)
+    assert.are.equal(1, assert(cursor:next()):get("n"))
+    assert.is_true(cursor:is_closed())
+    assert.are.equal(1, release_count)
+  end)
+
+  it("uses and returns a cursor pin when explicitly closed", function()
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        if name == "find" then
+          options.on_connection_pinned(pin)
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(41) },
+              { "ns", "app.users" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        end
+
+        assert.are.equal("killCursors", name)
+        assert.are.equal(pin, options.pinned_connection)
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("users"):find())
+
+    assert.are.equal(0, release_count)
+    assert.is_true(cursor:close())
+    assert.are.equal(1, release_count)
+    assert.is_false(cursor:close())
+    assert.are.equal(1, release_count)
+  end)
+
   it("encodes and polls a non-awaitData tailable cursor", function()
     local commands = {}
     local responses = {

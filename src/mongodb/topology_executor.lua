@@ -5,7 +5,9 @@ local operation_timeout = require("mongodb.operation_timeout")
 local M = {}
 
 local EXECUTOR_STATES = setmetatable({}, { __mode = "k" })
+local PIN_STATES = setmetatable({}, { __mode = "k" })
 local METHODS = {}
+local PIN_METHODS = {}
 
 local READ_COMMANDS = {
   aggregate = true,
@@ -32,6 +34,36 @@ local METATABLE = {
     error("topology executors are immutable", 2)
   end,
 }
+
+local PIN_METATABLE = {
+  __index = PIN_METHODS,
+  __metatable = "mongodb.topology_executor.connection_pin",
+  __newindex = function()
+    error("connection pins are immutable", 2)
+  end,
+}
+
+function PIN_METHODS:release()
+  local state = PIN_STATES[self]
+
+  if state.released then
+    return false
+  end
+
+  state.released = true
+  return state.selected.pool:check_in(state.selected.connection)
+end
+
+local function connection_pin(owner, selected)
+  local value = {}
+
+  PIN_STATES[value] = {
+    owner = owner,
+    released = false,
+    selected = selected,
+  }
+  return setmetatable(value, PIN_METATABLE)
+end
 
 local function copy_read_preference(preference)
   local tag_sets = {}
@@ -157,6 +189,18 @@ local function refresh_socket_deadline(options)
 end
 
 local function select_connection(state, operation, options)
+  local pin = options and options.pinned_connection
+
+  if pin ~= nil then
+    local pin_state = PIN_STATES[pin]
+
+    if pin_state == nil or pin_state.owner ~= state or pin_state.released then
+      error("pinned_connection must be an active connection pin", 3)
+    end
+
+    return pin_state.selected, nil, true
+  end
+
   local context = operation_timeout.current()
   local deadline = options and options.deadline or context and context.deadline
   local read_preference = operation == "read"
@@ -219,7 +263,7 @@ local function select_connection(state, operation, options)
   }
 end
 
-local function finish_connection(state, selected, err)
+local function finish_connection(state, selected, err, retained)
   if err then
     local cancelled = errors.is(err, errors.CATEGORY.CANCELLED)
 
@@ -243,7 +287,47 @@ local function finish_connection(state, selected, err)
     end
   end
 
-  selected.pool:check_in(selected.connection)
+  if not retained then
+    selected.pool:check_in(selected.connection)
+  end
+end
+
+local function validate_command_options(options)
+  if options and options.on_server_selected ~= nil
+      and type(options.on_server_selected) ~= "function"
+  then
+    error("on_server_selected must be a function", 3)
+  end
+
+  if options and options.server_address ~= nil
+      and type(options.server_address) ~= "string"
+  then
+    error("server_address must be a string", 3)
+  end
+
+  if options and options.pin_connection ~= nil
+      and type(options.pin_connection) ~= "boolean"
+  then
+    error("pin_connection must be a boolean", 3)
+  end
+
+  if options and options.on_connection_pinned ~= nil
+      and type(options.on_connection_pinned) ~= "function"
+  then
+    error("on_connection_pinned must be a function", 3)
+  end
+
+  if options and options.pin_connection == true
+      and options.on_connection_pinned == nil
+  then
+    error("pin_connection requires on_connection_pinned", 3)
+  end
+
+  if options and options.pin_connection == true
+      and options.pinned_connection ~= nil
+  then
+    error("cannot request and use a connection pin together", 3)
+  end
 end
 
 function METHODS:command(database, command, options)
@@ -251,21 +335,13 @@ function METHODS:command(database, command, options)
     error("command must be a BSON document", 2)
   end
 
+  validate_command_options(options)
   local state = EXECUTOR_STATES[self]
-
-  if options and options.on_server_selected ~= nil
-      and type(options.on_server_selected) ~= "function"
-  then
-    error("on_server_selected must be a function", 2)
-  end
-
-  if options and options.server_address ~= nil
-      and type(options.server_address) ~= "string"
-  then
-    error("server_address must be a string", 2)
-  end
-
-  local selected, err = select_connection(state, operation_for(command, options), options)
+  local selected, err, using_pin = select_connection(
+    state,
+    operation_for(command, options),
+    options
+  )
 
   if not selected then
     return nil, err
@@ -274,7 +350,10 @@ function METHODS:command(database, command, options)
   local command_options = {}
 
   for key, value in pairs(options or {}) do
-    if key ~= "on_server_selected" and key ~= "server_address" then
+    if key ~= "on_connection_pinned" and key ~= "on_server_selected"
+        and key ~= "pin_connection" and key ~= "pinned_connection"
+        and key ~= "server_address"
+    then
       command_options[key] = value
     end
   end
@@ -290,7 +369,18 @@ function METHODS:command(database, command, options)
 
   command = decorate_read_preference(selected, command)
   response, err = selected.executor:command(database, command, command_options)
-  finish_connection(state, selected, err)
+  local retained = using_pin == true
+
+  if response and not retained and options and options.pin_connection
+      and selected.server_type == "LoadBalancer"
+  then
+    local pin = connection_pin(state, selected)
+
+    options.on_connection_pinned(pin)
+    retained = true
+  end
+
+  finish_connection(state, selected, err, retained)
   return response, err
 end
 

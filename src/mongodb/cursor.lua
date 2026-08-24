@@ -119,6 +119,17 @@ local function release_session_context(state)
   end
 end
 
+local function release_pinned_connection(state)
+  local pin = state.pinned_connection
+
+  if pin == nil then
+    return false
+  end
+
+  state.pinned_connection = nil
+  return pin:release()
+end
+
 local function mark_closed(value, state)
   if state.closed then
     return
@@ -177,6 +188,7 @@ local function get_more(value, state)
         {
           cancellation = state.cancellation,
           deadline = timeout_options.deadline or state.deadline,
+          pinned_connection = state.pinned_connection,
           server_address = state.server_address,
           session = state.session,
           session_context = state.session_context,
@@ -211,6 +223,7 @@ local function get_more(value, state)
   state.position = 1
 
   if state.numeric_id == 0 then
+    release_pinned_connection(state)
     release_session_context(state)
   end
 
@@ -333,6 +346,7 @@ function CURSOR_METHODS:close(options)
   end
 
   if client_is_closed(state) or state.numeric_id == 0 then
+    release_pinned_connection(state)
     mark_closed(self, state)
     return true
   end
@@ -356,6 +370,7 @@ function CURSOR_METHODS:close(options)
           {
             cancellation = options.cancellation,
             deadline = timeout_options.deadline,
+            pinned_connection = state.pinned_connection,
             server_address = state.server_address,
             session = state.session,
             session_context = state.session_context,
@@ -373,6 +388,7 @@ function CURSOR_METHODS:close(options)
       {
         cancellation = options.cancellation,
         deadline = options.deadline,
+        pinned_connection = state.pinned_connection,
         server_address = state.server_address,
         session = state.session,
         session_context = state.session_context,
@@ -380,6 +396,7 @@ function CURSOR_METHODS:close(options)
     )
   end
 
+  release_pinned_connection(state)
   mark_closed(self, state)
 
   if not response then
@@ -476,6 +493,10 @@ function M.new(response, options)
   local batch, err = response_batch(response, "firstBatch")
 
   if not batch then
+    if options.pinned_connection then
+      options.pinned_connection:release()
+    end
+
     if options.session_context
         and type(options.executor.release_session_context) == "function"
     then
@@ -507,6 +528,7 @@ function M.new(response, options)
     operation_time = response:get("operationTime"),
     position = 1,
     post_batch_resume_token = batch.post_batch_resume_token,
+    pinned_connection = options.pinned_connection,
     retrieved = 0,
     server_address = options.server_address,
     session = options.session,
@@ -517,6 +539,7 @@ function M.new(response, options)
   local result = setmetatable(value, CURSOR_METATABLE)
 
   if batch.numeric_id == 0 then
+    release_pinned_connection(CURSOR_STATES[result])
     release_session_context(CURSOR_STATES[result])
   end
 
