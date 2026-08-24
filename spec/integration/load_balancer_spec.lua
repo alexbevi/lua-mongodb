@@ -84,7 +84,11 @@ local function run_endpoint(load_balanced, service_id, callback, handle_command)
             command_response = bson.document({ { "ok", 1 } })
           end
 
-          send_response(peer, request, command_response)
+          if command_response then
+            send_response(peer, request, command_response)
+          else
+            break
+          end
         end
       end
     end)
@@ -205,6 +209,62 @@ describe("load-balanced connection establishment", function()
 
     assert.is_not_nil(find_peer)
     assert.is_not_nil(ping_peer)
+  end)
+
+  it("discards a pinned connection after getMore network failure", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local commands = {}
+    local find_peer
+    local get_more_peer
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local collection = client:database():collection("users")
+      local cursor = assert(collection:find(nil, { batch_size = 1 }))
+
+      assert.are.equal(1, assert(cursor:next()):get("n"):to_number())
+      local document, err = cursor:next()
+
+      assert.is_nil(document)
+      assert.is_true(errors.is(err, errors.CATEGORY.NETWORK))
+      assert(client:database():run_command("ping"))
+      assert.is_true(cursor:close())
+      assert.is_false(cursor:close())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      commands[#commands + 1] = name
+
+      if name == "find" then
+        find_peer = peer
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(41) },
+            { "ns", "app.users" },
+            { "firstBatch", bson.array({
+              bson.document({ { "n", 1 } }),
+            }) },
+          }) },
+        })
+      elseif name == "getMore" then
+        get_more_peer = peer
+        peer:close()
+        return nil
+      end
+
+      return bson.document({ { "ok", 1 } })
+    end)
+
+    assert.are.equal(find_peer, get_more_peer)
+    assert.same({ "find", "getMore", "ping", "endSessions" }, commands)
   end)
 
   it("runs the exact non-load-balanced connection-establishment cases", function()

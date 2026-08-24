@@ -127,6 +127,7 @@ local function release_pinned_connection(state)
   end
 
   state.pinned_connection = nil
+  state.pinned_connection_failed = false
   return pin:release()
 end
 
@@ -200,6 +201,12 @@ local function get_more(value, state)
   if not response then
     local cancelled_await = state.cursor_type == "tailable_await"
       and errors.is(err, errors.CATEGORY.CANCELLED)
+    local failed_pin = state.pinned_connection ~= nil
+      and errors.is(err, errors.CATEGORY.NETWORK)
+
+    if failed_pin then
+      state.pinned_connection_failed = true
+    end
 
     if not errors.is(err, errors.CATEGORY.TIMEOUT) and not cancelled_await then
       mark_closed(value, state)
@@ -336,6 +343,11 @@ function CURSOR_METHODS:close(options)
   local state = CURSOR_STATES[self]
 
   if state.closed then
+    if state.pinned_connection_failed then
+      release_pinned_connection(state)
+      return true
+    end
+
     return false
   end
 
@@ -529,6 +541,7 @@ function M.new(response, options)
     position = 1,
     post_batch_resume_token = batch.post_batch_resume_token,
     pinned_connection = options.pinned_connection,
+    pinned_connection_failed = false,
     retrieved = 0,
     server_address = options.server_address,
     session = options.session,

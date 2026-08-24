@@ -44561,13 +44561,13 @@
       "activity": "LB-008",
       "fingerprint": "1594d201e03ba3af193483b69c305e78031a60b4be27511ca5c9ddd5379bc00c",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "pending:LB-008",
-      "scope": "post-v1",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+      "required_environment": "directly-coupled-endpoint",
+      "runner": "spec/unit/cursor_spec.lua",
+      "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "load-balancers"
     },
     "load-balancers/tests/cursors.json::test[5]": {
@@ -86764,9 +86764,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1049,
+      "deferred_unsupported": 1048,
       "excluded_scope": 98,
-      "passed": 4362,
+      "passed": 4363,
       "unsupported": 15
     },
     "suites": {

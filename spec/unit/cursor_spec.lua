@@ -138,6 +138,55 @@ describe("find cursor lifecycle", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("releases a failed pinned getMore connection without killCursors", function()
+    local commands = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = name
+
+        if name == "find" then
+          options.on_connection_pinned(pin)
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(41) },
+              { "ns", "app.users" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        end
+
+        assert.are.equal("getMore", name)
+        return nil, errors.new({
+          category = errors.CATEGORY.NETWORK,
+          message = "getMore connection closed",
+        })
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("users"):find())
+    local document, err = cursor:next()
+
+    assert.is_nil(document)
+    assert.is_true(errors.is(err, errors.CATEGORY.NETWORK))
+    assert.are.equal(0, release_count)
+    assert.is_true(cursor:close())
+    assert.same({ "find", "getMore" }, commands)
+    assert.are.equal(1, release_count)
+    assert.is_false(cursor:close())
+    assert.are.equal(1, release_count)
+  end)
+
   it("encodes and polls a non-awaitData tailable cursor", function()
     local commands = {}
     local responses = {

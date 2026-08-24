@@ -8051,6 +8051,28 @@
       "notes": [],
       "started_at": "2026-08-24T22:59:13+00:00",
       "completed_at": "2026-08-24T23:25:32+00:00"
+    },
+    "LB-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua --filter=releases.a.failed.pinned.getMore.connection.without.killCursors'",
+          "exit_code": 1,
+          "summary": "After a pinned getMore network error, cursor:close() returned false instead of relinquishing the failed pin; release_count remained zero.",
+          "recorded_at": "2026-08-24T23:41:44+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility' FOCUS_LINT='<4 touched Lua files>'; make test-complexity; run conformance, release-scope, checklist, README, Python, JSON, and diff validators",
+          "exit_code": 0,
+          "summary": "42 focused unit cases, four directly coupled endpoint integration cases, and 15 conformance/release/README contracts passed; case 4 behavior had 1 passed, 0 environment-skipped, 0 deferred, and 0 failed. Four touched Lua files linted cleanly; complexity and all generated-artifact validators passed. The failed service generation advanced while the logical checkout remained until close, which skipped killCursors and discarded the resource exactly once.",
+          "recorded_at": "2026-08-24T23:45:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T23:41:01+00:00",
+      "completed_at": "2026-08-24T23:45:35+00:00"
     }
   },
   "verified_references": {
