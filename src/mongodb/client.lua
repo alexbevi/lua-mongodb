@@ -486,6 +486,7 @@ local function open_executor(
   local executor = command_executor.new(connection, {
     compression = runtime.compression,
     compressors = config.compressors,
+    load_balanced = config.load_balanced,
     metadata = metadata,
     monitoring = monitor,
     server = server_address,
@@ -579,6 +580,33 @@ local function open_executor(
   end
 
   return executor, nil, hello
+end
+
+local function load_balanced_capabilities(manager, config, special)
+  local selected, pool_or_err = manager:select_server("write", nil, {
+    cancellation = special.cancellation,
+    deadline = special.deadline,
+    timeout_ms = config.server_selection_timeout_ms,
+  })
+
+  if not selected then
+    return nil, pool_or_err
+  end
+
+  local application_pool = pool_or_err
+  local connection, err = application_pool:check_out({
+    cancellation = special.cancellation,
+    deadline = special.deadline,
+  })
+
+  if not connection then
+    return nil, err
+  end
+
+  local capabilities = connection.resource:capabilities()
+
+  assert(application_pool:check_in(connection))
+  return capabilities
 end
 
 local function connect_topology(
@@ -729,7 +757,8 @@ local function connect_topology(
       minimum_ttl = parsed.srv.minimum_ttl,
       service_name = parsed.srv.service_name,
     } or nil,
-    type = config.direct_connection and "Single"
+    type = config.load_balanced and "LoadBalanced"
+      or config.direct_connection and "Single"
       or config.replica_set ~= nil and "ReplicaSetNoPrimary"
       or "Unknown",
   })
@@ -745,36 +774,42 @@ local function connect_topology(
     read_preference = config.read_preference,
     server_selection_timeout_ms = config.server_selection_timeout_ms,
   })
-  local capabilities, err
-  local capabilities_deadline = runtime_contract.deadline_after(
-    runtime,
-    config.server_selection_timeout_ms / 1000
-  )
+  local capabilities
+  local err
 
-  while monitor_capabilities == nil do
-    local ok
-    ok, err = runtime_contract.check(runtime, capabilities_deadline)
-
-    if not ok then
-      break
-    end
-
-    local remaining = runtime_contract.remaining(runtime, capabilities_deadline)
-
-    assert(runtime.clock:sleep(math.min(0.01, remaining or math.huge)))
-  end
-
-  capabilities = monitor_capabilities
-
-  if capabilities == nil then
-    local selected, selection_err = manager:select_server(
-      "write",
-      nil,
-      { timeout_ms = 0 }
+  if config.load_balanced then
+    capabilities, err = load_balanced_capabilities(manager, config, special)
+  else
+    local capabilities_deadline = runtime_contract.deadline_after(
+      runtime,
+      config.server_selection_timeout_ms / 1000
     )
 
-    assert(selected == nil)
-    err = selection_err
+    while monitor_capabilities == nil do
+      local ok
+      ok, err = runtime_contract.check(runtime, capabilities_deadline)
+
+      if not ok then
+        break
+      end
+
+      local remaining = runtime_contract.remaining(runtime, capabilities_deadline)
+
+      assert(runtime.clock:sleep(math.min(0.01, remaining or math.huge)))
+    end
+
+    capabilities = monitor_capabilities
+
+    if capabilities == nil then
+      local selected, selection_err = manager:select_server(
+        "write",
+        nil,
+        { timeout_ms = 0 }
+      )
+
+      assert(selected == nil)
+      err = selection_err
+    end
   end
 
   if not capabilities then
@@ -842,12 +877,6 @@ function M.connect(uri, values)
     return nil, credential_err
   end
 
-  if config.load_balanced then
-    return configuration_error(
-      "load-balanced deployment execution is not implemented"
-    )
-  end
-
   runtime = runtime or special.runtime or runtime_contract.copas()
 
   runtime_contract.validate(runtime)
@@ -895,7 +924,8 @@ function M.connect(uri, values)
 
   append_compression_warnings(warnings, config, runtime.compression)
 
-  if parsed.is_srv or config.replica_set ~= nil or config.min_pool_size > 0
+  if config.load_balanced or parsed.is_srv or config.replica_set ~= nil
+      or config.min_pool_size > 0
       or special.pool_listeners ~= nil or special.sdam_listeners ~= nil
   then
     return connect_topology(

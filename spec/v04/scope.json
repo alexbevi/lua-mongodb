@@ -5,7 +5,7 @@
   },
   "excluded_by_activity": {
     "ADV-009": 24,
-    "LB-003": 1,
+    "CON-010": 1,
     "LB-009": 2,
     "LEG-003": 1
   },
@@ -16,6 +16,7 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
     "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",
     "CBW-010": "client bulk transactions remain a separate post-v0.4 capability",
+    "CON-010": "complete load-balanced unified execution is outside the v0.4 sharded target",
     "LB-001": "load-balanced deployment behavior is outside the v0.4 sharded target",
     "LB-002": "load-balanced deployment behavior is outside the v0.4 sharded target",
     "LB-003": "load-balanced deployment behavior is outside the v0.4 sharded target",

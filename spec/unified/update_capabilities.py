@@ -33,6 +33,7 @@ OWNER_REASONS = {
   "ADV-006": "load-balanced execution is a post-v1 capability",
   "ADV-007": "client bulkWrite is a post-v1 capability",
   "LB-003": "load-balanced connection establishment awaits its dedicated slice",
+  "CON-010": "complete load-balanced unified execution awaits the v0.10 conformance closure",
   "CBW-001": "client bulk update models await their dedicated slice",
   "CBW-002": "client bulk delete models await their dedicated slice",
   "CBW-003": "client bulk verbose results await their dedicated slice",
@@ -886,7 +887,7 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   if requirements["logs"] or "/logging-" in path or "/backpressure-" in path:
     owner = "ADV-009"
   elif "load-balanced" in topologies or "loadbalanced" in path:
-    owner = "LB-003"
+    owner = "CON-010"
   elif {"sharded", "sharded-replicaset"} & topologies or "sharded-" in path:
     owner = "ADV-005"
   else:

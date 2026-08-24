@@ -7941,6 +7941,28 @@
       "notes": [],
       "started_at": "2026-08-24T21:21:47+00:00",
       "completed_at": "2026-08-24T21:29:44+00:00"
+    },
+    "LB-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_executor_spec.lua --filter=serviceId'",
+          "exit_code": 1,
+          "summary": "The focused handshake test observed legacy ismaster without loadBalanced instead of modern hello with loadBalanced=true.",
+          "recorded_at": "2026-08-24T21:53:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/command_executor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope planning.tests.test_readme_compatibility spec.release.test_checklist' FOCUS_LINT='src/mongodb/client.lua src/mongodb/command/executor.lua src/mongodb/command/hello.lua spec/unit/command_executor_spec.lua spec/integration/load_balancer_spec.lua'",
+          "exit_code": 0,
+          "summary": "36 handshake/topology unit cases, 2 directly coupled load-balancer integration cases, 23 conformance artifact tests, and touched-file lint passed.",
+          "recorded_at": "2026-08-24T21:53:33+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T21:39:24+00:00",
+      "completed_at": "2026-08-24T21:53:51+00:00"
     }
   },
   "verified_references": {

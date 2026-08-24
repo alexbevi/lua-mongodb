@@ -29,6 +29,14 @@ local function protocol_error(message, details)
   })
 end
 
+local function client_error(state, message)
+  return errors.new({
+    category = errors.CATEGORY.CLIENT,
+    message = message,
+    server = state.server,
+  })
+end
+
 local function available_compressors(values, compression)
   if values == nil then
     return {}
@@ -434,7 +442,8 @@ end
 
 function EXECUTOR_METHODS:hello(options)
   local state = EXECUTOR_STATES[self]
-  local command_name = (state.server_api ~= nil or state.hello_ok) and "hello" or "ismaster"
+  local command_name = (state.load_balanced or state.server_api ~= nil or state.hello_ok)
+    and "hello" or "ismaster"
   local entries = { { command_name, 1 } }
 
   if command_name == "ismaster" then
@@ -446,6 +455,10 @@ function EXECUTOR_METHODS:hello(options)
   if not state.handshake_complete then
     entries[#entries + 1] = { "client", state.metadata }
     entries[#entries + 1] = { "compression", bson.array(state.compressors) }
+
+    if state.load_balanced then
+      entries[#entries + 1] = { "loadBalanced", true }
+    end
   end
 
   options = options or {}
@@ -540,6 +553,14 @@ function EXECUTOR_METHODS:hello(options)
     return close_with(state, err)
   end
 
+  if state.load_balanced and hello.service_id == nil then
+    return close_with(state, client_error(
+      state,
+      "Driver attempted to initialize in load balancing mode, "
+        .. "but the server does not support this mode."
+    ))
+  end
+
   if not state.handshake_complete then
     state.compressor, err = negotiated_compressor(state, response)
 
@@ -553,6 +574,7 @@ function EXECUTOR_METHODS:hello(options)
   state.max_bson_size = hello.max_bson_size
   state.max_message_size = hello.max_message_size
   state.server_connection_id = hello.connection_id
+  state.service_id = hello.service_id
   state.hello = hello
   return hello
 end
@@ -657,6 +679,10 @@ function M.new(connection, options)
     error("command executor compression capabilities must be a table", 2)
   end
 
+  if options.load_balanced ~= nil and type(options.load_balanced) ~= "boolean" then
+    error("command executor load_balanced must be a boolean", 2)
+  end
+
   local zlib_compression_level = options.zlib_compression_level or -1
 
   if math.type(zlib_compression_level) ~= "integer"
@@ -677,6 +703,7 @@ function M.new(connection, options)
     handshake_complete = false,
     hello = nil,
     hello_ok = false,
+    load_balanced = options.load_balanced == true,
     max_bson_size = DEFAULT_MAX_BSON_SIZE,
     max_message_size = DEFAULT_MAX_MESSAGE_SIZE,
     metadata = options.metadata or handshake_metadata.new(),

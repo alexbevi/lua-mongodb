@@ -72184,9 +72184,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/loadbalanced-emit-topology-changed-before-close.json::test[1]": {
-      "activity": "LB-003",
+      "activity": "CON-010",
       "fingerprint": "4c0c7f6a0be84490459e789eb4cd9bb230d63a069bcce74f258f9bcbf6e5bb62",
-      "reason": "load-balanced connection establishment awaits its dedicated slice",
+      "reason": "complete load-balanced unified execution awaits the v0.10 conformance closure",
       "requirements": {
         "arguments": [
           "createEntities.entities",

@@ -72,6 +72,7 @@ EXCLUSION_REASONS = {
     for index in range(1, 19)
   },
   "ADV-006": "load-balanced deployment behavior is outside the v0.4 sharded target",
+  "CON-010": "complete load-balanced unified execution is outside the v0.4 sharded target",
   "ADV-007": "client bulk write remains a separate post-v0.4 capability",
   "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",
   "CBW-010": "client bulk transactions remain a separate post-v0.4 capability",

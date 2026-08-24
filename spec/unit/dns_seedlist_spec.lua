@@ -170,7 +170,7 @@ describe("initial DNS seedlist discovery", function()
     end
   end)
 
-  it("does not execute a load-balanced client after valid DNS preprocessing", function()
+  it("connects the load-balanced client after valid DNS preprocessing", function()
     local runtime = fake_runtime.new()
 
     runtime:queue_dns("srv", {
@@ -179,6 +179,10 @@ describe("initial DNS seedlist discovery", function()
     runtime:queue_dns("txt", {
       { strings = { "loadBalanced=true" }, ttl = 60 },
     })
+    runtime:queue_connect(errors.new({
+      category = errors.CATEGORY.NETWORK,
+      message = "expected load-balancer connection failure",
+    }))
 
     local connected, err = client.connect(
       "mongodb+srv://cluster.example.com",
@@ -186,8 +190,12 @@ describe("initial DNS seedlist discovery", function()
     )
 
     assert.is_nil(connected)
-    assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
-    assert.are.same({}, runtime.calls.connect)
+    assert.is_true(errors.is(err, errors.CATEGORY.NETWORK))
+    assert.are.same({ {
+      host = "db.example.com",
+      options = {},
+      port = 27017,
+    } }, runtime.calls.connect)
   end)
 
   it("does no DNS or socket work for an invalid SRV URI envelope", function()

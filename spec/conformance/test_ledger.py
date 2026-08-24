@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1062,
-      "excluded_scope": 97,
-      "passed": 4350,
+      "deferred_unsupported": 1059,
+      "excluded_scope": 98,
+      "passed": 4352,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -112,6 +112,26 @@ class ConformanceLedgerTests(unittest.TestCase):
       and case["last_execution"] is None
       for case in proxy_options
     ))
+
+    connection_cases = [
+      case for case in generated["cases"].values()
+      if case["source"]
+        == "load-balancers/tests/non-lb-connection-establishment.json"
+    ]
+    self.assertEqual(2, len(connection_cases))
+    self.assertTrue(all(
+      case["activity"] == "LB-003"
+      and case["status"] == "passed"
+      and case["required_environment"] == "directly-coupled-endpoint"
+      for case in connection_cases
+    ))
+
+    skipped_connection = generated["cases"][
+      "load-balancers/tests/lb-connection-establishment.json::test[1]"
+    ]
+    self.assertEqual("LB-003", skipped_connection["activity"])
+    self.assertEqual("excluded_scope", skipped_connection["status"])
+    self.assertIn("skipReason", skipped_connection["reason"])
 
     sharded_command_cursor = generated["cases"][
       "run-command/tests/unified/runCursorCommand.json::test[1]"

@@ -543,11 +543,22 @@ def classify_case(
         owner = "LB-009"
     elif fixture == "event-monitoring.json":
       owner = "LB-006"
-    elif fixture in {
-      "lb-connection-establishment.json",
-      "non-lb-connection-establishment.json",
-    }:
-      owner = "LB-003"
+    elif fixture == "lb-connection-establishment.json":
+      return _excluded(
+        case,
+        "LB-003",
+        "spec/integration/load_balancer_spec.lua",
+        "make test-focus FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+        "the upstream case has a skipReason because load balancers do not reject loadBalanced=false",
+      )
+    elif fixture == "non-lb-connection-establishment.json":
+      return _passed(
+        case,
+        "LB-003",
+        "spec/integration/load_balancer_spec.lua",
+        "make test-focus FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+        "directly-coupled-endpoint",
+      )
     elif fixture == "sdam-error-handling.json":
       owner = "LB-004" if index in {1, 4} else "LB-005"
     elif fixture == "server-selection.json":

@@ -186,6 +186,14 @@ function M.new(document)
     end
   end
 
+  local service_id = document:get("serviceId")
+
+  if service_id ~= nil and not bson.is_tagged(service_id, "object_id") then
+    return protocol_error("hello response contains an invalid serviceId", {
+      field = "serviceId",
+    })
+  end
+
   local kind = server_type(document)
   local is_writable = kind == "standalone" or kind == "mongos"
     or kind == "load_balancer" or kind == "rs_primary"
@@ -204,6 +212,7 @@ function M.new(document)
     max_wire_version = max_wire_version,
     max_write_batch_size = max_write_batch_size,
     min_wire_version = min_wire_version,
+    service_id = service_id,
     server_type = kind,
   }
 

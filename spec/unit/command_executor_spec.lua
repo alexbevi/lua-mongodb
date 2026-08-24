@@ -403,6 +403,46 @@ describe("single-connection command executor", function()
     assert.is_false(sent:get("apiDeprecationErrors"))
   end)
 
+  it("establishes load-balanced connections only with a serviceId", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local connection = fake_connection({
+      bson.document({
+        { "ok", 1 },
+        { "maxWireVersion", 25 },
+        { "serviceId", service_id },
+      }),
+    })
+    local commands = assert(executor.new(connection, { load_balanced = true }))
+    local hello = assert(commands:hello())
+
+    assert.are.same(
+      {
+        "hello", "backpressure", "client", "compression", "loadBalanced", "$db",
+      },
+      connection.requests[1].body:keys()
+    )
+    assert.is_true(connection.requests[1].body:get("loadBalanced"))
+    assert.are.equal(service_id, hello.service_id)
+
+    local unsupported_connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+    })
+    local unsupported = assert(executor.new(
+      unsupported_connection,
+      { load_balanced = true }
+    ))
+    local unsupported_hello, err = unsupported:hello()
+
+    assert.is_nil(unsupported_hello)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal(
+      "Driver attempted to initialize in load balancing mode, "
+        .. "but the server does not support this mode.",
+      err.message
+    )
+    assert.is_true(unsupported_connection.closed)
+  end)
+
   it("validates awaitable hello arguments before writing", function()
     local connection = fake_connection({
       bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),

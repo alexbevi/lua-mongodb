@@ -1,0 +1,173 @@
+local bson = require("mongodb.bson")
+local copas = require("copas")
+local errors = require("mongodb.error")
+local mongodb = require("mongodb")
+local op_msg = require("mongodb.wire.op_msg")
+local socket = require("socket")
+
+local FIXTURE = (os.getenv("PWD") or ".")
+  .. "/planning/specifications/source/load-balancers/tests/"
+  .. "non-lb-connection-establishment.json"
+
+local function receive_frame(peer)
+  local header = assert(peer:receive(4))
+  local size = string.unpack("<i4", header)
+
+  return assert(op_msg.decode(header .. assert(peer:receive(size - 4)), {
+    direction = "request",
+  }))
+end
+
+local function send_response(peer, request, body)
+  assert(peer:send(assert(op_msg.encode({
+    body = body,
+    direction = "response",
+    request_id = 900 + request.request_id,
+    response_to = request.request_id,
+  }))))
+end
+
+local function run_endpoint(load_balanced, service_id, callback)
+  local server = assert(socket.bind("127.0.0.1", 0))
+  local _, port = assert(server:getsockname())
+  local outcome
+  local server_error
+
+  port = assert(math.tointeger(port))
+  copas.addserver(server, function(peer)
+    local ok, err = pcall(function()
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      if load_balanced then
+        assert.are.equal("hello", handshake.body:keys()[1])
+        assert.is_true(handshake.body:get("loadBalanced"))
+      else
+        assert.are.equal("ismaster", handshake.body:keys()[1])
+        assert.is_nil(handshake.body:get("loadBalanced"))
+      end
+
+      local response = {
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }
+
+      if service_id then
+        response[#response + 1] = { "serviceId", service_id }
+      end
+
+      send_response(peer, handshake, bson.document(response))
+
+      if load_balanced and service_id == nil then
+        local trailing, close_err = peer:receive(1)
+
+        assert.is_nil(trailing)
+        assert.are.equal("closed", close_err)
+      else
+        while true do
+          local received, request = pcall(receive_frame, peer)
+
+          if not received then
+            break
+          end
+
+          local command_name = request.body:keys()[1]
+
+          assert.is_true(command_name == "ping" or command_name == "endSessions")
+          send_response(peer, request, bson.document({ { "ok", 1 } }))
+        end
+      end
+    end)
+
+    if not ok then
+      server_error = err
+    end
+
+    pcall(peer.close, peer)
+  end)
+
+  copas.loop(function()
+    outcome = table.pack(pcall(callback, port))
+    copas.removeserver(server)
+  end)
+
+  if server_error then
+    error(server_error, 0)
+  elseif not outcome[1] then
+    error(outcome[2], 0)
+  end
+end
+
+local function load_fixture()
+  local file = assert(io.open(FIXTURE, "rb"))
+  local fixture = assert(bson.json.decode(file:read("*a")))
+
+  file:close()
+  return fixture
+end
+
+local function fixture_option(fixture, entity_id)
+  for _, entity in fixture:get("createEntities"):iter() do
+    local client = entity:get("client")
+
+    if client and client:get("id") == entity_id then
+      return client:get("uriOptions"):get("loadBalanced")
+    end
+  end
+end
+
+describe("load-balanced connection establishment", function()
+  it("handshakes and runs a command through the pooled connection", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local reply = assert(client:database():run_command("ping"))
+
+      assert.are.equal(1, reply:get("ok"):to_number())
+      assert(client:close())
+    end)
+  end)
+
+  it("runs the exact non-load-balanced connection-establishment cases", function()
+    local fixture = load_fixture()
+    local first = fixture:get("tests"):get(1)
+    local expected_message = first:get("operations"):get(1)
+      :get("expectError"):get("errorContains")
+
+    assert.is_true(fixture_option(fixture, "lbTrueClient"))
+    assert.is_false(fixture_option(fixture, "lbFalseClient"))
+
+    run_endpoint(true, nil, function(port)
+      local client, err = mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      )
+
+      assert.is_nil(client)
+      assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+      assert.is_truthy(err.message:find(expected_message, 1, true))
+    end)
+
+    run_endpoint(false, nil, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=false",
+        { runtime = mongodb.runtime.copas() }
+      ))
+
+      assert(client:database():run_command("ping"))
+      assert(client:close())
+    end)
+  end)
+end)

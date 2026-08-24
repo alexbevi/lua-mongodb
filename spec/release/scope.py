@@ -114,6 +114,7 @@ POST_V1_REASONS = {
   "CMAP-002": "authentication failure pool clearing is outside production-core v1",
   "CMAP-003": "application error pool-clear ordering is outside production-core v1",
   "CMAP-004": "interrupting in-use connections is outside production-core v1",
+  "CON-010": "complete load-balanced unified execution is outside production-core v1",
   "CS-001": "change stream option forwarding is outside production-core v1",
   "CS-002": "cooperative change stream iteration is outside production-core v1",
   "CS-003": "change stream resume-token tracking is outside production-core v1",
