@@ -25,6 +25,7 @@ describe("CMAP connection pools", function()
     local service_b = bson.object_id("000000000000000000000002")
     local services = { service_a, service_b }
     local resources = {}
+    local cleared_event
     local connection_pool = pool.new({
       address = "load-balancer:27017",
       connect = function()
@@ -39,6 +40,13 @@ describe("CMAP connection pools", function()
         resources[#resources + 1] = resource
         return resource, nil, { service_id = service_id }
       end,
+      listeners = {
+        function(event)
+          if event.type == "ConnectionPoolCleared" then
+            cleared_event = event
+          end
+        end,
+      },
       runtime = runtime,
     })
 
@@ -53,6 +61,7 @@ describe("CMAP connection pools", function()
     assert(connection_pool:check_in(first))
     assert(connection_pool:check_in(second))
     assert(connection_pool:clear(false, service_a))
+    assert.are.equal(service_a, cleared_event.service_id)
     assert.are.equal("ready", connection_pool.state)
     assert.are.equal(1, connection_pool:generation_for(service_a))
     assert.are.equal(0, connection_pool:generation_for(service_b))

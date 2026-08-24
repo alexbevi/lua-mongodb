@@ -8007,6 +8007,28 @@
       "notes": [],
       "started_at": "2026-08-24T22:32:30+00:00",
       "completed_at": "2026-08-24T22:38:14+00:00"
+    },
+    "LB-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua --filter=tracks.service'",
+          "exit_code": 1,
+          "summary": "The targeted load-balanced clear event preserved ordering but exposed nil service_id instead of the cleared service ObjectId.",
+          "recorded_at": "2026-08-24T22:47:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/command_monitoring_spec.lua spec/unit/command_executor_spec.lua spec/unit/pool_spec.lua spec/unit/unified_events_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger planning.tests.test_readme_compatibility spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/pool.lua spec/support/mongodb/unified/events.lua spec/unit/command_monitoring_spec.lua spec/unit/pool_spec.lua spec/unit/unified_events_spec.lua'",
+          "exit_code": 0,
+          "summary": "43 focused command-monitoring, executor, pool, and unified-event unit cases covering all three exact load-balancer event fixtures, 2 directly coupled integration cases, 15 conformance artifact tests, and touched-file lint passed; complexity and all conformance projections also passed.",
+          "recorded_at": "2026-08-24T22:51:22+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T22:46:32+00:00",
+      "completed_at": "2026-08-24T22:51:23+00:00"
     }
   },
   "verified_references": {

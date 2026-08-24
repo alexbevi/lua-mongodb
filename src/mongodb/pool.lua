@@ -1095,6 +1095,7 @@ function POOL_METHODS:clear(interrupt_in_use_connections, service_id)
   if service_id ~= nil or prior_state ~= "paused" then
     publish(state, "ConnectionPoolCleared", {
       interrupt_in_use_connections = interrupt_in_use_connections,
+      service_id = service_id,
     })
   end
 

@@ -362,6 +362,7 @@ function M.new(specification)
       record(collector, {
         address = event.address,
         interrupt_in_use_connections = event.interrupt_in_use_connections,
+        service_id = event.service_id,
         type = "pool_cleared",
       })
     end,

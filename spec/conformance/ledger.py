@@ -542,7 +542,13 @@ def classify_case(
       else:
         owner = "LB-009"
     elif fixture == "event-monitoring.json":
-      owner = "LB-006"
+      return _passed(
+        case,
+        "LB-006",
+        "spec/unit/command_monitoring_spec.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua spec/unit/pool_spec.lua spec/unit/unified_events_spec.lua'",
+        "deterministic-runtime",
+      )
     elif fixture == "lb-connection-establishment.json":
       return _excluded(
         case,

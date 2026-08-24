@@ -5,6 +5,17 @@ local errors = require("mongodb.error")
 local monitoring = require("mongodb.monitoring")
 local op_msg = require("mongodb.wire.op_msg")
 
+local FIXTURE_ROOT = (os.getenv("PWD") or ".")
+  .. "/planning/specifications/source/"
+
+local function read_fixture(relative)
+  local file = assert(io.open(FIXTURE_ROOT .. relative, "rb"))
+  local content = file:read("*a")
+
+  file:close()
+  return assert(bson.json.decode(content))
+end
+
 local function fake_connection(responses)
   local connection = { requests = {}, responses = responses }
 
@@ -39,6 +50,81 @@ local function clock(values)
 end
 
 describe("command monitoring", function()
+  it("runs the exact load-balanced serviceId event cases", function()
+    local fixture = read_fixture("load-balancers/tests/event-monitoring.json")
+    local service_id = bson.object_id("000000000000000000000001")
+    local observed = {}
+    local events = monitoring.new({
+      clock = clock({ 1, 2, 3, 4 }),
+      listeners = {
+        {
+          started = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          succeeded = function(_, event)
+            observed[#observed + 1] = event
+          end,
+          failed = function(_, event)
+            observed[#observed + 1] = event
+          end,
+        },
+      },
+    })
+    local connection = fake_connection({
+      bson.document({
+        { "ok", 1 },
+        { "maxWireVersion", 25 },
+        { "serviceId", service_id },
+      }),
+      bson.document({ { "ok", 1 } }),
+      bson.document({ { "ok", 0 }, { "errmsg", "bad filter" }, { "code", 2 } }),
+    })
+    local commands = command_executor.new(connection, {
+      load_balanced = true,
+      monitoring = events,
+    })
+
+    assert(commands:hello())
+    assert(commands:command("database0", bson.document({ { "insert", "coll0" } })))
+    local response, err = commands:command(
+      "database0",
+      bson.document({ { "find", "coll0" } })
+    )
+
+    assert.is_nil(response)
+    assert.is_true(errors.is(err, errors.CATEGORY.SERVER))
+    assert.are.same({
+      "command started and succeeded events include serviceId",
+      "command failed events include serviceId",
+      "poolClearedEvent events include serviceId",
+    }, {
+      fixture:get("tests"):get(1):get("description"),
+      fixture:get("tests"):get(2):get("description"),
+      fixture:get("tests"):get(3):get("description"),
+    })
+    assert.are.same({
+      "command_started",
+      "command_succeeded",
+      "command_started",
+      "command_failed",
+    }, {
+      observed[1].type,
+      observed[2].type,
+      observed[3].type,
+      observed[4].type,
+    })
+
+    for _, event in ipairs(observed) do
+      assert.are.equal(service_id, event.service_id)
+    end
+
+    local expected_pool_event = fixture:get("tests"):get(3)
+      :get("expectEvents"):get(2):get("events"):get(1)
+      :get("poolClearedEvent")
+
+    assert.is_true(expected_pool_event:get("hasServiceId"))
+  end)
+
   it("keeps security helpers closed for invalid command values", function()
     assert.is_false(command_security.is_sensitive(nil, bson.document({})))
     assert.are.equal(0, #command_security.redact_server_response("invalid"))
@@ -130,6 +216,10 @@ describe("command monitoring", function()
     assert.are.equal(500, observed[4].duration_ms)
     assert.are.equal("db.example:27017", observed[1].connection_id)
     assert.are.equal(99, observed[1].server_connection_id)
+    assert.is_nil(observed[1].service_id)
+    assert.is_nil(observed[2].service_id)
+    assert.is_nil(observed[3].service_id)
+    assert.is_nil(observed[4].service_id)
     assert.are.equal("app", observed[1].database_name)
     assert.are.equal("insert", observed[1].command_name)
     assert.are.equal("Ada", observed[1].command:get("documents"):get(1):get("name"))

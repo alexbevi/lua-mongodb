@@ -350,14 +350,18 @@ describe("unified command events", function()
     })))
 
     assert(runner:add_entity("client0", "client", client))
+    local service_id = bson.object_id("0123456789abcdef01234567")
+
     collector.pool_listener:ConnectionPoolCleared({
       address = "127.0.0.1:27017",
       interrupt_in_use_connections = true,
+      service_id = service_id,
     })
 
     assert(event_module.assert_all(runner, expected_cmap_events({
       document({
         { "poolClearedEvent", document({
+          { "hasServiceId", true },
           { "interruptInUseConnections", true },
         }) },
       }),
