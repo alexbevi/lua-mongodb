@@ -399,6 +399,22 @@ local function find_options(options)
   return options
 end
 
+local function rename_options(options)
+  if options == nil then
+    return {}
+  elseif type(options) ~= "table" then
+    error("GridFS rename options must be a table", 3)
+  end
+
+  for key in pairs(options) do
+    if key ~= "timeout_ms" then
+      error("unknown GridFS rename option: " .. tostring(key), 3)
+    end
+  end
+
+  return options
+end
+
 local function file_metadata(document)
   local length = integer_value(document:get("length"))
   local chunk_size_bytes = integer_value(document:get("chunkSize"))
@@ -1038,6 +1054,34 @@ function BUCKET_METHODS:find(filter, options)
     filter,
     find_options(options)
   )
+end
+
+function BUCKET_METHODS:rename(identifier, new_filename, options)
+  if identifier == nil then
+    error("GridFS rename id must not be nil", 2)
+  end
+
+  validate_filename(new_filename, "rename")
+
+  local result, err = BUCKET_STATES[self].files_collection:update_one(
+    bson.document({ { "_id", identifier } }),
+    bson.document({
+      { "$set", bson.document({ { "filename", new_filename } }) },
+    }),
+    rename_options(options)
+  )
+
+  if not result then
+    return nil, err
+  elseif result.matched_count == 0 then
+    return gridfs_error(
+      "file_not_found",
+      "GridFS file was not found",
+      { id = identifier }
+    )
+  end
+
+  return true
 end
 
 local function new_upload(state, identifier, filename, options)

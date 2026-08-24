@@ -2181,6 +2181,22 @@ local function find_gridfs(_, bucket, arguments)
   return collect_cursor(cursor)
 end
 
+local function rename_gridfs(_, bucket, arguments)
+  local renamed, err = call_driver(function()
+    return bucket:rename(
+      arguments:get("id"),
+      arguments:get("newFilename"),
+      operation_options(arguments, {})
+    )
+  end)
+
+  if not renamed then
+    return nil, err
+  end
+
+  return nil
+end
+
 local function upload_gridfs(_, bucket, arguments, _, path)
   local source, err = gridfs_source(
     arguments:get("source"),
@@ -2252,6 +2268,10 @@ local BUCKET_OPERATIONS = {
       "noCursorTimeout", "skip", "sort", "timeoutMS",
     },
     handler = find_gridfs,
+  },
+  rename = {
+    arguments = { "id", "newFilename", "timeoutMS" },
+    handler = rename_gridfs,
   },
   upload = {
     arguments = {

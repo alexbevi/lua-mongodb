@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2031,
-    "runnable": 2031
+    "passed": 2035,
+    "runnable": 2035
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -23225,7 +23225,6 @@
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[1]": {
       "activity": "GFS-012",
       "fingerprint": "855652e30c3769536dc0123eb15a1b83e0c7ddbe7e4e065f106a8c684f8f48c2",
-      "reason": "GridFS rename-by-id operations await the rename slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23256,12 +23255,11 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[2]": {
       "activity": "GFS-012",
       "fingerprint": "2fee797bf19b9c0114835a036c1f4a54f3538581482a46b3bc034bc92b34c0d1",
-      "reason": "GridFS rename-by-id operations await the rename slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -23291,7 +23289,7 @@
         ],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[3]": {
       "activity": "GFS-014",
@@ -50998,7 +50996,6 @@
     "gridfs/tests/rename.json::test[1]": {
       "activity": "GFS-012",
       "fingerprint": "6042c5963afb94091beae8e1a1e11600367baea2fa6c04933bb70b568007bbff",
-      "reason": "GridFS rename-by-id operations await the rename slice",
       "requirements": {
         "arguments": [
           "rename.id",
@@ -51020,12 +51017,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/rename.json::test[2]": {
       "activity": "GFS-012",
       "fingerprint": "a4d009d51b5077c233a434a36c999726dddf021367499976a20308aaa68f1675",
-      "reason": "GridFS rename-by-id operations await the rename slice",
       "requirements": {
         "arguments": [
           "rename.id",
@@ -51047,7 +51043,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/renameByName.json::test[1]": {
       "activity": "GFS-013",

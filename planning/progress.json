@@ -7527,6 +7527,28 @@
       "notes": [],
       "started_at": "2026-08-24T13:02:16+00:00",
       "completed_at": "2026-08-24T13:14:39+00:00"
+    },
+    "GFS-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/gridfs_spec.lua",
+          "exit_code": 2,
+          "summary": "28 unit cases passed and the defining exact-update case errored because bucket rename was absent",
+          "recorded_at": "2026-08-24T13:26:38+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with focused GridFS and unified-driver units, GridFS OP_MSG integration, both exact rename fixtures, both directly coupled rename CSOT identities, 143 focused Python artifact/package cases, and five touched-file lint targets; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "202 distinct focused tests executed and passed (45 unit, 10 integration, 4 exact unified, 143 Python artifact/package tests); 0 environment-skipped, 0 deferred, 0 failed; 5 touched Lua files lint-clean; complexity and all generated capability, conformance, README, release, package, and JSON validators passed",
+          "recorded_at": "2026-08-24T13:34:06+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T13:25:42+00:00",
+      "completed_at": "2026-08-24T13:34:07+00:00"
     }
   },
   "verified_references": {

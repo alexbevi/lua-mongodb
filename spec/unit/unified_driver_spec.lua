@@ -107,6 +107,7 @@ local function with_fake_client(callback)
           downloads = {},
           finds = {},
           options = bucket_options,
+          renames = {},
           uploads = {},
         }
 
@@ -233,6 +234,15 @@ local function with_fake_client(callback)
           end
 
           return cursor
+        end
+
+        function bucket:rename(identifier, new_filename, rename_options)
+          self.renames[#self.renames + 1] = {
+            identifier = identifier,
+            new_filename = new_filename,
+            options = rename_options,
+          }
+          return true
         end
 
         client.gridfs_buckets[#client.gridfs_buckets + 1] = {
@@ -795,6 +805,60 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal(1, find.options.skip)
       assert.are.equal(sort, find.options.sort)
       assert.are.equal(1000, find.options.timeout_ms)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("maps GridFS rename selectors and timeout options", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "assets" },
+            }) },
+          }),
+          document({
+            { "bucket", document({
+              { "id", "bucket0" },
+              { "database", "database0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Rename one stored file" },
+            { "operations", array({
+              document({
+                { "name", "rename" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "id", "rename-id" },
+                  { "newFilename", "renamed.txt" },
+                  { "timeoutMS", bson.int64(1000) },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "gridfs-rename.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      local rename = connections[2].gridfs_buckets[1].value.renames[1]
+
+      assert.are.equal("rename-id", rename.identifier)
+      assert.are.equal("renamed.txt", rename.new_filename)
+      assert.are.equal(1000, rename.options.timeout_ms)
       assert(lifecycle:close())
     end)
   end)

@@ -782,4 +782,65 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("renames one files document and reports a missing id", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      for index, expected_id in ipairs({ "rename-id", "missing-id" }) do
+        local update = receive_frame(peer)
+        local model = update.body:get("updates"):get(1)
+
+        assert.are.equal("fs.files", update.body:get("update"))
+        assert.are.equal(expected_id, model:get("q"):get("_id"))
+        assert.are.equal(
+          "renamed.txt",
+          model:get("u"):get("$set"):get("filename")
+        )
+        assert.are.same({ "$set" }, model:get("u"):keys())
+        send_response(peer, update, bson.document({
+          { "ok", 1 },
+          { "n", index == 1 and 1 or 0 },
+          { "nModified", index == 1 and 1 or 0 },
+        }))
+      end
+
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket())
+
+        assert.is_true(assert(bucket:rename("rename-id", "renamed.txt")))
+        local renamed, err = bucket:rename("missing-id", "renamed.txt")
+
+        assert.is_nil(renamed)
+        assert.are.equal("file_not_found", err.details.gridfs)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)
