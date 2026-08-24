@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "53b4ad02fef6a507e3f3f5b132f59d677adf9442a8fb0052ed6dd1cc3877d351",
+  "plan_digest": "b1f7d37b9f4d34b36692ef8e9e38e06a6e72b2dd0921592356f71e9decc71951",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -8073,6 +8073,13 @@
       "notes": [],
       "started_at": "2026-08-24T23:41:01+00:00",
       "completed_at": "2026-08-24T23:45:35+00:00"
+    },
+    "LB-019": {
+      "status": "pending",
+      "evidence": [],
+      "notes": [
+        "Requeued: Correct the close result contract to match the load-balancers cursor fixture and pinned PyMongo behavior before adding the defining test."
+      ]
     }
   },
   "verified_references": {
