@@ -7621,24 +7621,25 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON=spec.release.test_publish.PublishTests.test_workflow_recovers_a_partial_luarocks_publication",
+          "command": "make test-focus FOCUS_PYTHON=spec.release.test_source_rock.SourceRockTests.test_builder_omits_reference_submodule_payloads",
           "exit_code": 2,
-          "summary": "The publication workflow could not detect or recover a rockspec-only LuaRocks version; it had no source-artifact probe or existing-version upload_rock path.",
-          "recorded_at": "2026-08-24T17:42:37+00:00"
+          "summary": "The release had no builder for an upload-safe source rock; the only available luarocks pack artifact embedded 5,789 files including both pinned reference submodules, produced a 15.4 MB upload, and LuaRocks rejected it with HTTP 413 in run 32759361618.",
+          "recorded_at": "2026-08-24T18:03:17+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_publish spec.release.test_checklist planning.tests.test_ci_portability'; python3 -m py_compile spec/release/test_publish.py; ruby -e 'require yaml; YAML.load_file(.github/workflows/release.yml)'; python3 spec/release/checklist.py --check; git diff --check",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_source_rock spec.release.test_publish spec.release.test_checklist planning.tests.test_ci_portability'; python3 -m py_compile spec/release/source_rock.py spec/release/test_source_rock.py spec/release/test_publish.py; ruby -e 'require yaml; YAML.load_file(.github/workflows/release.yml)'; python3 spec/release/checklist.py --check; python3 spec/release/source_rock.py --repository . --commit 5835f5db04b0d5a3810a1db1096bcbaeb3d7a41e --rockspec mongodb-0.9.0-1.rockspec --source-directory lua-mongodb --output ARTIFACT; luarocks --lua-version=5.4 --tree=INSTALL_TREE install ARTIFACT --deps-mode=one; lua spec/package/smoke.lua; git diff --check",
           "exit_code": 0,
-          "summary": "26 focused release and workflow-portability tests passed; Python compilation, workflow YAML parsing, the 0.9.0 release checklist (5524 classified cases, 0 applicable gaps, 9 compatibility rows), and diff validation passed.",
-          "recorded_at": "2026-08-24T17:45:17+00:00"
+          "summary": "27 focused release and workflow-portability tests passed; Python/YAML/release-checklist/diff validators passed; the deterministic exact-release source rock was 1.5 MB with 395 entries, installed in an isolated LuaRocks tree, and passed the packaged public-API smoke test.",
+          "recorded_at": "2026-08-24T18:07:24+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance release qualification exposed that the checked coverage ratchet has no src/mongodb/gridfs.lua baseline row; the Linux supplemental 90 ms CSOT identity also produced a documented hosted-runner timing flake that passed the two intervening Linux runs and 10 focused local repetitions.",
         "Requeued: Full Conformance 32744710748 reproduced the hosted Linux command-execution test[3] failure after 240 seconds: the focused Lua process still shared its Python invocation and replica-set deployment with the preceding change-stream branch, so release qualification requires deployment-level isolation.",
         "Requeued: Full Conformance run 32746961796 reported authoritative GridFS coverage 774/877 against the conservative 702/794 release baseline.",
-        "Requeued: LuaRocks publication run 32757189130 committed the immutable 0.9.0-1 rockspec but its paired source-rock upload failed, requiring safe partial-publication recovery."
+        "Requeued: LuaRocks publication run 32757189130 committed the immutable 0.9.0-1 rockspec but its paired source-rock upload failed, requiring safe partial-publication recovery.",
+        "Requeued: LuaRocks publication run 32759361618 reached partial-publication recovery but rejected the 15.4 MB source rock with HTTP 413 because luarocks pack recursively embedded both pinned reference submodules."
       ],
       "reopen_history": [
         {
@@ -7716,11 +7717,30 @@
               "recorded_at": "2026-08-24T16:36:44+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-24T17:45:18+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON=spec.release.test_publish.PublishTests.test_workflow_recovers_a_partial_luarocks_publication",
+              "exit_code": 2,
+              "summary": "The publication workflow could not detect or recover a rockspec-only LuaRocks version; it had no source-artifact probe or existing-version upload_rock path.",
+              "recorded_at": "2026-08-24T17:42:37+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_publish spec.release.test_checklist planning.tests.test_ci_portability'; python3 -m py_compile spec/release/test_publish.py; ruby -e 'require yaml; YAML.load_file(.github/workflows/release.yml)'; python3 spec/release/checklist.py --check; git diff --check",
+              "exit_code": 0,
+              "summary": "26 focused release and workflow-portability tests passed; Python compilation, workflow YAML parsing, the 0.9.0 release checklist (5524 classified cases, 0 applicable gaps, 9 compatibility rows), and diff validation passed.",
+              "recorded_at": "2026-08-24T17:45:17+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "5835f5db04b0d5a3810a1db1096bcbaeb3d7a41e",
-      "started_at": "2026-08-24T17:41:38+00:00",
-      "completed_at": "2026-08-24T17:45:18+00:00"
+      "reopened_after_commit": "df7916b5ecec1271f23920eff3fd9470bce6559d",
+      "started_at": "2026-08-24T18:02:19+00:00",
+      "completed_at": "2026-08-24T18:07:25+00:00"
     }
   },
   "verified_references": {

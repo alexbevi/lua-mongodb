@@ -155,6 +155,11 @@ class PublishTests(unittest.TestCase):
     workflow = WORKFLOW.read_text(encoding="utf-8")
 
     self.assertIn(
+      'python3 "$GITHUB_WORKSPACE/spec/release/source_rock.py"',
+      workflow,
+    )
+    self.assertNotIn('run: luarocks pack "$ROCKSPEC"', workflow)
+    self.assertIn(
       'luarocks download --source "$PACKAGE" "$ROCKSPEC_VERSION"',
       workflow,
     )

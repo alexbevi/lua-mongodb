@@ -185,7 +185,13 @@ jobs:
 
       - name: Build source rock from public immutable tag
         working-directory: release-source
-        run: luarocks pack "$ROCKSPEC"
+        run: |
+          python3 "$GITHUB_WORKSPACE/spec/release/source_rock.py" \
+            --repository . \
+            --commit "$RELEASE_SHA" \
+            --rockspec "$ROCKSPEC" \
+            --source-directory lua-mongodb \
+            --output "$SOURCE_ROCK"
 
       - name: Verify source rock in an isolated tree
         working-directory: release-source
