@@ -1084,6 +1084,31 @@ function BUCKET_METHODS:rename(identifier, new_filename, options)
   return true
 end
 
+function BUCKET_METHODS:rename_by_name(filename, new_filename, options)
+  validate_filename(filename, "rename")
+  validate_filename(new_filename, "rename")
+
+  local result, err = BUCKET_STATES[self].files_collection:update_many(
+    bson.document({ { "filename", filename } }),
+    bson.document({
+      { "$set", bson.document({ { "filename", new_filename } }) },
+    }),
+    rename_options(options)
+  )
+
+  if not result then
+    return nil, err
+  elseif result.matched_count == 0 then
+    return gridfs_error(
+      "file_not_found",
+      "GridFS file was not found",
+      { filename = filename }
+    )
+  end
+
+  return true
+end
+
 local function new_upload(state, identifier, filename, options)
   validate_filename(filename)
 

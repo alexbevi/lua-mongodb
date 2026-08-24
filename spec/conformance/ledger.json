@@ -43430,26 +43430,26 @@
       "activity": "GFS-013",
       "fingerprint": "1a7891cae17a9a720227b18c49d3010133cc50aaa8508338ac8752e2ca56eaf6",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "gridfs/tests/renameByName.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "gridfs"
     },
     "gridfs/tests/renameByName.json::test[2]": {
       "activity": "GFS-013",
       "fingerprint": "f8c7606d86763bbec83cf96e970b3d0205e63ab6b736f6788114dc2ea401f784",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "gridfs/tests/renameByName.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "gridfs"
     },
     "gridfs/tests/upload-disableMD5.json::test[1]": {
@@ -86748,9 +86748,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1103,
+      "deferred_unsupported": 1101,
       "excluded_scope": 97,
-      "passed": 4324
+      "passed": 4326
     },
     "suites": {
       "auth": 73,

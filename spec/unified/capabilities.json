@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2035,
-    "runnable": 2035
+    "passed": 2037,
+    "runnable": 2037
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -51048,7 +51048,6 @@
     "gridfs/tests/renameByName.json::test[1]": {
       "activity": "GFS-013",
       "fingerprint": "1a7891cae17a9a720227b18c49d3010133cc50aaa8508338ac8752e2ca56eaf6",
-      "reason": "GridFS rename-by-name operations await the revision-rename slice",
       "requirements": {
         "arguments": [
           "renameByName.filename",
@@ -51070,12 +51069,11 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/renameByName.json::test[2]": {
       "activity": "GFS-013",
       "fingerprint": "f8c7606d86763bbec83cf96e970b3d0205e63ab6b736f6788114dc2ea401f784",
-      "reason": "GridFS rename-by-name operations await the revision-rename slice",
       "requirements": {
         "arguments": [
           "renameByName.filename",
@@ -51097,7 +51095,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "gridfs/tests/upload-disableMD5.json::test[1]": {
       "activity": "GFS-004",

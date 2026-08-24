@@ -245,6 +245,14 @@ local function with_fake_client(callback)
           return true
         end
 
+        function bucket:rename_by_name(filename, new_filename)
+          self.renames[#self.renames + 1] = {
+            filename = filename,
+            new_filename = new_filename,
+          }
+          return true
+        end
+
         client.gridfs_buckets[#client.gridfs_buckets + 1] = {
           database_name = name,
           options = bucket_options,
@@ -848,6 +856,14 @@ describe("unified driver GridFS buckets", function()
                   { "timeoutMS", bson.int64(1000) },
                 }) },
               }),
+              document({
+                { "name", "renameByName" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "filename", "report" },
+                  { "newFilename", "archive" },
+                }) },
+              }),
             }) },
           }),
         }) },
@@ -859,6 +875,10 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal("rename-id", rename.identifier)
       assert.are.equal("renamed.txt", rename.new_filename)
       assert.are.equal(1000, rename.options.timeout_ms)
+      local rename_by_name = connections[2].gridfs_buckets[1].value.renames[2]
+
+      assert.are.equal("report", rename_by_name.filename)
+      assert.are.equal("archive", rename_by_name.new_filename)
       assert(lifecycle:close())
     end)
   end)

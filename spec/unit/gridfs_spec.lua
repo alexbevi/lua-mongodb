@@ -1494,6 +1494,72 @@ describe("GridFS buckets", function()
     assert.are.equal("missing-id", err.details.id)
   end)
 
+  it("renames every files document with the selected filename", function()
+    local runtime = fake_runtime.new({ now = 60 })
+    local commands = {}
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command)
+        commands[#commands + 1] = command
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+        return bson.document({
+          { "ok", 1 },
+          { "n", 3 },
+          { "nModified", 3 },
+        })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      nil,
+      runtime
+    )
+
+    assert.is_true(assert(bucket:rename_by_name(
+      "report",
+      "archive",
+      { timeout_ms = 1000 }
+    )))
+    assert.are.equal(1, #commands)
+    assert.are.equal("fs.files", commands[1]:get("update"))
+    local update = commands[1]:get("updates"):get(1)
+
+    assert.are.equal("report", update:get("q"):get("filename"))
+    assert.is_true(update:get("multi"))
+    assert.are.same({ "$set" }, update:get("u"):keys())
+    assert.are.equal("archive", update:get("u"):get("$set"):get("filename"))
+    assert.are.equal(61, deadlines[1])
+  end)
+
+  it("returns a structured error when a rename filename is missing", function()
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function()
+        return bson.document({
+          { "ok", 1 },
+          { "n", 0 },
+          { "nModified", 0 },
+        })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local renamed, err = bucket:rename_by_name("missing", "archive")
+
+    assert.is_nil(renamed)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.are.equal("file_not_found", err.details.gridfs)
+    assert.are.equal("missing", err.details.filename)
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

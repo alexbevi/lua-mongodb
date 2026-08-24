@@ -843,4 +843,66 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("renames every filename revision and reports a missing filename", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      for index, expected_filename in ipairs({ "report", "missing" }) do
+        local update = receive_frame(peer)
+        local model = update.body:get("updates"):get(1)
+
+        assert.are.equal("fs.files", update.body:get("update"))
+        assert.are.equal(expected_filename, model:get("q"):get("filename"))
+        assert.is_true(model:get("multi"))
+        assert.are.equal(
+          "archive",
+          model:get("u"):get("$set"):get("filename")
+        )
+        assert.are.same({ "$set" }, model:get("u"):keys())
+        send_response(peer, update, bson.document({
+          { "ok", 1 },
+          { "n", index == 1 and 3 or 0 },
+          { "nModified", index == 1 and 3 or 0 },
+        }))
+      end
+
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket())
+
+        assert.is_true(assert(bucket:rename_by_name("report", "archive")))
+        local renamed, err = bucket:rename_by_name("missing", "archive")
+
+        assert.is_nil(renamed)
+        assert.are.equal("file_not_found", err.details.gridfs)
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

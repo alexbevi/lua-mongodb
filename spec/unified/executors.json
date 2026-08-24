@@ -52,6 +52,8 @@
     "gridfs/tests/downloadByName.json::test[8]": {"activity": "GFS-007", "environment": "live-replicaset"},
     "gridfs/tests/rename.json::test[1]": {"activity": "GFS-012", "environment": "live-replicaset"},
     "gridfs/tests/rename.json::test[2]": {"activity": "GFS-012", "environment": "live-replicaset"},
+    "gridfs/tests/renameByName.json::test[1]": {"activity": "GFS-013", "environment": "live-replicaset"},
+    "gridfs/tests/renameByName.json::test[2]": {"activity": "GFS-013", "environment": "live-replicaset"},
     "gridfs/tests/upload-disableMD5.json::test[1]": {"activity": "GFS-004", "environment": "live-replicaset"},
     "gridfs/tests/upload-disableMD5.json::test[2]": {"activity": "GFS-004", "environment": "live-replicaset"},
     "gridfs/tests/upload.json::test[1]": {"activity": "GFS-004", "environment": "live-replicaset"},
