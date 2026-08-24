@@ -166,10 +166,15 @@ jobs:
           echo "$mongodb_dir/bin" >> "$GITHUB_PATH"
           "$mongodb_dir/bin/mongod" --version
 
-      - name: Run exact supplemental version branches
+      - name: Run isolated timing-sensitive Linux CSOT evidence
         run: >-
           MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py
           --include 'client-side-operations-timeout/tests/command-execution.json::test?3?'
+          --report build/conformance/unified-linux-timing-sensitive-csot.json
+
+      - name: Run exact supplemental version branches
+        run: >-
+          python3 spec/unified/run.py
           --include index-management/tests/index-rawdata.json
           --include 'change-streams/tests/unified/change-streams-disambiguatedPaths.json::test?1?'
           --include 'crud/tests/unified/count-rawdata.json::test?2?'
@@ -183,7 +188,9 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: unified-pre-8.2-${{ github.sha }}
-          path: build/conformance/unified-pre-8.2.json
+          path: |
+            build/conformance/unified-linux-timing-sensitive-csot.json
+            build/conformance/unified-pre-8.2.json
           if-no-files-found: error
 
   linux-aggregate:
@@ -259,6 +266,7 @@ jobs:
           name: full-conformance-linux-${{ github.sha }}
           path: |
             build/conformance/unified.json
+            build/conformance/version-branches/unified-linux-timing-sensitive-csot.json
             build/conformance/version-branches/unified-pre-8.2.json
           if-no-files-found: error
 

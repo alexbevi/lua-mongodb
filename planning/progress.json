@@ -7621,21 +7621,22 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "python3 spec/quality/coverage_gate.py --report build/rel058-red-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
-          "exit_code": 1,
-          "summary": "The downloaded authoritative Linux Full Conformance report reproduced the release blocker: src/mongodb/gridfs.lua has no checked-in coverage baseline.",
-          "recorded_at": "2026-08-24T15:17:16+00:00"
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_linux_runs_short_circuit_csot_as_focused_exact_evidence'",
+          "exit_code": 2,
+          "summary": "The defining workflow contract failed because the 90 ms command-execution identity had no isolated invocation/report and remained combined with seven pre-8.2 branches in one Python deployment.",
+          "recorded_at": "2026-08-24T15:39:26+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.release.test_checklist spec.v09.test_scope'; python3 spec/quality/coverage_gate.py --report build/rel058-red-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; release, v0.9, README, JSON, plan, and diff validators",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.release.test_checklist'; isolated MongoDB 8.0.16 make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/command-execution.json::test?3?'; release, v0.9, README, Python, YAML, plan, and diff validators",
           "exit_code": 0,
-          "summary": "All 10 focused coverage, release-checklist, and v0.9 scope contracts passed; the authoritative Linux report passes at 23985/26431 lines with no regressions; the conservative checked baseline is sorted and internally consistent at 23615/26068; the 0.9.0 checklist has 0 gaps, all 113 v0.9 requirements pass, and README, JSON, plan, and diff validators are current. No Lua file changed, so touched-file Lua lint, complexity, and architecture checks are not applicable.",
-          "recorded_at": "2026-08-24T15:19:21+00:00"
+          "summary": "20 focused workflow and release contracts passed; the unchanged timing-sensitive upstream identity executed alone against MongoDB 8.0.16 and passed 1/1 in 982 ms with 0 failures, environment skips, or deferrals; release checklist, all 113 v0.9 requirements, README projection, Python compilation, workflow YAML, plan, and diff validators passed. No production Lua changed, so touched-file Lua lint, complexity, and architecture checks are not applicable.",
+          "recorded_at": "2026-08-24T15:41:02+00:00"
         }
       ],
       "notes": [
-        "Requeued: Full Conformance release qualification exposed that the checked coverage ratchet has no src/mongodb/gridfs.lua baseline row; the Linux supplemental 90 ms CSOT identity also produced a documented hosted-runner timing flake that passed the two intervening Linux runs and 10 focused local repetitions."
+        "Requeued: Full Conformance release qualification exposed that the checked coverage ratchet has no src/mongodb/gridfs.lua baseline row; the Linux supplemental 90 ms CSOT identity also produced a documented hosted-runner timing flake that passed the two intervening Linux runs and 10 focused local repetitions.",
+        "Requeued: Full Conformance 32744710748 reproduced the hosted Linux command-execution test[3] failure after 240 seconds: the focused Lua process still shared its Python invocation and replica-set deployment with the preceding change-stream branch, so release qualification requires deployment-level isolation."
       ],
       "reopen_history": [
         {
@@ -7656,11 +7657,30 @@
               "recorded_at": "2026-08-24T14:53:41+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-24T15:19:22+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "python3 spec/quality/coverage_gate.py --report build/rel058-red-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
+              "exit_code": 1,
+              "summary": "The downloaded authoritative Linux Full Conformance report reproduced the release blocker: src/mongodb/gridfs.lua has no checked-in coverage baseline.",
+              "recorded_at": "2026-08-24T15:17:16+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.release.test_checklist spec.v09.test_scope'; python3 spec/quality/coverage_gate.py --report build/rel058-red-coverage/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux; release, v0.9, README, JSON, plan, and diff validators",
+              "exit_code": 0,
+              "summary": "All 10 focused coverage, release-checklist, and v0.9 scope contracts passed; the authoritative Linux report passes at 23985/26431 lines with no regressions; the conservative checked baseline is sorted and internally consistent at 23615/26068; the 0.9.0 checklist has 0 gaps, all 113 v0.9 requirements pass, and README, JSON, plan, and diff validators are current. No Lua file changed, so touched-file Lua lint, complexity, and architecture checks are not applicable.",
+              "recorded_at": "2026-08-24T15:19:21+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "0e023ada65fb63ed39bd955794653e7122e12a20",
-      "started_at": "2026-08-24T15:16:07+00:00",
-      "completed_at": "2026-08-24T15:19:22+00:00"
+      "reopened_after_commit": "ba0fb3f2c33b3ada8f40e2579f9ff32db2aadd5d",
+      "started_at": "2026-08-24T15:38:50+00:00",
+      "completed_at": "2026-08-24T15:41:03+00:00"
     }
   },
   "verified_references": {

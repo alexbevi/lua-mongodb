@@ -307,11 +307,31 @@ class CiPortabilityTests(unittest.TestCase):
       workflow.index("  linux-version-branches:"):
       workflow.index("  linux-aggregate:")
     ]
+    focused_marker = "Run isolated timing-sensitive Linux CSOT evidence"
+    branches_marker = "Run exact supplemental version branches"
+    focused = linux[
+      linux.index(focused_marker):linux.index(branches_marker)
+    ]
+    branches = linux[
+      linux.index(branches_marker):linux.index("Upload pre-8.2 exact evidence")
+    ]
 
-    self.assertIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1", linux)
+    self.assertIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1", focused)
     self.assertIn(
       "client-side-operations-timeout/tests/command-execution.json::test?3?",
-      linux,
+      focused,
+    )
+    self.assertIn(
+      "--report build/conformance/unified-linux-timing-sensitive-csot.json",
+      focused,
+    )
+    self.assertNotIn(
+      "client-side-operations-timeout/tests/command-execution.json::test?3?",
+      branches,
+    )
+    self.assertIn(
+      "build/conformance/unified-linux-timing-sensitive-csot.json",
+      linux[linux.index("Upload pre-8.2 exact evidence"):],
     )
 
   def test_manual_macos_full_conformance_is_sharded_and_aggregated(self) -> None:

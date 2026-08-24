@@ -445,6 +445,7 @@ def generate() -> dict[str, Any]:
     "spec/v08/scope.py",
     "spec/v09/scope.py",
     "--execution-report build/conformance/unified.json",
+    "unified-linux-timing-sensitive-csot.json",
     "unified-pre-8.2.json",
   ):
     require_text(full_workflow, expected)
