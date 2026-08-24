@@ -155,18 +155,80 @@ describe("monitored topology", function()
     assert(manager:close())
   end)
 
-  it("runs every applicable pinned SDAM monitoring event fixture", function()
-    local paths = sdam_runner.fixture_paths("monitoring")
-    local count = 0
+  it("constructs a static load-balanced topology without monitoring", function()
+    local events = {}
+    local runtime = fake_runtime.new()
+    local checks = 0
+    local manager = topology.new({
+      check = function()
+        checks = checks + 1
+        return nil
+      end,
+      listeners = {
+        function(event)
+          events[#events + 1] = event
+        end,
+      },
+      pool_factory = new_pool,
+      runtime = runtime,
+      seeds = { "load-balancer:27017" },
+      topology_id = "42",
+      type = "LoadBalanced",
+    })
 
-    for _, path in ipairs(paths) do
-      if path ~= "monitoring/load_balancer.json" then
-        assert(sdam_runner.run(path))
-        count = count + 1
-      end
+    assert(manager:open())
+    assert.are.equal("LoadBalanced", manager.description.type)
+    assert.are.equal(
+      "LoadBalancer",
+      manager.description:server("load-balancer:27017").type
+    )
+    assert.is_true(manager.description.compatible)
+    assert.are.equal(0, checks)
+    assert.are.equal(0, #runtime._task_queue)
+
+    local event_types = {}
+
+    for index, event in ipairs(events) do
+      event_types[index] = event.type
     end
 
-    assert.are.equal(7, count)
+    assert.are.same({
+      "TopologyOpening",
+      "TopologyDescriptionChanged",
+      "ServerOpening",
+      "ServerDescriptionChanged",
+      "TopologyDescriptionChanged",
+    }, event_types)
+    assert.are.equal("Unknown", events[2].previous_description.type)
+    assert.are.equal(0, #events[2].previous_description:addresses())
+    assert.are.equal("Unknown", events[2].new_description
+      :server("load-balancer:27017").type)
+    assert.are.equal("Unknown", events[4].previous_description.type)
+    assert.are.equal("LoadBalancer", events[4].new_description.type)
+
+    local static_description = manager.description
+
+    assert(manager:process_hello("load-balancer:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "maxWireVersion", 25 },
+    })))
+    assert.are.equal(static_description, manager.description)
+    assert(manager:close())
+  end)
+
+  it("runs every applicable pinned SDAM monitoring event fixture", function()
+    local paths = sdam_runner.fixture_paths("monitoring")
+
+    for _, path in ipairs(paths) do
+      assert(sdam_runner.run(path))
+    end
+
+    assert.are.equal(8, #paths)
+  end)
+
+  it("runs the pinned load-balanced discovery fixture", function()
+    assert(sdam_runner.run("load-balanced/discover_load_balancer.json"))
   end)
 
   it("runs every pinned SDAM application error fixture", function()

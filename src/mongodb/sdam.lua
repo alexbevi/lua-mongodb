@@ -306,6 +306,40 @@ local function error_server(address, message, options, current_topology_version)
   return setmetatable(value, SERVER_METATABLE)
 end
 
+local function load_balancer_server(address, options)
+  local value = {}
+
+  SERVER_STATES[value] = {
+    address = address,
+    all_hosts = {},
+    arbiters = readonly_table({}, "addresses"),
+    election_id = nil,
+    error = nil,
+    generation = options and options.generation or 0,
+    hosts = readonly_table({}, "addresses"),
+    last_update_time = options and options.last_update_time,
+    last_write_date = nil,
+    logical_session_timeout_minutes = nil,
+    max_bson_size = nil,
+    max_message_size = nil,
+    max_wire_version = nil,
+    max_write_batch_size = nil,
+    me = nil,
+    min_wire_version = nil,
+    minimum_round_trip_time = nil,
+    op_time = nil,
+    passives = readonly_table({}, "addresses"),
+    primary = nil,
+    round_trip_time = nil,
+    set_name = nil,
+    set_version = nil,
+    tags = bson.document({}),
+    topology_version = nil,
+    type = SERVER_TYPE.LOAD_BALANCER,
+  }
+  return setmetatable(value, SERVER_METATABLE)
+end
+
 local function valid_integer(response, name, default, minimum)
   local raw = nullable(response:get(name))
 
@@ -378,6 +412,10 @@ local function parse_server(address, response, options)
 
     local version = topology_version(response)
     return error_server(address, message, options, version)
+  end
+
+  if response:get("serviceId") ~= nil then
+    return load_balancer_server(address, options)
   end
 
   local hosts, parse_err = parse_address_array(response, "hosts")
@@ -616,7 +654,8 @@ local function compatibility(servers, client_min, client_max)
   for address, server in pairs(servers) do
     local state = SERVER_STATES[server]
 
-    if state.type ~= SERVER_TYPE.UNKNOWN
+    if state.type ~= SERVER_TYPE.LOAD_BALANCER
+        and state.type ~= SERVER_TYPE.UNKNOWN
         and state.type ~= SERVER_TYPE.POSSIBLE_PRIMARY
     then
       if state.min_wire_version > client_max then
@@ -881,7 +920,17 @@ local function transition(topology, server)
   local description = SERVER_STATES[server]
   local address = description.address
 
+  if state.type == TOPOLOGY_TYPE.LOAD_BALANCED
+      and description.type ~= SERVER_TYPE.LOAD_BALANCER
+  then
+    return topology
+  end
+
   state.servers[address] = server
+
+  if state.type == TOPOLOGY_TYPE.LOAD_BALANCED then
+    return new_topology(state)
+  end
 
   if state.type == TOPOLOGY_TYPE.SINGLE then
     if state.set_name ~= nil and state.set_name ~= description.set_name then
@@ -1267,6 +1316,8 @@ function M.new(options)
 
   if topology_type == TOPOLOGY_TYPE.SINGLE and #seeds ~= 1 then
     error("Single topology requires exactly one seed", 2)
+  elseif topology_type == TOPOLOGY_TYPE.LOAD_BALANCED and #seeds ~= 1 then
+    error("LoadBalanced topology requires exactly one seed", 2)
   end
 
   local client_min = options.client_min_wire_version or 21
@@ -1330,7 +1381,9 @@ function M.from_uri(connection_string, options)
 
   local topology_type
 
-  if config.direct_connection then
+  if config.load_balanced then
+    topology_type = TOPOLOGY_TYPE.LOAD_BALANCED
+  elseif config.direct_connection then
     topology_type = TOPOLOGY_TYPE.SINGLE
   elseif config.replica_set ~= nil then
     topology_type = TOPOLOGY_TYPE.REPLICA_SET_NO_PRIMARY

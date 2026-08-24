@@ -359,7 +359,13 @@ def classify_case(
       )
 
     if "/tests/load-balanced/" in path:
-      return _deferred(case, "ADV-006", activities)
+      return _passed(
+        case,
+        "ADV-006",
+        "spec/support/dns_seedlist_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/dns_seedlist_spec.lua'",
+        "deterministic-runtime",
+      )
 
     raise LedgerError(f"unknown initial DNS deployment fixture: {identity}")
 
@@ -447,7 +453,12 @@ def classify_case(
     if path.endswith("/connection-options.json") and any(
       identity.endswith(f"::test[{index}]") for index in range(18, 25)
     ):
-      return _deferred(case, "ADV-006", activities)
+      return _passed(
+        case,
+        "ADV-006",
+        "spec/support/config_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      )
 
     return _passed(
       case,
@@ -497,9 +508,63 @@ def classify_case(
         "deterministic-runtime",
       )
 
-    owner = "ADV-006" if (
-      "/tests/load-balanced/" in path or path.endswith("/monitoring/load_balancer.json")
-    ) else "SDAM-002"
+    if "/tests/load-balanced/" in path or path.endswith("/monitoring/load_balancer.json"):
+      return _passed(
+        case,
+        "ADV-006",
+        "spec/support/sdam_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'",
+        "deterministic-runtime",
+      )
+
+    return _deferred(case, "SDAM-002", activities)
+
+  if suite == "load-balancers":
+    fixture = Path(path).name
+    index = int(identity.rsplit("[", 1)[1][:-1])
+
+    if fixture == "cursors.json":
+      if index <= 3:
+        owner = "LB-007"
+      elif index <= 6:
+        owner = "LB-008"
+      else:
+        owner = "LB-009"
+    elif fixture == "event-monitoring.json":
+      owner = "LB-006"
+    elif fixture in {
+      "lb-connection-establishment.json",
+      "non-lb-connection-establishment.json",
+    }:
+      owner = "LB-003"
+    elif fixture == "sdam-error-handling.json":
+      owner = "LB-004" if index in {1, 4} else "LB-005"
+    elif fixture == "server-selection.json":
+      owner = "LB-001"
+    elif fixture == "transactions.json":
+      if index == 1:
+        owner = "LB-002"
+      elif index <= 3:
+        owner = "LB-011"
+      elif index <= 6:
+        owner = "LB-012"
+      elif index <= 8:
+        owner = "LB-013"
+      elif index <= 10:
+        owner = "LB-014"
+      elif index <= 13:
+        owner = "LB-015"
+      elif index <= 15:
+        owner = "LB-016"
+      elif index == 16:
+        owner = "LB-017"
+      else:
+        owner = "LB-018"
+    elif fixture == "wait-queue-timeouts.json":
+      owner = "LB-010"
+    else:
+      raise LedgerError(f"unknown load-balancer fixture: {identity}")
+
     return _deferred(case, owner, activities)
 
   if suite == "connection-monitoring-and-pooling":

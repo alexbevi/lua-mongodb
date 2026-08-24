@@ -638,7 +638,10 @@ end
 start_monitor = function(state, manager, address)
   local server = state.servers[address]
 
-  if state.background and server and server.task == nil then
+  if state.background
+      and state.description.type ~= sdam.TOPOLOGY_TYPE.LOAD_BALANCED
+      and server and server.task == nil
+  then
     server.task = state.runtime.task:spawn(monitor_loop, manager, address)
   end
 end
@@ -967,8 +970,17 @@ function MANAGER_METHODS:open(options)
     add_server(state, address)
   end
 
-  for _, address in ipairs(state.description:addresses()) do
-    start_monitor(state, self, address)
+  if state.description.type == sdam.TOPOLOGY_TYPE.LOAD_BALANCED then
+    local address = state.description:addresses()[1]
+
+    process_description(state, address, bson.document({
+      { "ok", 1 },
+      { "serviceId", state.topology_id },
+    }))
+  else
+    for _, address in ipairs(state.description:addresses()) do
+      start_monitor(state, self, address)
+    end
   end
 
   start_srv_polling(state, self)

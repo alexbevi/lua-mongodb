@@ -32,6 +32,7 @@ OWNER_REASONS = {
   "ADV-005": "sharded execution is a post-v1 capability",
   "ADV-006": "load-balanced execution is a post-v1 capability",
   "ADV-007": "client bulkWrite is a post-v1 capability",
+  "LB-003": "load-balanced connection establishment awaits its dedicated slice",
   "CBW-001": "client bulk update models await their dedicated slice",
   "CBW-002": "client bulk delete models await their dedicated slice",
   "CBW-003": "client bulk verbose results await their dedicated slice",
@@ -611,12 +612,12 @@ TEST_OVERRIDES.update({
     None,
   ),
   "run-command/tests/unified/runCursorCommand.json::test[5]": (
-    "ADV-006",
-    "load-balanced command cursor pinning is outside production-core v1",
+    "LB-009",
+    "load-balanced command cursor pinning awaits its dedicated slice",
   ),
   "run-command/tests/unified/runCursorCommand.json::test[6]": (
-    "ADV-006",
-    "load-balanced command cursor pinning is outside production-core v1",
+    "LB-009",
+    "load-balanced command cursor pinning awaits its dedicated slice",
   ),
   "run-command/tests/unified/runCursorCommand.json::test[10]": (
     "LEG-008",
@@ -885,7 +886,7 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   if requirements["logs"] or "/logging-" in path or "/backpressure-" in path:
     owner = "ADV-009"
   elif "load-balanced" in topologies or "loadbalanced" in path:
-    owner = "ADV-006"
+    owner = "LB-003"
   elif {"sharded", "sharded-replicaset"} & topologies or "sharded-" in path:
     owner = "ADV-005"
   else:

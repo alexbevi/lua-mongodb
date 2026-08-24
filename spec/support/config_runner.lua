@@ -179,10 +179,6 @@ local function applicable_uri_case(name, index)
     return false
   end
 
-  if name == "connection-options.json" and index >= 18 and index <= 24 then
-    return false
-  end
-
   return true
 end
 

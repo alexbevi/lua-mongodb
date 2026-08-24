@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1082,
+      "deferred_unsupported": 1064,
       "excluded_scope": 97,
-      "passed": 4330,
+      "passed": 4348,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -365,13 +365,13 @@ class ConformanceLedgerTests(unittest.TestCase):
       case for case in generated["cases"].values()
       if case["suite"] == "initial-dns-seedlist-discovery"
     ]
-    self.assertEqual(44, sum(case["status"] == "passed" for case in dns))
+    self.assertEqual(53, sum(case["status"] == "passed" for case in dns))
     self.assertEqual(4, sum(
       case["activity"] == "DNS-001" and case["status"] == "passed"
       for case in dns
     ))
     self.assertEqual(9, sum(
-      case["activity"] == "ADV-006" and case["status"] == "deferred_unsupported"
+      case["activity"] == "ADV-006" and case["status"] == "passed"
       for case in dns
     ))
 

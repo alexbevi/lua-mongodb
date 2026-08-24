@@ -9,8 +9,21 @@ local M = {}
 local ROOT = os.getenv("PWD") or "."
 local SOURCE_ROOT = ROOT
   .. "/planning/specifications/source/initial-dns-seedlist-discovery/tests/"
+local LOAD_BALANCED_SOURCE = SOURCE_ROOT .. "load-balanced/"
 local REPLICA_SET_SOURCE = SOURCE_ROOT .. "replica-set/"
 local SHARDED_SOURCE = SOURCE_ROOT .. "sharded/"
+
+local LOAD_BALANCED_FIXTURES = {
+  "loadBalanced-directConnection.json",
+  "loadBalanced-no-results.json",
+  "loadBalanced-replicaSet-errors.json",
+  "loadBalanced-true-multiple-hosts.json",
+  "loadBalanced-true-txt.json",
+  "srvMaxHosts-conflicts_with_loadBalanced-true-txt.json",
+  "srvMaxHosts-conflicts_with_loadBalanced-true.json",
+  "srvMaxHosts-zero-txt.json",
+  "srvMaxHosts-zero.json",
+}
 
 local FIXTURES = {
   "dbname-with-commas-escaped.json",
@@ -114,6 +127,8 @@ local DNS = {
     srv("localhost.test.build.10gen.cc", 27017),
     srv("localhost.test.build.10gen.cc", 27018),
   },
+  test23 = { srv("localhost.test.build.10gen.cc", 8000) },
+  test24 = { srv("localhost.test.build.10gen.cc", 8000) },
 }
 
 local TXT = {
@@ -131,6 +146,7 @@ local TXT = {
     { strings = { "replicaS", "et=rep", "l0" }, ttl = 86400 },
   },
   test21 = { { strings = { "loadBalanced=false" }, ttl = 86400 } },
+  test24 = { { strings = { "loadBalanced=true" }, ttl = 86400 } },
 }
 
 local function load_fixture(source, name)
@@ -285,6 +301,14 @@ function M.run_replica_set_fixtures()
   end
 
   return #FIXTURES
+end
+
+function M.run_load_balanced_fixtures()
+  for _, name in ipairs(LOAD_BALANCED_FIXTURES) do
+    run_fixture(LOAD_BALANCED_SOURCE, name)
+  end
+
+  return #LOAD_BALANCED_FIXTURES
 end
 
 function M.run_sharded_fixtures()

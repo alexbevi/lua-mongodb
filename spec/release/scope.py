@@ -26,6 +26,10 @@ RELEASE_FIXTURE_OWNERS = {
   "REL-037", "REL-038", "REL-039", "REL-040", "REL-041",
 }
 POST_V1_REASONS = {
+  **{
+    f"LB-{index:03d}": "load-balanced deployment behavior is outside production-core v1"
+    for index in range(1, 19)
+  },
   "ADV-001": "change streams are outside production-core v1",
   "ADV-002": "GridFS is outside production-core v1",
   "ADV-003": "SRV and TXT discovery are outside production-core v1",

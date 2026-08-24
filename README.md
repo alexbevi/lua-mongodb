@@ -552,14 +552,14 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Serialization | [BSON corpus](https://alexbevi.com/specifications/bson-corpus/bson-corpus.html) | 🟢 | 100.0% |
 | Serialization | [BSON binary vector](https://alexbevi.com/specifications/bson-binary-vector/bson-binary-vector.html) | 🟢 | 100.0% |
 | Communication | [Connection string](https://alexbevi.com/specifications/connection-string/connection-string-spec.html) | 🟢 | 100.0% |
-| Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 81.8% |
+| Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 86.2% |
 | Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
-| Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟡 | 83.0% |
+| Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟢 | 100.0% |
 | Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | 🔴 Not supported | 0.0% |
 | Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
 | Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | 🔴 Not supported | 0.0% |
 | Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟡 | 90.5% |
-| Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.1% |
+| Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.5% |
 | Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 82.5% |
 | Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🔴 | 0.0% |
 | Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 83.6% |
@@ -586,7 +586,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **78.4%** |
+|  | **Total** |  | **78.8%** |
 <!-- END SPEC CONFORMANCE -->
 
 ## Development
