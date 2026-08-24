@@ -2,11 +2,11 @@
   "files": {
     "src/mongodb/admin.lua": {
       "active": 893,
-      "covered": 804
+      "covered": 805
     },
     "src/mongodb/api.lua": {
-      "active": 666,
-      "covered": 595
+      "active": 723,
+      "covered": 649
     },
     "src/mongodb/auth/aws.lua": {
       "active": 269,
@@ -101,8 +101,8 @@
       "covered": 162
     },
     "src/mongodb/client.lua": {
-      "active": 554,
-      "covered": 463
+      "active": 572,
+      "covered": 488
     },
     "src/mongodb/client_bulk.lua": {
       "active": 847,
@@ -125,40 +125,40 @@
       "covered": 94
     },
     "src/mongodb/config/options.lua": {
-      "active": 546,
-      "covered": 509
+      "active": 589,
+      "covered": 551
     },
     "src/mongodb/config/uri.lua": {
       "active": 201,
       "covered": 184
     },
     "src/mongodb/crud.lua": {
-      "active": 923,
-      "covered": 827
+      "active": 1067,
+      "covered": 972
     },
     "src/mongodb/cursor.lua": {
-      "active": 275,
-      "covered": 241
+      "active": 291,
+      "covered": 258
     },
     "src/mongodb/discovery/dns.lua": {
       "active": 247,
       "covered": 216
     },
     "src/mongodb/error.lua": {
-      "active": 206,
-      "covered": 191
+      "active": 209,
+      "covered": 195
     },
     "src/mongodb/gridfs.lua": {
-      "active": 794,
-      "covered": 702
+      "active": 877,
+      "covered": 774
     },
     "src/mongodb/handshake/metadata.lua": {
       "active": 254,
       "covered": 236
     },
     "src/mongodb/init.lua": {
-      "active": 20,
-      "covered": 19
+      "active": 22,
+      "covered": 21
     },
     "src/mongodb/monitoring.lua": {
       "active": 141,
@@ -166,15 +166,15 @@
     },
     "src/mongodb/network/transport.lua": {
       "active": 131,
-      "covered": 112
+      "covered": 113
     },
     "src/mongodb/operation_timeout.lua": {
-      "active": 162,
-      "covered": 142
+      "active": 166,
+      "covered": 146
     },
     "src/mongodb/pool.lua": {
-      "active": 666,
-      "covered": 601
+      "active": 669,
+      "covered": 605
     },
     "src/mongodb/retry_executor.lua": {
       "active": 183,
@@ -189,20 +189,20 @@
       "covered": 82
     },
     "src/mongodb/runtime/copas.lua": {
-      "active": 278,
-      "covered": 244
+      "active": 293,
+      "covered": 259
     },
     "src/mongodb/runtime/copas_dns.lua": {
       "active": 352,
       "covered": 277
     },
     "src/mongodb/runtime/copas_socket.lua": {
-      "active": 229,
-      "covered": 140
+      "active": 238,
+      "covered": 150
     },
     "src/mongodb/runtime/fake.lua": {
-      "active": 444,
-      "covered": 370
+      "active": 447,
+      "covered": 373
     },
     "src/mongodb/runtime/http.lua": {
       "active": 285,
@@ -217,8 +217,8 @@
       "covered": 107
     },
     "src/mongodb/runtime/openssl.lua": {
-      "active": 63,
-      "covered": 56
+      "active": 103,
+      "covered": 93
     },
     "src/mongodb/runtime/sha256.lua": {
       "active": 76,
@@ -237,8 +237,8 @@
       "covered": 44
     },
     "src/mongodb/runtime_guard.lua": {
-      "active": 10,
-      "covered": 10
+      "active": 12,
+      "covered": 12
     },
     "src/mongodb/sdam.lua": {
       "active": 762,
@@ -261,16 +261,16 @@
       "covered": 39
     },
     "src/mongodb/standalone_executor.lua": {
-      "active": 63,
-      "covered": 57
+      "active": 64,
+      "covered": 58
     },
     "src/mongodb/topology.lua": {
       "active": 831,
       "covered": 747
     },
     "src/mongodb/topology_executor.lua": {
-      "active": 234,
-      "covered": 201
+      "active": 237,
+      "covered": 205
     },
     "src/mongodb/wire/op_compressed.lua": {
       "active": 107,
@@ -297,7 +297,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 26068,
-    "covered": 23615
+    "active": 26514,
+    "covered": 24058
   }
 }
