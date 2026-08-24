@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "3db79f49edf414dfc405ac61eca33e498f57e4e1f2e959341fafbe1dfe78fb7a",
+  "plan_digest": "53b4ad02fef6a507e3f3f5b132f59d677adf9442a8fb0052ed6dd1cc3877d351",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
@@ -20,7 +20,7 @@
     "completed": 294,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 19
+    "pending": 21
   },
   "active": [],
   "ready": [

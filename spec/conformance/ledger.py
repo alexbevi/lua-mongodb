@@ -543,8 +543,12 @@ def classify_case(
           "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
           "directly-coupled-endpoint",
         )
-      elif index <= 6:
+      elif index == 4:
         owner = "LB-008"
+      elif index == 5:
+        owner = "LB-019"
+      elif index == 6:
+        owner = "LB-020"
       else:
         owner = "LB-009"
     elif fixture == "event-monitoring.json":

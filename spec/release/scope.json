@@ -5,7 +5,7 @@
     "AUTH-019": 11,
     "CON-010": 1,
     "CSOT-001": 3,
-    "LB-008": 3,
+    "LB-008": 1,
     "LB-009": 6,
     "LB-010": 2,
     "LB-011": 2,
@@ -15,7 +15,9 @@
     "LB-015": 3,
     "LB-016": 2,
     "LB-017": 1,
-    "LB-018": 1
+    "LB-018": 1,
+    "LB-019": 1,
+    "LB-020": 1
   },
   "deferred_by_scope": {
     "post-v1-exclusion": 1049
@@ -127,6 +129,8 @@
     "LB-016": "load-balanced deployment behavior is outside production-core v1",
     "LB-017": "load-balanced deployment behavior is outside production-core v1",
     "LB-018": "load-balanced deployment behavior is outside production-core v1",
+    "LB-019": "load-balanced deployment behavior is outside production-core v1",
+    "LB-020": "load-balanced deployment behavior is outside production-core v1",
     "LEG-001": "deprecated count retry behavior is outside production-core v1",
     "LEG-002": "deprecated count timeout behavior is outside production-core v1",
     "LEG-003": "legacy mapReduce is outside production-core v1",
