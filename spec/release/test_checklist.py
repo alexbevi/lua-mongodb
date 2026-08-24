@@ -79,6 +79,18 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
+        "classified_requirements": 113,
+        "csot_cases": 25,
+        "exact_unified_cases": 98,
+        "gridfs_cases": 39,
+        "passed_requirements": 113,
+        "prose_requirements": 15,
+        "retryable_read_cases": 34,
+      },
+      report["gates"]["v0_9_conformance"],
+    )
+    self.assertEqual(
+      {
         "cleanup": ["REL-042", "REL-043"],
         "packaging": ["REL-007"],
         "security": ["REL-008"],
@@ -178,6 +190,13 @@ class ReleaseChecklistTests(unittest.TestCase):
         "CON-008",
       ],
       report["gates"]["completed_v0_8_gates"],
+    )
+    self.assertEqual(
+      [
+        "ADV-002",
+        *[f"GFS-{index:03d}" for index in range(1, 15)],
+      ],
+      report["gates"]["completed_v0_9_gates"],
     )
     self.assertEqual(
       [

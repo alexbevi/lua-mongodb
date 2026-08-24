@@ -163,16 +163,18 @@ def _generate_requirements(
 ) -> dict[str, dict[str, Any]]:
   classifications = _load_requirement_manifest()
   activities = _load_activities()
-  prose_sources = {
+  required_prose_sources = {
     identity for identity, document in documents.items()
     if not suites[document["suite"]]["has_machine_fixtures"]
   }
+  configured_sources = set(classifications)
 
-  if prose_sources != set(classifications):
-    missing = sorted(prose_sources - set(classifications))
-    stale = sorted(set(classifications) - prose_sources)
+  if not required_prose_sources <= configured_sources \
+      or not configured_sources <= set(documents):
+    missing = sorted(required_prose_sources - configured_sources)
+    stale = sorted(configured_sources - set(documents))
     raise CatalogError(
-      f"prose-only documents differ from requirement manifest; "
+      f"prose requirement sources differ from accepted documents; "
       f"unclassified={missing}, stale={stale}"
     )
 
@@ -186,7 +188,7 @@ def _generate_requirements(
   }
   requirements = {}
 
-  for source in sorted(prose_sources):
+  for source in sorted(configured_sources):
     configured = classifications[source]
     configured_entries = configured if isinstance(configured, list) else [configured]
 

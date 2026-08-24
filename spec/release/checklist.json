@@ -167,6 +167,23 @@
       "WIRE-009",
       "CON-008"
     ],
+    "completed_v0_9_gates": [
+      "ADV-002",
+      "GFS-001",
+      "GFS-002",
+      "GFS-003",
+      "GFS-004",
+      "GFS-005",
+      "GFS-006",
+      "GFS-007",
+      "GFS-008",
+      "GFS-009",
+      "GFS-010",
+      "GFS-011",
+      "GFS-012",
+      "GFS-013",
+      "GFS-014"
+    ],
     "conformance": {
       "applicable_gaps": 0,
       "classified_cases": 5524,
@@ -209,6 +226,15 @@
       "configuration_cases": 5,
       "passed_requirements": 16,
       "prose_requirements": 11
+    },
+    "v0_9_conformance": {
+      "classified_requirements": 113,
+      "csot_cases": 25,
+      "exact_unified_cases": 98,
+      "gridfs_cases": 39,
+      "passed_requirements": 113,
+      "prose_requirements": 15,
+      "retryable_read_cases": 34
     }
   },
   "ready": true,

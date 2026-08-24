@@ -20,7 +20,7 @@ V05_SCOPE_ARGUMENTS ?=
 .PHONY: check check-fast check-fast-runtime check-full check-tools check-lua check-busted check-luacheck check-luacov check-luarocks check-python \
 	test-focus test-unit test-integration test-unified test-unified-static test-unified-schema test-unified-inventory \
 	test-unified-meta test-unified-execution test-conformance test-architecture test-generated test-complexity test-quality test-coverage \
-	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-v04-scope test-v05-scope test-v06-scope test-v07-scope test-v08-scope test-release-checklist lint rockspec planning-check
+	test-stress test-compatibility test-compatibility-live test-package test-release-scope test-v04-scope test-v05-scope test-v06-scope test-v07-scope test-v08-scope test-v09-scope test-release-checklist lint rockspec planning-check
 
 check: check-full
 
@@ -115,7 +115,7 @@ test-unified-inventory: check-python check-lua
 	@"$(PYTHON)" spec/unified/update_capabilities.py --check
 	@$(MAKE) --no-print-directory test-conformance
 
-test-conformance: check-python test-release-scope test-v04-scope test-v05-scope test-v06-scope test-v07-scope test-v08-scope test-release-checklist
+test-conformance: check-python test-release-scope test-v04-scope test-v05-scope test-v06-scope test-v07-scope test-v08-scope test-v09-scope test-release-checklist
 	@"$(PYTHON)" -m unittest spec.conformance.test_catalog -v
 	@"$(PYTHON)" spec/conformance/catalog.py --check
 	@"$(PYTHON)" -m unittest spec.conformance.test_ledger -v
@@ -155,6 +155,10 @@ test-v07-scope: check-python
 test-v08-scope: check-python
 	@"$(PYTHON)" -m unittest spec.v08.test_scope -v
 	@"$(PYTHON)" spec/v08/scope.py --check
+
+test-v09-scope: check-python
+	@"$(PYTHON)" -m unittest spec.v09.test_scope -v
+	@"$(PYTHON)" spec/v09/scope.py --check
 
 test-release-checklist: check-python
 	@"$(PYTHON)" -m unittest spec.release.test_checklist spec.release.test_publish -v

@@ -7593,6 +7593,28 @@
       "notes": [],
       "started_at": "2026-08-24T14:00:45+00:00",
       "completed_at": "2026-08-24T14:07:18+00:00"
+    },
+    "CON-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.v09.test_scope",
+          "exit_code": 2,
+          "summary": "1 defining Python scope contract errored because spec.v09.scope did not exist; the 113-requirement GridFS closure boundary was absent",
+          "recorded_at": "2026-08-24T14:19:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.v09.test_scope spec.conformance.test_catalog planning.tests.test_readme_compatibility planning.tests.test_ci_portability spec.release.test_checklist spec.package.test_package'; catalog, ledger, capability, v0.9 scope, README, release-checklist, JSON, YAML, diff, and strict validators",
+          "exit_code": 0,
+          "summary": "39 focused Python conformance, compatibility, workflow, release-checklist, and package contracts passed; v0.9 ratchets 98 exact unified identities plus 15 prose requirements with no gaps; generated artifacts, JSON, workflow YAML, diff, and strict plan validators passed",
+          "recorded_at": "2026-08-24T14:32:14+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T14:18:38+00:00",
+      "completed_at": "2026-08-24T14:32:23+00:00"
     }
   },
   "verified_references": {

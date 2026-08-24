@@ -113,6 +113,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     counts = readme_compatibility.suite_counts()
 
     self.assertEqual({"passed": 11}, dict(counts["compression"]))
+    self.assertEqual({"passed": 54}, dict(counts["gridfs"]))
 
     for suite in ("logging", "ocsp-support", "socks5-support"):
       self.assertEqual({"deferred_unsupported": 1}, dict(counts[suite]))

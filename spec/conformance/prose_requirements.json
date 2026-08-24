@@ -219,6 +219,143 @@
       "runner": "spec/unit/cursor_spec.lua",
       "status": "passed"
     },
+    "gridfs/gridfs-spec.md": [
+      {
+        "id": "bucket-configuration",
+        "activity": "ADV-002",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua'",
+        "reason": "Deterministic public and unified-adapter vectors cover immutable bucket names, chunk sizes, concerns, preferences, timeouts, and the disableMD5 compatibility no-op without database I/O.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "required-indexes-and-empty-files",
+        "activity": "GFS-001",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/crud_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "The first bucket write lazily compares and creates both required indexes, while an empty upload stores one zero-length files document and no chunks.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "chunked-upload-streams",
+        "activity": "GFS-002",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Upload-stream vectors cover exact chunk boundaries, final partial chunks, per-file overrides, metadata, custom ids, terminal close, and structured write failures without orphan cleanup.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "upload-abort",
+        "activity": "GFS-003",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Abort removes written chunks, omits the files document, closes the stream, rejects later writes, and preserves a cleanup failure.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "readable-stream-upload",
+        "activity": "GFS-004",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/unified_driver_spec.lua spec/unit/gridfs_spec.lua spec/unit/operation_timeout_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Readable-source uploads preserve caller ownership and apply one timeout context across index discovery, chunk writes, and the final files insert.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "download-streams",
+        "activity": "GFS-005",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Download streams cover exact bytes, bounded reads, seek and tell, zero-length files, numeric field variants, missing files, and required chunk ordering and length validation.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "download-to-stream",
+        "activity": "GFS-006",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Destination-copy vectors preserve exact byte order and the first structured read, write, or cleanup failure without closing the caller-owned destination.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "filename-revisions",
+        "activity": "GFS-007",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua'",
+        "reason": "Filename downloads select positive revisions oldest-first and negative revisions newest-first and distinguish a missing filename from an out-of-range revision.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "download-to-stream-by-name",
+        "activity": "GFS-008",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Named destination-copy vectors select the requested revision and share one timeout across lookup and chunks without closing the caller-owned destination.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "delete-by-id",
+        "activity": "GFS-009",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Deletion vectors remove the files document before chunks, optionally clean orphan chunks, and return the GridFS not-found error for a missing file.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "delete-by-name",
+        "activity": "GFS-010",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Filename deletion discovers every revision id, removes only those files before their chunks, and returns the GridFS not-found error when no revision exists.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "files-find",
+        "activity": "GFS-011",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Find returns a cursor-like iterable and forwards the filter, all GridFS find options, concerns, preference, and the cursor-lifetime timeout without filter validation.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "rename-by-id",
+        "activity": "GFS-012",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Rename-by-id changes only the selected files document filename and returns the GridFS not-found error when the id is absent.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "rename-by-name",
+        "activity": "GFS-013",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Rename-by-name changes every matching revision and no other files and returns the GridFS not-found error when the filename is absent.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "bucket-drop",
+        "activity": "GFS-014",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/gridfs_spec.lua spec/unit/unified_driver_spec.lua' FOCUS_INTEGRATION='spec/integration/gridfs_spec.lua'",
+        "reason": "Bucket drop removes only the configured files collection and then chunks collection under one operation timeout and stops on the first failure.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/gridfs_spec.lua",
+        "status": "passed"
+      }
+    ],
     "logging/logging.md": {
       "activity": "ADV-009",
       "last_execution": null,

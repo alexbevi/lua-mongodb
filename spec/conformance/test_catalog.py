@@ -62,7 +62,12 @@ class ConformanceCatalogTests(unittest.TestCase):
       if not suites[document["suite"]]["has_machine_fixtures"]
     }
 
-    self.assertEqual(prose_sources, {value["source"] for value in requirements.values()})
+    requirement_sources = {value["source"] for value in requirements.values()}
+    self.assertTrue(prose_sources <= requirement_sources)
+    self.assertEqual(
+      {"gridfs/gridfs-spec.md"},
+      requirement_sources - prose_sources,
+    )
 
     required_fields = {
       "activity",
@@ -164,6 +169,21 @@ class ConformanceCatalogTests(unittest.TestCase):
       self.assertEqual("spec/unit/topology_spec.lua", requirement["runner"])
       self.assertIn("spec/unit/admin_spec.lua", requirement["last_execution"])
       self.assertIn("spec/unit/topology_spec.lua", requirement["last_execution"])
+
+  def test_gridfs_requirements_cover_the_normative_api_surface(self) -> None:
+    requirements = catalog.generate()["requirements"]
+    gridfs = {
+      identity: requirement
+      for identity, requirement in requirements.items()
+      if requirement["suite"] == "gridfs"
+    }
+
+    self.assertEqual(15, len(gridfs))
+    self.assertEqual({"passed"}, {value["status"] for value in gridfs.values()})
+    self.assertEqual(
+      {"spec/unit/gridfs_spec.lua"},
+      {value["runner"] for value in gridfs.values()},
+    )
 
 
 if __name__ == "__main__":

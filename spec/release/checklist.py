@@ -20,6 +20,7 @@ from spec.v05 import scope as v05_scope  # noqa: E402
 from spec.v06 import scope as v06_scope  # noqa: E402
 from spec.v07 import scope as v07_scope  # noqa: E402
 from spec.v08 import scope as v08_scope  # noqa: E402
+from spec.v09 import scope as v09_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -130,6 +131,12 @@ V08_GATES = [
   "CON-008",
 ]
 V08_RELEASE_ACTIVITY = "REL-057"
+V09_GATES = [
+  "ADV-002",
+  *(f"GFS-{index:03d}" for index in range(1, 15)),
+]
+V09_CONFORMANCE_ACTIVITY = "CON-009"
+V09_RELEASE_ACTIVITY = "REL-058"
 
 
 class ChecklistError(ValueError):
@@ -260,6 +267,18 @@ def generate() -> dict[str, Any]:
   ]:
     raise ChecklistError("v0.8 release gate inventory does not match the track")
 
+  gridfs_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-9-gridfs"
+  ]
+  if gridfs_track != [
+    *V09_GATES,
+    V09_CONFORMANCE_ACTIVITY,
+    V09_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError("v0.9 release gate inventory does not match the track")
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -312,6 +331,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in V09_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.9 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   for activity_ids in AUDITS.values():
     for activity_id in activity_ids:
       if activity_id not in activities:
@@ -325,6 +350,7 @@ def generate() -> dict[str, Any]:
   v06_report = v06_scope.generate()
   v07_report = v07_scope.generate()
   v08_report = v08_scope.generate()
+  v09_report = v09_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -382,6 +408,10 @@ def generate() -> dict[str, Any]:
   if v08_summary["planned"] != 0:
     raise ChecklistError("v0.8 conformance still has planned requirements")
 
+  v09_summary = v09_report["summary"]
+  if v09_summary["planned"] != 0:
+    raise ChecklistError("v0.9 conformance still has planned requirements")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -414,6 +444,7 @@ def generate() -> dict[str, Any]:
     "spec/v06/scope.py",
     "spec/v07/scope.py",
     "spec/v08/scope.py",
+    "spec/v09/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-pre-8.2.json",
   ):
@@ -446,6 +477,7 @@ def generate() -> dict[str, Any]:
       "completed_v0_6_gates": V06_GATES,
       "completed_v0_7_gates": V07_GATES,
       "completed_v0_8_gates": V08_GATES,
+      "completed_v0_9_gates": V09_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -513,6 +545,21 @@ def generate() -> dict[str, Any]:
           "prose_requirements"
         ],
       },
+      "v0_9_conformance": {
+        "classified_requirements": v09_summary["classified"],
+        "csot_cases": v09_report["evidence"]["csot_cases"],
+        "exact_unified_cases": (
+          v09_report["evidence"]["gridfs_cases"]
+          + v09_report["evidence"]["retryable_read_cases"]
+          + v09_report["evidence"]["csot_cases"]
+        ),
+        "gridfs_cases": v09_report["evidence"]["gridfs_cases"],
+        "passed_requirements": v09_summary["passed"],
+        "prose_requirements": v09_report["evidence"]["prose_requirements"],
+        "retryable_read_cases": v09_report["evidence"][
+          "retryable_read_cases"
+        ],
+      },
     },
     "ready": True,
     "release": release_metadata(),
@@ -537,6 +584,7 @@ def main(argv: list[str] | None = None) -> int:
     v06_scope.ScopeError,
     v07_scope.ScopeError,
     v08_scope.ScopeError,
+    v09_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

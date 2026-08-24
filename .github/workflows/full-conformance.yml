@@ -247,6 +247,12 @@ jobs:
       - name: Validate exact v0.8 conformance evidence
         run: python3 spec/v08/scope.py --check
 
+      - name: Validate exact v0.9 conformance evidence
+        run: >-
+          python3 spec/v09/scope.py
+          --check
+          --execution-report build/conformance/unified.json
+
       - name: Upload authoritative Linux conformance evidence
         uses: actions/upload-artifact@v7
         with:
@@ -541,6 +547,12 @@ jobs:
 
       - name: Validate exact macOS v0.8 conformance evidence
         run: python3 spec/v08/scope.py --check
+
+      - name: Validate exact macOS v0.9 conformance evidence
+        run: >-
+          python3 spec/v09/scope.py
+          --check
+          --execution-report build/conformance/unified-macos.json
 
       - name: Upload authoritative macOS conformance evidence
         uses: actions/upload-artifact@v7

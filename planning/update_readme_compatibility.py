@@ -142,6 +142,9 @@ CATALOG_PROSE_SUITES = frozenset({
   "socks5-support",
 })
 
+CATALOG_MIXED_SUITES = frozenset({"gridfs"})
+CATALOG_PROJECTED_SUITES = CATALOG_PROSE_SUITES | CATALOG_MIXED_SUITES
+
 CATALOG_REQUIREMENT_STATUSES = frozenset({
   "deferred_unsupported",
   "excluded",
@@ -218,6 +221,19 @@ def suite_counts(
         f"catalog prose suite also has ledger cases: {suite}"
       )
 
+  for suite in CATALOG_MIXED_SUITES:
+    metadata = suites.get(suite)
+
+    if not isinstance(metadata, dict) or metadata.get("has_machine_fixtures") is not True:
+      raise ReadmeCompatibilityError(
+        f"catalog mixed suite is missing machine fixtures: {suite}"
+      )
+
+    if suite not in counts:
+      raise ReadmeCompatibilityError(
+        f"catalog mixed suite has no ledger cases: {suite}"
+      )
+
   for identity, requirement in requirements.items():
     if not isinstance(requirement, dict):
       raise ReadmeCompatibilityError(
@@ -226,7 +242,7 @@ def suite_counts(
 
     suite = requirement.get("suite")
 
-    if suite not in CATALOG_PROSE_SUITES:
+    if suite not in CATALOG_PROJECTED_SUITES:
       continue
 
     status = requirement.get("status")
@@ -239,7 +255,7 @@ def suite_counts(
     counts[suite][status] += 1
 
   missing_requirements = sorted(
-    suite for suite in CATALOG_PROSE_SUITES if not counts[suite]
+    suite for suite in CATALOG_PROJECTED_SUITES if not counts[suite]
   )
 
   if missing_requirements:
