@@ -47,6 +47,7 @@ local APPLICATION_ERROR_FIELDS = {
   labels = true,
   max_wire_version = true,
   response = true,
+  service_id = true,
   type = true,
   when = true,
 }
@@ -1145,11 +1146,25 @@ local function validate_application_error_fields(fields)
   end
 end
 
+local function pool_generation(pool, service_id)
+  if type(pool.generation_for) == "function" then
+    return pool:generation_for(service_id)
+  end
+
+  return pool.generation or 0
+end
+
 local function application_error_generation(fields, pool)
+  if fields.service_id ~= nil
+      and not bson.is_tagged(fields.service_id, "object_id")
+  then
+    error("application error service_id must be a BSON ObjectId", 3)
+  end
+
   local generation = fields.generation
 
   if generation == nil then
-    generation = pool.generation or 0
+    generation = pool_generation(pool, fields.service_id)
   elseif math.type(generation) ~= "integer" or generation < 0 then
     error("application error generation must be a non-negative integer", 3)
   end
@@ -1158,7 +1173,7 @@ local function application_error_generation(fields, pool)
 end
 
 local function application_error_is_stale(state, address, fields, generation, pool)
-  if generation < (pool.generation or 0) then
+  if generation ~= pool_generation(pool, fields.service_id) then
     return true
   end
 
@@ -1248,6 +1263,7 @@ local function apply_application_error(
   address,
   server,
   generation,
+  service_id,
   decision
 )
   assert(state.lock:acquire())
@@ -1266,7 +1282,7 @@ local function apply_application_error(
   local pool = server.pool
 
   if decision.clear_pool and state.servers[address] then
-    pool:clear(false)
+    pool:clear(false, service_id)
     state.description = state.description:with_generation(
       address,
       pool.generation or 0
@@ -1314,6 +1330,7 @@ function MANAGER_METHODS:handle_application_error(address, fields)
     normalized,
     server,
     generation,
+    fields.service_id,
     decision
   )
 end

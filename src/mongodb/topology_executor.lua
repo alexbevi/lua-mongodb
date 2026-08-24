@@ -134,13 +134,14 @@ local function application_error_type(err)
   return "handshake"
 end
 
-local function report_error(state, address, generation, err, when)
+local function report_error(state, address, generation, service_id, err, when)
   local response = err.details and err.details.response
 
   state.topology:handle_application_error(address, {
     error = err,
     generation = generation,
     response = response,
+    service_id = service_id,
     type = application_error_type(err),
     when = when,
   })
@@ -198,6 +199,7 @@ local function select_connection(state, operation, options)
         state,
         selected.address,
         pool.generation or 0,
+        nil,
         checkout_err,
         "beforeHandshakeCompletes"
       )
@@ -234,6 +236,7 @@ local function finish_connection(state, selected, err)
         state,
         selected.address,
         selected.connection.generation,
+        selected.connection.service_id,
         err,
         "afterHandshakeCompletes"
       )

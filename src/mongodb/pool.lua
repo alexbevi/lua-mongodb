@@ -1,3 +1,4 @@
+local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 local operation_timeout = require("mongodb.operation_timeout")
 local runtime_contract = require("mongodb.runtime")
@@ -26,6 +27,7 @@ local CONNECTION_PROPERTIES = {
   id = true,
   interrupted = true,
   resource = true,
+  service_id = true,
   state = true,
 }
 
@@ -212,6 +214,36 @@ local function remove_value(values, wanted)
   return false
 end
 
+local function require_service_id(service_id, level)
+  if service_id ~= nil and not bson.is_tagged(service_id, "object_id") then
+    error("service_id must be a BSON ObjectId", level or 3)
+  end
+end
+
+local function service_key(service_id)
+  return service_id and tostring(service_id) or nil
+end
+
+local function generation_for(state, service_id)
+  local key = service_key(service_id)
+
+  if key then
+    return state.service_generations[key] or 0
+  end
+
+  return state.generation
+end
+
+local function connection_is_current(state, connection_state)
+  return connection_state.generation
+    == generation_for(state, connection_state.service_id)
+end
+
+local function connection_matches_service(connection_state, service_id)
+  return service_id == nil
+    or service_key(connection_state.service_id) == service_key(service_id)
+end
+
 local function close_resource(resource)
   if resource and type(resource.close) == "function" then
     pcall(resource.close, resource)
@@ -315,7 +347,7 @@ local function establish(
   publish(state, "ConnectionCreated", {
     connection_id = connection_state.id,
   })
-  local resource, connect_err = state.connect({
+  local resource, connect_err, connection_info = state.connect({
     address = state.address,
     cancellation = connection_state.setup_cancellation,
     deadline = deadline,
@@ -354,17 +386,22 @@ local function establish(
     return nil, connect_err, detached, reported
   end
 
-  connection_state.resource = resource
-  publish(state, "ConnectionReady", {
-    connection_id = connection_state.id,
-    duration_ms = duration_ms(state, connection_state.created_at),
-  })
+  if connection_info ~= nil and type(connection_info) ~= "table" then
+    close_resource(resource)
+    error("pool connection metadata must be a table", 3)
+  end
 
+  local service_id = connection_info and connection_info.service_id or nil
+
+  require_service_id(service_id, 3)
+  connection_state.resource = resource
   assert(acquire(state))
+  connection_state.service_id = service_id
+  connection_state.generation = generation_for(state, service_id)
   state.pending_count = state.pending_count - 1
   state.pending[connection] = nil
   local usable = state.state == "ready"
-    and connection_state.generation == state.generation
+    and connection_is_current(state, connection_state)
     and not connection_state.setup_cancellation:is_cancelled()
 
   if usable then
@@ -384,6 +421,10 @@ local function establish(
   end
 
   state.lock:release()
+  publish(state, "ConnectionReady", {
+    connection_id = connection_state.id,
+    duration_ms = duration_ms(state, connection_state.created_at),
+  })
 
   if not usable then
     local reason = state.state == "closed" and "poolClosed" or "stale"
@@ -559,6 +600,7 @@ function M.new(options)
     poll_interval = poll_interval,
     pool = pool,
     runtime = options.runtime,
+    service_generations = {},
     state = "paused",
     total_count = 0,
     wait_queue = {},
@@ -594,7 +636,7 @@ end
 local function connection_is_perished(state, connection)
   local connection_state = CONNECTION_STATES[connection]
 
-  if connection_state.generation ~= state.generation then
+  if not connection_is_current(state, connection_state) then
     return true, "stale"
   end
 
@@ -868,7 +910,7 @@ function POOL_METHODS:check_in(connection)
 
   if state.state == "closed" then
     reason = "poolClosed"
-  elseif connection_state.generation ~= state.generation then
+  elseif not connection_is_current(state, connection_state) then
     reason = "stale"
   elseif connection_state.errored then
     reason = "error"
@@ -914,10 +956,21 @@ function CONNECTION_METHODS:mark_error()
   return true
 end
 
-local function collect_available_locked(state)
-  local connections = state.available
+local function collect_available_locked(state, service_id)
+  local connections = {}
+  local retained = {}
 
-  state.available = {}
+  for _, connection in ipairs(state.available) do
+    local connection_state = CONNECTION_STATES[connection]
+
+    if connection_matches_service(connection_state, service_id) then
+      connections[#connections + 1] = connection
+    else
+      retained[#retained + 1] = connection
+    end
+  end
+
+  state.available = retained
 
   for _, connection in ipairs(connections) do
     local connection_state = CONNECTION_STATES[connection]
@@ -930,12 +983,28 @@ local function collect_available_locked(state)
   return connections
 end
 
-function POOL_METHODS:clear(interrupt_in_use_connections)
+function POOL_METHODS:generation_for(service_id)
+  require_service_id(service_id, 2)
+  return generation_for(POOL_STATES[self], service_id)
+end
+
+function POOL_METHODS:is_stale(generation, service_id)
+  if math.type(generation) ~= "integer" or generation < 0 then
+    error("generation must be a non-negative integer", 2)
+  end
+
+  require_service_id(service_id, 2)
+  return generation ~= generation_for(POOL_STATES[self], service_id)
+end
+
+function POOL_METHODS:clear(interrupt_in_use_connections, service_id)
   if interrupt_in_use_connections == nil then
     interrupt_in_use_connections = false
   elseif type(interrupt_in_use_connections) ~= "boolean" then
     error("interrupt_in_use_connections must be a boolean", 2)
   end
+
+  require_service_id(service_id, 2)
 
   local state = POOL_STATES[self]
 
@@ -947,16 +1016,27 @@ function POOL_METHODS:clear(interrupt_in_use_connections)
   end
 
   local prior_state = state.state
-  local cleared_generation = state.generation
+  local cleared_generation = generation_for(state, service_id)
 
-  state.generation = state.generation + 1
-  state.state = "paused"
+  if service_id then
+    local key = service_key(service_id)
 
-  for _, waiter in ipairs(state.wait_queue) do
-    waiter.evicted = "connectionError"
+    state.service_generations[key] = cleared_generation + 1
+  else
+    state.generation = state.generation + 1
+
+    for key, generation in pairs(state.service_generations) do
+      state.service_generations[key] = generation + 1
+    end
+
+    state.state = "paused"
+
+    for _, waiter in ipairs(state.wait_queue) do
+      waiter.evicted = "connectionError"
+    end
   end
 
-  local available = collect_available_locked(state)
+  local available = collect_available_locked(state, service_id)
   local interrupted = {}
 
   if interrupt_in_use_connections then
@@ -969,22 +1049,26 @@ function POOL_METHODS:clear(interrupt_in_use_connections)
     for _, connection in ipairs(in_use) do
       local connection_state = CONNECTION_STATES[connection]
 
-      if connection_state.generation <= cleared_generation then
+      if connection_matches_service(connection_state, service_id)
+          and connection_state.generation <= cleared_generation
+      then
         connection_state.interrupted = true
         interrupted[#interrupted + 1] = connection
       end
     end
 
-    for connection in pairs(state.pending) do
-      CONNECTION_STATES[connection].setup_cancellation:cancel(
-        "connection interrupted by pool clear"
-      )
+    if service_id == nil then
+      for connection in pairs(state.pending) do
+        CONNECTION_STATES[connection].setup_cancellation:cancel(
+          "connection interrupted by pool clear"
+        )
+      end
     end
   end
 
   state.lock:release()
 
-  if prior_state ~= "paused" then
+  if service_id ~= nil or prior_state ~= "paused" then
     publish(state, "ConnectionPoolCleared", {
       interrupt_in_use_connections = interrupt_in_use_connections,
     })

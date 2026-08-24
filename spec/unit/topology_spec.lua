@@ -306,6 +306,82 @@ describe("monitored topology", function()
     assert(commands:close())
   end)
 
+  it("runs the exact load-balanced targeted-clear and stale-generation cases", function()
+    local fixture = read_fixture("load-balancers/tests/sdam-error-handling.json")
+    local targeted_case = fixture:get("tests"):get(1)
+    local stale_case = fixture:get("tests"):get(4)
+    local runtime = fake_runtime.new()
+    local service_a = bson.object_id("000000000000000000000001")
+    local service_b = bson.object_id("000000000000000000000002")
+    local services = { service_a, service_b }
+    local resources = {}
+    local manager = topology.new({
+      pool_factory = function(address)
+        return pool.new({
+          address = address,
+          connect = function()
+            local service_id = table.remove(services, 1)
+            local resource = {
+              closed = false,
+              close = function(self)
+                self.closed = true
+              end,
+            }
+
+            resources[#resources + 1] = resource
+            return resource, nil, { service_id = service_id }
+          end,
+          runtime = runtime,
+        })
+      end,
+      runtime = runtime,
+      seeds = { "load-balancer:27017" },
+      topology_id = "42",
+      type = "LoadBalanced",
+    })
+
+    assert.are.equal(
+      "only connections for a specific serviceId are closed when pools are cleared",
+      targeted_case:get("description")
+    )
+    assert.are.equal("stale errors are ignored", stale_case:get("description"))
+    assert(manager:open({ background = false }))
+    local connection_pool = manager:pool("load-balancer:27017")
+    local first = assert(connection_pool:check_out())
+    local second = assert(connection_pool:check_out())
+
+    assert(connection_pool:check_in(first))
+    assert(connection_pool:check_in(second))
+    assert(manager:handle_application_error("load-balancer:27017", {
+      generation = 0,
+      response = bson.document({
+        { "ok", 0 },
+        { "code", 11600 },
+        { "errmsg", "service shutting down" },
+      }),
+      service_id = service_a,
+      type = "command",
+      when = "afterHandshakeCompletes",
+    }))
+    assert.are.equal(1, connection_pool:generation_for(service_a))
+    assert.are.equal(0, connection_pool:generation_for(service_b))
+    assert.is_true(resources[1].closed)
+    assert.is_false(resources[2].closed)
+    assert.is_false(manager:handle_application_error("load-balancer:27017", {
+      generation = 0,
+      service_id = service_a,
+      type = "network",
+      when = "afterHandshakeCompletes",
+    }))
+    assert.are.equal(1, connection_pool:generation_for(service_a))
+
+    local reused = assert(connection_pool:check_out())
+
+    assert.are.equal(second.id, reused.id)
+    assert(connection_pool:check_in(reused))
+    assert(manager:close())
+  end)
+
   it("runs every applicable pinned SDAM monitoring event fixture", function()
     local paths = sdam_runner.fixture_paths("monitoring")
 

@@ -1,3 +1,4 @@
+local bson = require("mongodb.bson")
 local fake_runtime = require("mongodb.runtime.fake")
 local pool = require("mongodb.pool")
 local cmap_runner = require("spec.support.cmap_runner")
@@ -18,6 +19,55 @@ local function run_copas(callback)
 end
 
 describe("CMAP connection pools", function()
+  it("tracks service-specific generations across targeted clears", function()
+    local runtime = fake_runtime.new()
+    local service_a = bson.object_id("000000000000000000000001")
+    local service_b = bson.object_id("000000000000000000000002")
+    local services = { service_a, service_b }
+    local resources = {}
+    local connection_pool = pool.new({
+      address = "load-balancer:27017",
+      connect = function()
+        local service_id = table.remove(services, 1)
+        local resource = {
+          closed = false,
+          close = function(self)
+            self.closed = true
+          end,
+        }
+
+        resources[#resources + 1] = resource
+        return resource, nil, { service_id = service_id }
+      end,
+      runtime = runtime,
+    })
+
+    assert(connection_pool:ready())
+    local first = assert(connection_pool:check_out())
+    local second = assert(connection_pool:check_out())
+
+    assert.are.equal(service_a, first.service_id)
+    assert.are.equal(service_b, second.service_id)
+    assert.are.equal(0, first.generation)
+    assert.are.equal(0, second.generation)
+    assert(connection_pool:check_in(first))
+    assert(connection_pool:check_in(second))
+    assert(connection_pool:clear(false, service_a))
+    assert.are.equal("ready", connection_pool.state)
+    assert.are.equal(1, connection_pool:generation_for(service_a))
+    assert.are.equal(0, connection_pool:generation_for(service_b))
+    assert.is_true(connection_pool:is_stale(0, service_a))
+    assert.is_false(connection_pool:is_stale(0, service_b))
+    assert.is_true(resources[1].closed)
+    assert.is_false(resources[2].closed)
+
+    local reused = assert(connection_pool:check_out())
+
+    assert.are.equal(second.id, reused.id)
+    assert(connection_pool:check_in(reused))
+    assert(connection_pool:close())
+  end)
+
   it("creates, readies, and checks out an established connection", function()
     local runtime = fake_runtime.new()
     local events = {}

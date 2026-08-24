@@ -560,7 +560,16 @@ def classify_case(
         "directly-coupled-endpoint",
       )
     elif fixture == "sdam-error-handling.json":
-      owner = "LB-004" if index in {1, 4} else "LB-005"
+      if index in {1, 4}:
+        return _passed(
+          case,
+          "LB-004",
+          "spec/unit/topology_spec.lua",
+          "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua'",
+          "deterministic-runtime",
+        )
+
+      owner = "LB-005"
     elif fixture == "server-selection.json":
       return _passed(
         case,

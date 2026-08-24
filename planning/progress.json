@@ -7963,6 +7963,28 @@
       "notes": [],
       "started_at": "2026-08-24T21:39:24+00:00",
       "completed_at": "2026-08-24T21:53:51+00:00"
+    },
+    "LB-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua --filter=tracks.service'",
+          "exit_code": 1,
+          "summary": "The focused pool test established two service-tagged resources, but the first pooled connection exposed nil service_id instead of its handshake service identifier.",
+          "recorded_at": "2026-08-24T22:13:19+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/unit/retry_executor_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger planning.tests.test_readme_compatibility spec.release.test_scope spec.release.test_checklist' FOCUS_LINT='src/mongodb/pool.lua src/mongodb/topology.lua src/mongodb/topology_executor.lua spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/integration/load_balancer_spec.lua'",
+          "exit_code": 0,
+          "summary": "45 focused pool, topology, and retry unit cases; 2 directly coupled load-balancer integration cases; 15 conformance artifact tests; and touched-file lint passed. Architecture, complexity, ledger, and README projection validators also passed.",
+          "recorded_at": "2026-08-24T22:19:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T22:10:06+00:00",
+      "completed_at": "2026-08-24T22:19:52+00:00"
     }
   },
   "verified_references": {
