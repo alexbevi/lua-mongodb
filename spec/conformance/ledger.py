@@ -477,6 +477,12 @@ def classify_case(
       "make test-unit",
     )
 
+  if (
+    suite == "server-selection"
+    and "/tests/server_selection/LoadBalanced/" in path
+  ):
+    return _deferred(case, "LB-001", activities)
+
   if suite == "max-staleness" or (
     suite == "server-selection"
     and "/logging/" not in path

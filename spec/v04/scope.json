@@ -1,11 +1,12 @@
 {
   "evidence": {
     "exact_unified_cases": 363,
-    "static_passing_cases": 496
+    "static_passing_cases": 507
   },
   "excluded_by_activity": {
-    "ADV-006": 14,
     "ADV-009": 24,
+    "LB-003": 1,
+    "LB-009": 2,
     "LEG-003": 1
   },
   "exclusion_reasons": {
@@ -15,6 +16,24 @@
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
     "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",
     "CBW-010": "client bulk transactions remain a separate post-v0.4 capability",
+    "LB-001": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-002": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-003": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-004": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-005": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-006": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-007": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-008": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-009": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-010": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-011": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-012": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-013": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-014": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-015": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-016": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-017": "load-balanced deployment behavior is outside the v0.4 sharded target",
+    "LB-018": "load-balanced deployment behavior is outside the v0.4 sharded target",
     "LEG-001": "deprecated count retries are outside the v0.4 public API",
     "LEG-002": "deprecated count timeouts are outside the v0.4 public API",
     "LEG-003": "legacy mapReduce is outside the v0.4 public API",
@@ -41,8 +60,7 @@
       "passed": 19
     },
     "initial-dns-seedlist-discovery": {
-      "excluded": 9,
-      "passed": 44
+      "passed": 53
     },
     "read-write-concern": {
       "excluded": 1,
@@ -53,8 +71,8 @@
       "passed": 19
     },
     "server-discovery-and-monitoring": {
-      "excluded": 18,
-      "passed": 441
+      "excluded": 16,
+      "passed": 443
     },
     "sessions": {
       "passed": 39
@@ -66,10 +84,10 @@
   },
   "summary": {
     "classified": 898,
-    "excluded": 39,
-    "passed": 859,
+    "excluded": 28,
+    "passed": 870,
     "planned": 0,
-    "supported": 859
+    "supported": 870
   },
   "target_owners": [
     "ADV-005",

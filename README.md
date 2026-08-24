@@ -563,7 +563,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 82.5% |
 | Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🔴 | 0.0% |
 | Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 83.6% |
-| Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟡 | 90.4% |
+| Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟡 | 81.6% |
 | Availability | [Max staleness](https://alexbevi.com/specifications/max-staleness/max-staleness.html) | 🟢 | 100.0% |
 | Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
 | Resilience | [Retryable reads](https://alexbevi.com/specifications/retryable-reads/retryable-reads.html) | 🟢 | 100.0% |
@@ -586,7 +586,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **78.8%** |
+|  | **Total** |  | **78.6%** |
 <!-- END SPEC CONFORMANCE -->
 
 ## Development

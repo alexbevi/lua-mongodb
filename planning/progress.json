@@ -7843,22 +7843,53 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'",
+          "command": "make check-fast LUACHECK=/Users/alex/.luarocks/bin/luacheck",
           "exit_code": 2,
-          "summary": "21 passed and the defining load-balanced topology test failed because the sole server remained Unknown instead of LoadBalancer",
-          "recorded_at": "2026-08-24T20:28:34+00:00"
+          "summary": "CI Fast and local reproduction failed only the ten LoadBalanced server-selection fixtures because selection behavior belongs to LB-001",
+          "recorded_at": "2026-08-24T20:48:34+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/dns_seedlist_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/sdam.lua src/mongodb/topology.lua spec/support/config_runner.lua spec/support/dns_seedlist_runner.lua spec/unit/config_fixtures_spec.lua spec/unit/dns_seedlist_spec.lua spec/unit/topology_spec.lua' && generated validators && make test-architecture && make test-complexity",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/dns_seedlist_spec.lua spec/unit/selection_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility' FOCUS_LINT='spec/unit/selection_spec.lua' plus ledger, scope, README, and whitespace validators",
           "exit_code": 0,
-          "summary": "35 focused Lua cases and 139 capability/conformance tests passed; seven touched Lua files linted cleanly; capability, ledger, scope, README, architecture, complexity, and whitespace validators passed",
-          "recorded_at": "2026-08-24T20:39:03+00:00"
+          "summary": "42 focused Lua cases and 14 conformance tests passed; touched Lua lint and generated artifact validators passed with the ten LB-001 fixtures explicitly deferred",
+          "recorded_at": "2026-08-24T20:48:35+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make check-fast LUACHECK=/Users/alex/.luarocks/bin/luacheck",
+          "exit_code": 0,
+          "summary": "CI failure reproduction is fully green: 551 unit, 67 integration, unified inventory, release scopes, packaging, architecture, complexity, stress, generated checks, and 194-file lint all passed",
+          "recorded_at": "2026-08-24T20:54:40+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-24T20:23:23+00:00",
-      "completed_at": "2026-08-24T20:39:13+00:00"
+      "notes": [
+        "Requeued: CI Fast 32775321781 exposed load-balanced server-selection fixtures that belong to LB-001; defer those cases until their dedicated slice"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-24T20:39:13+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'",
+              "exit_code": 2,
+              "summary": "21 passed and the defining load-balanced topology test failed because the sole server remained Unknown instead of LoadBalancer",
+              "recorded_at": "2026-08-24T20:28:34+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/dns_seedlist_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/sdam.lua src/mongodb/topology.lua spec/support/config_runner.lua spec/support/dns_seedlist_runner.lua spec/unit/config_fixtures_spec.lua spec/unit/dns_seedlist_spec.lua spec/unit/topology_spec.lua' && generated validators && make test-architecture && make test-complexity",
+              "exit_code": 0,
+              "summary": "35 focused Lua cases and 139 capability/conformance tests passed; seven touched Lua files linted cleanly; capability, ledger, scope, README, architecture, complexity, and whitespace validators passed",
+              "recorded_at": "2026-08-24T20:39:03+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "115d387868ccd1292c4f37ec0f6b1c650dd0c823",
+      "started_at": "2026-08-24T20:48:25+00:00",
+      "completed_at": "2026-08-24T20:54:41+00:00"
     }
   },
   "verified_references": {

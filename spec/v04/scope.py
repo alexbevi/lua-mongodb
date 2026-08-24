@@ -67,6 +67,10 @@ TARGET_OWNERS = {
 }
 
 EXCLUSION_REASONS = {
+  **{
+    f"LB-{index:03d}": "load-balanced deployment behavior is outside the v0.4 sharded target"
+    for index in range(1, 19)
+  },
   "ADV-006": "load-balanced deployment behavior is outside the v0.4 sharded target",
   "ADV-007": "client bulk write remains a separate post-v0.4 capability",
   "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",

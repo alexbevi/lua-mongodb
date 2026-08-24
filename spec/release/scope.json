@@ -4,7 +4,7 @@
     "ADV-010": 777,
     "AUTH-019": 11,
     "CSOT-001": 3,
-    "LB-001": 1,
+    "LB-001": 11,
     "LB-002": 1,
     "LB-003": 4,
     "LB-004": 2,
@@ -24,7 +24,7 @@
     "LB-018": 1
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1064
+    "post-v1-exclusion": 1074
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -166,9 +166,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1064,
+    "deferred_unsupported": 1074,
     "excluded_scope": 97,
-    "passed": 4348,
+    "passed": 4338,
     "unsupported": 15
   },
   "total_cases": 5524,

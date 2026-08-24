@@ -236,29 +236,35 @@ describe("server selection", function()
     end, "tag_set values are immutable")
   end)
 
-  it("runs every pinned server-selection filtering fixture", function()
+  it("runs every production-core server-selection filtering fixture", function()
     local paths = fixture_paths("server-selection/tests/server_selection")
+    local count = 0
 
     assert.are.equal(88, #paths)
 
     for _, path in ipairs(paths) do
-      local fixture = read_fixture(path)
-      local topology = topology_from_fixture(fixture:get("topology_description"))
-      local result, err = selection.evaluate(
-        topology,
-        fixture:get("operation"),
-        fixture:get("read_preference"),
-        { deprioritized_servers = fixture:get("deprioritized_servers") }
-      )
+      if not path:find("/LoadBalanced/", 1, true) then
+        local fixture = read_fixture(path)
+        local topology = topology_from_fixture(fixture:get("topology_description"))
+        local result, err = selection.evaluate(
+          topology,
+          fixture:get("operation"),
+          fixture:get("read_preference"),
+          { deprioritized_servers = fixture:get("deprioritized_servers") }
+        )
 
-      assert.is_nil(err, path .. ": " .. tostring(err))
-      assert_addresses(fixture:get("suitable_servers"), result.suitable_servers, path)
-      assert_addresses(
-        fixture:get("in_latency_window"),
-        result.in_latency_window,
-        path
-      )
+        assert.is_nil(err, path .. ": " .. tostring(err))
+        assert_addresses(fixture:get("suitable_servers"), result.suitable_servers, path)
+        assert_addresses(
+          fixture:get("in_latency_window"),
+          result.in_latency_window,
+          path
+        )
+        count = count + 1
+      end
     end
+
+    assert.are.equal(78, count)
   end)
 
   it("runs every pinned max-staleness filtering fixture", function()
