@@ -2161,6 +2161,26 @@ local function delete_gridfs_by_name(_, bucket, arguments)
   return nil
 end
 
+local function find_gridfs(_, bucket, arguments)
+  local cursor, err = call_driver(function()
+    return bucket:find(arguments:get("filter"), operation_options(arguments, {
+      allowDiskUse = "allow_disk_use",
+      batchSize = "batch_size",
+      limit = "limit",
+      maxTimeMS = "max_time_ms",
+      noCursorTimeout = "no_cursor_timeout",
+      skip = "skip",
+      sort = "sort",
+    }))
+  end)
+
+  if not cursor then
+    return nil, err
+  end
+
+  return collect_cursor(cursor)
+end
+
 local function upload_gridfs(_, bucket, arguments, _, path)
   local source, err = gridfs_source(
     arguments:get("source"),
@@ -2225,6 +2245,13 @@ local BUCKET_OPERATIONS = {
     arguments = { "filename", "revision", "timeoutMS" },
     handler = download_gridfs_by_name,
     result_kind = "bson",
+  },
+  find = {
+    arguments = {
+      "allowDiskUse", "batchSize", "filter", "limit", "maxTimeMS",
+      "noCursorTimeout", "skip", "sort", "timeoutMS",
+    },
+    handler = find_gridfs,
   },
   upload = {
     arguments = {

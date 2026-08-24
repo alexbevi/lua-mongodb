@@ -707,4 +707,79 @@ describe("GridFS streams over OP_MSG", function()
       error(outcome[2], 0)
     end
   end)
+
+  it("finds matching files with GridFS options over OP_MSG", function()
+    local server = assert(socket.bind("127.0.0.1", 0))
+    local _, port = assert(server:getsockname())
+    local outcome
+
+    port = assert(math.tointeger(port))
+    copas.addserver(server, function(peer)
+      peer = copas.wrap(peer)
+      local handshake = receive_frame(peer)
+
+      send_response(peer, handshake, bson.document({
+        { "ok", 1 },
+        { "helloOk", true },
+        { "isWritablePrimary", true },
+        { "maxWireVersion", 25 },
+      }))
+
+      local find = receive_frame(peer)
+
+      assert.are.equal("fs.files", find.body:get("find"))
+      assert.are.equal("report", find.body:get("filter"):get("filename"))
+      assert.is_true(find.body:get("allowDiskUse"))
+      assert.are.equal(2, find.body:get("batchSize"):to_number())
+      assert.are.equal(3, find.body:get("limit"):to_number())
+      assert.are.equal(250, find.body:get("maxTimeMS"):to_number())
+      assert.is_true(find.body:get("noCursorTimeout"))
+      assert.are.equal(1, find.body:get("skip"):to_number())
+      assert.are.equal(-1, find.body:get("sort"):get("uploadDate"):to_number())
+      send_response(peer, find, bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "assets.fs.files" },
+          { "firstBatch", bson.array({
+            bson.document({ { "_id", "file-a" } }),
+            bson.document({ { "_id", "file-b" } }),
+          }) },
+        }) },
+      }))
+      peer:close()
+    end)
+
+    copas.loop(function()
+      outcome = table.pack(pcall(function()
+        local client = assert(mongodb.client(
+          "mongodb://127.0.0.1:" .. port .. "/assets",
+          { runtime = mongodb.runtime.copas() }
+        ))
+        local bucket = assert(client:database():gridfs_bucket())
+        local cursor = assert(bucket:find(
+          bson.document({ { "filename", "report" } }),
+          {
+            allow_disk_use = true,
+            batch_size = 2,
+            limit = 3,
+            max_time_ms = 250,
+            no_cursor_timeout = true,
+            skip = 1,
+            sort = bson.document({ { "uploadDate", -1 } }),
+          }
+        ))
+
+        assert.are.equal("file-a", assert(cursor:next()):get("_id"))
+        assert.are.equal("file-b", assert(cursor:next()):get("_id"))
+        assert.is_nil(cursor:next())
+        assert.is_true(client:close())
+      end))
+      copas.removeserver(server)
+    end)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+  end)
 end)

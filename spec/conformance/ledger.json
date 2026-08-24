@@ -29301,26 +29301,26 @@
       "activity": "GFS-011",
       "fingerprint": "fea02ec98e1a35f2771d76fba59bed246a9d37d2847944fd82fbd6670b440e96",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-find.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/gridfs-find.json::test[2]": {
       "activity": "GFS-011",
       "fingerprint": "d6b92e54f846244fab710a17f44f10f93cb0aa921b473eae8d44e4935c84164c",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "post-v1",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-find.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/gridfs-upload.json::test[1]": {
@@ -86748,9 +86748,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1109,
+      "deferred_unsupported": 1107,
       "excluded_scope": 97,
-      "passed": 4318
+      "passed": 4320
     },
     "suites": {
       "auth": 73,

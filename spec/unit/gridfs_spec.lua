@@ -1317,6 +1317,114 @@ describe("GridFS buckets", function()
     assert.are.equal("revision-b", chunk_ids:get(2))
   end)
 
+  it("finds stored files through the files collection cursor", function()
+    local runtime = fake_runtime.new({ now = 40 })
+    local commands = {}
+    local executor_options = {}
+    local deadlines = {}
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+        executor_options[#executor_options + 1] = options
+        deadlines[#deadlines + 1] = operation_timeout.current().deadline
+
+        if command:get("getMore") ~= nil then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(0) },
+              { "ns", "assets.fs.files" },
+              { "nextBatch", bson.array({
+                bson.document({
+                  { "_id", "file-c" },
+                  { "filename", "report" },
+                }),
+              }) },
+            }) },
+          })
+        end
+
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(41) },
+            { "ns", "assets.fs.files" },
+            { "firstBatch", bson.array({
+              bson.document({ { "_id", "file-a" } }),
+              bson.document({ { "_id", "file-b" } }),
+            }) },
+          }) },
+        })
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617"),
+      {
+        read_concern = { level = "majority" },
+        read_preference = { mode = "secondary" },
+      },
+      runtime
+    )
+    local filter = bson.document({ { "filename", "report" } })
+    local sort = bson.document({ { "uploadDate", -1 } })
+    local cursor = assert(bucket:find(filter, {
+      allow_disk_use = true,
+      batch_size = 2,
+      limit = 3,
+      max_time_ms = 250,
+      no_cursor_timeout = true,
+      skip = 1,
+      sort = sort,
+      timeout_ms = 2000,
+    }))
+
+    assert.are.equal("file-a", assert(cursor:next()):get("_id"))
+    assert.are.equal("file-b", assert(cursor:next()):get("_id"))
+    assert.are.equal("file-c", assert(cursor:next()):get("_id"))
+    assert.is_nil(cursor:next())
+    assert.are.equal(2, #commands)
+    assert.are.equal("fs.files", commands[1]:get("find"))
+    assert.are.equal(filter, commands[1]:get("filter"))
+    assert.is_true(commands[1]:get("allowDiskUse"))
+    assert.are.equal(2, commands[1]:get("batchSize"))
+    assert.are.equal(3, commands[1]:get("limit"))
+    assert.are.equal(250, commands[1]:get("maxTimeMS"))
+    assert.is_true(commands[1]:get("noCursorTimeout"))
+    assert.are.equal(1, commands[1]:get("skip"))
+    assert.are.equal(sort, commands[1]:get("sort"))
+    assert.are.equal("majority", commands[1]:get("readConcern"):get("level"))
+    assert.are.equal("secondary", executor_options[1].read_preference.mode)
+    assert.are.equal(42, deadlines[1])
+    assert.are.equal(42, deadlines[2])
+  end)
+
+  it("returns an empty cursor when no stored files match", function()
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function()
+        return cursor_response("assets.fs.files", {})
+      end,
+    }
+    local bucket = upload_bucket(
+      executor,
+      bson.object_id("010203041011121314151617")
+    )
+    local cursor = assert(bucket:find(bson.document({
+      { "filename", "absent" },
+    })))
+    local document, err = cursor:next()
+
+    assert.is_nil(document)
+    assert.is_nil(err)
+    assert.is_true(cursor:is_closed())
+  end)
+
   it("distinguishes missing files from corrupt required chunks", function()
     local function bucket_for(file, chunks)
       local executor = {

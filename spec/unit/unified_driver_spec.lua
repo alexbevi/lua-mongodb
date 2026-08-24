@@ -105,6 +105,7 @@ local function with_fake_client(callback)
         local bucket = {
           deletions = {},
           downloads = {},
+          finds = {},
           options = bucket_options,
           uploads = {},
         }
@@ -209,6 +210,29 @@ local function with_fake_client(callback)
         function bucket:delete_by_name(filename)
           self.deletions[#self.deletions + 1] = { filename = filename }
           return true
+        end
+
+        function bucket:find(filter, find_options)
+          self.finds[#self.finds + 1] = {
+            filter = filter,
+            options = find_options,
+          }
+          local documents = {
+            document({ { "_id", "file-a" } }),
+            document({ { "_id", "file-b" } }),
+          }
+          local cursor = { index = 0 }
+
+          function cursor.next(cursor_value)
+            cursor_value.index = cursor_value.index + 1
+            return documents[cursor_value.index]
+          end
+
+          function cursor.close()
+            return true
+          end
+
+          return cursor
         end
 
         client.gridfs_buckets[#client.gridfs_buckets + 1] = {
@@ -699,6 +723,78 @@ describe("unified driver GridFS buckets", function()
       assert.are.equal("delete-id", bucket.deletions[1].identifier)
       assert.are.equal(75, bucket.deletions[1].options.timeout_ms)
       assert.are.equal("report", bucket.deletions[2].filename)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("maps GridFS find filters, options, and document results", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local filter = document({ { "filename", "report" } })
+      local sort = document({ { "uploadDate", bson.int32(-1) } })
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "assets" },
+            }) },
+          }),
+          document({
+            { "bucket", document({
+              { "id", "bucket0" },
+              { "database", "database0" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Find stored files" },
+            { "operations", array({
+              document({
+                { "name", "find" },
+                { "object", "bucket0" },
+                { "arguments", document({
+                  { "filter", filter },
+                  { "allowDiskUse", true },
+                  { "batchSize", bson.int32(2) },
+                  { "limit", bson.int32(3) },
+                  { "maxTimeMS", bson.int64(250) },
+                  { "noCursorTimeout", true },
+                  { "skip", bson.int32(1) },
+                  { "sort", sort },
+                  { "timeoutMS", bson.int64(1000) },
+                }) },
+                { "expectResult", array({
+                  document({ { "_id", "file-a" } }),
+                  document({ { "_id", "file-b" } }),
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "gridfs-find.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      local find = connections[2].gridfs_buckets[1].value.finds[1]
+
+      assert.are.equal(filter, find.filter)
+      assert.is_true(find.options.allow_disk_use)
+      assert.are.equal(2, find.options.batch_size)
+      assert.are.equal(3, find.options.limit)
+      assert.are.equal(250, find.options.max_time_ms)
+      assert.is_true(find.options.no_cursor_timeout)
+      assert.are.equal(1, find.options.skip)
+      assert.are.equal(sort, find.options.sort)
+      assert.are.equal(1000, find.options.timeout_ms)
       assert(lifecycle:close())
     end)
   end)

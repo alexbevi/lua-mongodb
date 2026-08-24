@@ -372,6 +372,33 @@ local function delete_options(options)
   return options
 end
 
+local function find_options(options)
+  if options == nil then
+    return {}
+  elseif type(options) ~= "table" then
+    error("GridFS find options must be a table", 3)
+  end
+
+  local allowed = {
+    allow_disk_use = true,
+    batch_size = true,
+    limit = true,
+    max_time_ms = true,
+    no_cursor_timeout = true,
+    skip = true,
+    sort = true,
+    timeout_ms = true,
+  }
+
+  for key in pairs(options) do
+    if not allowed[key] then
+      error("unknown GridFS find option: " .. tostring(key), 3)
+    end
+  end
+
+  return options
+end
+
 local function file_metadata(document)
   local length = integer_value(document:get("length"))
   local chunk_size_bytes = integer_value(document:get("chunkSize"))
@@ -1003,6 +1030,13 @@ function BUCKET_METHODS:delete_by_name(filename, options)
 
       return true
     end
+  )
+end
+
+function BUCKET_METHODS:find(filter, options)
+  return BUCKET_STATES[self].files_collection:find(
+    filter,
+    find_options(options)
   )
 end
 
