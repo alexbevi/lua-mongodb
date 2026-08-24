@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report wire compression v0.8 release readiness."""
+"""Validate and report GridFS v0.9 release readiness."""
 
 from __future__ import annotations
 
@@ -27,8 +27,8 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.8.0-1.rockspec"
-RELEASE_VERSION = "0.8.0"
+ROCKSPEC = ROOT / "mongodb-0.9.0-1.rockspec"
+RELEASE_VERSION = "0.9.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
@@ -134,13 +134,13 @@ V08_RELEASE_ACTIVITY = "REL-057"
 V09_GATES = [
   "ADV-002",
   *(f"GFS-{index:03d}" for index in range(1, 15)),
+  "CON-009",
 ]
-V09_CONFORMANCE_ACTIVITY = "CON-009"
 V09_RELEASE_ACTIVITY = "REL-058"
 
 
 class ChecklistError(ValueError):
-  """Raised when the wire compression release is not ready."""
+  """Raised when the GridFS release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -198,11 +198,11 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-20",
+    f"## [{RELEASE_VERSION}] - 2026-08-24",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: wire compression v0.8 release-ready.",
+    "Status: GridFS v0.9 release-ready.",
   )
 
   return {
@@ -274,7 +274,6 @@ def generate() -> dict[str, Any]:
   ]
   if gridfs_track != [
     *V09_GATES,
-    V09_CONFORMANCE_ACTIVITY,
     V09_RELEASE_ACTIVITY,
   ]:
     raise ChecklistError("v0.9 release gate inventory does not match the track")
@@ -564,7 +563,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "wire-compression-release-checklist",
+    "type": "gridfs-release-checklist",
   }
 
 

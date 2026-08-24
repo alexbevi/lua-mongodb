@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.9.0] - 2026-08-24
+
+GridFS release.
+
+### Added
+
+- Added immutable configurable GridFS buckets with public upload streams, readable-source uploads, required-index management, abort, and operation-wide timeout handling.
+- Added validated download streams with bounded reads, seeking, filename revisions, and destination-copy APIs that preserve caller-owned streams.
+- Added deletion and renaming by id or filename, cursor-based files discovery, and whole-bucket drop with specification-defined ordering and structured errors.
+
+### Conformance
+
+- All 39 pinned GridFS fixtures, 34 directly coupled retryable-read cases, and 25 GridFS timeout cases have exact unified executors and passing evidence.
+- Fifteen normative GridFS API requirements have exact passing runner, environment, and completed-owner evidence.
+
+### Release engineering
+
+- Added the generated v0.9 GridFS projection to Full Conformance, requiring all 98 machine identities to pass in the authoritative Linux and manual macOS aggregate reports.
+- Added GridFS prose evidence to the generated compatibility projection and v0.9 exact-commit LuaRocks release checklist.
+
 ## [0.8.0] - 2026-08-20
 
 Wire compression release.

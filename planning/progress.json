@@ -7615,6 +7615,28 @@
       "notes": [],
       "started_at": "2026-08-24T14:18:38+00:00",
       "completed_at": "2026-08-24T14:32:23+00:00"
+    },
+    "REL-058": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready",
+          "exit_code": 2,
+          "summary": "the defining release checklist expected 0.9.0 but generated metadata remained 0.8.0",
+          "recorded_at": "2026-08-24T14:44:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus for version metadata, handshake, client API, release checklist, publication guards, package install, CI portability, v0.9 scope, and touched Lua lint; make rockspec; release, metadata, scope, README, workflow, JSON, diff, and strict validators",
+          "exit_code": 0,
+          "summary": "19 focused unit, 6 integration, and 34 Python release/package/workflow/conformance tests passed; isolated v0.9 source-rock GridFS smoke passed; 6 touched Lua files lint-clean; rockspec, 0-gap release checklist, immutable publication metadata, v0.9 scope, versionless README, YAML/JSON, diff, and strict plan validators passed with 0 skips, deferrals, or final failures",
+          "recorded_at": "2026-08-24T14:53:41+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T14:43:42+00:00",
+      "completed_at": "2026-08-24T14:53:51+00:00"
     }
   },
   "verified_references": {

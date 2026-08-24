@@ -182,7 +182,8 @@
       "GFS-011",
       "GFS-012",
       "GFS-013",
-      "GFS-014"
+      "GFS-014",
+      "CON-009"
     ],
     "conformance": {
       "applicable_gaps": 0,
@@ -240,10 +241,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.8.0-1.rockspec",
-    "rockspec_version": "0.8.0-1",
-    "version": "0.8.0"
+    "rockspec": "mongodb-0.9.0-1.rockspec",
+    "rockspec_version": "0.9.0-1",
+    "version": "0.9.0"
   },
   "schema_version": 1,
-  "type": "wire-compression-release-checklist"
+  "type": "gridfs-release-checklist"
 }

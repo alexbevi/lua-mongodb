@@ -2,7 +2,7 @@ describe("project bootstrap", function()
   it("loads the top-level module", function()
     local mongodb = require("mongodb")
 
-    assert.are.equal("0.8.0", mongodb._VERSION)
+    assert.are.equal("0.9.0", mongodb._VERSION)
   end)
 
   it("accepts the supported Lua runtimes", function()

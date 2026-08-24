@@ -1,4 +1,4 @@
-"""Contract tests for the wire compression v0.8 release checklist."""
+"""Contract tests for the GridFS v0.9 release checklist."""
 
 import unittest
 
@@ -10,8 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("wire-compression-release-checklist", report["type"])
-    self.assertEqual("0.8.0", report["release"]["version"])
+    self.assertEqual("gridfs-release-checklist", report["type"])
+    self.assertEqual("0.9.0", report["release"]["version"])
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])
@@ -195,6 +195,7 @@ class ReleaseChecklistTests(unittest.TestCase):
       [
         "ADV-002",
         *[f"GFS-{index:03d}" for index in range(1, 15)],
+        "CON-009",
       ],
       report["gates"]["completed_v0_9_gates"],
     )

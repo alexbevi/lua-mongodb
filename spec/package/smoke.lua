@@ -15,7 +15,7 @@ local document = bson.document({
 })
 local decoded = assert(bson.decode(assert(bson.encode(document))))
 
-assert(mongodb._VERSION == "0.8.0")
+assert(mongodb._VERSION == "0.9.0")
 assert(decoded:get("name") == "Ada")
 assert(decoded:get("count"):to_number() == 2)
 
@@ -24,6 +24,22 @@ local index = mongodb.index_model(bson.document({ { "name", 1 } }))
 
 assert(model.kind == "insert")
 assert(index.name == "name_1")
+
+local api = require("mongodb.api")
+local driver_options = require("mongodb.config.options")
+local package_client = api.new_client({
+  close = function()
+    return true
+  end,
+  command = function()
+    error("package smoke must not issue a command")
+  end,
+}, assert(driver_options.normalize()))
+local bucket = assert(package_client:database("package"):gridfs_bucket())
+
+assert(bucket.bucket_name == "fs")
+assert(bucket.chunk_size_bytes == 255 * 1024)
+assert(package_client:close())
 
 local client, client_err = mongodb.client("http://localhost")
 
