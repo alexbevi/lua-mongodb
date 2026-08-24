@@ -162,6 +162,8 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 | Pooling | `maxPoolSize`, `minPoolSize`, `maxConnecting`, `maxIdleTimeMS`, `waitQueueTimeoutMS` |
 | Reads, writes, and retries | `readPreference`, `readPreferenceTags`, `maxStalenessSeconds`, `readConcernLevel`, `w`, `journal`, `wTimeoutMS`, `retryReads`, `retryWrites` |
 
+OCSP is not supported. The driver cannot perform certificate revocation checking for Atlas if it uses OCSP-only certificates, or for deployments whose certificate authority issues OCSP-only certificates.
+
 `serverMonitoringMode=auto` uses streaming monitoring except in a detected FaaS environment, where it uses polling. `stream` requests streaming on servers that support awaitable hello and falls back to polling on older servers; `poll` always waits `heartbeatFrequencyMS` after a successful check.
 
 For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults. Load-balanced deployment execution remains outside the current scope even though its connection-string option is recognized and validated.
@@ -551,7 +553,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 81.8% |
 | Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
 | Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟡 | 83.0% |
-| Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | 🔴 | 0.0% |
+| Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | 🔴 Not supported | 0.0% |
 | Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
 | Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | 🔴 | 0.0% |
 | Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟡 | 90.5% |

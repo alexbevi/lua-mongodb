@@ -151,6 +151,7 @@ CATALOG_REQUIREMENT_STATUSES = frozenset({
   "no_machine_cases",
   "not_applicable",
   "passed",
+  "unsupported",
 })
 
 NON_EXECUTION_STATUSES = frozenset({
@@ -278,6 +279,9 @@ def status_marker(counts: dict[str, int]) -> str:
 
   if passed > 0:
     return "🟡"
+
+  if counts.get("unsupported", 0) > 0:
+    return "🔴 Not supported"
 
   if incomplete > 0:
     return "🔴"

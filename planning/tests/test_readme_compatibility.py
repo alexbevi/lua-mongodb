@@ -23,6 +23,10 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       readme_compatibility.status_marker({"deferred_unsupported": 3}),
     )
     self.assertEqual(
+      "🔴 Not supported",
+      readme_compatibility.status_marker({"unsupported": 1}),
+    )
+    self.assertEqual(
       "⚪",
       readme_compatibility.status_marker({
         "no_machine_cases": 1,
@@ -115,7 +119,9 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     self.assertEqual({"passed": 11}, dict(counts["compression"]))
     self.assertEqual({"passed": 54}, dict(counts["gridfs"]))
 
-    for suite in ("logging", "ocsp-support", "socks5-support"):
+    self.assertEqual({"unsupported": 1}, dict(counts["ocsp-support"]))
+
+    for suite in ("logging", "socks5-support"):
       self.assertEqual({"deferred_unsupported": 1}, dict(counts[suite]))
 
     self.assertEqual(
@@ -124,7 +130,11 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
 
     table = readme_compatibility.render_table()
-    self.assertIn("[OCSP support]", table)
+    self.assertIn(
+      "| Communication | [OCSP support](https://alexbevi.com/specifications/"
+      "ocsp-support/ocsp-support.html) | 🔴 Not supported | 0.0% |",
+      table,
+    )
     self.assertIn("[Wire compression]", table)
     self.assertIn("[SOCKS5 proxy support]", table)
     self.assertIn("[Standardized logging]", table)

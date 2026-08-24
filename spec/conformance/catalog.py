@@ -37,6 +37,7 @@ VALID_REQUIREMENT_STATUSES = {
   "no_machine_cases",
   "not_applicable",
   "passed",
+  "unsupported",
 }
 
 
@@ -245,7 +246,14 @@ def _generate_requirements(
         if status == "deferred_unsupported" and activities[activity]["status"] == "completed":
           raise CatalogError(f"deferred prose requirement has completed owner: {identity}")
 
-        if status in {"no_machine_cases", "not_applicable"}:
+        if status == "unsupported":
+          if activities[activity]["status"] not in {"completed", "in_progress"}:
+            raise CatalogError(f"unsupported prose requirement has inactive owner: {identity}")
+
+          if classification["runner"] != "none:unsupported":
+            raise CatalogError(f"unsupported prose requirement has a runner: {identity}")
+
+        if status in {"no_machine_cases", "not_applicable", "unsupported"}:
           if classification["required_environment"] != "none":
             raise CatalogError(f"non-execution prose outcome requires no environment: {identity}")
 

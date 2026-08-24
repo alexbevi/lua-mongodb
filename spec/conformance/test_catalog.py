@@ -154,6 +154,17 @@ class ConformanceCatalogTests(unittest.TestCase):
     self.assertEqual("deferred_unsupported", post_fork["status"])
     self.assertIsNone(post_fork["last_execution"])
 
+  def test_terminal_unsupported_requirement_has_no_pending_runner(self) -> None:
+    requirement = catalog.generate()["requirements"][
+      "ocsp-support/ocsp-support.md::document"
+    ]
+
+    self.assertEqual("TLS-002", requirement["activity"])
+    self.assertEqual("unsupported", requirement["status"])
+    self.assertEqual("none", requirement["required_environment"])
+    self.assertEqual("none:unsupported", requirement["runner"])
+    self.assertIsNone(requirement["last_execution"])
+
   def test_enumeration_requirements_record_the_topology_matrix(self) -> None:
     requirements = catalog.generate()["requirements"]
 

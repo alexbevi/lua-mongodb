@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 284,
+    "completed": 285,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 29
+    "pending": 28
   },
   "active": [],
   "ready": [
@@ -28,9 +28,9 @@
     "AUTH-019",
     "ADV-009",
     "ADV-010",
-    "TLS-002",
     "SFP-001",
-    "BSON-010"
+    "BSON-010",
+    "ADV-012"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -40,7 +40,7 @@
     "v0-8-wire-compression": [],
     "v0-9-gridfs": [],
     "v0-10-load-balancing": [
-      "TLS-002"
+      "ADV-012"
     ],
     "macos-ci-signal": [],
     "driver-examples": [],

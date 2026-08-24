@@ -7741,6 +7741,28 @@
       "reopened_after_commit": "df7916b5ecec1271f23920eff3fd9470bce6559d",
       "started_at": "2026-08-24T18:02:19+00:00",
       "completed_at": "2026-08-24T18:07:25+00:00"
+    },
+    "TLS-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'",
+          "exit_code": 2,
+          "summary": "2 failures: OCSP remained deferred_unsupported and unsupported rendered only an ambiguous red marker",
+          "recorded_at": "2026-08-24T19:40:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility spec.conformance.test_catalog spec.conformance.test_ledger' && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "16 executed and passed; 0 skipped, deferred, or failed; catalog, ledger, and README generated artifacts current",
+          "recorded_at": "2026-08-24T19:43:04+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-24T19:38:59+00:00",
+      "completed_at": "2026-08-24T19:43:13+00:00"
     }
   },
   "verified_references": {

@@ -880,13 +880,13 @@
       "fingerprint": "3cc845ccddf04c803815f3140ad152af0c1194feec68d78cc2369c28e952c9d1",
       "format": "prose",
       "last_execution": null,
-      "reason": "LuaSec 1.3 does not expose certificate revocation or OCSP endpoint verification, so the accepted OCSP behavior remains unsupported.",
-      "required_environment": "ocsp-responder",
-      "runner": "pending:TLS-002",
+      "reason": "LuaSec 1.3 does not expose certificate revocation, OCSP stapling, or OCSP endpoint verification, and this driver will not add a separate OCSP implementation.",
+      "required_environment": "none",
+      "runner": "none:unsupported",
       "scope": "post-v1",
       "source": "ocsp-support/ocsp-support.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "unsupported",
       "suite": "ocsp-support"
     },
     "polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.md::document": {
@@ -1298,10 +1298,11 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 6,
+      "deferred_unsupported": 5,
       "no_machine_cases": 1,
       "not_applicable": 2,
-      "passed": 37
+      "passed": 37,
+      "unsupported": 1
     },
     "requirements": 46,
     "suites": 50
