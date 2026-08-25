@@ -8740,29 +8740,53 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='<release metadata and checklist contracts>'",
-          "exit_code": 2,
-          "summary": "The top-level module still reported 0.10.0 while the maintenance release contract requires 0.10.1; three adjacent runtime-guard cases passed.",
-          "recorded_at": "2026-08-25T19:34:49+00:00"
+          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-rel060-coverage.Yd7COH/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
+          "exit_code": 1,
+          "summary": "The authoritative Linux Full Conformance report rejected stale coverage baselines for BSON-010: bson/tagged.lua expected 209/238 but observed 223/255, and runtime/copas.lua expected 259/293 but observed 268/304.",
+          "recorded_at": "2026-08-25T21:24:59+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='<version and handshake units>' FOCUS_PYTHON='<release, scope, CI contracts>' FOCUS_LINT='<six touched Lua files>'; focused wrapper-metadata integration",
+          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.release.test_checklist spec.release.test_publish'; authoritative Linux coverage gate; release checklist, README, JSON, plan, and diff validators",
           "exit_code": 0,
-          "summary": "Twenty Lua version/handshake cases, 31 release and CI contracts, six-file lint, and the focused wrapper-metadata integration case passed under Lua 5.4.",
-          "recorded_at": "2026-08-25T20:32:25+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-package; deterministic source-rock build from staged Git tree; rockspec, checklist, catalog, README, syntax, and diff validators",
-          "exit_code": 0,
-          "summary": "All three isolated package tests passed under Lua 5.5; two 1.7 MiB source rocks from the immutable candidate tree were byte-identical and contained the versioned rockspec and public GridFS module; every release artifact validator passed.",
-          "recorded_at": "2026-08-25T20:32:26+00:00"
+          "summary": "All 10 focused coverage and release contracts passed; the authoritative Linux report now passes at 24504/26959 with no per-file or total regressions, while the conservative baseline records only the BSON-010 deltas at 24081/26542. The 0.10.1 checklist remains ready with 0 gaps; README, JSON, plan, and diff validators pass.",
+          "recorded_at": "2026-08-25T21:25:54+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-25T19:33:31+00:00",
-      "completed_at": "2026-08-25T20:32:31+00:00"
+      "notes": [
+        "Requeued: Full Conformance 32896569052 passed every runtime, compatibility, unified, and aggregate gate after the hosted CSOT retry but rejected stale Linux coverage baselines for the BSON-010 fork-safety paths."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-25T20:32:31+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='<release metadata and checklist contracts>'",
+              "exit_code": 2,
+              "summary": "The top-level module still reported 0.10.0 while the maintenance release contract requires 0.10.1; three adjacent runtime-guard cases passed.",
+              "recorded_at": "2026-08-25T19:34:49+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='<version and handshake units>' FOCUS_PYTHON='<release, scope, CI contracts>' FOCUS_LINT='<six touched Lua files>'; focused wrapper-metadata integration",
+              "exit_code": 0,
+              "summary": "Twenty Lua version/handshake cases, 31 release and CI contracts, six-file lint, and the focused wrapper-metadata integration case passed under Lua 5.4.",
+              "recorded_at": "2026-08-25T20:32:25+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-package; deterministic source-rock build from staged Git tree; rockspec, checklist, catalog, README, syntax, and diff validators",
+              "exit_code": 0,
+              "summary": "All three isolated package tests passed under Lua 5.5; two 1.7 MiB source rocks from the immutable candidate tree were byte-identical and contained the versioned rockspec and public GridFS module; every release artifact validator passed.",
+              "recorded_at": "2026-08-25T20:32:26+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "a36205d6fe4bab633509f917f4d505f8700d0329",
+      "started_at": "2026-08-25T21:24:52+00:00",
+      "completed_at": "2026-08-25T21:26:02+00:00"
     }
   },
   "verified_references": {

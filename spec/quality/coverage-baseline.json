@@ -81,8 +81,8 @@
       "covered": 483
     },
     "src/mongodb/bson/tagged.lua": {
-      "active": 238,
-      "covered": 209
+      "active": 255,
+      "covered": 223
     },
     "src/mongodb/bson/value.lua": {
       "active": 168,
@@ -189,8 +189,8 @@
       "covered": 82
     },
     "src/mongodb/runtime/copas.lua": {
-      "active": 293,
-      "covered": 259
+      "active": 304,
+      "covered": 268
     },
     "src/mongodb/runtime/copas_dns.lua": {
       "active": 352,
@@ -297,7 +297,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 26514,
-    "covered": 24058
+    "active": 26542,
+    "covered": 24081
   }
 }
