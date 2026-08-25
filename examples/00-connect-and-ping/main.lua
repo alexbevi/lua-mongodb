@@ -1,19 +1,5 @@
 local mongodb = require("mongodb")
 
-local function supported_version(version)
-  local major, minor, patch = version:match("^(%d+)%.(%d+)%.(%d+)$")
-
-  if major == nil then
-    return false
-  end
-
-  major = tonumber(major)
-  minor = tonumber(minor)
-  patch = tonumber(patch)
-
-  return major > 0 or minor > 5 or minor == 5 and patch >= 0
-end
-
 local function ping()
   local uri = os.getenv("MONGODB_URI")
     or "mongodb://127.0.0.1:27017/lua_examples_ping"
@@ -42,16 +28,10 @@ local function ping()
       return nil, err
     end
 
-    print("MongoDB driver 0.5.0 or later loaded from LuaRocks")
     print("Ping succeeded")
     print("Client closed")
     return true
   end)
-end
-
-if not supported_version(mongodb._VERSION) then
-  io.stderr:write("mongodb 0.5.0 or later is required\n")
-  os.exit(1)
 end
 
 local ok, err = ping()

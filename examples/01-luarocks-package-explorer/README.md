@@ -9,7 +9,7 @@ API export. Every run starts with the same eight rows.
 
 ## What you'll do
 
-- Load `mongodb` 0.5.0 or later from LuaRocks.
+- Load `mongodb` from LuaRocks.
 - Build ordered package documents with `mongodb.bson.document`.
 - Build dense labels, versions, and dependencies with
   `mongodb.bson.array`.

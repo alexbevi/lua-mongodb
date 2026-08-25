@@ -110,11 +110,7 @@ def assert_installed_rock(
   script = (
     "local p=assert(package.searchpath('mongodb', package.path));"
     f"assert(p:sub(1,{len(str(tree))})=={str(tree)!r});"
-    "local v=require('mongodb')._VERSION;"
-    "local a,b,c=v:match('^(%d+)%.(%d+)%.(%d+)$');"
-    "assert(a and (tonumber(a)>0 or tonumber(b)>=5),"
-    "'mongodb 0.5.0 or later is required');"
-    "print(v)"
+    "require('mongodb')"
   )
   checked = run_command(
     [lua, "-e", script],
@@ -122,7 +118,6 @@ def assert_installed_rock(
     environment=environment,
   )
   case.assertEqual(0, checked.returncode, checked.stderr or checked.stdout)
-  case.assertRegex(checked.stdout.strip(), r"^\d+\.\d+\.\d+$")
 
 
 class ConnectAndPingTests(unittest.TestCase):
@@ -164,7 +159,6 @@ class ConnectAndPingTests(unittest.TestCase):
     )
     self.assertIn(PINNED_IMAGE, compose)
     self.assertEqual(
-      "MongoDB driver 0.5.0 or later loaded from LuaRocks\n"
       "Ping succeeded\n"
       "Client closed\n",
       expected,

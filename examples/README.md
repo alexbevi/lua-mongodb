@@ -11,7 +11,7 @@ released `mongodb` rock. They never add this checkout's `src/` directory to
 | Environment | Status |
 | --- | --- |
 | Stock Lua 5.4 or Lua 5.5 with 64-bit integers | Required |
-| `mongodb` rock 0.5.0 or later | Required; install the latest public rock |
+| `mongodb` rock | Install from LuaRocks |
 | Copas 4.11.x | Installed by LuaRocks; do not upgrade it separately |
 | LuaJIT and OpenResty | Not currently supported by the driver |
 | MongoDB standalone | Used by the introductory examples |

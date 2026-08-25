@@ -61,7 +61,6 @@ Compare-Object (Get-Content .\expected-output.txt) (lua .\main.lua)
 [`expected-output.txt`](expected-output.txt) contains:
 
 ```text
-MongoDB driver 0.5.0 or later loaded from LuaRocks
 Ping succeeded
 Client closed
 ```

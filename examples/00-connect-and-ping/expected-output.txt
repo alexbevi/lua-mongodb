@@ -1,3 +1,2 @@
-MongoDB driver 0.5.0 or later loaded from LuaRocks
 Ping succeeded
 Client closed
