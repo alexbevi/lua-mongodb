@@ -945,6 +945,67 @@ describe("client sessions", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("releases a load-balanced pin after a successful abort", function()
+    local release_count = 0
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function()
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:pin_connection({
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }))
+    assert(session:abort_transaction())
+
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+  end)
+
+  it("releases a load-balanced pin after a transient abort error", function()
+    local release_count = 0
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function()
+        return nil, errors.new({
+          category = errors.CATEGORY.SERVER,
+          code = 24,
+          labels = { "TransientTransactionError" },
+          message = "transaction lock request timed out",
+        })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:pin_connection({
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }))
+    assert(session:abort_transaction())
+
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+  end)
+
   it("releases a load-balanced pin after an ordinary abort error", function()
     local release_count = 0
     local sessions = new_session_manager({

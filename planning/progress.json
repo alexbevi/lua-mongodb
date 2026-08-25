@@ -8260,6 +8260,28 @@
       "notes": [],
       "started_at": "2026-08-25T02:32:20+00:00",
       "completed_at": "2026-08-25T02:38:09+00:00"
+    },
+    "LB-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=successful.abort spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused successful-abort case failed because a load-balanced session still owned its physical connection pin after abort completed.",
+          "recorded_at": "2026-08-25T02:45:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/retry_executor_spec.lua spec/unit/topology_spec.lua spec/unit/pool_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "Every terminal load-balanced abort path releases its session-owned pin exactly once, network-failed sockets are discarded, and focused Lua, conformance, lint, complexity, and generated-artifact checks pass.",
+          "recorded_at": "2026-08-25T02:48:59+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T02:44:58+00:00",
+      "completed_at": "2026-08-25T02:49:00+00:00"
     }
   },
   "verified_references": {

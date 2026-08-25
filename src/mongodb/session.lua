@@ -547,7 +547,7 @@ function SESSION_METHODS:commit_transaction(options)
 end
 
 function SESSION_METHODS:abort_transaction(options)
-  local response, err, command_err = finish_transaction(
+  local response, err = finish_transaction(
     self,
     "abortTransaction",
     options
@@ -555,13 +555,7 @@ function SESSION_METHODS:abort_transaction(options)
 
   if SESSION_STATES[self].transaction.state == "aborted" then
     self:unpin_server()
-
-    if command_err
-        and not command_err:has_label("TransientTransactionError")
-        and not retryable_transaction_command("abortTransaction", command_err)
-    then
-      self:unpin_connection()
-    end
+    self:unpin_connection()
   end
 
   return response, err

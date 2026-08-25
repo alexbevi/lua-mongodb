@@ -711,8 +711,7 @@ describe("load-balanced connection establishment", function()
       assert.is_true(err:has_label("TransientTransactionError"))
       assert.is_false(session:is_pinned())
       assert(session:abort_transaction())
-      assert.is_true(session:is_pinned())
-      assert(session:unpin_connection())
+      assert.is_false(session:is_pinned())
       assert(database:run_command("ping"))
       assert(session:end_session())
       assert(client:close())
@@ -727,6 +726,61 @@ describe("load-balanced connection establishment", function()
       elseif name == "abortTransaction" then
         assert.are_not.equal(failed_peer, peer)
       elseif name ~= "ping" and name ~= "endSessions" then
+        error("unexpected command: " .. name)
+      end
+
+      return bson.document({ { "ok", 1 }, { "n", 1 } })
+    end)
+  end)
+
+  it("releases a load-balanced pin after a network abort", function()
+    local abort_count = 0
+    local failed_peer
+    local retry_peer
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 1,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local database = client:database()
+      local collection = database:collection("events")
+      local session = assert(client:start_session())
+
+      assert(session:start_transaction())
+      assert(collection:insert_one(
+        bson.document({ { "n", 1 } }),
+        { session = session }
+      ))
+      assert(session:abort_transaction())
+      assert.are.equal(2, abort_count)
+      assert.is_false(session:is_pinned())
+      assert(database:run_command("ping"))
+      assert(session:end_session())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      if name == "insert" then
+        failed_peer = peer
+      elseif name == "abortTransaction" then
+        abort_count = abort_count + 1
+
+        if abort_count == 1 then
+          assert.are.equal(failed_peer, peer)
+          return nil
+        end
+
+        retry_peer = peer
+        assert.are_not.equal(failed_peer, retry_peer)
+      elseif name == "ping" then
+        assert.are.equal(retry_peer, peer)
+      elseif name ~= "endSessions" then
         error("unexpected command: " .. name)
       end
 
