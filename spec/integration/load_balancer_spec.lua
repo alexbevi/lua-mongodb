@@ -610,6 +610,61 @@ describe("load-balanced connection establishment", function()
     end)
   end)
 
+  it("repins after starting a new load-balanced transaction", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local transaction_numbers = {}
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 1,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local collection = client:database():collection("events")
+      local session = assert(client:start_session())
+
+      assert(session:start_transaction())
+      assert(collection:insert_one(
+        bson.document({ { "n", 1 } }),
+        { session = session }
+      ))
+      assert(session:commit_transaction())
+      assert.is_true(session:is_pinned())
+
+      assert(session:start_transaction())
+      assert.is_false(session:is_pinned())
+      assert(collection:insert_one(
+        bson.document({ { "n", 2 } }),
+        { session = session }
+      ))
+      assert.is_true(session:is_pinned())
+      assert(session:abort_transaction())
+      assert.is_false(session:is_pinned())
+      assert(session:end_session())
+      assert(client:close())
+    end, function(_, request)
+      local name = request.body:keys()[1]
+
+      if name == "insert" then
+        assert.is_true(request.body:get("startTransaction"))
+        transaction_numbers[#transaction_numbers + 1] =
+          request.body:get("txnNumber")
+      elseif name ~= "commitTransaction" and name ~= "abortTransaction"
+          and name ~= "endSessions"
+      then
+        error("unexpected command: " .. name)
+      end
+
+      return bson.document({ { "ok", 1 }, { "n", 1 } })
+    end)
+
+    assert.are.equal(2, #transaction_numbers)
+    assert.are_not.equal(transaction_numbers[1], transaction_numbers[2])
+  end)
+
   it("applies ordinary transaction-error pin lifecycles", function()
     local service_id = assert(bson.object_id("000000000000000000000001"))
     local transaction_peer

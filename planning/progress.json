@@ -8282,6 +8282,28 @@
       "notes": [],
       "started_at": "2026-08-25T02:44:58+00:00",
       "completed_at": "2026-08-25T02:49:00+00:00"
+    },
+    "LB-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=repins spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused new-transaction case failed because replacing transaction state dropped the retained load-balanced pin without releasing its physical connection.",
+          "recorded_at": "2026-08-25T03:07:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/retry_executor_spec.lua spec/unit/topology_spec.lua spec/unit/pool_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "Starting a new transaction releases the retained load-balanced checkout before state replacement, permits a fresh transaction pin, preserves the session id, advances txnNumber, and passes focused Lua, conformance, lint, complexity, and generated-artifact checks.",
+          "recorded_at": "2026-08-25T03:10:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T03:06:59+00:00",
+      "completed_at": "2026-08-25T03:10:09+00:00"
     }
   },
   "verified_references": {

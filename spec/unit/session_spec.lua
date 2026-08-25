@@ -945,6 +945,74 @@ describe("client sessions", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("repins a new load-balanced transaction on a fresh connection", function()
+    local commands = {}
+    local pins = {}
+    local release_counts = {}
+    local executor
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+
+        if options.pin_connection then
+          local index = #pins + 1
+          local pin = {
+            release = function()
+              release_counts[index] = release_counts[index] + 1
+              return true
+            end,
+          }
+
+          pins[index] = pin
+          release_counts[index] = 0
+          options.on_connection_pinned(pin)
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function(session, name)
+        return executor:command(
+          "admin",
+          bson.document({ { name, 1 } }),
+          { session = session, transaction_control = true }
+        )
+      end,
+    })
+
+    executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:commit_transaction())
+    assert.are.equal(0, release_counts[1])
+
+    assert(session:start_transaction())
+    assert.are.equal(1, release_counts[1])
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+
+    assert.are.equal(2, #pins)
+    assert.are_not.equal(pins[1], pins[2])
+    assert.are.equal(commands[1]:get("lsid"), commands[3]:get("lsid"))
+    assert.are.equal(bson.int64(1), commands[1]:get("txnNumber"))
+    assert.are.equal(bson.int64(2), commands[3]:get("txnNumber"))
+    assert(session:abort_transaction())
+    assert.are.equal(1, release_counts[2])
+  end)
+
   it("releases a load-balanced pin after a successful abort", function()
     local release_count = 0
     local sessions = new_session_manager({

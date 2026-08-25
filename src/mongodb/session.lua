@@ -414,6 +414,7 @@ function SESSION_METHODS:start_transaction(options)
   state.server_session.transaction_number =
     state.server_session.transaction_number + 1
   self:unpin_server()
+  self:unpin_connection()
   state.transaction = { options = transaction_options, state = "starting" }
   return true
 end
