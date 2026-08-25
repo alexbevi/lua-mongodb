@@ -613,12 +613,12 @@ TEST_OVERRIDES.update({
     None,
   ),
   "run-command/tests/unified/runCursorCommand.json::test[5]": (
-    "LB-009",
-    "load-balanced command cursor pinning awaits its dedicated slice",
+    "CON-010",
+    OWNER_REASONS["CON-010"],
   ),
   "run-command/tests/unified/runCursorCommand.json::test[6]": (
-    "LB-009",
-    "load-balanced command cursor pinning awaits its dedicated slice",
+    "CON-010",
+    OWNER_REASONS["CON-010"],
   ),
   "run-command/tests/unified/runCursorCommand.json::test[10]": (
     "LEG-008",

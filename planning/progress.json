@@ -8119,6 +8119,28 @@
       "notes": [],
       "started_at": "2026-08-25T00:25:47+00:00",
       "completed_at": "2026-08-25T00:28:52+00:00"
+    },
+    "LB-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted 'FOCUS_UNIT=--filter=generic spec/unit/api_handles_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused generic command-cursor case failed because its initial command did not request a pinned connection.",
+          "recorded_at": "2026-08-25T00:38:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/database_aggregate_spec.lua spec/unit/admin_spec.lua spec/unit/change_stream_spec.lua spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger' FOCUS_LINT='src/mongodb/api.lua src/mongodb/crud.lua src/mongodb/admin.lua spec/unit/api_handles_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/database_aggregate_spec.lua spec/unit/admin_spec.lua spec/unit/change_stream_spec.lua spec/integration/load_balancer_spec.lua'",
+          "exit_code": 0,
+          "summary": "93 focused unit and 7 directly coupled integration cases passed; 130 unified/conformance classifier tests passed; touched Lua files linted cleanly; complexity and generated artifact checks passed",
+          "recorded_at": "2026-08-25T00:56:30+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T00:36:49+00:00",
+      "completed_at": "2026-08-25T00:56:31+00:00"
     }
   },
   "verified_references": {

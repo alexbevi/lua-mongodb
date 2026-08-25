@@ -5,8 +5,7 @@
   },
   "excluded_by_activity": {
     "ADV-009": 24,
-    "CON-010": 1,
-    "LB-009": 2,
+    "CON-010": 3,
     "LEG-003": 1
   },
   "exclusion_reasons": {

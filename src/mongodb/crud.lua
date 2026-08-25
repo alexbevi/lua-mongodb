@@ -533,9 +533,12 @@ local function execute_write(state, entries, options, retryable, read_preference
       cancellation = options.cancellation,
       deadline = options.deadline,
       no_response = not acknowledged,
+      on_connection_pinned = options.on_connection_pinned,
+      pin_connection = options.pin_connection,
       read_preference = read_preference,
       retryable_write = acknowledged and retryable == true,
       session = options.session,
+      session_context = options.session_context,
     }
   )
 
@@ -853,8 +856,16 @@ local function aggregate_entries(state, pipeline, options, writes)
   return entries
 end
 
-local function aggregate_response(state, pipeline, options, writes)
+local function aggregate_response(state, pipeline, options, writes, pin_connection)
   local entries = aggregate_entries(state, pipeline, options, writes)
+  local pinned_connection
+
+  if pin_connection then
+    options.on_connection_pinned = function(pin)
+      pinned_connection = pin
+    end
+    options.pin_connection = true
+  end
 
   if writes then
     local response, acknowledged, err = execute_write(
@@ -866,6 +877,10 @@ local function aggregate_response(state, pipeline, options, writes)
     )
 
     if not response then
+      if pinned_connection then
+        pinned_connection:release()
+      end
+
       return nil, err
     end
 
@@ -880,7 +895,7 @@ local function aggregate_response(state, pipeline, options, writes)
       })
     end
 
-    return response
+    return response, nil, nil, pinned_connection
   end
 
   local server_address
@@ -890,7 +905,9 @@ local function aggregate_response(state, pipeline, options, writes)
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_connection_pinned = options.on_connection_pinned,
       on_server_selected = function(address) server_address = address end,
+      pin_connection = options.pin_connection,
       read_preference = state.read_preference,
       retryable_read = not writes,
       session = options.session,
@@ -898,7 +915,7 @@ local function aggregate_response(state, pipeline, options, writes)
     }
   )
 
-  return response, err, server_address
+  return response, err, server_address, pinned_connection
 end
 
 local function cursor_from_response(state, response, options)
@@ -910,6 +927,10 @@ local function cursor_from_response(state, response, options)
     collection_name, err = cursor_model.collection_name(response, database_name)
 
     if err then
+      if options.pinned_connection then
+        options.pinned_connection:release()
+      end
+
       return nil, err
     end
   end
@@ -925,6 +946,7 @@ local function cursor_from_response(state, response, options)
     executor = state.executor,
     max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
+    pinned_connection = options.pinned_connection,
     server_address = options.server_address,
     session = options.session,
     session_context = options.session_context,
@@ -1105,11 +1127,12 @@ function M.aggregate(state, pipeline, options)
     })
   end
 
-  local response, err, server_address = aggregate_response(
+  local response, err, server_address, pinned_connection = aggregate_response(
     state,
     pipeline,
     options,
-    writes
+    writes,
+    true
   )
 
   if not response then
@@ -1121,6 +1144,7 @@ function M.aggregate(state, pipeline, options)
   end
 
   options.server_address = server_address
+  options.pinned_connection = pinned_connection
   return cursor_from_response(state, response, options)
 end
 

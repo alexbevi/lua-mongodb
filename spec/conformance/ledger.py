@@ -568,7 +568,13 @@ def classify_case(
           "directly-coupled-endpoint",
         )
       else:
-        owner = "LB-009"
+        return _passed(
+          case,
+          "LB-009",
+          "spec/unit/api_handles_spec.lua",
+          "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/database_aggregate_spec.lua spec/unit/admin_spec.lua spec/unit/change_stream_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+          "directly-coupled-endpoint",
+        )
     elif fixture == "event-monitoring.json":
       return _passed(
         case,

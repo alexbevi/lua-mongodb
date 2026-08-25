@@ -148,7 +148,14 @@ describe("core MongoDB handles", function()
 
   it("executes a generic command cursor on its selected server", function()
     local calls = {}
+    local release_count = 0
     local released_sessions = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local executor = {
       close = function() return true end,
       command = function(_, database, command, options)
@@ -159,6 +166,8 @@ describe("core MongoDB handles", function()
         }
 
         if command:get("getMore") == nil then
+          assert.is_true(options.pin_connection)
+          options.on_connection_pinned(pin)
           options.on_server_selected("server:27017")
           return bson.document({
             { "ok", 1 },
@@ -172,6 +181,7 @@ describe("core MongoDB handles", function()
           })
         end
 
+        assert.are.equal(pin, options.pinned_connection)
         return bson.document({
           { "ok", 1 },
           { "cursor", bson.document({
@@ -210,6 +220,47 @@ describe("core MongoDB handles", function()
     assert.are.equal(5, calls[2].command:get("batchSize"))
     assert.are.equal(300, calls[2].command:get("maxTimeMS"))
     assert.are.equal(comment, calls[2].command:get("comment"))
+    assert.are.equal(1, release_count)
+  end)
+
+  it("closes a generic command cursor on its pinned connection", function()
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        if command:get("aggregate") ~= nil then
+          assert.is_true(options.pin_connection)
+          options.on_connection_pinned(pin)
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(42) },
+              { "ns", "db.items" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        end
+
+        assert.are.equal("killCursors", command:keys()[1])
+        assert.are.equal(pin, options.pinned_connection)
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("db"):run_cursor_command(
+      bson.document({ { "aggregate", "items" }, { "pipeline", bson.array({}) } })
+    ))
+
+    assert.is_true(cursor:close())
+    assert.are.equal(1, release_count)
+    assert.is_false(cursor:close())
+    assert.are.equal(1, release_count)
   end)
 
   it("keeps a tailable command cursor open across an empty batch", function()

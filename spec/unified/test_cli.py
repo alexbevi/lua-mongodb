@@ -2499,8 +2499,8 @@ class UnifiedCliTests(unittest.TestCase):
     }
     post_v1 = {
       "run-command/tests/unified/runCursorCommand.json::test[1]": "ADV-005",
-      "run-command/tests/unified/runCursorCommand.json::test[5]": "LB-009",
-      "run-command/tests/unified/runCursorCommand.json::test[6]": "LB-009",
+      "run-command/tests/unified/runCursorCommand.json::test[5]": "CON-010",
+      "run-command/tests/unified/runCursorCommand.json::test[6]": "CON-010",
       "run-command/tests/unified/runCursorCommand.json::test[10]": "LEG-008",
       "client-side-operations-timeout/tests/runCursorCommand.json::test[4]": "REL-053",
       "client-side-operations-timeout/tests/runCursorCommand.json::test[5]": "REL-053",

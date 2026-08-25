@@ -7,7 +7,14 @@ local retry_executor = require("mongodb.retry_executor")
 
 describe("database aggregate", function()
   it("returns a cursor for an aggregate command against the database", function()
+    local release_count = 0
     local sent
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local executor = {
       close = function()
         return true
@@ -18,6 +25,8 @@ describe("database aggregate", function()
           database = database,
           options = options,
         }
+        assert.is_true(options.pin_connection)
+        options.on_connection_pinned(pin)
         return bson.document({
           { "ok", 1 },
           { "cursor", bson.document({
@@ -58,6 +67,7 @@ describe("database aggregate", function()
     assert.are.equal("majority", sent.command:get("readConcern"):get("level"))
     assert.are.equal("secondary_preferred", sent.options.read_preference.mode)
     assert.is_true(sent.options.retryable_read)
+    assert.are.equal(1, release_count)
   end)
 
   it("retries read pipelines once but not write pipelines", function()

@@ -70873,9 +70873,9 @@
       "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[5]": {
-      "activity": "LB-009",
+      "activity": "CON-010",
       "fingerprint": "e7f6311ae3921425d3da576d86a55605356c55fc01d1fbd29a04e3e43c753fba",
-      "reason": "load-balanced command cursor pinning awaits its dedicated slice",
+      "reason": "complete load-balanced unified execution awaits the v0.10 conformance closure",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -70917,9 +70917,9 @@
       "status": "deferred_unsupported"
     },
     "run-command/tests/unified/runCursorCommand.json::test[6]": {
-      "activity": "LB-009",
+      "activity": "CON-010",
       "fingerprint": "3627623fe17a9d9857461413935e8664e5124bd865b8c852181fc1d40b60d9b0",
-      "reason": "load-balanced command cursor pinning awaits its dedicated slice",
+      "reason": "complete load-balanced unified execution awaits the v0.10 conformance closure",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",

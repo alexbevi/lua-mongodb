@@ -649,14 +649,19 @@ function DATABASE_METHODS:run_cursor_command(command, options)
 
     local session_context = prepared.session == nil
       and type(state.executor.release_session_context) == "function" and {} or nil
+    local pinned_connection
     local server_address
 
     execution_options.batch_size = nil
     execution_options.comment = nil
     execution_options.max_await_time_ms = nil
+    execution_options.on_connection_pinned = function(pin)
+      pinned_connection = pin
+    end
     execution_options.on_server_selected = function(address)
       server_address = address
     end
+    execution_options.pin_connection = true
     execution_options.retryable_read = true
     execution_options.session_context = session_context
     local response
@@ -681,6 +686,10 @@ function DATABASE_METHODS:run_cursor_command(command, options)
     )
 
     if option_err then
+      if pinned_connection then
+        pinned_connection:release()
+      end
+
       if session_context then
         state.executor:release_session_context(session_context)
       end
@@ -700,6 +709,7 @@ function DATABASE_METHODS:run_cursor_command(command, options)
       executor = state.executor,
       max_await_time_ms = prepared.max_await_time_ms,
       on_close = state.on_cursor_close,
+      pinned_connection = pinned_connection,
       server_address = server_address,
       session = prepared.session,
       session_context = session_context,

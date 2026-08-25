@@ -440,6 +440,10 @@ local function cursor_from_response(state, response, options)
   local cursor = response:get("cursor")
 
   if not bson.is_document(cursor) then
+    if options.pinned_connection then
+      options.pinned_connection:release()
+    end
+
     return protocol_error("administration response is missing its cursor document")
   end
 
@@ -449,6 +453,10 @@ local function cursor_from_response(state, response, options)
   if type(namespace) ~= "string" or namespace:sub(1, #prefix) ~= prefix
       or #namespace == #prefix
   then
+    if options.pinned_connection then
+      options.pinned_connection:release()
+    end
+
     return protocol_error("administration cursor contains an invalid namespace")
   end
 
@@ -463,6 +471,7 @@ local function cursor_from_response(state, response, options)
     executor = state.executor,
     max_await_time_ms = options.max_await_time_ms,
     on_close = state.on_cursor_close,
+    pinned_connection = options.pinned_connection,
     session = options.session,
     session_context = options.session_context,
     timeout_context = operation_timeout.capture(),
@@ -789,12 +798,15 @@ function M.list_collections(state, options)
 
   append_raw_data(entries, state, options)
 
+  local pinned_connection
   local response, err = state.executor:command(
     state.name,
     bson.document(entries),
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_connection_pinned = function(pin) pinned_connection = pin end,
+      pin_connection = true,
       read_preference = PRIMARY_READ_PREFERENCE,
       retryable_read = true,
       session = options.session,
@@ -815,6 +827,7 @@ function M.list_collections(state, options)
     cancellation = options.cancellation,
     database_name = state.name,
     deadline = options.deadline,
+    pinned_connection = pinned_connection,
     session = options.session,
     session_context = options.session_context,
     timeout_mode = options.timeout_mode,
@@ -1269,12 +1282,15 @@ function M.list_search_indexes(state, name, options)
   end
 
   append_raw_data(entries, state, options)
+  local pinned_connection
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_connection_pinned = function(pin) pinned_connection = pin end,
+      pin_connection = true,
       read_preference = PRIMARY_READ_PREFERENCE,
       retryable_read = true,
       session = options.session,
@@ -1298,6 +1314,7 @@ function M.list_search_indexes(state, name, options)
     deadline = options.deadline,
     inherit_comment = true,
     max_await_time_ms = options.max_await_time_ms,
+    pinned_connection = pinned_connection,
     session = options.session,
     session_context = options.session_context,
     timeout_mode = options.timeout_mode,
@@ -1379,12 +1396,15 @@ function M.list_indexes(state, options)
   end
 
   append_raw_data(entries, state, options)
+  local pinned_connection
   local response, err = state.executor:command(
     state.database_name,
     bson.document(entries),
     {
       cancellation = options.cancellation,
       deadline = options.deadline,
+      on_connection_pinned = function(pin) pinned_connection = pin end,
+      pin_connection = true,
       retryable_read = true,
       session = options.session,
       session_context = options.session_context,
@@ -1417,6 +1437,7 @@ function M.list_indexes(state, options)
     database_name = state.database_name,
     deadline = options.deadline,
     inherit_comment = true,
+    pinned_connection = pinned_connection,
     session = options.session,
     session_context = options.session_context,
     timeout_mode = options.timeout_mode,

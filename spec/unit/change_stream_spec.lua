@@ -7,6 +7,13 @@ local fake_runtime = require("mongodb.runtime.fake")
 describe("collection change streams", function()
   it("opens, yields from, and closes a collection stream", function()
     local commands = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local event = bson.document({
       { "_id", bson.document({ { "token", 1 } }) },
       { "operationType", "insert" },
@@ -32,6 +39,14 @@ describe("collection change streams", function()
           database = database,
           options = options,
         }
+
+        if command:get("aggregate") ~= nil then
+          assert.is_true(options.pin_connection)
+          options.on_connection_pinned(pin)
+        else
+          assert.are.equal(pin, options.pinned_connection)
+        end
+
         return table.remove(responses, 1)
       end,
     }
@@ -48,6 +63,7 @@ describe("collection change streams", function()
     assert.are.equal(event, assert(stream:next()))
     assert.is_true(stream:close())
     assert.is_true(stream:is_closed())
+    assert.are.equal(1, release_count)
 
     local aggregate = commands[1]
     local pipeline = aggregate.command:get("pipeline")

@@ -142,6 +142,13 @@ describe("database and collection management", function()
 
   it("lists and drops databases and collections with command cursors", function()
     local commands = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local responses = {
       bson.document({
         { "ok", 1 },
@@ -166,8 +173,16 @@ describe("database and collection management", function()
       close = function()
         return true
       end,
-      command = function(_, database, command)
+      command = function(_, database, command, options)
         commands[#commands + 1] = { command = command, database = database }
+
+        if command:get("listCollections") ~= nil then
+          assert.is_true(options.pin_connection)
+          options.on_connection_pinned(pin)
+        elseif command:get("getMore") ~= nil then
+          assert.are.equal(pin, options.pinned_connection)
+        end
+
         return table.remove(responses, 1)
       end,
     }
@@ -209,6 +224,7 @@ describe("database and collection management", function()
     assert.is_true(client:drop_database(database))
     assert.are.equal("dropDatabase", commands[6].command:keys()[1])
     assert.are.equal("app", commands[6].database)
+    assert.are.equal(2, release_count)
   end)
 
   it("forces database and collection enumeration onto primary selection", function()
@@ -520,6 +536,13 @@ describe("database and collection management", function()
   it("lists Search indexes through aggregation without concerns", function()
     local commands = {}
     local executions = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local responses = {
       cursor_response("app.events", 0, {
         bson.document({ { "name", "standard" } }),
@@ -535,6 +558,8 @@ describe("database and collection management", function()
       command = function(_, _, command, options)
         commands[#commands + 1] = command
         executions[#executions + 1] = options
+        assert.is_true(options.pin_connection)
+        options.on_connection_pinned(pin)
         return table.remove(responses, 1)
       end,
     }
@@ -566,6 +591,7 @@ describe("database and collection management", function()
     assert.are.equal(10, list_named:get("cursor"):get("batchSize"))
     assert.is_nil(list_named:get("readConcern"))
     assert.is_nil(list_named:get("writeConcern"))
+    assert.are.equal(2, release_count)
   end)
 
   it("updates a Search index definition", function()
@@ -662,6 +688,13 @@ describe("database and collection management", function()
 
   it("lists indexes and inherits comments on getMore", function()
     local commands = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local responses = {
       cursor_response("app.events", 91, {
         bson.document({ { "name", "_id_" } }),
@@ -674,8 +707,16 @@ describe("database and collection management", function()
       close = function()
         return true
       end,
-      command = function(_, _, command)
+      command = function(_, _, command, options)
         commands[#commands + 1] = command
+
+        if command:get("listIndexes") ~= nil then
+          assert.is_true(options.pin_connection)
+          options.on_connection_pinned(pin)
+        else
+          assert.are.equal(pin, options.pinned_connection)
+        end
+
         return table.remove(responses, 1)
       end,
     }
@@ -690,6 +731,7 @@ describe("database and collection management", function()
     assert.are.equal("kind_1", assert(cursor:next()):get("name"))
     assert.are.equal("events", commands[2]:get("collection"))
     assert.are.equal("index-list", commands[2]:get("comment"))
+    assert.are.equal(1, release_count)
   end)
 
   it("retains write concern errors and validates wire-version options", function()

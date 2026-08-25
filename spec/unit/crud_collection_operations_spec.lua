@@ -5,6 +5,13 @@ local driver_options = require("mongodb.config.options")
 describe("core collection read and modify operations", function()
   it("builds aggregate, count, distinct, and findAndModify commands", function()
     local commands = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
     local responses = {
       bson.document({
         { "ok", 1 },
@@ -54,6 +61,13 @@ describe("core collection read and modify operations", function()
           options.on_server_selected("router-a:27017")
         end
 
+        if #commands == 1 then
+          assert.is_true(options.pin_connection)
+          options.on_connection_pinned(pin)
+        elseif command:get("getMore") ~= nil then
+          assert.are.equal(pin, options.pinned_connection)
+        end
+
         return table.remove(responses, 1)
       end,
     }
@@ -80,6 +94,7 @@ describe("core collection read and modify operations", function()
     assert.are.equal("getMore", commands[2].command:keys()[1])
     assert.are.equal(25, commands[2].command:get("maxTimeMS"))
     assert.are.equal("router-a:27017", commands[2].options.server_address)
+    assert.are.equal(1, release_count)
 
     assert.are.equal(2, assert(collection:count_documents(filter, {
       limit = 5,

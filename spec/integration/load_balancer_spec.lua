@@ -383,6 +383,124 @@ describe("load-balanced connection establishment", function()
     )
   end)
 
+  it("pins every supported command cursor through continuation or close", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local cursor_connections = {}
+    local next_cursor_id = 100
+    local active_connection
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local database = client:database()
+      local collection = database:collection("events")
+      local function drain(cursor)
+        assert(cursor:next())
+        assert(database:run_command("ping"))
+        assert(cursor:next())
+      end
+
+      drain(assert(database:run_cursor_command(
+        bson.document({ { "find", "events" } })
+      )))
+      local closed = assert(database:run_cursor_command(
+        bson.document({ { "find", "events" } })
+      ))
+
+      assert(database:run_command("ping"))
+      assert.is_true(closed:close())
+      drain(assert(collection:aggregate(bson.array({}))))
+      drain(assert(database:aggregate(bson.array({}))))
+      drain(assert(database:list_collections()))
+      drain(assert(collection:list_indexes()))
+      drain(assert(collection:list_search_indexes()))
+
+      local stream = assert(collection:watch())
+
+      assert(stream:next())
+      assert(database:run_command("ping"))
+      assert(stream:next())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      if name == "ping" then
+        assert.are_not.equal(active_connection, peer)
+        return bson.document({ { "ok", 1 } })
+      elseif name == "endSessions" then
+        return bson.document({ { "ok", 1 } })
+      elseif name == "getMore" then
+        local cursor_id = request.body:get("getMore"):to_number()
+        local cursor_state = assert(cursor_connections[cursor_id])
+
+        assert.are.equal(cursor_state.connection, peer)
+        active_connection = nil
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", cursor_state.namespace },
+            { "nextBatch", bson.array({ cursor_state.document }) },
+          }) },
+        })
+      elseif name == "killCursors" then
+        local cursor_id = request.body:get("cursors"):get(1):to_number()
+        local cursor_state = assert(cursor_connections[cursor_id])
+
+        assert.are.equal(cursor_state.connection, peer)
+        active_connection = nil
+        return bson.document({ { "ok", 1 } })
+      end
+
+      local namespace = "app.events"
+      local document = bson.document({ { "n", next_cursor_id } })
+
+      if name == "listCollections" then
+        namespace = "app.$cmd.listCollections"
+        document = bson.document({ { "name", "events" } })
+      elseif name == "listIndexes" then
+        document = bson.document({ { "name", "_id_" } })
+      elseif name == "aggregate" then
+        local pipeline = request.body:get("pipeline")
+        local first_stage = #pipeline > 0 and pipeline:get(1) or nil
+
+        if first_stage and first_stage:get("$changeStream") ~= nil then
+          document = bson.document({
+            { "_id", bson.document({ { "token", next_cursor_id } }) },
+            { "operationType", "insert" },
+          })
+        elseif first_stage and first_stage:get("$listSearchIndexes") ~= nil then
+          document = bson.document({ { "name", "search" } })
+        elseif type(request.body:get("aggregate")) ~= "string" then
+          namespace = "app.$cmd.aggregate"
+        end
+      end
+
+      cursor_connections[next_cursor_id] = {
+        connection = peer,
+        document = document,
+        namespace = namespace,
+      }
+      active_connection = peer
+      local response = bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(next_cursor_id) },
+          { "ns", namespace },
+          { "firstBatch", bson.array({ document }) },
+        }) },
+      })
+
+      next_cursor_id = next_cursor_id + 1
+      return response
+    end)
+  end)
+
   it("runs the exact non-load-balanced connection-establishment cases", function()
     local fixture = load_fixture()
     local first = fixture:get("tests"):get(1)
