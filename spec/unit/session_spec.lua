@@ -936,6 +936,58 @@ describe("client sessions", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("releases a load-balanced pin after a transient CRUD error", function()
+    local command_count = 0
+    local release_count = 0
+    local transient_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 91,
+      labels = { "TransientTransactionError" },
+      message = "transaction interrupted",
+    })
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        command_count = command_count + 1
+
+        if command_count == 1 then
+          options.on_connection_pinned({
+            release = function()
+              release_count = release_count + 1
+              return true
+            end,
+          })
+          return bson.document({ { "ok", 1 } })
+        end
+
+        return nil, transient_error
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+    })
+    local executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    local response, err = executor:command(
+      "db",
+      bson.document({ { "update", "items" } }),
+      { session = session }
+    )
+
+    assert.is_nil(response)
+    assert.are.equal(transient_error, err)
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+  end)
+
   it("unpins only transient transaction application errors", function()
     local pending_error
     local underlying = {

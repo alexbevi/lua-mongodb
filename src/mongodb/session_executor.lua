@@ -104,6 +104,7 @@ local function transaction_error(session, err, transaction_control)
 
   if err:has_label("TransientTransactionError") then
     session:unpin_server()
+    session:unpin_connection()
   end
 
   return err

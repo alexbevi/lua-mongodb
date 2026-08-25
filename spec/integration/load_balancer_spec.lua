@@ -679,6 +679,61 @@ describe("load-balanced connection establishment", function()
     end)
   end)
 
+  it("discards a transient network transaction pin", function()
+    local failed_peer
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 1,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local database = client:database()
+      local collection = database:collection("events")
+      local session = assert(client:start_session())
+
+      assert(session:start_transaction())
+      assert(collection:insert_one(
+        bson.document({ { "n", 1 } }),
+        { session = session }
+      ))
+      local result, err = collection:update_one(
+        bson.document({ { "n", 1 } }),
+        bson.document({ { "$set", bson.document({ { "seen", true } }) } }),
+        { session = session }
+      )
+
+      assert.is_nil(result)
+      assert.is_true(err:has_label("TransientTransactionError"))
+      assert.is_false(session:is_pinned())
+      assert(session:abort_transaction())
+      assert.is_true(session:is_pinned())
+      assert(session:unpin_connection())
+      assert(database:run_command("ping"))
+      assert(session:end_session())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      if name == "insert" then
+        failed_peer = peer
+      elseif name == "update" then
+        assert.are.equal(failed_peer, peer)
+        return nil
+      elseif name == "abortTransaction" then
+        assert.are_not.equal(failed_peer, peer)
+      elseif name ~= "ping" and name ~= "endSessions" then
+        error("unexpected command: " .. name)
+      end
+
+      return bson.document({ { "ok", 1 }, { "n", 1 } })
+    end)
+  end)
+
   it("runs the exact non-load-balanced connection-establishment cases", function()
     local fixture = load_fixture()
     local first = fixture:get("tests"):get(1)

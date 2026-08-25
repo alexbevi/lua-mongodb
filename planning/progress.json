@@ -8216,6 +8216,28 @@
       "notes": [],
       "started_at": "2026-08-25T02:01:57+00:00",
       "completed_at": "2026-08-25T02:09:22+00:00"
+    },
+    "LB-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=transient.CRUD spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused transient CRUD-error case failed because the load-balanced session kept its connection pin.",
+          "recorded_at": "2026-08-25T02:19:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/retry_executor_spec.lua spec/unit/topology_spec.lua spec/unit/pool_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session_executor.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "Transient CRUD and network errors release the load-balanced session pin, failed sockets are discarded, and focused Lua, conformance, lint, complexity, and generated-artifact checks pass.",
+          "recorded_at": "2026-08-25T02:25:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T02:18:46+00:00",
+      "completed_at": "2026-08-25T02:25:27+00:00"
     }
   },
   "verified_references": {

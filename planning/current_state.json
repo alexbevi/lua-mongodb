@@ -17,15 +17,15 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 301,
+    "completed": 302,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 14
+    "pending": 13
   },
   "active": [],
   "ready": [
     "CSOT-001",
-    "LB-013",
+    "LB-014",
     "AUTH-019",
     "ADV-009",
     "ADV-010",
@@ -40,7 +40,7 @@
     "v0-8-wire-compression": [],
     "v0-9-gridfs": [],
     "v0-10-load-balancing": [
-      "LB-013"
+      "LB-014"
     ],
     "macos-ci-signal": [],
     "driver-examples": [],
