@@ -714,6 +714,10 @@
       "activity": "QUA-001",
       "environment": "isolated-replicaset"
     },
+    "client-side-operations-timeout/tests/deprecated-options.json::test[79]": {
+      "activity": "CSOT-001",
+      "environment": "isolated-replicaset"
+    },
     "client-side-operations-timeout/tests/deprecated-options.json::test[80]": {
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
@@ -723,6 +727,10 @@
       "activity": "QUA-001",
       "environment": "isolated-replicaset"
     },
+    "client-side-operations-timeout/tests/deprecated-options.json::test[82]": {
+      "activity": "CSOT-001",
+      "environment": "isolated-replicaset"
+    },
     "client-side-operations-timeout/tests/deprecated-options.json::test[83]": {
       "activity": "QUA-001",
       "environment": "isolated-replicaset",
@@ -730,6 +738,10 @@
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[84]": {
       "activity": "QUA-001",
+      "environment": "isolated-replicaset"
+    },
+    "client-side-operations-timeout/tests/deprecated-options.json::test[85]": {
+      "activity": "CSOT-001",
       "environment": "isolated-replicaset"
     },
     "client-side-operations-timeout/tests/error-transformations.json::test[1]": {

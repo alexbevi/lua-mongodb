@@ -8645,6 +8645,35 @@
       "notes": [],
       "started_at": "2026-08-25T14:18:56+00:00",
       "completed_at": "2026-08-25T14:21:11+00:00"
+    },
+    "CSOT-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='<three exact deprecated-options index identities>'",
+          "exit_code": 2,
+          "summary": "All three normative createIndex, dropIndex, and dropIndexes identities failed because the unified runner rejected maxTimeMS as an unsupported argument.",
+          "recorded_at": "2026-08-25T18:48:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_driver_spec.lua' FOCUS_PYTHON='<capability, ledger, release, README contracts>' FOCUS_LINT='<two touched Lua files>'; make test-complexity; generated --check validators",
+          "exit_code": 0,
+          "summary": "17 focused Lua tests, 145 focused Python contracts, and touched-file lint passed; complexity and generated capability, conformance, release, README, JSON, syntax, and diff validators are current.",
+          "recorded_at": "2026-08-25T18:53:20+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='<three exact deprecated-options index identities>'",
+          "exit_code": 0,
+          "summary": "The exact createIndex, dropIndex, and dropIndexes identities each executed once and passed with no skips, deferrals, or failures against the live replica set.",
+          "recorded_at": "2026-08-25T18:53:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T18:45:23+00:00",
+      "completed_at": "2026-08-25T18:53:40+00:00"
     }
   },
   "verified_references": {

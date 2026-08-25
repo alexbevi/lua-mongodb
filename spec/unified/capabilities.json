@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2044,
-    "runnable": 2044
+    "passed": 2047,
+    "runnable": 2047
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -20389,7 +20389,6 @@
     "client-side-operations-timeout/tests/deprecated-options.json::test[79]": {
       "activity": "CSOT-001",
       "fingerprint": "671cadf5fd8e50939028df8ac91848aa8b719fed7f409df16fc5706048c18873",
-      "reason": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20424,7 +20423,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[7]": {
       "activity": "QUA-001",
@@ -20548,7 +20547,6 @@
     "client-side-operations-timeout/tests/deprecated-options.json::test[82]": {
       "activity": "CSOT-001",
       "fingerprint": "8a542397dbaf16511d0647785cc065225b8a9e7a97e7577392b00057f05b770c",
-      "reason": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20585,7 +20583,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[83]": {
       "activity": "QUA-001",
@@ -20666,7 +20664,6 @@
     "client-side-operations-timeout/tests/deprecated-options.json::test[85]": {
       "activity": "CSOT-001",
       "fingerprint": "2bbe878843cb99d4a64c6d35b601a79f2b90ddf77197544833501e609ce25bb9",
-      "reason": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -20699,7 +20696,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[8]": {
       "activity": "QUA-001",

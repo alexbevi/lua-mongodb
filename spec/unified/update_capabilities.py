@@ -80,7 +80,6 @@ OWNER_REASONS = {
   "CS-001": "change stream command options await the dedicated option slice",
   "CS-004": "change stream error recovery awaits the resumability slice",
   "CS-005": "change stream resume positioning awaits the position slice",
-  "CSOT-001": "deprecated index maxTimeMS handling awaits its dedicated CSOT slice",
   "GFS-004": "GridFS upload operations await the readable-stream slice",
   "GFS-005": "GridFS download-by-id operations await the download-stream slice",
   "GFS-007": "GridFS filename downloads await the revision-selection slice",
@@ -250,7 +249,7 @@ TEST_OVERRIDES = {
 for index in (79, 82, 85):
   TEST_OVERRIDES[
     f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
-  ] = ("CSOT-001", OWNER_REASONS["CSOT-001"])
+  ] = ("CSOT-001", None)
 TEST_OVERRIDES[
   "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[4]"
 ] = (

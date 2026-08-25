@@ -28131,13 +28131,13 @@
       "activity": "CSOT-001",
       "fingerprint": "671cadf5fd8e50939028df8ac91848aa8b719fed7f409df16fc5706048c18873",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "additional",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/deprecated-options.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[7]": {
@@ -28183,13 +28183,13 @@
       "activity": "CSOT-001",
       "fingerprint": "8a542397dbaf16511d0647785cc065225b8a9e7a97e7577392b00057f05b770c",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "additional",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/deprecated-options.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[83]": {
@@ -28222,13 +28222,13 @@
       "activity": "CSOT-001",
       "fingerprint": "2bbe878843cb99d4a64c6d35b601a79f2b90ddf77197544833501e609ce25bb9",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "spec/unified/run.py",
-      "scope": "additional",
+      "last_execution": "make test-unified",
+      "required_environment": "isolated-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/deprecated-options.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "client-side-operations-timeout"
     },
     "client-side-operations-timeout/tests/deprecated-options.json::test[8]": {
@@ -86764,9 +86764,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1021,
+      "deferred_unsupported": 1018,
       "excluded_scope": 98,
-      "passed": 4390,
+      "passed": 4393,
       "unsupported": 15
     },
     "suites": {

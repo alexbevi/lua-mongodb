@@ -1719,11 +1719,30 @@ local function rename_collection(_, collection, arguments)
   ))
 end
 
+local function index_operation_options(arguments, fields)
+  if arguments:get("maxTimeMS") ~= nil
+      and arguments:get("timeoutMS") == nil
+  then
+    return configuration_error(
+      "index maxTimeMS requires timeoutMS",
+      "$.arguments.maxTimeMS"
+    )
+  end
+
+  return operation_options(arguments, fields)
+end
+
 local function create_index(_, collection, arguments)
-  return collection:create_index(arguments:get("keys"), operation_options(
+  local options, err = index_operation_options(
     arguments,
     { name = "name", rawData = "raw_data", unique = "unique" }
-  ))
+  )
+
+  if not options then
+    return nil, err
+  end
+
+  return collection:create_index(arguments:get("keys"), options)
 end
 
 local function create_search_index(_, collection, arguments)
@@ -1832,14 +1851,26 @@ local function drop_search_index(_, collection, arguments)
 end
 
 local function drop_index(_, collection, arguments)
-  return collection:drop_index(arguments:get("name"), operation_options(
+  local options, err = index_operation_options(
     arguments,
     { rawData = "raw_data" }
-  ))
+  )
+
+  if not options then
+    return nil, err
+  end
+
+  return collection:drop_index(arguments:get("name"), options)
 end
 
 local function drop_indexes(_, collection, arguments)
-  return collection:drop_indexes(operation_options(arguments, {}))
+  local options, err = index_operation_options(arguments, {})
+
+  if not options then
+    return nil, err
+  end
+
+  return collection:drop_indexes(options)
 end
 
 local function list_indexes(_, collection, arguments)
@@ -3072,7 +3103,9 @@ function M.new(options)
           result_kind = "findCursor",
         },
         createIndex = {
-          arguments = { "keys", "name", "rawData", "timeoutMS", "unique" },
+          arguments = {
+            "keys", "maxTimeMS", "name", "rawData", "timeoutMS", "unique",
+          },
           handler = create_index,
         },
         createSearchIndex = {
@@ -3096,11 +3129,11 @@ function M.new(options)
           handler = drop_search_index,
         },
         dropIndex = {
-          arguments = { "name", "rawData", "timeoutMS" },
+          arguments = { "maxTimeMS", "name", "rawData", "timeoutMS" },
           handler = drop_index,
         },
         dropIndexes = {
-          arguments = { "timeoutMS" },
+          arguments = { "maxTimeMS", "timeoutMS" },
           handler = drop_indexes,
         },
         rename = {

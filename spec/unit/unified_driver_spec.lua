@@ -451,6 +451,77 @@ describe("unified driver collection management", function()
       assert(lifecycle:close())
     end)
   end)
+
+  it("limits deprecated index maxTimeMS to timeout operations", function()
+    with_fake_client(function(driver)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "replicaset" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017/?replicaSet=rs",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "createEntities", array({
+          document({
+            { "client", document({ { "id", "client0" } }) },
+          }),
+          document({
+            { "database", document({
+              { "id", "database0" },
+              { "client", "client0" },
+              { "databaseName", "app" },
+            }) },
+          }),
+          document({
+            { "collection", document({
+              { "id", "collection0" },
+              { "database", "database0" },
+              { "collectionName", "events" },
+            }) },
+          }),
+        }) },
+        { "tests", array({
+          document({
+            { "description", "Reject index maxTimeMS without timeoutMS" },
+            { "operations", array({
+              document({
+                { "name", "createIndex" },
+                { "object", "collection0" },
+                { "arguments", document({
+                  { "keys", document({ { "created_at", 1 } }) },
+                  { "maxTimeMS", 5000 },
+                }) },
+              }),
+            }) },
+          }),
+          document({
+            { "description", "Reject unknown index argument" },
+            { "operations", array({
+              document({
+                { "name", "dropIndexes" },
+                { "object", "collection0" },
+                { "arguments", document({ { "unknown", true } }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "index-max-time.json"))
+
+      assert.are.equal(2, report.summary.failed)
+      assert.are.equal(
+        "index maxTimeMS requires timeoutMS",
+        report.tests[1].error.message
+      )
+      assert.are.equal(
+        "$.arguments.maxTimeMS",
+        report.tests[1].error.details.path
+      )
+      assert.are.equal(
+        "$.tests[2].operations[1].arguments.unknown",
+        report.tests[2].error.details.path
+      )
+      assert(lifecycle:close())
+    end)
+  end)
 end)
 
 describe("unified driver GridFS buckets", function()
