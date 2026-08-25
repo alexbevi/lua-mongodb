@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "bf5c25d0538fc4a25f6052ea8399aa7d3f6f4a7ca3c9401b6533dd6b99b12d89",
+  "plan_digest": "071f2611d194b7ceb58bf096905cff7546dd845858ace590c73f67982a89f060",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -8328,6 +8328,13 @@
       ],
       "started_at": "2026-08-25T03:24:07+00:00",
       "completed_at": "2026-08-25T03:24:45+00:00"
+    },
+    "LB-017": {
+      "status": "pending",
+      "evidence": [],
+      "notes": [
+        "Requeued: The existing transaction pin boundary already shares ownership with cursors; reclassify this activity as validation instead of manufacturing a production failure."
+      ]
     }
   },
   "verified_references": {
