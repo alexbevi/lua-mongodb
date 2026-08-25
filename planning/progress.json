@@ -8367,6 +8367,28 @@
       "notes": [],
       "started_at": "2026-08-25T03:57:32+00:00",
       "completed_at": "2026-08-25T04:01:15+00:00"
+    },
+    "CON-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_load_balanced_closure_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The exact closure contract failed because both load-balanced command-cursor cases and the load-balanced SDAM close case remained deferred_unsupported with no live-load-balanced executors.",
+          "recorded_at": "2026-08-25T04:13:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with 29 focused unified-support unit cases, 17 load-balancer endpoint integration cases, 3 exact live-load-balanced unified cases, 42 Python conformance cases, and touched Lua lint; generated capability, ledger, v0.4, v0.10, release-checklist, README, strict-plan, and diff validators",
+          "exit_code": 0,
+          "summary": "Three exact live load-balanced cases executed and passed with no skips or failures; 29 unit, 17 directly coupled integration, and 42 Python conformance cases passed; five touched Lua files linted cleanly under Lua 5.4; every generated artifact, strict plan check, and diff check passed",
+          "recorded_at": "2026-08-25T04:39:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T04:08:52+00:00",
+      "completed_at": "2026-08-25T04:39:27+00:00"
     }
   },
   "verified_references": {

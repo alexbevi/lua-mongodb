@@ -2,14 +2,18 @@
 
 from __future__ import annotations
 
-from contextlib import contextmanager
+from contextlib import contextmanager, ExitStack
 import json
 from pathlib import Path
 import re
+import select
 import shutil
 import socket
+import socketserver
+import struct
 import subprocess
 import tempfile
+import threading
 import time
 from typing import Any, Iterator
 from urllib.parse import quote
@@ -132,6 +136,63 @@ def _run_shell(
     raise ShardedEnvironmentError(f"mongosh failed: {detail[-2000:]}")
 
   return completed.stdout.strip()
+
+
+class _ProxyServer(socketserver.ThreadingTCPServer):
+  allow_reuse_address = True
+  daemon_threads = True
+
+
+class _ProxyHandler(socketserver.BaseRequestHandler):
+  def handle(self) -> None:
+    server = self.server
+    target_port = server.target_port
+    source_host, source_port = self.request.getpeername()
+    destination_host, destination_port = self.request.getsockname()
+    header = b"\r\n\r\n\x00\r\nQUIT\n" + struct.pack(
+      "!BBH4s4sHH",
+      0x21,
+      0x11,
+      12,
+      socket.inet_aton(source_host),
+      socket.inet_aton(destination_host),
+      source_port,
+      destination_port,
+    )
+
+    with socket.create_connection(("127.0.0.1", target_port)) as upstream:
+      upstream.sendall(header)
+      peers = {
+        self.request: upstream,
+        upstream: self.request,
+      }
+
+      while True:
+        readable, _, _ = select.select(tuple(peers), (), (), 1)
+
+        for source in readable:
+          data = source.recv(65536)
+
+          if not data:
+            return
+
+          peers[source].sendall(data)
+
+
+@contextmanager
+def load_balancer_proxy(target_port: int) -> Iterator[int]:
+  """Forward TCP with the PROXY v2 header required by loadBalancerPort."""
+  server = _ProxyServer(("127.0.0.1", 0), _ProxyHandler)
+  server.target_port = target_port
+  thread = threading.Thread(target=server.serve_forever, daemon=True)
+  thread.start()
+
+  try:
+    yield int(server.server_address[1])
+  finally:
+    server.shutdown()
+    server.server_close()
+    thread.join(timeout=5)
 
 
 def _docker_checked(
@@ -672,6 +733,7 @@ def cluster(
   mongosh: str | None = None,
   mongos_count: int = 1,
   test_commands: bool = True,
+  load_balanced: bool = False,
 ) -> Iterator[dict[str, Any]]:
   """Start, verify, and always tear down one minimal sharded cluster."""
   if type(mongos_count) is not int or mongos_count < 1 or mongos_count > 2:
@@ -687,7 +749,11 @@ def cluster(
     )
 
   version = _server_version(mongod)
-  config_port, shard_port, *mongos_ports = _free_ports(2 + mongos_count)
+  ports = _free_ports(2 + mongos_count + (1 if load_balanced else 0))
+  config_port = ports[0]
+  shard_port = ports[1]
+  mongos_ports = ports[2:2 + mongos_count]
+  load_balancer_port = ports[-1] if load_balanced else None
   config_host = f"127.0.0.1:{config_port}"
   shard_host = f"127.0.0.1:{shard_port}"
   mongos_hosts = [f"127.0.0.1:{port}" for port in mongos_ports]
@@ -696,7 +762,10 @@ def cluster(
   uri = f"mongodb://{mongos_hosts[0]}"
   multiple_mongos_uri = "mongodb://" + ",".join(mongos_hosts)
 
-  with tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-sharded-") as temp:
+  with (
+    tempfile.TemporaryDirectory(prefix="lua-mongodb-unified-sharded-") as temp,
+    ExitStack() as adapters,
+  ):
     root = Path(temp)
     processes: list[subprocess.Popen[bytes]] = []
     common = [
@@ -744,6 +813,13 @@ def cluster(
 
       for index, mongos_port in enumerate(mongos_ports):
         mongos_log = root / f"mongos-{index}.log"
+        load_balancer_arguments = []
+
+        if index == 0 and load_balancer_port is not None:
+          load_balancer_arguments = [
+            "--setParameter", f"loadBalancerPort={load_balancer_port}",
+          ]
+
         mongos_process = subprocess.Popen(
           [
             mongos,
@@ -752,6 +828,7 @@ def cluster(
             "--logpath", str(mongos_log),
             "--port", str(mongos_port),
             "--quiet",
+            *load_balancer_arguments,
             *test_parameters,
           ],
           stdout=subprocess.DEVNULL,
@@ -765,6 +842,23 @@ def cluster(
           f"mongos {index + 1}",
           time.monotonic() + 60,
         )
+
+        if index == 0 and load_balancer_port is not None:
+          _wait_for_port(
+            mongos_process,
+            load_balancer_port,
+            mongos_log,
+            "load-balanced mongos",
+            time.monotonic() + 60,
+          )
+
+      load_balancer_frontend = None
+
+      if load_balancer_port is not None:
+        load_balancer_frontend = adapters.enter_context(
+          load_balancer_proxy(load_balancer_port)
+        )
+
       _run_shell(
         mongosh,
         uri,
@@ -810,6 +904,12 @@ def cluster(
 
       yield {
         "facts": facts,
+        "load_balanced_uri": (
+          f"mongodb://127.0.0.1:{load_balancer_frontend}/"
+          "?loadBalanced=true&serverSelectionTimeoutMS=5000"
+          "&heartbeatFrequencyMS=500"
+          if load_balancer_frontend is not None else None
+        ),
         "multiple_mongos_uri": multiple_mongos_uri,
         "process_ids": [process.pid for process in processes],
         "test_commands": test_commands,

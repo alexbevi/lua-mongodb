@@ -44,6 +44,9 @@ AUTHENTICATED_REPLICA_SET_URI = "MONGODB_UNIFIED_AUTH_REPLICA_SET_URI"
 AUTHENTICATED_REPLICA_SET_VERSION = (
   "MONGODB_UNIFIED_AUTH_REPLICA_SET_SERVER_VERSION"
 )
+LOAD_BALANCED_ENVIRONMENT = "live-load-balanced"
+LOAD_BALANCED_URI = "MONGODB_UNIFIED_LOAD_BALANCED_URI"
+LOAD_BALANCED_VERSION = "MONGODB_UNIFIED_LOAD_BALANCED_SERVER_VERSION"
 MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/change-streams.json::test[4]",
   "client-side-operations-timeout/tests/change-streams.json::test[5]",
@@ -1704,10 +1707,17 @@ def sharded_environment(
 ):
   needs_server = any(
     value["status"] == "runnable"
-    and registry.get(value["id"], {}).get("environment") == "live-sharded"
+    and registry.get(value["id"], {}).get("environment")
+      in {"live-sharded", LOAD_BALANCED_ENVIRONMENT}
     for value in classifications
   )
   environment = base_environment.copy()
+  needs_load_balanced = any(
+    value["status"] == "runnable"
+    and registry.get(value["id"], {}).get("environment")
+      == LOAD_BALANCED_ENVIRONMENT
+    for value in classifications
+  )
 
   if not needs_server:
     yield environment
@@ -1759,6 +1769,16 @@ def sharded_environment(
         f"sharded environment requires {mongos_count} mongoses"
       )
 
+    if needs_load_balanced and not environment.get(LOAD_BALANCED_URI):
+      raise CapabilityError(
+        f"{LOAD_BALANCED_URI} is required for external load-balanced cases"
+      )
+
+    if needs_load_balanced and not environment.get(LOAD_BALANCED_VERSION):
+      raise CapabilityError(
+        f"{LOAD_BALANCED_VERSION} is required with {LOAD_BALANCED_URI}"
+      )
+
     parsed_uri = urlsplit(configured_uri)
     credentials = (
       parsed_uri.netloc.rsplit("@", 1)[0] + "@"
@@ -1781,6 +1801,7 @@ def sharded_environment(
       mongos=environment.get("MONGOS"),
       mongosh=environment.get("MONGOSH"),
       mongos_count=mongos_count,
+      load_balanced=needs_load_balanced,
     ) as deployment:
       facts = deployment["facts"]
       environment["MONGODB_UNIFIED_SHARDED_URI"] = deployment["uri"]
@@ -1794,12 +1815,49 @@ def sharded_environment(
         facts,
         sort_keys=True,
       )
+      if needs_load_balanced:
+        environment[LOAD_BALANCED_URI] = deployment["load_balanced_uri"]
+        environment[LOAD_BALANCED_VERSION] = facts["server_version"]
       environment["MONGODB_UNIFIED_TEST_COMMANDS"] = (
         "1" if deployment["test_commands"] else "0"
       )
       yield environment
   except sharded_cluster.ShardedEnvironmentError as exc:
     raise CapabilityError(str(exc)) from exc
+
+
+@contextmanager
+def load_balanced_environment(
+  classifications: list[dict[str, Any]],
+  registry: dict[str, Any],
+  base_environment: dict[str, str],
+):
+  needs_server = any(
+    value["status"] == "runnable"
+    and registry.get(value["id"], {}).get("environment")
+      == LOAD_BALANCED_ENVIRONMENT
+    for value in classifications
+  )
+  environment = base_environment.copy()
+
+  if not needs_server:
+    yield environment
+    return
+
+  configured_uri = environment.get(LOAD_BALANCED_URI)
+
+  if configured_uri:
+    if not environment.get(LOAD_BALANCED_VERSION):
+      raise CapabilityError(
+        f"{LOAD_BALANCED_VERSION} is required with {LOAD_BALANCED_URI}"
+      )
+
+    yield environment
+    return
+
+  raise CapabilityError(
+    "load-balanced cases require a mongos loadBalancerPort endpoint"
+  )
 
 
 def write_report(report: dict[str, Any], destination: str | None) -> None:
@@ -2088,6 +2146,18 @@ def main(argv: list[str] | None = None) -> int:
           environment = environments.enter_context(sharded_manager)
       else:
         environment = environments.enter_context(sharded_manager)
+
+      load_balanced_manager = load_balanced_environment(
+        selected,
+        registry,
+        environment,
+      )
+
+      if LOAD_BALANCED_ENVIRONMENT in needed_environments:
+        with timings.observe_environment(LOAD_BALANCED_ENVIRONMENT):
+          environment = environments.enter_context(load_balanced_manager)
+      else:
+        environment = environments.enter_context(load_balanced_manager)
 
       for batch in batches:
         entry = registry.get(batch[0]["id"], {})

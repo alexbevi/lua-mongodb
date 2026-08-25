@@ -21,6 +21,7 @@ from spec.v06 import scope as v06_scope  # noqa: E402
 from spec.v07 import scope as v07_scope  # noqa: E402
 from spec.v08 import scope as v08_scope  # noqa: E402
 from spec.v09 import scope as v09_scope  # noqa: E402
+from spec.v10 import scope as v10_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -137,6 +138,34 @@ V09_GATES = [
   "CON-009",
 ]
 V09_RELEASE_ACTIVITY = "REL-058"
+V10_CORE_GATES = [
+  "ADV-006",
+  "LB-001",
+  "LB-002",
+  "LB-003",
+  "LB-004",
+  "LB-005",
+  "LB-006",
+  "LB-007",
+  "LB-008",
+  "LB-019",
+  "LB-020",
+  "LB-009",
+  "LB-010",
+  "LB-011",
+  "LB-012",
+  "LB-013",
+  "LB-014",
+  "LB-015",
+  "LB-016",
+  "LB-021",
+  "LB-017",
+  "LB-018",
+]
+V10_TERMINAL_GATES = ["TLS-002", "ADV-012"]
+V10_GATES = [*V10_CORE_GATES, *V10_TERMINAL_GATES]
+V10_CONFORMANCE_ACTIVITY = "CON-010"
+V10_RELEASE_ACTIVITY = "REL-059"
 
 
 class ChecklistError(ValueError):
@@ -278,6 +307,19 @@ def generate() -> dict[str, Any]:
   ]:
     raise ChecklistError("v0.9 release gate inventory does not match the track")
 
+  load_balancing_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-load-balancing"
+  ]
+  if load_balancing_track != [
+    *V10_CORE_GATES,
+    V10_CONFORMANCE_ACTIVITY,
+    V10_RELEASE_ACTIVITY,
+    *V10_TERMINAL_GATES,
+  ]:
+    raise ChecklistError("v0.10 release gate inventory does not match the track")
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -336,6 +378,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in V10_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.10 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   for activity_ids in AUDITS.values():
     for activity_id in activity_ids:
       if activity_id not in activities:
@@ -350,6 +398,7 @@ def generate() -> dict[str, Any]:
   v07_report = v07_scope.generate()
   v08_report = v08_scope.generate()
   v09_report = v09_scope.generate()
+  v10_report = v10_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -412,6 +461,10 @@ def generate() -> dict[str, Any]:
   if v09_summary["planned"] != 0:
     raise ChecklistError("v0.9 conformance still has planned requirements")
 
+  v10_summary = v10_report["summary"]
+  if v10_summary["planned"] != 245:
+    raise ChecklistError("v0.10 optional-suite inventory changed")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -445,6 +498,7 @@ def generate() -> dict[str, Any]:
     "spec/v07/scope.py",
     "spec/v08/scope.py",
     "spec/v09/scope.py",
+    "spec/v10/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-linux-timing-sensitive-csot.json",
     "unified-pre-8.2.json",
@@ -479,6 +533,7 @@ def generate() -> dict[str, Any]:
       "completed_v0_7_gates": V07_GATES,
       "completed_v0_8_gates": V08_GATES,
       "completed_v0_9_gates": V09_GATES,
+      "completed_v0_10_gates": V10_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -562,6 +617,16 @@ def generate() -> dict[str, Any]:
           "retryable_read_cases"
         ],
       },
+      "v0_10_conformance": {
+        "classified_requirements": v10_summary["classified"],
+        "dedicated_cases": v10_report["evidence"]["dedicated_cases"],
+        "exact_unified_cases": v10_report["evidence"]["exact_unified_cases"],
+        "excluded_requirements": v10_summary["excluded"],
+        "optional_requirements": v10_summary["planned"],
+        "passed_requirements": v10_summary["passed"],
+        "run_on_branches": v10_report["evidence"]["run_on_branches"],
+        "unsupported_requirements": v10_summary["unsupported"],
+      },
     },
     "ready": True,
     "release": release_metadata(),
@@ -587,6 +652,7 @@ def main(argv: list[str] | None = None) -> int:
     v07_scope.ScopeError,
     v08_scope.ScopeError,
     v09_scope.ScopeError,
+    v10_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

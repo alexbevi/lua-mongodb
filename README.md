@@ -518,7 +518,7 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket, upload, and download handles; standalone, replica-set, and mongos connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. The v0.9 GridFS surface includes file discovery, rename and deletion by id or filename, and whole-bucket drop.
+The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket, upload, and download handles; standalone, replica-set, mongos, and load-balanced connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. The v0.9 GridFS surface includes file discovery, rename and deletion by id or filename, and whole-bucket drop. Load-balanced clients use service-aware pools and retain the required cursor and transaction connection pins.
 
 ### Errors and resource lifetimes
 
@@ -558,8 +558,8 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | 🔴 Not supported | 0.0% |
 | Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
 | Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | 🔴 Not supported | 0.0% |
-| Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟡 | 90.5% |
-| Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.5% |
+| Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟢 | 100.0% |
+| Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.7% |
 | Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 82.5% |
 | Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟡 | 97.5% |
 | Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 83.6% |

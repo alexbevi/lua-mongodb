@@ -269,6 +269,18 @@ function COLLECTOR_METHODS:pools_populated(min_pool_size)
   return found
 end
 
+function COLLECTOR_METHODS:connections_checked_out()
+  local count = 0
+
+  for _, pool in pairs(self.pools) do
+    for _ in pairs(pool.checked_out or {}) do
+      count = count + 1
+    end
+  end
+
+  return count
+end
+
 function COLLECTOR_METHODS:reset()
   self.events = {}
 end
@@ -340,6 +352,7 @@ function M.new(specification)
 
       if pool then
         pool.connections[event.connection_id] = nil
+        pool.checked_out[event.connection_id] = nil
       end
 
       record(collector, {
@@ -368,13 +381,19 @@ function M.new(specification)
     end,
     ConnectionPoolReady = function(_, event)
       collector.pools[event.address] = collector.pools[event.address]
-        or { connections = {} }
+        or { checked_out = {}, connections = {} }
       record(collector, {
         address = event.address,
         type = "pool_ready",
       })
     end,
     ConnectionCheckedIn = function(_, event)
+      local pool = collector.pools[event.address]
+
+      if pool then
+        pool.checked_out[event.connection_id] = nil
+      end
+
       record(collector, {
         address = event.address,
         connection_id = event.connection_id,
@@ -382,6 +401,11 @@ function M.new(specification)
       })
     end,
     ConnectionCheckedOut = function(_, event)
+      local pool = collector.pools[event.address]
+        or { checked_out = {}, connections = {} }
+
+      collector.pools[event.address] = pool
+      pool.checked_out[event.connection_id] = true
       record(collector, {
         address = event.address,
         connection_id = event.connection_id,
@@ -391,7 +415,7 @@ function M.new(specification)
     end,
     ConnectionReady = function(_, event)
       local pool = collector.pools[event.address]
-        or { connections = {} }
+        or { checked_out = {}, connections = {} }
 
       collector.pools[event.address] = pool
       pool.connections[event.connection_id] = true
@@ -669,7 +693,9 @@ function M.assert_all(runner, expected_groups, collectors, path)
       or not ignore_extra and #actual_events ~= #expected_events
     then
       return configuration_error(
-        "observed event count does not match",
+        "observed event count does not match"
+          .. " (expected " .. #expected_events
+          .. ", actual " .. #actual_events .. ")",
         group_path .. ".events",
         { actual = #actual_events, expected = #expected_events }
       )

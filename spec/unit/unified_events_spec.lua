@@ -93,6 +93,17 @@ describe("unified command events", function()
       connection_id = 1,
     })
     assert.is_false(collector:pools_populated(1))
+    assert.are.equal(0, collector:connections_checked_out())
+    collector.pool_listener:ConnectionCheckedOut({
+      address = address,
+      connection_id = 1,
+    })
+    assert.are.equal(1, collector:connections_checked_out())
+    collector.pool_listener:ConnectionCheckedIn({
+      address = address,
+      connection_id = 1,
+    })
+    assert.are.equal(0, collector:connections_checked_out())
 
     collector.pool_listener:ConnectionReady({
       address = second_address,

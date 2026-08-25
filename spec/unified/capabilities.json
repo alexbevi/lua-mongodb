@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2041,
-    "runnable": 2041
+    "passed": 2044,
+    "runnable": 2044
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -70875,7 +70875,6 @@
     "run-command/tests/unified/runCursorCommand.json::test[5]": {
       "activity": "CON-010",
       "fingerprint": "e7f6311ae3921425d3da576d86a55605356c55fc01d1fbd29a04e3e43c753fba",
-      "reason": "complete load-balanced unified execution awaits the v0.10 conformance closure",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -70914,12 +70913,11 @@
           "load-balanced"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[6]": {
       "activity": "CON-010",
       "fingerprint": "3627623fe17a9d9857461413935e8664e5124bd865b8c852181fc1d40b60d9b0",
-      "reason": "complete load-balanced unified execution awaits the v0.10 conformance closure",
       "requirements": {
         "arguments": [
           "assertNumberConnectionsCheckedOut.client",
@@ -70948,7 +70946,7 @@
           "load-balanced"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "run-command/tests/unified/runCursorCommand.json::test[7]": {
       "activity": "REL-022",
@@ -72186,7 +72184,6 @@
     "server-discovery-and-monitoring/tests/unified/loadbalanced-emit-topology-changed-before-close.json::test[1]": {
       "activity": "CON-010",
       "fingerprint": "4c0c7f6a0be84490459e789eb4cd9bb230d63a069bcce74f258f9bcbf6e5bb62",
-      "reason": "complete load-balanced unified execution awaits the v0.10 conformance closure",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72216,7 +72213,7 @@
           "load-balanced"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]": {
       "activity": "ADV-009",

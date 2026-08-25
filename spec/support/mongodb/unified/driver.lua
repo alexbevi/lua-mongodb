@@ -294,6 +294,12 @@ local function client_factory(state)
     end
 
     collector:discard_type("connection_checkout_started")
+
+    if state.environment_topology == "load-balanced" then
+      collector:discard_type("connection_checked_out")
+      collector:discard_type("connection_checked_in")
+    end
+
     state.collectors[client] = collector
     return client
   end
@@ -1066,6 +1072,61 @@ local function assert_last_lsids(state, expected_same)
       return configuration_error(
         expected_same and "last two commands have different lsids"
           or "last two commands have the same lsid",
+        path
+      )
+    end
+
+    return true
+  end
+end
+
+local function assert_number_connections_checked_out(state)
+  return function(runner, arguments, path)
+    local valid, err = validate_fields(arguments, {
+      client = true,
+      connections = true,
+    }, path .. ".arguments")
+
+    if not valid then
+      return nil, err
+    end
+
+    local client
+    client, err = runner:get_entity(
+      arguments:get("client"),
+      "client",
+      path .. ".arguments.client"
+    )
+
+    if not client then
+      return nil, err
+    end
+
+    local expected = arguments:get("connections")
+
+    if bson.is_exact(expected) then
+      expected = expected:to_number()
+    end
+
+    if math.type(expected) ~= "integer" or expected < 0 then
+      return configuration_error(
+        "connections must be a non-negative integer",
+        path .. ".arguments.connections"
+      )
+    end
+
+    local collector = state.collectors[client]
+
+    if not collector then
+      return configuration_error("client has no pool collector", path)
+    end
+
+    local actual = collector:connections_checked_out()
+
+    if actual ~= expected then
+      return configuration_error(
+        "checked-out connection count does not match"
+          .. " (expected " .. expected .. ", actual " .. actual .. ")",
         path
       )
     end
@@ -3303,6 +3364,7 @@ function M.new(options)
       assertCollectionExists = assert_collection_exists(state, true),
       assertCollectionNotExists = assert_collection_exists(state, false),
       assertEventCount = assert_event_count(state),
+      assertNumberConnectionsCheckedOut = assert_number_connections_checked_out(state),
       assertTopologyType = assert_topology_type,
       assertDifferentLsidOnLastTwoCommands = assert_last_lsids(state, false),
       assertIndexExists = assert_index_exists(state, true),

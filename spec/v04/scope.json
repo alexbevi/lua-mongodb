@@ -1,11 +1,10 @@
 {
   "evidence": {
-    "exact_unified_cases": 363,
+    "exact_unified_cases": 366,
     "static_passing_cases": 507
   },
   "excluded_by_activity": {
     "ADV-009": 24,
-    "CON-010": 3,
     "LEG-003": 1
   },
   "exclusion_reasons": {
@@ -67,12 +66,11 @@
       "passed": 48
     },
     "run-command": {
-      "excluded": 2,
-      "passed": 19
+      "passed": 21
     },
     "server-discovery-and-monitoring": {
-      "excluded": 16,
-      "passed": 443
+      "excluded": 15,
+      "passed": 444
     },
     "sessions": {
       "passed": 39
@@ -84,10 +82,10 @@
   },
   "summary": {
     "classified": 898,
-    "excluded": 28,
-    "passed": 870,
+    "excluded": 25,
+    "passed": 873,
     "planned": 0,
-    "supported": 870
+    "supported": 873
   },
   "target_owners": [
     "ADV-005",

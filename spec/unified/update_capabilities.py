@@ -614,11 +614,13 @@ TEST_OVERRIDES.update({
   ),
   "run-command/tests/unified/runCursorCommand.json::test[5]": (
     "CON-010",
-    OWNER_REASONS["CON-010"],
+    None if "run-command/tests/unified/runCursorCommand.json::test[5]"
+      in EXECUTOR_TESTS else OWNER_REASONS["CON-010"],
   ),
   "run-command/tests/unified/runCursorCommand.json::test[6]": (
     "CON-010",
-    OWNER_REASONS["CON-010"],
+    None if "run-command/tests/unified/runCursorCommand.json::test[6]"
+      in EXECUTOR_TESTS else OWNER_REASONS["CON-010"],
   ),
   "run-command/tests/unified/runCursorCommand.json::test[10]": (
     "LEG-008",
@@ -893,7 +895,10 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
   else:
     owner = "REL-006"
 
-  return owner, OWNER_REASONS[owner]
+  return (
+    owner,
+    None if test["id"] in EXECUTOR_TESTS else OWNER_REASONS[owner],
+  )
 
 
 def classify_csot(test: dict[str, Any]) -> tuple[str, str | None]:

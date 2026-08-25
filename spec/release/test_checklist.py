@@ -32,9 +32,9 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(
       {
         "classified_cases": 898,
-        "excluded_cases": 28,
-        "exact_unified_cases": 363,
-        "passed_cases": 870,
+        "excluded_cases": 25,
+        "exact_unified_cases": 366,
+        "passed_cases": 873,
         "read_write_concern_passed": 48,
         "target_version_exclusions": 6,
       },
@@ -91,6 +91,19 @@ class ReleaseChecklistTests(unittest.TestCase):
         "retryable_read_cases": 34,
       },
       report["gates"]["v0_9_conformance"],
+    )
+    self.assertEqual(
+      {
+        "classified_requirements": 1042,
+        "dedicated_cases": 40,
+        "exact_unified_cases": 738,
+        "excluded_requirements": 18,
+        "optional_requirements": 245,
+        "passed_requirements": 777,
+        "run_on_branches": 1000,
+        "unsupported_requirements": 2,
+      },
+      report["gates"]["v0_10_conformance"],
     )
     self.assertEqual(
       {
@@ -201,6 +214,13 @@ class ReleaseChecklistTests(unittest.TestCase):
         "CON-009",
       ],
       report["gates"]["completed_v0_9_gates"],
+    )
+    self.assertEqual(
+      [
+        *checklist.V10_CORE_GATES,
+        *checklist.V10_TERMINAL_GATES,
+      ],
+      report["gates"]["completed_v0_10_gates"],
     )
     self.assertEqual(
       [

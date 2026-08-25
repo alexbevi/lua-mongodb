@@ -31,6 +31,7 @@ python3 spec/v06/scope.py [--check]
 python3 spec/v07/scope.py [--check]
 python3 spec/v08/scope.py [--check]
 python3 spec/v09/scope.py [--check] [--execution-report REPORT]
+python3 spec/v10/scope.py [--check] [--execution-report REPORT]
 make test-focus FOCUS_UNIT=spec/unit/example_spec.lua FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
 make test-focus FOCUS_INTEGRATION=spec/integration/example_spec.lua
 make test-focus FOCUS_UNIFIED='crud/tests/unified/example.json::test?1?'
@@ -62,7 +63,7 @@ Starting post-v1 work requires `start ID --track TRACK`. The track must be decla
 
 `spec/v09/scope.py` projects 98 exact GridFS-related unified identities—39 GridFS fixtures, 34 retryable-read cases, and 25 timeout cases—plus fifteen explicit normative API requirements. Every record must pass with its exact runner, environment, executor, and completed v0.9 implementation owner; the closure owner may only be active or complete. Any stale or missing pinned identity, deferred v0.9 evidence, unknown unified operation, environment-only skip, missing Full Conformance row, or ratchet reduction fails `make test-v09-scope` or its `--execution-report` gate. Linux and manual macOS Full Conformance provide the authoritative complete unified reports.
 
-The `v0-10-load-balancing` track advances one load-balanced contract at a time before adding its dedicated Full Conformance profile. `LB-003` proves modern OP_MSG hello advertisement, required `serviceId` handling, connection closure, and the exact non-load-balanced connection-establishment cases against a directly coupled endpoint. The upstream load-balancer case with a normative `skipReason` remains an explicit exclusion; the cross-suite load-balanced topology lifecycle stays assigned to `CON-010`, which owns complete live execution and final ledger closure.
+`spec/v10/scope.py` projects all 40 dedicated load-balancer cases and every unified identity with a load-balanced runOn branch. It requires exact runners and completed owners for the 39 executable dedicated cases, preserves the one normative upstream skip, and requires exact Full Conformance passes for all 738 runnable cross-suite identities. The 245 optional logging, backpressure, and encryption branches must keep concrete incomplete out-of-track owners. The same gate checks the explicit OCSP and SOCKS5 unsupported decisions. `make test-v10-scope` validates the committed projection; Linux and requested macOS Full Conformance supply the authoritative aggregate execution reports.
 
 Activity implementation follows red-green vertical slices. A `red_green` activity cannot complete without a recorded nonzero red command and successful green command. A `validation` activity requires successful green evidence. Only one activity may be `in_progress`.
 

@@ -609,16 +609,19 @@ end
 local function run_live(selections, topology, authenticated)
   local replica_set = topology == "replicaset"
   local sharded = topology == "sharded-replicaset"
+  local load_balanced = topology == "load-balanced"
   local authenticated_replica_set = authenticated and replica_set
   local uri_name = authenticated_replica_set
     and "MONGODB_UNIFIED_AUTH_REPLICA_SET_URI" or authenticated
-    and "MONGODB_UNIFIED_AUTH_URI" or sharded
+    and "MONGODB_UNIFIED_AUTH_URI" or load_balanced
+    and "MONGODB_UNIFIED_LOAD_BALANCED_URI" or sharded
     and "MONGODB_UNIFIED_SHARDED_URI"
     or replica_set and "MONGODB_UNIFIED_REPLICA_SET_URI"
     or "MONGODB_UNIFIED_URI"
   local version_name = authenticated_replica_set
     and "MONGODB_UNIFIED_AUTH_REPLICA_SET_SERVER_VERSION" or authenticated
-    and "MONGODB_UNIFIED_AUTH_SERVER_VERSION" or sharded
+    and "MONGODB_UNIFIED_AUTH_SERVER_VERSION" or load_balanced
+    and "MONGODB_UNIFIED_LOAD_BALANCED_SERVER_VERSION" or sharded
     and "MONGODB_UNIFIED_SHARDED_SERVER_VERSION"
     or replica_set and "MONGODB_UNIFIED_REPLICA_SET_SERVER_VERSION"
     or "MONGODB_UNIFIED_SERVER_VERSION"
@@ -790,6 +793,8 @@ local function run(identities)
     return run_live(selections, "replicaset")
   elseif environment == "live-sharded" then
     return run_live(selections, "sharded-replicaset")
+  elseif environment == "live-load-balanced" then
+    return run_live(selections, "load-balanced")
   end
 
   error("unknown unified executor environment: " .. tostring(environment), 0)
