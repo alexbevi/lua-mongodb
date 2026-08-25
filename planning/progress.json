@@ -8558,6 +8558,35 @@
       "notes": [],
       "started_at": "2026-08-25T13:21:31+00:00",
       "completed_at": "2026-08-25T13:32:59+00:00"
+    },
+    "CON-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility.ReadmeCompatibilityTests.test_terminal_unsupported_rows_are_unscored'",
+          "exit_code": 2,
+          "summary": "1 focused compatibility test failed: terminal unsupported rendered red Not supported instead of white Will Not Implement and remained support-scored",
+          "recorded_at": "2026-08-25T13:42:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'",
+          "exit_code": 0,
+          "summary": "Five focused README compatibility projection tests passed; terminal unsupported outcomes render as Will Not Implement with N/A and are omitted from URI Options and total scoring.",
+          "recorded_at": "2026-08-25T13:45:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Generated README projection is current; catalog, ledger, v0.10 scope, release checklist, plan, Python syntax, and diff validators also passed.",
+          "recorded_at": "2026-08-25T13:45:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T13:41:35+00:00",
+      "completed_at": "2026-08-25T13:45:19+00:00"
     }
   },
   "verified_references": {
