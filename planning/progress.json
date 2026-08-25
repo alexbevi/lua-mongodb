@@ -8587,6 +8587,35 @@
       "notes": [],
       "started_at": "2026-08-25T13:41:35+00:00",
       "completed_at": "2026-08-25T13:45:19+00:00"
+    },
+    "DOC-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_content.ReadmeContentTests.test_load_balanced_support_is_current'",
+          "exit_code": 2,
+          "summary": "The README content contract failed because it still claimed load-balanced deployment execution was outside scope.",
+          "recorded_at": "2026-08-25T13:54:51+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_content planning.tests.test_readme_compatibility spec.examples.test_examples.ConnectAndPingTests.test_required_artifacts_and_catalog_links spec.examples.test_examples.PongLoveClientTests.test_launch_controls_rejoin_and_demo_boundary_are_documented spec.package.test_package.PackageTests.test_source_rock_installs_complete_public_api_without_workspace_paths'",
+          "exit_code": 0,
+          "summary": "Eleven focused README, compatibility, example, link, and isolated source-rock package tests passed. No Lua file was touched, so touched-file Luacheck was not applicable.",
+          "recorded_at": "2026-08-25T13:59:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "The generated compatibility table, v0.10 release checklist, plan, Python syntax, local Markdown links, stale-language scan, and diff validators passed.",
+          "recorded_at": "2026-08-25T13:59:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T13:54:13+00:00",
+      "completed_at": "2026-08-25T13:59:31+00:00"
     }
   },
   "verified_references": {

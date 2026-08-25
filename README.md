@@ -1,6 +1,6 @@
-# MongoDB Lua Driver
+# MongoDB Lua driver
 
-A pure-Lua MongoDB driver built directly from the [MongoDB driver specifications](https://github.com/mongodb/specifications), using a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) source as a behavioral reference. It supports client-level bulk writes across multiple namespaces with ordered and unordered execution, detailed results, retries, transactions, and operation timeouts. It targets Lua 5.4 and Lua 5.5 without binding or wrapping `libmongoc`.
+A coroutine-aware MongoDB driver written in Lua without binding or wrapping `libmongoc`. It supports Lua 5.4 and Lua 5.5, standalone servers, replica sets, sharded clusters, and load-balanced deployments. The implementation follows the [MongoDB driver specifications](https://github.com/mongodb/specifications), with a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) checkout as its behavioral reference.
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
@@ -23,7 +23,7 @@ luarocks install lua-csnappy
 luarocks install lua-zstd
 ```
 
-## Building and Installing
+## Building and installing
 
 Install the latest public release from LuaRocks with:
 
@@ -41,7 +41,7 @@ luarocks make
 
 Release rockspecs are built and verified from immutable release tags before publication.
 
-## Getting Started
+## Getting started
 
 The driver runs network operations through a coroutine-aware runtime. For standalone programs, `mongodb.run` starts the default Copas scheduler and runs the application callback inside it. Applications that already own a Copas loop may create clients directly inside that loop instead. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.
 
@@ -70,6 +70,8 @@ Set the optional handshake application name with the URI `appName` option or the
 For a DNS seedlist, use a `mongodb+srv` URI. Before opening a MongoDB socket, the driver resolves the URI hostname's SRV records and optional TXT defaults, validates every returned hostname against the URI's parent domain, and enables TLS unless the URI explicitly sets `tls=false` (or its `ssl` alias). Unknown and sharded topologies continue polling SRV records at the DNS TTL cadence, with a 60-second minimum, so mongos additions and removals do not require a client restart.
 
 An ordinary one-seed URI may also point to mongos. The client discovers the sharded topology and executes ordinary and cursor commands through the monitored mongos pool.
+
+Set `loadBalanced=true` when connecting to a load-balanced endpoint. The client then uses a service-aware pool and keeps cursor and transaction connections pinned when required.
 
 ```lua
 local mongodb = require("mongodb")
@@ -148,9 +150,9 @@ local client = assert(mongodb.client(
 ))
 ```
 
-### URI Options
+### URI options
 
-URI option names use the standard MongoDB spelling and are case-insensitive. When the same setting is supplied in the client options table, the idiomatic `snake_case` client option takes precedence over the URI. The currently accepted URI options are grouped below.
+URI option names use the standard MongoDB spelling and are case-insensitive. When the same setting is supplied in the client options table, the idiomatic `snake_case` client option takes precedence over the URI. The driver accepts these URI options:
 
 | Area | URI options |
 | --- | --- |
@@ -168,9 +170,9 @@ SOCKS5 proxy transport is not supported. The `proxyHost`, `proxyPort`, `proxyUse
 
 `serverMonitoringMode=auto` uses streaming monitoring except in a detected FaaS environment, where it uses polling. `stream` requests streaming on servers that support awaitable hello and falls back to polling on older servers; `poll` always waits `heartbeatFrequencyMS` after a successful check.
 
-For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults. Load-balanced deployment execution remains outside the current scope even though its connection-string option is recognized and validated.
+For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults.
 
-### CRUD Operations
+### CRUD operations
 
 The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
 
@@ -266,7 +268,7 @@ local deleted = assert(users:delete_one(
 print(deleted.deleted_count)
 ```
 
-### Change Streams
+### Change streams
 
 On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. `database:create_collection` and `database:modify_collection` accept the ordered `change_stream_pre_and_post_images` document supported by MongoDB 6.0 and later. `collection:rename` accepts a destination name plus optional `drop_target`, `comment`, and `session`, and applies the collection's inherited write concern. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `timeout_ms` limits stream establishment and each iteration separately; one iteration budget covers both `getMore` and any resume attempt. A positive timeout requires a lower `max_await_time_ms`, which is further bounded by the remaining timeout budget. A timed-out stream remains usable, and its next iteration attempts to resume it. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
 
@@ -297,7 +299,7 @@ assert(users:rename("archived_users", {
 }))
 ```
 
-### Bulk Operations
+### Bulk operations
 
 Bulk writes combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
 
@@ -321,7 +323,7 @@ print(written.deleted_count)
 
 Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps. Command options also accept `ordered`, `bypass_document_validation`, `comment`, `let`, and an operation-level `write_concern`; an operation concern overrides the client default.
 
-MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are deliberately distinct from collection bulk models. The API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary or verbose results. Set `timeout_ms` to bound the complete client bulk operation, including all batches, one retry, and result-cursor cleanup. An unacknowledged `write_concern = { w = 0 }` requires `ordered = false` and no verbose results; its immutable result exposes `acknowledged = false` without count or per-model result fields.
+MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are separate from collection bulk models. The API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary or verbose results. Set `timeout_ms` to bound the complete client bulk operation, including all batches, one retry, and result-cursor cleanup. An unacknowledged `write_concern = { w = 0 }` requires `ordered = false` and no verbose results; its immutable result exposes `acknowledged = false` without count or per-model result fields.
 
 ```lua
 local client_bulk = mongodb.client_bulk
@@ -354,7 +356,7 @@ print(written.deleted_count)
 
 An individual client bulk failure returns `nil` and a structured write error. Its immutable `details.write_errors` array is ordered by the models' original 1-based positions; each entry exposes the server code, message, optional `errInfo` details, and failed wire operation. Ordered execution reports its first individual failure, while unordered execution reports every observed individual failure. When at least one model is known to have succeeded, `details.partial_result` exposes the same immutable summary or verbose result shape; it is absent when the first ordered model or every unordered model failed.
 
-### Generic Commands
+### Generic commands
 
 `database:run_command` returns one command reply. For a command whose reply owns a server cursor, use `database:run_cursor_command`; it executes the initial command eagerly and returns the same cursor type used by collection reads. Its `batch_size`, `max_await_time_ms`, and `comment` options apply to subsequent `getMore` commands.
 
@@ -370,7 +372,7 @@ for user in cursor:iter() do
 end
 ```
 
-### Index Management
+### Index management
 
 `collection:create_index` creates one index from an ordered key document and returns its name. Use `mongodb.index_model` with `collection:create_indexes` to create several indexes together; `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Key directions may be ascending (`1`), descending (`-1`), `text`, `hashed`, `2d`, `2dsphere`, or `geoHaystack`.
 
@@ -389,7 +391,7 @@ local email_index = assert(users:create_index(doc({ { "email", 1 } }), {
 print(email_index)
 ```
 
-#### Search Indexes
+#### Search indexes
 
 `collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. `collection:update_search_index` replaces the definition of a named Search index, and `collection:drop_search_index` idempotently removes one by name. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
 
@@ -518,8 +520,6 @@ assert(transferred, err)
 
 `client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
 
-The public surface currently includes ordered BSON and Extended JSON values; client, database, collection, cursor, session, and configurable GridFS bucket, upload, and download handles; standalone, replica-set, mongos, and load-balanced connections; SCRAM, PLAIN, X.509, and TLS; generic database commands and database aggregation; CRUD including tailable and awaitData finds; collection bulk writes and client-level mixed-namespace bulk writes; collection and index management; monitoring; retries; transactions; and client-side operation timeout. The GridFS surface includes file discovery, rename and deletion by id or filename, and whole-bucket drop. Load-balanced clients use service-aware pools and retain the required cursor and transaction connection pins.
-
 ### Errors and resource lifetimes
 
 Operational methods return a value on success or `nil, err` with a structured error on failure. Errors expose stable categories, labels, timeout and retryability flags, and server details without including protected command values in diagnostic strings.
@@ -528,10 +528,7 @@ Clients, cursors, and sessions have explicit idempotent close methods. Closing a
 
 ## Examples
 
-The self-contained [`examples`](examples/README.md) learning path installs the
-public LuaRocks driver and covers connection setup, BSON application modeling,
-transactions, and a two-window LÖVE Pong demo driven by real-time change
-streams, without adding source-checkout module paths.
+The self-contained [`examples`](examples/README.md) learning path installs the public LuaRocks driver and covers connection setup, BSON application modeling, transactions, and a two-window LÖVE Pong demo driven by change streams. The examples do not add source-checkout module paths.
 
 ## Specification compatibility
 

@@ -17,10 +17,10 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 312,
+    "completed": 313,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 7
+    "pending": 6
   },
   "active": [],
   "ready": [
@@ -29,8 +29,7 @@
     "ADV-009",
     "ADV-010",
     "SFP-001",
-    "BSON-010",
-    "DOC-001"
+    "BSON-010"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -43,9 +42,7 @@
     "macos-ci-signal": [],
     "driver-examples": [],
     "lua-5-5-support": [],
-    "roadmap-clarity": [
-      "DOC-001"
-    ]
+    "roadmap-clarity": []
   },
   "blocked": [],
   "needs_review": [],
