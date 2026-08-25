@@ -37,6 +37,13 @@ CLOSURE_EXECUTORS = {
   "server-discovery-and-monitoring/tests/unified/"
     "loadbalanced-emit-topology-changed-before-close.json::test[1]",
 }
+TARGET_VERSION_EXECUTION_EXCLUSIONS = frozenset({
+  "crud/tests/unified/aggregate-write-readPreference.json::test[2]",
+  "crud/tests/unified/aggregate-write-readPreference.json::test[4]",
+  "retryable-writes/tests/unified/insertOne-serverErrors.json::test[2]",
+  "retryable-writes/tests/unified/insertOne-serverErrors.json::test[3]",
+  "retryable-writes/tests/unified/insertOne-serverErrors.json::test[4]",
+})
 RATCHETS = {
   "classified": 1042,
   "dedicated_cases": 40,
@@ -262,6 +269,9 @@ def classify(
   if CLOSURE_EXECUTORS - exact_unified:
     raise ScopeError("v0.10 closure executor inventory is incomplete")
 
+  if TARGET_VERSION_EXECUTION_EXCLUSIONS - exact_unified:
+    raise ScopeError("v0.10 target-version exclusion inventory is stale")
+
   for identity in CLOSURE_EXECUTORS:
     if executors[identity].get("environment") != "live-load-balanced":
       raise ScopeError(f"v0.10 closure executor environment is stale: {identity}")
@@ -331,7 +341,10 @@ def validate_execution(
   expected_ratchets: dict[str, int],
 ) -> dict[str, int]:
   reports = report if isinstance(report, list) else [report]
-  required = set(generate()["exact_unified_cases"])
+  required = (
+    set(generate()["exact_unified_cases"])
+    - TARGET_VERSION_EXECUTION_EXCLUSIONS
+  )
   passed = set()
 
   for report_index, exact_report in enumerate(reports):

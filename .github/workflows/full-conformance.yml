@@ -265,6 +265,7 @@ jobs:
           python3 spec/v10/scope.py
           --check
           --execution-report build/conformance/unified.json
+          --execution-report build/conformance/version-branches/unified-pre-8.2.json
 
       - name: Upload authoritative Linux conformance evidence
         uses: actions/upload-artifact@v7
@@ -573,6 +574,7 @@ jobs:
           python3 spec/v10/scope.py
           --check
           --execution-report build/conformance/unified-macos.json
+          --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
 
       - name: Upload authoritative macOS conformance evidence
         uses: actions/upload-artifact@v7

@@ -105,6 +105,70 @@ class V10ScopeTests(unittest.TestCase):
         scope.load_capability_ratchets(),
       )
 
+  def test_exact_execution_allows_only_pre_floor_target_skips(self) -> None:
+    report = self.exact_report()
+
+    for row in report["tests"]:
+      if row["id"] in scope.TARGET_VERSION_EXECUTION_EXCLUSIONS:
+        row["status"] = "environment_skipped"
+
+    expected = len(scope.generate()["exact_unified_cases"]) - len(
+      scope.TARGET_VERSION_EXECUTION_EXCLUSIONS
+    )
+    self.assertEqual(
+      {"passed": expected, "required": expected},
+      scope.validate_execution(report, scope.load_capability_ratchets()),
+    )
+
+  def test_authenticated_handshake_branches_use_authenticated_executor(
+    self,
+  ) -> None:
+    executors = scope.load_executors()
+    identities = {
+      *(
+        "retryable-reads/tests/unified/handshakeError.json::test["
+          f"{index}]"
+        for index in (*range(1, 5), *range(9, 13), *range(15, 31))
+      ),
+      *(
+        "retryable-writes/tests/unified/handshakeError.json::test["
+          f"{index}]"
+        for index in range(3, 21)
+      ),
+    }
+
+    self.assertEqual(42, len(identities))
+
+    for identity in identities:
+      self.assertEqual(
+        "live-authenticated-replicaset",
+        executors[identity]["environment"],
+      )
+
+  def test_full_conformance_unions_pre_8_2_evidence_for_v10(self) -> None:
+    workflow = (
+      scope.ROOT / ".github" / "workflows" / "full-conformance.yml"
+    ).read_text(encoding="utf-8")
+
+    for primary, supplemental in (
+      (
+        "build/conformance/unified.json",
+        "build/conformance/version-branches/unified-pre-8.2.json",
+      ),
+      (
+        "build/conformance/unified-macos.json",
+        "build/conformance/macos-version-branches/"
+          "unified-macos-pre-8.2.json",
+      ),
+    ):
+      command = (
+        "python3 spec/v10/scope.py\n"
+        "          --check\n"
+        f"          --execution-report {primary}\n"
+        f"          --execution-report {supplemental}"
+      )
+      self.assertIn(command, workflow)
+
   def test_optional_branch_requires_an_incomplete_out_of_track_owner(self) -> None:
     activities = copy.deepcopy(scope.load_activities())
     activities["ADV-010"]["status"] = "completed"

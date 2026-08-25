@@ -1394,7 +1394,10 @@ class UnifiedCliTests(unittest.TestCase):
 
     for index in collection_cases:
       identity = identities[index]
-      self.assertEqual("live-replicaset", registry[identity]["environment"])
+      self.assertEqual(
+        "live-authenticated-replicaset",
+        registry[identity]["environment"],
+      )
       self.assertTrue(registry[identity]["testCommands"])
 
     for index in client_bulk_cases:
