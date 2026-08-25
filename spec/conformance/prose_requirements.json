@@ -359,7 +359,7 @@
     "logging/logging.md": {
       "activity": "ADV-009",
       "last_execution": null,
-      "reason": "Standardized driver logging remains owned by the post-v1 observability activity.",
+      "reason": "Standardized driver logging remains owned by the additional observability activity.",
       "required_environment": "deterministic-runtime",
       "runner": "pending:ADV-009",
       "status": "deferred_unsupported"

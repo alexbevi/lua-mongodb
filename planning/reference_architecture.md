@@ -15,7 +15,7 @@ The MongoDB specifications are normative. PyMongo is pinned as a mature implemen
 | CMAP | `synchronous/pool.py` | Checkout/check-in, generations, wait queues, handshakes, clearing, CMAP events |
 | Public execution | `synchronous/mongo_client.py`, `database.py`, `collection.py`, `cursor.py`, `command_cursor.py`, `client_session.py`, `bulk.py` | Idiomatic module tables and colon methods, command lifecycle, cursors, sessions, retries, transactions, bulk batching |
 | Monitoring/results | `monitoring.py`, `results.py`, `operations.py` | Command/SDAM/CMAP events, redaction, result values, operation option encoding |
-| GridFS | `gridfs/` | Deferred post-v1 bucket/files/chunks layer |
+| GridFS | `gridfs/` | Additional bucket/files/chunks layer |
 | Unified runner | `test/unified_format.py`, `test/unified_format_shared.py`, `test/utils_spec_runner.py` | Requirements, entities, operations, matcher, outcome checks, threads/loops, fake services, capability report |
 
 PyMongo's synchronous package is generated from its asynchronous implementation. Lua will use a single coroutine-aware implementation and explicit runtime interface, avoiding duplicated sync/async trees.

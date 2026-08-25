@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "632f360243b840817e8509cb2c659c8ba1ea760cedc847974450337ecc7bfc74",
+  "plan_digest": "6084270931b8d500701b96f493406296179ea324269b44d096afe4090f87b6df",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -8529,6 +8529,35 @@
       "reopened_after_commit": "ed40d8e0f2807ad4263cc95f3aff132420528938",
       "started_at": "2026-08-25T09:57:11+00:00",
       "completed_at": "2026-08-25T10:00:08+00:00"
+    },
+    "PLN-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_update_plan.EvidenceTests.test_additional_start_requires_the_matching_authorized_track'",
+          "exit_code": 2,
+          "summary": "1 focused planner contract failed: an unscoped additional activity reached commit validation instead of requiring matching track authorization",
+          "recorded_at": "2026-08-25T13:22:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_PYTHON='planning.tests.test_update_plan.EvidenceTests.test_additional_start_requires_the_matching_authorized_track spec.release.test_scope spec.release.test_checklist spec.v06.test_scope spec.unified.test_cli.UnifiedCliTests.test_sensitive_command_redaction_cases_are_runnable spec.unified.test_cli.UnifiedCliTests.test_database_aggregate_cases_are_classified_by_server_floor spec.unified.test_cli.UnifiedCliTests.test_pre_5_0_dot_dollar_cases_are_additional_exclusions spec.unified.test_cli.UnifiedCliTests.test_command_cursor_release_cases_keep_vertical_slice_owners' FOCUS_LINT='src/mongodb/client.lua'",
+          "exit_code": 0,
+          "summary": "16 focused planner, release-scope, v0.6, and unified contracts passed; src/mongodb/client.lua linted with 0 warnings and 0 errors; the directly coupled five-module Python run also passed 160 tests",
+          "recorded_at": "2026-08-25T13:32:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/v06/scope.py --check && python3 spec/v08/scope.py --check && python3 spec/v09/scope.py --check && python3 spec/v10/scope.py --check && python3 spec/release/checklist.py --check && python3 planning/update_readme_compatibility.py --check && python3 planning/update_plan.py check && git diff --check",
+          "exit_code": 0,
+          "summary": "Capability, catalog, ledger, release scope, v0.6, v0.8, v0.9, v0.10, checklist, README, plan, JSON, Python compile, lifecycle terminology audit, and diff validators passed; 5524 cases classify with 0 applicable gaps and 1021 additional exclusions",
+          "recorded_at": "2026-08-25T13:32:48+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T13:21:31+00:00",
+      "completed_at": "2026-08-25T13:32:59+00:00"
     }
   },
   "verified_references": {

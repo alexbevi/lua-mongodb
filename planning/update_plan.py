@@ -584,8 +584,8 @@ def command_start(arguments: argparse.Namespace) -> int:
   if requested_track is not None and requested_track not in declared_track_ids(plan):
     raise PlanError(f"unknown track: {requested_track}")
   activity_track = activity.get("track")
-  if activity.get("milestone") == "post-v1" and requested_track is None:
-    raise PlanError(f"post-v1 activity {arguments.activity_id} requires --track authorization")
+  if activity.get("milestone") == "additional" and requested_track is None:
+    raise PlanError(f"additional activity {arguments.activity_id} requires --track authorization")
   if requested_track is not None and activity_track != requested_track:
     raise PlanError(
       f"activity {arguments.activity_id} does not belong to track {requested_track}"
@@ -778,7 +778,7 @@ def build_parser() -> argparse.ArgumentParser:
 
   start = subparsers.add_parser("start", help="start a ready activity")
   start.add_argument("activity_id")
-  start.add_argument("--track", help="authorize this declared track for a post-v1 start")
+  start.add_argument("--track", help="authorize this declared track for an additional-task start")
   start.set_defaults(function=command_start)
 
   requeue = subparsers.add_parser(

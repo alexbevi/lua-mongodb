@@ -6,14 +6,14 @@ Use sources in this order: MongoDB specifications are normative; the pinned PyMo
 
 Read `skills/execute-driver-slice/SKILL.md` before implementing a roadmap activity. Use `skills/refresh-mongodb-references/SKILL.md` only when the user explicitly requests a reference refresh. Do not edit either submodule or change a reference pin during normal implementation.
 
-The production goal stops after `production-core-v1`. Do not begin post-v1 work unless explicitly requested. Never bind or wrap `libmongoc`; keep driver, BSON, wire-protocol, topology, and selection logic in Lua. Networking, TLS, and cryptography belong behind runtime adapters.
+The production goal stops after `production-core-v1`. Do not begin additional tasks unless explicitly requested. Never bind or wrap `libmongoc`; keep driver, BSON, wire-protocol, topology, and selection logic in Lua. Networking, TLS, and cryptography belong behind runtime adapters.
 
 ## Activity workflow
 
 Keep commits small. Each commit must be the smallest practical vertical slice that delivers one independently verifiable behavior from its tests through its implementation and required documentation. If an activity is too large for one such commit, split it into ordered plan activities before implementation; never accumulate several behaviors into a broad checkpoint commit.
 
 1. Run `python3 planning/update_plan.py check --strict --pushed` and `next`. When the user authorizes a declared roadmap track, retain that track for the activity loop and select with `next --track TRACK`.
-2. Start exactly one ready activity through the script. A post-v1 start requires the user-authorized declared track: use `start ID --track TRACK`, retain the same track for the goal, and never use it to start an activity outside that track.
+2. Start exactly one ready activity through the script. An additional-task start requires the user-authorized declared track: use `start ID --track TRACK`, retain the same track for the goal, and never use it to start an activity outside that track.
 3. Add the smallest failing test that defines the vertical slice, run it, and record the red result.
 4. Implement only enough production behavior for the slice, preserving public contracts.
 5. Run the narrowest effective local verification with `make test-focus`: the defining test, directly coupled integration or unified cases, touched-file lint, and any validator for generated artifacts changed by the slice. Record green evidence. Do not run full suites locally for an ordinary slice.

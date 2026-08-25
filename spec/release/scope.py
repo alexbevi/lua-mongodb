@@ -25,7 +25,7 @@ RELEASE_FIXTURE_OWNERS = {
   "REL-029", "REL-030", "REL-031", "REL-034", "REL-035", "REL-036",
   "REL-037", "REL-038", "REL-039", "REL-040", "REL-041",
 }
-POST_V1_REASONS = {
+ADDITIONAL_REASONS = {
   **{
     f"LB-{index:03d}": "load-balanced deployment behavior is outside production-core v1"
     for index in range(1, 22)
@@ -89,7 +89,7 @@ POST_V1_REASONS = {
   "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
   "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1",
   "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
-  "ADV-010": "client-side encryption requires a separate post-v1 design",
+  "ADV-010": "client-side encryption requires a separate additional design",
   "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
   "LEG-001": "deprecated count retry behavior is outside production-core v1",
   "LEG-002": "deprecated count timeout behavior is outside production-core v1",
@@ -226,11 +226,11 @@ def classify(
         raise ScopeError(f"invalid production-core release owner {owner}: {identity}")
 
       scope = "applicable-release-gap"
-    elif activity["milestone"] == "post-v1":
-      if owner not in POST_V1_REASONS:
-        raise ScopeError(f"post-v1 owner has no scope reason {owner}: {identity}")
+    elif activity["milestone"] == "additional":
+      if owner not in ADDITIONAL_REASONS:
+        raise ScopeError(f"additional owner has no scope reason {owner}: {identity}")
 
-      scope = "post-v1-exclusion"
+      scope = "additional-exclusion"
     else:
       raise ScopeError(f"unknown release milestone for {identity}: {activity['milestone']}")
 
@@ -240,7 +240,7 @@ def classify(
   return {
     "deferred_by_activity": dict(sorted(deferred_by_activity.items())),
     "deferred_by_scope": dict(sorted(deferred_by_scope.items())),
-    "post_v1_reasons": POST_V1_REASONS,
+    "additional_reasons": ADDITIONAL_REASONS,
     "schema_version": 1,
     "statuses": dict(sorted(statuses.items())),
     "total_cases": len(cases),
@@ -271,7 +271,7 @@ def release_cases(
 
       value["reason"] = (
         reason
-        or POST_V1_REASONS.get(record["activity"])
+        or ADDITIONAL_REASONS.get(record["activity"])
         or f"awaits {record['activity']} conformance"
       )
 
@@ -307,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
   print(
     f"release scope: {report['total_cases']} cases; "
     f"{scopes.get('applicable-release-gap', 0)} applicable gaps, "
-    f"{scopes.get('post-v1-exclusion', 0)} post-v1 exclusions"
+    f"{scopes.get('additional-exclusion', 0)} additional exclusions"
   )
   return 0
 

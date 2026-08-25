@@ -28048,7 +28048,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "b3d13aec16ae924fddf6bda3ae6c7b40c83ff1f30181bd34c2b1b67cb01d033b",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -29452,7 +29452,7 @@
     "transactions/tests/unified/backpressure-retryable-abort.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "7adb8b5748c4b9b8ae4845fd930910d05211c5d16fe2daa4a4a90b8a07117a4c",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29495,7 +29495,7 @@
     "transactions/tests/unified/backpressure-retryable-abort.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "c07a5fb8c0e1ddc38d2be5db6019f80e4e7747806a4ccdb2a5d599bf7c377ff3",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29538,7 +29538,7 @@
     "transactions/tests/unified/backpressure-retryable-commit.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "2b1502f6da9e592e39082477e0fcbad93a15257ce6f961628e2b5bceb83562b6",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29581,7 +29581,7 @@
     "transactions/tests/unified/backpressure-retryable-commit.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "998673bb419dedf2e4a89e46a3fa29607d5cc2630df433b38ca21d1f2baa508f",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29624,7 +29624,7 @@
     "transactions/tests/unified/backpressure-retryable-reads.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "89d87a6ef480116656417f86508a0062edcfc32712e98fd52fe1d06e93c97604",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29670,7 +29670,7 @@
     "transactions/tests/unified/backpressure-retryable-reads.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "ba08fabace9da6e45847cdb8aa8fa6d3b339833896dc25dd7f71a761eafaa95e",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29714,7 +29714,7 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "a3ec942ccca674213ede329ab2970431558248c9ad1727951b1189d80fa7e491",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29757,7 +29757,7 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "6c112c980925323835a96163c23ff29ac5dfd9d91681154940af41311108b7f0",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -29798,7 +29798,7 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[3]": {
       "activity": "ADV-009",
       "fingerprint": "73a5f2fade1d41d0b9fc0c160607c8c880833b0f2a8e6f850a4e51de78d62928",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -36910,7 +36910,7 @@
       "reason": "LuaSec 1.3 does not expose certificate revocation, OCSP stapling, or OCSP endpoint verification, and this driver will not add a separate OCSP implementation.",
       "required_environment": "none",
       "runner": "none:unsupported",
-      "scope": "post-v1",
+      "scope": "additional",
       "source": "ocsp-support/ocsp-support.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",
@@ -36924,7 +36924,7 @@
       "reason": "This driver will not implement SOCKS5 proxy options, authentication, or transport forwarding.",
       "required_environment": "none",
       "runner": "none:unsupported",
-      "scope": "post-v1",
+      "scope": "additional",
       "source": "socks5-support/socks5.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",

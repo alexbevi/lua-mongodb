@@ -53,7 +53,7 @@ class ReleaseScopeTests(unittest.TestCase):
     ):
       scope.classify(cases, activities)
 
-  def test_rejects_a_post_v1_exclusion_without_a_capability_reason(self):
+  def test_rejects_an_additional_exclusion_without_a_capability_reason(self):
     cases = {
       "fixture.json::test[1]": {
         "activity": "ADV-999",
@@ -62,12 +62,12 @@ class ReleaseScopeTests(unittest.TestCase):
       },
     }
     activities = {
-      "ADV-999": {"milestone": "post-v1", "status": "pending"},
+      "ADV-999": {"milestone": "additional", "status": "pending"},
     }
 
     with self.assertRaisesRegex(
       scope.ScopeError,
-      "post-v1 owner has no scope reason ADV-999",
+      "additional owner has no scope reason ADV-999",
     ):
       scope.classify(cases, activities)
 
@@ -80,7 +80,7 @@ class ReleaseScopeTests(unittest.TestCase):
       },
     }
     activities = {
-      "AUTH-020": {"milestone": "post-v1", "status": "completed"},
+      "AUTH-020": {"milestone": "additional", "status": "completed"},
     }
 
     report = scope.classify(cases, activities)

@@ -74,12 +74,12 @@ def tracked_plan() -> dict:
   return plan
 
 
-def post_v1_tracked_plan() -> dict:
+def additional_tracked_plan() -> dict:
   plan = tracked_plan()
-  plan["milestones"].append({"id": "post-v1", "goal": "Explicitly authorized work."})
+  plan["milestones"].append({"id": "additional", "goal": "Explicitly authorized work."})
   for item in plan["activities"]:
     if item["id"] != "PRE-001":
-      item["milestone"] = "post-v1"
+      item["milestone"] = "additional"
   return plan
 
 
@@ -265,8 +265,8 @@ class EvidenceTests(unittest.TestCase):
       with self.assertRaisesRegex(update_plan.PlanError, "already in_progress"):
         update_plan.command_start(argparse.Namespace(activity_id="TST-002"))
 
-  def test_post_v1_start_requires_the_matching_authorized_track(self) -> None:
-    plan = post_v1_tracked_plan()
+  def test_additional_start_requires_the_matching_authorized_track(self) -> None:
+    plan = additional_tracked_plan()
     parser = update_plan.build_parser()
     parsed = parser.parse_args(["start", "PLN-001", "--track", "lua-hardening"])
     self.assertEqual("lua-hardening", parsed.track)

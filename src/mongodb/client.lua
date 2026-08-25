@@ -947,7 +947,7 @@ function M.connect(uri, values)
 
   if #parsed.hosts ~= 1 then
     return configuration_error(
-      "multiple seeds require replicaSet; sharded deployments are post-v1"
+      "multiple seeds require replicaSet; use one seed or mongodb+srv for sharded deployments"
     )
   end
 

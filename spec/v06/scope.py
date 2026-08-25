@@ -38,8 +38,8 @@ IMPLEMENTED_OWNERS = {
 }
 TARGET_OWNERS = IMPLEMENTED_OWNERS | {"REL-053"}
 
-PRE_V1_FLOOR_REASON = (
-  "the fixture targets server behavior before the v1 MongoDB 7.0 "
+BELOW_FLOOR_REASON = (
+  "the fixture targets server behavior below the supported MongoDB 7.0 "
   "compatibility floor"
 )
 PRE_44_REASON = "the pre-4.4 server requirement is outside the v1 compatibility matrix"
@@ -68,7 +68,7 @@ TARGET_VERSION_EXCLUSIONS = {
     "getnonce is capped below MongoDB 7.0 and is outside production-core v1"
   ),
   **{
-    f"crud/tests/unified/{fixture}.json::test[3]": PRE_V1_FLOOR_REASON
+    f"crud/tests/unified/{fixture}.json::test[3]": BELOW_FLOOR_REASON
     for fixture in (
       "bulkWrite-comment",
       "countDocuments-comment",
@@ -87,9 +87,9 @@ TARGET_VERSION_EXCLUSIONS = {
       "updateOne-comment",
     )
   },
-  "crud/tests/unified/find-comment.json::test[5]": PRE_V1_FLOOR_REASON,
+  "crud/tests/unified/find-comment.json::test[5]": BELOW_FLOOR_REASON,
   **{
-    f"crud/tests/unified/{fixture}.json::test[2]": PRE_V1_FLOOR_REASON
+    f"crud/tests/unified/{fixture}.json::test[2]": BELOW_FLOOR_REASON
     for fixture in (
       "aggregate-let",
       "bulkWrite-deleteMany-let",
@@ -108,7 +108,7 @@ TARGET_VERSION_EXCLUSIONS = {
       "updateOne-let",
     )
   },
-  "crud/tests/unified/aggregate-let.json::test[4]": PRE_V1_FLOOR_REASON,
+  "crud/tests/unified/aggregate-let.json::test[4]": BELOW_FLOOR_REASON,
   **{
     f"crud/tests/unified/aggregate.json::test[{index}]": PRE_44_REASON
     for index in (4, 6)

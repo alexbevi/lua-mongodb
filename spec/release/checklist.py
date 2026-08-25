@@ -33,7 +33,7 @@ RELEASE_VERSION = "0.10.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
-MAXIMUM_POST_V1_EXCLUSIONS = 1371
+MAXIMUM_ADDITIONAL_EXCLUSIONS = 1371
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -409,8 +409,8 @@ def generate() -> dict[str, Any]:
     "applicable-release-gap",
     0,
   )
-  post_v1_exclusions = scope_report.get("deferred_by_scope", {}).get(
-    "post-v1-exclusion",
+  additional_exclusions = scope_report.get("deferred_by_scope", {}).get(
+    "additional-exclusion",
     0,
   ) + statuses.get("excluded_scope", 0)
   unsupported_cases = statuses.get("unsupported", 0)
@@ -432,8 +432,8 @@ def generate() -> dict[str, Any]:
   if statuses.get("passed", 0) < MINIMUM_PASSED_CASES:
     raise ChecklistError("production-core passing-case ratchet regressed")
 
-  if post_v1_exclusions > MAXIMUM_POST_V1_EXCLUSIONS:
-    raise ChecklistError("production-core post-v1 exclusions increased")
+  if additional_exclusions > MAXIMUM_ADDITIONAL_EXCLUSIONS:
+    raise ChecklistError("production-core additional exclusions increased")
 
   if ledger_summary.get("cases") != classified:
     raise ChecklistError("conformance ledger and release scope totals differ")
@@ -542,7 +542,7 @@ def generate() -> dict[str, Any]:
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
         "passed_cases": statuses.get("passed", 0),
-        "post_v1_exclusions": post_v1_exclusions,
+        "additional_exclusions": additional_exclusions,
         "unsupported_cases": unsupported_cases,
       },
       "production_core_prerequisites": len(production_core),

@@ -1,14 +1,5 @@
 {
-  "deferred_by_activity": {
-    "ADV-009": 230,
-    "ADV-010": 777,
-    "AUTH-019": 11,
-    "CSOT-001": 3
-  },
-  "deferred_by_scope": {
-    "post-v1-exclusion": 1021
-  },
-  "post_v1_reasons": {
+  "additional_reasons": {
     "ADV-001": "change streams are outside production-core v1",
     "ADV-002": "GridFS is outside production-core v1",
     "ADV-003": "SRV and TXT discovery are outside production-core v1",
@@ -17,7 +8,7 @@
     "ADV-006": "load-balanced deployment behavior is outside production-core v1",
     "ADV-007": "client bulk write is outside production-core v1",
     "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
-    "ADV-010": "client-side encryption requires a separate post-v1 design",
+    "ADV-010": "client-side encryption requires a separate additional design",
     "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
     "ADV-012": "proxy transports are outside production-core v1",
     "ADV-013": "runtime DNS resolution is outside production-core v1",
@@ -149,6 +140,15 @@
     "TXN-005": "sharded transaction recovery tokens are outside production-core v1",
     "TXN-006": "non-transient mongos pin retention is outside production-core v1",
     "TXN-007": "transient mongos unpinning is outside production-core v1"
+  },
+  "deferred_by_activity": {
+    "ADV-009": 230,
+    "ADV-010": 777,
+    "AUTH-019": 11,
+    "CSOT-001": 3
+  },
+  "deferred_by_scope": {
+    "additional-exclusion": 1021
   },
   "schema_version": 1,
   "statuses": {

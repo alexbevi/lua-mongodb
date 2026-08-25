@@ -36876,7 +36876,7 @@
     "crud/tests/unified/aggregate-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "0457cbe0817d4850dd2ac63211944bcd36277109e279d38c61ea00679b2d7c34",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -36931,7 +36931,7 @@
     "crud/tests/unified/aggregate-let.json::test[4]": {
       "activity": "REL-053",
       "fingerprint": "48d54183a4dd6e81c24a3fd0d48f0031f7776cffb53cb42326760feecc92aa54",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "aggregate.let",
@@ -37858,7 +37858,7 @@
     "crud/tests/unified/bulkWrite-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "2f8a6133f680791dadcaa03ca97d30ff10ecabeb210ef8ef7bec4ca6d07fb40d",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "bulkWrite.comment",
@@ -38135,7 +38135,7 @@
     "crud/tests/unified/bulkWrite-deleteMany-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "3d8e62d51ee2a2d55897b12daf68090818efdae832f21e6c8f4bc82e53091f7e",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -38354,7 +38354,7 @@
     "crud/tests/unified/bulkWrite-deleteOne-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "571a1366d06370e85c7093ed7622624b6f21bf1a83aca4afad63cc5431cabdf3",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -38809,7 +38809,7 @@
     "crud/tests/unified/bulkWrite-replaceOne-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "d45da63d00461b168fb22dae1027886f40d7d7d389e6a9d3cb21c6768fbe8f0c",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -39313,7 +39313,7 @@
     "crud/tests/unified/bulkWrite-updateMany-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "5631df326566b7d9ef56e96f62efa1a6cf91fd6f22b1d41714cd916115a5ff0b",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -39629,7 +39629,7 @@
     "crud/tests/unified/bulkWrite-updateOne-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "90a3fc998e5cfad1c368d6779f0ce662b024085b1d917da603589351bd091261",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "bulkWrite.let",
@@ -42159,7 +42159,7 @@
     "crud/tests/unified/countDocuments-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "6f7365efa5023f245f7263455bb6451307d7af248e8256ac19b4fdd7e98d3cb4",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "countDocuments.comment",
@@ -42735,7 +42735,7 @@
     "crud/tests/unified/deleteMany-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "96cb9d59acee870205ceef6eabab438089ff4b1faf8662ba097fe52db5a29c9a",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "deleteMany.comment",
@@ -43012,7 +43012,7 @@
     "crud/tests/unified/deleteMany-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "6df0ef48fecd3d14d7c14c9bf1ddcbc66724f2ad1c0aa75b2df3ee4076ebecf3",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "deleteMany.filter",
@@ -43223,7 +43223,7 @@
     "crud/tests/unified/deleteOne-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "08f6ec7c642544af2e157559666f9229adac452903d1e55989499058792b8748",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "deleteOne.comment",
@@ -43532,7 +43532,7 @@
     "crud/tests/unified/deleteOne-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "a0156b16bb1b7b6bc89b101a77ee1e501393d806069e4d21d50649c01a23c06c",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "deleteOne.filter",
@@ -43770,7 +43770,7 @@
     "crud/tests/unified/distinct-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "5cefd159a8c330bd06fdc6d214705ac67fc1ac8ff966c0a776a3a77040cd1537",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "distinct.comment",
@@ -44015,7 +44015,7 @@
     "crud/tests/unified/estimatedDocumentCount-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "44e25169104337597fd7cd9dba07535de40e349dd71518bd675eb71a40083408",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "estimatedDocumentCount.comment"
@@ -44487,7 +44487,7 @@
     "crud/tests/unified/find-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "1249432587925f6597ead1f1b5b7345a8e8134def4e44fe3366a1fcaa037b7a0",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "find.comment",
@@ -44545,7 +44545,7 @@
     "crud/tests/unified/find-comment.json::test[5]": {
       "activity": "REL-053",
       "fingerprint": "9e303a066beaba142e3b635999cb23b465432319740dd831eab4153d06355110",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -44604,7 +44604,7 @@
     "crud/tests/unified/find-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "8c59d670fa4306359ddac92bb1918e387292061cb868ffc37eff21d340f5c1a5",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "find.filter",
@@ -44963,7 +44963,7 @@
     "crud/tests/unified/findOneAndDelete-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "4b841c5bb8cdd99ba0b5314e96c71c35511138ff0063fbb17b7c481eca428552",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "findOneAndDelete.comment",
@@ -45240,7 +45240,7 @@
     "crud/tests/unified/findOneAndDelete-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "85db8b7c2fc3ea06cb2b2d8e21f971858aa472dbc921adff5801e8a84368407f",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "findOneAndDelete.filter",
@@ -45487,7 +45487,7 @@
     "crud/tests/unified/findOneAndReplace-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "e91cfcd5f1a7325944d8de8716f18b11e21ab6c35006bae4972f24bec90e3c0b",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "findOneAndReplace.comment",
@@ -45891,7 +45891,7 @@
     "crud/tests/unified/findOneAndReplace-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "b5522dabc8e9686fda3c4a27da4d7b2f2ac5caed76aa843ec41e42781bd1f488",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "findOneAndReplace.filter",
@@ -46417,7 +46417,7 @@
     "crud/tests/unified/findOneAndUpdate-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "c4049e17316d1efe3eea53417f82ea0727e47fd124337f49519c77d7cbfd4058",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.comment",
@@ -46879,7 +46879,7 @@
     "crud/tests/unified/findOneAndUpdate-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "5d72c368543f16e0931763c2fe0223fa5269717ec9a6296cc24649fbc66dec51",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "findOneAndUpdate.filter",
@@ -47268,7 +47268,7 @@
     "crud/tests/unified/insertMany-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "cf76abe49fd491de942b4e71d8443bc866e85be44a94e678c6752136b8520625",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "insertMany.comment",
@@ -47622,7 +47622,7 @@
     "crud/tests/unified/insertOne-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "efbf28fc98ac928e4e0429921ef7c13f63ccb5b48e1898c3d4b4b340b5159be1",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "insertOne.comment",
@@ -48100,7 +48100,7 @@
     "crud/tests/unified/replaceOne-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "7a82ea66446f4e5888461fee9a407cc60edc017464f00e33eebf9681aa183d8a",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "replaceOne.comment",
@@ -48430,7 +48430,7 @@
     "crud/tests/unified/replaceOne-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "11339127051c1e062baa3f6a26b7ec9ef82aca216bd6b7c22a7f0d25d3d740f2",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "replaceOne.filter",
@@ -48899,7 +48899,7 @@
     "crud/tests/unified/updateMany-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "192de775889260307df0a96a222f44900e2b71cf1935889e40902f9b939d775a",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "updateMany.comment",
@@ -49198,7 +49198,7 @@
     "crud/tests/unified/updateMany-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "38fff32be51a1c145011220bdc26c618bf2b8800980eb11a4e533ddb1589614c",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "updateMany.filter",
@@ -49661,7 +49661,7 @@
     "crud/tests/unified/updateOne-comment.json::test[3]": {
       "activity": "REL-053",
       "fingerprint": "2a0e42cf94b657787f47a25ae276db21ddd456d0d084da9211e3bf7978b1b82d",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "updateOne.comment",
@@ -49993,7 +49993,7 @@
     "crud/tests/unified/updateOne-let.json::test[2]": {
       "activity": "REL-053",
       "fingerprint": "764546d7010e132169ed9329440c11fc09b336c86ce47405ba3c9a3d2f4906ec",
-      "reason": "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+      "reason": "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
       "requirements": {
         "arguments": [
           "updateOne.filter",
@@ -71267,7 +71267,7 @@
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "0d1fe85c7ce3f5f556e91869f5838ccc2f3aa9fbcb606d5e41738d9f93a3727c",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71304,7 +71304,7 @@
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "d63a222da32b854ab7cb6cfc44c9b105a94f907888bc56317e3d29fb8d8fd0f1",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71341,7 +71341,7 @@
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "d3b8df1a48f1f5283ed4e5cebc8876efa64ed95ed6b0b26051e811c94b7e447a",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71378,7 +71378,7 @@
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-single.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "56054d7a0d1d4bd02ce3c71d4cb59598552da3bad2b9921ba85afe5f4c861d3e",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71415,7 +71415,7 @@
     "server-discovery-and-monitoring/tests/unified/backpressure-server-description-unchanged-on-min-pool-size-population-error.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "def9aa6056fa430e003c3c49bdd06216d7b88758eb8a2beb04c0db96df0c5b34",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72218,7 +72218,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "b3d13aec16ae924fddf6bda3ae6c7b40c83ff1f30181bd34c2b1b67cb01d033b",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72252,7 +72252,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "a9c67f66b8cf51d4aaa7ed316568bef80a3c9db5ad9783b082e4118a79c5708f",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72286,7 +72286,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "090730c7ce572e58ef7318e35a84fa75d29fdb5d80c6abc89abb75a3e9655c20",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72320,7 +72320,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[3]": {
       "activity": "ADV-009",
       "fingerprint": "9b837a18ed79355901edac2b6a9cdee163792ee74f7b1e1f5c797765f30ee05c",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72355,7 +72355,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "748442acf2edbeb2ab62f840c5b8b7e17384362b5ee9b5a1afd9dfcb0a3ba2b9",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72389,7 +72389,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "55197a4ac557e2243f5b0b6249e0bfd26b61fed8eda2dd59f7d465fa13ff836f",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72423,7 +72423,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[3]": {
       "activity": "ADV-009",
       "fingerprint": "62275d9cd13c910ffe2081851bdf5323f498c4ba6342bcb136c5d553c7ffe668",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72458,7 +72458,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "f783feb9842e976f4647e05bc9791d20b29558ab4d4a7cc8e8c20d947d33f721",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72492,7 +72492,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "9a80b9e3e54a22c9fc968644a7181dca6d8e16de8e358a14063ddd8f665fd2ac",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72528,7 +72528,7 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[3]": {
       "activity": "ADV-009",
       "fingerprint": "26d215e764523011228efc718c9c556163187a1cbe1cd0c0de404a1a1cc6bd61",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -75531,7 +75531,7 @@
     "transactions/tests/unified/backpressure-retryable-abort.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "7adb8b5748c4b9b8ae4845fd930910d05211c5d16fe2daa4a4a90b8a07117a4c",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75574,7 +75574,7 @@
     "transactions/tests/unified/backpressure-retryable-abort.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "c07a5fb8c0e1ddc38d2be5db6019f80e4e7747806a4ccdb2a5d599bf7c377ff3",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75617,7 +75617,7 @@
     "transactions/tests/unified/backpressure-retryable-commit.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "2b1502f6da9e592e39082477e0fcbad93a15257ce6f961628e2b5bceb83562b6",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75660,7 +75660,7 @@
     "transactions/tests/unified/backpressure-retryable-commit.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "998673bb419dedf2e4a89e46a3fa29607d5cc2630df433b38ca21d1f2baa508f",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75703,7 +75703,7 @@
     "transactions/tests/unified/backpressure-retryable-reads.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "89d87a6ef480116656417f86508a0062edcfc32712e98fd52fe1d06e93c97604",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75749,7 +75749,7 @@
     "transactions/tests/unified/backpressure-retryable-reads.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "ba08fabace9da6e45847cdb8aa8fa6d3b339833896dc25dd7f71a761eafaa95e",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75793,7 +75793,7 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[1]": {
       "activity": "ADV-009",
       "fingerprint": "a3ec942ccca674213ede329ab2970431558248c9ad1727951b1189d80fa7e491",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75836,7 +75836,7 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[2]": {
       "activity": "ADV-009",
       "fingerprint": "6c112c980925323835a96163c23ff29ac5dfd9d91681154940af41311108b7f0",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75877,7 +75877,7 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[3]": {
       "activity": "ADV-009",
       "fingerprint": "73a5f2fade1d41d0b9fc0c160607c8c880833b0f2a8e6f850a4e51de78d62928",
-      "reason": "logging, telemetry, and backpressure are post-v1 capabilities",
+      "reason": "logging, telemetry, and backpressure are additional capabilities",
       "requirements": {
         "arguments": [
           "failPoint.client",

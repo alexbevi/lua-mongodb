@@ -27,11 +27,11 @@ RATCHETS = {
 }
 
 OWNER_REASONS = {
-  "ADV-001": "change streams are a post-v1 capability",
-  "ADV-002": "GridFS is a post-v1 capability",
-  "ADV-005": "sharded execution is a post-v1 capability",
-  "ADV-006": "load-balanced execution is a post-v1 capability",
-  "ADV-007": "client bulkWrite is a post-v1 capability",
+  "ADV-001": "change streams are an additional capability",
+  "ADV-002": "GridFS is an additional capability",
+  "ADV-005": "sharded execution is an additional capability",
+  "ADV-006": "load-balanced execution is an additional capability",
+  "ADV-007": "client bulkWrite is an additional capability",
   "LB-003": "load-balanced connection establishment awaits its dedicated slice",
   "CON-010": "complete load-balanced unified execution awaits the v0.10 conformance closure",
   "CBW-001": "client bulk update models await their dedicated slice",
@@ -55,9 +55,9 @@ OWNER_REASONS = {
   "AUTH-011": "the test requires OIDC machine authentication",
   "AUTH-017": "the test requires OIDC speculative authentication",
   "AUTH-018": "the test requires OIDC operation reauthentication",
-  "ADV-009": "logging, telemetry, and backpressure are post-v1 capabilities",
+  "ADV-009": "logging, telemetry, and backpressure are additional capabilities",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
-  "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and pre-v1 server behavior are post-v1 capabilities",
+  "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and below-floor server behavior are additional capabilities",
   "LEG-001": "deprecated count retry behavior awaits the dedicated legacy read slice",
   "LEG-002": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice",
   "LEG-003": "legacy mapReduce command behavior awaits the dedicated collection slice",
@@ -398,12 +398,12 @@ for fixture in (
 ):
   TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[3]"] = (
     "REL-053",
-    "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+    "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
   )
 
 TEST_OVERRIDES["crud/tests/unified/find-comment.json::test[5]"] = (
   "REL-053",
-  "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+  "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
 )
 
 for fixture in (
@@ -425,12 +425,12 @@ for fixture in (
 ):
   TEST_OVERRIDES[f"crud/tests/unified/{fixture}.json::test[2]"] = (
     "REL-053",
-    "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+    "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
   )
 
 TEST_OVERRIDES["crud/tests/unified/aggregate-let.json::test[4]"] = (
   "REL-053",
-  "the fixture targets server behavior before the v1 MongoDB 7.0 compatibility floor",
+  "the fixture targets server behavior below the supported MongoDB 7.0 compatibility floor",
 )
 
 for index in (4, 6):

@@ -382,7 +382,7 @@ class UnifiedCliTests(unittest.TestCase):
       "redacted-commands.json::test"
     )
     runnable = [f"{prefix}[{index}]" for index in (1, 2, 3, 5, 6, 7, 8, 9, 10)]
-    pre_v1 = f"{prefix}[4]"
+    below_floor = f"{prefix}[4]"
 
     self.assertEqual(
       ["runnable"] * len(runnable),
@@ -392,8 +392,8 @@ class UnifiedCliTests(unittest.TestCase):
       ["REL-008"] * len(runnable),
       [manifest["tests"][identity]["activity"] for identity in runnable],
     )
-    self.assertEqual("excluded_scope", manifest["tests"][pre_v1]["status"])
-    self.assertEqual("REL-053", manifest["tests"][pre_v1]["activity"])
+    self.assertEqual("excluded_scope", manifest["tests"][below_floor]["status"])
+    self.assertEqual("REL-053", manifest["tests"][below_floor]["activity"])
     self.assertEqual(2044, manifest["ratchets"]["runnable"])
     self.assertEqual(2044, manifest["ratchets"]["passed"])
 
@@ -2108,7 +2108,7 @@ class UnifiedCliTests(unittest.TestCase):
       "versioned-api/tests/crud-api-version-1-strict.json::test[2]",
       "versioned-api/tests/crud-api-version-1.json::test[2]",
     ]
-    pre_v1 = [
+    below_floor = [
       "crud/tests/unified/db-aggregate-write-readPreference.json::test[2]",
       "crud/tests/unified/db-aggregate-write-readPreference.json::test[4]",
     ]
@@ -2130,7 +2130,7 @@ class UnifiedCliTests(unittest.TestCase):
           manifest["tests"][identity]["activity"],
           manifest["tests"][identity]["status"],
         )
-        for identity in pre_v1
+        for identity in below_floor
       },
     )
 
@@ -2176,7 +2176,7 @@ class UnifiedCliTests(unittest.TestCase):
       [manifest["tests"][identity]["status"] for identity in identities],
     )
 
-  def test_pre_5_0_dot_dollar_cases_are_post_v1_exclusions(self) -> None:
+  def test_pre_5_0_dot_dollar_cases_are_additional_exclusions(self) -> None:
     manifest = update_capabilities.generate()
     identities = [
       "crud/tests/unified/bulkWrite-insertOne-dots_and_dollars.json::test[2]",
@@ -2529,7 +2529,7 @@ class UnifiedCliTests(unittest.TestCase):
       "client-side-operations-timeout/tests/close-cursors.json::test[2]": "REL-025",
       "client-side-operations-timeout/tests/legacy-timeouts.json::test[3]": "REL-026",
     }
-    post_v1 = {
+    additional = {
       "run-command/tests/unified/runCursorCommand.json::test[1]": "ADV-005",
       "run-command/tests/unified/runCursorCommand.json::test[5]": "CON-010",
       "run-command/tests/unified/runCursorCommand.json::test[6]": "CON-010",
@@ -2548,10 +2548,10 @@ class UnifiedCliTests(unittest.TestCase):
     }
 
     self.assertEqual(
-      {**expected, **post_v1},
+      {**expected, **additional},
       {
         identity: manifest["tests"][identity]["activity"]
-        for identity in {**expected, **post_v1}
+        for identity in {**expected, **additional}
       },
     )
     generic_commands = [
