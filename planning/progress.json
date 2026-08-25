@@ -8330,11 +8330,21 @@
       "completed_at": "2026-08-25T03:24:45+00:00"
     },
     "LB-017": {
-      "status": "pending",
-      "evidence": [],
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'; make test-complexity; generated --check validators; git diff --check",
+          "exit_code": 0,
+          "summary": "Validation policy: 40 focused session unit cases, 16 directly coupled load-balancer endpoint cases, 46 conformance and release-scope tests, touched-file lint, complexity, generated artifacts, and diff checks passed; the transaction cursor borrowed the session pin through killCursors and abort alone released it.",
+          "recorded_at": "2026-08-25T03:46:52+00:00"
+        }
+      ],
       "notes": [
         "Requeued: The existing transaction pin boundary already shares ownership with cursors; reclassify this activity as validation instead of manufacturing a production failure."
-      ]
+      ],
+      "started_at": "2026-08-25T03:42:37+00:00",
+      "completed_at": "2026-08-25T03:46:53+00:00"
     }
   },
   "verified_references": {

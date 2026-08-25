@@ -1222,6 +1222,96 @@ describe("client sessions", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("shares a load-balanced transaction pin with its cursor", function()
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        if name == "insert" then
+          assert.is_true(options.pin_connection)
+          assert.is_function(options.on_connection_pinned)
+          options.on_connection_pinned(pin)
+          return bson.document({ { "ok", 1 }, { "n", 1 } })
+        elseif name == "endSessions" then
+          assert.is_nil(options.pinned_connection)
+          return bson.document({ { "ok", 1 } })
+        end
+
+        assert.are.equal(pin, options.pinned_connection)
+        assert.is_nil(options.pin_connection)
+        assert.is_nil(options.on_connection_pinned)
+
+        if name == "find" then
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(41) },
+              { "ns", "db.items" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        end
+
+        assert.is_true(name == "killCursors" or name == "abortTransaction")
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local executor
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      timeout_minutes = 30,
+      transaction_command = function(session, name)
+        return executor:command(
+          "admin",
+          bson.document({ { name, 1 } }),
+          { session = session, transaction_control = true }
+        )
+      end,
+    })
+
+    executor = session_executor.new(underlying, sessions)
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize()),
+      nil,
+      nil,
+      nil,
+      sessions
+    )
+    local collection = client:database("db"):collection("items")
+    local session = assert(client:start_session())
+
+    assert(session:start_transaction())
+    assert(collection:insert_one(
+      bson.document({ { "_id", 1 } }),
+      { session = session }
+    ))
+    local cursor = assert(collection:find(nil, {
+      batch_size = 2,
+      session = session,
+    }))
+
+    assert.is_true(session:is_pinned())
+    assert.are.equal(0, release_count)
+    assert(cursor:close())
+    assert.is_true(session:is_pinned())
+    assert.are.equal(0, release_count)
+    assert(session:abort_transaction())
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+    assert(session:end_session())
+    assert(client:close())
+  end)
+
   it("releases a load-balanced pin after a transient CRUD error", function()
     local command_count = 0
     local release_count = 0

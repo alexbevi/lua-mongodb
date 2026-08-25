@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1026,
+      "deferred_unsupported": 1025,
       "excluded_scope": 98,
-      "passed": 4385,
+      "passed": 4386,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -132,6 +132,16 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual("LB-003", skipped_connection["activity"])
     self.assertEqual("excluded_scope", skipped_connection["status"])
     self.assertIn("skipReason", skipped_connection["reason"])
+
+    transaction_cursor = generated["cases"][
+      "load-balancers/tests/transactions.json::test[16]"
+    ]
+    self.assertEqual("LB-017", transaction_cursor["activity"])
+    self.assertEqual("passed", transaction_cursor["status"])
+    self.assertEqual(
+      "directly-coupled-endpoint",
+      transaction_cursor["required_environment"],
+    )
 
     sharded_command_cursor = generated["cases"][
       "run-command/tests/unified/runCursorCommand.json::test[1]"
