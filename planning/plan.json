@@ -80,7 +80,7 @@
     {"id": "macos-ci-signal", "goal": "Retain focused macOS portability evidence, remove the oversized unified-test bottleneck, and require bounded sharded macOS conformance only for release publication.", "entry_activity": "CI-006", "terminal_activity": "CI-009", "after_activity": "REL-052"},
     {"id": "driver-examples", "goal": "Teach consumers to build complete stock-Lua 5.4 applications with the installed MongoDB rock through deterministic standalone, transaction, and change-stream examples.", "entry_activity": "EXM-001", "terminal_activity": "EXM-007", "after_activity": "REL-054"},
     {"id": "lua-5-5-support", "goal": "Certify the complete packaged driver and its supported runtime dependencies on PUC Lua 5.5 without regressing Lua 5.4.", "entry_activity": "LUA-001", "terminal_activity": "LUA-002", "after_activity": "EXM-007"},
-    {"id": "roadmap-clarity", "goal": "Describe remaining work as additional tasks, exclude will-not-implement specifications from support scoring, and keep the public README current and direct.", "entry_activity": "PLN-003", "terminal_activity": "DOC-001", "after_activity": "REL-059"}
+    {"id": "roadmap-clarity", "goal": "Describe remaining work as additional tasks, exclude will-not-implement specifications from support scoring, and keep the public README current and direct.", "entry_activity": "PLN-003", "terminal_activity": "CON-012", "after_activity": "REL-059"}
   ],
   "activities": [
     {
@@ -1577,6 +1577,11 @@
       "id": "DOC-001", "title": "Refresh the public README", "milestone": "additional", "track": "roadmap-clarity", "depends_on": ["CON-011"], "references": [], "test_policy": "red_green",
       "test_first": "Require the README to describe current load-balanced execution, release metadata, supported public behavior, and development commands without stale scope claims or formulaic copy.", "implementation": "Audit every README section against the v0.10 implementation and project metadata, remove the obsolete load-balancing limitation, correct stale claims, and rewrite headings and prose under the unslop guidance without adding internal design detail.",
       "verification": ["make test-focus with focused README, examples, package, and compatibility projection tests", "Run README compatibility, link, generated-artifact, and diff validators"], "acceptance": ["The README no longer says load-balanced execution is outside scope", "Every retained public claim matches the current driver, release metadata, and supported environments", "Generated compatibility content remains generator-owned and current", "README wording is concise, specific, and free of the unslop skill's listed patterns"], "docs": ["README.md"], "commit": "docs(readme): refresh public guidance"
+    },
+    {
+      "id": "CON-012", "title": "Render neutral compatibility badges without labels", "milestone": "additional", "track": "roadmap-clarity", "depends_on": ["DOC-001"], "references": [], "test_policy": "red_green",
+      "test_first": "Require terminal unsupported compatibility rows to render only the white badge in their status cells while retaining N/A scoring and a labeled legend.", "implementation": "Return only the neutral badge for unsupported-only table rows and regenerate the README compatibility table without changing conformance classifications or percentage calculations.",
+      "verification": ["make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'", "Run README projection, plan, Python syntax, and diff validators"], "acceptance": ["OCSP and SOCKS5 status cells contain only the white badge", "The legend still defines the badge as Will Not Implement", "Both rows remain N/A and excluded from percentage scoring", "Generated compatibility content remains current"], "docs": ["README.md"], "commit": "docs(conformance): render neutral rows as badges"
     }
   ]
 }
