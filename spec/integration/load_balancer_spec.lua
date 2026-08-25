@@ -665,6 +665,54 @@ describe("load-balanced connection establishment", function()
     assert.are_not.equal(transaction_numbers[1], transaction_numbers[2])
   end)
 
+  it("unpins for a non-transaction session operation", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local transaction_lsid
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 1,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local database = client:database()
+      local collection = database:collection("events")
+      local session = assert(client:start_session())
+
+      assert(session:start_transaction())
+      assert(collection:insert_one(
+        bson.document({ { "n", 1 } }),
+        { session = session }
+      ))
+      assert(session:commit_transaction())
+      assert.is_true(session:is_pinned())
+      assert(database:run_command("ping", { session = session }))
+      assert.is_false(session:is_pinned())
+      assert(session:end_session())
+      assert(client:close())
+    end, function(_, request)
+      local name = request.body:keys()[1]
+
+      if name == "insert" then
+        transaction_lsid = assert(bson.encode(request.body:get("lsid")))
+      elseif name == "ping" then
+        assert.are.equal(
+          transaction_lsid,
+          assert(bson.encode(request.body:get("lsid")))
+        )
+        assert.is_nil(request.body:get("txnNumber"))
+        assert.is_nil(request.body:get("autocommit"))
+      elseif name ~= "commitTransaction" and name ~= "endSessions" then
+        error("unexpected command: " .. name)
+      end
+
+      return bson.document({ { "ok", 1 }, { "n", 1 } })
+    end)
+  end)
+
   it("applies ordinary transaction-error pin lifecycles", function()
     local service_id = assert(bson.object_id("000000000000000000000001"))
     local transaction_peer

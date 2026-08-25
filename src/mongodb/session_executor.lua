@@ -40,7 +40,6 @@ end
 
 local function pin_transaction(options, session, in_transaction)
   if not in_transaction then
-    session:unpin_server()
     return
   end
 
@@ -187,6 +186,11 @@ function METHODS:command(database, command, options)
 
   if err then
     return nil, err
+  end
+
+  if session and not in_transaction then
+    session:unpin_server()
+    session:unpin_connection()
   end
 
   local decorated

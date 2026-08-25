@@ -1013,6 +1013,62 @@ describe("client sessions", function()
     assert.are.equal(1, release_counts[2])
   end)
 
+  it("unpins before an ordinary session operation", function()
+    local commands = {}
+    local release_count = 0
+    local executor
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        commands[#commands + 1] = command
+
+        if options.pin_connection then
+          options.on_connection_pinned({
+            release = function()
+              release_count = release_count + 1
+              return true
+            end,
+          })
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function(session, name)
+        return executor:command(
+          "admin",
+          bson.document({ { name, 1 } }),
+          { session = session, transaction_control = true }
+        )
+      end,
+    })
+
+    executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:commit_transaction())
+    assert.is_true(session:is_pinned())
+    assert(executor:command(
+      "db",
+      bson.document({ { "ping", 1 } }),
+      { session = session }
+    ))
+
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+    assert.are.equal(commands[1]:get("lsid"), commands[3]:get("lsid"))
+    assert.is_nil(commands[3]:get("txnNumber"))
+  end)
+
   it("releases a load-balanced pin after a successful abort", function()
     local release_count = 0
     local sessions = new_session_manager({

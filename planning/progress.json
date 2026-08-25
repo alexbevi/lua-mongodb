@@ -8304,6 +8304,30 @@
       "notes": [],
       "started_at": "2026-08-25T03:06:59+00:00",
       "completed_at": "2026-08-25T03:10:09+00:00"
+    },
+    "LB-021": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=ordinary.session spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused ordinary-session operation failed because command decoration dropped the committed transaction pin state without releasing the underlying load-balanced checkout.",
+          "recorded_at": "2026-08-25T03:21:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/retry_executor_spec.lua spec/unit/topology_spec.lua spec/unit/pool_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session_executor.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'; make test-complexity; generated artifact --check validators",
+          "exit_code": 0,
+          "summary": "A non-transaction operation releases the retained load-balanced transaction checkout before decoration and selection, reuses lsid without transaction fields, retains no new pin, and passes focused Lua, conformance, lint, complexity, and generated-artifact checks.",
+          "recorded_at": "2026-08-25T03:21:00+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Reorder already-executed red and green evidence through the planner after recording them out of sequence."
+      ],
+      "started_at": "2026-08-25T03:24:07+00:00",
+      "completed_at": "2026-08-25T03:24:45+00:00"
     }
   },
   "verified_references": {
