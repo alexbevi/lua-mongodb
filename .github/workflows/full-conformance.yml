@@ -49,7 +49,7 @@ jobs:
 
       - name: Install development dependencies
         run: |
-          luarocks install --only-deps mongodb-0.9.0-1.rockspec
+          luarocks install --only-deps mongodb-0.10.0-1.rockspec
           luarocks install busted 2.3.0-1
           luarocks install lua-csnappy 0.1.5-2
           luarocks install lua-zstd 0.2.0-1
@@ -95,7 +95,7 @@ jobs:
           luaRocksVersion: "3.12.2"
 
       - name: Install driver dependencies
-        run: luarocks install --only-deps mongodb-0.9.0-1.rockspec
+        run: luarocks install --only-deps mongodb-0.10.0-1.rockspec
 
       - name: Install MongoDB test tools on Linux
         run: |
@@ -149,7 +149,7 @@ jobs:
           luaRocksVersion: "3.12.2"
 
       - name: Install driver dependencies
-        run: luarocks install --only-deps mongodb-0.9.0-1.rockspec
+        run: luarocks install --only-deps mongodb-0.10.0-1.rockspec
 
       - name: Install pre-8.2 MongoDB test tools
         run: |
@@ -311,7 +311,7 @@ jobs:
 
       - name: Install focused test dependencies
         run: |
-          luarocks install --only-deps mongodb-0.9.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
+          luarocks install --only-deps mongodb-0.10.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
           luarocks install busted 2.3.0-1
           luarocks install lua-csnappy 0.1.5-2
           luarocks install lua-zstd 0.2.0-1 ZSTD_DIR="$ZSTD_DIR"
@@ -395,7 +395,7 @@ jobs:
 
       - name: Install driver dependencies
         run: >-
-          luarocks install --only-deps mongodb-0.9.0-1.rockspec
+          luarocks install --only-deps mongodb-0.10.0-1.rockspec
           OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
 
       - name: Install MongoDB test tools on macOS
@@ -460,7 +460,7 @@ jobs:
 
       - name: Install driver dependencies
         run: >-
-          luarocks install --only-deps mongodb-0.9.0-1.rockspec
+          luarocks install --only-deps mongodb-0.10.0-1.rockspec
           OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
 
       - name: Install pre-8.2 MongoDB test tools on macOS
@@ -609,7 +609,7 @@ jobs:
           luaRocksVersion: "3.12.2"
 
       - name: Install driver dependencies
-        run: luarocks install --only-deps mongodb-0.9.0-1.rockspec
+        run: luarocks install --only-deps mongodb-0.10.0-1.rockspec
 
       - name: Run pinned live compatibility row
         run: >-

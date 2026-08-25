@@ -1,19 +1,19 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.9.0-1"
+version = "0.10.0-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.9.0",
+  tag = "v0.10.0",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.9.0 adds configurable GridFS buckets with streaming
-    uploads and downloads, file discovery, deletion, renaming, and bucket drop.
+    libmongoc. Version 0.10.0 adds load-balanced topology, service-aware
+    pooling, and cursor, transaction, and session connection pinning.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",

@@ -2,6 +2,27 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.0] - 2026-08-25
+
+Load balancing release.
+
+### Added
+
+- Added static load-balanced topology and server selection with single-endpoint validation, service-aware connection pools, and per-service pool generations.
+- Added load-balanced command-cursor pinning, including network-error cleanup, server-error retention, explicit kill cleanup, and checkout-purpose monitoring.
+- Added transaction and session connection ownership, including ordinary-error retention, transient-error unpinning, commit retry on a fresh connection, abort cleanup, repinning, and shared cursor ownership.
+
+### Conformance
+
+- Closed 39 of 40 dedicated load-balancer cases; the remaining upstream case retains its normative skip reason.
+- Added exact passing evidence for all 738 runnable unified identities whose `runOnRequirements` include load-balanced topology.
+- Classified OCSP and SOCKS5 as intentionally unsupported capabilities.
+
+### Release engineering
+
+- Added the generated v0.10 load-balancing projection to Full Conformance on Linux and requested macOS runs.
+- Added the exact-commit v0.10 LuaRocks release checklist and publication guards.
+
 ## [0.9.0] - 2026-08-24
 
 GridFS release.

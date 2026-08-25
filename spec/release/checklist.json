@@ -90,7 +90,8 @@
       "LB-017",
       "LB-018",
       "TLS-002",
-      "ADV-012"
+      "ADV-012",
+      "CON-010"
     ],
     "completed_v0_4_gates": [
       "ADV-005",
@@ -278,10 +279,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.9.0-1.rockspec",
-    "rockspec_version": "0.9.0-1",
-    "version": "0.9.0"
+    "rockspec": "mongodb-0.10.0-1.rockspec",
+    "rockspec_version": "0.10.0-1",
+    "version": "0.10.0"
   },
   "schema_version": 1,
-  "type": "gridfs-release-checklist"
+  "type": "load-balancing-release-checklist"
 }

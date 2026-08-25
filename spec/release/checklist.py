@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report GridFS v0.9 release readiness."""
+"""Validate and report load balancing v0.10 release readiness."""
 
 from __future__ import annotations
 
@@ -28,8 +28,8 @@ PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.9.0-1.rockspec"
-RELEASE_VERSION = "0.9.0"
+ROCKSPEC = ROOT / "mongodb-0.10.0-1.rockspec"
+RELEASE_VERSION = "0.10.0"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
@@ -163,13 +163,17 @@ V10_CORE_GATES = [
   "LB-018",
 ]
 V10_TERMINAL_GATES = ["TLS-002", "ADV-012"]
-V10_GATES = [*V10_CORE_GATES, *V10_TERMINAL_GATES]
 V10_CONFORMANCE_ACTIVITY = "CON-010"
+V10_GATES = [
+  *V10_CORE_GATES,
+  *V10_TERMINAL_GATES,
+  V10_CONFORMANCE_ACTIVITY,
+]
 V10_RELEASE_ACTIVITY = "REL-059"
 
 
 class ChecklistError(ValueError):
-  """Raised when the GridFS release is not ready."""
+  """Raised when the load balancing release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -227,11 +231,11 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-24",
+    f"## [{RELEASE_VERSION}] - 2026-08-25",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: GridFS v0.9 release-ready.",
+    "Status: load balancing v0.10 release-ready.",
   )
 
   return {
@@ -631,7 +635,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "gridfs-release-checklist",
+    "type": "load-balancing-release-checklist",
   }
 
 

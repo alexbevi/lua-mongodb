@@ -8389,6 +8389,28 @@
       "notes": [],
       "started_at": "2026-08-25T04:08:52+00:00",
       "completed_at": "2026-08-25T04:39:27+00:00"
+    },
+    "REL-059": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "The defining release checklist test failed because the generated contract still reported gridfs-release-checklist instead of load-balancing-release-checklist for v0.10.0.",
+          "recorded_at": "2026-08-25T04:53:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='<version and handshake tests>' FOCUS_INTEGRATION='spec/integration/client_api_spec.lua' FOCUS_PYTHON='<release, package, and workflow contracts>' FOCUS_LINT='<six touched Lua files>'; build source rock from exact temporary release tree; run rockspec, checklist, scope, conformance, README, Python, actionlint, and diff validators",
+          "exit_code": 0,
+          "summary": "20 unit, 6 integration, and 29 Python release/package/workflow cases passed; touched Lua lint reported 0 warnings/errors; the 0.10.0 source rock built from the exact temporary release tree; rockspec, release checklist, release scope, conformance ledger, v0.10 scope, README projection, Python compilation, workflow lint, and diff validators passed.",
+          "recorded_at": "2026-08-25T05:01:55+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T04:53:16+00:00",
+      "completed_at": "2026-08-25T05:03:31+00:00"
     }
   },
   "verified_references": {

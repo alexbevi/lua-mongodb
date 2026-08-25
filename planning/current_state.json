@@ -17,15 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 309,
+    "completed": 310,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 7
+    "pending": 6
   },
   "active": [],
   "ready": [
     "CSOT-001",
-    "REL-059",
     "AUTH-019",
     "ADV-009",
     "ADV-010",
@@ -39,9 +38,7 @@
     "v0-5-v0-7-api": [],
     "v0-8-wire-compression": [],
     "v0-9-gridfs": [],
-    "v0-10-load-balancing": [
-      "REL-059"
-    ],
+    "v0-10-load-balancing": [],
     "macos-ci-signal": [],
     "driver-examples": [],
     "lua-5-5-support": []

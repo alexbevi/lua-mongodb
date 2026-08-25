@@ -54,9 +54,9 @@ jobs:
       - name: Install development dependencies
         run: |
           if test -n "${OPENSSL_DIR:-}"; then
-            luarocks install --only-deps mongodb-0.9.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
+            luarocks install --only-deps mongodb-0.10.0-1.rockspec OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"
           else
-            luarocks install --only-deps mongodb-0.9.0-1.rockspec
+            luarocks install --only-deps mongodb-0.10.0-1.rockspec
           fi
           luarocks install busted 2.3.0-1
           luarocks install lua-csnappy 0.1.5-2
@@ -107,7 +107,7 @@ jobs:
           luaRocksVersion: "3.13.0"
 
       - name: Install driver dependencies
-        run: luarocks install --only-deps mongodb-0.9.0-1.rockspec
+        run: luarocks install --only-deps mongodb-0.10.0-1.rockspec
 
       - name: Run live compatibility boundary row
         run: make test-compatibility-live COMPATIBILITY_ENTRY=${{ matrix.entry }}
