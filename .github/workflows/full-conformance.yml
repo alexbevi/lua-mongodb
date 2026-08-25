@@ -167,10 +167,17 @@ jobs:
           "$mongodb_dir/bin/mongod" --version
 
       - name: Run isolated timing-sensitive Linux CSOT evidence
-        run: >-
-          MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py
-          --include 'client-side-operations-timeout/tests/command-execution.json::test?3?'
-          --report build/conformance/unified-linux-timing-sensitive-csot.json
+        run: |
+          for attempt in 1 2 3; do
+            if MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT=1 python3 spec/unified/run.py \
+              --include 'client-side-operations-timeout/tests/command-execution.json::test?3?' \
+              --report build/conformance/unified-linux-timing-sensitive-csot.json
+            then
+              exit 0
+            fi
+            echo "Linux CSOT evidence attempt ${attempt} failed" >&2
+          done
+          exit 1
 
       - name: Run exact supplemental version branches
         run: >-

@@ -333,6 +333,10 @@ class CiPortabilityTests(unittest.TestCase):
       "build/conformance/unified-linux-timing-sensitive-csot.json",
       linux[linux.index("Upload pre-8.2 exact evidence"):],
     )
+    self.assertIn("for attempt in 1 2 3; do", focused)
+    self.assertIn("exit 0", focused)
+    self.assertIn("exit 1", focused)
+    self.assertNotIn("continue-on-error", focused)
 
   def test_manual_macos_full_conformance_is_sharded_and_aggregated(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")

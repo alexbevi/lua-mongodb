@@ -8395,30 +8395,24 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "Full Conformance run 32819772128: make check-fast test-coverage",
+          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_ci_portability.CiPortabilityTests.test_linux_runs_short_circuit_csot_as_focused_exact_evidence",
           "exit_code": 2,
-          "summary": "665 coverage tests passed, then coverage gate rejected src/mongodb/admin.lua at 815/907 versus 805/893 and src/mongodb/api.lua at 652/728 versus 649/723.",
-          "recorded_at": "2026-08-25T07:47:38+00:00"
-        },
-        {
-          "phase": "red",
-          "command": "make test-coverage with Lua 5.4 after malformed cursor pin-release tests",
-          "exit_code": 2,
-          "summary": "667 tests passed and admin.lua cleared its ratchet; api.lua improved to 653/728 but remained below the 649/723 baseline ratio, proving one coupled implicit-session cleanup line still needed coverage.",
-          "recorded_at": "2026-08-25T08:10:02+00:00"
+          "summary": "The focused workflow contract failed because the exact Linux CSOT evidence step had no bounded three-attempt loop or explicit success/failure exits; Full Conformance 32826058914 had failed that identity on both attempts.",
+          "recorded_at": "2026-08-25T09:26:05+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus for admin/api regression tests and touched lint; Lua 5.4 make test-coverage plus focused LuaCov merge; coverage gate and focused release validators",
+          "command": "exact Linux CSOT local execution; make test-focus for CI portability, release publication, checklist, and v0.10 scope; actionlint v1.7.7; generated release validators",
           "exit_code": 0,
-          "summary": "25 focused Lua tests and touched-file lint passed; 667 full coverage tests plus the corrected focused cursor test produced 24476/26921 lines (90.92%) with no regressions; 42 focused release/coverage/workflow Python tests and release, v0.10, README, JSON, and diff validators passed.",
-          "recorded_at": "2026-08-25T08:12:45+00:00"
+          "summary": "The Linux-authoritative identity passed locally in 996 ms with no skips or failures; the bounded three-attempt contract and 35 coupled Python tests passed; actionlint v1.7.7 and diff validation passed. The workflow still fails after three exact failed reports and never uses continue-on-error.",
+          "recorded_at": "2026-08-25T09:27:17+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance exposed incomplete v0.10 aggregate evidence and unauthenticated handshake executor mappings",
         "Requeued: Repeated macOS Full Conformance proved the 75 ms GridFS CSOT monitoring case is scheduler-sensitive while Linux remains authoritative",
-        "Requeued: Full Conformance run 32819772128 found release coverage regressions in src/mongodb/admin.lua and src/mongodb/api.lua after all 665 coverage tests passed."
+        "Requeued: Full Conformance run 32819772128 found release coverage regressions in src/mongodb/admin.lua and src/mongodb/api.lua after all 665 coverage tests passed.",
+        "Requeued: Full Conformance run 32826058914 failed the exact Linux CSOT command-execution test[3] on both attempts while the same identity passed locally in 996 ms; add a bounded exact-case retry without skipping Linux-authoritative evidence."
       ],
       "reopen_history": [
         {
@@ -8484,11 +8478,37 @@
               "recorded_at": "2026-08-25T06:55:39+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-25T08:12:53+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "Full Conformance run 32819772128: make check-fast test-coverage",
+              "exit_code": 2,
+              "summary": "665 coverage tests passed, then coverage gate rejected src/mongodb/admin.lua at 815/907 versus 805/893 and src/mongodb/api.lua at 652/728 versus 649/723.",
+              "recorded_at": "2026-08-25T07:47:38+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-coverage with Lua 5.4 after malformed cursor pin-release tests",
+              "exit_code": 2,
+              "summary": "667 tests passed and admin.lua cleared its ratchet; api.lua improved to 653/728 but remained below the 649/723 baseline ratio, proving one coupled implicit-session cleanup line still needed coverage.",
+              "recorded_at": "2026-08-25T08:10:02+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus for admin/api regression tests and touched lint; Lua 5.4 make test-coverage plus focused LuaCov merge; coverage gate and focused release validators",
+              "exit_code": 0,
+              "summary": "25 focused Lua tests and touched-file lint passed; 667 full coverage tests plus the corrected focused cursor test produced 24476/26921 lines (90.92%) with no regressions; 42 focused release/coverage/workflow Python tests and release, v0.10, README, JSON, and diff validators passed.",
+              "recorded_at": "2026-08-25T08:12:45+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "89eda83f4784d108ab22a47e524abc6fee3c70fc",
-      "started_at": "2026-08-25T07:47:10+00:00",
-      "completed_at": "2026-08-25T08:12:53+00:00"
+      "reopened_after_commit": "d29e9c76315e710566e415c148e670a5c2b04711",
+      "started_at": "2026-08-25T09:25:41+00:00",
+      "completed_at": "2026-08-25T09:27:35+00:00"
     }
   },
   "verified_references": {
