@@ -8395,22 +8395,30 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='<macOS CSOT runner, v0.9 scope, and Full Conformance workflow contracts>'",
+          "command": "Full Conformance run 32819772128: make check-fast test-coverage",
           "exit_code": 2,
-          "summary": "The three focused contracts failed because the exact GridFS 75 ms identity was not in the macOS timing set, v0.9 had no narrow skip validator, and the macOS aggregate invoked only the v0.5/v0.6 skip policies.",
-          "recorded_at": "2026-08-25T06:51:24+00:00"
+          "summary": "665 coverage tests passed, then coverage gate rejected src/mongodb/admin.lua at 815/907 versus 805/893 and src/mongodb/api.lua at 652/728 versus 649/723.",
+          "recorded_at": "2026-08-25T07:47:38+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-coverage with Lua 5.4 after malformed cursor pin-release tests",
+          "exit_code": 2,
+          "summary": "667 tests passed and admin.lua cleared its ratchet; api.lua improved to 653/728 but remained below the 649/723 baseline ratio, proving one coupled implicit-session cleanup line still needed coverage.",
+          "recorded_at": "2026-08-25T08:10:02+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='<unified CLI, v0.9 scope, CI portability, and release checklist>'; run capability, ledger, v0.9, v0.10, release, README, strict-plan, Python, actionlint, and diff validators",
+          "command": "make test-focus for admin/api regression tests and touched lint; Lua 5.4 make test-coverage plus focused LuaCov merge; coverage gate and focused release validators",
           "exit_code": 0,
-          "summary": "All 155 focused Python contracts passed; the runner permits only the exact GridFS identity on macOS CI, v0.9 requires 97 macOS passes plus that explicit skip, and every generated, release, strict-plan, Python, workflow, and diff validator passed.",
-          "recorded_at": "2026-08-25T06:55:39+00:00"
+          "summary": "25 focused Lua tests and touched-file lint passed; 667 full coverage tests plus the corrected focused cursor test produced 24476/26921 lines (90.92%) with no regressions; 42 focused release/coverage/workflow Python tests and release, v0.10, README, JSON, and diff validators passed.",
+          "recorded_at": "2026-08-25T08:12:45+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance exposed incomplete v0.10 aggregate evidence and unauthenticated handshake executor mappings",
-        "Requeued: Repeated macOS Full Conformance proved the 75 ms GridFS CSOT monitoring case is scheduler-sensitive while Linux remains authoritative"
+        "Requeued: Repeated macOS Full Conformance proved the 75 ms GridFS CSOT monitoring case is scheduler-sensitive while Linux remains authoritative",
+        "Requeued: Full Conformance run 32819772128 found release coverage regressions in src/mongodb/admin.lua and src/mongodb/api.lua after all 665 coverage tests passed."
       ],
       "reopen_history": [
         {
@@ -8457,11 +8465,30 @@
               "recorded_at": "2026-08-25T06:01:37+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-25T06:55:40+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='<macOS CSOT runner, v0.9 scope, and Full Conformance workflow contracts>'",
+              "exit_code": 2,
+              "summary": "The three focused contracts failed because the exact GridFS 75 ms identity was not in the macOS timing set, v0.9 had no narrow skip validator, and the macOS aggregate invoked only the v0.5/v0.6 skip policies.",
+              "recorded_at": "2026-08-25T06:51:24+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='<unified CLI, v0.9 scope, CI portability, and release checklist>'; run capability, ledger, v0.9, v0.10, release, README, strict-plan, Python, actionlint, and diff validators",
+              "exit_code": 0,
+              "summary": "All 155 focused Python contracts passed; the runner permits only the exact GridFS identity on macOS CI, v0.9 requires 97 macOS passes plus that explicit skip, and every generated, release, strict-plan, Python, workflow, and diff validator passed.",
+              "recorded_at": "2026-08-25T06:55:39+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "289f2362dab98e2d02b81ed1f7ec5cd08026be9f",
-      "started_at": "2026-08-25T06:49:57+00:00",
-      "completed_at": "2026-08-25T06:55:40+00:00"
+      "reopened_after_commit": "89eda83f4784d108ab22a47e524abc6fee3c70fc",
+      "started_at": "2026-08-25T07:47:10+00:00",
+      "completed_at": "2026-08-25T08:12:53+00:00"
     }
   },
   "verified_references": {

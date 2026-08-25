@@ -223,6 +223,45 @@ describe("core MongoDB handles", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("releases a pinned generic command connection for a malformed cursor", function()
+    local release_count = 0
+    local released_sessions = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        assert.is_true(options.pin_connection)
+        options.on_connection_pinned(pin)
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(0) },
+            { "ns", "other.items" },
+            { "firstBatch", bson.array({}) },
+          }) },
+        })
+      end,
+      release_session_context = function(_, context)
+        assert.is_table(context)
+        released_sessions = released_sessions + 1
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor, err = client:database("db"):run_cursor_command(
+      bson.document({ { "find", "items" } })
+    )
+
+    assert.is_nil(cursor)
+    assert.is_true(errors.is(err, errors.CATEGORY.PROTOCOL))
+    assert.are.equal(1, release_count)
+    assert.are.equal(1, released_sessions)
+  end)
+
   it("closes a generic command cursor on its pinned connection", function()
     local release_count = 0
     local pin = {

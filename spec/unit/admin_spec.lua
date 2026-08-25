@@ -227,6 +227,32 @@ describe("database and collection management", function()
     assert.are.equal(2, release_count)
   end)
 
+  it("releases a pinned administration connection for a malformed cursor", function()
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function()
+        return true
+      end,
+      command = function(_, _, _, options)
+        assert.is_true(options.pin_connection)
+        options.on_connection_pinned(pin)
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local database = api.new_client(executor, config()):database("app")
+    local cursor, err = database:list_collections()
+
+    assert.is_nil(cursor)
+    assert.is_true(errors.is(err, errors.CATEGORY.PROTOCOL))
+    assert.are.equal(1, release_count)
+  end)
+
   it("forces database and collection enumeration onto primary selection", function()
     local executions = {}
     local executor = {
