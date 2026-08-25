@@ -12,6 +12,19 @@ describe("runtime interface", function()
     end, "runtime capability clock.now must be a function")
   end)
 
+  it("simulates process identity changes behind the runtime boundary", function()
+    local fake = fake_runtime.new({ process_identity = 100 })
+
+    assert.are.equal(100, fake.process:identity())
+
+    fake:set_process_identity(101)
+
+    assert.are.equal(101, fake.process:identity())
+    assert.has_error(function()
+      fake:set_process_identity(0)
+    end, "process identity must be a positive integer")
+  end)
+
   it("provides isolated dynamic environment access", function()
     local fake = fake_runtime.new({
       environment = { AWS_ACCESS_KEY_ID = "first" },

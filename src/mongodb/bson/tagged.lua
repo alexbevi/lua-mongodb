@@ -124,8 +124,45 @@ local GENERATOR_METATABLE = {
   __metatable = "mongodb.bson.object_id_generator",
 }
 
+local function process_identity(runtime, level)
+  local identity = runtime.process:identity()
+
+  if math.type(identity) ~= "integer" or identity <= 0 then
+    error("runtime process identity must be a positive integer", level or 3)
+  end
+
+  return identity
+end
+
+local function entropy_bytes(runtime, count, level)
+  local entropy, err = runtime.entropy:bytes(count)
+
+  if not entropy then
+    return nil, err
+  end
+
+  if type(entropy) ~= "string" or #entropy ~= count then
+    error("runtime entropy must return exactly the requested byte count", level or 3)
+  end
+
+  return entropy
+end
+
 function GENERATOR_METHODS:new()
   local state = GENERATOR_STATES[self]
+  local identity = process_identity(state.runtime, 2)
+
+  if identity ~= state.process_identity then
+    local random, err = entropy_bytes(state.runtime, 5, 2)
+
+    if not random then
+      return nil, err
+    end
+
+    state.process_identity = identity
+    state.random = random
+  end
+
   local seconds = math.floor(state.runtime.clock:wall_time())
 
   require_integer("ObjectId Unix time", seconds, 0, UINT32_MAX, 2)
@@ -141,20 +178,18 @@ end
 function M.object_id_generator(runtime)
   runtime_contract.validate(runtime)
 
-  local entropy, err = runtime.entropy:bytes(8)
+  local identity = process_identity(runtime, 2)
+  local entropy, err = entropy_bytes(runtime, 8, 2)
 
   if not entropy then
     return nil, err
-  end
-
-  if type(entropy) ~= "string" or #entropy ~= 8 then
-    error("runtime entropy must return exactly the requested byte count", 2)
   end
 
   local generator = {}
 
   GENERATOR_STATES[generator] = {
     counter = string.unpack(">I4", "\0" .. entropy:sub(6, 8)),
+    process_identity = identity,
     random = entropy:sub(1, 5),
     runtime = runtime,
   }

@@ -238,6 +238,11 @@ function FAKE_METHODS:queue_entropy(bytes)
   self._entropy = self._entropy .. bytes
 end
 
+function FAKE_METHODS:set_process_identity(identity)
+  require_positive_integer("process identity", identity, 2)
+  self._process_identity = identity
+end
+
 function FAKE_METHODS:queue_crypto(operation, result)
   local queue = self._crypto_queue[operation]
 
@@ -513,6 +518,14 @@ local function new_environment_capability(owner)
   }
 end
 
+local function new_process_capability(owner)
+  return {
+    identity = function()
+      return owner._process_identity
+    end,
+  }
+end
+
 local function fake_file_error()
   return errors.new({
     category = errors.CATEGORY.NETWORK,
@@ -729,6 +742,7 @@ function M.new(options)
 
   require_nonnegative_number("now", options.now or 0, 2)
   require_nonnegative_number("wall_time", options.wall_time or 0, 2)
+  require_positive_integer("process identity", options.process_identity or 1, 2)
 
   if options.entropy ~= nil and type(options.entropy) ~= "string" then
     error("entropy must be a string", 2)
@@ -785,6 +799,7 @@ function M.new(options)
     _http_head = 1,
     _http_queue = {},
     _now = options.now or 0,
+    _process_identity = options.process_identity or 1,
     _wall_time = options.wall_time or 0,
     _task_head = 1,
     _task_queue = {},
@@ -809,6 +824,7 @@ function M.new(options)
   fake.cancellation = { new = cancellation_factory.new }
   fake.task = new_task_capability(fake)
   fake.lock = new_lock_capability(fake)
+  fake.process = new_process_capability(fake)
   fake.environment = new_environment_capability(fake)
   fake.file = new_file_capability(fake)
   fake.http = new_http_capability(fake)

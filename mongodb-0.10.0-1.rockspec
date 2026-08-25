@@ -22,6 +22,7 @@ description = {
 dependencies = {
   "lua >= 5.4, < 5.6",
   "copas >= 4.11, < 4.12",
+  "getpid == 0.1.0-1",
   "lua-cryptorandom >= 0.0.6, < 0.1",
   "lua-zlib >= 1.4, < 1.5",
   "luasocket >= 3.1, < 4",

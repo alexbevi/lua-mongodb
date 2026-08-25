@@ -11,6 +11,7 @@ local REQUIRED_CAPABILITIES = {
   "task.await",
   "task.cancel",
   "lock.new",
+  "process.identity",
   "environment.get",
   "file.read",
   "http.request",

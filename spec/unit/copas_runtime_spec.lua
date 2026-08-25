@@ -25,6 +25,7 @@ describe("Copas runtime adapter", function()
 
     assert.are.equal(adapter, runtime.validate(adapter))
     assert.is_function(adapter.socket.connect)
+    assert.is_true(adapter.process:identity() > 0)
     assert.is_table(adapter.metadata.environment)
     assert.is_boolean(adapter.metadata.files["/.dockerenv"])
 
@@ -32,6 +33,21 @@ describe("Copas runtime adapter", function()
     local injected = runtime.copas({ metadata = facts })
 
     assert.are.equal(facts, injected.metadata)
+  end)
+
+  it("reads process identity dynamically through an injected provider", function()
+    local identity = 100
+    local adapter = runtime.copas({
+      getpid = function()
+        return identity
+      end,
+    })
+
+    assert.are.equal(100, adapter.process:identity())
+
+    identity = 101
+
+    assert.are.equal(101, adapter.process:identity())
   end)
 
   it("reads environment values dynamically through an injected provider", function()

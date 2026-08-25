@@ -13,6 +13,7 @@ local ALLOWED_OPTIONS = {
   dns_query_timeout = true,
   entropy = true,
   file = true,
+  getpid = true,
   getenv = true,
   gettime = true,
   http = true,
@@ -271,6 +272,20 @@ local function require_copas(provided)
   return copas
 end
 
+local function new_process_capability(getpid)
+  return {
+    identity = function()
+      local identity = getpid()
+
+      if math.type(identity) ~= "integer" or identity <= 0 then
+        error("getpid capability must return a positive integer", 2)
+      end
+
+      return identity
+    end,
+  }
+end
+
 local function new_clock(adapter, copas, raw_gettime, raw_wall_time)
   local last_now
   local clock = {}
@@ -448,6 +463,7 @@ function M.new(options)
 
   local raw_gettime = options.gettime or copas.gettime
   local raw_getenv = options.getenv or os.getenv
+  local raw_getpid = options.getpid or require("getpid")
   local raw_wall_time = options.wall_time or os.time
 
   if type(raw_gettime) ~= "function" then
@@ -458,6 +474,9 @@ function M.new(options)
     error("getenv capability must be a function", 2)
   end
 
+  if type(raw_getpid) ~= "function" then
+    error("getpid capability must be a function", 2)
+  end
 
   if type(raw_wall_time) ~= "function" then
     error("wall_time capability must be a function", 2)
@@ -482,6 +501,7 @@ function M.new(options)
   adapter.cancellation = { new = cancellation.new }
   adapter.task = new_task_capability(copas.future, copas)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)
+  adapter.process = new_process_capability(raw_getpid)
   adapter.environment = new_environment_capability(raw_getenv)
   adapter.dns = options.dns or require("mongodb.runtime.copas_dns").new(adapter, {
     copas = copas,

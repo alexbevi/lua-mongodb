@@ -152,6 +152,7 @@ class PackageTests(unittest.TestCase):
     self.assertIn('"lua-zstd == 0.2.0-1"', rockspec)
 
     for dependency in (
+      '"getpid == 0.1.0-1"',
       '"lua-cryptorandom >= 0.0.6, < 0.1"',
       '"lua-zlib >= 1.4, < 1.5"',
       '"md5 >= 1.3, < 1.4"',

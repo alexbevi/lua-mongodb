@@ -8674,6 +8674,42 @@
       "notes": [],
       "started_at": "2026-08-25T18:45:23+00:00",
       "completed_at": "2026-08-25T18:53:40+00:00"
+    },
+    "BSON-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+          "exit_code": 2,
+          "summary": "The simulated child identity retained the parent's five ObjectId process bytes instead of consuming fresh runtime entropy; six adjacent tagged-value cases passed.",
+          "recorded_at": "2026-08-25T19:07:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_LINT='<seven touched Lua files>' under Lua 5.4",
+          "exit_code": 0,
+          "summary": "33 focused ObjectId/runtime tests passed and the seven touched Lua files produced no lint warnings or errors.",
+          "recorded_at": "2026-08-25T19:13:50+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' under Lua 5.5.1",
+          "exit_code": 0,
+          "summary": "The same 33 focused ObjectId/runtime tests passed under Lua 5.5.1 with the pinned getpid provider built for that runtime.",
+          "recorded_at": "2026-08-25T19:13:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-architecture; make test-complexity; make rockspec; make test-package; dependency and diff validators",
+          "exit_code": 0,
+          "summary": "Architecture and complexity gates passed; rockspec lint passed; all three isolated source-rock/package tests passed with getpid 0.1.0 installed from declared dependencies.",
+          "recorded_at": "2026-08-25T19:14:01+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T19:03:54+00:00",
+      "completed_at": "2026-08-25T19:14:11+00:00"
     }
   },
   "verified_references": {

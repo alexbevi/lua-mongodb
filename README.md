@@ -10,7 +10,7 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 - [Copas](https://lunarmodules.github.io/copas/) 4.11.x.
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
-- `sha1` 0.5, `md5` 1.3, `lua-cryptorandom` 0.0.6, and `lua-zlib` 1.4 or compatible releases.
+- `getpid` 0.1.0, `sha1` 0.5, `md5` 1.3, `lua-cryptorandom` 0.0.6, and `lua-zlib` 1.4 or compatible releases.
 - Optional Snappy and Zstandard wire compression use `lua-csnappy` 0.1.5 and `lua-zstd` 0.2 or compatible releases; `lua-zstd` also requires the Zstandard library and development headers.
 - OpenSSL libraries and development headers required by the TLS dependency and by `lua-cryptorandom` on supported Unix-like platforms.
 

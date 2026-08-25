@@ -25,6 +25,27 @@ describe("BSON tagged values", function()
     assert.are.equal(first, bson.object_id(tostring(first)))
   end)
 
+  it("refreshes ObjectId process entropy when runtime identity changes", function()
+    local runtime = fake_runtime.new({
+      wall_time = 0x01020304,
+      process_identity = 100,
+      entropy = "\16\17\18\19\20\21\22\23\32\33\34\35\36",
+    })
+    local generator = assert(bson.object_id_generator(runtime))
+    local parent = assert(generator:new())
+
+    runtime:set_process_identity(101)
+
+    local child = assert(generator:new())
+
+    assert.are.equal("010203041011121314151617", tostring(parent))
+    assert.are.equal("010203042021222324151618", tostring(child))
+    assert.are_not.equal(
+      tostring(parent):sub(9, 18),
+      tostring(child):sub(9, 18)
+    )
+  end)
+
   it("encodes every normative unsigned ObjectId timestamp boundary", function()
     local boundaries = {
       { 0x00000000, "00000000" },
