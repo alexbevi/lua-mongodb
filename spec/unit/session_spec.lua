@@ -844,6 +844,107 @@ describe("client sessions", function()
     end
   end)
 
+  it("retries a load-balanced commit on a fresh connection pin", function()
+    local command_count = 0
+    local pins = {}
+    local release_counts = {}
+    local executor
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        command_count = command_count + 1
+
+        if options.pin_connection then
+          local index = #pins + 1
+          local pin = {
+            release = function()
+              release_counts[index] = release_counts[index] + 1
+              return true
+            end,
+          }
+
+          pins[index] = pin
+          release_counts[index] = 0
+          options.on_connection_pinned(pin)
+        end
+
+        if command_count == 2 then
+          return nil, errors.new({
+            category = errors.CATEGORY.NETWORK,
+            message = "commit connection closed",
+          })
+        end
+
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function(session, name)
+        return executor:command(
+          "admin",
+          bson.document({ { name, 1 } }),
+          { session = session, transaction_control = true }
+        )
+      end,
+    })
+
+    executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:commit_transaction())
+
+    assert.are.equal(3, command_count)
+    assert.are.equal(2, #pins)
+    assert.are_not.equal(pins[1], pins[2])
+    assert.are.equal(1, release_counts[1])
+    assert.are.equal(0, release_counts[2])
+    assert.are.equal(pins[2], session:get_pinned_connection())
+  end)
+
+  it("releases a load-balanced pin after a transient commit error", function()
+    local release_count = 0
+    local transient_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 24,
+      labels = { "TransientTransactionError" },
+      message = "transaction lock request timed out",
+    })
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function()
+        return nil, transient_error
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:pin_connection({
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }))
+    local response, err = session:commit_transaction()
+
+    assert.is_nil(response)
+    assert.are.equal(transient_error, err)
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+  end)
+
   it("releases a load-balanced pin after an ordinary abort error", function()
     local release_count = 0
     local sessions = new_session_manager({

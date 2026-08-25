@@ -498,6 +498,7 @@ local function finish_transaction(session, name, options)
 
   if err and retryable_transaction_command(name, err) then
     session:unpin_server()
+    session:unpin_connection()
     response, err = manager.transaction_command(
       session,
       name,
@@ -539,6 +540,7 @@ function SESSION_METHODS:commit_transaction(options)
       or err:has_label("UnknownTransactionCommitResult"))
   then
     self:unpin_server()
+    self:unpin_connection()
   end
 
   return response, err

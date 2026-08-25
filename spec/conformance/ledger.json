@@ -44783,13 +44783,13 @@
       "activity": "LB-014",
       "fingerprint": "47783d31b56ee3f87e06534ebf5a7fc6524a6ea5edbf3fde61c3196bcaaa6489",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "pending:LB-014",
-      "scope": "post-v1",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+      "required_environment": "directly-coupled-endpoint",
+      "runner": "spec/unit/session_spec.lua",
+      "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "load-balancers"
     },
     "load-balancers/tests/transactions.json::test[11]": {
@@ -44991,13 +44991,13 @@
       "activity": "LB-014",
       "fingerprint": "e2c389e42fc1681f5b9b5e568c71973d79cde2aa0ea48f9ec4e1fd9fc4fed581",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "pending:LB-014",
-      "scope": "post-v1",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+      "required_environment": "directly-coupled-endpoint",
+      "runner": "spec/unit/session_spec.lua",
+      "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "load-balancers"
     },
     "load-balancers/tests/wait-queue-timeouts.json::test[1]": {
@@ -86764,9 +86764,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 1033,
+      "deferred_unsupported": 1031,
       "excluded_scope": 98,
-      "passed": 4378,
+      "passed": 4380,
       "unsupported": 15
     },
     "suites": {

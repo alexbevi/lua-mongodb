@@ -734,6 +734,62 @@ describe("load-balanced connection establishment", function()
     end)
   end)
 
+  it("retries commit on a fresh load-balanced connection", function()
+    local commit_count = 0
+    local failed_peer
+    local retry_peer
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 1,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local database = client:database()
+      local collection = database:collection("events")
+      local session = assert(client:start_session())
+
+      assert(session:start_transaction())
+      assert(collection:insert_one(
+        bson.document({ { "n", 1 } }),
+        { session = session }
+      ))
+      assert(session:commit_transaction())
+      assert.are.equal(2, commit_count)
+      assert.is_true(session:is_pinned())
+      assert(session:unpin_connection())
+      assert(database:run_command("ping"))
+      assert(session:end_session())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      if name == "insert" then
+        failed_peer = peer
+      elseif name == "commitTransaction" then
+        commit_count = commit_count + 1
+
+        if commit_count == 1 then
+          assert.are.equal(failed_peer, peer)
+          return nil
+        end
+
+        retry_peer = peer
+        assert.are_not.equal(failed_peer, retry_peer)
+      elseif name == "ping" then
+        assert.are.equal(retry_peer, peer)
+      elseif name ~= "endSessions" then
+        error("unexpected command: " .. name)
+      end
+
+      return bson.document({ { "ok", 1 }, { "n", 1 } })
+    end)
+  end)
+
   it("runs the exact non-load-balanced connection-establishment cases", function()
     local fixture = load_fixture()
     local first = fixture:get("tests"):get(1)
