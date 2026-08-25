@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import re
 import unittest
 
 
@@ -8,9 +9,48 @@ ROOT = Path(__file__).resolve().parents[2]
 MAKEFILE = ROOT / "Makefile"
 WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
 FULL_WORKFLOW = ROOT / ".github" / "workflows" / "full-conformance.yml"
+DEPENDABOT = ROOT / ".github" / "dependabot.yml"
+WORKFLOWS = tuple(sorted((ROOT / ".github" / "workflows").glob("*.yml")))
+
+
+REMOTE_ACTION = re.compile(
+  r"^\s*uses:\s*(?P<action>[^\s#]+)(?:\s+#\s*(?P<version>\S+))?\s*$"
+)
+UPLOAD_ARTIFACT_PIN = (
+  "actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7"
+)
+DOWNLOAD_ARTIFACT_PIN = (
+  "actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8"
+)
 
 
 class CiPortabilityTests(unittest.TestCase):
+  def test_remote_actions_use_full_sha_pins_with_version_comments(self) -> None:
+    for workflow in WORKFLOWS:
+      for line_number, line in enumerate(
+        workflow.read_text(encoding="utf-8").splitlines(),
+        start=1,
+      ):
+        match = REMOTE_ACTION.match(line)
+
+        if match is None or match.group("action").startswith("./"):
+          continue
+
+        action, separator, reference = match.group("action").rpartition("@")
+
+        with self.subTest(workflow=workflow.name, line=line_number):
+          self.assertTrue(separator, f"remote action has no ref: {action}")
+          self.assertRegex(reference, r"^[0-9a-f]{40}$")
+          self.assertRegex(match.group("version") or "", r"^v\d+(?:\.\d+)*$")
+
+  def test_dependabot_tracks_github_actions_weekly(self) -> None:
+    configuration = DEPENDABOT.read_text(encoding="utf-8")
+
+    self.assertIn("version: 2", configuration)
+    self.assertIn('package-ecosystem: "github-actions"', configuration)
+    self.assertIn('directory: "/"', configuration)
+    self.assertIn('interval: "weekly"', configuration)
+
   def test_portable_matrix_tests_both_supported_lua_versions(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     portable = workflow[
@@ -187,8 +227,7 @@ class CiPortabilityTests(unittest.TestCase):
   def test_artifact_upload_uses_node_24_action(self) -> None:
     workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
 
-    self.assertIn("uses: actions/upload-artifact@v7", workflow)
-    self.assertNotIn("uses: actions/upload-artifact@v4", workflow)
+    self.assertIn(f"uses: {UPLOAD_ARTIFACT_PIN}", workflow)
 
   def test_fast_workflow_is_cancelable_and_omits_full_execution(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -233,7 +272,7 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("--shard-count 4", workflow)
     self.assertIn("--shard-index ${{ matrix.shard }}", workflow)
     self.assertIn("needs: [linux-unified, linux-version-branches]", workflow)
-    self.assertIn("uses: actions/download-artifact@v8", workflow)
+    self.assertIn(f"uses: {DOWNLOAD_ARTIFACT_PIN}", workflow)
     self.assertIn("--aggregate build/conformance/shards/*.json", workflow)
     self.assertIn("Validate exact v0.4 conformance evidence", workflow)
     self.assertIn("Validate exact v0.5 conformance evidence", workflow)
@@ -363,7 +402,7 @@ class CiPortabilityTests(unittest.TestCase):
       aggregate,
     )
     self.assertIn("timeout-minutes: 10", aggregate)
-    self.assertIn("uses: actions/download-artifact@v8", aggregate)
+    self.assertIn(f"uses: {DOWNLOAD_ARTIFACT_PIN}", aggregate)
     self.assertIn(
       "--aggregate build/conformance/macos-shards/*.json",
       aggregate,

@@ -8787,6 +8787,28 @@
       "reopened_after_commit": "a36205d6fe4bab633509f917f4d505f8700d0329",
       "started_at": "2026-08-25T21:24:52+00:00",
       "completed_at": "2026-08-25T21:26:02+00:00"
+    },
+    "CI-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_remote_actions_use_full_sha_pins_with_version_comments planning.tests.test_ci_portability.CiPortabilityTests.test_dependabot_tracks_github_actions_weekly'",
+          "exit_code": 2,
+          "summary": "The defining workflow contract found 54 movable remote action tags across CI, Full Conformance, and release workflows, and the Dependabot GitHub Actions configuration was absent.",
+          "recorded_at": "2026-08-25T23:47:20+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability'; actionlint workflow parse; exact Dependabot YAML, upstream action tag/SHA, plan, and diff validators",
+          "exit_code": 0,
+          "summary": "All 21 CI portability contracts passed; actionlint accepted all three workflows, Dependabot is exactly scoped to weekly GitHub Actions updates, and all five selected tags resolve to the committed 40-character SHAs. Plan and diff validators pass; workflow permissions and job topology are unchanged.",
+          "recorded_at": "2026-08-25T23:50:12+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T22:21:17+00:00",
+      "completed_at": "2026-08-25T23:50:27+00:00"
     }
   },
   "verified_references": {

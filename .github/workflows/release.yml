@@ -53,7 +53,7 @@ jobs:
 
     steps:
       - name: Check out trusted release automation
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
@@ -71,7 +71,7 @@ jobs:
           echo "release_sha=$release_sha" >> "$GITHUB_OUTPUT"
 
       - name: Check out selected release commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ steps.commit.outputs.release_sha }}
           path: release-source
@@ -88,12 +88,12 @@ jobs:
           --github-output "$GITHUB_OUTPUT"
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -125,13 +125,13 @@ jobs:
 
     steps:
       - name: Check out trusted release automation
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Check out validated release commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           ref: ${{ needs.validate.outputs.release_sha }}
           path: release-source
@@ -139,12 +139,12 @@ jobs:
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 

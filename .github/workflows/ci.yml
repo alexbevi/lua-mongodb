@@ -22,18 +22,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua ${{ matrix.lua-version }}
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "${{ matrix.lua-version }}"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.13.0"
 
@@ -91,18 +91,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.13.0"
 
@@ -114,7 +114,7 @@ jobs:
 
       - name: Upload machine-readable environment facts
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: compatibility-smoke-${{ matrix.entry }}
           path: build/compatibility/*.json
@@ -125,18 +125,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.13.0"
 

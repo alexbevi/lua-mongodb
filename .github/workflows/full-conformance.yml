@@ -29,18 +29,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -64,7 +64,7 @@ jobs:
 
       - name: Upload Linux quality evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: full-quality-linux-${{ github.sha }}
           path: build/quality/luacov.report.out
@@ -79,18 +79,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -122,7 +122,7 @@ jobs:
 
       - name: Upload unified shard evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: unified-shard-${{ matrix.shard }}-${{ github.sha }}
           path: build/conformance/unified-shard-${{ matrix.shard }}.json
@@ -133,18 +133,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -192,7 +192,7 @@ jobs:
           --report build/conformance/unified-pre-8.2.json
 
       - name: Upload pre-8.2 exact evidence
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: unified-pre-8.2-${{ github.sha }}
           path: |
@@ -206,20 +206,20 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Download unified shard evidence
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: unified-shard-*-${{ github.sha }}
           path: build/conformance/shards
           merge-multiple: true
 
       - name: Download pre-8.2 exact evidence
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: unified-pre-8.2-${{ github.sha }}
           path: build/conformance/version-branches
@@ -275,7 +275,7 @@ jobs:
           --execution-report build/conformance/version-branches/unified-pre-8.2.json
 
       - name: Upload authoritative Linux conformance evidence
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: full-conformance-linux-${{ github.sha }}
           path: |
@@ -293,18 +293,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -362,7 +362,7 @@ jobs:
 
       - name: Upload focused macOS evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: macos-platform-${{ github.sha }}
           path: build/conformance/macos-platform.json
@@ -379,18 +379,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -431,7 +431,7 @@ jobs:
 
       - name: Upload macOS unified shard evidence
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: macos-unified-shard-${{ matrix.shard }}-${{ github.sha }}
           path: build/conformance/unified-macos-shard-${{ matrix.shard }}.json
@@ -444,18 +444,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -499,7 +499,7 @@ jobs:
           --report build/conformance/unified-macos-pre-8.2.json
 
       - name: Upload macOS pre-8.2 exact evidence
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: macos-unified-pre-8.2-${{ github.sha }}
           path: build/conformance/unified-macos-pre-8.2.json
@@ -513,20 +513,20 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Download macOS unified shard evidence
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           pattern: macos-unified-shard-*-${{ github.sha }}
           path: build/conformance/macos-shards
           merge-multiple: true
 
       - name: Download macOS pre-8.2 exact evidence
-        uses: actions/download-artifact@v8
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
         with:
           name: macos-unified-pre-8.2-${{ github.sha }}
           path: build/conformance/macos-version-branches
@@ -586,7 +586,7 @@ jobs:
           --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
 
       - name: Upload authoritative macOS conformance evidence
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: full-conformance-macos-${{ github.sha }}
           path: |
@@ -604,18 +604,18 @@ jobs:
 
     steps:
       - name: Check out repository and pinned references
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
           submodules: recursive
 
       - name: Install Lua 5.4.8
-        uses: leafo/gh-actions-lua@v13
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
           luaVersion: "5.4.8"
 
       - name: Install LuaRocks
-        uses: leafo/gh-actions-luarocks@v6
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
         with:
           luaRocksVersion: "3.12.2"
 
@@ -629,7 +629,7 @@ jobs:
 
       - name: Upload machine-readable environment facts
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: compatibility-${{ matrix.series }}-${{ matrix.topology }}-${{ github.sha }}
           path: build/compatibility/*.json
