@@ -28,7 +28,7 @@ RELEASE_FIXTURE_OWNERS = {
 POST_V1_REASONS = {
   **{
     f"LB-{index:03d}": "load-balanced deployment behavior is outside production-core v1"
-    for index in range(1, 21)
+    for index in range(1, 22)
   },
   "ADV-001": "change streams are outside production-core v1",
   "ADV-002": "GridFS is outside production-core v1",
