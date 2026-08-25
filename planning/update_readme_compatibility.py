@@ -282,7 +282,7 @@ def status_marker(counts: dict[str, int]) -> str:
     return "🟡"
 
   if counts.get("unsupported", 0) > 0:
-    return "⚪ Will Not Implement"
+    return "⚪"
 
   if incomplete > 0:
     return "🔴"

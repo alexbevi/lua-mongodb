@@ -532,7 +532,7 @@ The self-contained [`examples`](examples/README.md) learning path installs the p
 
 ## Specification compatibility
 
-Compatibility comes from the checked-in [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Machine-fixture rows use ledger cases, and named prose-only rows use catalog requirement outcomes. A suite is green when every support-scored outcome passes, yellow when passes and incomplete scored outcomes coexist, and red when no scored outcome passes. Tracked support % divides passed outcomes by all scored outcomes. The calculation omits `not_applicable`, `no_machine_cases`, and terminal `unsupported` outcomes. A suite containing only omitted outcomes displays N/A; an unsupported-only suite displays Will Not Implement. The total uses the same calculation across all displayed scored outcomes instead of averaging suite percentages. `planning/update_readme_compatibility.py` generates the table.
+Compatibility comes from the checked-in [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Machine-fixture rows use ledger cases, and named prose-only rows use catalog requirement outcomes. A suite is green when every support-scored outcome passes, yellow when passes and incomplete scored outcomes coexist, and red when no scored outcome passes. Tracked support % divides passed outcomes by all scored outcomes. The calculation omits `not_applicable`, `no_machine_cases`, and terminal `unsupported` outcomes. A suite containing only omitted outcomes displays N/A; the white badge marks a suite the project will not implement. The total uses the same calculation across all displayed scored outcomes instead of averaging suite percentages. `planning/update_readme_compatibility.py` generates the table.
 
 The ordering follows the "onion model" classification of [MongoDB driver specifications](https://alexbevi.com/specifications/), from serialization at the core through communication, connectivity, authentication, availability, resilience, programmability, observability, and testability.
 
@@ -552,9 +552,9 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 95.1% |
 | Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
 | Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟢 | 100.0% |
-| Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | ⚪ Will Not Implement | N/A |
+| Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | ⚪ | N/A |
 | Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
-| Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | ⚪ Will Not Implement | N/A |
+| Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | ⚪ | N/A |
 | Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟢 | 100.0% |
 | Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.7% |
 | Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 82.5% |

@@ -23,7 +23,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       readme_compatibility.status_marker({"deferred_unsupported": 3}),
     )
     self.assertEqual(
-      "⚪ Will Not Implement",
+      "⚪",
       readme_compatibility.status_marker({"unsupported": 1}),
     )
     self.assertEqual(
@@ -63,7 +63,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
 
   def test_terminal_unsupported_rows_are_unscored(self) -> None:
     self.assertEqual(
-      "⚪ Will Not Implement",
+      "⚪",
       readme_compatibility.status_marker({"unsupported": 1}),
     )
     self.assertEqual(
@@ -74,13 +74,13 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "| Communication | [OCSP support](https://alexbevi.com/specifications/"
-      "ocsp-support/ocsp-support.html) | ⚪ Will Not Implement | N/A |",
+      "ocsp-support/ocsp-support.html) | ⚪ | N/A |",
       table,
     )
     self.assertIn(
       "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
       "specifications/socks5-support/socks5.html) | "
-      "⚪ Will Not Implement | N/A |",
+      "⚪ | N/A |",
       table,
     )
     self.assertIn(
@@ -93,6 +93,23 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
     self.assertIn("⚪ Will Not Implement", readme)
     self.assertNotIn("⚪ No support-scored requirement / Not applicable", readme)
+
+  def test_terminal_unsupported_table_rows_use_badge_only(self) -> None:
+    table = readme_compatibility.render_table()
+
+    self.assertIn(
+      "| Communication | [OCSP support](https://alexbevi.com/specifications/"
+      "ocsp-support/ocsp-support.html) | ⚪ | N/A |",
+      table,
+    )
+    self.assertIn(
+      "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
+      "specifications/socks5-support/socks5.html) | ⚪ | N/A |",
+      table,
+    )
+
+    readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
+    self.assertIn("> ⚪ Will Not Implement", readme)
 
   def test_table_follows_the_onion_and_covers_every_suite(self) -> None:
     suites = {
@@ -169,14 +186,14 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "| Communication | [OCSP support](https://alexbevi.com/specifications/"
-      "ocsp-support/ocsp-support.html) | ⚪ Will Not Implement | N/A |",
+      "ocsp-support/ocsp-support.html) | ⚪ | N/A |",
       table,
     )
     self.assertIn("[Wire compression]", table)
     self.assertIn(
       "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
       "specifications/socks5-support/socks5.html) | "
-      "⚪ Will Not Implement | N/A |",
+      "⚪ | N/A |",
       table,
     )
     self.assertIn("[Standardized logging]", table)

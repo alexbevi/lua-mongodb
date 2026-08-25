@@ -8616,6 +8616,35 @@
       "notes": [],
       "started_at": "2026-08-25T13:54:13+00:00",
       "completed_at": "2026-08-25T13:59:31+00:00"
+    },
+    "CON-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility.ReadmeCompatibilityTests.test_terminal_unsupported_table_rows_use_badge_only'",
+          "exit_code": 2,
+          "summary": "The focused projection test failed because OCSP and SOCKS5 table cells still rendered the Will Not Implement label after the white badge.",
+          "recorded_at": "2026-08-25T14:19:28+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility'",
+          "exit_code": 0,
+          "summary": "Six focused compatibility projection tests passed; OCSP and SOCKS5 render badge-only status cells, the legend remains labeled, both rows remain N/A, and total scoring stays 79.8%.",
+          "recorded_at": "2026-08-25T14:20:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "README projection, catalog, ledger, plan, Python syntax, exact badge count, and diff validators passed. No Lua file was touched, so touched-file Luacheck was not applicable.",
+          "recorded_at": "2026-08-25T14:20:58+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T14:18:56+00:00",
+      "completed_at": "2026-08-25T14:21:11+00:00"
     }
   },
   "verified_references": {
