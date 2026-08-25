@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "b1f7d37b9f4d34b36692ef8e9e38e06a6e72b2dd0921592356f71e9decc71951",
+  "plan_digest": "67fa9f585bc55252dee23c12ff5ea7690656ce3e97e4116bfad1bbfffcaa1ba7",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -8163,6 +8163,21 @@
       "notes": [],
       "started_at": "2026-08-25T01:14:16+00:00",
       "completed_at": "2026-08-25T01:23:27+00:00"
+    },
+    "LB-011": {
+      "status": "pending",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=each spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused load-balanced transaction case failed because the first command did not create a session-owned connection pin.",
+          "recorded_at": "2026-08-25T01:36:29+00:00"
+        }
+      ],
+      "notes": [
+        "Requeued: Pinned load-balancer case 3 requires successful commits to retain the connection for repeated commits; correct the conflicting release acceptance before implementation."
+      ]
     }
   },
   "verified_references": {
