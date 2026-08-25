@@ -777,6 +777,73 @@ describe("client sessions", function()
     assert.same({ false, "router-a:27017" }, selected_addresses)
   end)
 
+  it("retains one load-balanced transaction pin through repeated commits", function()
+    local command_pins = {}
+    local executor
+    local pin_count = 0
+    local release_count = 0
+    local transaction_pin
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        if options.pin_connection then
+          pin_count = pin_count + 1
+          transaction_pin = {
+            release = function()
+              release_count = release_count + 1
+              return true
+            end,
+          }
+          options.on_connection_pinned(transaction_pin)
+        end
+
+        command_pins[#command_pins + 1] = options.pinned_connection
+          or transaction_pin
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function(session, name)
+        return executor:command(
+          "admin",
+          bson.document({ { name, 1 } }),
+          { session = session, transaction_control = true }
+        )
+      end,
+    })
+
+    executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert.is_not_nil(transaction_pin)
+    assert(executor:command(
+      "db",
+      bson.document({ { "find", "items" } }),
+      { session = session }
+    ))
+
+    for _ = 1, 4 do
+      assert(session:commit_transaction())
+    end
+
+    assert.is_true(session:is_pinned())
+    assert.are.equal(1, pin_count)
+    assert.are.equal(0, release_count)
+    assert.are.equal(6, #command_pins)
+
+    for _, pin in ipairs(command_pins) do
+      assert.are.equal(transaction_pin, pin)
+    end
+  end)
+
   it("unpins only transient transaction application errors", function()
     local pending_error
     local underlying = {

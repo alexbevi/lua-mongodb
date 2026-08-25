@@ -361,7 +361,7 @@ function METHODS:command(database, command, options)
   for key, value in pairs(options or {}) do
     if key ~= "on_connection_pinned" and key ~= "on_server_selected"
         and key ~= "pin_connection" and key ~= "pinned_connection"
-        and key ~= "server_address"
+        and key ~= "server_address" and key ~= "session"
     then
       command_options[key] = value
     end

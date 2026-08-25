@@ -634,7 +634,13 @@ def classify_case(
           "deterministic-runtime",
         )
       elif index <= 3:
-        owner = "LB-011"
+        return _passed(
+          case,
+          "LB-011",
+          "spec/unit/session_spec.lua",
+          "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+          "directly-coupled-endpoint",
+        )
       elif index <= 6:
         owner = "LB-012"
       elif index <= 8:

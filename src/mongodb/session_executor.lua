@@ -16,7 +16,8 @@ local function command_options(
   options,
   on_attempt_error,
   retryable_write,
-  in_transaction
+  in_transaction,
+  session
 )
   local result = {}
 
@@ -33,10 +34,11 @@ local function command_options(
   result.retryable_read = options and options.retryable_read == true
     and not in_transaction
   result.retryable_write = retryable_write
+  result.session = session
   return result
 end
 
-local function pin_transaction_server(options, session, in_transaction)
+local function pin_transaction(options, session, in_transaction)
   if not in_transaction then
     session:unpin_server()
     return
@@ -51,6 +53,24 @@ local function pin_transaction_server(options, session, in_transaction)
     end
 
     session:pin_server(address, server_type)
+  end
+
+  if not session:uses_connection_pinning() then
+    return
+  end
+
+  local pinned_connection = session:get_pinned_connection()
+
+  if pinned_connection then
+    options.on_connection_pinned = nil
+    options.pin_connection = nil
+    options.pinned_connection = pinned_connection
+  else
+    options.on_connection_pinned = function(pin)
+      assert(session:pin_connection(pin))
+    end
+    options.pin_connection = true
+    options.pinned_connection = nil
   end
 end
 
@@ -198,11 +218,12 @@ function METHODS:command(database, command, options)
     options,
     on_attempt_error,
     retryable_write,
-    in_transaction
+    in_transaction,
+    session
   )
 
   if session then
-    pin_transaction_server(downstream_options, session, in_transaction)
+    pin_transaction(downstream_options, session, in_transaction)
   end
 
   local context = operation_timeout.current()

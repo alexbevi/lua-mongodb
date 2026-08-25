@@ -552,6 +552,64 @@ describe("load-balanced connection establishment", function()
     end)
   end)
 
+  it("pins a load-balanced transaction through repeated commits", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+    local transaction_peer
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 2,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+        }
+      ))
+      local database = client:database()
+      local collection = database:collection("events")
+      local session = assert(client:start_session())
+
+      assert(session:start_transaction())
+      assert(collection:insert_one(
+        bson.document({ { "n", 1 } }),
+        { session = session }
+      ))
+      assert(database:run_command("ping"))
+      assert(collection:insert_one(
+        bson.document({ { "n", 2 } }),
+        { session = session }
+      ))
+
+      for _ = 1, 4 do
+        assert(session:commit_transaction())
+      end
+
+      assert.is_true(session:is_pinned())
+      assert(session:unpin_connection())
+      assert.is_false(session:is_pinned())
+      assert(session:end_session())
+      assert(client:close())
+    end, function(peer, request)
+      local name = request.body:keys()[1]
+
+      if name == "ping" then
+        assert.are_not.equal(transaction_peer, peer)
+      elseif name == "insert" then
+        if transaction_peer then
+          assert.are.equal(transaction_peer, peer)
+        else
+          transaction_peer = peer
+        end
+      elseif name == "commitTransaction" then
+        assert.are.equal(transaction_peer, peer)
+      elseif name ~= "endSessions" then
+        error("unexpected command: " .. name)
+      end
+
+      return bson.document({ { "ok", 1 }, { "n", 1 } })
+    end)
+  end)
+
   it("runs the exact non-load-balanced connection-establishment cases", function()
     local fixture = load_fixture()
     local first = fixture:get("tests"):get(1)

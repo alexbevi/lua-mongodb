@@ -8165,7 +8165,7 @@
       "completed_at": "2026-08-25T01:23:27+00:00"
     },
     "LB-011": {
-      "status": "pending",
+      "status": "completed",
       "evidence": [
         {
           "phase": "red",
@@ -8173,11 +8173,27 @@
           "exit_code": 1,
           "summary": "The focused load-balanced transaction case failed because the first command did not create a session-owned connection pin.",
           "recorded_at": "2026-08-25T01:36:29+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=repeated spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The corrected focused case failed because the first load-balanced transaction command did not create a session-owned connection pin for repeated commits.",
+          "recorded_at": "2026-08-25T01:51:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/topology_spec.lua spec/unit/retry_executor_spec.lua spec/unit/api_handles_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session.lua src/mongodb/session_executor.lua src/mongodb/topology_executor.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'",
+          "exit_code": 0,
+          "summary": "76 focused unit and 9 directly coupled integration cases passed; 46 conformance and release-scope tests passed; touched Lua files linted cleanly; complexity and generated artifact validators passed",
+          "recorded_at": "2026-08-25T01:54:02+00:00"
         }
       ],
       "notes": [
         "Requeued: Pinned load-balancer case 3 requires successful commits to retain the connection for repeated commits; correct the conflicting release acceptance before implementation."
-      ]
+      ],
+      "started_at": "2026-08-25T01:50:29+00:00",
+      "completed_at": "2026-08-25T01:54:03+00:00"
     }
   },
   "verified_references": {

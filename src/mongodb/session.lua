@@ -248,8 +248,19 @@ function SESSION_METHODS:get_pinned_server_address()
   return SESSION_STATES[self].transaction.pinned_server_address
 end
 
+function SESSION_METHODS:get_pinned_connection()
+  return SESSION_STATES[self].transaction.pinned_connection
+end
+
 function SESSION_METHODS:is_pinned()
   return self:get_pinned_server_address() ~= nil
+    or self:get_pinned_connection() ~= nil
+end
+
+function SESSION_METHODS:uses_connection_pinning()
+  local state = SESSION_STATES[self]
+
+  return MANAGER_STATES[state.manager].load_balanced
 end
 
 function SESSION_METHODS:unpin_server()
@@ -287,6 +298,51 @@ function SESSION_METHODS:pin_server(address, server_type)
   end
 
   state.transaction.pinned_server_address = address
+  return true
+end
+
+function SESSION_METHODS:pin_connection(pin)
+  local state, err = check_session(self)
+
+  if not state then
+    return nil, err
+  end
+
+  if type(pin) ~= "table" or type(pin.release) ~= "function" then
+    error("pinned connection must expose release", 2)
+  end
+
+  if not self:uses_connection_pinning()
+      or not transaction_active(state.transaction)
+  then
+    return false
+  end
+
+  local pinned = state.transaction.pinned_connection
+
+  if pinned ~= nil and pinned ~= pin then
+    error("transaction selected a different connection than its pin", 2)
+  end
+
+  state.transaction.pinned_connection = pin
+  return true
+end
+
+function SESSION_METHODS:unpin_connection()
+  local state, err = check_session(self)
+
+  if not state then
+    return nil, err
+  end
+
+  local pin = state.transaction.pinned_connection
+
+  if pin == nil then
+    return false
+  end
+
+  state.transaction.pinned_connection = nil
+  pin:release()
   return true
 end
 
@@ -1209,6 +1265,7 @@ function M.new(options)
     default_transaction_options = options.default_transaction_options or {},
     default_timeout_ms = options.default_timeout_ms,
     id_factory = options.id_factory,
+    load_balanced = options.load_balanced == true,
     pool = {},
     runtime = options.runtime,
     timeout_minutes = timeout_minutes,
