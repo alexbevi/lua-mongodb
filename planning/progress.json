@@ -8680,36 +8680,60 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+          "command": "GitHub Actions CI Fast run 32888440074 portable jobs: make check-fast",
           "exit_code": 2,
-          "summary": "The simulated child identity retained the parent's five ObjectId process bytes instead of consuming fresh runtime entropy; six adjacent tagged-value cases passed.",
-          "recorded_at": "2026-08-25T19:07:40+00:00"
+          "summary": "All four portable lanes rejected the completed BSON-010 owner because bson-objectid/objectid.md::post-fork-random remained classified as deferred_unsupported with a pending runner.",
+          "recorded_at": "2026-08-25T19:21:53+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_LINT='<seven touched Lua files>' under Lua 5.4",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua' FOCUS_PYTHON='spec.conformance.test_catalog planning.tests.test_readme_compatibility'; catalog and README --check validators",
           "exit_code": 0,
-          "summary": "33 focused ObjectId/runtime tests passed and the seven touched Lua files produced no lint warnings or errors.",
-          "recorded_at": "2026-08-25T19:13:50+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' under Lua 5.5.1",
-          "exit_code": 0,
-          "summary": "The same 33 focused ObjectId/runtime tests passed under Lua 5.5.1 with the pinned getpid provider built for that runtime.",
-          "recorded_at": "2026-08-25T19:13:55+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-architecture; make test-complexity; make rockspec; make test-package; dependency and diff validators",
-          "exit_code": 0,
-          "summary": "Architecture and complexity gates passed; rockspec lint passed; all three isolated source-rock/package tests passed with getpid 0.1.0 installed from declared dependencies.",
-          "recorded_at": "2026-08-25T19:14:01+00:00"
+          "summary": "Seven ObjectId cases, seven conformance-catalog contracts, and six README-projection contracts passed; generated catalog and compatibility projections are current.",
+          "recorded_at": "2026-08-25T19:22:38+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-25T19:03:54+00:00",
-      "completed_at": "2026-08-25T19:14:11+00:00"
+      "notes": [
+        "Requeued: CI Fast exposed stale deferred conformance evidence after the completed implementation"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-25T19:14:11+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+              "exit_code": 2,
+              "summary": "The simulated child identity retained the parent's five ObjectId process bytes instead of consuming fresh runtime entropy; six adjacent tagged-value cases passed.",
+              "recorded_at": "2026-08-25T19:07:40+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' FOCUS_LINT='<seven touched Lua files>' under Lua 5.4",
+              "exit_code": 0,
+              "summary": "33 focused ObjectId/runtime tests passed and the seven touched Lua files produced no lint warnings or errors.",
+              "recorded_at": "2026-08-25T19:13:50+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua' under Lua 5.5.1",
+              "exit_code": 0,
+              "summary": "The same 33 focused ObjectId/runtime tests passed under Lua 5.5.1 with the pinned getpid provider built for that runtime.",
+              "recorded_at": "2026-08-25T19:13:55+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-architecture; make test-complexity; make rockspec; make test-package; dependency and diff validators",
+              "exit_code": 0,
+              "summary": "Architecture and complexity gates passed; rockspec lint passed; all three isolated source-rock/package tests passed with getpid 0.1.0 installed from declared dependencies.",
+              "recorded_at": "2026-08-25T19:14:01+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "a6679786dede7de8f21eedde10cb4715010835df",
+      "started_at": "2026-08-25T19:21:40+00:00",
+      "completed_at": "2026-08-25T19:22:39+00:00"
     }
   },
   "verified_references": {

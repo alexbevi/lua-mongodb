@@ -63,11 +63,11 @@
       {
         "id": "post-fork-random",
         "activity": "BSON-010",
-        "last_execution": null,
-        "reason": "The generator does not yet detect a fork or equivalent process-identity change and regenerate its five-byte process-unique value.",
-        "required_environment": "fork-capable-runtime",
-        "runner": "pending:BSON-010",
-        "status": "deferred_unsupported"
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/bson_tagged_spec.lua'",
+        "reason": "A deterministic fake-runtime vector changes process identity and proves that the first child ObjectId consumes a fresh five-byte process value while retaining the wrapping counter.",
+        "required_environment": "none",
+        "runner": "spec/unit/bson_tagged_spec.lua",
+        "status": "passed"
       }
     ],
     "collation/collation.md": {

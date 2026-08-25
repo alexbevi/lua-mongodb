@@ -151,8 +151,10 @@ class ConformanceCatalogTests(unittest.TestCase):
 
     post_fork = requirements["bson-objectid/objectid.md::post-fork-random"]
     self.assertEqual("BSON-010", post_fork["activity"])
-    self.assertEqual("deferred_unsupported", post_fork["status"])
-    self.assertIsNone(post_fork["last_execution"])
+    self.assertEqual("passed", post_fork["status"])
+    self.assertEqual("none", post_fork["required_environment"])
+    self.assertEqual("spec/unit/bson_tagged_spec.lua", post_fork["runner"])
+    self.assertIn("spec/unit/bson_tagged_spec.lua", post_fork["last_execution"])
 
   def test_terminal_unsupported_requirements_have_no_pending_runner(self) -> None:
     requirements = catalog.generate()["requirements"]
