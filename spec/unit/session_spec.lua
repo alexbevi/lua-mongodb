@@ -1069,6 +1069,38 @@ describe("client sessions", function()
     assert.is_nil(commands[3]:get("txnNumber"))
   end)
 
+  it("releases a committed load-balanced pin when the session ends", function()
+    local release_count = 0
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function()
+        return bson.document({ { "ok", 1 } })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:pin_connection({
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }))
+    assert(session:commit_transaction())
+    assert.is_true(session:is_pinned())
+
+    assert(session:end_session())
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+    assert(session:end_session())
+    assert.are.equal(1, release_count)
+  end)
+
   it("releases a load-balanced pin after a successful abort", function()
     local release_count = 0
     local sessions = new_session_manager({

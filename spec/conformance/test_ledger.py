@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1025,
+      "deferred_unsupported": 1024,
       "excluded_scope": 98,
-      "passed": 4386,
+      "passed": 4387,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -141,6 +141,16 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(
       "directly-coupled-endpoint",
       transaction_cursor["required_environment"],
+    )
+
+    ended_session = generated["cases"][
+      "load-balancers/tests/transactions.json::test[17]"
+    ]
+    self.assertEqual("LB-018", ended_session["activity"])
+    self.assertEqual("passed", ended_session["status"])
+    self.assertEqual(
+      "directly-coupled-endpoint",
+      ended_session["required_environment"],
     )
 
     sharded_command_cursor = generated["cases"][

@@ -174,6 +174,7 @@ function SESSION_METHODS:end_session()
   end
 
   self:unpin_server()
+  self:unpin_connection()
   state.ended = true
   local manager_state = MANAGER_STATES[state.manager]
   local server_session = state.server_session

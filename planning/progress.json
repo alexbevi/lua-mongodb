@@ -8345,6 +8345,28 @@
       ],
       "started_at": "2026-08-25T03:42:37+00:00",
       "completed_at": "2026-08-25T03:46:53+00:00"
+    },
+    "LB-018": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua'",
+          "exit_code": 2,
+          "summary": "40 existing session cases passed; the defining committed-session case failed because end_session left session:is_pinned() true and never released the retained load-balanced connection.",
+          "recorded_at": "2026-08-25T03:58:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'; make test-complexity; generated --check validators; git diff --check",
+          "exit_code": 0,
+          "summary": "81 focused session, pool, and topology unit cases, 17 directly coupled load-balancer endpoint cases, 46 conformance and release-scope tests, touched-file lint, complexity, generated artifacts, and diff checks passed; ending a committed session released its pin once and maxPoolSize=1 immediately reused the connection.",
+          "recorded_at": "2026-08-25T04:01:14+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T03:57:32+00:00",
+      "completed_at": "2026-08-25T04:01:15+00:00"
     }
   },
   "verified_references": {
