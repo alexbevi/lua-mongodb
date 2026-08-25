@@ -134,7 +134,7 @@ class CiPortabilityTests(unittest.TestCase):
     ]
 
     self.assertNotIn("MONGODB_UNIFIED_RUN_TIMING_SENSITIVE_CSOT", supplemental)
-    self.assertEqual(3, authoritative.count("--allow-macos-ci-timing-skips"))
+    self.assertEqual(4, authoritative.count("--allow-macos-ci-timing-skips"))
 
     for index in (4, 5, 6):
       self.assertNotIn(

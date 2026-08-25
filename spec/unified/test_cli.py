@@ -3694,6 +3694,7 @@ class UnifiedCliTests(unittest.TestCase):
       "client-side-operations-timeout/tests/command-execution.json::test[1]",
       "client-side-operations-timeout/tests/command-execution.json::test[2]",
       "client-side-operations-timeout/tests/command-execution.json::test[3]",
+      "client-side-operations-timeout/tests/bulkWrite.json::test[1]",
       "client-side-operations-timeout/tests/gridfs-download.json::test[4]",
       "client-side-operations-timeout/tests/change-streams.json::test[4]",
       "client-side-operations-timeout/tests/change-streams.json::test[5]",

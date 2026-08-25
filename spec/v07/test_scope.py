@@ -86,6 +86,34 @@ class V07ScopeTests(unittest.TestCase):
         ratchets,
       )
 
+  def test_exact_execution_allows_only_declared_macos_timing_skip(self) -> None:
+    identity = "client-side-operations-timeout/tests/bulkWrite.json::test[1]"
+    cases = {identity: {"status": "passed"}}
+    ratchets = {"classified": 1, "passed": 1, "runnable": 1}
+    report = self.exact_report(identity, "environment_skipped")
+
+    self.assertEqual(
+      {"macos_timing_skipped": 1, "passed": 0, "required": 1},
+      scope.validate_execution(
+        cases,
+        report,
+        ratchets,
+        allow_macos_ci_timing_skips=True,
+      ),
+    )
+
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
+      scope.validate_execution(cases, report, ratchets)
+
+    unrelated = "crud/tests/unified/create-null-ids.json::test[7]"
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(unrelated)):
+      scope.validate_execution(
+        {unrelated: {"status": "passed"}},
+        self.exact_report(unrelated, "environment_skipped"),
+        ratchets,
+        allow_macos_ci_timing_skips=True,
+      )
+
   def test_completed_owner_cannot_hide_a_deferred_case(self) -> None:
     cases = copy.deepcopy(scope.load_cases())
     activities = scope.load_activities()

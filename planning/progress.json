@@ -8395,24 +8395,25 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_ci_portability.CiPortabilityTests.test_linux_runs_short_circuit_csot_as_focused_exact_evidence",
+          "command": "make test-focus for exact macOS bulkWrite runner, v0.7 scope, and Full Conformance policy contracts",
           "exit_code": 2,
-          "summary": "The focused workflow contract failed because the exact Linux CSOT evidence step had no bounded three-attempt loop or explicit success/failure exits; Full Conformance 32826058914 had failed that identity on both attempts.",
-          "recorded_at": "2026-08-25T09:26:05+00:00"
+          "summary": "All three contracts failed: the runner timing set omitted bulkWrite test[1], v0.7 had no explicit macOS timing-skip mode, and the macOS aggregate enabled only three existing scope policies.",
+          "recorded_at": "2026-08-25T09:57:16+00:00"
         },
         {
           "phase": "green",
-          "command": "exact Linux CSOT local execution; make test-focus for CI portability, release publication, checklist, and v0.10 scope; actionlint v1.7.7; generated release validators",
+          "command": "make test-focus for unified runner, v0.7/v0.10 scope, CI portability, and release guards; actionlint v1.7.7; Python compile and generated validators",
           "exit_code": 0,
-          "summary": "The Linux-authoritative identity passed locally in 996 ms with no skips or failures; the bounded three-attempt contract and 35 coupled Python tests passed; actionlint v1.7.7 and diff validation passed. The workflow still fails after three exact failed reports and never uses continue-on-error.",
-          "recorded_at": "2026-08-25T09:27:17+00:00"
+          "summary": "All 169 coupled Python tests passed; hosted macOS skips only bulkWrite test[1], v0.7 accepts exactly 70 passes plus that explicit skip, Linux remains authoritative for all 71, and actionlint plus Python compilation passed.",
+          "recorded_at": "2026-08-25T09:59:47+00:00"
         }
       ],
       "notes": [
         "Requeued: Full Conformance exposed incomplete v0.10 aggregate evidence and unauthenticated handshake executor mappings",
         "Requeued: Repeated macOS Full Conformance proved the 75 ms GridFS CSOT monitoring case is scheduler-sensitive while Linux remains authoritative",
         "Requeued: Full Conformance run 32819772128 found release coverage regressions in src/mongodb/admin.lua and src/mongodb/api.lua after all 665 coverage tests passed.",
-        "Requeued: Full Conformance run 32826058914 failed the exact Linux CSOT command-execution test[3] on both attempts while the same identity passed locally in 996 ms; add a bounded exact-case retry without skipping Linux-authoritative evidence."
+        "Requeued: Full Conformance run 32826058914 failed the exact Linux CSOT command-execution test[3] on both attempts while the same identity passed locally in 996 ms; add a bounded exact-case retry without skipping Linux-authoritative evidence.",
+        "Requeued: Full Conformance runs 32826058914 and 32832718367 repeatedly observed only two of three command events for client-side-operations-timeout bulkWrite test[1] on hosted macOS; classify that exact timing case while retaining Linux authority."
       ],
       "reopen_history": [
         {
@@ -8504,11 +8505,30 @@
               "recorded_at": "2026-08-25T08:12:45+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-25T09:27:35+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON=planning.tests.test_ci_portability.CiPortabilityTests.test_linux_runs_short_circuit_csot_as_focused_exact_evidence",
+              "exit_code": 2,
+              "summary": "The focused workflow contract failed because the exact Linux CSOT evidence step had no bounded three-attempt loop or explicit success/failure exits; Full Conformance 32826058914 had failed that identity on both attempts.",
+              "recorded_at": "2026-08-25T09:26:05+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "exact Linux CSOT local execution; make test-focus for CI portability, release publication, checklist, and v0.10 scope; actionlint v1.7.7; generated release validators",
+              "exit_code": 0,
+              "summary": "The Linux-authoritative identity passed locally in 996 ms with no skips or failures; the bounded three-attempt contract and 35 coupled Python tests passed; actionlint v1.7.7 and diff validation passed. The workflow still fails after three exact failed reports and never uses continue-on-error.",
+              "recorded_at": "2026-08-25T09:27:17+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "d29e9c76315e710566e415c148e670a5c2b04711",
-      "started_at": "2026-08-25T09:25:41+00:00",
-      "completed_at": "2026-08-25T09:27:35+00:00"
+      "reopened_after_commit": "ed40d8e0f2807ad4263cc95f3aff132420528938",
+      "started_at": "2026-08-25T09:57:11+00:00",
+      "completed_at": "2026-08-25T10:00:08+00:00"
     }
   },
   "verified_references": {

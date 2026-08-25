@@ -32,6 +32,9 @@ IMPLEMENTED_OWNERS = {
 CLOSURE_OWNER = "REL-055"
 TARGET_OWNERS = IMPLEMENTED_OWNERS | {CLOSURE_OWNER}
 TARGET_VERSION_EXCLUSIONS: dict[str, str] = {}
+MACOS_CI_TIMING_SKIPS = frozenset({
+  "client-side-operations-timeout/tests/bulkWrite.json::test[1]",
+})
 
 
 class ScopeError(ValueError):
@@ -78,6 +81,8 @@ def validate_execution(
   cases: dict[str, dict[str, Any]],
   report: dict[str, Any] | list[dict[str, Any]],
   expected_ratchets: dict[str, int],
+  *,
+  allow_macos_ci_timing_skips: bool = False,
 ) -> dict[str, int]:
   reports = report if isinstance(report, list) else [report]
   required = {
@@ -86,6 +91,7 @@ def validate_execution(
     if case.get("status") == "passed"
   }
   passed = set()
+  macos_timing_skipped = set()
 
   for report_index, exact_report in enumerate(reports):
     if not isinstance(exact_report, dict) or exact_report.get("type") != "execution":
@@ -118,20 +124,32 @@ def validate_execution(
       seen.add(identity)
       if identity not in required:
         continue
-      if row.get("status") == "passed":
+      status = row.get("status")
+      if status == "passed":
         passed.add(identity)
-      elif row.get("status") != "environment_skipped":
+      elif (
+        status == "environment_skipped"
+        and allow_macos_ci_timing_skips
+        and identity in MACOS_CI_TIMING_SKIPS
+      ):
+        macos_timing_skipped.add(identity)
+      elif status != "environment_skipped":
         detail = row.get("error")
         suffix = f": {detail}" if isinstance(detail, str) and detail else ""
         raise ScopeError(
           f"v0.7 target did not pass exact execution: {identity}{suffix}"
         )
 
-  missing = sorted(required - passed)
+  macos_timing_skipped -= passed
+  missing = sorted(required - passed - macos_timing_skipped)
   if missing:
     raise ScopeError(f"v0.7 target did not pass exact execution: {missing[0]}")
 
-  return {"passed": len(passed), "required": len(required)}
+  return {
+    "macos_timing_skipped": len(macos_timing_skipped),
+    "passed": len(passed),
+    "required": len(required),
+  }
 
 
 def validate_scope_ratchets(report: dict[str, Any]) -> None:
@@ -244,6 +262,7 @@ def main() -> int:
   parser = argparse.ArgumentParser()
   parser.add_argument("--check", action="store_true")
   parser.add_argument("--execution-report", action="append", type=Path)
+  parser.add_argument("--allow-macos-ci-timing-skips", action="store_true")
   arguments = parser.parse_args()
   if arguments.check:
     check()
@@ -261,8 +280,16 @@ def main() -> int:
       load_cases(),
       reports,
       load_capability_ratchets(),
+      allow_macos_ci_timing_skips=arguments.allow_macos_ci_timing_skips,
     )
-    exact = f"; exact evidence {evidence['passed']}/{evidence['required']}"
+    if evidence["macos_timing_skipped"]:
+      exact = (
+        f"; exact evidence {evidence['passed']} passed + "
+        f"{evidence['macos_timing_skipped']} explicit macOS timing skips/"
+        f"{evidence['required']} required"
+      )
+    else:
+      exact = f"; exact evidence {evidence['passed']}/{evidence['required']}"
   print(
     "v0.7 client bulk-write scope: "
     f"{summary['classified']} classified, {summary['passed']} passed, "

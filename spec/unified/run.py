@@ -48,6 +48,7 @@ LOAD_BALANCED_ENVIRONMENT = "live-load-balanced"
 LOAD_BALANCED_URI = "MONGODB_UNIFIED_LOAD_BALANCED_URI"
 LOAD_BALANCED_VERSION = "MONGODB_UNIFIED_LOAD_BALANCED_SERVER_VERSION"
 MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
+  "client-side-operations-timeout/tests/bulkWrite.json::test[1]",
   "client-side-operations-timeout/tests/change-streams.json::test[4]",
   "client-side-operations-timeout/tests/change-streams.json::test[5]",
   "client-side-operations-timeout/tests/change-streams.json::test[6]",
