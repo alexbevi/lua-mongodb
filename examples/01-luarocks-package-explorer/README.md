@@ -1,28 +1,27 @@
-# Build a LuaRocks Package Explorer with Lua 5.4 or Lua 5.5 and MongoDB
+# Build a LuaRocks package explorer with Lua 5.4 or Lua 5.5 and MongoDB
 
-This example starts with a deterministic catalog of eight familiar LuaRocks
-packages. It shows why MongoDB values are not arbitrary Lua tables: BSON keeps
-documents ordered and distinguishes documents from arrays of labels, versions,
-and dependencies.
+This example uses a fixed catalog of eight familiar LuaRocks packages. MongoDB
+cannot infer document order or array intent from arbitrary Lua tables, so the
+code builds BSON documents and arrays explicitly.
 
-The checked-in data is a small illustrative snapshot, not a live or historical
-LuaRocks API export. Keeping it local makes every run reproducible.
+The checked-in data is an example dataset, not a live or historical LuaRocks
+API export. Every run starts with the same eight rows.
 
-## What this example demonstrates
+## What you'll do
 
-- Loading `mongodb` 0.5.0 or later from LuaRocks.
-- Building ordered package documents with `mongodb.bson.document`.
-- Building dense labels, versions, and dependencies with
+- Load `mongodb` 0.5.0 or later from LuaRocks.
+- Build ordered package documents with `mongodb.bson.document`.
+- Build dense labels, versions, and dependencies with
   `mongodb.bson.array`.
-- Creating a unique index on `name`.
-- Resetting and inserting a fixture idempotently.
-- Looking up one package and querying a nested release field.
-- Querying array membership to find packages labelled `networking`.
-- Updating release metadata with `$set` and `$push`.
-- Running an aggregation pipeline to rank shared dependencies.
-- Iterating sorted cursors and closing owned resources.
+- Create a unique index on `name`.
+- Reset and insert the fixture idempotently.
+- Look up one package and query a nested release field.
+- Query array membership to find packages labelled `networking`.
+- Update release metadata with `$set` and `$push`.
+- Run an aggregation pipeline to rank shared dependencies.
+- Iterate sorted cursors and close owned resources.
 
-The solution follows a normal application lifecycle:
+The programs run these steps:
 
 ```text
 connect → obtain collection → list → lookup → query → update → aggregate → close
@@ -80,34 +79,31 @@ download_count (BSON int64)
 latest_release
 ```
 
-[`packages.lua`](packages.lua) makes both container choices visible. This is
-important for application code and for MongoDB command documents, where field
-order and BSON type identity cannot be inferred reliably from a general Lua
-table.
+[`packages.lua`](packages.lua) makes both container choices explicit. MongoDB
+command documents need field order and BSON type identity, which a general Lua
+table cannot supply reliably.
 
 ## Explore the catalog
 
-[`main.lua`](main.lua) first lists the catalog, then performs four distinct
-operations:
+[`main.lua`](main.lua) first lists the catalog, then performs four operations:
 
 1. A `find_one` lookup retrieves Copas by package name.
 2. Dot notation queries the nested release field `versions.version`.
-3. An equality filter demonstrates array membership against `labels`.
+3. An equality filter checks array membership against `labels`.
 4. An aggregation pipeline unwinds `dependencies`, groups identical values,
    and sorts by popularity and name.
 
 The aggregation count is a BSON integer value. The example calls
-`to_number()` before using it as a Lua number, another small but important
-boundary between BSON and general Lua values.
+`to_number()` before Lua arithmetic instead of relying on implicit conversion.
 
 Between the reads and aggregation, `update_one` adds a release document and
 changes `latest_release`. Run `seed.lua` before `main.lua` to reset the example
 and keep the modified count and output deterministic.
 
-Both programs handle the driver's `value` or `nil, err` contract explicitly.
-On a failure, the active cursor and client are closed before the error is
-reported. Exhausted cursors close automatically; `main.lua` checks
-`is_closed()` before closing a cursor early.
+Both programs handle the driver's `value` or `nil, err` contract. On failure,
+they close the active cursor and client before reporting the error. Exhausted
+cursors close automatically. `main.lua` checks `is_closed()` before closing a
+cursor early.
 
 ## Cleanup
 

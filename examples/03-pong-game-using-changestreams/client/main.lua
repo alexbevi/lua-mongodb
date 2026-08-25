@@ -235,7 +235,7 @@ function love.load(arguments)
   local role = role_from_arguments(arguments)
 
   if not role then
-    error("Launch with: love client -- p1  (or p2)")
+    error("Launch with: love client -- p1 or love client -- p2")
   end
 
   state = game.new(role)

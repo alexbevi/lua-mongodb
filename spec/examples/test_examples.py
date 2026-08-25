@@ -282,14 +282,14 @@ class PackageExplorerSeedTests(unittest.TestCase):
       "Created unique index: package_name_unique\n"
       "Seeded 8 packages\n"
       "LuaRocks package catalog (8 packages)\n"
-      "1. busted — 2.3.0-1\n"
-      "2. copas — 4.11.0-1\n"
-      "3. dkjson — 2.8-1\n"
-      "4. lpeg — 1.1.0-2\n"
-      "5. luacheck — 1.2.0-1\n"
-      "6. luasec — 1.3.2-1\n"
-      "7. luasocket — 3.1.0-1\n"
-      "8. penlight — 1.14.0-3\n",
+      "1. busted: 2.3.0-1\n"
+      "2. copas: 4.11.0-1\n"
+      "3. dkjson: 2.8-1\n"
+      "4. lpeg: 1.1.0-2\n"
+      "5. luacheck: 1.2.0-1\n"
+      "6. luasec: 1.3.2-1\n"
+      "7. luasocket: 3.1.0-1\n"
+      "8. penlight: 1.14.0-3\n",
     ))
 
   @unittest.skipUnless(LIVE, "set MONGODB_EXAMPLES_LIVE=1 for live examples")
@@ -372,25 +372,25 @@ class PackageExplorerWorkflowTests(unittest.TestCase):
       "Created unique index: package_name_unique\n"
       "Seeded 8 packages\n"
       "LuaRocks package catalog (8 packages)\n"
-      "1. busted — 2.3.0-1\n"
-      "2. copas — 4.11.0-1\n"
-      "3. dkjson — 2.8-1\n"
-      "4. lpeg — 1.1.0-2\n"
-      "5. luacheck — 1.2.0-1\n"
-      "6. luasec — 1.3.2-1\n"
-      "7. luasocket — 3.1.0-1\n"
-      "8. penlight — 1.14.0-3\n"
-      "Lookup: copas — Coroutine-oriented portable asynchronous services\n"
+      "1. busted: 2.3.0-1\n"
+      "2. copas: 4.11.0-1\n"
+      "3. dkjson: 2.8-1\n"
+      "4. lpeg: 1.1.0-2\n"
+      "5. luacheck: 1.2.0-1\n"
+      "6. luasec: 1.3.2-1\n"
+      "7. luasocket: 3.1.0-1\n"
+      "8. penlight: 1.14.0-3\n"
+      "Lookup: copas, Coroutine-oriented portable asynchronous services\n"
       "Nested release query: luasec contains 1.3.2-1\n"
       "Networking label: copas, luasec, luasocket\n"
       "Updated copas: 4.11.0-1 -> 4.11.1-1 (1 modified)\n"
       "Dependency popularity:\n"
-      "1. luafilesystem — 2 packages\n"
-      "2. luasocket — 2 packages\n"
-      "3. argparse — 1 package\n"
-      "4. coxpcall — 1 package\n"
-      "5. lua-term — 1 package\n"
-      "6. penlight — 1 package\n",
+      "1. luafilesystem: 2 packages\n"
+      "2. luasocket: 2 packages\n"
+      "3. argparse: 1 package\n"
+      "4. coxpcall: 1 package\n"
+      "5. lua-term: 1 package\n"
+      "6. penlight: 1 package\n",
       expected,
     )
 
@@ -468,9 +468,9 @@ class LeaderboardWorkflowTests(unittest.TestCase):
       "Submitted 1320 points for Ada Byte (1 modified)\n"
       "Awarded comeback achievement to Ada Byte (1 modified)\n"
       "Top players:\n"
-      "1. Ada Byte — 1320\n"
-      "2. Lin Loop — 1250\n"
-      "3. Noor Node — 1110\n"
+      "1. Ada Byte: 1320\n"
+      "2. Lin Loop: 1250\n"
+      "3. Noor Node: 1110\n"
       "Season spring-2026: 16970 points across 5 players\n",
     ))
 

@@ -65,7 +65,7 @@ local function explore_packages()
     local package_lines
     package_lines, err = collect(cursor, function(package_doc)
       return package_doc:get("name")
-        .. " — " .. package_doc:get("latest_release")
+        .. ": " .. package_doc:get("latest_release")
     end)
 
     if not package_lines then
@@ -146,7 +146,7 @@ local function explore_packages()
       local count = dependency:get("dependency_count"):to_number()
       local noun = count == 1 and "package" or "packages"
 
-      return dependency:get("_id") .. " — " .. count .. " " .. noun
+      return dependency:get("_id") .. ": " .. count .. " " .. noun
     end)
 
     if not dependency_lines then
@@ -166,7 +166,7 @@ local function explore_packages()
       print(index .. ". " .. line)
     end
 
-    print("Lookup: " .. copas:get("name") .. " — " .. copas:get("summary"))
+    print("Lookup: " .. copas:get("name") .. ", " .. copas:get("summary"))
     print("Nested release query: " .. nested_release:get("name")
       .. " contains 1.3.2-1")
     print("Networking label: " .. table.concat(networking_packages, ", "))

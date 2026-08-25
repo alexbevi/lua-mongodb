@@ -173,7 +173,7 @@ local function run_leaderboard()
 
     local ranking
     ranking, err = collect(cursor, function(player)
-      return player:get("display_name") .. " — "
+      return player:get("display_name") .. ": "
         .. player:get("high_score"):to_number()
     end)
 

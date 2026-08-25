@@ -1,15 +1,15 @@
-# Build a Server-Side Game Leaderboard with Lua and MongoDB
+# Build a server-side game leaderboard with Lua and MongoDB
 
-This example is a **dedicated backend process running stock Lua 5.4 or Lua 5.5**. It is
-not code that connects directly to MongoDB from LÖVE, Roblox, or another game
-client. A production game would send authenticated requests to a service like
-this one rather than distribute database credentials to players.
+This example is a dedicated backend process running stock Lua 5.4 or Lua 5.5.
+It does not connect to MongoDB from LÖVE, Roblox, or another game client. A
+production game should send authenticated requests to a backend like this one
+instead of distributing database credentials to players.
 
-The deterministic workflow creates five evolving player profiles, submits a
-score, awards an achievement, reads the top three, and aggregates the current
-season, then transfers credits atomically.
+The sample seeds five player profiles. It submits a score, awards an
+achievement, reads the top three, aggregates the current season, and transfers
+credits atomically.
 
-## What it demonstrates
+## What you'll build
 
 - Ordered BSON player documents and explicit BSON arrays.
 - A unique `player_id` index.
@@ -75,7 +75,7 @@ credit balance, achievements array, recent-match array, and update marker.
 [`players.lua`](players.lua) keeps the fixture local so the example does not
 depend on a game platform or external API.
 
-[`main.lua`](main.lua) demonstrates this lifecycle:
+[`main.lua`](main.lua) runs these steps:
 
 ```text
 connect → submit score → award → rank → aggregate → transact → close
@@ -83,7 +83,7 @@ connect → submit score → award → rank → aggregate → transact → close
 
 The score submission uses `$max` so a lower score cannot replace the player's
 high score, while `$inc` records the season contribution. The ranking adds a
-name tiebreaker, making its output stable even when scores match.
+name tiebreaker, so equal scores still have a stable order.
 
 ## Transactional credit transfer
 
@@ -93,15 +93,15 @@ active session, so the debit and credit commit or abort together. The debit
 filter also requires a sufficient balance.
 
 The callback performs only database operations and is safe to run more than once.
-This matters because the callback transaction API may rerun it after a
-`TransientTransactionError`, while an unknown commit result retries only the
-commit. Do not send email, award an external prize, or perform another
-non-transactional side effect inside such a callback.
+The transaction API may rerun it after a `TransientTransactionError`; an
+unknown commit result retries only the commit. Do not send email, award an
+external prize, or perform another non-transactional side effect inside the
+callback.
 
 `with_transaction` owns commit, abort, and specification-required retries.
-The application still owns cleanup: `main.lua` calls `end_session` whether the
+The application still owns cleanup. `main.lua` calls `end_session` whether the
 transaction succeeds or returns an operational error, then closes the client.
-Transactions require a replica set or sharded deployment; they do not work on
+Transactions require a replica set or sharded deployment. They do not work on
 a standalone MongoDB server.
 
 ## Cleanup

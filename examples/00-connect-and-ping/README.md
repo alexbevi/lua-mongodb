@@ -1,11 +1,10 @@
 # Connect Lua 5.4 or Lua 5.5 to MongoDB and run `ping`
 
-This five-minute example installs the public `mongodb` rock, starts one local
-MongoDB server, runs the smallest complete command, and closes the client. It
-uses stock Lua 5.4 or Lua 5.5 with 64-bit integers. LuaJIT and OpenResty are
-not currently supported.
+This example installs the public `mongodb` rock, starts one local MongoDB
+server, runs `ping`, and closes the client. It uses stock Lua 5.4 or Lua 5.5
+with 64-bit integers. LuaJIT and OpenResty are not currently supported.
 
-The program follows this lifecycle:
+The program runs these steps:
 
 ```text
 load installed rock → enter Copas scheduler → connect → ping → close
@@ -67,23 +66,23 @@ Ping succeeded
 Client closed
 ```
 
-The program uses `MONGODB_URI` when set and otherwise uses the Compose URI. It
-creates one client inside `mongodb.run`, sends an ordered BSON command to the
-`admin` database, reports operational failures through the driver's
-`nil, err` contract, and closes the client before returning.
+The program uses `MONGODB_URI` when set. Otherwise, it uses the Compose URI.
+It creates one client inside `mongodb.run` and sends an ordered BSON command to
+the `admin` database. Operational failures follow the driver's `nil, err`
+contract, and the program closes the client before returning.
 
 ## Common failures
 
-- **`lua-mongodb requires Lua 5.4 or Lua 5.5`:** `lua` is an unsupported
-  runtime, or LuaRocks installed the rock for a different runtime. Select a
-  supported executable and confirm `luarocks ... config lua_version` prints
-  the same minor version.
-- **Server selection or connection refused:** wait for
-  `docker compose ps` to report `healthy`, then verify `MONGODB_URI` uses port
-  27017.
-- **No default database is configured:** include `/lua_examples_ping` in a
-  custom URI. This example uses `admin` for `ping`, but later collection
-  examples use the URI's default database.
+- If the program prints `lua-mongodb requires Lua 5.4 or Lua 5.5`, either
+  `lua` is unsupported or LuaRocks installed the rock for a different runtime.
+  Select a supported executable and confirm that
+  `luarocks ... config lua_version` prints the same minor version.
+- If server selection fails or the connection is refused, wait for
+  `docker compose ps` to report `healthy`. Then verify that `MONGODB_URI` uses
+  port 27017.
+- If no default database is configured, include `/lua_examples_ping` in a
+  custom URI. This example uses `admin` for `ping`; later collection examples
+  use the URI's default database.
 
 ## Cleanup
 
