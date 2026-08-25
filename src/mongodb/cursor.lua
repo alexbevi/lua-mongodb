@@ -203,12 +203,16 @@ local function get_more(value, state)
       and errors.is(err, errors.CATEGORY.CANCELLED)
     local failed_pin = state.pinned_connection ~= nil
       and errors.is(err, errors.CATEGORY.NETWORK)
+    local retained_pin = state.pinned_connection ~= nil
+      and errors.is(err, errors.CATEGORY.SERVER)
 
     if failed_pin then
       state.pinned_connection_failed = true
     end
 
-    if not errors.is(err, errors.CATEGORY.TIMEOUT) and not cancelled_await then
+    if not errors.is(err, errors.CATEGORY.TIMEOUT)
+        and not cancelled_await
+        and not retained_pin then
       mark_closed(value, state)
     end
 

@@ -14,11 +14,10 @@
     "LB-015": 3,
     "LB-016": 2,
     "LB-017": 1,
-    "LB-018": 1,
-    "LB-020": 1
+    "LB-018": 1
   },
   "deferred_by_scope": {
-    "post-v1-exclusion": 1047
+    "post-v1-exclusion": 1046
   },
   "post_v1_reasons": {
     "ADV-001": "change streams are outside production-core v1",
@@ -163,9 +162,9 @@
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1047,
+    "deferred_unsupported": 1046,
     "excluded_scope": 98,
-    "passed": 4364,
+    "passed": 4365,
     "unsupported": 15
   },
   "total_cases": 5524,

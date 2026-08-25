@@ -234,6 +234,61 @@ describe("find cursor lifecycle", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("retains a cursor pin after a getMore server error", function()
+    local commands = {}
+    local release_count = 0
+    local pin = {
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }
+    local executor = {
+      close = function() return true end,
+      command = function(_, _, command, options)
+        local name = command:keys()[1]
+
+        commands[#commands + 1] = name
+
+        if name == "find" then
+          options.on_connection_pinned(pin)
+          return bson.document({
+            { "ok", 1 },
+            { "cursor", bson.document({
+              { "id", bson.int64(41) },
+              { "ns", "app.users" },
+              { "firstBatch", bson.array({}) },
+            }) },
+          })
+        elseif name == "getMore" then
+          assert.are.equal(pin, options.pinned_connection)
+          return nil, errors.new({
+            category = errors.CATEGORY.SERVER,
+            code = 123,
+            message = "getMore failed",
+          })
+        end
+
+        assert.are.equal("killCursors", name)
+        assert.are.equal(pin, options.pinned_connection)
+        return bson.document({ { "ok", 1 } })
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("users"):find())
+    local document, err = cursor:next()
+
+    assert.is_nil(document)
+    assert.is_true(errors.is(err, errors.CATEGORY.SERVER))
+    assert.is_false(cursor:is_closed())
+    assert.are.equal(0, release_count)
+    assert.is_true(cursor:close())
+    assert.same({ "find", "getMore", "killCursors" }, commands)
+    assert.are.equal(1, release_count)
+    assert.is_false(cursor:close())
+    assert.are.equal(1, release_count)
+  end)
+
   it("encodes and polls a non-awaitData tailable cursor", function()
     local commands = {}
     local responses = {

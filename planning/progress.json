@@ -8097,6 +8097,28 @@
       ],
       "started_at": "2026-08-25T00:03:33+00:00",
       "completed_at": "2026-08-25T00:07:27+00:00"
+    },
+    "LB-020": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted 'FOCUS_UNIT=--filter=retains spec/unit/cursor_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused getMore server-error case failed because the cursor was marked closed, preventing killCursors from using and returning its healthy pin.",
+          "recorded_at": "2026-08-25T00:26:39+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_LINT='src/mongodb/cursor.lua spec/unit/cursor_spec.lua spec/integration/load_balancer_spec.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck && python3 -m unittest spec.conformance.test_ledger -v && conformance projection checks",
+          "exit_code": 0,
+          "summary": "44 focused cursor/topology unit cases, 6 load-balancer endpoint cases, touched Lua lint, complexity, ledger ratchet, and all conformance scope/checklist/README projections passed; upstream load-balancer cursor case 6 is classified passed.",
+          "recorded_at": "2026-08-25T00:28:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T00:25:47+00:00",
+      "completed_at": "2026-08-25T00:28:52+00:00"
     }
   },
   "verified_references": {
