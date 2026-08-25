@@ -56,6 +56,7 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
   "client-side-operations-timeout/tests/command-execution.json::test[1]",
   "client-side-operations-timeout/tests/command-execution.json::test[2]",
   "client-side-operations-timeout/tests/command-execution.json::test[3]",
+  "client-side-operations-timeout/tests/gridfs-download.json::test[4]",
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[2]",
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[3]",
   "client-side-operations-timeout/tests/non-tailable-cursors.json::test[5]",

@@ -101,6 +101,36 @@ class V09ScopeTests(unittest.TestCase):
         scope.load_capability_ratchets(),
       )
 
+  def test_exact_execution_allows_only_declared_macos_timing_skip(self) -> None:
+    identity = next(iter(scope.MACOS_CI_TIMING_SKIPS))
+    report = self.exact_report(identity, "environment_skipped")
+
+    self.assertEqual(
+      {"macos_timing_skipped": 1, "passed": 97, "required": 98},
+      scope.validate_execution(
+        scope.load_cases(),
+        report,
+        scope.load_capability_ratchets(),
+        allow_macos_ci_timing_skips=True,
+      ),
+    )
+
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
+      scope.validate_execution(
+        scope.load_cases(),
+        report,
+        scope.load_capability_ratchets(),
+      )
+
+    unrelated = "gridfs/tests/download.json::test[1]"
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(unrelated)):
+      scope.validate_execution(
+        scope.load_cases(),
+        self.exact_report(unrelated, "environment_skipped"),
+        scope.load_capability_ratchets(),
+        allow_macos_ci_timing_skips=True,
+      )
+
   def test_completed_owner_cannot_hide_non_passing_evidence(self) -> None:
     cases = copy.deepcopy(scope.load_cases())
     requirements = scope.load_requirements()

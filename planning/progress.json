@@ -8395,28 +8395,22 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.v10.test_scope.V10ScopeTests.test_full_conformance_unions_pre_8_2_evidence_for_v10'",
+          "command": "make test-focus FOCUS_PYTHON='<macOS CSOT runner, v0.9 scope, and Full Conformance workflow contracts>'",
           "exit_code": 2,
-          "summary": "The focused workflow contract failed because both v0.10 aggregate validators omitted the pre-8.2 exact evidence report exposed by Linux Full Conformance.",
-          "recorded_at": "2026-08-25T06:00:36+00:00"
-        },
-        {
-          "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='<v0.10 target-version and authenticated-handshake executor contracts>'",
-          "exit_code": 2,
-          "summary": "The focused contracts failed because five pre-floor branches were treated as current release targets and 42 authentication-required handshake identities used an unauthenticated replica-set executor.",
-          "recorded_at": "2026-08-25T06:00:37+00:00"
+          "summary": "The three focused contracts failed because the exact GridFS 75 ms identity was not in the macOS timing set, v0.9 had no narrow skip validator, and the macOS aggregate invoked only the v0.5/v0.6 skip policies.",
+          "recorded_at": "2026-08-25T06:51:24+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIFIED='<authenticated handshake fixtures>' FOCUS_PYTHON='<v0.10, ledger, release, and workflow contracts>'; run capability, ledger, v0.10, release, README, strict-plan, Python, actionlint, and diff validators",
+          "command": "make test-focus FOCUS_PYTHON='<unified CLI, v0.9 scope, CI portability, and release checklist>'; run capability, ledger, v0.9, v0.10, release, README, strict-plan, Python, actionlint, and diff validators",
           "exit_code": 0,
-          "summary": "All 52 authenticated handshake cases passed with zero skips or failures; 34 focused Python contracts passed; capability, ledger, v0.10, release, README, strict-plan, Python compilation, workflow lint, and diff validators passed.",
-          "recorded_at": "2026-08-25T06:01:37+00:00"
+          "summary": "All 155 focused Python contracts passed; the runner permits only the exact GridFS identity on macOS CI, v0.9 requires 97 macOS passes plus that explicit skip, and every generated, release, strict-plan, Python, workflow, and diff validator passed.",
+          "recorded_at": "2026-08-25T06:55:39+00:00"
         }
       ],
       "notes": [
-        "Requeued: Full Conformance exposed incomplete v0.10 aggregate evidence and unauthenticated handshake executor mappings"
+        "Requeued: Full Conformance exposed incomplete v0.10 aggregate evidence and unauthenticated handshake executor mappings",
+        "Requeued: Repeated macOS Full Conformance proved the 75 ms GridFS CSOT monitoring case is scheduler-sensitive while Linux remains authoritative"
       ],
       "reopen_history": [
         {
@@ -8437,11 +8431,37 @@
               "recorded_at": "2026-08-25T05:01:55+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-25T06:01:38+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.v10.test_scope.V10ScopeTests.test_full_conformance_unions_pre_8_2_evidence_for_v10'",
+              "exit_code": 2,
+              "summary": "The focused workflow contract failed because both v0.10 aggregate validators omitted the pre-8.2 exact evidence report exposed by Linux Full Conformance.",
+              "recorded_at": "2026-08-25T06:00:36+00:00"
+            },
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='<v0.10 target-version and authenticated-handshake executor contracts>'",
+              "exit_code": 2,
+              "summary": "The focused contracts failed because five pre-floor branches were treated as current release targets and 42 authentication-required handshake identities used an unauthenticated replica-set executor.",
+              "recorded_at": "2026-08-25T06:00:37+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIFIED='<authenticated handshake fixtures>' FOCUS_PYTHON='<v0.10, ledger, release, and workflow contracts>'; run capability, ledger, v0.10, release, README, strict-plan, Python, actionlint, and diff validators",
+              "exit_code": 0,
+              "summary": "All 52 authenticated handshake cases passed with zero skips or failures; 34 focused Python contracts passed; capability, ledger, v0.10, release, README, strict-plan, Python compilation, workflow lint, and diff validators passed.",
+              "recorded_at": "2026-08-25T06:01:37+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "952f9ba5ec181f093e52d916b1ce3b2d5133ae26",
-      "started_at": "2026-08-25T06:00:22+00:00",
-      "completed_at": "2026-08-25T06:01:38+00:00"
+      "reopened_after_commit": "289f2362dab98e2d02b81ed1f7ec5cd08026be9f",
+      "started_at": "2026-08-25T06:49:57+00:00",
+      "completed_at": "2026-08-25T06:55:40+00:00"
     }
   },
   "verified_references": {

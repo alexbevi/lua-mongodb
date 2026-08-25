@@ -567,6 +567,7 @@ jobs:
         run: >-
           python3 spec/v09/scope.py
           --check
+          --allow-macos-ci-timing-skips
           --execution-report build/conformance/unified-macos.json
 
       - name: Validate exact macOS v0.10 conformance evidence
