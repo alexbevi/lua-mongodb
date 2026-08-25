@@ -709,6 +709,7 @@ local function connect_topology(
         )
       end,
       listeners = special.pool_listeners or {},
+      load_balanced = config.load_balanced,
       max_connecting = config.max_connecting,
       max_idle_time_ms = config.max_idle_time_ms,
       max_pool_size = config.max_pool_size,

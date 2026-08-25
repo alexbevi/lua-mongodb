@@ -650,7 +650,13 @@ def classify_case(
       else:
         owner = "LB-018"
     elif fixture == "wait-queue-timeouts.json":
-      owner = "LB-010"
+      return _passed(
+        case,
+        "LB-010",
+        "spec/unit/pool_spec.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+        "directly-coupled-endpoint",
+      )
     else:
       raise LedgerError(f"unknown load-balancer fixture: {identity}")
 

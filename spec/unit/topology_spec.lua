@@ -368,6 +368,64 @@ describe("monitored topology", function()
     assert(commands:close())
   end)
 
+  it("checks out active transaction commands for their transaction purpose", function()
+    local runtime = fake_runtime.new()
+    local connection_pool
+    local timeout_err
+    local manager = topology.new({
+      pool_factory = function(address)
+        connection_pool = pool.new({
+          address = address,
+          connect = function()
+            return {
+              close = function() return true end,
+              command = function()
+                local connection
+
+                connection, timeout_err = connection_pool:check_out()
+                assert.is_nil(connection)
+                return bson.document({ { "ok", 1 } })
+              end,
+            }
+          end,
+          load_balanced = true,
+          max_pool_size = 1,
+          poll_interval_ms = 1,
+          runtime = runtime,
+          wait_queue_timeout_ms = 1,
+        })
+        return connection_pool
+      end,
+      runtime = runtime,
+      seeds = { "load-balancer:27017" },
+      type = "LoadBalanced",
+    })
+
+    assert(manager:open({ background = false }))
+    local commands = topology_executor.new(manager)
+    local session = {
+      is_in_transaction = function()
+        return true
+      end,
+    }
+
+    assert(commands:command(
+      "app",
+      bson.document({ { "insert", "events" } }),
+      { session = session }
+    ))
+    assert.matches(
+      "connections in use by cursors: 0, "
+        .. "connections in use by transactions: 1, "
+        .. "connections in use by other operations: 0",
+      timeout_err.message,
+      1,
+      true
+    )
+    assert.are.equal(0, connection_pool.operation_count)
+    assert(commands:close())
+  end)
+
   it("retains a failed load-balanced pin until its owner releases it", function()
     local runtime = fake_runtime.new()
     local service_id = bson.object_id("000000000000000000000001")

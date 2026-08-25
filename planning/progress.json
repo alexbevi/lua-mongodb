@@ -8141,6 +8141,28 @@
       "notes": [],
       "started_at": "2026-08-25T00:36:49+00:00",
       "completed_at": "2026-08-25T00:56:31+00:00"
+    },
+    "LB-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=purposes spec/unit/pool_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused wait-queue timeout case failed because the pool did not accept load-balanced purpose accounting.",
+          "recorded_at": "2026-08-25T01:15:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/unit/resource_cleanup_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/pool.lua src/mongodb/topology_executor.lua src/mongodb/client.lua spec/unit/pool_spec.lua spec/unit/topology_spec.lua spec/integration/load_balancer_spec.lua'",
+          "exit_code": 0,
+          "summary": "41 focused unit and 8 directly coupled integration cases passed; 46 conformance and release-scope tests passed; touched Lua files linted cleanly; complexity and all generated artifact validators passed",
+          "recorded_at": "2026-08-25T01:23:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T01:14:16+00:00",
+      "completed_at": "2026-08-25T01:23:27+00:00"
     }
   },
   "verified_references": {

@@ -501,6 +501,57 @@ describe("load-balanced connection establishment", function()
     end)
   end)
 
+  it("reports a pinned cursor in load-balanced wait queue timeouts", function()
+    local service_id = assert(bson.object_id("000000000000000000000001"))
+
+    run_endpoint(true, service_id, function(port)
+      local client = assert(mongodb.client(
+        "mongodb://127.0.0.1:" .. port .. "/app?loadBalanced=true",
+        {
+          max_pool_size = 1,
+          runtime = mongodb.runtime.copas(),
+          server_selection_timeout_ms = 2000,
+          wait_queue_timeout_ms = 50,
+        }
+      ))
+      local database = client:database()
+      local cursor = assert(database:collection("events"):find())
+      local response, err = database:run_command("ping")
+
+      assert.is_nil(response)
+      assert.matches(
+        "maxPoolSize: 1, connections in use by cursors: 1, "
+          .. "connections in use by transactions: 0, "
+          .. "connections in use by other operations: 0",
+        err.message,
+        1,
+        true
+      )
+      assert(cursor:close())
+      assert(client:close())
+    end, function(_, request)
+      local name = request.body:keys()[1]
+
+      if name == "find" then
+        return bson.document({
+          { "ok", 1 },
+          { "cursor", bson.document({
+            { "id", bson.int64(42) },
+            { "ns", "app.events" },
+            { "firstBatch", bson.array({}) },
+          }) },
+        })
+      end
+
+      if name == "endSessions" then
+        return bson.document({ { "ok", 1 } })
+      end
+
+      assert.are.equal("killCursors", name)
+      return bson.document({ { "ok", 1 } })
+    end)
+  end)
+
   it("runs the exact non-load-balanced connection-establishment cases", function()
     local fixture = load_fixture()
     local first = fixture:get("tests"):get(1)

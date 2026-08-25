@@ -280,6 +280,57 @@ describe("CMAP connection pools", function()
     assert(connection_pool:close())
   end)
 
+  it("reports load-balanced checkout purposes in wait queue timeouts", function()
+    local runtime = fake_runtime.new()
+    local connection_pool = pool.new({
+      address = "load-balancer:27017",
+      connect = function()
+        return { close = function() end }
+      end,
+      load_balanced = true,
+      max_pool_size = 3,
+      poll_interval_ms = 1,
+      runtime = runtime,
+      wait_queue_timeout_ms = 1,
+    })
+
+    assert(connection_pool:ready())
+    local function assert_timeout_counts()
+      local value, err = connection_pool:check_out()
+
+      assert.is_nil(value)
+      assert.is_true(errors.is(err, errors.CATEGORY.POOL))
+      assert.matches(
+        "maxPoolSize: 3, connections in use by cursors: 1, "
+          .. "connections in use by transactions: 1, "
+          .. "connections in use by other operations: 1",
+        err.message,
+        1,
+        true
+      )
+    end
+
+    local cursor = assert(connection_pool:check_out({ purpose = "cursor" }))
+    local transaction = assert(connection_pool:check_out({
+      purpose = "transaction",
+    }))
+    local other = assert(connection_pool:check_out())
+
+    assert_timeout_counts()
+
+    assert(cursor:check_in())
+    assert(transaction:mark_error())
+    assert(transaction:check_in())
+    cursor = assert(connection_pool:check_out({ purpose = "cursor" }))
+    transaction = assert(connection_pool:check_out({ purpose = "transaction" }))
+    assert_timeout_counts()
+    assert(cursor:check_in())
+    assert(transaction:check_in())
+    assert(other:check_in())
+    assert.are.equal(0, connection_pool.operation_count)
+    assert(connection_pool:close())
+  end)
+
   it("replenishes minPoolSize after a background connection error", function()
     run_copas(function()
       local runtime = runtime_module.copas({ lock_poll_interval = 0.001 })

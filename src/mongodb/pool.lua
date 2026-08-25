@@ -30,6 +30,11 @@ local CONNECTION_PROPERTIES = {
   service_id = true,
   state = true,
 }
+local CHECKOUT_PURPOSES = {
+  cursor = true,
+  other = true,
+  transaction = true,
+}
 
 local EVENT_METATABLE = {
   __index = function(value, key)
@@ -185,6 +190,24 @@ local function closed_error(state)
 end
 
 local function wait_timeout_error(state)
+  if state.load_balanced then
+    return pool_error(
+      state,
+      "timeout",
+      string.format(
+        "Timeout waiting for connection from the connection pool. "
+          .. "maxPoolSize: %s, connections in use by cursors: %s, "
+          .. "connections in use by transactions: %s, "
+          .. "connections in use by other operations: %s",
+        tostring(state.max_pool_size),
+        tostring(state.checkout_purposes.cursor),
+        tostring(state.checkout_purposes.transaction),
+        tostring(state.checkout_purposes.other)
+      ),
+      { timeout = true }
+    )
+  end
+
   return pool_error(
     state,
     "timeout",
@@ -197,6 +220,23 @@ local function wait_timeout_error(state)
     ),
     { timeout = true }
   )
+end
+
+local function begin_checkout_locked(state, connection, purpose)
+  local connection_state = CONNECTION_STATES[connection]
+
+  assert(connection_state.checkout_purpose == nil)
+  connection_state.checkout_purpose = purpose
+  state.checkout_purposes[purpose] = state.checkout_purposes[purpose] + 1
+end
+
+local function finish_checkout_locked(state, connection_state)
+  local purpose = connection_state.checkout_purpose
+
+  assert(CHECKOUT_PURPOSES[purpose])
+  assert(state.checkout_purposes[purpose] > 0)
+  state.checkout_purposes[purpose] = state.checkout_purposes[purpose] - 1
+  connection_state.checkout_purpose = nil
 end
 
 local function acquire(state, deadline, cancellation)
@@ -529,6 +569,7 @@ local function validate_options(options)
     address = true,
     connect = true,
     listeners = true,
+    load_balanced = true,
     max_connecting = true,
     max_idle_time_ms = true,
     max_pool_size = true,
@@ -552,6 +593,12 @@ local function validate_options(options)
 
   if type(options.connect) ~= "function" then
     error("pool connect adapter must be a function", 3)
+  end
+
+  if options.load_balanced ~= nil
+      and type(options.load_balanced) ~= "boolean"
+  then
+    error("load_balanced must be a boolean", 3)
   end
 
   runtime_contract.validate(options.runtime)
@@ -602,12 +649,14 @@ function M.new(options)
   local state = {
     address = options.address:lower(),
     available = {},
+    checkout_purposes = { cursor = 0, other = 0, transaction = 0 },
     connect = options.connect,
     connections = {},
     generation = 0,
     in_use = {},
     in_use_count = 0,
     listeners = normalize_listeners(options.listeners),
+    load_balanced = options.load_balanced == true,
     lock = options.runtime.lock:new(),
     maintenance_scheduled = false,
     max_connecting = normalized.max_connecting,
@@ -708,9 +757,15 @@ function POOL_METHODS:check_out(options)
   end
 
   for key in pairs(options) do
-    if key ~= "cancellation" and key ~= "deadline" then
+    if key ~= "cancellation" and key ~= "deadline" and key ~= "purpose" then
       error("unknown checkout option: " .. tostring(key), 2)
     end
+  end
+
+  local purpose = options.purpose or "other"
+
+  if not CHECKOUT_PURPOSES[purpose] then
+    error("checkout purpose must be cursor, transaction, or other", 2)
   end
 
   local state = POOL_STATES[self]
@@ -816,6 +871,7 @@ function POOL_METHODS:check_out(options)
 
         connection_state.state = "in_use"
         connection_state.checked_in = false
+        begin_checkout_locked(state, connection, purpose)
         state.in_use[connection] = true
         state.in_use_count = state.in_use_count + 1
         remove_waiter(state, waiter)
@@ -862,6 +918,10 @@ function POOL_METHODS:check_out(options)
             reported
           )
         end
+
+        assert(acquire(state))
+        begin_checkout_locked(state, connection, purpose)
+        state.lock:release()
 
         publish(state, "ConnectionCheckedOut", {
           connection_id = connection.id,
@@ -919,6 +979,7 @@ function POOL_METHODS:check_in(connection)
 
   connection_state.checked_in = true
   state.operation_count = state.operation_count - 1
+  finish_checkout_locked(state, connection_state)
 
   if connection_state.state == "closed" then
     state.lock:release()

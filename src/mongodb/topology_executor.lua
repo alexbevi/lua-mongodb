@@ -232,9 +232,18 @@ local function select_connection(state, operation, options)
   end
 
   local pool = pool_or_err
+  local purpose = "other"
+
+  if options and options.session and options.session:is_in_transaction() then
+    purpose = "transaction"
+  elseif options and options.pin_connection then
+    purpose = "cursor"
+  end
+
   local connection, checkout_err, reported = pool:check_out({
     cancellation = options and options.cancellation,
     deadline = deadline,
+    purpose = purpose,
   })
 
   if not connection then
