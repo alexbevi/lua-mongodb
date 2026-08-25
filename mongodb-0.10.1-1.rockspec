@@ -1,19 +1,19 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.10.0-1"
+version = "0.10.1-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.10.0",
+  tag = "v0.10.1",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.10.0 adds load-balanced topology, service-aware
-    pooling, and cursor, transaction, and session connection pinning.
+    libmongoc. Version 0.10.1 fixes deprecated index maxTimeMS handling
+    under CSOT and refreshes ObjectId process entropy after a fork.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",

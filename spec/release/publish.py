@@ -13,7 +13,7 @@ from typing import Sequence
 
 
 ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_ROCKSPEC = ROOT / "mongodb-0.10.0-1.rockspec"
+DEFAULT_ROCKSPEC = ROOT / "mongodb-0.10.1-1.rockspec"
 VERSION_PATTERN = re.compile(r"^(?P<version>\d+\.\d+\.\d+)-(?P<revision>\d+)$")
 REQUIRED_FULL_JOBS = (
   "linux-quality",

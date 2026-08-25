@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report load balancing v0.10 release readiness."""
+"""Validate and report maintenance v0.10.1 release readiness."""
 
 from __future__ import annotations
 
@@ -27,9 +27,10 @@ from spec.v10 import scope as v10_scope  # noqa: E402
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
+CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.10.0-1.rockspec"
-RELEASE_VERSION = "0.10.0"
+ROCKSPEC = ROOT / "mongodb-0.10.1-1.rockspec"
+RELEASE_VERSION = "0.10.1"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
@@ -170,10 +171,17 @@ V10_GATES = [
   V10_CONFORMANCE_ACTIVITY,
 ]
 V10_RELEASE_ACTIVITY = "REL-059"
+MAINTENANCE_GATES = ["CSOT-001", "BSON-010"]
+MAINTENANCE_RELEASE_ACTIVITY = "REL-060"
+CSOT_IDENTITIES = {
+  f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
+  for index in (79, 82, 85)
+}
+OBJECTID_IDENTITIES = {"bson-objectid/objectid.md::post-fork-random"}
 
 
 class ChecklistError(ValueError):
-  """Raised when the load balancing release is not ready."""
+  """Raised when the maintenance release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -209,6 +217,37 @@ def completed_activity(progress: dict[str, Any], activity_id: str) -> None:
     raise ChecklistError(f"release activity has no green evidence: {activity_id}")
 
 
+def passed_owner_evidence(
+  entries: dict[str, dict[str, Any]],
+  activity_id: str,
+  expected_identities: set[str],
+) -> dict[str, dict[str, Any]]:
+  owned = {
+    identity: entry
+    for identity, entry in entries.items()
+    if entry.get("activity") == activity_id
+  }
+
+  if set(owned) != expected_identities:
+    raise ChecklistError(
+      f"{activity_id} release identities do not match the maintenance scope"
+    )
+
+  for entry in owned.values():
+    if entry.get("status") != "passed":
+      raise ChecklistError(f"{activity_id} release requirement is not passed")
+
+    for field in ("runner", "last_execution"):
+      value = entry.get(field)
+
+      if not isinstance(value, str) or not value.strip():
+        raise ChecklistError(
+          f"{activity_id} release requirement has no {field} evidence"
+        )
+
+  return owned
+
+
 def release_metadata() -> dict[str, str]:
   if not ROCKSPEC.exists():
     raise ChecklistError(f"release rockspec is missing: {ROCKSPEC.name}")
@@ -235,7 +274,7 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: load balancing v0.10 release-ready.",
+    "Status: maintenance v0.10.1 release-ready.",
   )
 
   return {
@@ -250,6 +289,7 @@ def generate() -> dict[str, Any]:
   plan = load_json(PLAN)
   progress = load_json(PROGRESS)
   ledger = load_json(LEDGER)
+  catalog = load_json(CATALOG)
   activities = {
     activity["id"]: activity
     for activity in plan.get("activities", [])
@@ -324,6 +364,19 @@ def generate() -> dict[str, Any]:
   ]:
     raise ChecklistError("v0.10 release gate inventory does not match the track")
 
+  maintenance_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-1-maintenance"
+  ]
+  if maintenance_track != [
+    *MAINTENANCE_GATES,
+    MAINTENANCE_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError(
+      "v0.10.1 release gate inventory does not match the track"
+    )
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -387,6 +440,23 @@ def generate() -> dict[str, Any]:
       raise ChecklistError(f"unknown v0.10 gate activity: {activity_id}")
 
     completed_activity(progress, activity_id)
+
+  for activity_id in MAINTENANCE_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown maintenance gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
+  csot_evidence = passed_owner_evidence(
+    ledger.get("cases", {}),
+    "CSOT-001",
+    CSOT_IDENTITIES,
+  )
+  objectid_evidence = passed_owner_evidence(
+    catalog.get("requirements", {}),
+    "BSON-010",
+    OBJECTID_IDENTITIES,
+  )
 
   for activity_ids in AUDITS.values():
     for activity_id in activity_ids:
@@ -631,11 +701,17 @@ def generate() -> dict[str, Any]:
         "run_on_branches": v10_report["evidence"]["run_on_branches"],
         "unsupported_requirements": v10_summary["unsupported"],
       },
+      "maintenance": {
+        "activities": MAINTENANCE_GATES,
+        "bson_objectid_requirements": len(objectid_evidence),
+        "csot_cases": len(csot_evidence),
+        "passed_requirements": len(csot_evidence) + len(objectid_evidence),
+      },
     },
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "load-balancing-release-checklist",
+    "type": "maintenance-release-checklist",
   }
 
 

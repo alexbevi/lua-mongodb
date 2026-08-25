@@ -1,4 +1,4 @@
-"""Contract tests for the load balancing v0.10 release checklist."""
+"""Contract tests for the maintenance v0.10.1 release checklist."""
 
 import unittest
 
@@ -10,8 +10,17 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("load-balancing-release-checklist", report["type"])
-    self.assertEqual("0.10.0", report["release"]["version"])
+    self.assertEqual("maintenance-release-checklist", report["type"])
+    self.assertEqual("0.10.1", report["release"]["version"])
+    self.assertEqual(
+      {
+        "activities": ["CSOT-001", "BSON-010"],
+        "bson_objectid_requirements": 1,
+        "csot_cases": 3,
+        "passed_requirements": 4,
+      },
+      report["gates"]["maintenance"],
+    )
     conformance = report["gates"]["conformance"]
 
     self.assertEqual(0, conformance["applicable_gaps"])

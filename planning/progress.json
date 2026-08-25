@@ -8734,6 +8734,35 @@
       "reopened_after_commit": "a6679786dede7de8f21eedde10cb4715010835df",
       "started_at": "2026-08-25T19:21:40+00:00",
       "completed_at": "2026-08-25T19:22:39+00:00"
+    },
+    "REL-060": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua' FOCUS_PYTHON='<release metadata and checklist contracts>'",
+          "exit_code": 2,
+          "summary": "The top-level module still reported 0.10.0 while the maintenance release contract requires 0.10.1; three adjacent runtime-guard cases passed.",
+          "recorded_at": "2026-08-25T19:34:49+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='<version and handshake units>' FOCUS_PYTHON='<release, scope, CI contracts>' FOCUS_LINT='<six touched Lua files>'; focused wrapper-metadata integration",
+          "exit_code": 0,
+          "summary": "Twenty Lua version/handshake cases, 31 release and CI contracts, six-file lint, and the focused wrapper-metadata integration case passed under Lua 5.4.",
+          "recorded_at": "2026-08-25T20:32:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-package; deterministic source-rock build from staged Git tree; rockspec, checklist, catalog, README, syntax, and diff validators",
+          "exit_code": 0,
+          "summary": "All three isolated package tests passed under Lua 5.5; two 1.7 MiB source rocks from the immutable candidate tree were byte-identical and contained the versioned rockspec and public GridFS module; every release artifact validator passed.",
+          "recorded_at": "2026-08-25T20:32:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T19:33:31+00:00",
+      "completed_at": "2026-08-25T20:32:31+00:00"
     }
   },
   "verified_references": {

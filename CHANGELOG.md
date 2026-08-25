@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.1] - 2026-08-25
+
+Maintenance release.
+
+### Fixed
+
+- Ignored deprecated index `maxTimeMS` options when a client-side operation timeout is configured, allowing the central CSOT deadline to derive the command budget.
+- Refreshed the five-byte ObjectId process value after a fork while retaining the generator's wrapping counter.
+
+### Dependencies
+
+- Added the pinned `getpid` 0.1.0-1 provider behind the runtime process-identity capability.
+
+### Conformance
+
+- Added exact passing evidence for the three deprecated-index CSOT cases and the normative ObjectId post-fork uniqueness requirement.
+
 ## [0.10.0] - 2026-08-25
 
 Load balancing release.
