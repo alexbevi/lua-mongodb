@@ -8075,11 +8075,28 @@
       "completed_at": "2026-08-24T23:45:35+00:00"
     },
     "LB-019": {
-      "status": "pending",
-      "evidence": [],
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted 'FOCUS_UNIT=--filter=killCursors spec/unit/cursor_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused killCursors network-error case failed because cursor:close() returned nil and the network error instead of true after releasing the pin.",
+          "recorded_at": "2026-08-25T00:04:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_LINT='src/mongodb/cursor.lua spec/unit/cursor_spec.lua spec/integration/load_balancer_spec.lua' && make test-complexity LUA=/opt/homebrew/opt/lua@5.4/bin/lua LUACHECK=/Users/alex/.luarocks/bin/luacheck && python3 spec/conformance/ledger.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "43 focused cursor/topology unit cases, 5 load-balancer endpoint cases, touched Lua lint, complexity, conformance ledger, and README projection passed; upstream load-balancer cursor case 5 is classified passed.",
+          "recorded_at": "2026-08-25T00:07:21+00:00"
+        }
+      ],
       "notes": [
         "Requeued: Correct the close result contract to match the load-balancers cursor fixture and pinned PyMongo behavior before adding the defining test."
-      ]
+      ],
+      "started_at": "2026-08-25T00:03:33+00:00",
+      "completed_at": "2026-08-25T00:07:27+00:00"
     }
   },
   "verified_references": {

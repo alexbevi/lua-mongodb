@@ -552,7 +552,13 @@ def classify_case(
           "directly-coupled-endpoint",
         )
       elif index == 5:
-        owner = "LB-019"
+        return _passed(
+          case,
+          "LB-019",
+          "spec/unit/cursor_spec.lua",
+          "make test-focus FOCUS_UNIT='spec/unit/cursor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
+          "directly-coupled-endpoint",
+        )
       elif index == 6:
         owner = "LB-020"
       else:

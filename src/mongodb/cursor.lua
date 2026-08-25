@@ -365,6 +365,7 @@ function CURSOR_METHODS:close(options)
 
   local id = state.id
   local context = state.timeout_context
+  local pinned_connection = state.pinned_connection
   local response, err
 
   if context then
@@ -411,7 +412,8 @@ function CURSOR_METHODS:close(options)
   release_pinned_connection(state)
   mark_closed(self, state)
 
-  if not response then
+  if not response
+      and not (pinned_connection and errors.is(err, errors.CATEGORY.NETWORK)) then
     return nil, err
   end
 
