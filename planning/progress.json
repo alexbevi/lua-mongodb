@@ -8194,6 +8194,28 @@
       ],
       "started_at": "2026-08-25T01:50:29+00:00",
       "completed_at": "2026-08-25T01:54:03+00:00"
+    },
+    "LB-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus 'FOCUS_UNIT=--filter=ordinary.abort spec/unit/session_spec.lua'",
+          "exit_code": 1,
+          "summary": "The focused ordinary abort-error case failed because the terminal transaction retained its load-balanced connection pin.",
+          "recorded_at": "2026-08-25T02:03:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/retry_executor_spec.lua spec/unit/topology_spec.lua' FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua' FOCUS_PYTHON='spec.conformance.test_ledger spec.release.test_scope spec.v04.test_scope spec.v05.test_scope spec.v06.test_scope spec.v07.test_scope spec.v08.test_scope spec.v09.test_scope' FOCUS_LINT='src/mongodb/session.lua spec/unit/session_spec.lua spec/integration/load_balancer_spec.lua'",
+          "exit_code": 0,
+          "summary": "70 focused unit and 10 directly coupled integration cases passed; 46 conformance and release-scope tests passed; touched Lua files linted cleanly; complexity and generated artifact validators passed",
+          "recorded_at": "2026-08-25T02:09:21+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-25T02:01:57+00:00",
+      "completed_at": "2026-08-25T02:09:22+00:00"
     }
   },
   "verified_references": {

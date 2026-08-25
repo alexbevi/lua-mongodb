@@ -844,6 +844,98 @@ describe("client sessions", function()
     end
   end)
 
+  it("releases a load-balanced pin after an ordinary abort error", function()
+    local release_count = 0
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function()
+        return nil, errors.new({
+          category = errors.CATEGORY.SERVER,
+          code = 123,
+          message = "abort rejected",
+        })
+      end,
+    })
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(sessions:decorate(
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    assert(session:pin_connection({
+      release = function()
+        release_count = release_count + 1
+        return true
+      end,
+    }))
+    assert(session:abort_transaction())
+    assert.is_false(session:is_pinned())
+    assert.are.equal(1, release_count)
+  end)
+
+  it("retains load-balanced pins after ordinary CRUD and commit errors", function()
+    local command_count = 0
+    local release_count = 0
+    local ordinary_error = errors.new({
+      category = errors.CATEGORY.SERVER,
+      code = 123,
+      message = "operation rejected",
+    })
+    local underlying = {
+      close = function() return true end,
+      command = function(_, _, _, options)
+        command_count = command_count + 1
+
+        if command_count == 1 then
+          options.on_connection_pinned({
+            release = function()
+              release_count = release_count + 1
+              return true
+            end,
+          })
+          return bson.document({ { "ok", 1 } })
+        end
+
+        assert.is_not_nil(options.pinned_connection)
+        return nil, ordinary_error
+      end,
+    }
+    local sessions = new_session_manager({
+      id_factory = identifiers(),
+      load_balanced = true,
+      transaction_command = function()
+        return nil, ordinary_error
+      end,
+    })
+    local executor = session_executor.new(underlying, sessions)
+    local session = assert(sessions:start())
+
+    assert(session:start_transaction())
+    assert(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { session = session }
+    ))
+    local response, err = executor:command(
+      "db",
+      bson.document({ { "update", "items" } }),
+      { session = session }
+    )
+
+    assert.is_nil(response)
+    assert.are.equal(ordinary_error, err)
+    assert.is_true(session:is_pinned())
+    response, err = session:commit_transaction()
+    assert.is_nil(response)
+    assert.are.equal(ordinary_error, err)
+    assert.is_true(session:is_pinned())
+    assert.are.equal(0, release_count)
+    assert(session:unpin_connection())
+    assert.are.equal(1, release_count)
+  end)
+
   it("unpins only transient transaction application errors", function()
     local pending_error
     local underlying = {
