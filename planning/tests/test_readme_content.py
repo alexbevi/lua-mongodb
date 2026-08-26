@@ -9,6 +9,8 @@ README = ROOT / "README.md"
 API = ROOT / "docs" / "API.md"
 ARCHITECTURE = ROOT / "docs" / "ARCHITECTURE.md"
 SECURITY = ROOT / "SECURITY.md"
+CONTRIBUTING = ROOT / "CONTRIBUTING.md"
+MAKEFILE = ROOT / "Makefile"
 MODULE_CLASSIFICATION = ROOT / "spec" / "module-classification.json"
 RUNTIME_CAPABILITIES = (
   "clock.now",
@@ -67,7 +69,7 @@ class ReadmeContentTests(unittest.TestCase):
       self.assertNotIn(heading, readme)
 
   def test_local_links_resolve(self) -> None:
-    documents = (README, API)
+    documents = (README, API, CONTRIBUTING, SECURITY)
 
     for document in documents:
       contents = document.read_text(encoding="utf-8")
@@ -123,6 +125,70 @@ class ReadmeContentTests(unittest.TestCase):
     ):
       with self.subTest(invented=invented_contact_or_promise):
         self.assertNotIn(invented_contact_or_promise, policy.lower())
+
+  def test_contributor_guide_exposes_the_existing_workflow(self) -> None:
+    readme = README.read_text(encoding="utf-8")
+
+    self.assertTrue(CONTRIBUTING.exists(), "CONTRIBUTING.md is required")
+    guide = " ".join(CONTRIBUTING.read_text(encoding="utf-8").split())
+
+    self.assertIn("[contribution guide](CONTRIBUTING.md)", readme)
+
+    for requirement in (
+      "Lua 5.4 and Lua 5.5 with a 64-bit `lua_Integer`",
+      "Linux and macOS",
+      "A running Docker daemon is required only for the image-backed live compatibility matrix",
+      "git submodule update --init --recursive",
+      "luarocks install --only-deps mongodb-0.10.1-1.rockspec",
+      "FOCUS_UNIT",
+      "FOCUS_INTEGRATION",
+      "FOCUS_UNIFIED",
+      "FOCUS_PYTHON",
+      "FOCUS_LINT",
+      "make check-fast-runtime",
+      "make check-fast",
+      "make check-full",
+      "CI Fast",
+      "Full Conformance",
+      "python3 planning/update_plan.py check --strict --pushed",
+      "Plan-Activity: ID",
+      "Never edit `planning/current_state.json`",
+      "Do not edit either pinned submodule",
+      "python3 planning/update_readme_compatibility.py",
+      "[security policy](SECURITY.md)",
+      "[architecture](docs/ARCHITECTURE.md)",
+      "[implementation strategy](planning/strategy.md)",
+      "[agent working agreement](AGENTS.md)",
+    ):
+      with self.subTest(requirement=requirement):
+        self.assertIn(requirement, guide)
+
+    self.assertNotIn("git submodule update --remote", guide)
+
+  def test_contributor_guide_names_only_existing_project_commands(self) -> None:
+    makefile = MAKEFILE.read_text(encoding="utf-8")
+
+    for target in (
+      "test-focus",
+      "test-architecture",
+      "test-complexity",
+      "test-compatibility-live",
+      "check-fast-runtime",
+      "check-fast",
+      "check-full",
+      "check",
+    ):
+      with self.subTest(target=target):
+        self.assertRegex(makefile, rf"(?m)^{re.escape(target)}:")
+
+    for script in (
+      "planning/update_plan.py",
+      "planning/update_readme_compatibility.py",
+      "spec/conformance/catalog.py",
+      "spec/conformance/ledger.py",
+    ):
+      with self.subTest(script=script):
+        self.assertTrue((ROOT / script).is_file())
 
   def test_api_stability_policy_is_linked_and_explicit(self) -> None:
     readme = README.read_text(encoding="utf-8")

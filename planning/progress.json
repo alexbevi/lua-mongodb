@@ -9160,6 +9160,42 @@
       "notes": [],
       "started_at": "2026-08-26T04:38:37+00:00",
       "completed_at": "2026-08-26T04:40:47+00:00"
+    },
+    "DOC-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_readme_content.ReadmeContentTests.test_contributor_guide_exposes_the_existing_workflow planning.tests.test_readme_content.ReadmeContentTests.test_contributor_guide_names_only_existing_project_commands",
+          "exit_code": 1,
+          "summary": "CONTRIBUTING.md and its README entry point were absent; validated project commands already existed",
+          "recorded_at": "2026-08-26T04:52:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_content planning.tests.test_generated_artifacts planning.tests.test_update_plan'",
+          "exit_code": 0,
+          "summary": "42 repository-content, planning-command, and generated-artifact tests passed",
+          "recorded_at": "2026-08-26T04:57:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "env -u FOCUS_UNIT -u FOCUS_INTEGRATION -u FOCUS_UNIFIED -u FOCUS_PYTHON -u FOCUS_LINT python3 -m unittest planning.tests.test_local_testing -v",
+          "exit_code": 0,
+          "summary": "5 local verification command-contract tests passed",
+          "recorded_at": "2026-08-26T04:57:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "summary": "passed",
+          "recorded_at": "2026-08-26T04:57:53+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T04:50:25+00:00",
+      "completed_at": "2026-08-26T04:57:58+00:00"
     }
   },
   "verified_references": {
