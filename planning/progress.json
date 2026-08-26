@@ -9262,6 +9262,28 @@
       "notes": [],
       "started_at": "2026-08-26T15:05:05+00:00",
       "completed_at": "2026-08-26T15:19:41+00:00"
+    },
+    "AUTH-033": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_gssapi_spec.lua'",
+          "exit_code": 2,
+          "summary": "mongodb.auth.gssapi had no authenticate function, so it could not create a provider context or run the GSSAPI SASL and final security-layer exchanges.",
+          "recorded_at": "2026-08-26T15:36:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/auth_gssapi_spec.lua spec/unit/auth_spec.lua spec/unit/auth_gssapi_hostname_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_gssapi_spec.lua' FOCUS_LINT='src/mongodb/auth/gssapi.lua src/mongodb/auth/init.lua src/mongodb/client.lua spec/unit/auth_gssapi_spec.lua spec/unit/auth_spec.lua spec/integration/auth_gssapi_spec.lua'",
+          "exit_code": 0,
+          "summary": "The GSSAPI provider state machine, dispatcher, hostname coupling, real client/socket exchange, cleanup, redaction, round bound, and touched-file lint passed (13 focused examples; 0 lint warnings).",
+          "recorded_at": "2026-08-26T15:43:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T15:34:14+00:00",
+      "completed_at": "2026-08-26T15:43:32+00:00"
     }
   },
   "verified_references": {

@@ -1626,11 +1626,21 @@ deadline [, cancellation]])` returns `{ canonical_name, address }`, and
 `resolve_address(address [, deadline [, cancellation]])` returns a hostname. Operational
 failures return `nil, err`.
 
+GSSAPI authentication uses an optional `runtime.gssapi` provider. Its
+`create_context(options [, deadline [, cancellation]])` method receives `service_principal`,
+`username`, and an optional `password`, then returns a context or `nil, err`. A context supplies
+`step(challenge [, deadline [, cancellation]]) -> { token, complete }`,
+`security_layer(challenge, username [, deadline [, cancellation]]) -> token`, and
+`close() -> true | nil, err`. Tokens are raw byte strings. The driver closes every created
+context, including after failed commands, provider failures, timeouts, cancellation, and raised
+programmer errors.
+
 A runtime may expose `compression`, keyed by compressor name. Each compression provider has a
 matching `name`, a unique integer `compressor_id` from 1 through 255, and `compress` and
 `decompress` functions. `mongodb.runtime.validate` checks the required function paths, optional
-metadata type, GSSAPI DNS pair, and compression-provider shape; adapter authors remain
-responsible for the method semantics above.
+metadata type, GSSAPI DNS pair, and compression-provider shape. GSSAPI provider validation is
+deferred until that optional provider is used; adapter authors remain responsible for the
+method semantics above.
 
 ### Built-in runtime modules
 

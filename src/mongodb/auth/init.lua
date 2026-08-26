@@ -3,6 +3,7 @@ local aws_credentials = require("mongodb.auth.aws_credentials")
 local aws_ec2 = require("mongodb.auth.aws_ec2")
 local aws_ecs = require("mongodb.auth.aws_ecs")
 local aws_web_identity = require("mongodb.auth.aws_web_identity")
+local gssapi = require("mongodb.auth.gssapi")
 local oidc = require("mongodb.auth.oidc")
 local plain = require("mongodb.auth.plain")
 local scram = require("mongodb.auth.scram")
@@ -100,6 +101,10 @@ function M.authenticate(commands, runtime, credentials, options)
 
   if mechanism == "PLAIN" then
     return plain.authenticate(commands, credentials, options)
+  end
+
+  if mechanism == "GSSAPI" then
+    return gssapi.authenticate(commands, runtime, credentials, options)
   end
 
   if mechanism == "MONGODB-OIDC" then

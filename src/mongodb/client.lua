@@ -389,6 +389,7 @@ end
 local function mechanism_from(hello, configured)
   if configured ~= nil then
     if configured ~= "PLAIN"
+        and configured ~= "GSSAPI"
         and configured ~= "MONGODB-AWS"
         and configured ~= "MONGODB-OIDC"
         and configured ~= "MONGODB-X509"
