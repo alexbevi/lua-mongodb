@@ -9394,6 +9394,49 @@
       "notes": [],
       "started_at": "2026-08-26T19:09:51+00:00",
       "completed_at": "2026-08-26T19:12:58+00:00"
+    },
+    "AUTH-039": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh",
+          "exit_code": 2,
+          "summary": "4 existing GSSAPI successes, 1 replica-set failure: the live environment had no Kerberos-enabled replica-set profile",
+          "recorded_at": "2026-08-26T19:25:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh",
+          "exit_code": 0,
+          "summary": "5 live GSSAPI successes, including replica-set discovery, authentication, ping, and close; 0 failures, 0 errors, 0 pending",
+          "recorded_at": "2026-08-26T19:35:40+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_INTEGRATION=spec/integration/auth_gssapi_live_spec.lua FOCUS_LINT=spec/integration/auth_gssapi_live_spec.lua",
+          "exit_code": 0,
+          "summary": "ordinary profile: 1 explicit environment pending; touched Lua integration file: 0 lint warnings, 0 lint errors",
+          "recorded_at": "2026-08-26T19:35:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "shellcheck spec/integration/run_gssapi_live.sh",
+          "exit_code": 0,
+          "summary": "GSSAPI live setup script passed shellcheck",
+          "recorded_at": "2026-08-26T19:35:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "actionlint -ignore SC2129 .github/workflows/ci.yml && git diff --check",
+          "exit_code": 0,
+          "summary": "workflow validation and whitespace validation passed",
+          "recorded_at": "2026-08-26T19:35:42+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T19:24:20+00:00",
+      "completed_at": "2026-08-26T19:35:48+00:00"
     }
   },
   "verified_references": {

@@ -9,6 +9,8 @@ gssapi_realm=LUA-MONGODB.TEST
 gssapi_host=gssapi.test
 gssapi_canonical_endpoint=gssapi-alias.test
 gssapi_port=27018
+gssapi_replica_set=gssapi-rs
+gssapi_replica_set_port=27019
 gssapi_kdc_port=10088
 gssapi_user=driver_$(openssl rand -hex 8)
 gssapi_principal=${gssapi_user}@${gssapi_realm}
@@ -17,11 +19,20 @@ gssapi_master_password=$(openssl rand -hex 24)
 gssapi_krb5_conf=${gssapi_temp_dir}/krb5.conf
 gssapi_kdc_conf=${gssapi_temp_dir}/kdc.conf
 gssapi_keytab=${gssapi_temp_dir}/mongod.keytab
+gssapi_replica_set_key=${gssapi_temp_dir}/replica-set.key
 gssapi_cache=${gssapi_temp_dir}/client.ccache
 gssapi_mongod_pid=
+gssapi_replica_set_pid=
 gssapi_kdc_pid=
 
 cleanup() {
+  if test -n "$gssapi_replica_set_pid" \
+      && kill -0 "$gssapi_replica_set_pid" 2>/dev/null
+  then
+    kill "$gssapi_replica_set_pid"
+    wait "$gssapi_replica_set_pid" || true
+  fi
+
   if test -n "$gssapi_mongod_pid" && kill -0 "$gssapi_mongod_pid" 2>/dev/null; then
     kill "$gssapi_mongod_pid"
     wait "$gssapi_mongod_pid" || true
@@ -48,7 +59,10 @@ if test -n "${GITHUB_ACTIONS:-}"; then
   printf '::add-mask::%s\n' "$gssapi_master_password"
 fi
 
-mkdir -p "$gssapi_temp_dir/database" "$gssapi_temp_dir/mongodb-data"
+mkdir -p \
+  "$gssapi_temp_dir/database" \
+  "$gssapi_temp_dir/mongodb-data" \
+  "$gssapi_temp_dir/mongodb-replica-set-data"
 
 cat > "$gssapi_krb5_conf" <<EOF
 [libdefaults]
@@ -102,6 +116,8 @@ kadmin.local -r "$gssapi_realm" \
   -q "ktadd -k $gssapi_keytab mongodb/$gssapi_host@$gssapi_realm" \
   > "$gssapi_temp_dir/kadmin-keytab.log" 2>&1
 chmod 600 "$gssapi_keytab"
+openssl rand -base64 512 > "$gssapi_replica_set_key"
+chmod 600 "$gssapi_replica_set_key"
 
 krb5kdc -n -r "$gssapi_realm" > "$gssapi_temp_dir/kdc.log" 2>&1 &
 gssapi_kdc_pid=$!
@@ -140,6 +156,20 @@ env KRB5_CONFIG="$gssapi_krb5_conf" KRB5_KTNAME="$gssapi_keytab" \
   > "$gssapi_temp_dir/mongod-console.log" 2>&1 &
 gssapi_mongod_pid=$!
 
+env KRB5_CONFIG="$gssapi_krb5_conf" KRB5_KTNAME="$gssapi_keytab" \
+  "$gssapi_mongod" \
+  --auth \
+  --bind_ip 127.0.0.1,127.0.0.2 \
+  --dbpath "$gssapi_temp_dir/mongodb-replica-set-data" \
+  --keyFile "$gssapi_replica_set_key" \
+  --logpath "$gssapi_temp_dir/mongod-replica-set.log" \
+  --port "$gssapi_replica_set_port" \
+  --replSet "$gssapi_replica_set" \
+  --setParameter authenticationMechanisms=GSSAPI \
+  --setParameter saslHostName="$gssapi_host" \
+  > "$gssapi_temp_dir/mongod-replica-set-console.log" 2>&1 &
+gssapi_replica_set_pid=$!
+
 for _ in $(seq 1 60); do
   if (exec 3<>/dev/tcp/127.0.0.1/$gssapi_port) 2>/dev/null; then
     exec 3>&-
@@ -162,6 +192,28 @@ fi
 exec 3>&-
 exec 3<&-
 
+for _ in $(seq 1 60); do
+  if (exec 3<>/dev/tcp/127.0.0.1/$gssapi_replica_set_port) 2>/dev/null; then
+    exec 3>&-
+    exec 3<&-
+    break
+  fi
+
+  if ! kill -0 "$gssapi_replica_set_pid" 2>/dev/null; then
+    echo "The GSSAPI replica-set member stopped before accepting connections" >&2
+    exit 1
+  fi
+
+  sleep 0.5
+done
+
+if ! (exec 3<>/dev/tcp/127.0.0.1/$gssapi_replica_set_port) 2>/dev/null; then
+  echo "The GSSAPI replica-set member did not accept connections" >&2
+  exit 1
+fi
+exec 3>&-
+exec 3<&-
+
 export MONGODB_GSSAPI_LIVE=1
 export MONGODB_GSSAPI_BOOTSTRAP_URI=mongodb://127.0.0.1:$gssapi_port
 export MONGODB_GSSAPI_CANONICAL_ENDPOINT=$gssapi_canonical_endpoint
@@ -170,6 +222,8 @@ export MONGODB_GSSAPI_PASSWORD=$gssapi_user_password
 export MONGODB_GSSAPI_PORT=$gssapi_port
 export MONGODB_GSSAPI_PRINCIPAL=$gssapi_principal
 export MONGODB_GSSAPI_PACKAGE_TREE=$gssapi_package_tree
+export MONGODB_GSSAPI_REPLICA_SET=$gssapi_replica_set
+export MONGODB_GSSAPI_REPLICA_SET_PORT=$gssapi_replica_set_port
 export MONGODB_GSSAPI_SERVICE_ENDPOINT=$gssapi_canonical_endpoint
 
 echo "Running the installed-rock GSSAPI integration test"
