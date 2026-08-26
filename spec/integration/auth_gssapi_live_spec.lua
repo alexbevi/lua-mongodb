@@ -208,4 +208,94 @@ describe("live GSSAPI authentication", function()
       assert.is_true(client:close())
     end)
   end)
+
+  it("uses independent contexts for concurrent application connections", function()
+    local client_count = assert(math.tointeger(
+      required_environment("MONGODB_GSSAPI_CONCURRENT_CLIENTS")
+    ))
+
+    assert.is_true(client_count >= 2)
+
+    mongodb.run(function()
+      local runtime = mongodb.runtime.copas()
+      local native_provider = assert(runtime.gssapi)
+      local native_contexts = {}
+      local closed_contexts = 0
+
+      runtime.gssapi = {
+        capabilities = function()
+          return native_provider:capabilities()
+        end,
+        create_context = function(_, options, deadline, cancellation)
+          local native_context, err = native_provider:create_context(
+            options,
+            deadline,
+            cancellation
+          )
+
+          if native_context == nil then
+            return nil, err
+          end
+
+          native_contexts[#native_contexts + 1] = native_context
+          local wait_deadline = runtime.clock:now() + 5
+
+          while #native_contexts < client_count do
+            if runtime.clock:now() >= wait_deadline then
+              native_context:close()
+              error("concurrent GSSAPI contexts did not overlap", 0)
+            end
+
+            assert(runtime.clock:sleep(0.001, cancellation))
+          end
+
+          local closed = false
+
+          return {
+            step = function(_, ...)
+              return native_context:step(...)
+            end,
+            security_layer = function(_, ...)
+              return native_context:security_layer(...)
+            end,
+            close = function()
+              local ok, close_err = native_context:close()
+
+              if ok and not closed then
+                closed = true
+                closed_contexts = closed_contexts + 1
+              end
+
+              return ok, close_err
+            end,
+          }
+        end,
+      }
+
+      local uri = "mongodb://" .. encoded_component(principal)
+        .. "@" .. host .. ":" .. port .. "/?authMechanism=GSSAPI"
+      local tasks = {}
+
+      for index = 1, client_count do
+        tasks[index] = runtime.task:spawn(function()
+          local client = assert(mongodb.client(uri, { runtime = runtime }))
+          local reply = assert(client:database("admin"):run_command("ping"))
+
+          assert.is_true(client:close())
+          return reply:get("ok"):to_number()
+        end)
+      end
+
+      for index = 1, client_count do
+        assert.are.equal(1, runtime.task:await(tasks[index]))
+      end
+
+      assert.are.equal(client_count, #native_contexts)
+      assert.are.equal(client_count, closed_contexts)
+
+      for index = 2, client_count do
+        assert.are_not.equal(native_contexts[1], native_contexts[index])
+      end
+    end)
+  end)
 end)

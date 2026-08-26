@@ -9437,6 +9437,49 @@
       "notes": [],
       "started_at": "2026-08-26T19:24:20+00:00",
       "completed_at": "2026-08-26T19:35:48+00:00"
+    },
+    "AUTH-040": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh",
+          "exit_code": 2,
+          "summary": "5 existing GSSAPI successes, 1 concurrent-context failure: the live profile did not declare concurrent application clients",
+          "recorded_at": "2026-08-26T19:48:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh",
+          "exit_code": 0,
+          "summary": "6 live GSSAPI successes; two concurrent clients held distinct native contexts, both authenticated pings passed, and both contexts and clients closed; 0 failures, 0 errors, 0 pending",
+          "recorded_at": "2026-08-26T19:50:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_INTEGRATION=spec/integration/auth_gssapi_live_spec.lua FOCUS_LINT=spec/integration/auth_gssapi_live_spec.lua",
+          "exit_code": 0,
+          "summary": "ordinary profile: 1 explicit environment pending; touched Lua integration file: 0 lint warnings, 0 lint errors",
+          "recorded_at": "2026-08-26T19:50:49+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "shellcheck spec/integration/run_gssapi_live.sh",
+          "exit_code": 0,
+          "summary": "GSSAPI live setup script passed shellcheck",
+          "recorded_at": "2026-08-26T19:50:50+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "actionlint -ignore SC2129 .github/workflows/ci.yml && git diff --check",
+          "exit_code": 0,
+          "summary": "workflow validation and whitespace validation passed",
+          "recorded_at": "2026-08-26T19:50:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T19:46:35+00:00",
+      "completed_at": "2026-08-26T19:50:52+00:00"
     }
   },
   "verified_references": {

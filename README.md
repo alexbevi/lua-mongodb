@@ -157,7 +157,7 @@ local client = assert(mongodb.client(
 ))
 ```
 
-**GSSAPI.** On Linux and macOS, the default runtime loads the operating system's GSSAPI library when it is available. Omit the password to use the current Kerberos ticket cache. Password credentials are accepted only when the installed library reports that capability.
+**GSSAPI.** Live authentication is verified with Lua 5.4 on Linux. The default runtime can load the operating system's GSSAPI library on Linux and macOS, but macOS and Lua 5.5 remain unclaimed until they have recurring live profiles. Omit the password to use the current Kerberos ticket cache. Password credentials are accepted only when the installed library reports that capability. Each application connection owns its GSSAPI context, including during concurrent authentication.
 
 ```lua
 local client = assert(mongodb.client(

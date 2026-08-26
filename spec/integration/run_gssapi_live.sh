@@ -217,6 +217,7 @@ exec 3<&-
 export MONGODB_GSSAPI_LIVE=1
 export MONGODB_GSSAPI_BOOTSTRAP_URI=mongodb://127.0.0.1:$gssapi_port
 export MONGODB_GSSAPI_CANONICAL_ENDPOINT=$gssapi_canonical_endpoint
+export MONGODB_GSSAPI_CONCURRENT_CLIENTS=2
 export MONGODB_GSSAPI_HOST=$gssapi_host
 export MONGODB_GSSAPI_PASSWORD=$gssapi_user_password
 export MONGODB_GSSAPI_PORT=$gssapi_port
