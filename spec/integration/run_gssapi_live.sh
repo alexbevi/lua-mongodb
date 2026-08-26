@@ -7,6 +7,7 @@ gssapi_package_tree=${MONGODB_GSSAPI_PACKAGE_TREE:?MONGODB_GSSAPI_PACKAGE_TREE m
 gssapi_temp_dir=$(mktemp -d /tmp/lua-mongodb-gssapi.XXXXXXXX)
 gssapi_realm=LUA-MONGODB.TEST
 gssapi_host=gssapi.test
+gssapi_canonical_endpoint=gssapi-alias.test
 gssapi_port=27018
 gssapi_kdc_port=10088
 gssapi_user=driver_$(openssl rand -hex 8)
@@ -130,7 +131,7 @@ echo "Starting MongoDB Enterprise with GSSAPI authentication"
 env KRB5_CONFIG="$gssapi_krb5_conf" KRB5_KTNAME="$gssapi_keytab" \
   "$gssapi_mongod" \
   --auth \
-  --bind_ip 127.0.0.1 \
+  --bind_ip 127.0.0.1,127.0.0.2 \
   --dbpath "$gssapi_temp_dir/mongodb-data" \
   --logpath "$gssapi_temp_dir/mongod.log" \
   --port "$gssapi_port" \
@@ -163,6 +164,7 @@ exec 3<&-
 
 export MONGODB_GSSAPI_LIVE=1
 export MONGODB_GSSAPI_BOOTSTRAP_URI=mongodb://127.0.0.1:$gssapi_port
+export MONGODB_GSSAPI_CANONICAL_ENDPOINT=$gssapi_canonical_endpoint
 export MONGODB_GSSAPI_HOST=$gssapi_host
 export MONGODB_GSSAPI_PASSWORD=$gssapi_user_password
 export MONGODB_GSSAPI_PORT=$gssapi_port

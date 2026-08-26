@@ -186,8 +186,10 @@ jobs:
           "$install_dir/bin/mongod" --version | grep -Eq '"(enterprise|subscription)"'
           echo "MONGODB_GSSAPI_MONGOD=$install_dir/bin/mongod" >> "$GITHUB_ENV"
 
-      - name: Register the Kerberos service host
-        run: echo '127.0.0.1 gssapi.test' | sudo tee -a /etc/hosts >/dev/null
+      - name: Register Kerberos service DNS facts
+        run: >-
+          echo '127.0.0.2 gssapi.test gssapi-alias.test'
+          | sudo tee -a /etc/hosts >/dev/null
 
       - name: Run live GSSAPI authentication
         run: bash spec/integration/run_gssapi_live.sh

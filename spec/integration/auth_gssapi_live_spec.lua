@@ -73,4 +73,18 @@ describe("live GSSAPI authentication", function()
       assert.is_true(client:close())
     end)
   end)
+
+  it("canonicalizes the endpoint host with forward and reverse DNS", function()
+    local endpoint = required_environment("MONGODB_GSSAPI_CANONICAL_ENDPOINT")
+
+    mongodb.run(function()
+      local uri = "mongodb://" .. encoded_component(principal)
+        .. "@" .. endpoint .. ":" .. port .. "/?authMechanism=GSSAPI"
+        .. "&authMechanismProperties=CANONICALIZE_HOST_NAME:forwardAndReverse"
+      local client = assert(mongodb.client(uri))
+
+      assert.is_not_nil(client:database("admin"):run_command("ping"))
+      assert.is_true(client:close())
+    end)
+  end)
 end)
