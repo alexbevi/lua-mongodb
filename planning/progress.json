@@ -9124,6 +9124,42 @@
       "notes": [],
       "started_at": "2026-08-26T04:24:56+00:00",
       "completed_at": "2026-08-26T04:29:31+00:00"
+    },
+    "SEC-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_readme_content.ReadmeContentTests.test_security_policy_uses_the_verified_private_route",
+          "exit_code": 1,
+          "summary": "SECURITY.md and its verified private-reporting route were absent",
+          "recorded_at": "2026-08-26T04:39:35+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_content'",
+          "exit_code": 0,
+          "summary": "14 repository-content and documentation-link tests passed",
+          "recorded_at": "2026-08-26T04:40:41+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "gh api repos/alexbevi/lua-mongodb/private-vulnerability-reporting",
+          "exit_code": 0,
+          "summary": "GitHub reported private vulnerability reporting enabled",
+          "recorded_at": "2026-08-26T04:40:42+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "summary": "passed",
+          "recorded_at": "2026-08-26T04:40:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T04:38:37+00:00",
+      "completed_at": "2026-08-26T04:40:47+00:00"
     }
   },
   "verified_references": {

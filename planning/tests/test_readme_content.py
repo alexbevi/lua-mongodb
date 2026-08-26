@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 README = ROOT / "README.md"
 API = ROOT / "docs" / "API.md"
 ARCHITECTURE = ROOT / "docs" / "ARCHITECTURE.md"
+SECURITY = ROOT / "SECURITY.md"
 MODULE_CLASSIFICATION = ROOT / "spec" / "module-classification.json"
 RUNTIME_CAPABILITIES = (
   "clock.now",
@@ -78,6 +79,50 @@ class ReadmeContentTests(unittest.TestCase):
         path = target.split("#", 1)[0]
         with self.subTest(document=document.name, target=target):
           self.assertTrue((document.parent / path).exists(), target)
+
+  def test_security_policy_uses_the_verified_private_route(self) -> None:
+    readme = README.read_text(encoding="utf-8")
+
+    self.assertTrue(SECURITY.exists(), "SECURITY.md is required")
+    policy = " ".join(SECURITY.read_text(encoding="utf-8").split())
+
+    self.assertIn("[security policy](SECURITY.md)", readme)
+    self.assertIn(
+      "https://github.com/alexbevi/lua-mongodb/security/advisories/new",
+      policy,
+    )
+    self.assertIn(
+      "Only the latest published patch in the current `0.10.x` release line receives security updates",
+      policy,
+    )
+    self.assertIn(
+      "Older release lines and superseded patch releases are unsupported",
+      policy,
+    )
+    self.assertIn(
+      "Do not open a public issue, discussion, or pull request",
+      policy,
+    )
+
+    for topic in (
+      "credentials",
+      "authentication",
+      "tls",
+      "error redaction",
+      "wire protocol",
+      "coordinated disclosure",
+    ):
+      with self.subTest(topic=topic):
+        self.assertIn(topic, policy.lower())
+
+    for invented_contact_or_promise in (
+      "mailto:",
+      "response within",
+      "respond within",
+      "business days",
+    ):
+      with self.subTest(invented=invented_contact_or_promise):
+        self.assertNotIn(invented_contact_or_promise, policy.lower())
 
   def test_api_stability_policy_is_linked_and_explicit(self) -> None:
     readme = README.read_text(encoding="utf-8")

@@ -4,6 +4,8 @@ A coroutine-aware MongoDB driver written in Lua without binding or wrapping `lib
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
+Report potential vulnerabilities privately through the repository's [security policy](SECURITY.md).
+
 ## Dependencies
 
 - Lua 5.4 or Lua 5.5 with a 64-bit `lua_Integer`.
