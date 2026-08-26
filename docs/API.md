@@ -1620,11 +1620,17 @@ normalized `headers` table. File-read options are `deadline`, `cancellation`, an
 integer `max_bytes`.
 
 `runtime.metadata` is optional and contains handshake facts rather than active providers. A
-runtime may also expose `compression`, keyed by compressor name. Each compression provider has
-a matching `name`, a unique integer `compressor_id` from 1 through 255, and `compress` and
+runtime may also expose `dns.resolve_host` and `dns.resolve_address` for GSSAPI service-host
+canonicalization. Adapters must provide both functions or neither. `resolve_host(name [,
+deadline [, cancellation]])` returns `{ canonical_name, address }`, and
+`resolve_address(address [, deadline [, cancellation]])` returns a hostname. Operational
+failures return `nil, err`.
+
+A runtime may expose `compression`, keyed by compressor name. Each compression provider has a
+matching `name`, a unique integer `compressor_id` from 1 through 255, and `compress` and
 `decompress` functions. `mongodb.runtime.validate` checks the required function paths, optional
-metadata type, and compression-provider shape; adapter authors remain responsible for the
-method semantics above.
+metadata type, GSSAPI DNS pair, and compression-provider shape; adapter authors remain
+responsible for the method semantics above.
 
 ### Built-in runtime modules
 
@@ -1667,6 +1673,7 @@ The Copas constructor recognizes only these options:
 | `crypto`, `entropy`, `dns`, `file`, `http`, `socket`, `tls` | Complete capability overrides. |
 | `dns_nameservers` | Adapter-local nameserver list for the default DNS provider. |
 | `dns_query_timeout` | Positive per-nameserver DNS query bound in seconds. |
+| `dns_resolver` | LuaSocket-compatible resolver used for forward and reverse host lookups. |
 | `getpid`, `getenv`, `gettime`, `wall_time` | Function overrides for process, environment, monotonic-clock, and wall-clock access. |
 | `lock_poll_interval` | Positive cancellation polling interval in seconds; defaults to 0.05. |
 | `metadata` | Handshake fact table exposed as `runtime.metadata`. |

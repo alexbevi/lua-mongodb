@@ -52,6 +52,10 @@
       "path": "src/mongodb/auth/aws_web_identity.lua",
       "stability": "internal"
     },
+    "mongodb.auth.gssapi": {
+      "path": "src/mongodb/auth/gssapi.lua",
+      "stability": "internal"
+    },
     "mongodb.auth.oidc": {
       "path": "src/mongodb/auth/oidc.lua",
       "stability": "internal"

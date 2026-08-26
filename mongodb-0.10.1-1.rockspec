@@ -71,6 +71,7 @@ build = {
     ["mongodb.auth.aws_ec2"] = "src/mongodb/auth/aws_ec2.lua",
     ["mongodb.auth.aws_ecs"] = "src/mongodb/auth/aws_ecs.lua",
     ["mongodb.auth.aws_web_identity"] = "src/mongodb/auth/aws_web_identity.lua",
+    ["mongodb.auth.gssapi"] = "src/mongodb/auth/gssapi.lua",
     ["mongodb.auth.oidc"] = "src/mongodb/auth/oidc.lua",
     ["mongodb.auth.oidc_providers"] = "src/mongodb/auth/oidc_providers.lua",
     ["mongodb.auth.plain"] = "src/mongodb/auth/plain.lua",

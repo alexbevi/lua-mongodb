@@ -264,8 +264,10 @@ function FAKE_METHODS:queue_dns(record_type, result)
     error("unknown fake DNS record type: " .. tostring(record_type), 2)
   end
 
-  if type(result) ~= "table" and not errors.is(result) then
-    error("DNS results must be record arrays or structured errors", 2)
+  local expected_type = record_type == "reverse" and "string" or "table"
+
+  if type(result) ~= expected_type and not errors.is(result) then
+    error("DNS result has the wrong type for " .. record_type, 2)
   end
 
   queue[#queue + 1] = result
@@ -496,6 +498,12 @@ end
 
 local function new_dns_capability(owner)
   return {
+    resolve_address = function(_, address, deadline, cancellation)
+      return dns_call(owner, "reverse", address, deadline, cancellation)
+    end,
+    resolve_host = function(_, name, deadline, cancellation)
+      return dns_call(owner, "host", name, deadline, cancellation)
+    end,
     resolve_srv = function(_, name, deadline, cancellation)
       return dns_call(owner, "srv", name, deadline, cancellation)
     end,
@@ -792,7 +800,7 @@ function M.new(options)
     _connect_head = 1,
     _connect_queue = {},
     _crypto_queue = {},
-    _dns_queue = { srv = {}, txt = {} },
+    _dns_queue = { host = {}, reverse = {}, srv = {}, txt = {} },
     _environment = environment,
     _entropy = options.entropy or "",
     _files = files,

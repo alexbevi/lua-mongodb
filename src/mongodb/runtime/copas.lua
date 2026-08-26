@@ -11,6 +11,7 @@ local ALLOWED_OPTIONS = {
   dns = true,
   dns_nameservers = true,
   dns_query_timeout = true,
+  dns_resolver = true,
   entropy = true,
   file = true,
   getpid = true,
@@ -508,6 +509,7 @@ function M.new(options)
     nameservers = options.dns_nameservers,
     poll_interval = poll_interval,
     query_timeout = options.dns_query_timeout,
+    resolver = options.dns_resolver,
   })
   adapter.socket = options.socket or require("mongodb.runtime.copas_socket").new(adapter, {
     copas = copas,

@@ -82,6 +82,19 @@ local function validate_compression(runtime)
   end
 end
 
+local function validate_gssapi_dns(runtime)
+  local resolve_host = capability(runtime, "dns.resolve_host")
+  local resolve_address = capability(runtime, "dns.resolve_address")
+
+  if resolve_host == nil and resolve_address == nil then
+    return
+  end
+
+  if type(resolve_host) ~= "function" or type(resolve_address) ~= "function" then
+    error("runtime GSSAPI DNS capabilities must be functions when present", 3)
+  end
+end
+
 function M.validate(runtime)
   if type(runtime) ~= "table" then
     error("runtime must be a table", 2)
@@ -97,6 +110,7 @@ function M.validate(runtime)
     error("runtime metadata facts must be a table", 2)
   end
 
+  validate_gssapi_dns(runtime)
   validate_compression(runtime)
 
   return runtime

@@ -9240,6 +9240,28 @@
       "notes": [],
       "started_at": "2026-08-26T14:31:26+00:00",
       "completed_at": "2026-08-26T14:45:04+00:00"
+    },
+    "AUTH-032": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/auth_gssapi_hostname_spec.lua'",
+          "exit_code": 2,
+          "summary": "The GSSAPI hostname module did not exist, so none, forward, reverse, fallback, timeout, or cancellation behavior was available.",
+          "recorded_at": "2026-08-26T15:08:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/auth_gssapi_hostname_spec.lua spec/unit/runtime_spec.lua spec/unit/runtime_copas_spec.lua' FOCUS_INTEGRATION='spec/integration/copas_dns_spec.lua' FOCUS_LINT='src/mongodb/auth/gssapi.lua src/mongodb/runtime/contract.lua src/mongodb/runtime/copas.lua src/mongodb/runtime/copas_dns.lua src/mongodb/runtime/fake.lua spec/unit/auth_gssapi_hostname_spec.lua spec/unit/runtime_spec.lua spec/unit/runtime_copas_spec.lua spec/integration/copas_dns_spec.lua'",
+          "exit_code": 0,
+          "summary": "GSSAPI service-host canonicalization, optional runtime DNS-pair validation, deterministic fake DNS behavior, LuaSocket forward and reverse lookups, and touched-file lint all passed (23 focused examples; 0 lint warnings).",
+          "recorded_at": "2026-08-26T15:19:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T15:05:05+00:00",
+      "completed_at": "2026-08-26T15:19:41+00:00"
     }
   },
   "verified_references": {

@@ -12,6 +12,16 @@ describe("runtime interface", function()
     end, "runtime capability clock.now must be a function")
   end)
 
+  it("validates optional GSSAPI DNS capabilities as a pair", function()
+    local fake = fake_runtime.new()
+
+    fake.dns.resolve_address = nil
+
+    assert.has_error(function()
+      runtime.validate(fake)
+    end, "runtime GSSAPI DNS capabilities must be functions when present")
+  end)
+
   it("simulates process identity changes behind the runtime boundary", function()
     local fake = fake_runtime.new({ process_identity = 100 })
 

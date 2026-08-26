@@ -664,6 +664,94 @@ local function query(owner, name, record_type, deadline, cancellation)
   return nil, last_error or runtime_contract.timeout_error()
 end
 
+local function resolver_call(owner, operation, value, deadline, cancellation)
+  local ok, err = runtime_contract.check(owner.runtime, deadline, cancellation)
+
+  if not ok then
+    return nil, err
+  end
+
+  local resolver = owner.resolver
+  local callback = type(resolver) == "table" and resolver[operation] or nil
+
+  if type(callback) ~= "function" then
+    return nil, network_error("host lookup", "system resolver is unavailable")
+  end
+
+  local outcome = table.pack(pcall(callback, value))
+
+  ok, err = runtime_contract.check(owner.runtime, deadline, cancellation)
+
+  if not ok then
+    return nil, err
+  elseif not outcome[1] then
+    return nil, network_error("host lookup", "system resolver failed")
+  end
+
+  return outcome
+end
+
+local function first_address(info)
+  if type(info) ~= "table" or type(info.ip) ~= "table" then
+    return nil
+  end
+
+  for _, address in ipairs(info.ip) do
+    if type(address) == "string" and address ~= "" then
+      return address
+    end
+  end
+
+  return nil
+end
+
+local function resolve_host(owner, name, deadline, cancellation)
+  if type(name) ~= "string" or name == "" then
+    error("DNS name must be a non-empty string", 3)
+  end
+
+  local outcome, err = resolver_call(
+    owner, "toip", name, deadline, cancellation
+  )
+
+  if not outcome then
+    return nil, err
+  end
+
+  local canonical_name = outcome[2]
+  local info = outcome[3]
+  local address = first_address(info)
+
+  if type(canonical_name) ~= "string" or canonical_name == ""
+      or address == nil then
+    return nil, network_error("host lookup", "system resolver returned no result")
+  end
+
+  return { address = address, canonical_name = canonical_name }
+end
+
+local function resolve_address(owner, address, deadline, cancellation)
+  if type(address) ~= "string" or address == "" then
+    error("DNS address must be a non-empty string", 3)
+  end
+
+  local outcome, err = resolver_call(
+    owner, "tohostname", address, deadline, cancellation
+  )
+
+  if not outcome then
+    return nil, err
+  end
+
+  local name = outcome[2]
+
+  if type(name) ~= "string" or name == "" then
+    return nil, network_error("reverse lookup", "system resolver returned no result")
+  end
+
+  return name
+end
+
 function M.new(runtime, options)
   options = options or {}
 
@@ -672,14 +760,23 @@ function M.new(runtime, options)
     nameservers = normalize_nameservers(options.nameservers),
     poll_interval = options.poll_interval or 0.05,
     query_timeout = options.query_timeout or DNS_QUERY_TIMEOUT,
+    resolver = options.resolver,
     runtime = runtime,
     socket = options.socket or require("socket"),
   }
+
+  owner.resolver = owner.resolver or owner.socket.dns
 
   require_positive_number("DNS poll interval", owner.poll_interval, 2)
   require_positive_number("DNS query timeout", owner.query_timeout, 2)
 
   return {
+    resolve_address = function(_, address, deadline, cancellation)
+      return resolve_address(owner, address, deadline, cancellation)
+    end,
+    resolve_host = function(_, name, deadline, cancellation)
+      return resolve_host(owner, name, deadline, cancellation)
+    end,
     resolve_srv = function(_, name, deadline, cancellation)
       return query(owner, name, DNS_TYPE_SRV, deadline, cancellation)
     end,
