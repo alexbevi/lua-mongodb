@@ -179,6 +179,73 @@ class ReadmeContentTests(unittest.TestCase):
     self.assertIn("Operational failures return `nil, err`", api)
     self.assertIn("Programmer errors raise", api)
 
+  def test_bson_api_reference_has_exact_contracts(self) -> None:
+    api = API.read_text(encoding="utf-8")
+
+    for signature in (
+      "bson.document(entries) -> document",
+      "document:get(key) -> value | nil",
+      "document:get_at(index) -> key, value | nil",
+      "document:keys() -> keys",
+      "document:entries() -> entries",
+      "document:iter() -> iterator",
+      "bson.array(values) -> array",
+      "array:get(index) -> value | nil",
+      "array:values() -> values",
+      "array:iter() -> iterator",
+      "bson.binary(data [, subtype]) -> binary",
+      "binary:as_vector() -> vector",
+      "bson.vector(values, dtype [, padding]) -> binary",
+      "bson.int32(number) -> int32",
+      "bson.int64(number) -> int64",
+      "bson.double(number) -> double",
+      "exact_number:to_number() -> number",
+      "bson.decimal128(input) -> decimal128",
+      "bson.decimal128_from_bid(bytes) -> decimal128",
+      "decimal128:bid_hex() -> string",
+      "bson.object_id(input) -> object_id",
+      "bson.object_id_generator(runtime) -> generator | nil, err",
+      "generator:new() -> object_id | nil, err",
+      "bson.datetime(milliseconds) -> datetime",
+      "bson.regex(pattern [, options]) -> regex",
+      "bson.timestamp(time, increment) -> timestamp",
+      "bson.code(source [, scope]) -> code",
+      "bson.symbol(value) -> symbol",
+      "bson.db_pointer(namespace, object_id) -> db_pointer",
+      "bson.is_document(value) -> boolean",
+      "bson.is_array(value) -> boolean",
+      "bson.is_binary(value) -> boolean",
+      "bson.is_null(value) -> boolean",
+      "bson.is_exact(value [, kind]) -> boolean",
+      "bson.is_tagged(value [, kind]) -> boolean",
+      "bson.encode(document [, options]) -> bytes | nil, err",
+      "bson.decode(bytes [, options]) -> document | nil, err",
+      "bson.json.encode(value [, options]) -> text | nil, err",
+      "bson.json.decode(text [, options]) -> value | nil, err",
+      "bson.json.parse(text [, options]) -> value | nil, err",
+    ):
+      with self.subTest(signature=signature):
+        self.assertIn(f"`{signature}`", api)
+
+    for name in (
+      "BINARY_SUBTYPE",
+      "VECTOR_DTYPE",
+      "null",
+      "undefined",
+      "min_key",
+      "max_key",
+    ):
+      with self.subTest(bson_value=name):
+        self.assertIn(f"`bson.{name}`", api)
+
+    self.assertIn("preserves insertion order and duplicate keys", api)
+    self.assertIn("last matching entry", api)
+    self.assertIn("full signed 64-bit Lua integer range", api)
+    self.assertIn("Canonical mode", api)
+    self.assertIn("Relaxed mode", api)
+    self.assertIn("Malformed BSON and JSON input returns a structured BSON error", api)
+    self.assertIn("Invalid constructor arguments and codec options raise", api)
+
 
 if __name__ == "__main__":
   unittest.main()

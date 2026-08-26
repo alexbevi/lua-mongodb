@@ -127,6 +127,207 @@ Copas loop. A non-function callback, an already active loop, premature loop exit
 raised by the callback raises to the caller. Applications that already own a Copas loop call
 `mongodb.client` inside that loop instead.
 
+## BSON API
+
+`mongodb.bson` is available through `require("mongodb.bson")` and as `mongodb.bson`. The
+module represents documents and arrays explicitly so BSON field order, duplicate keys, exact
+numeric wire types, binary subtypes, and null remain distinguishable in Lua. BSON value objects
+are immutable. Constructors copy their sequence inputs, and the collection accessors that
+return tables return fresh copies.
+
+### Ordered documents and arrays
+
+`bson.document(entries) -> document`
+
+`entries` is a dense Lua array of two-element `{ key, value }` arrays. Keys must be strings,
+cannot contain NUL, and values cannot be nil; use `bson.null` for BSON null. A document
+preserves insertion order and duplicate keys. It has these methods:
+
+- `document:get(key) -> value | nil` returns the value from the last matching entry.
+- `document:get_at(index) -> key, value | nil` returns the key and value at a one-based
+  positive integer index, or nil when no entry exists.
+- `document:keys() -> keys` returns a new array of keys in stored order, including duplicates.
+- `document:entries() -> entries` returns a new array of key-value pairs in stored order.
+- `document:iter() -> iterator` returns an iterator yielding `key, value` in stored order.
+
+`#document` is the number of entries, not the number of distinct keys.
+
+`bson.array(values) -> array`
+
+`values` is a dense Lua array. It cannot contain nil; use `bson.null`. A BSON array has these
+methods:
+
+- `array:get(index) -> value | nil` returns the value at a one-based positive integer index.
+- `array:values() -> values` returns a new dense Lua array.
+- `array:iter() -> iterator` returns an iterator yielding `index, value` in order.
+
+`#array` is the number of values. Plain Lua tables are never inferred as documents or arrays
+during encoding; applications must use these constructors to remove that ambiguity.
+
+### Binary and vector values
+
+`bson.binary(data [, subtype]) -> binary`
+
+`data` is an arbitrary byte string. `subtype` is an integer from 0 through 255 and defaults to
+`bson.BINARY_SUBTYPE.GENERIC`. The result exposes read-only `data` and `subtype` fields and
+compares by both fields.
+
+The immutable `bson.BINARY_SUBTYPE` table defines the standard numeric subtype values:
+
+| Name | Value | Name | Value |
+|---|---:|---|---:|
+| `GENERIC` | 0 | `FUNCTION` | 1 |
+| `OLD_BINARY` | 2 | `OLD_UUID` | 3 |
+| `UUID` | 4 | `MD5` | 5 |
+| `ENCRYPTED` | 6 | `COLUMN` | 7 |
+| `SENSITIVE` | 8 | `VECTOR` | 9 |
+| `USER_DEFINED` | 128 | | |
+
+`bson.vector(values, dtype [, padding]) -> binary`
+
+This constructor returns BSON binary subtype `VECTOR`. `values` can be a dense Lua array or a
+BSON array. `dtype` must be one of the immutable `bson.VECTOR_DTYPE` constants:
+
+| Name | Value | Input contract |
+|---|---:|---|
+| `INT8` | 0x03 | Integers from -128 through 127. |
+| `FLOAT32` | 0x27 | Lua numbers, rounded to their encoded IEEE-754 binary32 values. |
+| `PACKED_BIT` | 0x10 | Bytes from 0 through 255; `padding` is 0 through 7 ignored low bits in the final byte. |
+
+`padding` defaults to zero, must be zero for `INT8` and `FLOAT32`, and cannot describe nonzero
+ignored bits or an empty `PACKED_BIT` value.
+
+`binary:as_vector() -> vector`
+
+This method accepts only binary subtype `VECTOR` and validates the encoded dtype, padding, and
+payload length. It returns an immutable value with `dtype`, `padding`, and `data` fields;
+`data` is a BSON array. A non-vector subtype or malformed vector payload is programmer misuse
+of this accessor and raises.
+
+### Exact numeric values
+
+Lua integers passed directly to the encoder use BSON int32 when in range and BSON int64
+otherwise. This preserves the full signed 64-bit Lua integer range required by the driver.
+Lua floats use BSON double. Decoding always returns an exact numeric wrapper, which preserves
+the BSON wire type and can be passed back to the encoder unchanged.
+
+| Constructor or method | Contract |
+|---|---|
+| `bson.int32(number) -> int32` | Requires a Lua integer in the signed 32-bit range. |
+| `bson.int64(number) -> int64` | Requires a Lua integer; all supported runtimes have 64-bit integers. |
+| `bson.double(number) -> double` | Requires a Lua number and preserves its encoded binary64 representation, including signed zero and NaN payload identity. |
+| `exact_number:to_number() -> number` | Returns the Lua integer or float held by an int32, int64, or double. |
+| `bson.decimal128(input) -> decimal128` | Parses a non-empty exact decimal string, including signed zero, infinity, NaN, and signaling NaN spellings. |
+| `bson.decimal128_from_bid(bytes) -> decimal128` | Requires the exact 16-byte Decimal128 BID representation. |
+| `decimal128:bid_hex() -> string` | Returns the 32 lowercase hexadecimal digits of the BID representation. |
+
+Int32, int64, and double values expose read-only `kind`, `value`, and `bytes` fields.
+Decimal128 values expose read-only `kind`, `string`, and `bid` fields; `tostring(decimal)`
+returns its canonical string representation. Decimal construction raises if the input is
+malformed, outside Decimal128 range, has more than 34 significant digits, or would require
+inexact rounding.
+
+### Tagged values and singletons
+
+| Constructor | Read-only fields and contract |
+|---|---|
+| `bson.object_id(input) -> object_id` | Accepts a 12-byte string or 24 hexadecimal characters; exposes `binary`, lowercase `hex`, `kind`, and unsigned `timestamp`. `tostring` returns the hex value, and ObjectIds support equality and byte-order comparison. |
+| `bson.datetime(milliseconds) -> datetime` | Requires a signed 64-bit Lua integer; exposes `kind` and `milliseconds` and supports equality and chronological comparison. |
+| `bson.regex(pattern [, options]) -> regex` | `pattern` is a NUL-free string; options use only `i`, `l`, `m`, `s`, `u`, and `x` and are deduplicated into that order. Exposes `kind`, `pattern`, and `options`. |
+| `bson.timestamp(time, increment) -> timestamp` | Both values are integers from 0 through 2^32-1; exposes `kind`, `time`, and `increment` and compares time before increment. |
+| `bson.code(source [, scope]) -> code` | `source` is a string and optional `scope` is an ordered BSON document; exposes `kind`, `source`, and `scope`. |
+| `bson.symbol(value) -> symbol` | Represents the deprecated BSON Symbol type and exposes `kind` and string `value`. |
+| `bson.db_pointer(namespace, object_id) -> db_pointer` | Represents the deprecated BSON DBPointer type and exposes `kind`, string `namespace`, and `object_id`. |
+
+The public immutable singletons are `bson.null`, `bson.undefined`, `bson.min_key`, and
+`bson.max_key`. Null is distinct from Lua nil. Undefined, Symbol, and DBPointer remain
+available so existing BSON can round-trip even though those wire types are deprecated.
+
+`bson.object_id_generator(runtime) -> generator | nil, err`
+
+The supplied runtime must satisfy the advanced runtime contract. Construction reads eight
+entropy bytes: five process-unique bytes and a three-byte initial counter. Entropy failure
+returns `nil, err`; an invalid runtime result raises.
+
+`generator:new() -> object_id | nil, err`
+
+Generation uses the runtime wall clock, current process identity, and a wrapping 24-bit
+counter. When the process identity changes after a fork, the generator refreshes its five
+process-unique entropy bytes before returning another value. That refresh can return
+`nil, err`. Invalid time, identity, or entropy results raise.
+
+### BSON predicates
+
+- `bson.is_document(value) -> boolean`
+- `bson.is_array(value) -> boolean`
+- `bson.is_binary(value) -> boolean`
+- `bson.is_null(value) -> boolean`
+- `bson.is_exact(value [, kind]) -> boolean`, where `kind` can be `int32`, `int64`,
+  `double`, or `decimal128`.
+- `bson.is_tagged(value [, kind]) -> boolean`, where `kind` can be `object_id`,
+  `datetime`, `regex`, `timestamp`, `code`, `symbol`, `db_pointer`, `undefined`,
+  `min_key`, or `max_key`.
+
+With no `kind` argument, the last two predicates accept any value in their respective family.
+An unknown kind simply does not match.
+
+### BSON binary codec
+
+- `bson.encode(document [, options]) -> bytes | nil, err` encodes one ordered root document.
+- `bson.decode(bytes [, options]) -> document | nil, err` decodes exactly one complete root
+  document and rejects trailing bytes.
+
+The shared options table has these fields:
+
+| Option | Default | Contract |
+|---|---:|---|
+| `max_document_size` | 16 MiB | Maximum encoded or decoded document size in bytes. |
+| `max_binary_size` | 16 MiB | Maximum binary payload size in bytes. |
+| `max_string_size` | 16 MiB | Maximum string, code, regex, or namespace size in bytes. |
+| `max_depth` | 100 | Maximum document and array nesting depth. |
+| `validate_utf8` | true | Validate strings and applicable keys on encode and decode; false enables byte-preserving strings. |
+
+Size and depth options must be positive signed 32-bit integers, `validate_utf8` must be
+boolean, and unknown options raise. Encoding accepts BSON values plus Lua strings, booleans,
+integers, and floats. An ambiguous or unsupported Lua value, a non-document root, an over-limit
+value, or invalid UTF-8 returns `nil` and a structured `BSON`-category error. Malformed BSON
+bytes, unsupported wire types, limit violations, invalid UTF-8, and trailing data do the same.
+A non-string decode input raises.
+
+### JSON and Extended JSON
+
+`mongodb.bson.json` is available as `bson.json` and through
+`require("mongodb.bson.json")`.
+
+- `bson.json.parse(text [, options]) -> value | nil, err` parses plain JSON into ordered BSON
+  documents, BSON arrays, `bson.null`, strings, booleans, and exact int32, int64, or double
+  values. It does not interpret Extended JSON wrapper objects.
+- `bson.json.decode(text [, options]) -> value | nil, err` parses JSON and recursively
+  interprets recognized Extended JSON wrappers. Wrapper objects require their exact field set,
+  and decoded JSON object keys must be unique.
+- `bson.json.encode(value [, options]) -> text | nil, err` writes ordered BSON containers and
+  supported BSON values as Extended JSON.
+
+The shared JSON options are `mode` (`"relaxed"` by default or `"canonical"`),
+`max_depth` (200), `max_input_size` (16 MiB), and `max_string_size` (16 MiB). The maximum input
+size also bounds encoded output. Numeric limits must be positive integers, unknown options
+raise, and `mode` affects encoding:
+
+- Canonical mode writes int32, int64, and double with explicit Extended JSON wrappers and
+  writes dates using a wrapped `$numberLong` value.
+- Relaxed mode writes integers and finite doubles as JSON numbers when possible and writes
+  dates from years 1970 through 9999 as ISO-8601 strings. Decimal128 and non-finite doubles
+  remain wrapped.
+
+Both modes use Extended JSON wrappers for binary, ObjectId, regular expression, timestamp,
+code with optional scope, MinKey, MaxKey, undefined, symbol, and DBPointer. Decoding also
+accepts `$uuid` and the canonical numeric and date forms.
+
+Malformed BSON and JSON input returns a structured BSON error.
+Invalid constructor arguments and codec options raise.
+JSON parsing and encoding also return structured BSON errors for syntax failures, malformed
+wrapper objects, unsupported values, invalid UTF-8, and configured size or depth limits.
+
 ## Structured errors
 
 `mongodb.error` is available both as `require("mongodb.error")` and as `mongodb.error`. Error

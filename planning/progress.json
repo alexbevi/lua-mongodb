@@ -8921,6 +8921,28 @@
       "notes": [],
       "started_at": "2026-08-26T02:02:23+00:00",
       "completed_at": "2026-08-26T02:15:57+00:00"
+    },
+    "DOC-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_readme_content.ReadmeContentTests.test_bson_api_reference_has_exact_contracts",
+          "exit_code": 2,
+          "summary": "BSON reference contract failed with 47 missing signatures, constants, and semantic guarantees",
+          "recorded_at": "2026-08-26T02:29:31+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bson_spec.lua spec/unit/bson_exact_spec.lua spec/unit/bson_tagged_spec.lua spec/unit/bson_hardening_spec.lua spec/unit/extended_json_spec.lua' FOCUS_PYTHON='planning.tests.test_readme_content spec.package.test_package'",
+          "exit_code": 0,
+          "summary": "28 focused BSON, Extended JSON, and ObjectId tests; 7 API-reference and documentation-link tests; and 3 isolated source-rock package tests passed. Python compilation, pinned-reference verification, strict planning validation, and diff checks passed. Unified execution was not applicable: 0 executed, 0 failed, 0 environment-skipped, and 0 deferred.",
+          "recorded_at": "2026-08-26T02:34:47+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T02:25:53+00:00",
+      "completed_at": "2026-08-26T02:34:48+00:00"
     }
   },
   "verified_references": {
