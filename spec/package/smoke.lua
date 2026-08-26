@@ -8,6 +8,23 @@ assert(module_path:sub(1, #package_tree) == package_tree)
 assert(not module_path:find("/src/", 1, true))
 
 local mongodb = require("mongodb")
+local reading_exports = false
+
+for _, name in ipairs(arg) do
+  if name == "--exports" then
+    reading_exports = true
+  elseif reading_exports then
+    assert(mongodb[name] ~= nil, name)
+  else
+    local documented_path = assert(package.searchpath(name, package.path))
+
+    assert(documented_path:sub(1, #package_tree) == package_tree, name)
+    assert(type(require(name)) == "table", name)
+  end
+end
+
+assert(reading_exports, "documented exports are required")
+
 local bson = mongodb.bson
 local document = bson.document({
   { "name", "Ada" },
@@ -24,22 +41,6 @@ local index = mongodb.index_model(bson.document({ { "name", 1 } }))
 
 assert(model.kind == "insert")
 assert(index.name == "name_1")
-
-local api = require("mongodb.api")
-local driver_options = require("mongodb.config.options")
-local package_client = api.new_client({
-  close = function()
-    return true
-  end,
-  command = function()
-    error("package smoke must not issue a command")
-  end,
-}, assert(driver_options.normalize()))
-local bucket = assert(package_client:database("package"):gridfs_bucket())
-
-assert(bucket.bucket_name == "fs")
-assert(bucket.chunk_size_bytes == 255 * 1024)
-assert(package_client:close())
 
 local client, client_err = mongodb.client("http://localhost")
 

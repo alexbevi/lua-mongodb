@@ -8877,6 +8877,28 @@
       "reopened_after_commit": "3fd533b74fc0c7d918740b333249808f0452214c",
       "started_at": "2026-08-26T00:36:52+00:00",
       "completed_at": "2026-08-26T00:37:34+00:00"
+    },
+    "API-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.package.test_package.PackageTests.test_every_shipped_module_and_top_level_export_is_classified -v",
+          "exit_code": 1,
+          "summary": "The defining classification contract failed because spec/module-classification.json is still schema version 1 and classifies only the six unified test-support modules.",
+          "recorded_at": "2026-08-26T01:38:36+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_architecture_boundaries spec.package.test_package planning.tests.test_readme_content'; make test-package; make test-focus FOCUS_LINT='spec/package/smoke.lua spec/package/completeness.lua'; make test-architecture; make rockspec",
+          "exit_code": 0,
+          "summary": "13 focused architecture, isolated-package, classification, and documentation tests passed; all 4 package tests passed in the standalone package target; 1 directly coupled coverage-boundary test passed; 2 touched Lua package scripts linted with 0 warnings; the isolated source rock loaded all 70 packaged modules, all 14 supported or retained top-level exports, and all 14 documented public or advanced module paths. Rockspec lint, architecture graph, JSON syntax, Python compilation, strict planning validation, and diff checks passed. Unified execution was not applicable: 0 executed, 0 failed, 0 environment-skipped, and 0 deferred.",
+          "recorded_at": "2026-08-26T01:50:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T01:35:22+00:00",
+      "completed_at": "2026-08-26T01:51:00+00:00"
     }
   },
   "verified_references": {

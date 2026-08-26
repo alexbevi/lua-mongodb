@@ -41,6 +41,10 @@ luarocks make
 
 Release rockspecs are built and verified from immutable release tags before publication.
 
+The [API stability policy](docs/API.md) identifies supported public and runtime-extension entry
+points. Modules installed as implementation dependencies are not public merely because they can
+be loaded with `require`.
+
 ## Getting started
 
 The driver runs network operations through a coroutine-aware runtime. For standalone programs, `mongodb.run` starts the default Copas scheduler and runs the application callback inside it. Applications that already own a Copas loop may create clients directly inside that loop instead. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.

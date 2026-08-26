@@ -13,9 +13,16 @@ import unittest
 ROOT = Path(__file__).resolve().parents[2]
 ROCKSPEC = ROOT / "mongodb-0.10.1-1.rockspec"
 SMOKE = ROOT / "spec" / "package" / "smoke.lua"
+COMPLETENESS = ROOT / "spec" / "package" / "completeness.lua"
 SOURCE_ROOT = ROOT / "src" / "mongodb"
 TEST_SUPPORT_ROOT = ROOT / "spec" / "support" / "mongodb"
 MODULE_CLASSIFICATION = ROOT / "spec" / "module-classification.json"
+SUPPORTED_API_CLASSES = {
+  "public",
+  "advanced-extension",
+  "compatibility-only",
+  "internal",
+}
 
 
 def run_command(
@@ -101,13 +108,29 @@ def discovered_unified_modules() -> dict[str, str]:
   return modules
 
 
-def module_classification() -> dict[str, dict[str, str]]:
+def classification_document() -> dict[str, object]:
   document = json.loads(MODULE_CLASSIFICATION.read_text(encoding="utf-8"))
 
-  if document.get("schema_version") != 1:
+  if document.get("schema_version") != 2:
     raise AssertionError("unsupported module classification schema version")
 
-  return document["modules"]
+  return document
+
+
+def module_classification() -> dict[str, dict[str, str]]:
+  return classification_document()["modules"]
+
+
+def top_level_exports() -> set[str]:
+  source = (SOURCE_ROOT / "init.lua").read_text(encoding="utf-8")
+  table_body = source.split("local M = {", 1)[1].split("\n}", 1)[0]
+  exports = set(re.findall(
+    r"^  ([A-Za-z_][A-Za-z0-9_]*)\s*=",
+    table_body,
+    re.MULTILINE,
+  ))
+  exports.update(re.findall(r"^M\.([A-Za-z_][A-Za-z0-9_]*)\s*=", source, re.MULTILINE))
+  return exports
 
 
 def local_source_rockspec(directory: Path) -> Path:
@@ -141,6 +164,43 @@ def local_source_rockspec(directory: Path) -> Path:
 
 
 class PackageTests(unittest.TestCase):
+  def test_every_shipped_module_and_top_level_export_is_classified(self) -> None:
+    document = classification_document()
+
+    classified_modules = document["modules"]
+    production_modules = expected_modules()
+    test_only_modules = {
+      name: path
+      for name, path in discovered_unified_modules().items()
+      if path.startswith("spec/support/")
+    }
+
+    self.assertEqual(
+      set(production_modules) | set(test_only_modules),
+      set(classified_modules),
+    )
+
+    for name, path in production_modules.items():
+      with self.subTest(module=name):
+        self.assertEqual({"path", "stability"}, set(classified_modules[name]))
+        self.assertEqual(path, classified_modules[name]["path"])
+        self.assertIn(classified_modules[name]["stability"], SUPPORTED_API_CLASSES)
+
+    for name, path in test_only_modules.items():
+      with self.subTest(module=name):
+        self.assertEqual({"path", "stability"}, set(classified_modules[name]))
+        self.assertEqual(path, classified_modules[name]["path"])
+        self.assertEqual("test-only", classified_modules[name]["stability"])
+        self.assertNotIn(name, rockspec_modules())
+
+    classified_exports = document["exports"]
+    self.assertEqual(top_level_exports(), set(classified_exports))
+
+    for name, entry in classified_exports.items():
+      with self.subTest(export=name):
+        self.assertEqual({"stability"}, set(entry))
+        self.assertIn(entry["stability"], SUPPORTED_API_CLASSES)
+
   def test_release_dependencies_support_declared_lua_runtimes(self) -> None:
     rockspec = ROCKSPEC.read_text(encoding="utf-8")
     runtime_dependencies = rockspec.split("dependencies = {", 1)[1].split("}", 1)[0]
@@ -170,21 +230,24 @@ class PackageTests(unittest.TestCase):
 
     self.assertEqual(
       discovered,
-      {name: entry["path"] for name, entry in classified.items()},
+      {
+        name: entry["path"]
+        for name, entry in classified.items()
+        if name.startswith("mongodb.unified.")
+      },
     )
 
     packaged = rockspec_modules()
 
     for name, entry in classified.items():
       with self.subTest(module=name):
-        self.assertIn(entry["surface"], ("runtime", "test-only"))
-
-        if entry["surface"] == "runtime":
-          self.assertEqual(entry["path"], packaged.get(name))
-        else:
+        if entry["stability"] == "test-only":
           self.assertNotIn(name, packaged)
+        else:
+          self.assertIn(entry["stability"], SUPPORTED_API_CLASSES)
+          self.assertEqual(entry["path"], packaged.get(name))
 
-  def test_source_rock_installs_complete_public_api_without_workspace_paths(
+  def test_source_rock_separates_completeness_from_supported_api(
     self,
   ) -> None:
     lua = os.environ.get("LUA", "lua")
@@ -242,18 +305,39 @@ class PackageTests(unittest.TestCase):
       self.assertNotIn(str(ROOT), environment["LUA_PATH"])
       self.assertNotIn(str(ROOT), environment["LUA_CPATH"])
 
+      classification = classification_document()
+      documented_modules = sorted(
+        name
+        for name, entry in classification["modules"].items()
+        if entry["stability"] in ("public", "advanced-extension")
+      )
+      documented_exports = sorted(classification["exports"])
       smoked = run_command(
-        [lua, str(SMOKE)],
+        [
+          lua,
+          str(SMOKE),
+          *documented_modules,
+          "--exports",
+          *documented_exports,
+        ],
         cwd=run_directory,
         environment=environment,
       )
       self.assertEqual(0, smoked.returncode, smoked.stderr or smoked.stdout)
       self.assertIn("installed mongodb public API smoke passed", smoked.stdout)
 
+      complete = run_command(
+        [lua, str(COMPLETENESS), *sorted(rockspec_modules())],
+        cwd=run_directory,
+        environment=environment,
+      )
+      self.assertEqual(0, complete.returncode, complete.stderr or complete.stdout)
+      self.assertIn("installed mongodb package completeness passed", complete.stdout)
+
       installed_lua = install_tree / "share" / "lua" / lua_version
 
       for name, entry in module_classification().items():
-        if entry["surface"] == "test-only":
+        if entry["stability"] == "test-only":
           module_path = installed_lua.joinpath(*name.split(".")).with_suffix(".lua")
           init_path = module_path.with_suffix("") / "init.lua"
           self.assertFalse(module_path.exists(), name)

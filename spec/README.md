@@ -63,7 +63,8 @@ the test module search path and is not part of the installed driver.
 
 `support/mongodb/unified/` contains the test-only unified schema, matcher,
 lifecycle, event, failpoint, driver, and runner modules. Their test-only status is
-recorded in `module-classification.json`.
+recorded beside the complete shipped-module and export inventory in
+`module-classification.json`.
 
 ### `fixtures/`
 
@@ -94,8 +95,8 @@ stress tests for timing and lifecycle boundaries.
 ### `package/`
 
 Tests for the built LuaRock rather than the source checkout. They install the
-package into an isolated tree and smoke-test the exported module, BSON values,
-and public model constructors.
+package into an isolated tree, load every shipped module in a completeness pass,
+and separately smoke-test the supported module paths and top-level exports.
 
 ### `release/`
 
@@ -112,8 +113,9 @@ New release projections should follow the same `vNN/` layout.
 
 ## Root files
 
-- `module-classification.json` declares test-only Lua modules that resemble
-  production module paths but must remain outside the shipped package.
+- `module-classification.json` assigns a stability tier to every shipped Lua
+  module and top-level export, and declares test-only Lua modules that resemble
+  production paths but must remain outside the rock.
 - `sharded_environment.py` owns and verifies ephemeral replica-set-backed sharded
   MongoDB deployments used by live unified and compatibility runs.
 

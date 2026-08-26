@@ -1,29 +1,325 @@
 {
-  "schema_version": 1,
+  "exports": {
+    "_VERSION": { "stability": "public" },
+    "bson": { "stability": "public" },
+    "bulk": { "stability": "public" },
+    "client": { "stability": "public" },
+    "client_bulk": { "stability": "public" },
+    "error": { "stability": "public" },
+    "gridfs_bucket": { "stability": "public" },
+    "index_model": { "stability": "public" },
+    "pool": { "stability": "compatibility-only" },
+    "run": { "stability": "public" },
+    "runtime": { "stability": "advanced-extension" },
+    "sdam": { "stability": "compatibility-only" },
+    "selection": { "stability": "compatibility-only" },
+    "topology": { "stability": "compatibility-only" }
+  },
   "modules": {
+    "mongodb": {
+      "path": "src/mongodb/init.lua",
+      "stability": "public"
+    },
+    "mongodb.admin": {
+      "path": "src/mongodb/admin.lua",
+      "stability": "internal"
+    },
+    "mongodb.api": {
+      "path": "src/mongodb/api.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth": {
+      "path": "src/mongodb/auth/init.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.aws": {
+      "path": "src/mongodb/auth/aws.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.aws_credentials": {
+      "path": "src/mongodb/auth/aws_credentials.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.aws_ec2": {
+      "path": "src/mongodb/auth/aws_ec2.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.aws_ecs": {
+      "path": "src/mongodb/auth/aws_ecs.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.aws_web_identity": {
+      "path": "src/mongodb/auth/aws_web_identity.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.oidc": {
+      "path": "src/mongodb/auth/oidc.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.oidc_providers": {
+      "path": "src/mongodb/auth/oidc_providers.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.plain": {
+      "path": "src/mongodb/auth/plain.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.saslprep": {
+      "path": "src/mongodb/auth/saslprep.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.scram": {
+      "path": "src/mongodb/auth/scram.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.stringprep_tables": {
+      "path": "src/mongodb/auth/stringprep_tables.lua",
+      "stability": "internal"
+    },
+    "mongodb.auth.x509": {
+      "path": "src/mongodb/auth/x509.lua",
+      "stability": "internal"
+    },
+    "mongodb.bson": {
+      "path": "src/mongodb/bson/init.lua",
+      "stability": "public"
+    },
+    "mongodb.bson.base64": {
+      "path": "src/mongodb/bson/base64.lua",
+      "stability": "internal"
+    },
+    "mongodb.bson.codec": {
+      "path": "src/mongodb/bson/codec.lua",
+      "stability": "internal"
+    },
+    "mongodb.bson.exact": {
+      "path": "src/mongodb/bson/exact.lua",
+      "stability": "internal"
+    },
+    "mongodb.bson.json": {
+      "path": "src/mongodb/bson/json.lua",
+      "stability": "public"
+    },
+    "mongodb.bson.tagged": {
+      "path": "src/mongodb/bson/tagged.lua",
+      "stability": "internal"
+    },
+    "mongodb.bson.value": {
+      "path": "src/mongodb/bson/value.lua",
+      "stability": "internal"
+    },
+    "mongodb.bson.vector": {
+      "path": "src/mongodb/bson/vector.lua",
+      "stability": "internal"
+    },
+    "mongodb.bulk": {
+      "path": "src/mongodb/bulk.lua",
+      "stability": "public"
+    },
+    "mongodb.change_stream": {
+      "path": "src/mongodb/change_stream.lua",
+      "stability": "internal"
+    },
+    "mongodb.client": {
+      "path": "src/mongodb/client.lua",
+      "stability": "internal"
+    },
+    "mongodb.client_bulk": {
+      "path": "src/mongodb/client_bulk.lua",
+      "stability": "public"
+    },
+    "mongodb.command.executor": {
+      "path": "src/mongodb/command/executor.lua",
+      "stability": "internal"
+    },
+    "mongodb.command.hello": {
+      "path": "src/mongodb/command/hello.lua",
+      "stability": "internal"
+    },
+    "mongodb.command.security": {
+      "path": "src/mongodb/command/security.lua",
+      "stability": "internal"
+    },
+    "mongodb.config.credentials": {
+      "path": "src/mongodb/config/credentials.lua",
+      "stability": "internal"
+    },
+    "mongodb.config.options": {
+      "path": "src/mongodb/config/options.lua",
+      "stability": "internal"
+    },
+    "mongodb.config.uri": {
+      "path": "src/mongodb/config/uri.lua",
+      "stability": "internal"
+    },
+    "mongodb.crud": {
+      "path": "src/mongodb/crud.lua",
+      "stability": "internal"
+    },
+    "mongodb.cursor": {
+      "path": "src/mongodb/cursor.lua",
+      "stability": "internal"
+    },
+    "mongodb.discovery.dns": {
+      "path": "src/mongodb/discovery/dns.lua",
+      "stability": "internal"
+    },
+    "mongodb.error": {
+      "path": "src/mongodb/error.lua",
+      "stability": "public"
+    },
+    "mongodb.gridfs": {
+      "path": "src/mongodb/gridfs.lua",
+      "stability": "internal"
+    },
+    "mongodb.handshake.metadata": {
+      "path": "src/mongodb/handshake/metadata.lua",
+      "stability": "internal"
+    },
+    "mongodb.monitoring": {
+      "path": "src/mongodb/monitoring.lua",
+      "stability": "internal"
+    },
+    "mongodb.network.transport": {
+      "path": "src/mongodb/network/transport.lua",
+      "stability": "internal"
+    },
+    "mongodb.operation_timeout": {
+      "path": "src/mongodb/operation_timeout.lua",
+      "stability": "internal"
+    },
+    "mongodb.pool": {
+      "path": "src/mongodb/pool.lua",
+      "stability": "internal"
+    },
+    "mongodb.retry_executor": {
+      "path": "src/mongodb/retry_executor.lua",
+      "stability": "internal"
+    },
+    "mongodb.runtime": {
+      "path": "src/mongodb/runtime/init.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.cancellation": {
+      "path": "src/mongodb/runtime/cancellation.lua",
+      "stability": "internal"
+    },
+    "mongodb.runtime.contract": {
+      "path": "src/mongodb/runtime/contract.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.copas": {
+      "path": "src/mongodb/runtime/copas.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.copas_dns": {
+      "path": "src/mongodb/runtime/copas_dns.lua",
+      "stability": "internal"
+    },
+    "mongodb.runtime.copas_socket": {
+      "path": "src/mongodb/runtime/copas_socket.lua",
+      "stability": "internal"
+    },
+    "mongodb.runtime.fake": {
+      "path": "src/mongodb/runtime/fake.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.http": {
+      "path": "src/mongodb/runtime/http.lua",
+      "stability": "internal"
+    },
+    "mongodb.runtime.luasec": {
+      "path": "src/mongodb/runtime/luasec.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.openssl": {
+      "path": "src/mongodb/runtime/openssl.lua",
+      "stability": "compatibility-only"
+    },
+    "mongodb.runtime.sha256": {
+      "path": "src/mongodb/runtime/sha256.lua",
+      "stability": "internal"
+    },
+    "mongodb.runtime.snappy": {
+      "path": "src/mongodb/runtime/snappy.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.zlib": {
+      "path": "src/mongodb/runtime/zlib.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime.zstandard": {
+      "path": "src/mongodb/runtime/zstandard.lua",
+      "stability": "advanced-extension"
+    },
+    "mongodb.runtime_guard": {
+      "path": "src/mongodb/runtime_guard.lua",
+      "stability": "internal"
+    },
+    "mongodb.sdam": {
+      "path": "src/mongodb/sdam.lua",
+      "stability": "internal"
+    },
+    "mongodb.selection": {
+      "path": "src/mongodb/selection.lua",
+      "stability": "internal"
+    },
+    "mongodb.session": {
+      "path": "src/mongodb/session.lua",
+      "stability": "internal"
+    },
+    "mongodb.session_executor": {
+      "path": "src/mongodb/session_executor.lua",
+      "stability": "internal"
+    },
+    "mongodb.socket_timeout_executor": {
+      "path": "src/mongodb/socket_timeout_executor.lua",
+      "stability": "internal"
+    },
+    "mongodb.standalone_executor": {
+      "path": "src/mongodb/standalone_executor.lua",
+      "stability": "internal"
+    },
+    "mongodb.topology": {
+      "path": "src/mongodb/topology.lua",
+      "stability": "internal"
+    },
+    "mongodb.topology_executor": {
+      "path": "src/mongodb/topology_executor.lua",
+      "stability": "internal"
+    },
     "mongodb.unified.driver": {
       "path": "spec/support/mongodb/unified/driver.lua",
-      "surface": "test-only"
+      "stability": "test-only"
     },
     "mongodb.unified.events": {
       "path": "spec/support/mongodb/unified/events.lua",
-      "surface": "test-only"
+      "stability": "test-only"
     },
     "mongodb.unified.failpoints": {
       "path": "spec/support/mongodb/unified/failpoints.lua",
-      "surface": "test-only"
+      "stability": "test-only"
     },
     "mongodb.unified.lifecycle": {
       "path": "spec/support/mongodb/unified/lifecycle.lua",
-      "surface": "test-only"
+      "stability": "test-only"
     },
     "mongodb.unified.runner": {
       "path": "spec/support/mongodb/unified/runner.lua",
-      "surface": "test-only"
+      "stability": "test-only"
     },
     "mongodb.unified.schema": {
       "path": "spec/support/mongodb/unified/schema.lua",
-      "surface": "test-only"
+      "stability": "test-only"
+    },
+    "mongodb.wire.op_compressed": {
+      "path": "src/mongodb/wire/op_compressed.lua",
+      "stability": "internal"
+    },
+    "mongodb.wire.op_msg": {
+      "path": "src/mongodb/wire/op_msg.lua",
+      "stability": "internal"
     }
-  }
+  },
+  "schema_version": 2
 }

@@ -36,12 +36,10 @@ class CoverageGateTests(unittest.TestCase):
 
     for name, entry in classification.items():
       with self.subTest(module=name):
-        self.assertIn(entry["surface"], ("runtime", "test-only"))
-
-        if entry["surface"] == "runtime":
-          self.assertEqual(entry["path"], baseline_modules.get(name))
-        else:
+        if entry["stability"] == "test-only":
           self.assertNotIn(name, baseline_modules)
+        else:
+          self.assertEqual(entry["path"], baseline_modules.get(name))
 
   def test_applies_platform_adjustments_without_mutating_the_baseline(self):
     baseline = {
