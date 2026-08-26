@@ -396,6 +396,288 @@ Shared watch options are `allow_disk_use` and `bypass_document_validation` (bool
 (boolean). `timeout_mode` is unsupported, and `max_await_time_ms` must be lower than a positive
 `timeout_ms`. Iteration and resume behavior are specified in the change-stream reference.
 
+## Collection and administration APIs
+
+Collection operations inherit `read_concern`, `read_preference`, `write_concern`, and `timeout_ms`
+from the collection handle unless an operation's contract says otherwise. The handle rules are
+the one authoritative timeout, cancellation, session, and error contract for every operation
+below; see [handle configuration](#handle-configuration-timeouts-and-ownership). In particular,
+every method accepts `timeout_ms`, `deadline`, `cancellation`, and `session` even when those
+common options are not repeated in its method-specific list.
+`raw_data` is an internal conformance option and is not part of the supported application API.
+
+Collection handles additionally expose read-only `name`, `full_name`, `read_concern`,
+`read_preference`, `write_concern`, and `timeout_ms` properties. Documents, filters,
+projections, pipelines, collations, hints, and other BSON-shaped values below use
+`mongodb.bson` values, not ordinary Lua tables.
+
+### Write results
+
+Write result objects and their nested identifier maps are immutable. Fields that do not apply to
+an operation are nil. Unacknowledged results expose only `acknowledged = false`; count and
+identifier fields are unavailable because no server response was requested.
+
+| Field | Meaning |
+|---|---|
+| `acknowledged` | Whether the server acknowledged the write. |
+| `inserted_id` | Identifier of the document written by `insert_one`. |
+| `inserted_ids` | One-based immutable identifier map returned by acknowledged `insert_many`. |
+| `inserted_count` | Number of documents inserted by a bulk operation. |
+| `matched_count` | Number of documents matched by an update or replacement. |
+| `modified_count` | Number of documents modified by an update or replacement. |
+| `deleted_count` | Number of documents deleted. |
+| `upserted_count` | Number of documents created by upserts. |
+| `upserted_id` | Identifier created by a single update or replacement upsert. |
+| `upserted_ids` | Immutable model-index-to-identifier map for bulk upserts. |
+
+`collection:insert_one(document [, options]) -> result | nil, err`
+
+`document` must be a BSON document. The driver generates an ObjectId when `_id` is absent and
+returns an entropy error if generation fails. Options are `bypass_document_validation`
+(boolean), `comment`, and the common operation options. An acknowledged result exposes
+`acknowledged` and `inserted_id`; the operation is retryable when acknowledged.
+
+`collection:insert_many(documents [, options]) -> result | nil, err`
+
+`documents` is a non-empty dense Lua array of BSON documents. The driver generates missing
+identifiers before batching. Options are `bypass_document_validation` and `ordered` (booleans;
+ordered defaults to true), `comment`, and the common operation options. An acknowledged result
+exposes `acknowledged`, all five bulk counts, `upserted_ids`, and `inserted_ids`.
+
+`collection:bulk_write(models [, options]) -> result | nil, err`
+
+`models` is a non-empty dense Lua array constructed with `mongodb.bulk`. Options are
+`bypass_document_validation` and `ordered` (booleans; ordered defaults to true), `comment`, `let`
+(BSON document), and the common operation options. An acknowledged result exposes
+`acknowledged`, `inserted_count`, `matched_count`, `modified_count`, `deleted_count`,
+`upserted_count`, and `upserted_ids`. Ordered execution stops after the first write error;
+unordered execution reports all errors it receives. Bulk model constructors and partial-result
+error fields are specified in the bulk reference.
+
+Unacknowledged collection writes reject collation and array filters. Bulk writes also reject
+`bypass_document_validation = true`; hint and update-sort support remains subject to the server
+version. An explicit session can make a write acknowledged while it participates in a
+transaction.
+
+### Queries and cursors
+
+`collection:find([filter [, options]]) -> cursor | nil, err`
+
+`filter` defaults to an empty BSON document. Options are:
+
+- booleans: `allow_disk_use`, `allow_partial_results`, `no_cursor_timeout`, `return_key`, and
+  `show_record_id`;
+- non-negative integers: `batch_size`, `max_await_time_ms`, `max_time_ms`, and `skip`;
+- BSON documents: `collation`, `let`, `max`, `min`, `projection`, and `sort`;
+- `hint`, an index name or BSON document; `comment`, any BSON value; `limit`, an integer;
+  `cursor_type`, one of `non_tailable`, `tailable`, or `tailable_await`; `timeout_mode`; and the
+  common operation options.
+
+A negative limit requests a single batch and its absolute value is the result limit. The cursor
+pins its selected connection until close, inherits `comment` for `getMore`, and uses the
+collection read concern and read preference. Tailable cursor iteration and timeout constraints
+are specified in the cursor reference.
+
+`collection:find_one([filter [, options]]) -> document | nil, err`
+
+This accepts the `find` options except `cursor_type` and `max_await_time_ms`; it forces a
+one-document, single-batch query. A nil filter becomes an empty document, while any other
+non-document filter is shorthand for `{ _id = filter }`. The method returns one Lua nil with no
+error when no document matches.
+
+### Updates and deletes
+
+`collection:update_one(filter, update [, options]) -> result | nil, err`
+
+`collection:update_many(filter, update [, options]) -> result | nil, err`
+
+`filter` is a BSON document. `update` is either a non-empty modifier document whose first key
+begins with `$`, or a non-empty BSON array of pipeline-stage documents. Options are
+`array_filters` (BSON array of documents), `bypass_document_validation` and `upsert` (booleans),
+`collation`, `let`, and `sort` (BSON documents), `hint` (index name or BSON document), `comment`,
+and the common operation options. `update_many` does not accept `sort` and is not retryable;
+an acknowledged `update_one` is retryable.
+
+`collection:replace_one(filter, replacement [, options]) -> result | nil, err`
+
+`filter` and `replacement` are BSON documents, and the replacement cannot begin with an atomic
+`$` modifier. It accepts the update options except `array_filters`. An acknowledged replacement
+is retryable.
+
+Acknowledged update and replacement results expose `acknowledged`, `matched_count`,
+`modified_count`, `upserted_count`, and `upserted_id`.
+
+`collection:delete_one(filter [, options]) -> result | nil, err`
+
+`collection:delete_many(filter [, options]) -> result | nil, err`
+
+`filter` is a BSON document. Options are `collation` and `let` (BSON documents), `hint` (index
+name or BSON document), `comment`, and the common operation options. An acknowledged
+`delete_one` is retryable; `delete_many` is not. Acknowledged results expose `acknowledged` and
+`deleted_count`.
+
+### Aggregation, counts, and find-and-modify
+
+`collection:aggregate(pipeline [, options]) -> cursor | nil, err`
+
+`pipeline` and options have the same shapes as
+[`database:aggregate`](#database-methods). Read pipelines use the collection read concern and
+read preference and are retryable. Pipelines containing `$out` or `$merge` use the write concern,
+are not retryable, and reject iteration timeout mode.
+
+`collection:watch([pipeline [, options]]) -> change_stream | nil, err`
+
+This opens a collection-scoped change stream and accepts the shared pipeline and options listed
+for `database:watch`. Change-stream iteration, resume, and lifecycle behavior are specified in
+the change-stream reference.
+
+`collection:count(filter [, options]) -> integer | nil, err`
+
+This deprecated command requires a BSON document filter. Options are `collation` (BSON
+document), `hint` (index name or BSON document), `limit`, `max_time_ms`, and `skip` (non-negative
+integers), `comment`, and the common operation options. It uses the collection read concern and
+read preference and is retryable.
+
+`collection:count_documents(filter [, options]) -> integer | nil, err`
+
+This exact count requires a BSON document filter and executes an aggregation. Options are
+`collation` (BSON document), `hint` (index name or BSON document), `limit` (positive integer),
+`max_time_ms` and `skip` (non-negative integers), `comment`, and the common operation options.
+It returns zero when no documents match.
+
+`collection:estimated_document_count([options]) -> integer | nil, err`
+
+Options are `max_time_ms` (non-negative integer), `comment`, and the common operation options.
+The command uses collection metadata, inherits the read concern, and is retryable.
+
+`collection:distinct(key [, filter [, options]]) -> array | nil, err`
+
+`key` is a non-empty string. `filter` defaults to an empty BSON document. Options are
+`collation` (BSON document), `hint` (index name or BSON document), `max_time_ms` (non-negative
+integer), `comment`, and the common operation options. The operation inherits the collection
+read concern and is retryable; success returns a BSON array.
+
+`collection:map_reduce(map, reduce, out [, options]) -> value | nil, err`
+
+This deprecated operation accepts `map` and `reduce` as strings or BSON code. `out` is a
+collection-name string or BSON document. Options are `bypass_document_validation`, `js_mode`,
+and `verbose` (booleans); `collation`, `query`, `scope`, and `sort` (BSON documents); `finalize`
+(string or BSON code); `limit` and `max_time_ms` (non-negative integers); `comment`; and the
+common operation options. Inline output inherits the read concern and returns a BSON array;
+collection output uses the write concern and returns the server's result value. Map-reduce is
+never retried.
+
+`collection:find_one_and_delete(filter [, options]) -> document | nil, err`
+
+Options are `collation`, `let`, `projection`, and `sort` (BSON documents), `hint` (index name or
+BSON document), `max_time_ms` (non-negative integer), `comment`, and the common operation
+options.
+
+`collection:find_one_and_replace(filter, replacement [, options]) -> document | nil, err`
+
+This accepts the delete form's options plus `bypass_document_validation` and `upsert`
+(booleans), and `return_document` (`before` or `after`, default `before`). `replacement` follows
+the `replace_one` rules.
+
+`collection:find_one_and_update(filter, update [, options]) -> document | nil, err`
+
+This accepts the replacement form's options plus `array_filters` (BSON array of documents).
+`update` follows the `update_one` rules. All three methods use the collection write concern and
+are retryable when acknowledged. Each returns one Lua nil with no error when no document matches
+or when the write is unacknowledged.
+
+### Collection management
+
+`collection:drop([options]) -> true | nil, err`
+
+Options are `comment`, `max_time_ms` (non-negative integer), and the common operation options.
+The command uses the collection write concern.
+Server code 26 (`NamespaceNotFound`) is treated as success.
+
+`collection:rename(new_name [, options]) -> document | nil, err`
+
+`new_name` follows the collection-name rules. Options are `drop_target` (boolean), `comment`, and
+the common operation options. The command runs against `admin`, uses the collection write
+concern, and returns the server response document. The existing handle keeps its original name;
+obtain a handle for the new namespace separately.
+
+### Standard indexes
+
+`collection:create_index(keys_or_model [, options]) -> name | nil, err`
+
+`keys_or_model` is either a non-empty ordered BSON key document or a value returned by
+`mongodb.index_model`. Key directions are 1, -1, `2d`, `2dsphere`, `geoHaystack`, `hashed`, or
+`text`. With a key document, the following index options are accepted:
+
+- booleans: `background`, `hidden`, `sparse`, and `unique`;
+- non-negative integers: `bits`, `bucket_size`, `expire_after_seconds`, `text_index_version`,
+  `two_dsphere_index_version`, and `version`;
+- BSON documents: `collation`, `partial_filter_expression`, `storage_engine`, `weights`, and
+  `wildcard_projection`;
+- `default_language` and `language_override` (strings), `min` and `max` (numbers), and `name`
+  (non-empty UTF-8 string without NUL).
+
+Command options are `commit_quorum` (non-negative integer or non-empty string), `max_time_ms`
+(non-negative integer), `comment`, and the common operation options. Index options cannot be
+added when an existing model is supplied. Success returns the explicit or generated index name.
+
+`collection:create_indexes(models [, options]) -> names | nil, err`
+
+`models` is a non-empty dense Lua array of `mongodb.index_model` values. It accepts only the
+command options above and returns an immutable ordered array of names. Both creation methods use
+the collection write concern; `commit_quorum` requires MongoDB 4.4 or newer.
+
+`collection:drop_index(name_or_model [, options]) -> true | nil, err`
+
+`name_or_model` is a non-empty name or `mongodb.index_model`. The special name `*` is rejected;
+use `drop_indexes`. Options are `comment`, `max_time_ms` (non-negative integer), and the common
+operation options.
+
+`collection:drop_indexes([options]) -> true | nil, err`
+
+This accepts the same options as `drop_index`. Both methods use the collection write concern,
+and server code 26 is success.
+
+`collection:list_indexes([options]) -> cursor | nil, err`
+
+Options are `batch_size` (non-negative integer), `comment`, `timeout_mode`, and the common
+operation options. The selected connection remains pinned until cursor close and `comment` is
+inherited by `getMore`. Server code 26 returns an empty cursor.
+
+### Search indexes
+
+`collection:create_search_index(model [, options]) -> name | nil, err`
+
+`model` is a BSON document containing required `definition` (BSON document), optional `name`
+(non-empty UTF-8 string without NUL), and optional `type` (`search` or `vectorSearch`). No other
+fields are accepted. Options are the common operation options only.
+
+`collection:create_search_indexes(models [, options]) -> names | nil, err`
+
+`models` is a dense Lua array of those model documents. Options are the common operation options
+only. Success returns an immutable ordered array of created names in model order.
+
+`collection:update_search_index(name, definition [, options]) -> true | nil, err`
+
+`name` is a non-empty UTF-8 string without NUL and `definition` is a BSON document. Options are
+the common operation options only.
+
+`collection:drop_search_index(name [, options]) -> true | nil, err`
+
+`name` follows the same rules and options are the common operation options only. Server code 26
+is success.
+
+`collection:list_search_indexes([name [, options]]) -> cursor | nil, err`
+
+`name`, when present, is a string. Options are `allow_disk_use` and
+`bypass_document_validation` (booleans), `batch_size`, `max_await_time_ms`, and `max_time_ms`
+(non-negative integers), `collation` and `let` (BSON documents), `hint` (index name or BSON
+document), `comment`, `timeout_mode`, and the common operation options. The operation forces
+primary selection, is retryable, pins its connection, and inherits `comment` for `getMore`.
+
+Search index commands deliberately do not append the collection read or write concern; the
+server applies its command defaults.
+
 ## BSON API
 
 `mongodb.bson` is available through `require("mongodb.bson")` and as `mongodb.bson`. The

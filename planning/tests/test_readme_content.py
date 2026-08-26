@@ -345,6 +345,79 @@ class ReadmeContentTests(unittest.TestCase):
       with self.subTest(contract=contract):
         self.assertIn(contract, section)
 
+  def test_collection_and_administration_api_reference_has_exact_contracts(
+    self,
+  ) -> None:
+    api = API.read_text(encoding="utf-8")
+
+    self.assertIn("## Collection and administration APIs", api)
+    section = api.split("## Collection and administration APIs", 1)[1]
+    section = section.split("## BSON API", 1)[0]
+
+    for signature in (
+      "collection:insert_one(document [, options]) -> result | nil, err",
+      "collection:insert_many(documents [, options]) -> result | nil, err",
+      "collection:bulk_write(models [, options]) -> result | nil, err",
+      "collection:find([filter [, options]]) -> cursor | nil, err",
+      "collection:find_one([filter [, options]]) -> document | nil, err",
+      "collection:update_one(filter, update [, options]) -> result | nil, err",
+      "collection:update_many(filter, update [, options]) -> result | nil, err",
+      "collection:replace_one(filter, replacement [, options]) -> result | nil, err",
+      "collection:delete_one(filter [, options]) -> result | nil, err",
+      "collection:delete_many(filter [, options]) -> result | nil, err",
+      "collection:aggregate(pipeline [, options]) -> cursor | nil, err",
+      "collection:watch([pipeline [, options]]) -> change_stream | nil, err",
+      "collection:count(filter [, options]) -> integer | nil, err",
+      "collection:count_documents(filter [, options]) -> integer | nil, err",
+      "collection:estimated_document_count([options]) -> integer | nil, err",
+      "collection:distinct(key [, filter [, options]]) -> array | nil, err",
+      "collection:map_reduce(map, reduce, out [, options]) -> value | nil, err",
+      "collection:find_one_and_delete(filter [, options]) -> document | nil, err",
+      "collection:find_one_and_replace(filter, replacement [, options]) -> document | nil, err",
+      "collection:find_one_and_update(filter, update [, options]) -> document | nil, err",
+      "collection:drop([options]) -> true | nil, err",
+      "collection:rename(new_name [, options]) -> document | nil, err",
+      "collection:create_index(keys_or_model [, options]) -> name | nil, err",
+      "collection:create_indexes(models [, options]) -> names | nil, err",
+      "collection:drop_index(name_or_model [, options]) -> true | nil, err",
+      "collection:drop_indexes([options]) -> true | nil, err",
+      "collection:list_indexes([options]) -> cursor | nil, err",
+      "collection:create_search_index(model [, options]) -> name | nil, err",
+      "collection:create_search_indexes(models [, options]) -> names | nil, err",
+      "collection:update_search_index(name, definition [, options]) -> true | nil, err",
+      "collection:drop_search_index(name [, options]) -> true | nil, err",
+      "collection:list_search_indexes([name [, options]]) -> cursor | nil, err",
+    ):
+      with self.subTest(signature=signature):
+        self.assertIn(f"`{signature}`", section)
+
+    for field in (
+      "acknowledged",
+      "inserted_id",
+      "inserted_ids",
+      "inserted_count",
+      "matched_count",
+      "modified_count",
+      "deleted_count",
+      "upserted_count",
+      "upserted_id",
+      "upserted_ids",
+    ):
+      with self.subTest(result_field=field):
+        self.assertIn(f"| `{field}` |", section)
+
+    for contract in (
+      "Collection operations inherit `read_concern`, `read_preference`, `write_concern`, and `timeout_ms`",
+      "one authoritative timeout, cancellation, session, and error contract",
+      "Unacknowledged results expose only `acknowledged = false`",
+      "returns one Lua nil with no error when no document matches",
+      "`update_many` does not accept `sort`",
+      "`raw_data` is an internal conformance option",
+      "Server code 26 (`NamespaceNotFound`) is treated as success",
+    ):
+      with self.subTest(contract=contract):
+        self.assertIn(contract, section)
+
 
 if __name__ == "__main__":
   unittest.main()

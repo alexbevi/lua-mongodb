@@ -8965,6 +8965,35 @@
       "notes": [],
       "started_at": "2026-08-26T02:44:53+00:00",
       "completed_at": "2026-08-26T02:58:50+00:00"
+    },
+    "DOC-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_readme_content.ReadmeContentTests.test_collection_and_administration_api_reference_has_exact_contracts",
+          "exit_code": 2,
+          "summary": "One API-reference contract test failed because docs/API.md had no collection and administration section.",
+          "recorded_at": "2026-08-26T03:12:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/crud_spec.lua spec/unit/crud_mutations_spec.lua spec/unit/crud_collection_operations_spec.lua spec/unit/bulk_spec.lua spec/unit/admin_spec.lua spec/unit/database_aggregate_spec.lua spec/unit/api_handles_spec.lua' FOCUS_PYTHON=planning.tests.test_readme_content",
+          "exit_code": 0,
+          "summary": "42 focused CRUD, bulk, administration, aggregation, and handle cases plus 9 API-content and documentation-link tests passed.",
+          "recorded_at": "2026-08-26T03:21:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-package",
+          "exit_code": 0,
+          "summary": "All 4 isolated source-rock package and API-classification tests passed.",
+          "recorded_at": "2026-08-26T03:21:24+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T03:09:31+00:00",
+      "completed_at": "2026-08-26T03:21:29+00:00"
     }
   },
   "verified_references": {
