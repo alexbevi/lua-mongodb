@@ -973,6 +973,289 @@ command before shutting down its executor. A repeated `end_session()` call also 
 After end, operations and state-changing session methods return a `CLIENT` error. Applications
 should end explicit sessions promptly even though client close is a final safety net.
 
+## Bulk, index-model, and GridFS APIs
+
+### Collection bulk models
+
+`mongodb.bulk` is available through `require("mongodb.bulk")` and as `mongodb.bulk`. Its
+constructors return immutable models accepted only by `collection:bulk_write`:
+
+- `mongodb.bulk.insert_one(document) -> model`
+- `mongodb.bulk.update_one(filter, update [, options]) -> model`
+- `mongodb.bulk.update_many(filter, update [, options]) -> model`
+- `mongodb.bulk.replace_one(filter, replacement [, options]) -> model`
+- `mongodb.bulk.delete_one(filter [, options]) -> model`
+- `mongodb.bulk.delete_many(filter [, options]) -> model`
+
+Documents, filters, replacements, and modifier updates are BSON documents. An update can also
+be a non-empty BSON array of pipeline-stage documents. Modifier documents must begin with `$`;
+replacements must not. Update-model options are `array_filters` (BSON array of documents),
+`collation` and `sort` (BSON documents), `hint` (index name or BSON document), and `upsert`
+(boolean). `update_many` rejects `sort`. Replacement models accept the same options except
+`array_filters`; delete models accept only `collation` and `hint`. Unknown model options,
+malformed BSON shapes, and invalid value types raise.
+
+A model exposes only its immutable `kind`: `insert`, `update`, or `delete`. The constructor does
+not mutate its BSON arguments. Immediately before execution, an insert model without `_id` is
+copied with a generated ObjectId; entropy failure returns from the bulk operation as
+`nil, err`.
+
+`collection:bulk_write(models [, options]) -> result | nil, err`
+
+The execution contract and command options are introduced in the
+[collection reference](#write-results). `models` is a non-empty dense Lua array. The driver
+splits it by server count and message-size limits. Ordered mode preserves model order and stops
+after the first write error. Unordered mode may regroup operations by command kind, continues
+after individual write failures, and maps every result and error back to the original model
+position. Model positions and result maps are one-based.
+
+An acknowledged immutable result exposes `acknowledged`, `inserted_count`, `matched_count`,
+`modified_count`, `deleted_count`, `upserted_count`, and the immutable `upserted_ids` map.
+`insert_many` additionally exposes `inserted_ids`. Unacknowledged results expose only
+`acknowledged = false`; no count or identifier is inferred without a server response.
+
+An individual write, concern, or later command failure returns a `WRITE` error. Its immutable
+`details` has these fields:
+
+| Field | Collection bulk contract |
+|---|---|
+| `partial_result` | Counts confirmed by acknowledged responses before failure, including zero counts. |
+| `processed_count` | Number of original models attempted through the stopping point. |
+| `unprocessed_count` | Models not attempted after that point. |
+| `write_errors` | Array ordered by original one-based model position. |
+| `write_concern_errors` | Array of observed write-concern failures. |
+| `response` | Server response carried by an underlying command failure, when available. |
+| `responses` | Acknowledged batch responses received before failure. |
+
+Each write error contains `index`, `code`, optional `code_name`, `message`, and optional
+`details` copied from server `errInfo`. A concern error has the same fields except `index`.
+The top-level error uses the first individual or concern failure for its code and message,
+retains a command failure as `cause`, and preserves labels.
+
+### Client bulk models and results
+
+`mongodb.client_bulk` is available through `require("mongodb.client_bulk")` and as
+`mongodb.client_bulk`. Its models are distinct from collection bulk models and include a target
+namespace in `database.collection` form:
+
+- `mongodb.client_bulk.insert_one(namespace, document) -> model`
+- `mongodb.client_bulk.update_one(namespace, filter, update [, options]) -> model`
+- `mongodb.client_bulk.update_many(namespace, filter, update [, options]) -> model`
+- `mongodb.client_bulk.replace_one(namespace, filter, replacement [, options]) -> model`
+- `mongodb.client_bulk.delete_one(namespace, filter [, options]) -> model`
+- `mongodb.client_bulk.delete_many(namespace, filter [, options]) -> model`
+
+The namespace must be valid UTF-8 with a non-empty database and collection separated by a dot.
+Document and option validation matches the corresponding `mongodb.bulk` constructors. Models
+are immutable and expose only `kind`.
+
+`client:bulk_write(models [, options]) -> result | nil, err`
+
+This method requires MongoDB 8.0 or newer and accepts a non-empty dense array of client-bulk
+models. Options are `bypass_document_validation`, `ordered` (default true), and
+`verbose_results` (booleans); `let` (BSON document); `comment`; an operation-level
+`write_concern`; and `session`, `cancellation`, `deadline`, and `timeout_ms`. The operation write
+concern overrides the client default, but cannot be specified after a transaction starts.
+Unacknowledged execution requires `ordered = false`, forbids an explicit session and verbose
+results, and returns only `acknowledged = false`.
+
+The entire client bulk operation shares one CSOT deadline across batch creation, every server
+batch, one retry for each eligible batch containing no multi-document write, result-cursor
+`getMore`, and checked cursor cleanup. Multi-document writes and transaction batches are not
+retried. The result cursor is internal and is exhausted before a success value becomes visible.
+
+An acknowledged summary result is immutable and exposes `acknowledged`,
+`has_verbose_results = false`, and the five counts `inserted_count`, `matched_count`,
+`modified_count`, `deleted_count`, and `upserted_count`. `has_verbose_results` is false for
+summary results. With `verbose_results = true`, it is true and the result also exposes immutable
+maps keyed by original one-based model position:
+
+| Map | Per-model result |
+|---|---|
+| `insert_results` | `acknowledged` and `inserted_id`. |
+| `update_results` | `acknowledged`, `matched_count`, `modified_count`, and optional `upserted_id`. |
+| `delete_results` | `acknowledged` and `deleted_count`. |
+
+An individual or concern failure returns a `WRITE` error. `details.write_errors` is ordered by
+original model position; each item exposes `index`, `code`, optional `code_name`, `message`,
+optional `details` from `errInfo`, and the failed BSON `operation`. The
+`details.write_concern_errors` items omit `index` and `operation`. Ordered execution reports its
+first individual failure; unordered execution reports every observed failure.
+`details.partial_result` is present only after at least one model is known to have succeeded and
+uses the same summary or verbose shape. It is absent when the first ordered model or every
+unordered model fails. A result-cursor command failure can additionally expose
+`details.cleanup_error`; an available underlying response is retained as `details.response`.
+
+### Index models
+
+`mongodb.index_model(keys [, options]) -> index_model`
+
+`keys` is a non-empty ordered BSON document. Each direction is 1, -1, `2d`, `2dsphere`,
+`geoHaystack`, `hashed`, or `text`. Options have the exact names and value shapes listed under
+[`collection:create_index`](#standard-indexes). When `name` is omitted, the driver joins each
+key and direction in order, such as `kind_1_created_at_-1`.
+
+Index models expose immutable `keys`, `name`, and `document` properties. `document` is the
+complete ordered create-index model containing the key, resolved name, and translated MongoDB
+option names. Invalid key directions, option names, or option values raise. A model can be
+passed to `create_index`, `create_indexes`, and `drop_index`; index options cannot be overlaid
+when an existing model is supplied.
+
+### GridFS buckets and ownership
+
+`mongodb.gridfs_bucket(database [, options]) -> bucket | nil, err`
+
+The same constructor is available as `database:gridfs_bucket([options])`. Options are
+`bucket_name` (`fs` by default), `chunk_size_bytes` (261120 by default and at most signed
+32-bit), `disable_md5` (false), `read_concern`, `read_preference`, `write_concern`, and
+`timeout_ms`. Omitted concern and timeout values inherit from the database. GridFS requires an
+acknowledged write concern. Invalid normalized values return a `CONFIGURATION` error; the wrong
+database type, non-table options, and unknown keys raise. The `disable_md5` option records the
+legacy compatibility preference; this implementation never adds the deprecated `md5` field to
+new files.
+
+The immutable bucket exposes `bucket_name`, `chunk_size_bytes`, `database`, `disable_md5`,
+`read_concern`, `read_preference`, `write_concern`, and `timeout_ms`. A bucket borrows its
+database and client lifetime and has no `close` method. Upload and download streams must finish
+before their client closes; they do not own the bucket or client.
+
+### GridFS uploads
+
+- `bucket:open_upload_stream(filename [, options]) -> upload_stream | nil, err` creates a stream
+  with a generated ObjectId and performs no database I/O.
+- `bucket:open_upload_stream_with_id(identifier, filename [, options]) -> upload_stream | nil, err`
+  uses the non-nil caller value as `_id` and also performs no database I/O.
+- `bucket:upload_from_stream(filename, source [, options]) -> id | nil, err` owns and closes its
+  temporary upload stream and returns the generated identifier.
+- `bucket:upload_from_stream_with_id(identifier, filename, source [, options]) -> true | nil, err`
+  does the same with a caller-provided non-nil identifier.
+
+Filenames are UTF-8 strings. Stream options are `chunk_size_bytes` and `metadata` (BSON
+document). The convenience methods additionally accept `timeout_ms`. Their `source` is either a
+byte string or a readable table/userdata with `read(size)`. A readable source signals EOF with
+nil or an empty string and may return `nil, err`; invalid arguments raise.
+
+An upload stream is immutable and exposes `id`, `filename`, `chunk_size_bytes`, `length`,
+`upload_date`, `closed`, and `aborted`. `upload_date` is nil until a successful close.
+
+`upload_stream:write(data) -> true | nil, err`
+
+Buffers byte-string data and inserts each complete chunk. The required GridFS indexes are
+checked lazily on the first upload when the files collection is empty: `{filename: 1,
+uploadDate: 1}` on files and the unique `{files_id: 1, n: 1}` on chunks. Later uploads reuse the
+bucket's successful check. An index, chunk, or metadata-write failure returns `nil, err` and
+leaves the stream open. A failed upload does not automatically remove chunks already written;
+the application must call `abort()` when cleanup is required.
+
+`upload_stream:close() -> true | nil, err`
+
+Flushes the final partial chunk, ensures the indexes, and then inserts the files document. The
+files document is inserted only after every chunk is stored, so incomplete uploads are not
+published as complete files. Success sets `closed` and `upload_date` and returns true. Repeated
+close after success also returns true. A close failure leaves the stream open; close after abort
+returns a `CLIENT` error.
+
+`upload_stream:abort() -> true | nil, err`
+
+Marks the stream aborted and closed, discards buffered bytes, deletes stored chunks, then
+deletes any files document. `abort()` is terminal even when cleanup fails. A cleanup failure is
+returned again by a repeated abort without another attempt; repeated abort after success and
+close after abort return `CLIENT` errors.
+
+`upload_from_stream*` applies one effective `timeout_ms` deadline to source reads, index work,
+chunk writes, metadata insertion, and source-failure cleanup. It aborts after a source read
+failure and preserves that original failure even if cleanup also fails. The driver never closes
+a caller-provided source. A manually controlled upload stream has no reserved lifetime
+deadline: each blocking chunk or close operation independently inherits the bucket's timeout.
+
+### GridFS downloads
+
+- `bucket:open_download_stream(identifier [, options]) -> download_stream | nil, err` opens the
+  files document for a non-nil id.
+- `bucket:open_download_stream_by_name(filename [, options]) -> download_stream | nil, err`
+  selects one filename revision. `revision` defaults to -1, the newest file. Non-negative
+  revisions count from the oldest file starting at zero. A negative revision counts backward
+  from the newest file: -1 is newest, -2 is the previous version.
+- `bucket:download_to_stream(identifier, destination [, options]) -> true | nil, err`
+- `bucket:download_to_stream_by_name(filename, destination [, options]) -> true | nil, err`
+  accept a table/userdata with `write(data)` and own the temporary download stream they open.
+
+Download options contain `timeout_ms`; by-name forms also accept a signed 32-bit `revision`.
+The immutable stream exposes `id`, `filename`, `length`, `chunk_size_bytes`, `upload_date`,
+`metadata`, and `closed`. Opening validates required files-document metadata. Missing ids and
+filenames return a GridFS `file_not_found` error; a filename that exists without the selected
+revision returns `revision_not_found`.
+
+`download_stream:read([size]) -> string | nil, err`
+
+With no size or -1, reads all bytes from the current position; otherwise `size` is a
+non-negative integer. EOF and a zero-byte request return an empty string. Chunks are loaded in
+ascending `n` order and must have the exact expected length. A missing, out-of-order, or invalid
+chunk closes the internal cursor and records a sticky `corrupt_file` error returned by later
+reads and seeks.
+
+`download_stream:tell() -> integer`
+
+Returns the current zero-based byte position without I/O, including a position beyond EOF.
+
+`download_stream:seek([whence [, offset]]) -> integer | nil, err`
+
+`whence` defaults to `cur` and is `set`, `cur`, or `end`; integer `offset` defaults to zero.
+Seeking closes the current chunk cursor, clears buffered chunk data, and returns the new
+position. A negative result raises. Seeking beyond the end is allowed and a following read
+returns an empty string.
+
+`download_stream:close() -> true | nil, err`
+
+Closes the internal chunk cursor, clears buffered data, and marks the stream closed. Repeated
+close returns true. Reads and seeks after close return a `CLIENT` error. The opening timeout and
+every download-stream read, seek, and close share one deadline captured when the stream opens;
+the budget is not refreshed between calls.
+
+The `download_to_stream*` methods use one deadline for lookup, all reads and destination writes,
+and internal close. They always attempt to close their download stream. The first read or
+destination-write failure takes precedence over a later close failure; a close error is returned
+when copying otherwise succeeds. The driver never closes a caller-provided destination.
+
+### GridFS file management
+
+`bucket:delete(identifier [, options]) -> true | nil, err`
+
+Deletes the files document first and then all matching chunks under one deadline. Deleting a
+missing id still removes orphan chunks before returning `file_not_found`.
+
+`bucket:delete_by_name(filename [, options]) -> true | nil, err`
+
+Collects every matching id, deletes every files document for the name, and then deletes their
+chunks under one deadline. No matching filename returns `file_not_found`.
+
+`bucket:find([filter [, options]]) -> cursor | nil, err`
+
+Queries the files collection. `filter` defaults to an empty BSON document. Options are
+`allow_disk_use` and `no_cursor_timeout` (booleans); `batch_size`, `limit`, `max_time_ms`, and
+`skip` (validated as by `collection:find`); `sort` (BSON document); and `timeout_ms`. The cursor
+uses the bucket read concern and preference and follows the ordinary cursor lifecycle contract.
+
+`bucket:rename(identifier, new_filename [, options]) -> true | nil, err`
+
+Renames one files document. A missing id returns `file_not_found`.
+
+`bucket:rename_by_name(filename, new_filename [, options]) -> true | nil, err`
+
+Renames every files document for the original filename. No match returns `file_not_found`.
+
+`bucket:drop([options]) -> true | nil, err`
+
+Drops the files collection and then the chunks collection. Delete, rename, and drop options
+contain only `timeout_ms`. GridFS multi-command methods do not roll back an earlier successful
+command when a later command fails.
+
+GridFS-specific operational errors use the structured `CLIENT` category and place a discriminator
+in details: `details.gridfs` is `file_not_found`, `revision_not_found`, or `corrupt_file`.
+Additional details identify the id, filename, revision, metadata field, or corrupt chunk when
+available. Nil identifiers, invalid filenames, stream values, and read/seek arguments raise as
+described above. Management and download methods also reject unknown options.
+
 ## BSON API
 
 `mongodb.bson` is available through `require("mongodb.bson")` and as `mongodb.bson`. The

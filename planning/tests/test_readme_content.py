@@ -522,6 +522,88 @@ class ReadmeContentTests(unittest.TestCase):
       with self.subTest(internal_method=internal_method):
         self.assertNotIn(f"session:{internal_method}", section)
 
+  def test_bulk_index_and_gridfs_api_reference_has_exact_contracts(
+    self,
+  ) -> None:
+    api = API.read_text(encoding="utf-8")
+
+    self.assertIn("## Bulk, index-model, and GridFS APIs", api)
+    section = api.split("## Bulk, index-model, and GridFS APIs", 1)[1]
+    section = section.split("## BSON API", 1)[0]
+    normalized_section = " ".join(section.split())
+
+    for signature in (
+      "mongodb.bulk.insert_one(document) -> model",
+      "mongodb.bulk.update_one(filter, update [, options]) -> model",
+      "mongodb.bulk.update_many(filter, update [, options]) -> model",
+      "mongodb.bulk.replace_one(filter, replacement [, options]) -> model",
+      "mongodb.bulk.delete_one(filter [, options]) -> model",
+      "mongodb.bulk.delete_many(filter [, options]) -> model",
+      "mongodb.client_bulk.insert_one(namespace, document) -> model",
+      "mongodb.client_bulk.update_one(namespace, filter, update [, options]) -> model",
+      "mongodb.client_bulk.update_many(namespace, filter, update [, options]) -> model",
+      "mongodb.client_bulk.replace_one(namespace, filter, replacement [, options]) -> model",
+      "mongodb.client_bulk.delete_one(namespace, filter [, options]) -> model",
+      "mongodb.client_bulk.delete_many(namespace, filter [, options]) -> model",
+      "collection:bulk_write(models [, options]) -> result | nil, err",
+      "client:bulk_write(models [, options]) -> result | nil, err",
+      "mongodb.index_model(keys [, options]) -> index_model",
+      "mongodb.gridfs_bucket(database [, options]) -> bucket | nil, err",
+      "bucket:open_upload_stream(filename [, options]) -> upload_stream | nil, err",
+      "bucket:open_upload_stream_with_id(identifier, filename [, options]) -> upload_stream | nil, err",
+      "bucket:upload_from_stream(filename, source [, options]) -> id | nil, err",
+      "bucket:upload_from_stream_with_id(identifier, filename, source [, options]) -> true | nil, err",
+      "upload_stream:write(data) -> true | nil, err",
+      "upload_stream:abort() -> true | nil, err",
+      "upload_stream:close() -> true | nil, err",
+      "bucket:open_download_stream(identifier [, options]) -> download_stream | nil, err",
+      "bucket:open_download_stream_by_name(filename [, options]) -> download_stream | nil, err",
+      "bucket:download_to_stream(identifier, destination [, options]) -> true | nil, err",
+      "bucket:download_to_stream_by_name(filename, destination [, options]) -> true | nil, err",
+      "download_stream:read([size]) -> string | nil, err",
+      "download_stream:tell() -> integer",
+      "download_stream:seek([whence [, offset]]) -> integer | nil, err",
+      "download_stream:close() -> true | nil, err",
+      "bucket:delete(identifier [, options]) -> true | nil, err",
+      "bucket:delete_by_name(filename [, options]) -> true | nil, err",
+      "bucket:find([filter [, options]]) -> cursor | nil, err",
+      "bucket:rename(identifier, new_filename [, options]) -> true | nil, err",
+      "bucket:rename_by_name(filename, new_filename [, options]) -> true | nil, err",
+      "bucket:drop([options]) -> true | nil, err",
+    ):
+      with self.subTest(signature=signature):
+        self.assertIn(f"`{signature}`", section)
+
+    for contract in (
+      "Model positions and result maps are one-based",
+      "Unacknowledged results expose only `acknowledged = false`",
+      "`has_verbose_results` is false for summary results",
+      "`details.partial_result` is present only after at least one model is known to have succeeded",
+      "`details.write_errors` is ordered by original model position",
+      "The entire client bulk operation shares one CSOT deadline",
+      "Index models expose immutable `keys`, `name`, and `document` properties",
+      "A bucket borrows its database and client lifetime",
+      "The required GridFS indexes are checked lazily on the first upload",
+      "The files document is inserted only after every chunk is stored",
+      "A failed upload does not automatically remove chunks already written",
+      "`abort()` is terminal even when cleanup fails",
+      "The driver never closes a caller-provided source",
+      "The opening timeout and every download-stream read, seek, and close share one deadline",
+      "Seeking beyond the end is allowed",
+      "The driver never closes a caller-provided destination",
+      "The first read or destination-write failure takes precedence over a later close failure",
+      "A negative revision counts backward from the newest file",
+      "Deleting a missing id still removes orphan chunks before returning `file_not_found`",
+      "GridFS multi-command methods do not roll back an earlier successful command",
+      "`details.gridfs` is `file_not_found`, `revision_not_found`, or `corrupt_file`",
+    ):
+      with self.subTest(contract=contract):
+        self.assertIn(contract, normalized_section)
+
+    for internal_property in ("files_collection", "chunks_collection"):
+      with self.subTest(internal_property=internal_property):
+        self.assertNotIn(f"bucket.{internal_property}", section)
+
 
 if __name__ == "__main__":
   unittest.main()

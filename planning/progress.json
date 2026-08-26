@@ -9052,6 +9052,42 @@
       "notes": [],
       "started_at": "2026-08-26T03:49:28+00:00",
       "completed_at": "2026-08-26T03:56:00+00:00"
+    },
+    "DOC-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_readme_content.ReadmeContentTests.test_bulk_index_and_gridfs_api_reference_has_exact_contracts",
+          "exit_code": 1,
+          "summary": "API content test failed because the bulk, index-model, and GridFS reference section was absent",
+          "recorded_at": "2026-08-26T04:09:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/bulk_spec.lua spec/unit/client_bulk_spec.lua spec/unit/gridfs_spec.lua spec/unit/admin_spec.lua' FOCUS_PYTHON='planning.tests.test_readme_content.ReadmeContentTests.test_bulk_index_and_gridfs_api_reference_has_exact_contracts planning.tests.test_readme_content.ReadmeContentTests.test_local_links_resolve'",
+          "exit_code": 0,
+          "summary": "79 Lua and 2 Python tests passed",
+          "recorded_at": "2026-08-26T04:13:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-package",
+          "exit_code": 0,
+          "summary": "4 package tests passed",
+          "recorded_at": "2026-08-26T04:13:30+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "summary": "passed",
+          "recorded_at": "2026-08-26T04:13:31+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T04:06:05+00:00",
+      "completed_at": "2026-08-26T04:13:37+00:00"
     }
   },
   "verified_references": {
