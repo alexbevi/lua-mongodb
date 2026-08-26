@@ -157,6 +157,16 @@ local client = assert(mongodb.client(
 ))
 ```
 
+**GSSAPI.** On Linux and macOS, the default runtime loads the operating system's GSSAPI library when it is available. Omit the password to use the current Kerberos ticket cache. Password credentials are accepted only when the installed library reports that capability.
+
+```lua
+local client = assert(mongodb.client(
+  "mongodb://user%40EXAMPLE.COM@db.example.com/"
+    .. "?authMechanism=GSSAPI"
+    .. "&authMechanismProperties=SERVICE_NAME:mongodb"
+))
+```
+
 For an LDAP-compatible deployment, select SASL PLAIN explicitly. Its authentication source defaults to the URI database, or `$external` when the URI has no database. Because PLAIN sends the password inside the TLS-protected SASL exchange, enable and validate TLS in production:
 
 ```lua

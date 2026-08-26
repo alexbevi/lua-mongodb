@@ -48,8 +48,16 @@ assert(client == nil)
 assert(client_err.category == mongodb.error.CATEGORY.CONFIGURATION)
 
 local capabilities = mongodb.runtime.required_capabilities()
+local default_runtime = mongodb.runtime.copas()
+local gssapi_capabilities = assert(default_runtime.gssapi):capabilities()
 
 assert(type(capabilities) == "table")
+assert(gssapi_capabilities.default_credentials == true)
+assert(type(gssapi_capabilities.password_credentials) == "boolean")
+assert(
+  gssapi_capabilities.platform == "linux"
+    or gssapi_capabilities.platform == "macos"
+)
 assert(mongodb.run(function()
   return "runtime-ok"
 end) == "runtime-ok")

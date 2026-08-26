@@ -41,6 +41,7 @@ Advanced extension modules:
 | `mongodb.runtime.contract` | Dependency-free runtime contract helpers. |
 | `mongodb.runtime.copas` | Default Copas runtime construction and scheduler entry point. |
 | `mongodb.runtime.fake` | Deterministic runtime for adapter and integration testing. |
+| `mongodb.runtime.gssapi` | Optional system GSSAPI provider. |
 | `mongodb.runtime.luasec` | LuaSec TLS provider. |
 | `mongodb.runtime.snappy` | Optional Snappy compression provider. |
 | `mongodb.runtime.zlib` | zlib compression provider. |
@@ -211,9 +212,9 @@ GSSAPI configuration requires a non-empty username, always uses `$external`, and
 optional password. Its mechanism properties are case-insensitive: `SERVICE_NAME` defaults to
 `mongodb`; `SERVICE_HOST` and `SERVICE_REALM` are optional strings; and
 `CANONICALIZE_HOST_NAME` accepts `none`, `forward`, `forwardAndReverse`, `true`, or `false`.
-The legacy boolean values normalize to `forwardAndReverse` and `none`. DNS canonicalization and
-authentication require a conforming GSSAPI runtime provider; configuration alone does not load
-a native module or contact a KDC.
+The legacy boolean values normalize to `forwardAndReverse` and `none`. The default Copas
+runtime lazily loads the packaged system GSSAPI adapter on Linux and macOS when the operating
+system library is available. Constructing a client does not contact a KDC.
 
 `driver_info` fields must be valid UTF-8 and cannot contain `|`. Its `name` is required.
 Listener arrays must be dense. Command listener methods receive the listener as `self` and an
@@ -1635,12 +1636,17 @@ GSSAPI authentication uses an optional `runtime.gssapi` provider. Its
 context, including after failed commands, provider failures, timeouts, cancellation, and raised
 programmer errors.
 
+A provider may expose `capabilities() -> table` with `default_credentials`,
+`password_credentials`, and `platform` fields. The packaged provider always reports them and
+rejects a credential mode the system GSSAPI library does not support. Custom providers may omit
+capability reporting and retain the existing context contract.
+
 A runtime may expose `compression`, keyed by compressor name. Each compression provider has a
 matching `name`, a unique integer `compressor_id` from 1 through 255, and `compress` and
 `decompress` functions. `mongodb.runtime.validate` checks the required function paths, optional
 metadata type, GSSAPI DNS pair, and compression-provider shape. GSSAPI provider validation is
-deferred until that optional provider is used; adapter authors remain responsible for the
-method semantics above.
+limited to its `create_context` method and optional `capabilities` method; adapter authors remain
+responsible for the operation semantics above.
 
 ### Built-in runtime modules
 
@@ -1659,6 +1665,10 @@ method semantics above.
   socket or `nil, err`. Constructor options can inject LuaSec and the socket adapter or select
   default CA paths. TLS policy validation errors are structured configuration failures;
   malformed constructor input raises.
+- `mongodb.runtime.gssapi.new(runtime, binding) -> gssapi_provider | nil` adapts a supported
+  low-level system binding. `mongodb.runtime.gssapi.load(runtime [, loader])` lazily loads the
+  packaged binding and returns nil when the platform library is absent or unsupported. Binding
+  failures become fixed, credential-free authentication errors.
 - `mongodb.runtime.snappy.new(binding) -> compression_provider` and
   `mongodb.runtime.snappy.load([loader]) -> compression_provider | nil` adapt a binding with
   `compress` and `decompress` functions. `load` returns nil when the optional binding is absent
@@ -1680,7 +1690,7 @@ The Copas constructor recognizes only these options:
 |---|---|
 | `copas` | Injected Copas module, required to report a supported 4.11.x or 4.12.x version. |
 | `compression` | Compression-provider map; an empty table disables the discovered defaults. |
-| `crypto`, `entropy`, `dns`, `file`, `http`, `socket`, `tls` | Complete capability overrides. |
+| `crypto`, `entropy`, `dns`, `file`, `gssapi`, `http`, `socket`, `tls` | Complete capability or provider overrides. |
 | `dns_nameservers` | Adapter-local nameserver list for the default DNS provider. |
 | `dns_query_timeout` | Positive per-nameserver DNS query bound in seconds. |
 | `dns_resolver` | LuaSocket-compatible resolver used for forward and reverse host lookups. |

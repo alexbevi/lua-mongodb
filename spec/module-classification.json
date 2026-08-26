@@ -228,6 +228,10 @@
       "path": "src/mongodb/runtime/fake.lua",
       "stability": "advanced-extension"
     },
+    "mongodb.runtime.gssapi": {
+      "path": "src/mongodb/runtime/gssapi.lua",
+      "stability": "advanced-extension"
+    },
     "mongodb.runtime.http": {
       "path": "src/mongodb/runtime/http.lua",
       "stability": "internal"

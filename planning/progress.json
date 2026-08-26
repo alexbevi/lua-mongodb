@@ -9284,6 +9284,28 @@
       "notes": [],
       "started_at": "2026-08-26T15:34:14+00:00",
       "completed_at": "2026-08-26T15:43:32+00:00"
+    },
+    "AUTH-034": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/runtime_gssapi_spec.lua'",
+          "exit_code": 2,
+          "summary": "Defining runtime-provider test errors because mongodb.runtime.gssapi is not implemented",
+          "recorded_at": "2026-08-26T16:33:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua spec/unit/runtime_spec.lua spec/unit/auth_gssapi_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_gssapi_spec.lua' FOCUS_LINT='src/mongodb/runtime/gssapi.lua src/mongodb/runtime/copas.lua src/mongodb/runtime/contract.lua spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua spec/package/smoke.lua spec/integration/auth_gssapi_spec.lua'",
+          "exit_code": 0,
+          "summary": "Default GSSAPI discovery, capability enforcement, context operations and cleanup, runtime validation, injected-provider preservation, and the socket-level SASL exchange passed (29 focused examples; 0 lint warnings); source-rock installs passed under Lua 5.4 and 5.5, with rockspec, C warnings, architecture, and complexity validators green",
+          "recorded_at": "2026-08-26T16:45:23+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T16:27:29+00:00",
+      "completed_at": "2026-08-26T16:45:35+00:00"
     }
   },
   "verified_references": {

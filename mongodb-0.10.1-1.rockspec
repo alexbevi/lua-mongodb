@@ -97,6 +97,10 @@ build = {
     ["mongodb.runtime.copas"] = "src/mongodb/runtime/copas.lua",
     ["mongodb.runtime.copas_dns"] = "src/mongodb/runtime/copas_dns.lua",
     ["mongodb.runtime.copas_socket"] = "src/mongodb/runtime/copas_socket.lua",
+    ["mongodb.runtime._gssapi"] = {
+      sources = "src/mongodb/runtime/_gssapi.c",
+    },
+    ["mongodb.runtime.gssapi"] = "src/mongodb/runtime/gssapi.lua",
     ["mongodb.runtime.luasec"] = "src/mongodb/runtime/luasec.lua",
     ["mongodb.runtime.openssl"] = "src/mongodb/runtime/openssl.lua",
     ["mongodb.runtime.sha256"] = "src/mongodb/runtime/sha256.lua",

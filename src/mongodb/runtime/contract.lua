@@ -95,6 +95,20 @@ local function validate_gssapi_dns(runtime)
   end
 end
 
+local function validate_gssapi(runtime)
+  if runtime.gssapi == nil then
+    return
+  end
+
+  if type(runtime.gssapi) ~= "table"
+      or type(runtime.gssapi.create_context) ~= "function"
+      or (runtime.gssapi.capabilities ~= nil
+        and type(runtime.gssapi.capabilities) ~= "function")
+  then
+    error("runtime GSSAPI provider is invalid", 3)
+  end
+end
+
 function M.validate(runtime)
   if type(runtime) ~= "table" then
     error("runtime must be a table", 2)
@@ -111,6 +125,7 @@ function M.validate(runtime)
   end
 
   validate_gssapi_dns(runtime)
+  validate_gssapi(runtime)
   validate_compression(runtime)
 
   return runtime

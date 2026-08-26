@@ -17,6 +17,7 @@ local ALLOWED_OPTIONS = {
   getpid = true,
   getenv = true,
   gettime = true,
+  gssapi = true,
   http = true,
   lock_poll_interval = true,
   metadata = true,
@@ -522,6 +523,12 @@ function M.new(options)
 
   if adapter.compression == nil then
     adapter.compression = default_compression()
+  end
+
+  adapter.gssapi = options.gssapi
+
+  if adapter.gssapi == nil then
+    adapter.gssapi = require("mongodb.runtime.gssapi").load(adapter)
   end
 
   adapter.file = options.file or new_file_capability(adapter)
