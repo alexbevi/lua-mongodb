@@ -189,9 +189,9 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 
 For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults.
 
-### [CRUD operations](https://www.mongodb.com/docs/manual/crud/)
+### CRUD operations
 
-The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. [MongoDB documents](https://www.mongodb.com/docs/manual/core/document/) are represented by ordered [BSON values](https://www.mongodb.com/docs/manual/reference/bson-types/). Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
+The following examples of [CRUD operations](https://www.mongodb.com/docs/manual/crud/) assume they run inside the `mongodb.run` callback above, before `client:close()`. [MongoDB documents](https://www.mongodb.com/docs/manual/core/document/) are represented by ordered [BSON values](https://www.mongodb.com/docs/manual/reference/bson-types/). Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
 
 ```lua
 local doc = mongodb.bson.document
@@ -285,9 +285,9 @@ local deleted = assert(users:delete_one(
 print(deleted.deleted_count)
 ```
 
-### [Change streams](https://www.mongodb.com/docs/manual/changeStreams/)
+### Change streams
 
-On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. `database:create_collection` and `database:modify_collection` accept the ordered `change_stream_pre_and_post_images` document supported by MongoDB 6.0 and later. `collection:rename` accepts a destination name plus optional `drop_target`, `comment`, and `session`, and applies the collection's inherited write concern. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `timeout_ms` limits stream establishment and each iteration separately; one iteration budget covers both `getMore` and any resume attempt. A positive timeout requires a lower `max_await_time_ms`, which is further bounded by the remaining timeout budget. A timed-out stream remains usable, and its next iteration attempts to resume it. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
+On a replica set or sharded deployment, `collection:watch` opens a [change stream](https://www.mongodb.com/docs/manual/changeStreams/) for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. `database:create_collection` and `database:modify_collection` accept the ordered `change_stream_pre_and_post_images` document supported by MongoDB 6.0 and later. `collection:rename` accepts a destination name plus optional `drop_target`, `comment`, and `session`, and applies the collection's inherited write concern. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `timeout_ms` limits stream establishment and each iteration separately; one iteration budget covers both `getMore` and any resume attempt. A positive timeout requires a lower `max_await_time_ms`, which is further bounded by the remaining timeout budget. A timed-out stream remains usable, and its next iteration attempts to resume it. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
 
 ```lua
 local events = assert(users:watch(mongodb.bson.array({
@@ -316,9 +316,9 @@ assert(users:rename("archived_users", {
 }))
 ```
 
-### [Bulk operations](https://www.mongodb.com/docs/manual/core/bulk-write-operations/)
+### Bulk operations
 
-Bulk writes combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
+[Bulk writes](https://www.mongodb.com/docs/manual/core/bulk-write-operations/) combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
 
 ```lua
 local doc = mongodb.bson.document
@@ -389,9 +389,9 @@ for user in cursor:iter() do
 end
 ```
 
-### [Index management](https://www.mongodb.com/docs/manual/indexes/)
+### Index management
 
-`collection:create_index` creates one index from an ordered key document and returns its name. Use `mongodb.index_model` with `collection:create_indexes` to create several indexes together; `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Key directions may be ascending (`1`), descending (`-1`), `text`, `hashed`, `2d`, `2dsphere`, or `geoHaystack`.
+`collection:create_index` creates one [index](https://www.mongodb.com/docs/manual/indexes/) from an ordered key document and returns its name. Use `mongodb.index_model` with `collection:create_indexes` to create several indexes together; `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Key directions may be ascending (`1`), descending (`-1`), `text`, `hashed`, `2d`, `2dsphere`, or `geoHaystack`.
 
 MongoDB's [index properties guide](https://www.mongodb.com/docs/manual/core/indexes/index-properties/) covers case-insensitive, hidden, partial, sparse, TTL, and unique indexes. Configure those properties with `collation`, `hidden`, `partial_filter_expression`, `sparse`, `expire_after_seconds`, and `unique`, respectively. Not every property is compatible with every index type; MongoDB validates the final combination.
 
@@ -408,9 +408,9 @@ local email_index = assert(users:create_index(doc({ { "email", 1 } }), {
 print(email_index)
 ```
 
-#### [Search indexes](https://www.mongodb.com/docs/search/index/manage-indexes/)
+#### Search indexes
 
-`collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. `collection:update_search_index` replaces the definition of a named Search index, and `collection:drop_search_index` idempotently removes one by name. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
+`collection:create_search_index` creates one standard or vector [Search index](https://www.mongodb.com/docs/search/index/manage-indexes/) and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. `collection:update_search_index` replaces the definition of a named Search index, and `collection:drop_search_index` idempotently removes one by name. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
 
 ```lua
 local search_name = assert(users:create_search_index(doc({
@@ -422,9 +422,9 @@ local search_name = assert(users:create_search_index(doc({
 })))
 ```
 
-### [GridFS](https://www.mongodb.com/docs/manual/core/gridfs/)
+### GridFS
 
-GridFS stores files in bounded BSON chunks. Upload from a byte string, query
+[GridFS](https://www.mongodb.com/docs/manual/core/gridfs/) stores files in bounded BSON chunks. Upload from a byte string, query
 stored file documents through a cursor, then open an immutable download stream
 by id. Download streams support bounded `read` calls plus the standard Lua
 `seek`, `tell`, and `close` methods.
