@@ -27,10 +27,12 @@ local host = required_environment("MONGODB_GSSAPI_HOST")
 local port = required_environment("MONGODB_GSSAPI_PORT")
 local principal = required_environment("MONGODB_GSSAPI_PRINCIPAL")
 
-local function encoded_username(username)
-  return username:gsub("([^%w%-%._~])", function(character)
+local function encoded_component(value)
+  local encoded = value:gsub("([^%w%-%._~])", function(character)
     return string.format("%%%02X", string.byte(character))
   end)
+
+  return encoded
 end
 
 describe("live GSSAPI authentication", function()
@@ -45,9 +47,27 @@ describe("live GSSAPI authentication", function()
       assert.is_not_nil(created)
       assert.is_true(bootstrap:close())
 
-      local uri = "mongodb://" .. encoded_username(principal)
+      local uri = "mongodb://" .. encoded_component(principal)
         .. "@" .. host .. ":" .. port .. "/?authMechanism=GSSAPI"
       local client = assert(mongodb.client(uri))
+
+      assert.is_not_nil(client:database("admin"):run_command("ping"))
+      assert.is_true(client:close())
+    end)
+  end)
+
+  it("uses an explicit password when the provider supports it", function()
+    local password = required_environment("MONGODB_GSSAPI_PASSWORD")
+    local runtime = mongodb.runtime.copas()
+    local capabilities = assert(runtime.gssapi):capabilities()
+
+    assert.is_true(capabilities.password_credentials)
+
+    mongodb.run(function()
+      local uri = "mongodb://" .. encoded_component(principal)
+        .. ":" .. encoded_component(password)
+        .. "@" .. host .. ":" .. port .. "/?authMechanism=GSSAPI"
+      local client = assert(mongodb.client(uri, { runtime = runtime }))
 
       assert.is_not_nil(client:database("admin"):run_command("ping"))
       assert.is_true(client:close())

@@ -9328,6 +9328,28 @@
       "notes": [],
       "started_at": "2026-08-26T17:56:05+00:00",
       "completed_at": "2026-08-26T18:30:05+00:00"
+    },
+    "AUTH-036": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh",
+          "exit_code": 2,
+          "summary": "1 default-credential success, 1 explicit-password failure: MONGODB_GSSAPI_PASSWORD was not provided by the protected live environment",
+          "recorded_at": "2026-08-26T18:43:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh; make test-focus FOCUS_INTEGRATION='spec/integration/auth_gssapi_live_spec.lua' FOCUS_LINT='spec/integration/auth_gssapi_live_spec.lua'; shellcheck spec/integration/run_gssapi_live.sh; actionlint -ignore SC2129 .github/workflows/ci.yml; git diff --check",
+          "exit_code": 0,
+          "summary": "Live Ubuntu 24.04/Lua 5.4: 2 executed, 2 passed, 0 environment-skipped, 0 failed; the explicit-password case required provider password capability before authenticating; ordinary local profile reported 1 explicit environment pending; Lua lint, shellcheck, workflow validation, and diff validation passed",
+          "recorded_at": "2026-08-26T18:45:09+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T18:42:27+00:00",
+      "completed_at": "2026-08-26T18:45:15+00:00"
     }
   },
   "verified_references": {

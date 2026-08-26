@@ -189,7 +189,7 @@ jobs:
       - name: Register the Kerberos service host
         run: echo '127.0.0.1 gssapi.test' | sudo tee -a /etc/hosts >/dev/null
 
-      - name: Run default-credential GSSAPI authentication
+      - name: Run live GSSAPI authentication
         run: bash spec/integration/run_gssapi_live.sh
 
   examples:
