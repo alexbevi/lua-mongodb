@@ -142,7 +142,7 @@ CATALOG_PROSE_SUITES = frozenset({
   "socks5-support",
 })
 
-CATALOG_MIXED_SUITES = frozenset({"gridfs"})
+CATALOG_MIXED_SUITES = frozenset({"auth", "gridfs"})
 CATALOG_PROJECTED_SUITES = CATALOG_PROSE_SUITES | CATALOG_MIXED_SUITES
 
 CATALOG_REQUIREMENT_STATUSES = frozenset({

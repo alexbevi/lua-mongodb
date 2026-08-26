@@ -322,6 +322,9 @@ jobs:
           --execution-report build/conformance/unified.json
           --execution-report build/conformance/version-branches/unified-pre-8.2.json
 
+      - name: Validate exact v0.10.2 GSSAPI conformance evidence
+        run: python3 spec/v102/scope.py --check
+
       - name: Upload authoritative Linux conformance evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
@@ -632,6 +635,9 @@ jobs:
           --check
           --execution-report build/conformance/unified-macos.json
           --execution-report build/conformance/macos-version-branches/unified-macos-pre-8.2.json
+
+      - name: Validate exact macOS v0.10.2 GSSAPI conformance evidence
+        run: python3 spec/v102/scope.py --check
 
       - name: Upload authoritative macOS conformance evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

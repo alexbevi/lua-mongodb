@@ -116,6 +116,23 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
+        "classified_requirements": 21,
+        "configuration_cases": 11,
+        "passed_requirements": 21,
+        "prose_requirements": 10,
+        "provider_claims": [
+          {
+            "lua": "5.4",
+            "operating_system": "Ubuntu 24.04",
+            "provider": "packaged system GSSAPI adapter",
+            "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+          },
+        ],
+      },
+      report["gates"]["v0_10_2_conformance"],
+    )
+    self.assertEqual(
+      {
         "cleanup": ["REL-042", "REL-043"],
         "packaging": ["REL-007"],
         "security": ["REL-008"],
@@ -231,6 +248,13 @@ class ReleaseChecklistTests(unittest.TestCase):
         checklist.V10_CONFORMANCE_ACTIVITY,
       ],
       report["gates"]["completed_v0_10_gates"],
+    )
+    self.assertEqual(
+      [
+        "AUTH-019",
+        *[f"AUTH-{index:03d}" for index in range(31, 41)],
+      ],
+      report["gates"]["completed_v0_10_2_gates"],
     )
     self.assertEqual(
       [

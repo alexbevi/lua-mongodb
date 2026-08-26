@@ -22,6 +22,7 @@ from spec.v07 import scope as v07_scope  # noqa: E402
 from spec.v08 import scope as v08_scope  # noqa: E402
 from spec.v09 import scope as v09_scope  # noqa: E402
 from spec.v10 import scope as v10_scope  # noqa: E402
+from spec.v102 import scope as v102_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -173,6 +174,12 @@ V10_GATES = [
 V10_RELEASE_ACTIVITY = "REL-059"
 MAINTENANCE_GATES = ["CSOT-001", "BSON-010"]
 MAINTENANCE_RELEASE_ACTIVITY = "REL-060"
+V102_GATES = [
+  "AUTH-019",
+  *(f"AUTH-{index:03d}" for index in range(31, 41)),
+]
+V102_CONFORMANCE_ACTIVITY = "CON-013"
+V102_RELEASE_ACTIVITY = "REL-061"
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -377,6 +384,20 @@ def generate() -> dict[str, Any]:
       "v0.10.1 release gate inventory does not match the track"
     )
 
+  gssapi_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-2-gssapi"
+  ]
+  if gssapi_track != [
+    *V102_GATES,
+    V102_CONFORMANCE_ACTIVITY,
+    V102_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError(
+      "v0.10.2 release gate inventory does not match the track"
+    )
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -447,6 +468,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in V102_GATES:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.10.2 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   csot_evidence = passed_owner_evidence(
     ledger.get("cases", {}),
     "CSOT-001",
@@ -473,6 +500,7 @@ def generate() -> dict[str, Any]:
   v08_report = v08_scope.generate()
   v09_report = v09_scope.generate()
   v10_report = v10_scope.generate()
+  v102_report = v102_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -539,6 +567,10 @@ def generate() -> dict[str, Any]:
   if v10_summary["planned"] != 245:
     raise ChecklistError("v0.10 optional-suite inventory changed")
 
+  v102_summary = v102_report["summary"]
+  if v102_summary["planned"] != 0:
+    raise ChecklistError("v0.10.2 GSSAPI conformance still has planned requirements")
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -574,6 +606,7 @@ def generate() -> dict[str, Any]:
     "spec/v08/scope.py",
     "spec/v09/scope.py",
     "spec/v10/scope.py",
+    "spec/v102/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-linux-timing-sensitive-csot.json",
     "unified-pre-8.2.json",
@@ -610,6 +643,7 @@ def generate() -> dict[str, Any]:
       "completed_v0_8_gates": V08_GATES,
       "completed_v0_9_gates": V09_GATES,
       "completed_v0_10_gates": V10_GATES,
+      "completed_v0_10_2_gates": V102_GATES,
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -703,6 +737,17 @@ def generate() -> dict[str, Any]:
         "run_on_branches": v10_report["evidence"]["run_on_branches"],
         "unsupported_requirements": v10_summary["unsupported"],
       },
+      "v0_10_2_conformance": {
+        "classified_requirements": v102_summary["classified"],
+        "configuration_cases": v102_report["evidence"][
+          "configuration_cases"
+        ],
+        "passed_requirements": v102_summary["passed"],
+        "prose_requirements": v102_report["evidence"][
+          "prose_requirements"
+        ],
+        "provider_claims": v102_report["provider_claims"],
+      },
       "maintenance": {
         "activities": MAINTENANCE_GATES,
         "bson_objectid_requirements": len(objectid_evidence),
@@ -735,6 +780,7 @@ def main(argv: list[str] | None = None) -> int:
     v08_scope.ScopeError,
     v09_scope.ScopeError,
     v10_scope.ScopeError,
+    v102_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

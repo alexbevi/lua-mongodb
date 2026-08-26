@@ -65,7 +65,7 @@ class ConformanceCatalogTests(unittest.TestCase):
     requirement_sources = {value["source"] for value in requirements.values()}
     self.assertTrue(prose_sources <= requirement_sources)
     self.assertEqual(
-      {"gridfs/gridfs-spec.md"},
+      {"auth/auth.md", "gridfs/gridfs-spec.md"},
       requirement_sources - prose_sources,
     )
 
@@ -201,6 +201,42 @@ class ConformanceCatalogTests(unittest.TestCase):
       {"spec/unit/gridfs_spec.lua"},
       {value["runner"] for value in gridfs.values()},
     )
+
+  def test_gssapi_requirements_record_exact_configuration_and_live_evidence(
+    self,
+  ) -> None:
+    requirements = catalog.generate()["requirements"]
+    gssapi = {
+      identity: requirement
+      for identity, requirement in requirements.items()
+      if identity.startswith("auth/auth.md::gssapi-")
+    }
+    expected = {
+      "gssapi-concurrent-contexts": "AUTH-040",
+      "gssapi-default-credential-standalone": "AUTH-035",
+      "gssapi-default-runtime-provider": "AUTH-034",
+      "gssapi-hostname-canonicalization": "AUTH-032",
+      "gssapi-live-canonicalized-host": "AUTH-037",
+      "gssapi-password-credential-standalone": "AUTH-036",
+      "gssapi-replica-set": "AUTH-039",
+      "gssapi-sasl-conversation": "AUTH-033",
+      "gssapi-service-host": "AUTH-038",
+      "gssapi-credential-normalization": "AUTH-031",
+    }
+
+    self.assertEqual(
+      {f"auth/auth.md::{suffix}" for suffix in expected},
+      set(gssapi),
+    )
+    self.assertEqual(
+      expected,
+      {
+        identity.removeprefix("auth/auth.md::"): requirement["activity"]
+        for identity, requirement in gssapi.items()
+      },
+    )
+    self.assertEqual({"passed"}, {value["status"] for value in gssapi.values()})
+    self.assertTrue(all(value["last_execution"] for value in gssapi.values()))
 
 
 if __name__ == "__main__":

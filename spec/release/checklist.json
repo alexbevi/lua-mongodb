@@ -67,6 +67,19 @@
       "ADV-014",
       "ADV-015"
     ],
+    "completed_v0_10_2_gates": [
+      "AUTH-019",
+      "AUTH-031",
+      "AUTH-032",
+      "AUTH-033",
+      "AUTH-034",
+      "AUTH-035",
+      "AUTH-036",
+      "AUTH-037",
+      "AUTH-038",
+      "AUTH-039",
+      "AUTH-040"
+    ],
     "completed_v0_10_gates": [
       "ADV-006",
       "LB-001",
@@ -230,6 +243,20 @@
       "passed_requirements": 4
     },
     "production_core_prerequisites": 71,
+    "v0_10_2_conformance": {
+      "classified_requirements": 21,
+      "configuration_cases": 11,
+      "passed_requirements": 21,
+      "prose_requirements": 10,
+      "provider_claims": [
+        {
+          "lua": "5.4",
+          "operating_system": "Ubuntu 24.04",
+          "provider": "packaged system GSSAPI adapter",
+          "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live"
+        }
+      ]
+    },
     "v0_10_conformance": {
       "classified_requirements": 1042,
       "dedicated_cases": 40,

@@ -9,6 +9,98 @@
       "runner": "pending:SFP-001",
       "status": "deferred_unsupported"
     },
+    "auth/auth.md": [
+      {
+        "id": "gssapi-credential-normalization",
+        "activity": "AUTH-031",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
+        "reason": "The pinned GSSAPI credential fixtures and deterministic programmatic cases cover the required username, $external source, optional password, mechanism, and mechanism-property normalization.",
+        "required_environment": "none",
+        "runner": "spec/support/auth_config_runner.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-hostname-canonicalization",
+        "activity": "AUTH-032",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/auth_gssapi_hostname_spec.lua'",
+        "reason": "Deterministic resolver cases cover none, forward, forward-and-reverse, legacy boolean values, lowercase normalization, lookup fallback, deadlines, cancellation, and malformed adapter results.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/auth_gssapi_hostname_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-sasl-conversation",
+        "activity": "AUTH-033",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/auth_gssapi_spec.lua'",
+        "reason": "Deterministic command cases cover service-principal construction, bounded SASL rounds, RFC 4752 security-layer negotiation, reply validation, redaction, deadlines, cancellation, and cleanup.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/auth_gssapi_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-default-runtime-provider",
+        "activity": "AUTH-034",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua' FOCUS_LINT='src/mongodb/runtime/gssapi.lua src/mongodb/runtime/copas.lua src/mongodb/runtime.lua spec/unit/runtime_gssapi_spec.lua' && make test-package",
+        "reason": "Runtime and package cases cover lazy system-library discovery, capability reporting, native context operations, fixed diagnostics, platform guards, and idempotent cleanup without a libmongoc dependency.",
+        "required_environment": "packaged-runtime",
+        "runner": "spec/unit/runtime_gssapi_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-default-credential-standalone",
+        "activity": "AUTH-035",
+        "last_execution": "bash spec/integration/run_gssapi_live.sh",
+        "reason": "The recurring Ubuntu 24.04 and Lua 5.4 profile authenticates a packaged default-runtime client from an ephemeral ticket cache against MongoDB Enterprise 8.0.16, runs ping, and closes.",
+        "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+        "runner": "spec/integration/auth_gssapi_live_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-password-credential-standalone",
+        "activity": "AUTH-036",
+        "last_execution": "bash spec/integration/run_gssapi_live.sh",
+        "reason": "The recurring live profile requires password-credential capability before authenticating an ephemeral explicit credential, running ping, and closing.",
+        "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+        "runner": "spec/integration/auth_gssapi_live_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-live-canonicalized-host",
+        "activity": "AUTH-037",
+        "last_execution": "bash spec/integration/run_gssapi_live.sh",
+        "reason": "The recurring live profile resolves an endpoint alias through the default forward-and-reverse DNS adapter and authenticates against the resulting Kerberos service host.",
+        "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+        "runner": "spec/integration/auth_gssapi_live_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-service-host",
+        "activity": "AUTH-038",
+        "last_execution": "bash spec/integration/run_gssapi_live.sh",
+        "reason": "The recurring live profile uses SERVICE_HOST for the Kerberos principal while asserting that the MongoDB socket still connects through the selected endpoint alias.",
+        "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+        "runner": "spec/integration/auth_gssapi_live_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-replica-set",
+        "activity": "AUTH-039",
+        "last_execution": "bash spec/integration/run_gssapi_live.sh",
+        "reason": "The recurring live profile discovers a Kerberos-enabled replica-set member through the public client, authenticates its application connection, runs ping, and closes.",
+        "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+        "runner": "spec/integration/auth_gssapi_live_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "gssapi-concurrent-contexts",
+        "activity": "AUTH-040",
+        "last_execution": "bash spec/integration/run_gssapi_live.sh",
+        "reason": "The recurring live profile holds two distinct packaged native contexts at once, then requires both authenticated pings and both context and client cleanups to succeed.",
+        "required_environment": "ubuntu-24.04-lua-5.4-gssapi-live",
+        "runner": "spec/integration/auth_gssapi_live_spec.lua",
+        "status": "passed"
+      }
+    ],
     "benchmarking/benchmarking.md": {
       "activity": "CON-005",
       "last_execution": null,

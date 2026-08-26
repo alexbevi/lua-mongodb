@@ -157,7 +157,7 @@ local client = assert(mongodb.client(
 ))
 ```
 
-**GSSAPI.** Live authentication is verified with Lua 5.4 on Linux. The default runtime can load the operating system's GSSAPI library on Linux and macOS, but macOS and Lua 5.5 remain unclaimed until they have recurring live profiles. Omit the password to use the current Kerberos ticket cache. Password credentials are accepted only when the installed library reports that capability. Each application connection owns its GSSAPI context, including during concurrent authentication.
+**GSSAPI.** Live authentication is verified with Lua 5.4 on Ubuntu 24.04. The default runtime can load the operating system's GSSAPI library on Linux and macOS, but macOS and Lua 5.5 remain unclaimed until they have recurring live profiles. Omit the password to use the current Kerberos ticket cache. Password credentials are accepted only when the installed library reports that capability. Each application connection owns its GSSAPI context, including during concurrent authentication.
 
 ```lua
 local client = assert(mongodb.client(
@@ -586,7 +586,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 96.7% |
 | Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 82.5% |
 | Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟡 | 97.5% |
-| Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 97.3% |
+| Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 97.6% |
 | Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟡 | 90.4% |
 | Availability | [Max staleness](https://alexbevi.com/specifications/max-staleness/max-staleness.html) | 🟢 | 100.0% |
 | Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
@@ -610,7 +610,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **80.0%** |
+|  | **Total** |  | **80.1%** |
 <!-- END SPEC CONFORMANCE -->
 
 ## Development

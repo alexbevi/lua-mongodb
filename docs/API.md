@@ -214,7 +214,9 @@ optional password. Its mechanism properties are case-insensitive: `SERVICE_NAME`
 `CANONICALIZE_HOST_NAME` accepts `none`, `forward`, `forwardAndReverse`, `true`, or `false`.
 The legacy boolean values normalize to `forwardAndReverse` and `none`. The default Copas
 runtime lazily loads the packaged system GSSAPI adapter on Linux and macOS when the operating
-system library is available. Constructing a client does not contact a KDC.
+system library is available. Constructing a client does not contact a KDC. The verified default
+provider matrix covers Lua 5.4 on Ubuntu 24.04. macOS and Lua 5.5 can build and load the package,
+but they are not GSSAPI support claims without recurring Kerberos-enabled MongoDB profiles.
 
 `driver_info` fields must be valid UTF-8 and cannot contain `|`. Its `name` is required.
 Listener arrays must be dense. Command listener methods receive the listener as `self` and an
