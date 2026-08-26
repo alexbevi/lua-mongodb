@@ -418,6 +418,50 @@ class ReadmeContentTests(unittest.TestCase):
       with self.subTest(contract=contract):
         self.assertIn(contract, section)
 
+  def test_cursor_and_change_stream_api_reference_has_exact_lifecycle(
+    self,
+  ) -> None:
+    api = API.read_text(encoding="utf-8")
+
+    self.assertIn("## Cursor and change-stream APIs", api)
+    section = api.split("## Cursor and change-stream APIs", 1)[1]
+    section = section.split("## BSON API", 1)[0]
+
+    for signature in (
+      "cursor:next() -> document | nil, err",
+      "cursor:iter() -> iterator",
+      "cursor:is_closed() -> boolean",
+      "cursor:close([options]) -> boolean | nil, err",
+      "change_stream:next() -> document | nil, err",
+      "change_stream:try_next() -> document | nil, err",
+      "change_stream:iter() -> iterator",
+      "change_stream:is_closed() -> boolean",
+      "change_stream:resume_token() -> document | nil",
+      "change_stream:close([options]) -> boolean | nil, err",
+    ):
+      with self.subTest(signature=signature):
+        self.assertIn(f"`{signature}`", section)
+
+    for contract in (
+      "Ordinary cursors skip empty live batches",
+      "Tailable cursors return one Lua nil with no error after one empty live batch",
+      "Call `is_closed()` to distinguish",
+      "`iter()` cannot expose an operational error to a generic Lua `for` loop",
+      "`close()` returns false when the cursor was already closed",
+      "Closing a client closes every registered cursor and change stream",
+      "Every returned change event must have a non-nil `_id`",
+      "`try_next()` performs at most one cursor advance when no resume is required",
+      "one iteration timeout budget covers the read and any resume work",
+      "A CSOT timeout leaves the stream open and schedules recreation for the next iteration",
+      "`start_after` remains the resume position until the first change event",
+      "After the first event, resumptions use `resume_after`",
+      "post-batch resume token",
+      "A second failure after an immediate recreation is returned without another resume",
+      "A stream owns its cursor but not its client or explicit session",
+    ):
+      with self.subTest(contract=contract):
+        self.assertIn(contract, section)
+
 
 if __name__ == "__main__":
   unittest.main()

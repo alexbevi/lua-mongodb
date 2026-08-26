@@ -678,6 +678,144 @@ primary selection, is retryable, pins its connection, and inherits `comment` for
 Search index commands deliberately do not append the collection read or write concern; the
 server applies its command defaults.
 
+## Cursor and change-stream APIs
+
+Find, aggregate, generic cursor-command, index-listing, and Search-index-listing methods return
+the same immutable cursor type. A change stream wraps and owns one such cursor. Each cursor is
+registered to its client and retains its connection pin and implicit session context while the
+server cursor remains live. Buffered final documents can remain after those resources release.
+Neither a cursor nor a change stream may outlive its client.
+A stream owns its cursor but not its client or explicit session.
+Closing a client closes every registered cursor and change stream before the executor, pools,
+and runtime resources are released.
+
+### Cursor iteration and state
+
+`cursor:next() -> document | nil, err`
+
+The method returns the next BSON document, `nil, err` on an operational failure, or one Lua nil
+with no error for a non-document outcome. Interpret the nil outcome together with `is_closed()`:
+
+| Result | Cursor state | Meaning |
+|---|---|---|
+| document | open or closed | A document was returned. A zero-id final batch closes as its last document is returned. |
+| nil, nil | closed | The cursor is exhausted. |
+| nil, nil | open tailable cursor | The server returned an empty live batch; polling can continue. |
+| nil, err | inspect `is_closed()` | An operation failed; timeout, cancellation, and some server failures leave explicit cleanup possible. |
+
+Ordinary cursors skip empty live batches and continue fetching until a document, exhaustion, or
+error. `tailable` and `tailable_await` cursors instead advance through at most one server batch
+per call. Tailable cursors return one Lua nil with no error after one empty live batch and remain
+open. Call `is_closed()` to distinguish that result from exhaustion. `tailable_await` sends
+`max_await_time_ms` as `maxTimeMS` on `getMore`; its effective timeout mode is always iteration.
+
+A cursor with a positive limit requests only the remaining document count on `getMore`. If the
+server cursor is still live when that limit is reached, the following `next()` closes it before
+returning nil. A zero-id empty initial batch starts closed; a zero-id batch containing documents
+closes when its last document is returned.
+
+`cursor:iter() -> iterator`
+
+The returned closure calls `cursor:next()` and can be used as `for document in cursor:iter() do`.
+Generic Lua iteration stops when its first value is nil.
+`iter()` cannot expose an operational error to a generic Lua `for` loop. Use an explicit
+`next()` loop when failures must be handled, and do not use `iter()` to poll a tailable cursor
+because an empty live batch ends the loop even though the cursor remains open.
+
+`cursor:is_closed() -> boolean`
+
+This reports local lifecycle state without performing I/O. Normal exhaustion, explicit close,
+client close, and most non-timeout `getMore` failures close the cursor. A CSOT timeout does not;
+cancellation of an await-data read and a server error on a pinned cursor can also leave the
+cursor open. After any `nil, err`, check this method and close the cursor if it is still open.
+Calling `next()` after ordinary exhaustion returns nil without error. Calling it after the
+owning client closes returns a `CLIENT` error.
+
+`cursor:close([options]) -> boolean | nil, err`
+
+Closing a live server cursor sends `killCursors` on its selected server and pinned connection,
+then releases the pin and implicit session context. A zero-id cursor or a cursor whose client is
+already closed closes locally. `options`, when present, is a table whose `deadline` and
+`cancellation` bound cleanup. A cursor created under CSOT uses a fresh copy of its operation
+timeout for close, and `timeout_ms` can override that cleanup budget; an earlier iteration
+timeout therefore does not prevent an explicit close attempt.
+
+The first close returns true when cleanup succeeds or when a failed pinned connection already
+made `killCursors` unnecessary. A reportable cleanup-command failure returns `nil, err`, but the
+cursor is still locally closed and its owned resources are released.
+`close()` returns false when the cursor was already closed and no failed pin remains.
+
+### Change-stream iteration
+
+`change_stream:next() -> document | nil, err`
+
+This blocking form waits across empty live batches until it can return a change event, terminal
+exhaustion, or an operational error. It may transparently recreate a resumable stream once
+before returning. Every returned change event must have a non-nil `_id`; if it does not, the
+driver closes the cursor and returns a `CLIENT` error because future resume would be unsafe.
+
+`change_stream:try_next() -> document | nil, err`
+
+This cooperative form consumes a buffered event immediately or advances the underlying cursor
+once. `try_next()` performs at most one cursor advance when no resume is required. An empty live
+batch returns nil without an error while the stream remains open, allowing the application to
+run other coroutine work before polling again. If an iteration has to resume, it can also close
+the old cursor, establish the replacement, and advance that replacement once.
+
+`change_stream:iter() -> iterator`
+
+The returned closure calls `change_stream:next()`. It has the same generic-`for` error limitation
+as `cursor:iter()` and is appropriate only when stopping silently on a terminal nil is acceptable.
+
+`change_stream:is_closed() -> boolean`
+
+This reports the state of the owned cursor. A nil cooperative poll does not close a live stream.
+After an error, the application should inspect this value and explicitly close any stream that
+remains open.
+
+`change_stream:resume_token() -> document | nil`
+
+This returns the immutable token the next transparent resume would use, or nil when no token is
+available. The initial `resume_after` or `start_after` value is cached immediately. After an
+event, the driver normally caches its `_id`. A post-batch resume token replaces the document
+token after the last document in a batch and also advances the token after an empty live batch.
+When establishment has no token or buffered event, a qualifying server `operationTime` becomes
+the resume position but is not returned by `resume_token()`.
+
+`start_after` remains the resume position until the first change event.
+After the first event, resumptions use `resume_after`. Recreated streams preserve the original
+scope, user pipeline, aggregate options, read preference, and explicit session while replacing
+all three position options with exactly the selected cached token or operation time.
+
+### Change-stream resumability and timeouts
+
+On supported MongoDB versions, a wrapped network error, cursor-not-found code 43, or server error
+with the `ResumableChangeStreamError` label is resumable. The driver closes the old cursor,
+suppresses any cleanup error, recreates from the best saved position, and reads from the
+replacement. Each resumable read failure receives one immediate recreation attempt. A failed
+recreation and every non-resumable error are returned directly.
+A second failure after an immediate recreation is returned without another resume. A recreation
+scheduled by a prior CSOT timeout happens before the new read; a resumable failure from that new
+read can still receive its one immediate recreation.
+
+`timeout_ms` separately bounds establishment and each call to `next()` or `try_next()`. Each
+iteration receives a fresh budget.
+Within it, one iteration timeout budget covers the read and any resume work.
+`max_await_time_ms` must be lower than a positive timeout and is reduced to the remaining budget
+before `getMore`. Change streams reject an explicit `timeout_mode` because this per-iteration
+behavior is fixed.
+
+A CSOT timeout leaves the stream open and schedules recreation for the next iteration. The
+timeout is returned immediately; the driver does not spend a second budget resuming within the
+same call. The next `next()` or `try_next()` receives a fresh budget, first recreates from the
+saved position, and then continues reading.
+
+`change_stream:close([options]) -> boolean | nil, err`
+
+This delegates to the owned cursor and has the same cleanup options and return contract.
+Applications should close a stream when they stop before exhaustion. Repeated close returns
+false after the owned cursor and any connection pin are fully released.
+
 ## BSON API
 
 `mongodb.bson` is available through `require("mongodb.bson")` and as `mongodb.bson`. The
