@@ -1,6 +1,6 @@
 # MongoDB Lua driver
 
-A coroutine-aware MongoDB driver written in Lua without binding or wrapping `libmongoc`. It supports Lua 5.4 and Lua 5.5, standalone servers, replica sets, sharded clusters, and load-balanced deployments. The implementation follows the [MongoDB driver specifications](https://github.com/mongodb/specifications), with a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) checkout as its behavioral reference.
+A coroutine-aware MongoDB driver written in Lua without binding or wrapping `libmongoc`. It supports Lua 5.4 and Lua 5.5, standalone servers, [replica sets](https://www.mongodb.com/docs/manual/replication/), [sharded clusters](https://www.mongodb.com/docs/manual/sharding/), and load-balanced deployments. The implementation follows the [MongoDB driver specifications](https://github.com/mongodb/specifications), with a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) checkout as its behavioral reference.
 
 MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
 
@@ -63,7 +63,7 @@ The driver runs network operations through a coroutine-aware runtime. For standa
 
 ### Connecting
 
-Connect with a MongoDB URI, select the default database from that URI, and obtain a collection handle:
+Connect with a [MongoDB URI](https://www.mongodb.com/docs/manual/reference/connection-string/), select the default database from that URI, and obtain a collection handle:
 
 ```lua
 local mongodb = require("mongodb")
@@ -87,7 +87,7 @@ For a DNS seedlist, use a `mongodb+srv` URI. Before opening a MongoDB socket, th
 
 An ordinary one-seed URI may also point to mongos. The client discovers the sharded topology and executes ordinary and cursor commands through the monitored mongos pool.
 
-Set `loadBalanced=true` when connecting to a load-balanced endpoint. The client then uses a service-aware pool and keeps cursor and transaction connections pinned when required.
+Set `loadBalanced=true` when connecting to a load-balanced endpoint. The client then uses a service-aware pool and keeps cursor and [transaction](https://www.mongodb.com/docs/manual/core/transactions/) connections pinned when required.
 
 ```lua
 local mongodb = require("mongodb")
@@ -105,7 +105,7 @@ mongodb.run(function()
 end)
 ```
 
-Wire compression is opt-in and negotiated independently on every connection. Enable Zstandard, Snappy, or zlib with the `compressors` option; when several compressors are listed, their order defines client preference. Zstandard and Snappy are advertised only when their optional providers are installed, and an unavailable configured provider is reported in `client.warnings`. `zlibCompressionLevel` accepts `-1` (the default) through `9`. A server with no common compressor remains usable without compression, while handshake, authentication, and user-management commands always remain uncompressed.
+Wire compression is opt-in and negotiated independently on every connection. Enable Zstandard, Snappy, or zlib with the `compressors` option; when several compressors are listed, their order defines client preference. Zstandard and Snappy are advertised only when their optional providers are installed, and an unavailable configured provider is reported in `client.warnings`. `zlibCompressionLevel` accepts `-1` (the default) through `9`. A server with no common compressor remains usable without compression, while handshake, [authentication](https://www.mongodb.com/docs/manual/core/authentication/), and user-management commands always remain uncompressed.
 
 ```lua
 local client = assert(mongodb.client(
@@ -180,17 +180,18 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 | Pooling | `maxPoolSize`, `minPoolSize`, `maxConnecting`, `maxIdleTimeMS`, `waitQueueTimeoutMS` |
 | Reads, writes, and retries | `readPreference`, `readPreferenceTags`, `maxStalenessSeconds`, `readConcernLevel`, `w`, `journal`, `wTimeoutMS`, `retryReads`, `retryWrites` |
 
-OCSP is not supported. The driver cannot perform certificate revocation checking for Atlas if it uses OCSP-only certificates, or for deployments whose certificate authority issues OCSP-only certificates.
-
-SOCKS5 proxy transport is not supported. The `proxyHost`, `proxyPort`, `proxyUsername`, and `proxyPassword` options are unavailable.
+> [!IMPORTANT]
+> OCSP is not supported. The driver cannot perform certificate revocation checking for Atlas if it uses OCSP-only certificates, or for deployments whose certificate authority issues OCSP-only certificates.
+>
+> SOCKS5 proxy transport is not supported. The `proxyHost`, `proxyPort`, `proxyUsername`, and `proxyPassword` options are unavailable.
 
 `serverMonitoringMode=auto` uses streaming monitoring except in a detected FaaS environment, where it uses polling. `stream` requests streaming on servers that support awaitable hello and falls back to polling on older servers; `poll` always waits `heartbeatFrequencyMS` after a successful check.
 
 For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults.
 
-### CRUD operations
+### [CRUD operations](https://www.mongodb.com/docs/manual/crud/)
 
-The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. MongoDB documents are represented by ordered BSON values. Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
+The remaining examples assume they run inside the `mongodb.run` callback above, before `client:close()`. [MongoDB documents](https://www.mongodb.com/docs/manual/core/document/) are represented by ordered [BSON values](https://www.mongodb.com/docs/manual/reference/bson-types/). Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
 
 ```lua
 local doc = mongodb.bson.document
@@ -241,7 +242,7 @@ end
 assert(cursor:close())
 ```
 
-For reporting reads, `aggregate` accepts an ordered BSON array of pipeline stages and returns the same cursor type as `find`. This pipeline filters active users, groups them by team, and orders the busiest teams first:
+For reporting reads, `aggregate` accepts an ordered BSON array of [aggregation pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/) stages and returns the same cursor type as `find`. This pipeline filters active users, groups them by team, and orders the busiest teams first:
 
 ```lua
 local active_users_by_team = assert(users:aggregate(mongodb.bson.array({
@@ -284,7 +285,7 @@ local deleted = assert(users:delete_one(
 print(deleted.deleted_count)
 ```
 
-### Change streams
+### [Change streams](https://www.mongodb.com/docs/manual/changeStreams/)
 
 On a replica set or sharded deployment, `collection:watch` opens a change stream for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. `database:create_collection` and `database:modify_collection` accept the ordered `change_stream_pre_and_post_images` document supported by MongoDB 6.0 and later. `collection:rename` accepts a destination name plus optional `drop_target`, `comment`, and `session`, and applies the collection's inherited write concern. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `timeout_ms` limits stream establishment and each iteration separately; one iteration budget covers both `getMore` and any resume attempt. A positive timeout requires a lower `max_await_time_ms`, which is further bounded by the remaining timeout budget. A timed-out stream remains usable, and its next iteration attempts to resume it. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
 
@@ -315,7 +316,7 @@ assert(users:rename("archived_users", {
 }))
 ```
 
-### Bulk operations
+### [Bulk operations](https://www.mongodb.com/docs/manual/core/bulk-write-operations/)
 
 Bulk writes combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
 
@@ -388,7 +389,7 @@ for user in cursor:iter() do
 end
 ```
 
-### Index management
+### [Index management](https://www.mongodb.com/docs/manual/indexes/)
 
 `collection:create_index` creates one index from an ordered key document and returns its name. Use `mongodb.index_model` with `collection:create_indexes` to create several indexes together; `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Key directions may be ascending (`1`), descending (`-1`), `text`, `hashed`, `2d`, `2dsphere`, or `geoHaystack`.
 
@@ -407,7 +408,7 @@ local email_index = assert(users:create_index(doc({ { "email", 1 } }), {
 print(email_index)
 ```
 
-#### Search indexes
+#### [Search indexes](https://www.mongodb.com/docs/search/index/manage-indexes/)
 
 `collection:create_search_index` creates one standard or vector Search index and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. `collection:update_search_index` replaces the definition of a named Search index, and `collection:drop_search_index` idempotently removes one by name. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
 
@@ -421,7 +422,7 @@ local search_name = assert(users:create_search_index(doc({
 })))
 ```
 
-### GridFS
+### [GridFS](https://www.mongodb.com/docs/manual/core/gridfs/)
 
 GridFS stores files in bounded BSON chunks. Upload from a byte string, query
 stored file documents through a cursor, then open an immutable download stream
