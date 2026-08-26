@@ -81,9 +81,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 1018,
+      "deferred_unsupported": 1007,
       "excluded_scope": 98,
-      "passed": 4393,
+      "passed": 4404,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 
@@ -453,7 +453,7 @@ class ConformanceLedgerTests(unittest.TestCase):
 
     self.assertEqual(expected, actual)
     self.assertTrue(all(
-      cases[identity]["status"] == "deferred_unsupported"
+      cases[identity]["status"] == "passed"
       for identity in expected
     ))
 

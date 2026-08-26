@@ -3,13 +3,38 @@ local oidc = require("mongodb.auth.oidc")
 
 local M = {}
 
-local SCRAM_MECHANISMS = {
+local AWS_MECHANISM = "MONGODB-AWS"
+local GSSAPI_MECHANISM = "GSSAPI"
+local OIDC_MECHANISM = "MONGODB-OIDC"
+local X509_MECHANISM = "MONGODB-X509"
+local SUPPORTED_MECHANISMS = {
+  [AWS_MECHANISM] = true,
+  [GSSAPI_MECHANISM] = true,
+  [OIDC_MECHANISM] = true,
+  ["PLAIN"] = true,
+  ["SCRAM-SHA-1"] = true,
+  ["SCRAM-SHA-256"] = true,
+  [X509_MECHANISM] = true,
+}
+local USERNAME_MECHANISMS = {
+  [GSSAPI_MECHANISM] = true,
+  ["PLAIN"] = true,
   ["SCRAM-SHA-1"] = true,
   ["SCRAM-SHA-256"] = true,
 }
-local AWS_MECHANISM = "MONGODB-AWS"
-local OIDC_MECHANISM = "MONGODB-OIDC"
-local X509_MECHANISM = "MONGODB-X509"
+local GSSAPI_PROPERTIES = {
+  CANONICALIZE_HOST_NAME = true,
+  SERVICE_HOST = true,
+  SERVICE_NAME = true,
+  SERVICE_REALM = true,
+}
+local GSSAPI_CANONICALIZATION = {
+  ["false"] = "none",
+  ["forward"] = "forward",
+  ["forwardAndReverse"] = "forwardAndReverse",
+  ["none"] = "none",
+  ["true"] = "forwardAndReverse",
+}
 
 local function config_error(option, message)
   return nil, errors.new({
@@ -47,6 +72,94 @@ local function has_properties(properties)
   return iterator(state, key) ~= nil
 end
 
+local function normalize_gssapi_canonicalization(value)
+  local key = value
+
+  if type(value) == "boolean" then
+    key = tostring(value)
+  end
+
+  local normalized = GSSAPI_CANONICALIZATION[key]
+
+  if not normalized then
+    return config_error(
+      "auth_mechanism_properties",
+      "GSSAPI hostname canonicalization mode is invalid"
+    )
+  end
+
+  return normalized
+end
+
+local function normalize_gssapi_properties(properties)
+  local normalized = { SERVICE_NAME = "mongodb" }
+  local seen = {}
+
+  for name, value in pairs(properties) do
+    local canonical_name = type(name) == "string" and name:upper() or nil
+
+    if not canonical_name or not GSSAPI_PROPERTIES[canonical_name] then
+      return config_error(
+        "auth_mechanism_properties",
+        "GSSAPI mechanism property is unsupported"
+      )
+    elseif seen[canonical_name] then
+      return config_error(
+        "auth_mechanism_properties",
+        "GSSAPI mechanism property is duplicated"
+      )
+    end
+
+    seen[canonical_name] = true
+
+    if canonical_name == "CANONICALIZE_HOST_NAME" then
+      local canonicalization, canonicalization_err =
+        normalize_gssapi_canonicalization(value)
+
+      if not canonicalization then
+        return nil, canonicalization_err
+      end
+
+      normalized[canonical_name] = canonicalization
+    elseif type(value) ~= "string" then
+      return config_error(
+        "auth_mechanism_properties",
+        "GSSAPI mechanism property must be a string"
+      )
+    else
+      normalized[canonical_name] = value
+    end
+  end
+
+  return immutable(normalized)
+end
+
+local function build_gssapi(parsed, config)
+  if parsed.username == "" then
+    return config_error("username", "GSSAPI requires a username")
+  end
+
+  if config.auth_source ~= nil and config.auth_source ~= "$external" then
+    return config_error("auth_source", "GSSAPI source must be $external")
+  end
+
+  local normalized_properties, properties_err = normalize_gssapi_properties(
+    config.auth_mechanism_properties or {}
+  )
+
+  if not normalized_properties then
+    return nil, properties_err
+  end
+
+  return immutable({
+    mechanism = GSSAPI_MECHANISM,
+    mechanism_properties = normalized_properties,
+    password = parsed.password,
+    source = "$external",
+    username = parsed.username,
+  })
+end
+
 function M.build(parsed, config)
   if type(parsed) ~= "table" or type(config) ~= "table" then
     error("credential construction requires parsed URI and normalized options tables", 2)
@@ -59,26 +172,21 @@ function M.build(parsed, config)
       return nil
     end
 
-    if SCRAM_MECHANISMS[mechanism] or mechanism == "PLAIN" then
+    if USERNAME_MECHANISMS[mechanism] then
       return config_error("username", mechanism .. " requires a username")
     end
 
-    if mechanism ~= AWS_MECHANISM
-        and mechanism ~= OIDC_MECHANISM
-        and mechanism ~= X509_MECHANISM
-    then
+    if not SUPPORTED_MECHANISMS[mechanism] then
       return config_error("auth_mechanism", "unsupported authentication mechanism")
     end
   end
 
-  if mechanism ~= nil
-      and not SCRAM_MECHANISMS[mechanism]
-      and mechanism ~= "PLAIN"
-      and mechanism ~= AWS_MECHANISM
-      and mechanism ~= OIDC_MECHANISM
-      and mechanism ~= X509_MECHANISM
-  then
+  if mechanism ~= nil and not SUPPORTED_MECHANISMS[mechanism] then
     return config_error("auth_mechanism", "unsupported authentication mechanism")
+  end
+
+  if mechanism == GSSAPI_MECHANISM then
+    return build_gssapi(parsed, config)
   end
 
   if mechanism == AWS_MECHANISM then

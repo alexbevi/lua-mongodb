@@ -174,49 +174,39 @@ local function normalize_uri(value)
   return config, nil, combined_warnings(parsed, warnings)
 end
 
-local function applicable_uri_case(name, index)
-  if name == "auth-options.json" and index == 1 then
-    return false
-  end
-
-  return true
-end
-
 function M.run_uri_options()
   local count = 0
 
   for _, name in ipairs(URI_FIXTURES) do
     local fixture = load_fixture("uri-options/tests/" .. name)
 
-    for index, test in fixture:get("tests"):iter() do
-      if applicable_uri_case(name, index) then
-        local description = name .. ": " .. test:get("description")
-        local config, err, warnings = normalize_uri(test:get("uri"))
-        local valid = test:get("valid")
+    for _, test in fixture:get("tests"):iter() do
+      local description = name .. ": " .. test:get("description")
+      local config, err, warnings = normalize_uri(test:get("uri"))
+      local valid = test:get("valid")
 
-        assert((config ~= nil) == valid, description)
+      assert((config ~= nil) == valid, description)
 
-        if valid then
-          assert(err == nil, description)
-          assert((#warnings > 0) == test:get("warning"), description .. ": warning")
+      if valid then
+        assert(err == nil, description)
+        assert((#warnings > 0) == test:get("warning"), description .. ": warning")
 
-          for option, expected in iter(test:get("options")) do
-            local expected_value = plain(expected)
+        for option, expected in iter(test:get("options")) do
+          local expected_value = plain(expected)
 
-            if option == "readPreference" then
-              expected_value = READ_PREFERENCE_MODES[expected_value] or expected_value
-            end
-
-            luassert.same(
-              expected_value,
-              option_value(config, option),
-              description .. ": " .. option
-            )
+          if option == "readPreference" then
+            expected_value = READ_PREFERENCE_MODES[expected_value] or expected_value
           end
-        end
 
-        count = count + 1
+          luassert.same(
+            expected_value,
+            option_value(config, option),
+            description .. ": " .. option
+          )
+        end
       end
+
+      count = count + 1
     end
   end
 

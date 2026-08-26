@@ -402,7 +402,14 @@ def classify_case(
         "retained legacy assertion was superseded by DRIVERS-3131, which prohibits explicit MONGODB-AWS URI credentials",
       )
 
-    if owner in {"AUTH-002", "AUTH-003", "AUTH-004", "AUTH-010", "AUTH-020"}:
+    if owner in {
+      "AUTH-002",
+      "AUTH-003",
+      "AUTH-004",
+      "AUTH-010",
+      "AUTH-020",
+      "AUTH-031",
+    }:
       return _passed(
         case,
         owner,
@@ -414,7 +421,12 @@ def classify_case(
 
   if suite == "uri-options":
     if path.endswith("/auth-options.json") and identity.endswith("::test[1]"):
-      return _deferred(case, "AUTH-031", activities)
+      return _passed(
+        case,
+        "AUTH-031",
+        "spec/support/config_runner.lua",
+        "make test-focus FOCUS_UNIT='spec/unit/config_fixtures_spec.lua'",
+      )
 
     if path.endswith("/srv-options.json"):
       return _passed(

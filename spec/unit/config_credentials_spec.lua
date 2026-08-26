@@ -150,6 +150,55 @@ describe("authentication credential normalization", function()
     assert.is_nil(tostring(credential_err):find("private-secret", 1, true))
   end)
 
+  it("normalizes immutable GSSAPI credentials and mechanism properties", function()
+    local parsed = assert(uri.parse(
+      "mongodb://user%40EXAMPLE.COM:private-password@localhost/database"
+        .. "?authMechanism=GSSAPI"
+    ))
+    local config = assert(options.normalize(parsed.options, {
+      auth_mechanism_properties = {
+        canonicalize_host_name = true,
+        service_host = "db.example.com",
+        service_name = "custom",
+        service_realm = "SERVICE.EXAMPLE.COM",
+      },
+    }, parsed))
+    local credential = assert(credentials.build(parsed, config))
+
+    assert.are.equal("GSSAPI", credential.mechanism)
+    assert.are.equal("user@EXAMPLE.COM", credential.username)
+    assert.are.equal("private-password", credential.password)
+    assert.are.equal("$external", credential.source)
+    assert.are.same({
+      CANONICALIZE_HOST_NAME = "forwardAndReverse",
+      SERVICE_HOST = "db.example.com",
+      SERVICE_NAME = "custom",
+      SERVICE_REALM = "SERVICE.EXAMPLE.COM",
+    }, credential.mechanism_properties)
+    assert.has_error(function()
+      credential.mechanism_properties.SERVICE_NAME = "changed"
+    end, "authentication credentials are immutable")
+  end)
+
+  it("rejects invalid GSSAPI configuration without exposing values", function()
+    for _, query in ipairs({
+      "authSource=private-source",
+      "authMechanismProperties=CANONICALIZE_HOST_NAME:private-mode",
+      "authMechanismProperties=PRIVATE_PROPERTY:private-value",
+    }) do
+      local parsed = assert(uri.parse(
+        "mongodb://user%40EXAMPLE.COM:private-password@localhost/"
+          .. "?authMechanism=GSSAPI&" .. query
+      ))
+      local config = assert(options.normalize(parsed.options, nil, parsed))
+      local credential, err = credentials.build(parsed, config)
+
+      assert.is_nil(credential)
+      assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
+      assert.is_nil(tostring(err):find("private", 1, true))
+    end
+  end)
+
   it("normalizes a built-in MONGODB-OIDC environment credential", function()
     local parsed = assert(uri.parse(
       "mongodb://localhost/?authMechanism=MONGODB-OIDC"
@@ -200,6 +249,10 @@ describe("authentication credential normalization", function()
 
   it("runs every AUTH-004 X.509 credential case", function()
     assert.are.equal(7, auth_config_runner.run_auth_004())
+  end)
+
+  it("runs every AUTH-031 GSSAPI credential case", function()
+    assert.are.equal(10, auth_config_runner.run_auth_031())
   end)
 
   it("runs and classifies every AUTH-020 AWS credential case", function()

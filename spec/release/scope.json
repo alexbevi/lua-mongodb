@@ -143,17 +143,16 @@
   },
   "deferred_by_activity": {
     "ADV-009": 230,
-    "ADV-010": 777,
-    "AUTH-031": 11
+    "ADV-010": 777
   },
   "deferred_by_scope": {
-    "additional-exclusion": 1018
+    "additional-exclusion": 1007
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 1018,
+    "deferred_unsupported": 1007,
     "excluded_scope": 98,
-    "passed": 4393,
+    "passed": 4404,
     "unsupported": 15
   },
   "total_cases": 5524,

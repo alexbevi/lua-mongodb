@@ -44,6 +44,18 @@ local AUTH_004_CASES = {
   [21] = true,
   [22] = true,
 }
+local AUTH_031_CASES = {
+  [4] = true,
+  [5] = true,
+  [6] = true,
+  [7] = true,
+  [8] = true,
+  [9] = true,
+  [10] = true,
+  [11] = true,
+  [14] = true,
+  [15] = true,
+}
 local AUTH_020_CASES = {
   [40] = true,
   [41] = true,
@@ -208,6 +220,10 @@ end
 
 function M.run_auth_004()
   return run_cases(AUTH_004_CASES)
+end
+
+function M.run_auth_031()
+  return run_cases(AUTH_031_CASES)
 end
 
 function M.run_auth_020()

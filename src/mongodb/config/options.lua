@@ -534,10 +534,14 @@ local function normalize_auth_mechanism_properties(option, value, from_uri)
       or key == "OIDC_HUMAN_CALLBACK") and type(item) == "function"
     local valid_oidc_allowed_hosts = key == "ALLOWED_HOSTS"
       and type(item) == "table"
+    local valid_gssapi_canonicalization = type(key) == "string"
+      and key:upper() == "CANONICALIZE_HOST_NAME"
+      and type(item) == "boolean"
 
     if type(key) ~= "string" or key == ""
         or (type(item) ~= "string" and not valid_oidc_callback
-          and not valid_oidc_allowed_hosts)
+          and not valid_oidc_allowed_hosts
+          and not valid_gssapi_canonicalization)
     then
       return config_error(
         option,

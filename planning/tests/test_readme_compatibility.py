@@ -85,10 +85,10 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
     self.assertIn(
       "| Communication | [URI options](https://alexbevi.com/specifications/"
-      "uri-options/uri-options.html) | 🟡 | 95.1% |",
+      "uri-options/uri-options.html) | 🟡 | 95.8% |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **79.8%** |", table)
+    self.assertIn("|  | **Total** |  | **80.0%** |", table)
 
     readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
     self.assertIn("⚪ Will Not Implement", readme)
@@ -146,7 +146,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
     self.assertIn(
       "| Authentication | [Authentication options and additional mechanisms]"
-      "(https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 83.6% |",
+      "(https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 97.3% |",
       table,
     )
     self.assertRegex(
@@ -155,7 +155,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **79.8%** |", table)
+    self.assertIn("|  | **Total** |  | **80.0%** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"

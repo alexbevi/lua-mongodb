@@ -214,10 +214,10 @@
       "CON-009"
     ],
     "conformance": {
-      "additional_exclusions": 1116,
+      "additional_exclusions": 1105,
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 4393,
+      "passed_cases": 4404,
       "unsupported_cases": 15
     },
     "maintenance": {

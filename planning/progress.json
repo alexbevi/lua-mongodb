@@ -9218,6 +9218,28 @@
       "notes": [],
       "started_at": "2026-08-26T13:54:09+00:00",
       "completed_at": "2026-08-26T14:13:45+00:00"
+    },
+    "AUTH-031": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "busted --lua=lua '--lpath=spec/support/?.lua' '--lpath=spec/support/?/init.lua' '--lpath=src/?.lua' '--lpath=src/?/init.lua' '--filter=GSSAPI.*mechanism' spec/unit/config_credentials_spec.lua",
+          "exit_code": 1,
+          "summary": "Programmatic GSSAPI canonicalization was rejected before credential construction because the option layer did not admit its legacy boolean value.",
+          "recorded_at": "2026-08-26T14:34:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "busted --lua=lua '--lpath=spec/support/?.lua' '--lpath=spec/support/?/init.lua' '--lpath=src/?.lua' '--lpath=src/?/init.lua' '--filter=GSSAPI.*mechanism' spec/unit/config_credentials_spec.lua",
+          "exit_code": 0,
+          "summary": "GSSAPI credentials now normalize external source, optional password, canonical property names, legacy canonicalization booleans, and immutable mechanism properties.",
+          "recorded_at": "2026-08-26T14:35:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T14:31:26+00:00",
+      "completed_at": "2026-08-26T14:45:04+00:00"
     }
   },
   "verified_references": {

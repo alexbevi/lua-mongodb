@@ -8,11 +8,6 @@
       "complexity": 47
     },
     {
-      "path": "src/mongodb/config/credentials.lua",
-      "function": "M.build",
-      "complexity": 43
-    },
-    {
       "path": "src/mongodb/session.lua",
       "function": "finish_transaction",
       "complexity": 41

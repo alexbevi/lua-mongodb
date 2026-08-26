@@ -153,7 +153,7 @@ programmatic option set is:
 |---|---|---|
 | `app_name` | unset | Non-empty UTF-8 string of at most 128 bytes, included in handshake metadata. |
 | `auth_mechanism` | inferred | Non-empty authentication-mechanism string. |
-| `auth_mechanism_properties` | unset | Table of mechanism properties; values are strings except supported OIDC callback and allowed-host fields. |
+| `auth_mechanism_properties` | unset | Table of mechanism properties; values are strings except supported OIDC callback and allowed-host fields and the GSSAPI canonicalization boolean. |
 | `auth_source` | inferred | Non-empty authentication database name. |
 | `cancellation` | unset | Cancellation value from the selected runtime, used while constructing and initially connecting the client. |
 | `command_listeners` | empty | Dense array of tables with optional `started`, `succeeded`, and `failed` callbacks. |
@@ -206,6 +206,14 @@ programmatic option set is:
 max staleness. `write_concern.journal` is boolean; `w` is a non-negative integer or non-empty
 string; `w_timeout_ms` is a non-negative integer. `w = 0` cannot be combined with
 `journal = true`. Conflicting permissive TLS options return a configuration error.
+
+GSSAPI configuration requires a non-empty username, always uses `$external`, and permits an
+optional password. Its mechanism properties are case-insensitive: `SERVICE_NAME` defaults to
+`mongodb`; `SERVICE_HOST` and `SERVICE_REALM` are optional strings; and
+`CANONICALIZE_HOST_NAME` accepts `none`, `forward`, `forwardAndReverse`, `true`, or `false`.
+The legacy boolean values normalize to `forwardAndReverse` and `none`. DNS canonicalization and
+authentication require a conforming GSSAPI runtime provider; configuration alone does not load
+a native module or contact a KDC.
 
 `driver_info` fields must be valid UTF-8 and cannot contain `|`. Its `name` is required.
 Listener arrays must be dense. Command listener methods receive the listener as `self` and an
