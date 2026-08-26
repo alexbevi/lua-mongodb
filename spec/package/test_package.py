@@ -224,6 +224,12 @@ class PackageTests(unittest.TestCase):
     self.assertIn('"lua >= 5.4, < 5.6"', rockspec)
     self.assertIn('"copas >= 4.11, < 4.13"', runtime_dependencies)
 
+  def test_release_metadata_declares_only_verified_platforms(self) -> None:
+    rockspec = ROCKSPEC.read_text(encoding="utf-8")
+    platforms = rockspec.split("supported_platforms = {", 1)[1].split("}", 1)[0]
+
+    self.assertEqual(["linux", "macosx"], re.findall(r'"([^"]+)"', platforms))
+
   def test_unified_modules_follow_explicit_package_classification(self) -> None:
     classified = module_classification()
     discovered = discovered_unified_modules()

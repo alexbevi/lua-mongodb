@@ -1530,6 +1530,11 @@ the caller and must outlive every client using it; closing a client closes its M
 but does not close or stop the runtime. `mongodb.run` owns the Copas loop it creates, while an
 application with an existing loop owns that loop itself.
 
+The release rock and default Copas runtime are verified on Linux and macOS. Windows and other
+untested operating systems are not supported. A custom runtime adapter is an extension point,
+not a platform support claim. Supporting another operating system requires recurring package,
+runtime, and network verification in addition to an adapter implementation.
+
 ### Runtime façade and contract helpers
 
 The advanced `mongodb.runtime` façade has these signatures:

@@ -7,6 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 README = ROOT / "README.md"
 API = ROOT / "docs" / "API.md"
+ARCHITECTURE = ROOT / "docs" / "ARCHITECTURE.md"
 MODULE_CLASSIFICATION = ROOT / "spec" / "module-classification.json"
 RUNTIME_CAPABILITIES = (
   "clock.now",
@@ -98,6 +99,32 @@ class ReadmeContentTests(unittest.TestCase):
     self.assertIn("incompatible change", api)
     self.assertIn("minor release", api)
     self.assertIn("Internal and test-only modules carry no compatibility promise", api)
+
+  def test_verified_platform_policy_is_public_and_exact(self) -> None:
+    readme = " ".join(README.read_text(encoding="utf-8").split())
+    api = " ".join(API.read_text(encoding="utf-8").split())
+    architecture = " ".join(ARCHITECTURE.read_text(encoding="utf-8").split())
+
+    for document in (readme, api):
+      with self.subTest(document=document[:20]):
+        self.assertIn(
+          "The release rock and default Copas runtime are verified on Linux and macOS",
+          document,
+        )
+        self.assertIn(
+          "Windows and other untested operating systems are not supported",
+          document,
+        )
+        self.assertIn(
+          "A custom runtime adapter is an extension point, not a platform support claim",
+          document,
+        )
+
+    self.assertIn(
+      'supported_platforms = { "linux", "macosx" }',
+      architecture,
+    )
+    self.assertIn("release CI and package gates verify both platforms", architecture)
 
   def test_api_reference_names_every_supported_entry_point(self) -> None:
     api = API.read_text(encoding="utf-8")

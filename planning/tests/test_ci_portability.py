@@ -68,6 +68,16 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("if: matrix.verification == 'runtime'", portable)
     self.assertNotIn("if: matrix.lua-version", portable)
 
+  def test_portable_matrix_covers_every_declared_platform(self) -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+    portable = workflow[
+      workflow.index("  portable:"):workflow.index("  compatibility-smoke:")
+    ]
+
+    self.assertEqual(2, portable.count("os: ubuntu-latest"))
+    self.assertEqual(2, portable.count("os: macos-latest"))
+    self.assertNotIn("windows-latest", workflow)
+
   def test_luacheck_runs_only_on_its_supported_lua_runtime(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
     portable = workflow[

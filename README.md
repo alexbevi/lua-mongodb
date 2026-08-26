@@ -23,6 +23,15 @@ luarocks install lua-csnappy
 luarocks install lua-zstd
 ```
 
+## Platform support
+
+The release rock and default Copas runtime are verified on Linux and macOS. Windows and other
+untested operating systems are not supported. The pure-Lua driver core still reaches clocks,
+networking, TLS, entropy, and other platform services through the runtime boundary. A custom
+runtime adapter is an extension point, not a platform support claim. A new operating system
+becomes supported only after its dependencies, package installation, runtime behavior, and
+network integration are covered by recurring project CI.
+
 ## Building and installing
 
 Install the latest public release from LuaRocks with:

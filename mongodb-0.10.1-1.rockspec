@@ -19,6 +19,11 @@ description = {
   license = "Apache-2.0",
 }
 
+supported_platforms = {
+  "linux",
+  "macosx",
+}
+
 dependencies = {
   "lua >= 5.4, < 5.6",
   "copas >= 4.11, < 4.13",

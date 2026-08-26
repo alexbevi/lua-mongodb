@@ -9088,6 +9088,42 @@
       "notes": [],
       "started_at": "2026-08-26T04:06:05+00:00",
       "completed_at": "2026-08-26T04:13:37+00:00"
+    },
+    "PKG-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.package.test_package.PackageTests.test_release_metadata_declares_only_verified_platforms planning.tests.test_ci_portability.CiPortabilityTests.test_portable_matrix_covers_every_declared_platform planning.tests.test_readme_content.ReadmeContentTests.test_verified_platform_policy_is_public_and_exact",
+          "exit_code": 1,
+          "summary": "platform metadata and public policy were absent; CI already covered Linux and macOS",
+          "recorded_at": "2026-08-26T04:26:50+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.package.test_package planning.tests.test_ci_portability planning.tests.test_readme_content'",
+          "exit_code": 0,
+          "summary": "42 focused package, CI-portability, and documentation tests passed",
+          "recorded_at": "2026-08-26T04:29:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make rockspec",
+          "exit_code": 0,
+          "summary": "LuaRocks lint passed",
+          "recorded_at": "2026-08-26T04:29:26+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "git diff --check",
+          "exit_code": 0,
+          "summary": "passed",
+          "recorded_at": "2026-08-26T04:29:27+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T04:24:56+00:00",
+      "completed_at": "2026-08-26T04:29:31+00:00"
     }
   },
   "verified_references": {
