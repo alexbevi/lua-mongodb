@@ -174,6 +174,18 @@ class PublishTests(unittest.TestCase):
     )
     self.assertNotIn("--force", workflow)
 
+  def test_workflow_smokes_documented_api_after_each_install(self) -> None:
+    workflow = WORKFLOW.read_text(encoding="utf-8")
+
+    self.assertEqual(2, workflow.count("mapfile -t smoke_arguments"))
+    self.assertEqual(
+      2,
+      workflow.count(
+        'lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua" \\'
+      ),
+    )
+    self.assertEqual(2, workflow.count('"${smoke_arguments[@]}"'))
+
 
 if __name__ == "__main__":
   unittest.main()

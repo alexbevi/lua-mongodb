@@ -9560,36 +9560,67 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_publish.PublishTests.test_workflow_smokes_documented_api_after_each_install'",
           "exit_code": 2,
-          "summary": "Release checklist reported 0.10.1 instead of the required 0.10.2.",
-          "recorded_at": "2026-08-26T22:03:45+00:00"
+          "summary": "The release workflow invoked the installed-package smoke twice without generating or passing its required documented module and export arguments.",
+          "recorded_at": "2026-08-26T23:17:28+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_publish.PublishTests.test_workflow_smokes_documented_api_after_each_install'",
           "exit_code": 0,
-          "summary": "The defining release checklist contract reports v0.10.2 ready and includes every GSSAPI implementation gate plus CON-013.",
-          "recorded_at": "2026-08-26T22:10:57+00:00"
+          "summary": "The release workflow now derives and passes the documented module and classified export arguments to both installed-package smoke invocations.",
+          "recorded_at": "2026-08-26T23:19:30+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus with release version unit, client integration, release/package/workflow/documentation Python contracts, and touched-file lint",
+          "command": "make test-focus for publication, package, and CI portability contracts; actionlint release workflow; Python, classification, and diff validators",
           "exit_code": 0,
-          "summary": "20 Lua version tests, 6 directly coupled client integration tests, 52 release/package/workflow/documentation contracts, isolated source-rock installation, and 6 touched Lua files passed with zero failures or lint warnings under the declared Lua 5.4 dependency profile.",
-          "recorded_at": "2026-08-26T22:12:27+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make rockspec test-release-checklist test-v102-scope test-release-scope; publication, README, syntax, workflow, diff, and prepared-tree source-rock validators",
-          "exit_code": 0,
-          "summary": "Rockspec, release checklist, v0.10.2 GSSAPI scope, production-core release scope, publication metadata, README projection, Python/JSON/workflow syntax, and diff validators passed; two prepared-tree source rocks were byte-identical.",
-          "recorded_at": "2026-08-26T22:12:28+00:00"
+          "summary": "All 36 coupled publication, isolated source-rock, package-classification, and workflow portability tests passed under Lua 5.4; release workflow lint, Python syntax, 15-module and 14-export classification, and diff checks passed.",
+          "recorded_at": "2026-08-26T23:19:31+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-26T22:02:15+00:00",
-      "completed_at": "2026-08-26T22:12:35+00:00"
+      "notes": [
+        "Requeued: LuaRocks publication run 33022124605 installed the source rock but called the package smoke without its required documented module and export arguments."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-26T22:12:35+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 2,
+              "summary": "Release checklist reported 0.10.1 instead of the required 0.10.2.",
+              "recorded_at": "2026-08-26T22:03:45+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 0,
+              "summary": "The defining release checklist contract reports v0.10.2 ready and includes every GSSAPI implementation gate plus CON-013.",
+              "recorded_at": "2026-08-26T22:10:57+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus with release version unit, client integration, release/package/workflow/documentation Python contracts, and touched-file lint",
+              "exit_code": 0,
+              "summary": "20 Lua version tests, 6 directly coupled client integration tests, 52 release/package/workflow/documentation contracts, isolated source-rock installation, and 6 touched Lua files passed with zero failures or lint warnings under the declared Lua 5.4 dependency profile.",
+              "recorded_at": "2026-08-26T22:12:27+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make rockspec test-release-checklist test-v102-scope test-release-scope; publication, README, syntax, workflow, diff, and prepared-tree source-rock validators",
+              "exit_code": 0,
+              "summary": "Rockspec, release checklist, v0.10.2 GSSAPI scope, production-core release scope, publication metadata, README projection, Python/JSON/workflow syntax, and diff validators passed; two prepared-tree source rocks were byte-identical.",
+              "recorded_at": "2026-08-26T22:12:28+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "725951bec078ba97f02b77819fa5c89b2a5448cd",
+      "started_at": "2026-08-26T23:17:03+00:00",
+      "completed_at": "2026-08-26T23:19:40+00:00"
     }
   },
   "verified_references": {

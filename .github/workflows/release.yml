@@ -198,13 +198,28 @@ jobs:
         run: |
           install_tree="$(mktemp -d)"
           run_directory="$(mktemp -d)"
+          smoke_arguments_file="$(mktemp)"
           luarocks --lua-version=5.4 --tree="$install_tree" \
             install "$SOURCE_ROCK" --deps-mode=one
           eval "$(luarocks --lua-version=5.4 --tree="$install_tree" path)"
+          jq -r '
+            .modules
+            | to_entries[]
+            | select(
+                .value.stability == "public"
+                or .value.stability == "advanced-extension"
+              )
+            | .key
+          ' spec/module-classification.json > "$smoke_arguments_file"
+          printf '%s\n' --exports >> "$smoke_arguments_file"
+          jq -r '.exports | keys[]' spec/module-classification.json \
+            >> "$smoke_arguments_file"
+          mapfile -t smoke_arguments < "$smoke_arguments_file"
           (
             cd "$run_directory"
             MONGODB_PACKAGE_TREE="$install_tree" \
-              lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua"
+              lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua" \
+                "${smoke_arguments[@]}"
           )
 
       - name: Upload immutable LuaRocks artifacts if absent
@@ -259,6 +274,7 @@ jobs:
         working-directory: release-source
         run: |
           public_tree="$(mktemp -d)"
+          smoke_arguments_file="$(mktemp)"
           for attempt in $(seq 1 12); do
             if luarocks --lua-version=5.4 --tree="$public_tree" \
               install mongodb "$ROCKSPEC_VERSION"; then
@@ -268,8 +284,22 @@ jobs:
             sleep 10
           done
           eval "$(luarocks --lua-version=5.4 --tree="$public_tree" path)"
+          jq -r '
+            .modules
+            | to_entries[]
+            | select(
+                .value.stability == "public"
+                or .value.stability == "advanced-extension"
+              )
+            | .key
+          ' spec/module-classification.json > "$smoke_arguments_file"
+          printf '%s\n' --exports >> "$smoke_arguments_file"
+          jq -r '.exports | keys[]' spec/module-classification.json \
+            >> "$smoke_arguments_file"
+          mapfile -t smoke_arguments < "$smoke_arguments_file"
           MONGODB_PACKAGE_TREE="$public_tree" \
-            lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua"
+            lua "$GITHUB_WORKSPACE/release-source/spec/package/smoke.lua" \
+              "${smoke_arguments[@]}"
 
       - name: Create GitHub release if absent
         run: |
