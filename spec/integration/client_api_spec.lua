@@ -176,14 +176,14 @@ describe("public standalone client API", function()
 
         if connection_count == 1 then
           assert.are.equal("lua-mongodb|library", driver:get("name"))
-          assert.are.equal("0.10.1|1.2", driver:get("version"))
+          assert.are.equal("0.10.2|1.2", driver:get("version"))
           assert.are.equal(
             "Lua 5.4 wrapper-runtime|Library Platform",
             client_metadata:get("platform")
           )
         else
           assert.are.equal("lua-mongodb|library|framework", driver:get("name"))
-          assert.are.equal("0.10.1|1.2|2.0", driver:get("version"))
+          assert.are.equal("0.10.2|1.2|2.0", driver:get("version"))
           assert.are.equal(
             "Lua 5.4 wrapper-runtime|Library Platform|Framework Platform",
             client_metadata:get("platform")

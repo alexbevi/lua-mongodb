@@ -78,7 +78,8 @@
       "AUTH-037",
       "AUTH-038",
       "AUTH-039",
-      "AUTH-040"
+      "AUTH-040",
+      "CON-013"
     ],
     "completed_v0_10_gates": [
       "ADV-006",
@@ -316,10 +317,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.10.1-1.rockspec",
-    "rockspec_version": "0.10.1-1",
-    "version": "0.10.1"
+    "rockspec": "mongodb-0.10.2-1.rockspec",
+    "rockspec_version": "0.10.2-1",
+    "version": "0.10.2"
   },
   "schema_version": 1,
-  "type": "maintenance-release-checklist"
+  "type": "gssapi-release-checklist"
 }

@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.2] - 2026-08-26
+
+GSSAPI authentication release.
+
+### Added
+
+- Added GSSAPI credential normalization, service-host canonicalization, and SASL authentication with default Kerberos credentials or a password when the operating-system library supports it.
+- Added a packaged runtime adapter that loads the operating system's GSSAPI library on Linux and macOS without a link-time Kerberos dependency.
+
+### Conformance
+
+- Added exact passing evidence for eleven pinned GSSAPI configuration cases and ten normative requirements.
+- Added recurring live default-credential, password, canonical-host, explicit-host, replica-set, and concurrent-context coverage on Lua 5.4 and Ubuntu 24.04.
+
+### Release engineering
+
+- Added GSSAPI modules to the source rock and release checks while limiting the live provider support claim to its recurring Ubuntu 24.04 and Lua 5.4 profile.
+
 ## [0.10.1] - 2026-08-25
 
 Maintenance release.

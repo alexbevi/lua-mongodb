@@ -127,13 +127,13 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("ZSTD_DIR=", workflow[openssl:dependencies])
     self.assertIn("GITHUB_ENV", workflow[openssl:dependencies])
     self.assertIn(
-      'luarocks install --only-deps mongodb-0.10.1-1.rockspec '
+      'luarocks install --only-deps mongodb-0.10.2-1.rockspec '
       'OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"',
       workflow,
     )
     self.assertIn('if test -n "${OPENSSL_DIR:-}"; then', workflow)
     self.assertIn(
-      "else\n            luarocks install --only-deps mongodb-0.10.1-1.rockspec",
+      "else\n            luarocks install --only-deps mongodb-0.10.2-1.rockspec",
       workflow,
     )
 

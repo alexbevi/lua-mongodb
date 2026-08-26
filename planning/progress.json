@@ -9554,6 +9554,42 @@
       "reopened_after_commit": "9d2bb41f5ed185a1e2580cdee8aa7c9190d6f6a2",
       "started_at": "2026-08-26T21:03:53+00:00",
       "completed_at": "2026-08-26T21:05:52+00:00"
+    },
+    "REL-061": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "Release checklist reported 0.10.1 instead of the required 0.10.2.",
+          "recorded_at": "2026-08-26T22:03:45+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 0,
+          "summary": "The defining release checklist contract reports v0.10.2 ready and includes every GSSAPI implementation gate plus CON-013.",
+          "recorded_at": "2026-08-26T22:10:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with release version unit, client integration, release/package/workflow/documentation Python contracts, and touched-file lint",
+          "exit_code": 0,
+          "summary": "20 Lua version tests, 6 directly coupled client integration tests, 52 release/package/workflow/documentation contracts, isolated source-rock installation, and 6 touched Lua files passed with zero failures or lint warnings under the declared Lua 5.4 dependency profile.",
+          "recorded_at": "2026-08-26T22:12:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make rockspec test-release-checklist test-v102-scope test-release-scope; publication, README, syntax, workflow, diff, and prepared-tree source-rock validators",
+          "exit_code": 0,
+          "summary": "Rockspec, release checklist, v0.10.2 GSSAPI scope, production-core release scope, publication metadata, README projection, Python/JSON/workflow syntax, and diff validators passed; two prepared-tree source rocks were byte-identical.",
+          "recorded_at": "2026-08-26T22:12:28+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T22:02:15+00:00",
+      "completed_at": "2026-08-26T22:12:35+00:00"
     }
   },
   "verified_references": {

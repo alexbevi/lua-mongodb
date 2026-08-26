@@ -17,14 +17,13 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 343,
+    "completed": 344,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 4
+    "pending": 3
   },
   "active": [],
   "ready": [
-    "REL-061",
     "ADV-009",
     "ADV-010",
     "SFP-001"
@@ -43,12 +42,10 @@
     "roadmap-clarity": [],
     "v0-10-1-maintenance": [],
     "ecosystem-hardening": [],
-    "v0-10-2-gssapi": [
-      "REL-061"
-    ]
+    "v0-10-2-gssapi": []
   },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "REL-061"
+  "next_ready": "ADV-009"
 }

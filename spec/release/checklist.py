@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report maintenance v0.10.1 release readiness."""
+"""Validate and report GSSAPI v0.10.2 release readiness."""
 
 from __future__ import annotations
 
@@ -30,8 +30,8 @@ PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.10.1-1.rockspec"
-RELEASE_VERSION = "0.10.1"
+ROCKSPEC = ROOT / "mongodb-0.10.2-1.rockspec"
+RELEASE_VERSION = "0.10.2"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
@@ -188,7 +188,7 @@ OBJECTID_IDENTITIES = {"bson-objectid/objectid.md::post-fork-random"}
 
 
 class ChecklistError(ValueError):
-  """Raised when the maintenance release is not ready."""
+  """Raised when the GSSAPI release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -277,11 +277,11 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-25",
+    f"## [{RELEASE_VERSION}] - 2026-08-26",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: maintenance v0.10.1 release-ready.",
+    "Status: GSSAPI v0.10.2 release-ready.",
   )
 
   return {
@@ -468,7 +468,7 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
-  for activity_id in V102_GATES:
+  for activity_id in [*V102_GATES, V102_CONFORMANCE_ACTIVITY]:
     if activity_id not in activities:
       raise ChecklistError(f"unknown v0.10.2 gate activity: {activity_id}")
 
@@ -643,7 +643,10 @@ def generate() -> dict[str, Any]:
       "completed_v0_8_gates": V08_GATES,
       "completed_v0_9_gates": V09_GATES,
       "completed_v0_10_gates": V10_GATES,
-      "completed_v0_10_2_gates": V102_GATES,
+      "completed_v0_10_2_gates": [
+        *V102_GATES,
+        V102_CONFORMANCE_ACTIVITY,
+      ],
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -758,7 +761,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "maintenance-release-checklist",
+    "type": "gssapi-release-checklist",
   }
 
 

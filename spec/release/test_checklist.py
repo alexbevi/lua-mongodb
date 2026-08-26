@@ -1,4 +1,4 @@
-"""Contract tests for the maintenance v0.10.1 release checklist."""
+"""Contract tests for the GSSAPI v0.10.2 release checklist."""
 
 import unittest
 
@@ -10,8 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("maintenance-release-checklist", report["type"])
-    self.assertEqual("0.10.1", report["release"]["version"])
+    self.assertEqual("gssapi-release-checklist", report["type"])
+    self.assertEqual("0.10.2", report["release"]["version"])
     self.assertEqual(
       {
         "activities": ["CSOT-001", "BSON-010"],
@@ -253,6 +253,7 @@ class ReleaseChecklistTests(unittest.TestCase):
       [
         "AUTH-019",
         *[f"AUTH-{index:03d}" for index in range(31, 41)],
+        "CON-013",
       ],
       report["gates"]["completed_v0_10_2_gates"],
     )
