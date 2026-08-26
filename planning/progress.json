@@ -9486,43 +9486,74 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog.ConformanceCatalogTests.test_gssapi_requirements_record_exact_configuration_and_live_evidence'",
+          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate.CoverageGateTests.test_production_baseline_excludes_test_only_modules'",
           "exit_code": 2,
-          "summary": "the catalog exposed none of the ten exact GSSAPI normative requirement records required by the closure",
-          "recorded_at": "2026-08-26T20:03:47+00:00"
+          "summary": "the production baseline omitted mongodb.auth.gssapi and mongodb.runtime.gssapi",
+          "recorded_at": "2026-08-26T21:04:56+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-con013-coverage-9d2bb41/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux",
+          "exit_code": 1,
+          "summary": "the exact Full Conformance report also showed the pre-GSSAPI copas_dns coverage ratio was stale",
+          "recorded_at": "2026-08-26T21:04:57+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog.ConformanceCatalogTests.test_gssapi_requirements_record_exact_configuration_and_live_evidence spec.v102.test_scope'",
+          "command": "make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.v102.test_scope spec.release.test_checklist' && python3 spec/quality/coverage_gate.py --report /tmp/lua-mongodb-con013-coverage-9d2bb41/luacov.report.out --baseline spec/quality/coverage-baseline.json --platform linux && python3 spec/v102/scope.py --check && python3 spec/release/checklist.py --check && git diff --check",
           "exit_code": 0,
-          "summary": "the catalog records ten exact GSSAPI requirements and the v0.10.2 scope closes 21 configuration and prose records",
-          "recorded_at": "2026-08-26T20:17:09+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/auth_spec.lua spec/unit/auth_gssapi_hostname_spec.lua spec/unit/auth_gssapi_spec.lua spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_gssapi_live_spec.lua' FOCUS_LINT='spec/unit/config_credentials_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/auth_spec.lua spec/unit/auth_gssapi_hostname_spec.lua spec/unit/auth_gssapi_spec.lua spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua spec/integration/auth_gssapi_live_spec.lua spec/support/auth_config_runner.lua spec/support/config_runner.lua'",
-          "exit_code": 0,
-          "summary": "37 focused GSSAPI and configuration cases passed, the ordinary integration selector retained its expected live-profile pending result, and ten coupled Lua files linted cleanly",
-          "recorded_at": "2026-08-26T20:17:10+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog spec.conformance.test_ledger spec.v102.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility planning.tests.test_readme_content planning.tests.test_ci_portability'",
-          "exit_code": 0,
-          "summary": "70 focused conformance, ledger, release-scope, checklist, README, documentation, and workflow contract tests passed",
-          "recorded_at": "2026-08-26T20:17:11+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make test-package && actionlint -ignore 'SC2129' .github/workflows/full-conformance.yml .github/workflows/ci.yml && python3 -m py_compile spec/v102/scope.py spec/v102/test_scope.py && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/v102/scope.py --check && python3 planning/update_readme_compatibility.py --check && python3 spec/release/checklist.py --check && git diff --check",
-          "exit_code": 0,
-          "summary": "five package tests and every generated conformance, release, README, workflow, Python syntax, and diff validator passed",
-          "recorded_at": "2026-08-26T20:17:12+00:00"
+          "summary": "eight focused coverage, GSSAPI scope, and release-checklist tests passed; the exact Linux report held 90.80 percent coverage with reconciled per-file ratchets",
+          "recorded_at": "2026-08-26T21:05:51+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-26T20:00:07+00:00",
-      "completed_at": "2026-08-26T20:22:48+00:00"
+      "notes": [
+        "Requeued: Full Conformance exposed missing GSSAPI production coverage baselines and a stale copas_dns ratchet"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-26T20:22:48+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog.ConformanceCatalogTests.test_gssapi_requirements_record_exact_configuration_and_live_evidence'",
+              "exit_code": 2,
+              "summary": "the catalog exposed none of the ten exact GSSAPI normative requirement records required by the closure",
+              "recorded_at": "2026-08-26T20:03:47+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog.ConformanceCatalogTests.test_gssapi_requirements_record_exact_configuration_and_live_evidence spec.v102.test_scope'",
+              "exit_code": 0,
+              "summary": "the catalog records ten exact GSSAPI requirements and the v0.10.2 scope closes 21 configuration and prose records",
+              "recorded_at": "2026-08-26T20:17:09+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/auth_spec.lua spec/unit/auth_gssapi_hostname_spec.lua spec/unit/auth_gssapi_spec.lua spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua' FOCUS_INTEGRATION='spec/integration/auth_gssapi_live_spec.lua' FOCUS_LINT='spec/unit/config_credentials_spec.lua spec/unit/config_fixtures_spec.lua spec/unit/auth_spec.lua spec/unit/auth_gssapi_hostname_spec.lua spec/unit/auth_gssapi_spec.lua spec/unit/runtime_gssapi_spec.lua spec/unit/runtime_contract_spec.lua spec/integration/auth_gssapi_live_spec.lua spec/support/auth_config_runner.lua spec/support/config_runner.lua'",
+              "exit_code": 0,
+              "summary": "37 focused GSSAPI and configuration cases passed, the ordinary integration selector retained its expected live-profile pending result, and ten coupled Lua files linted cleanly",
+              "recorded_at": "2026-08-26T20:17:10+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog spec.conformance.test_ledger spec.v102.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility planning.tests.test_readme_content planning.tests.test_ci_portability'",
+              "exit_code": 0,
+              "summary": "70 focused conformance, ledger, release-scope, checklist, README, documentation, and workflow contract tests passed",
+              "recorded_at": "2026-08-26T20:17:11+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-package && actionlint -ignore 'SC2129' .github/workflows/full-conformance.yml .github/workflows/ci.yml && python3 -m py_compile spec/v102/scope.py spec/v102/test_scope.py && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/release/scope.py --check && python3 spec/v102/scope.py --check && python3 planning/update_readme_compatibility.py --check && python3 spec/release/checklist.py --check && git diff --check",
+              "exit_code": 0,
+              "summary": "five package tests and every generated conformance, release, README, workflow, Python syntax, and diff validator passed",
+              "recorded_at": "2026-08-26T20:17:12+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "9d2bb41f5ed185a1e2580cdee8aa7c9190d6f6a2",
+      "started_at": "2026-08-26T21:03:53+00:00",
+      "completed_at": "2026-08-26T21:05:52+00:00"
     }
   },
   "verified_references": {

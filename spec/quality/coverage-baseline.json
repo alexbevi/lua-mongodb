@@ -28,6 +28,10 @@
       "active": 174,
       "covered": 165
     },
+    "src/mongodb/auth/gssapi.lua": {
+      "active": 251,
+      "covered": 215
+    },
     "src/mongodb/auth/init.lua": {
       "active": 63,
       "covered": 56
@@ -193,8 +197,8 @@
       "covered": 268
     },
     "src/mongodb/runtime/copas_dns.lua": {
-      "active": 352,
-      "covered": 277
+      "active": 401,
+      "covered": 314
     },
     "src/mongodb/runtime/copas_socket.lua": {
       "active": 238,
@@ -203,6 +207,10 @@
     "src/mongodb/runtime/fake.lua": {
       "active": 447,
       "covered": 373
+    },
+    "src/mongodb/runtime/gssapi.lua": {
+      "active": 174,
+      "covered": 148
     },
     "src/mongodb/runtime/http.lua": {
       "active": 285,
@@ -297,7 +305,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 26542,
-    "covered": 24081
+    "active": 27016,
+    "covered": 24481
   }
 }
