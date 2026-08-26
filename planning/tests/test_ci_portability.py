@@ -271,6 +271,7 @@ class CiPortabilityTests(unittest.TestCase):
     ]
 
     self.assertIn('lua-version: ["5.4.9", "5.5.1"]', profile)
+    self.assertIn('luaRocksVersion: "3.13.0"', profile)
     self.assertNotIn("\n    if:", profile)
     self.assertIn("luarocks install copas 4.12.0-1", profile)
     self.assertIn('require("copas")._VERSION == "Copas 4.12.0"', profile)

@@ -8837,22 +8837,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/copas_runtime_spec.lua'",
-          "exit_code": 2,
-          "summary": "The defining runtime test rejected Copas 4.12.0 and retained the 4.11-only error contract.",
-          "recorded_at": "2026-08-26T00:16:48+00:00"
+          "command": "GitHub Actions Full Conformance 32915540963: copas-profile (5.5.1)",
+          "exit_code": 1,
+          "summary": "The exact profile stopped before installing Copas because LuaRocks 3.12.2 could not locate the Lua 5.5.1 action interpreter; the 3.13.0 Fast CI toolchain supports the same runtime.",
+          "recorded_at": "2026-08-26T00:37:04+00:00"
         },
         {
           "phase": "green",
-          "command": "Copas 4.12.0-1 isolated Lua 5.4 and 5.5 profiles: make test-focus FOCUS_UNIT='<Copas runtime, runtime DNS, topology cleanup>' FOCUS_INTEGRATION='<TCP, TLS, DNS polling, DNS seedlist>'; make test-package",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_full_conformance_certifies_exact_copas_4_12 spec.release.test_checklist'; actionlint; CI Fast 32915165474 Lua 5.5.1 with LuaRocks 3.13.0",
           "exit_code": 0,
-          "summary": "Each exact profile passed 46 unit checks, 10 integration checks, and all 3 isolated package tests; lint, architecture, complexity, rockspec, workflow, documentation, and release-checklist validators also passed.",
-          "recorded_at": "2026-08-26T00:27:06+00:00"
+          "summary": "The profile now selects LuaRocks 3.13.0, its workflow and release-checklist tests pass, actionlint is clean, and the same 3.13.0/5.5.1 setup passed the exact commit Fast CI.",
+          "recorded_at": "2026-08-26T00:37:33+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-26T00:14:04+00:00",
-      "completed_at": "2026-08-26T00:27:12+00:00"
+      "notes": [
+        "Requeued: Full Conformance 32915540963 showed that LuaRocks 3.12.2 cannot configure against the Lua 5.5.1 action layout in the new dependency profile."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-26T00:27:12+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/copas_runtime_spec.lua'",
+              "exit_code": 2,
+              "summary": "The defining runtime test rejected Copas 4.12.0 and retained the 4.11-only error contract.",
+              "recorded_at": "2026-08-26T00:16:48+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "Copas 4.12.0-1 isolated Lua 5.4 and 5.5 profiles: make test-focus FOCUS_UNIT='<Copas runtime, runtime DNS, topology cleanup>' FOCUS_INTEGRATION='<TCP, TLS, DNS polling, DNS seedlist>'; make test-package",
+              "exit_code": 0,
+              "summary": "Each exact profile passed 46 unit checks, 10 integration checks, and all 3 isolated package tests; lint, architecture, complexity, rockspec, workflow, documentation, and release-checklist validators also passed.",
+              "recorded_at": "2026-08-26T00:27:06+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "3fd533b74fc0c7d918740b333249808f0452214c",
+      "started_at": "2026-08-26T00:36:52+00:00",
+      "completed_at": "2026-08-26T00:37:34+00:00"
     }
   },
   "verified_references": {
