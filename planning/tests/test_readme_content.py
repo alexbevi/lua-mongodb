@@ -462,6 +462,66 @@ class ReadmeContentTests(unittest.TestCase):
       with self.subTest(contract=contract):
         self.assertIn(contract, section)
 
+  def test_session_and_transaction_api_reference_has_exact_contracts(
+    self,
+  ) -> None:
+    api = API.read_text(encoding="utf-8")
+
+    self.assertIn("## Session and transaction APIs", api)
+    section = api.split("## Session and transaction APIs", 1)[1]
+    section = section.split("## BSON API", 1)[0]
+    normalized_section = " ".join(section.split())
+
+    for signature in (
+      "session:get_lsid() -> document",
+      "session:get_operation_time() -> timestamp | nil",
+      "session:advance_operation_time(timestamp) -> true | nil, err",
+      "session:get_cluster_time() -> document | nil",
+      "session:advance_cluster_time(cluster_time) -> true | nil, err",
+      "session:get_snapshot_time() -> timestamp | nil",
+      "session:is_in_transaction() -> boolean",
+      "session:start_transaction([options]) -> true | nil, err",
+      "session:commit_transaction([options]) -> document | true | nil, err",
+      "session:abort_transaction([options]) -> true | nil, err",
+      "session:with_transaction(callback [, options]) -> value | nil, err",
+      "session:is_ended() -> boolean",
+      "session:end_session() -> true",
+    ):
+      with self.subTest(signature=signature):
+        self.assertIn(f"`{signature}`", section)
+
+    for contract in (
+      "A session belongs to exactly one client",
+      "Causal consistency defaults to true except for snapshot sessions",
+      "Snapshot sessions cannot start transactions",
+      "Transaction options resolve from client defaults, then session defaults, then explicit start options",
+      "The callback may run more than once",
+      "must therefore be safe to repeat",
+      "UnknownTransactionCommitResult",
+      "without rerunning the callback",
+      "one 120-second retry window",
+      "one absolute CSOT deadline",
+      "The driver owns transaction pins",
+      "Closing a cursor does not release a session's transaction pin",
+      "Calling `end_session()` aborts an active transaction on a best-effort basis",
+      "A repeated `end_session()` call also returns true",
+      "Sessions are not safe for concurrent use",
+    ):
+      with self.subTest(contract=contract):
+        self.assertIn(contract, normalized_section)
+
+    for internal_method in (
+      "mark_dirty",
+      "pin_server",
+      "pin_connection",
+      "unpin_server",
+      "unpin_connection",
+      "get_pinned_server_address",
+      "get_pinned_connection",
+    ):
+      with self.subTest(internal_method=internal_method):
+        self.assertNotIn(f"session:{internal_method}", section)
+
 
 if __name__ == "__main__":
   unittest.main()

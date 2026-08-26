@@ -816,6 +816,163 @@ This delegates to the owned cursor and has the same cleanup options and return c
 Applications should close a stream when they stop before exhaustion. Repeated close returns
 false after the owned cursor and any connection pin are fully released.
 
+## Session and transaction APIs
+
+`client:start_session` returns an immutable explicit session. A session belongs to exactly one
+client: passing it to another client's operation returns a `CLIENT` error. Sessions are not
+safe for concurrent use or for reuse in another process; an application must serialize all
+operations on a session. Pass the session as the `session` option to every operation that should
+participate in its causal history or active transaction. An operation that omits it is outside
+the transaction, including an operation run from a `with_transaction` callback.
+
+### Session construction and causal state
+
+`client:start_session([options]) -> session | nil, err` accepts these options:
+
+| Option | Default | Contract |
+|---|---|---|
+| `causal_consistency` | true unless `snapshot` is true | Boolean controlling causal read concern. |
+| `snapshot` | false | Boolean enabling snapshot reads; requires MongoDB 5.0 or newer. |
+| `snapshot_time` | unset | BSON timestamp used as the snapshot's `atClusterTime`; requires `snapshot = true`. |
+| `default_transaction_options` | client transaction defaults | Table containing the transaction options described below. |
+| `timeout_ms` | client `timeout_ms` | Non-negative integer default for session transaction methods; zero is unbounded. |
+
+Causal consistency defaults to true except for snapshot sessions. Snapshot mode rejects
+`causal_consistency = true`, sends snapshot read concern on every session operation, and cannot
+be used against a server older than MongoDB 5.0. Without an explicit `snapshot_time`, the first
+snapshot read captures the server's timestamp and later operations reuse it. Snapshot sessions
+cannot start transactions. Unknown options and invalid option types raise; a closed client, a
+deployment without session support, or failure to allocate a session identifier returns
+`nil, err`.
+
+`session:get_lsid() -> document`
+
+Returns the immutable logical-session-id BSON document assigned for this session's lifetime.
+
+`session:get_operation_time() -> timestamp | nil`
+
+Returns the greatest BSON operation time observed by this session, or nil before one is known.
+
+`session:advance_operation_time(timestamp) -> true | nil, err`
+
+Advances operation time only when `timestamp` is later than the stored value. A non-timestamp
+argument raises. An ended session returns `nil, err`.
+
+`session:get_cluster_time() -> document | nil`
+
+Returns the greatest signed cluster-time document observed by this session, or nil before one
+is known.
+
+`session:advance_cluster_time(cluster_time) -> true | nil, err`
+
+Advances cluster time only when the document's `clusterTime` BSON timestamp is later than the
+stored value. A value without that timestamp raises. An ended session returns `nil, err`.
+
+`session:get_snapshot_time() -> timestamp | nil`
+
+Returns the explicit or first captured snapshot timestamp. It returns nil for an ordinary
+session and for a snapshot session that has not captured a time. Applications cannot mutate
+the stored value through the session.
+
+### Explicit transaction control
+
+`session:is_in_transaction() -> boolean`
+
+Returns true while the transaction is starting or in progress. It returns false before a
+transaction starts and after commit or abort, without performing I/O.
+
+`session:start_transaction([options]) -> true | nil, err`
+
+Starts a new local transaction and increments its transaction number. Options are
+`read_concern` (BSON document), `read_preference` (table or BSON document), `write_concern`
+(BSON document), and `max_commit_time_ms`. Transaction options resolve from client defaults,
+then session defaults, then explicit start options. The first operation sent with the session
+starts the server transaction and applies its read concern; all transaction operations use the
+same transaction number. Transaction read preference must resolve to primary. An active
+transaction, snapshot session, or unacknowledged write concern returns `nil, err`; unknown
+options and invalid value types raise.
+
+`session:commit_transaction([options]) -> document | true | nil, err`
+
+Commits an active transaction. The only method option is `timeout_ms`; the transaction's
+`max_commit_time_ms` and write concern come from its start options. A transaction with no
+server operation commits locally and returns true. Otherwise success returns the server BSON
+response. Repeated commit after a non-empty commit sends `commitTransaction` again with retry
+write-concern rules; repeated commit after an empty transaction returns true locally.
+
+The driver retries one failed commit command for a network or timeout error, a
+`RetryableWriteError`, or a retryable authentication handshake failure, independently of the
+client's `retry_writes` setting. It adds the required `RetryableWriteError` and
+`UnknownTransactionCommitResult` labels before returning a qualifying failure. Calling commit
+without a transaction or after abort returns `nil, err`. Unknown options and invalid
+`timeout_ms` values raise.
+
+`session:abort_transaction([options]) -> true | nil, err`
+
+Aborts an active transaction. The only option is `timeout_ms`. An empty transaction is aborted
+locally. For a transaction that reached the server, the driver makes the abort command and one
+retry for a qualifying retryable failure, then deliberately ignores command errors because the
+application cannot usefully act on them. It releases the transaction pin and returns true.
+Calling abort without a transaction, twice, or after commit returns `nil, err`; unknown options
+and invalid `timeout_ms` values raise.
+
+After commit or abort, the next ordinary operation on the session resets its completed local
+transaction state. A new `start_transaction` call may also begin immediately. The core API does
+not retry the transaction body: applications using it own all error handling and retry policy.
+
+### Callback transaction control
+
+`session:with_transaction(callback [, options]) -> value | nil, err`
+
+Starts a transaction, calls `callback(session)`, and commits if the callback leaves the
+transaction active. Its options are the four `start_transaction` options plus `timeout_ms`.
+The callback returns one application value on success or `nil, structured_error` on an
+operational failure; the successful value is returned after commit. A non-structured second
+error value raises. If the callback raises a structured error, it is handled as an operational
+failure; any other raised value is re-raised after a best-effort abort. A callback that commits
+or aborts directly ends the helper without another transaction-control command.
+
+The helper aborts after a callback error. A `TransientTransactionError` retries the entire
+transaction with jittered exponential backoff. The callback may run more than once and must
+therefore be safe to repeat, including any effects outside MongoDB. An
+`UnknownTransactionCommitResult` retries commit without rerunning the callback; a
+`TransientTransactionError` from commit retries the whole transaction. Other errors return
+immediately. Callback code must propagate command failures instead of swallowing them, because
+the server may already have aborted the transaction. Use explicit transaction control when the
+application needs a different recovery policy.
+
+Without an effective `timeout_ms`, callback and commit retries share one 120-second retry
+window. With `timeout_ms`, one absolute CSOT deadline covers the helper, its callback operations
+that use this session, commit attempts, and retry decisions. Operations using the session inside
+the callback cannot override `timeout_ms`; attempting to do so returns a `CLIENT` error.
+Operations that omit the session receive neither its transaction nor its remaining timeout.
+When a callback failure requires abort after that deadline expires, cleanup receives one fresh
+session timeout budget, so total wall time can exceed the original deadline. If retry time is
+exhausted, the helper returns a timeout error that retains the last error as its cause and
+copies its labels.
+
+### Pinning and cleanup
+
+The driver owns transaction pins; applications do not select, release, or transfer them. On a
+sharded deployment, the first transaction operation pins the session to one mongos for later
+commands. On a load-balanced deployment, it pins one physical connection. A cursor opened in
+the transaction borrows that session pin. Closing a cursor does not release a session's
+transaction pin. Abort, the error transitions required by the transaction specification,
+session end, and client close release it; a retry can then select and pin a replacement.
+
+`session:is_ended() -> boolean`
+
+Reports local lifecycle state without I/O.
+
+`session:end_session() -> true`
+
+Calling `end_session()` aborts an active transaction on a best-effort basis, releases any
+transaction pin, and returns a clean unexpired server session to the client's pool. The client
+also ends every session still registered when it closes and sends a best-effort `endSessions`
+command before shutting down its executor. A repeated `end_session()` call also returns true.
+After end, operations and state-changing session methods return a `CLIENT` error. Applications
+should end explicit sessions promptly even though client close is a final safety net.
+
 ## BSON API
 
 `mongodb.bson` is available through `require("mongodb.bson")` and as `mongodb.bson`. The

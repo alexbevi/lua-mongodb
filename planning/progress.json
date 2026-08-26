@@ -9023,6 +9023,35 @@
       "notes": [],
       "started_at": "2026-08-26T03:31:32+00:00",
       "completed_at": "2026-08-26T03:41:30+00:00"
+    },
+    "DOC-007": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_readme_content.ReadmeContentTests.test_session_and_transaction_api_reference_has_exact_contracts",
+          "exit_code": 1,
+          "summary": "API content test failed because the session and transaction reference section was absent",
+          "recorded_at": "2026-08-26T03:51:58+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/session_spec.lua spec/unit/retry_executor_spec.lua spec/unit/resource_cleanup_spec.lua' FOCUS_PYTHON='planning.tests.test_readme_content.ReadmeContentTests.test_session_and_transaction_api_reference_has_exact_contracts planning.tests.test_readme_content.ReadmeContentTests.test_local_links_resolve'",
+          "exit_code": 0,
+          "summary": "52 focused Lua session/retry/cleanup tests and 2 API/link content tests passed",
+          "recorded_at": "2026-08-26T03:55:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-package",
+          "exit_code": 0,
+          "summary": "4 isolated source-rock package and supported-API checks passed",
+          "recorded_at": "2026-08-26T03:55:50+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T03:49:28+00:00",
+      "completed_at": "2026-08-26T03:56:00+00:00"
     }
   },
   "verified_references": {
