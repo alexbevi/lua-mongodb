@@ -8899,6 +8899,28 @@
       "notes": [],
       "started_at": "2026-08-26T01:35:22+00:00",
       "completed_at": "2026-08-26T01:51:00+00:00"
+    },
+    "DOC-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest planning.tests.test_readme_content.ReadmeContentTests.test_core_api_reference_has_exact_contracts -v",
+          "exit_code": 1,
+          "summary": "The core API content contract failed in 65 subtests because docs/API.md names the stability tiers but does not yet specify top-level signatures, structured-error fields and predicates, runtime constructors, the 24 required adapter capabilities, ownership, or raise-versus-return boundaries.",
+          "recorded_at": "2026-08-26T02:05:35+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 FOCUS_UNIT='spec/unit/error_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua spec/unit/luasec_runtime_spec.lua spec/unit/snappy_runtime_spec.lua spec/unit/zlib_runtime_spec.lua spec/unit/zstandard_runtime_spec.lua'; make test-focus FOCUS_PYTHON='planning.tests.test_readme_content spec.package.test_package.PackageTests.test_source_rock_separates_completeness_from_supported_api'",
+          "exit_code": 0,
+          "summary": "49 focused structured-error, runtime-contract, Copas, LuaSec, and compression-provider tests passed under the complete Lua 5.4 dependency profile; 6 API-reference, stability, and documentation-link tests plus the isolated Lua 5.5 source-rock API smoke passed. Python compilation, strict planning validation, and diff checks passed. Unified execution was not applicable: 0 executed, 0 failed, 0 environment-skipped, and 0 deferred.",
+          "recorded_at": "2026-08-26T02:15:52+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T02:02:23+00:00",
+      "completed_at": "2026-08-26T02:15:57+00:00"
     }
   },
   "verified_references": {

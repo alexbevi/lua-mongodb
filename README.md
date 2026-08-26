@@ -41,9 +41,9 @@ luarocks make
 
 Release rockspecs are built and verified from immutable release tags before publication.
 
-The [API stability policy](docs/API.md) identifies supported public and runtime-extension entry
-points. Modules installed as implementation dependencies are not public merely because they can
-be loaded with `require`.
+The [API reference and stability policy](docs/API.md) identifies supported public and
+runtime-extension entry points. Modules installed as implementation dependencies are not public
+merely because they can be loaded with `require`.
 
 ## Getting started
 
