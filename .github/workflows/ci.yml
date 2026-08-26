@@ -131,6 +131,67 @@ jobs:
           path: build/compatibility/*.json
           if-no-files-found: warn
 
+  gssapi-live:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua 5.4.9
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        with:
+          luaVersion: "5.4.9"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
+        with:
+          luaRocksVersion: "3.13.0"
+
+      - name: Install Kerberos and driver dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            krb5-admin-server \
+            krb5-kdc \
+            libsasl2-modules-gssapi-mit
+          luarocks install --only-deps mongodb-0.10.1-1.rockspec
+          luarocks install busted 2.3.0-1
+          luarocks install luacheck 1.2.0-1
+
+      - name: Install the current driver rock
+        run: |
+          package_tree="$RUNNER_TEMP/lua-mongodb-gssapi-rock"
+          luarocks --lua-version=5.4 --tree="$package_tree" make \
+            mongodb-0.10.1-1.rockspec --deps-mode=none
+          echo "MONGODB_GSSAPI_PACKAGE_TREE=$package_tree" >> "$GITHUB_ENV"
+
+      - name: Download MongoDB Enterprise 8.0.16
+        run: |
+          archive="$RUNNER_TEMP/mongodb-enterprise.tgz"
+          install_dir="$RUNNER_TEMP/mongodb-enterprise"
+          curl -fsSL \
+            https://downloads.mongodb.com/linux/mongodb-linux-x86_64-enterprise-ubuntu2404-8.0.16.tgz \
+            -o "$archive"
+          echo "db8c43d482e3f09bd08458e87b15e22d9323f493bd0da0008b863611281b4f2a  $archive" \
+            | sha256sum -c -
+          mkdir -p "$install_dir"
+          tar -xzf "$archive" --strip-components=1 -C "$install_dir"
+          "$install_dir/bin/mongod" --version | grep -Eq '"(enterprise|subscription)"'
+          echo "MONGODB_GSSAPI_MONGOD=$install_dir/bin/mongod" >> "$GITHUB_ENV"
+
+      - name: Register the Kerberos service host
+        run: echo '127.0.0.1 gssapi.test' | sudo tee -a /etc/hosts >/dev/null
+
+      - name: Run default-credential GSSAPI authentication
+        run: bash spec/integration/run_gssapi_live.sh
+
   examples:
     runs-on: ubuntu-latest
 

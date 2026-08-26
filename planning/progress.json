@@ -9306,6 +9306,28 @@
       "notes": [],
       "started_at": "2026-08-26T16:27:29+00:00",
       "completed_at": "2026-08-26T16:45:35+00:00"
+    },
+    "AUTH-035": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "MONGODB_GSSAPI_LIVE=1 make test-focus FOCUS_INTEGRATION='spec/integration/auth_gssapi_live_spec.lua'",
+          "exit_code": 2,
+          "summary": "0 successes, 0 failures, 1 setup error: the required installed-rock tree was absent because the live GSSAPI environment had not been provisioned",
+          "recorded_at": "2026-08-26T18:01:35+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh; make test-focus FOCUS_INTEGRATION='spec/integration/auth_gssapi_live_spec.lua spec/integration/auth_gssapi_spec.lua' FOCUS_LINT='spec/integration/auth_gssapi_live_spec.lua'; shellcheck spec/integration/run_gssapi_live.sh; actionlint -ignore SC2129 .github/workflows/ci.yml; git diff --check",
+          "exit_code": 0,
+          "summary": "Live Ubuntu 24.04/Lua 5.4/MongoDB Enterprise 8.0.16: 1 executed, 1 passed, 0 environment-skipped, 0 failed; ordinary local profile: 1 directly coupled integration passed, 1 explicit live-environment pending, 0 failed; touched Lua lint, shellcheck, workflow validation, and diff validation passed",
+          "recorded_at": "2026-08-26T18:29:41+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T17:56:05+00:00",
+      "completed_at": "2026-08-26T18:30:05+00:00"
     }
   },
   "verified_references": {

@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 336,
+    "completed": 337,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 11
+    "pending": 10
   },
   "active": [],
   "ready": [
-    "AUTH-035",
+    "AUTH-036",
     "ADV-009",
     "ADV-010",
     "SFP-001"
@@ -44,11 +44,11 @@
     "v0-10-1-maintenance": [],
     "ecosystem-hardening": [],
     "v0-10-2-gssapi": [
-      "AUTH-035"
+      "AUTH-036"
     ]
   },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "AUTH-035"
+  "next_ready": "AUTH-036"
 }
