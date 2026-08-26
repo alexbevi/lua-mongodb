@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "c901742be2cb3e1ba32b005ee6c496649f611afcc999e38ddcf17b523f3ca347",
+  "plan_digest": "02a2903471081953d53c285c6dc339d7a47104da050d70bbf2f2d66441d983f7",
   "activities": {
     "PLN-000": {
       "status": "completed",
