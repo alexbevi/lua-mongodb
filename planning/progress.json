@@ -9372,6 +9372,28 @@
       "notes": [],
       "started_at": "2026-08-26T18:55:47+00:00",
       "completed_at": "2026-08-26T18:58:41+00:00"
+    },
+    "AUTH-038": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh",
+          "exit_code": 2,
+          "summary": "3 existing GSSAPI successes, 1 SERVICE_HOST failure: the protected environment supplied no distinct endpoint for the override case",
+          "recorded_at": "2026-08-26T19:10:54+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Ubuntu 24.04 container: MONGODB_GSSAPI_MONGOD=<Enterprise-8.0.16-mongod> MONGODB_GSSAPI_PACKAGE_TREE=<isolated-rock-tree> bash spec/integration/run_gssapi_live.sh; make test-focus FOCUS_INTEGRATION='spec/integration/auth_gssapi_live_spec.lua' FOCUS_LINT='spec/integration/auth_gssapi_live_spec.lua'; shellcheck spec/integration/run_gssapi_live.sh; actionlint -ignore SC2129 .github/workflows/ci.yml; git diff --check",
+          "exit_code": 0,
+          "summary": "Live Ubuntu 24.04/Lua 5.4: 4 executed, 4 passed, 0 environment-skipped, 0 failed; SERVICE_HOST selected the Kerberos host while a delegated default-socket assertion kept every MongoDB connection on the endpoint alias; ordinary local profile reported 1 explicit environment pending; artifact validators passed",
+          "recorded_at": "2026-08-26T19:12:51+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T19:09:51+00:00",
+      "completed_at": "2026-08-26T19:12:58+00:00"
     }
   },
   "verified_references": {

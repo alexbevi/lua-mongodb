@@ -170,6 +170,7 @@ export MONGODB_GSSAPI_PASSWORD=$gssapi_user_password
 export MONGODB_GSSAPI_PORT=$gssapi_port
 export MONGODB_GSSAPI_PRINCIPAL=$gssapi_principal
 export MONGODB_GSSAPI_PACKAGE_TREE=$gssapi_package_tree
+export MONGODB_GSSAPI_SERVICE_ENDPOINT=$gssapi_canonical_endpoint
 
 echo "Running the installed-rock GSSAPI integration test"
 make test-focus \

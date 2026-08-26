@@ -87,4 +87,27 @@ describe("live GSSAPI authentication", function()
       assert.is_true(client:close())
     end)
   end)
+
+  it("uses SERVICE_HOST without replacing the selected endpoint", function()
+    local endpoint = required_environment("MONGODB_GSSAPI_SERVICE_ENDPOINT")
+    local runtime = mongodb.runtime.copas()
+    local socket = runtime.socket
+
+    runtime.socket = {
+      connect = function(_, selected_host, ...)
+        assert.are.equal(endpoint, selected_host)
+        return socket:connect(selected_host, ...)
+      end,
+    }
+
+    mongodb.run(function()
+      local uri = "mongodb://" .. encoded_component(principal)
+        .. "@" .. endpoint .. ":" .. port .. "/?authMechanism=GSSAPI"
+        .. "&authMechanismProperties=SERVICE_HOST:" .. host
+      local client = assert(mongodb.client(uri, { runtime = runtime }))
+
+      assert.is_not_nil(client:database("admin"):run_command("ping"))
+      assert.is_true(client:close())
+    end)
+  end)
 end)
