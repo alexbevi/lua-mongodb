@@ -436,6 +436,27 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual("passed", load_balanced_session["status"])
     self.assertEqual("spec/unit/session_spec.lua", load_balanced_session["runner"])
 
+  def test_gssapi_configuration_fixtures_have_implementation_ownership(self) -> None:
+    cases = ledger.generate()["cases"]
+    expected = {
+      *{
+        f"auth/tests/legacy/connection-string.json::test[{index}]"
+        for index in (*range(4, 12), 14, 15)
+      },
+      "uri-options/tests/auth-options.json::test[1]",
+    }
+    actual = {
+      identity
+      for identity, case in cases.items()
+      if case["activity"] == "AUTH-031"
+    }
+
+    self.assertEqual(expected, actual)
+    self.assertTrue(all(
+      cases[identity]["status"] == "deferred_unsupported"
+      for identity in expected
+    ))
+
   def test_unknown_runnable_unified_case_has_no_implicit_executor(self) -> None:
     identity = "crud/tests/unified/insertOne.json::test[2]"
     case = {

@@ -23,7 +23,6 @@
     "AUTH-012": "MONGODB-OIDC human authentication recovery is outside production-core v1",
     "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
     "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
-    "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
     "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1",
     "AUTH-024": "MONGODB-OIDC callback configuration is outside production-core v1",
     "AUTH-025": "MONGODB-OIDC machine token caching is outside production-core v1",
@@ -32,6 +31,7 @@
     "AUTH-028": "MONGODB-OIDC human authentication is outside production-core v1",
     "AUTH-029": "MONGODB-OIDC human access-token caching is outside production-core v1",
     "AUTH-030": "MONGODB-OIDC human refresh credential reuse is outside production-core v1",
+    "AUTH-031": "GSSAPI credential normalization is additional authentication work",
     "CBW-001": "client bulk update models are outside production-core v1",
     "CBW-002": "client bulk delete models are outside production-core v1",
     "CBW-003": "client bulk verbose results are outside production-core v1",
@@ -144,7 +144,7 @@
   "deferred_by_activity": {
     "ADV-009": 230,
     "ADV-010": 777,
-    "AUTH-019": 11
+    "AUTH-031": 11
   },
   "deferred_by_scope": {
     "additional-exclusion": 1018

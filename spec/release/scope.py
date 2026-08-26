@@ -86,7 +86,7 @@ ADDITIONAL_REASONS = {
   "AUTH-012": "MONGODB-OIDC human authentication recovery is outside production-core v1",
   "AUTH-017": "MONGODB-OIDC speculative authentication is outside production-core v1",
   "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
-  "AUTH-019": "GSSAPI authentication awaits a portable runtime-adapter design",
+  "AUTH-031": "GSSAPI credential normalization is additional authentication work",
   "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1",
   "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
   "ADV-010": "client-side encryption requires a separate additional design",

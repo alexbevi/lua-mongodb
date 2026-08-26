@@ -381,7 +381,7 @@ def classify_case(
     index = int(identity.rsplit("[", 1)[1][:-1])
 
     if index in {*range(4, 12), 14, 15}:
-      owner = "AUTH-019"
+      owner = "AUTH-031"
     elif 16 <= index <= 22:
       owner = "AUTH-004"
     elif 23 <= index <= 26:
@@ -414,7 +414,7 @@ def classify_case(
 
   if suite == "uri-options":
     if path.endswith("/auth-options.json") and identity.endswith("::test[1]"):
-      return _deferred(case, "AUTH-019", activities)
+      return _deferred(case, "AUTH-031", activities)
 
     if path.endswith("/srv-options.json"):
       return _passed(

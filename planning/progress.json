@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "73dec5e833bb32d4e26e28c53cff671d29d1f10e703de68c194bd8a2b0099ede",
+  "plan_digest": "aba9a6357e345d339d46421202d5ae29e01bc706ef0e4a8f4128ce062963c119",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -9196,6 +9196,28 @@
       "notes": [],
       "started_at": "2026-08-26T04:50:25+00:00",
       "completed_at": "2026-08-26T04:57:58+00:00"
+    },
+    "AUTH-019": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "python3 -m unittest spec.conformance.test_ledger.ConformanceLedgerTests.test_gssapi_configuration_fixtures_have_implementation_ownership",
+          "exit_code": 1,
+          "summary": "All eleven pinned GSSAPI configuration fixtures still belonged to the design activity instead of the credential implementation slice.",
+          "recorded_at": "2026-08-26T13:55:10+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "python3 -m unittest spec.conformance.test_ledger.ConformanceLedgerTests.test_gssapi_configuration_fixtures_have_implementation_ownership",
+          "exit_code": 0,
+          "summary": "All eleven pinned GSSAPI configuration fixtures are deferred to AUTH-031, leaving the design activity with no implementation deferrals.",
+          "recorded_at": "2026-08-26T14:10:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T13:54:09+00:00",
+      "completed_at": "2026-08-26T14:13:45+00:00"
     }
   },
   "verified_references": {
