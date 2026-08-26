@@ -94,9 +94,10 @@ internal, so the corresponding direct `require` paths are not supported entry po
 `uri` is a `mongodb://` or `mongodb+srv://` string. `options`, when present, is a table using
 Lua `snake_case` names; URI query parameters retain MongoDB URI spelling. The constructor
 returns a client handle, or `nil` and a configuration, DNS, topology, authentication, or network
-error. A non-string URI, a non-table options value, an unknown programmatic option, or an
-invalid caller-supplied runtime raises. Client options and handle methods are specified in the
-[README usage guide](../README.md#getting-started).
+error. A non-string URI or non-table options value raises. Invalid normalized settings,
+including unknown programmatic option names, return a configuration error; malformed extension
+objects such as runtimes, listeners, and driver metadata raise. The complete option and handle
+contracts are specified below.
 
 ### `mongodb.gridfs_bucket`
 
@@ -126,6 +127,274 @@ argument, and returns every value returned by the callback. It must be called ou
 Copas loop. A non-function callback, an already active loop, premature loop exit, or an error
 raised by the callback raises to the caller. Applications that already own a Copas loop call
 `mongodb.client` inside that loop instead.
+
+## Client and database handles
+
+Client, database, and collection handles are immutable. Methods use colon syntax.
+Database and collection handles borrow the client lifetime: they do not have independent
+`close` methods and must not outlive their client. Operations attempted through any of those
+handles after the client closes return `nil` and a `CLIENT`-category error.
+
+### Client construction
+
+`mongodb.client(uri [, options]) -> client | nil, err`
+
+Programmatic client options use `snake_case`. URI options keep the spelling defined by the
+MongoDB connection-string specification and are case-insensitive.
+Programmatic values take precedence over URI options. Unsupported, duplicated, deprecated, or
+recoverably invalid URI options are reported in the client's immutable `warnings` array. An
+unavailable requested Snappy or Zstandard provider also produces a warning.
+
+The constructor copies and normalizes configuration values. It retains extension callbacks,
+the supplied runtime, and listener objects for the lifetime of the client. The complete
+programmatic option set is:
+
+| Option | Default | Contract |
+|---|---|---|
+| `app_name` | unset | Non-empty UTF-8 string of at most 128 bytes, included in handshake metadata. |
+| `auth_mechanism` | inferred | Non-empty authentication-mechanism string. |
+| `auth_mechanism_properties` | unset | Table of mechanism properties; values are strings except supported OIDC callback and allowed-host fields. |
+| `auth_source` | inferred | Non-empty authentication database name. |
+| `cancellation` | unset | Cancellation value from the selected runtime, used while constructing and initially connecting the client. |
+| `command_listeners` | empty | Dense array of tables with optional `started`, `succeeded`, and `failed` callbacks. |
+| `compressors` | empty | Dense array containing `snappy`, `zlib`, and/or `zstd` in negotiation order. |
+| `connect_timeout_ms` | 10000 | Non-negative integer per-connect timeout in milliseconds; zero is unbounded. |
+| `deadline` | unset | Absolute deadline from the selected runtime's monotonic clock for client construction. |
+| `direct_connection` | false | Boolean; true requires one seed and is incompatible with load-balanced and SRV modes. |
+| `driver_info` | unset | Table with required non-empty `name` and optional `version` and `platform` strings for wrapper metadata. |
+| `heartbeat_frequency_ms` | 10000 | Integer of at least 500 milliseconds. |
+| `heartbeat_listeners` | empty | Dense array of listener functions or event-callback tables for server-heartbeat events. |
+| `local_threshold_ms` | 15 | Non-negative integer latency-window threshold in milliseconds. |
+| `load_balanced` | false | Boolean; true requires one seed and excludes `direct_connection` and `replica_set`. |
+| `max_connecting` | 2 | Positive integer concurrent connection-creation limit per pool. |
+| `max_idle_time_ms` | 0 | Non-negative integer idle lifetime; zero disables idle-time expiry. |
+| `max_pool_size` | 100 | Non-negative integer pool limit; zero is unbounded. |
+| `min_pool_size` | 0 | Non-negative integer; cannot exceed a nonzero `max_pool_size`. |
+| `on_listener_error` | unset | Function called with an error raised by a monitoring callback; its own errors are suppressed. |
+| `pool_listeners` | empty | Dense array of listener functions or event-callback tables for connection-pool events. |
+| `read_concern` | empty | Table with optional string `level`. |
+| `read_preference` | primary | Table with `mode`, `tag_sets`, and `max_staleness_seconds`; see concern shapes below. |
+| `replica_set` | unset | Non-empty replica-set name. |
+| `retry_reads` | true | Boolean enabling retryable reads where the operation permits them. |
+| `retry_writes` | true | Boolean enabling retryable writes where the operation permits them. |
+| `runtime` | default Copas runtime | Caller-owned value satisfying the advanced runtime contract. |
+| `sdam_listeners` | empty | Dense array of listener functions or event-callback tables for SDAM events. |
+| `server_api` | unset | Table with `version = "1"` and optional boolean `strict` and `deprecation_errors`. |
+| `server_monitoring_mode` | `auto` | One of `auto`, `poll`, or `stream`. |
+| `server_selection_timeout_ms` | 30000 | Non-negative integer server-selection timeout in milliseconds. |
+| `server_selection_try_once` | true | Boolean controlling single-threaded server-selection retry behavior. |
+| `socket_timeout_ms` | unset | Non-negative integer socket-operation timeout in milliseconds; zero is unbounded. |
+| `srv_max_hosts` | 0 | Non-negative integer SRV host limit; valid only with `mongodb+srv` and zero is unlimited. |
+| `srv_service_name` | `mongodb` | DNS service label, at most 62 bytes and valid only with `mongodb+srv`. |
+| `timeout_ms` | unset | Inherited non-negative client-side operation timeout; zero is unbounded. |
+| `tls` | false, true for SRV unless specified | Boolean enabling TLS. Supplying another `tls_*` option also enables it. |
+| `tls_allow_invalid_certificates` | false | Boolean disabling certificate-chain validation. |
+| `tls_allow_invalid_hostnames` | false | Boolean disabling certificate-hostname validation. |
+| `tls_ca_file` | runtime default | Non-empty CA-file path. |
+| `tls_certificate_key_file` | unset | Non-empty client certificate/private-key file path. |
+| `tls_certificate_key_file_password` | unset | Non-empty password for the client key file. |
+| `tls_disable_certificate_revocation_check` | false | Boolean disabling certificate revocation checks. |
+| `tls_disable_ocsp_endpoint_check` | false | Boolean disabling OCSP endpoint checks. |
+| `tls_insecure` | false | Boolean enabling the driver's combined insecure TLS policy. |
+| `wait_queue_timeout_ms` | 0 | Non-negative integer pool checkout timeout; zero is unbounded. |
+| `write_concern` | empty | Table with optional `journal`, `w`, and `w_timeout_ms` fields. |
+| `zlib_compression_level` | -1 | Integer from -1 through 9. |
+
+`read_preference.mode` is `primary`, `primary_preferred`, `secondary`,
+`secondary_preferred`, or `nearest`. `tag_sets` is a dense array of string-to-string tables.
+`max_staleness_seconds` is -1 or an integer of at least 90. Primary mode cannot use tags or
+max staleness. `write_concern.journal` is boolean; `w` is a non-negative integer or non-empty
+string; `w_timeout_ms` is a non-negative integer. `w = 0` cannot be combined with
+`journal = true`. Conflicting permissive TLS options return a configuration error.
+
+`driver_info` fields must be valid UTF-8 and cannot contain `|`. Its `name` is required.
+Listener arrays must be dense. Command listener methods receive the listener as `self` and an
+immutable event; the other listener families accept either a function receiving the event or a
+table callback receiving `self` and the event.
+
+### Handle configuration, timeouts, and ownership
+
+`client:database([name [, options]]) -> database | nil, err`
+
+`name` defaults to the database in the connection URI. If neither is present, the method
+returns a client error. Database names must be non-empty valid UTF-8 and cannot contain NUL,
+space, `"`, `/`, `\`, or `$`; `$external` is the allowed dollar-name exception. Namespace
+misuse raises.
+
+`database:collection(name [, options]) -> collection | nil, err`
+
+Collection names must be non-empty valid UTF-8, cannot contain NUL or `..`, and cannot begin or
+end with `.`. Dollar names are rejected except `$cmd`, `$cmd.*`, and `oplog.$main*`.
+
+Both handle constructors accept only `read_concern`, `read_preference`, `write_concern`, and
+`timeout_ms`. Omitted values inherit from the parent handle; supplied values use the normalized
+client option shapes above. An invalid value returns a configuration error. A non-table option
+value or unknown key raises. Database handles expose read-only `name`, `read_concern`,
+`read_preference`, `write_concern`, and `timeout_ms` values.
+
+Every operational method below accepts `timeout_ms` in addition to its listed options. It must
+be a non-negative integer, overrides the handle default, and uses zero for no client-side
+deadline. A positive value creates one absolute operation deadline shared by server selection,
+pool checkout, network work, retries, and cursor continuation. An explicit `deadline` is an
+absolute monotonic runtime deadline; when both bounds exist, the earlier one wins.
+`cancellation` is a cancellation value from the client's runtime. `session` is a session from
+the same client.
+
+Cursor-producing methods that list `timeout_mode` accept `cursor_lifetime` or `iteration` and
+require an effective `timeout_ms`. Cursor-lifetime mode keeps the original operation deadline;
+iteration mode refreshes the budget for each cursor iteration where supported. Change streams
+and write aggregations reject unsupported timeout-mode combinations with a client error.
+Unknown operation options and invalid caller value types raise.
+
+Closing a client closes its registered cursors and sessions, sends a best-effort `endSessions`
+command, and closes its MongoDB executor, pools, sockets, and monitor tasks. It does not close a
+caller-supplied runtime.
+
+- `client:close() -> boolean` returns true for the first close. A repeated close returns false.
+- `client:is_closed() -> boolean` reports the current state.
+- `client:append_metadata(driver_info) -> boolean | nil, err` applies the `driver_info` shape
+  above to future connections. It returns true for a new tuple, false for an exact duplicate,
+  and `nil, err` if the client is closed or metadata updates are unavailable.
+
+### Client methods
+
+`client:start_session([options]) -> session | nil, err`
+
+Options are `causal_consistency` (boolean), `snapshot` (boolean), `snapshot_time` (BSON
+timestamp), `default_transaction_options` (table), and `timeout_ms` (non-negative integer).
+Causal consistency defaults to true except for snapshot sessions. `snapshot_time` requires
+`snapshot = true`, and snapshot mode cannot use causal consistency. The timeout inherits from
+the client when omitted. The method returns a client error after close or when the deployment
+does not support sessions; creating the session can otherwise return an entropy error. Session
+methods are specified in the session reference.
+
+`client:list_databases([options]) -> cursor | nil, err`
+
+Options are `authorized_databases` and `name_only` (booleans), `filter` (BSON document),
+`comment`, `session`, `cancellation`, `deadline`, and `timeout_ms`. The command runs against
+`admin`, forces primary selection, and is retryable. The cursor yields the server's database
+description documents.
+
+`client:list_database_names([options]) -> names | nil, err`
+
+Accepts the same options as `list_databases`, forces `name_only = true`, consumes the cursor,
+and returns an immutable ordered array of non-empty names.
+
+`client:drop_database(name_or_database [, options]) -> true | nil, err`
+
+The target is a valid database-name string or a database handle. Options are `comment`,
+`max_time_ms` (non-negative integer), `session`, `cancellation`, `deadline`, and `timeout_ms`.
+The operation uses the client's write concern and returns true after successful dispatch.
+
+`client:bulk_write(models [, options]) -> result | nil, err`
+
+`models` is a non-empty dense array of `mongodb.client_bulk` models and requires MongoDB 8.0
+or newer. Options are `bypass_document_validation` (boolean), `comment`, `let` (BSON
+document), `ordered` (boolean, default true), `session`, `verbose_results` (boolean, default
+false), `write_concern`, `cancellation`, `deadline`, and `timeout_ms`. Unacknowledged writes
+cannot be ordered, verbose, or use an explicit session. Model and result fields are specified
+in the bulk reference.
+
+`client:watch([pipeline [, options]]) -> change_stream | nil, err`
+
+This opens a cluster-wide change stream. `pipeline` defaults to an empty BSON array and each
+stage must be a BSON document. The shared watch options described below apply.
+
+### Database methods
+
+`database:gridfs_bucket([options]) -> bucket | nil, err`
+
+This is the database-bound form of `mongodb.gridfs_bucket` and accepts `bucket_name`,
+`chunk_size_bytes`, `disable_md5`, `read_concern`, `read_preference`, `timeout_ms`, and
+`write_concern`. The GridFS reference specifies bucket methods.
+
+`database:create_collection(name [, options]) -> collection | nil, err`
+
+The name follows the collection-name rules above. Options are:
+
+- booleans: `capped`;
+- non-negative integers: `expire_after_seconds`, `max`, and `size`;
+- BSON documents: `change_stream_pre_and_post_images`, `clustered_index`, `collation`,
+  `index_option_defaults`, `timeseries`, and `validator`;
+- `pipeline`, a BSON array of BSON document stages;
+- `view_on`, a non-empty string;
+- `validation_action`, `error` or `warn`;
+- `validation_level`, `off`, `strict`, or `moderate`; and
+- `comment`, `session`, `cancellation`, `deadline`, and `timeout_ms`.
+
+The command uses the database write concern. Success returns a collection handle inheriting
+the database handle's settings, not operation-only options.
+
+`database:modify_collection(name [, options]) -> document | nil, err`
+
+Options are `change_stream_pre_and_post_images`, `index`, and `validator` (BSON documents);
+`validation_action` (`error` or `warn`); `validation_level` (`off`, `strict`, or `moderate`);
+and `comment`, `session`, `cancellation`, `deadline`, and `timeout_ms`. The command uses the
+database write concern and returns the server response.
+
+`database:drop_collection(name_or_collection [, options]) -> true | nil, err`
+
+The target is a valid collection-name string or a collection handle belonging to this database.
+A handle from another database raises. Options are `comment`, `max_time_ms` (non-negative
+integer), `session`, `cancellation`, `deadline`, and `timeout_ms`. The command uses the
+database write concern. Server code 26 (`NamespaceNotFound`) is treated as success.
+
+`database:list_collections([options]) -> cursor | nil, err`
+
+Options are `authorized_collections` and `name_only` (booleans), `batch_size` (non-negative
+integer), `filter` (BSON document), `comment`, `session`, `cancellation`, `deadline`,
+`timeout_ms`, and `timeout_mode`. The command forces primary selection and pins its selected
+connection until the cursor closes. `comment` applies to `listCollections` but is not inherited
+by `getMore`.
+
+`database:list_collection_names([options]) -> names | nil, err`
+
+Accepts the same options as `list_collections`, consumes its cursor, and returns an immutable
+ordered array of non-empty names. The driver requests `nameOnly` when the filter is absent,
+empty, or contains only a `name` predicate.
+
+`database:run_command(command [, options]) -> document | nil, err`
+
+`command` is a non-empty command-name string or non-empty BSON document. Options are
+`read_preference`, `session`, `cancellation`, `deadline`, and `timeout_ms`. Generic commands
+default to primary selection even when the database has another read preference. An explicit
+read preference uses the normalized shape above.
+Generic commands do not append inherited read or write concerns; place command-specific
+concern fields in the supplied BSON document.
+
+`database:run_cursor_command(command [, options]) -> cursor | nil, err`
+
+The command forms are the same as `run_command`, but the response must contain a valid cursor.
+Options are `batch_size` (positive integer), `comment`, `cursor_type` (`non_tailable` or
+`tailable`), `max_await_time_ms` (non-negative integer), `read_preference`, `session`,
+`cancellation`, `deadline`, `timeout_ms`, and `timeout_mode`. `batch_size`, `comment`, and
+`max_await_time_ms` configure `getMore` rather than rewriting the initial command. The selected
+connection remains pinned until the cursor closes. `tailable_await` is recognized only to
+return a client error because it is outside the supported generic-command API; tailable cursors
+also reject cursor-lifetime timeout mode.
+
+`database:aggregate(pipeline [, options]) -> cursor | nil, err`
+
+`pipeline` is a BSON array of BSON document stages. Options are `allow_disk_use` and
+`bypass_document_validation` (booleans), `batch_size`, `max_await_time_ms`, and `max_time_ms`
+(non-negative integers), `collation` and `let` (BSON documents), `hint` (index name or BSON
+document), `comment`, `session`, `cancellation`, `deadline`, `timeout_ms`, and `timeout_mode`.
+A read pipeline inherits the database read concern and read preference and can be retried once.
+A pipeline containing `$out` or `$merge` uses write selection and the database write concern,
+is not retryable, and rejects iteration timeout mode. When a positive timeout applies,
+`max_await_time_ms` must be lower than `timeout_ms`.
+
+`database:watch([pipeline [, options]]) -> change_stream | nil, err`
+
+This opens a database-wide change stream. `pipeline` has the same shape as client watch.
+Shared watch options are `allow_disk_use` and `bypass_document_validation` (booleans),
+`batch_size`, `max_await_time_ms`, and `max_time_ms` (non-negative integers), `collation` and
+`let` (BSON documents), `hint` (index name or BSON document), `comment`, `session`,
+`cancellation`, `deadline`, and `timeout_ms`. Change-stream stage options are
+`full_document` and `full_document_before_change` (strings), `resume_after` and `start_after`
+(BSON documents), `start_at_operation_time` (BSON timestamp), and `show_expanded_events`
+(boolean). `timeout_mode` is unsupported, and `max_await_time_ms` must be lower than a positive
+`timeout_ms`. Iteration and resume behavior are specified in the change-stream reference.
 
 ## BSON API
 

@@ -8943,6 +8943,28 @@
       "notes": [],
       "started_at": "2026-08-26T02:25:53+00:00",
       "completed_at": "2026-08-26T02:34:48+00:00"
+    },
+    "DOC-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON=planning.tests.test_readme_content.ReadmeContentTests.test_client_and_database_api_reference_has_exact_contracts",
+          "exit_code": 2,
+          "summary": "One API-reference contract test failed because docs/API.md had no client and database handles section.",
+          "recorded_at": "2026-08-26T02:51:27+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/api_handles_spec.lua spec/unit/database_aggregate_spec.lua spec/unit/admin_spec.lua spec/unit/config_options_spec.lua spec/unit/resource_cleanup_spec.lua' FOCUS_PYTHON='planning.tests.test_readme_content spec.package.test_package'",
+          "exit_code": 0,
+          "summary": "39 focused Lua client, database-command, aggregation, option, and cleanup tests passed; 8 API/reference tests and 4 isolated package/classification tests passed; 0 skipped, deferred, or failed.",
+          "recorded_at": "2026-08-26T02:58:30+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T02:44:53+00:00",
+      "completed_at": "2026-08-26T02:58:50+00:00"
     }
   },
   "verified_references": {

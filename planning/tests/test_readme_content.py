@@ -246,6 +246,105 @@ class ReadmeContentTests(unittest.TestCase):
     self.assertIn("Malformed BSON and JSON input returns a structured BSON error", api)
     self.assertIn("Invalid constructor arguments and codec options raise", api)
 
+  def test_client_and_database_api_reference_has_exact_contracts(self) -> None:
+    api = API.read_text(encoding="utf-8")
+
+    self.assertIn("## Client and database handles", api)
+    section = api.split("## Client and database handles", 1)[1]
+    section = section.split("## BSON API", 1)[0]
+
+    for signature in (
+      "client:database([name [, options]]) -> database | nil, err",
+      "client:start_session([options]) -> session | nil, err",
+      "client:append_metadata(driver_info) -> boolean | nil, err",
+      "client:close() -> boolean",
+      "client:is_closed() -> boolean",
+      "client:list_databases([options]) -> cursor | nil, err",
+      "client:list_database_names([options]) -> names | nil, err",
+      "client:drop_database(name_or_database [, options]) -> true | nil, err",
+      "client:bulk_write(models [, options]) -> result | nil, err",
+      "client:watch([pipeline [, options]]) -> change_stream | nil, err",
+      "database:collection(name [, options]) -> collection | nil, err",
+      "database:gridfs_bucket([options]) -> bucket | nil, err",
+      "database:create_collection(name [, options]) -> collection | nil, err",
+      "database:modify_collection(name [, options]) -> document | nil, err",
+      "database:drop_collection(name_or_collection [, options]) -> true | nil, err",
+      "database:list_collections([options]) -> cursor | nil, err",
+      "database:list_collection_names([options]) -> names | nil, err",
+      "database:run_command(command [, options]) -> document | nil, err",
+      "database:run_cursor_command(command [, options]) -> cursor | nil, err",
+      "database:aggregate(pipeline [, options]) -> cursor | nil, err",
+      "database:watch([pipeline [, options]]) -> change_stream | nil, err",
+    ):
+      with self.subTest(signature=signature):
+        self.assertIn(f"`{signature}`", section)
+
+    for option in (
+      "app_name",
+      "auth_mechanism",
+      "auth_mechanism_properties",
+      "auth_source",
+      "cancellation",
+      "command_listeners",
+      "compressors",
+      "connect_timeout_ms",
+      "deadline",
+      "direct_connection",
+      "driver_info",
+      "heartbeat_frequency_ms",
+      "heartbeat_listeners",
+      "local_threshold_ms",
+      "load_balanced",
+      "max_connecting",
+      "max_idle_time_ms",
+      "max_pool_size",
+      "min_pool_size",
+      "on_listener_error",
+      "pool_listeners",
+      "read_concern",
+      "read_preference",
+      "replica_set",
+      "retry_reads",
+      "retry_writes",
+      "runtime",
+      "sdam_listeners",
+      "server_api",
+      "server_monitoring_mode",
+      "server_selection_timeout_ms",
+      "server_selection_try_once",
+      "socket_timeout_ms",
+      "srv_max_hosts",
+      "srv_service_name",
+      "timeout_ms",
+      "tls",
+      "tls_allow_invalid_certificates",
+      "tls_allow_invalid_hostnames",
+      "tls_ca_file",
+      "tls_certificate_key_file",
+      "tls_certificate_key_file_password",
+      "tls_disable_certificate_revocation_check",
+      "tls_disable_ocsp_endpoint_check",
+      "tls_insecure",
+      "wait_queue_timeout_ms",
+      "write_concern",
+      "zlib_compression_level",
+    ):
+      with self.subTest(client_option=option):
+        self.assertIn(f"| `{option}` |", section)
+
+    for contract in (
+      "Programmatic client options use `snake_case`",
+      "take precedence over URI options",
+      "Database and collection handles borrow the client lifetime",
+      "Closing a client closes",
+      "A repeated close returns false",
+      "one absolute operation deadline",
+      "Generic commands do not append inherited read or write concerns",
+      "NamespaceNotFound",
+    ):
+      with self.subTest(contract=contract):
+        self.assertIn(contract, section)
+
 
 if __name__ == "__main__":
   unittest.main()
