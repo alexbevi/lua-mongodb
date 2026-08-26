@@ -16,8 +16,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
-        lua-version: ["5.4.8", "5.5.1"]
+        include:
+          - os: ubuntu-latest
+            lua-version: "5.4.9"
+            verification: full
+          - os: macos-latest
+            lua-version: "5.4.9"
+            verification: full
+          - os: ubuntu-latest
+            lua-version: "5.5.1"
+            verification: runtime
+          - os: macos-latest
+            lua-version: "5.5.1"
+            verification: runtime
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -67,16 +78,16 @@ jobs:
           fi
 
       - name: Install Lua 5.4 lint tools
-        if: matrix.lua-version == '5.4.8'
+        if: matrix.verification == 'full'
         run: |
           luarocks install luacheck 1.2.0-1
 
       - name: Run required fast verification
-        if: matrix.lua-version == '5.4.8'
+        if: matrix.verification == 'full'
         run: make check-fast
 
       - name: Run Lua 5.5 runtime verification
-        if: matrix.lua-version == '5.5.1'
+        if: matrix.verification == 'runtime'
         run: make check-fast-runtime
 
       - name: Verify executable roadmap and commit evidence
@@ -96,10 +107,10 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Install Lua 5.4.8
+      - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
-          luaVersion: "5.4.8"
+          luaVersion: "5.4.9"
 
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
@@ -130,10 +141,10 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Install Lua 5.4.8
+      - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
-          luaVersion: "5.4.8"
+          luaVersion: "5.4.9"
 
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6

@@ -8809,6 +8809,28 @@
       "notes": [],
       "started_at": "2026-08-25T22:21:17+00:00",
       "completed_at": "2026-08-25T23:50:27+00:00"
+    },
+    "CI-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability.CiPortabilityTests.test_portable_matrix_tests_both_supported_lua_versions planning.tests.test_ci_portability.CiPortabilityTests.test_luacheck_runs_only_on_its_supported_lua_runtime planning.tests.test_ci_portability.CiPortabilityTests.test_every_workflow_uses_final_lua_5_4_patch'",
+          "exit_code": 2,
+          "summary": "Three defining tests failed: workflows still used Lua 5.4.8 and selected verification through version-string comparisons.",
+          "recorded_at": "2026-08-26T00:04:14+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_ci_portability spec.release.test_publish'",
+          "exit_code": 0,
+          "summary": "All 28 CI portability and release workflow tests passed; actionlint, rockspec lint, plan validation, and diff checks also passed.",
+          "recorded_at": "2026-08-26T00:04:15+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T00:00:30+00:00",
+      "completed_at": "2026-08-26T00:04:16+00:00"
     }
   },
   "verified_references": {

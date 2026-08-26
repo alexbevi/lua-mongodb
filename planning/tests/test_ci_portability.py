@@ -57,12 +57,16 @@ class CiPortabilityTests(unittest.TestCase):
       workflow.index("  portable:"):workflow.index("  compatibility-smoke:")
     ]
 
-    self.assertIn('lua-version: ["5.4.8", "5.5.1"]', portable)
+    self.assertEqual(2, portable.count('lua-version: "5.4.9"'))
+    self.assertEqual(2, portable.count('lua-version: "5.5.1"'))
+    self.assertEqual(2, portable.count("verification: full"))
+    self.assertEqual(2, portable.count("verification: runtime"))
     self.assertIn("Install Lua ${{ matrix.lua-version }}", portable)
     self.assertIn('luaVersion: "${{ matrix.lua-version }}"', portable)
     self.assertIn('luaRocksVersion: "3.13.0"', portable)
     self.assertIn("run: make check-fast-runtime", portable)
-    self.assertIn("if: matrix.lua-version == '5.5.1'", portable)
+    self.assertIn("if: matrix.verification == 'runtime'", portable)
+    self.assertNotIn("if: matrix.lua-version", portable)
 
   def test_luacheck_runs_only_on_its_supported_lua_runtime(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
@@ -74,8 +78,18 @@ class CiPortabilityTests(unittest.TestCase):
       portable.index("Run required fast verification")
     ]
 
-    self.assertIn("if: matrix.lua-version == '5.4.8'", lint_step)
+    self.assertIn("if: matrix.verification == 'full'", lint_step)
     self.assertIn("luarocks install luacheck 1.2.0-1", lint_step)
+
+  def test_every_workflow_uses_final_lua_5_4_patch(self) -> None:
+    workflows = "\n".join(
+      workflow.read_text(encoding="utf-8")
+      for workflow in WORKFLOWS
+    )
+
+    self.assertNotIn("5.4.8", workflows)
+    self.assertIn("5.4.9", workflows)
+    self.assertIn("5.5.1", workflows)
 
   def test_lua_inline_programs_do_not_use_recipe_continuations(self) -> None:
     commands = [

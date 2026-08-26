@@ -87,10 +87,10 @@ jobs:
           --rockspec "$RELEASE_ROCKSPEC"
           --github-output "$GITHUB_OUTPUT"
 
-      - name: Install Lua 5.4.8
+      - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
-          luaVersion: "5.4.8"
+          luaVersion: "5.4.9"
 
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
@@ -138,10 +138,10 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
-      - name: Install Lua 5.4.8
+      - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:
-          luaVersion: "5.4.8"
+          luaVersion: "5.4.9"
 
       - name: Install LuaRocks
         uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
