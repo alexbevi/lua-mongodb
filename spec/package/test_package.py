@@ -162,6 +162,7 @@ class PackageTests(unittest.TestCase):
         self.assertIn(dependency, rockspec)
 
     self.assertIn('"lua >= 5.4, < 5.6"', rockspec)
+    self.assertIn('"copas >= 4.11, < 4.13"', runtime_dependencies)
 
   def test_unified_modules_follow_explicit_package_classification(self) -> None:
     classified = module_classification()

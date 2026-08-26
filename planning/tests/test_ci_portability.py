@@ -264,6 +264,25 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("macos-aggregate:", workflow)
     self.assertNotIn("make check-full", workflow)
 
+  def test_full_conformance_certifies_exact_copas_4_12(self) -> None:
+    workflow = FULL_WORKFLOW.read_text(encoding="utf-8")
+    profile = workflow[
+      workflow.index("  copas-profile:"):workflow.index("  linux-quality:")
+    ]
+
+    self.assertIn('lua-version: ["5.4.9", "5.5.1"]', profile)
+    self.assertNotIn("\n    if:", profile)
+    self.assertIn("luarocks install copas 4.12.0-1", profile)
+    self.assertIn('require("copas")._VERSION == "Copas 4.12.0"', profile)
+    self.assertIn("spec/unit/copas_runtime_spec.lua", profile)
+    self.assertIn("spec/unit/runtime_copas_spec.lua", profile)
+    self.assertIn("spec/unit/topology_spec.lua", profile)
+    self.assertIn("spec/integration/copas_tcp_spec.lua", profile)
+    self.assertIn("spec/integration/copas_tls_spec.lua", profile)
+    self.assertIn("spec/integration/dns_polling_spec.lua", profile)
+    self.assertIn("spec/integration/dns_seedlist_spec.lua", profile)
+    self.assertIn("run: make test-package", profile)
+
   def test_fast_compatibility_uses_only_boundary_rows(self) -> None:
     workflow = WORKFLOW.read_text(encoding="utf-8")
 

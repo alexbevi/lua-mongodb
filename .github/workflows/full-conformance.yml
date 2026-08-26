@@ -24,6 +24,54 @@ env:
   FULL_CONFORMANCE_LEGACY_MONGODB_VERSION: "8.0.16"
 
 jobs:
+  copas-profile:
+    strategy:
+      fail-fast: false
+      matrix:
+        lua-version: ["5.4.9", "5.5.1"]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Install Lua ${{ matrix.lua-version }}
+        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        with:
+          luaVersion: "${{ matrix.lua-version }}"
+
+      - name: Install LuaRocks
+        uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install exact Copas 4.12 dependency profile
+        run: |
+          luarocks install copas 4.12.0-1
+          luarocks install --only-deps mongodb-0.10.1-1.rockspec
+          luarocks install busted 2.3.0-1
+          lua -e 'assert(require("copas")._VERSION == "Copas 4.12.0")'
+
+      - name: Run focused Copas runtime boundaries
+        run: >-
+          make test-focus
+          FOCUS_UNIT='spec/unit/copas_runtime_spec.lua
+          spec/unit/runtime_copas_spec.lua
+          spec/unit/topology_spec.lua'
+          FOCUS_INTEGRATION='spec/integration/copas_tcp_spec.lua
+          spec/integration/copas_tls_spec.lua
+          spec/integration/dns_polling_spec.lua
+          spec/integration/dns_seedlist_spec.lua'
+
+      - name: Run isolated source-rock package gate
+        run: make test-package
+
+      - name: Verify executable roadmap and commit evidence
+        run: python3 planning/update_plan.py check --strict
+
   linux-quality:
     runs-on: ubuntu-latest
 

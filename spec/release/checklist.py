@@ -555,6 +555,7 @@ def generate() -> dict[str, Any]:
   full_workflow = ROOT / ".github" / "workflows" / "full-conformance.yml"
 
   for expected in (
+    "copas-profile:",
     "linux-quality:",
     "linux-unified:",
     "linux-version-branches:",
@@ -584,6 +585,7 @@ def generate() -> dict[str, Any]:
       "ci": [
         "fast-compatibility-smoke",
         "fast-portable",
+        "full-copas-profile",
         "full-compatibility",
         "full-linux-aggregate",
         "full-linux-quality",

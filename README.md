@@ -7,7 +7,7 @@ MongoDB specifications are normative. Architecture decisions live in [`docs/ARCH
 ## Dependencies
 
 - Lua 5.4 or Lua 5.5 with a 64-bit `lua_Integer`.
-- [Copas](https://lunarmodules.github.io/copas/) 4.11.x.
+- [Copas](https://lunarmodules.github.io/copas/) 4.11.x or 4.12.x.
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
 - `getpid` 0.1.0, `sha1` 0.5, `md5` 1.3, `lua-cryptorandom` 0.0.6, and `lua-zlib` 1.4 or compatible releases.

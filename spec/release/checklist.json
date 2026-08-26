@@ -3,6 +3,7 @@
     "ci": [
       "fast-compatibility-smoke",
       "fast-portable",
+      "full-copas-profile",
       "full-compatibility",
       "full-linux-aggregate",
       "full-linux-quality",

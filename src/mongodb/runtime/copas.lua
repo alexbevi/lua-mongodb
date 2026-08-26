@@ -265,8 +265,8 @@ local function require_copas(provided)
   local copas = provided or require("copas")
 
   if type(copas._VERSION) ~= "string"
-      or not string.match(copas._VERSION, "^Copas 4%.11%.") then
-    error("lua-mongodb requires Copas 4.11.x", 3)
+      or not string.match(copas._VERSION, "^Copas 4%.1[12]%.") then
+    error("lua-mongodb requires Copas 4.11.x or 4.12.x", 3)
   end
 
   return copas

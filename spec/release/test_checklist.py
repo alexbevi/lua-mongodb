@@ -236,6 +236,7 @@ class ReleaseChecklistTests(unittest.TestCase):
       [
         "fast-compatibility-smoke",
         "fast-portable",
+        "full-copas-profile",
         "full-compatibility",
         "full-linux-aggregate",
         "full-linux-quality",

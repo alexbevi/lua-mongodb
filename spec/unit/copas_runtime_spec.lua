@@ -20,6 +20,10 @@ local function run_copas(callback)
 end
 
 describe("Copas runtime adapter", function()
+  local function copas_with_version(version)
+    return setmetatable({ _VERSION = version }, { __index = copas })
+  end
+
   it("builds the validated public runtime", function()
     local adapter = runtime.copas()
 
@@ -93,12 +97,24 @@ describe("Copas runtime adapter", function()
     end
   end)
 
-  it("rejects unsupported Copas versions", function()
-    assert.has_error(function()
-      copas_runtime.new({
-        copas = { _VERSION = "Copas 4.10.0" },
+  it("accepts supported Copas versions", function()
+    for _, version in ipairs({ "Copas 4.11.0", "Copas 4.12.0" }) do
+      local adapter = copas_runtime.new({
+        copas = copas_with_version(version),
       })
-    end, "lua-mongodb requires Copas 4.11.x")
+
+      assert.is_table(adapter)
+    end
+  end)
+
+  it("rejects unsupported Copas versions", function()
+    for _, version in ipairs({ "Copas 4.10.0", "Copas 4.13.0" }) do
+      assert.has_error(function()
+        copas_runtime.new({
+          copas = copas_with_version(version),
+        })
+      end, "lua-mongodb requires Copas 4.11.x or 4.12.x")
+    end
   end)
 
   it("clamps the exposed clock when its source moves backward", function()

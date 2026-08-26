@@ -8831,6 +8831,28 @@
       "notes": [],
       "started_at": "2026-08-26T00:00:30+00:00",
       "completed_at": "2026-08-26T00:04:16+00:00"
+    },
+    "DEP-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/copas_runtime_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining runtime test rejected Copas 4.12.0 and retained the 4.11-only error contract.",
+          "recorded_at": "2026-08-26T00:16:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Copas 4.12.0-1 isolated Lua 5.4 and 5.5 profiles: make test-focus FOCUS_UNIT='<Copas runtime, runtime DNS, topology cleanup>' FOCUS_INTEGRATION='<TCP, TLS, DNS polling, DNS seedlist>'; make test-package",
+          "exit_code": 0,
+          "summary": "Each exact profile passed 46 unit checks, 10 integration checks, and all 3 isolated package tests; lint, architecture, complexity, rockspec, workflow, documentation, and release-checklist validators also passed.",
+          "recorded_at": "2026-08-26T00:27:06+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-26T00:14:04+00:00",
+      "completed_at": "2026-08-26T00:27:12+00:00"
     }
   },
   "verified_references": {
