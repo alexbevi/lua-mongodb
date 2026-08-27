@@ -10051,6 +10051,28 @@
       "notes": [],
       "started_at": "2026-08-27T19:26:05+00:00",
       "completed_at": "2026-08-27T19:28:50+00:00"
+    },
+    "LOG-004": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/driver-connection-id.json'",
+          "exit_code": 1,
+          "summary": "Both exact driver-connection-ID cases executed and failed with driverConnectionId missing from the first command log message; 2 executed, 0 passed, 0 environment-skipped, 0 deferred, and 2 failed.",
+          "recorded_at": "2026-08-27T19:53:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/driver-connection-id.json' FOCUS_PYTHON='<four focused contracts>' FOCUS_LINT='<four touched Lua files>'; make test-unified-inventory; make test-architecture; LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-complexity; run generated --check validators",
+          "exit_code": 0,
+          "summary": "The defining unified fixture executed both successful and failed command cases with driverConnectionId and passed 2/2 with no skips or deferrals; 8 command-monitoring unit tests, 4 focused Python contracts, 132 unified inventory tests, touched-file lint, architecture, complexity, generated artifacts, and diff checks all passed.",
+          "recorded_at": "2026-08-27T19:58:59+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T19:52:21+00:00",
+      "completed_at": "2026-08-27T19:59:00+00:00"
     }
   },
   "verified_references": {

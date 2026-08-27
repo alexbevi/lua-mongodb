@@ -488,6 +488,7 @@ local function open_executor(
   local executor = command_executor.new(connection, {
     compression = runtime.compression,
     compressors = config.compressors,
+    driver_connection_id = fields.id,
     load_balanced = config.load_balanced,
     metadata = metadata,
     monitoring = monitor,

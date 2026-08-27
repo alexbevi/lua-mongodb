@@ -415,6 +415,7 @@ local function execute(state, database, command, options)
       command = monitored_envelope(body, options.sequences),
       connection_id = state.server,
       database_name = database,
+      driver_connection_id = state.driver_connection_id,
       operation_id = options.operation_id,
       request_id = request_id,
       server_connection_id = state.server_connection_id,
@@ -691,6 +692,12 @@ function M.new(connection, options)
     error("command executor load_balanced must be a boolean", 2)
   end
 
+  if options.driver_connection_id ~= nil
+      and math.type(options.driver_connection_id) ~= "integer"
+  then
+    error("command executor driver_connection_id must be an integer", 2)
+  end
+
   local zlib_compression_level = options.zlib_compression_level or -1
 
   if math.type(zlib_compression_level) ~= "integer"
@@ -708,6 +715,7 @@ function M.new(connection, options)
     compressor = nil,
     compressors = available_compressors(options.compressors, compression),
     connection = connection,
+    driver_connection_id = options.driver_connection_id,
     handshake_complete = false,
     hello = nil,
     hello_ok = false,

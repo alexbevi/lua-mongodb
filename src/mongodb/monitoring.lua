@@ -130,6 +130,7 @@ local function common_log_fields(span_state, message, duration_ms)
   local fields = {
     commandName = span_state.command_name,
     databaseName = span_state.database_name,
+    driverConnectionId = span_state.driver_connection_id,
     message = message,
     requestId = span_state.request_id,
     serverHost = span_state.server_host,
@@ -237,6 +238,12 @@ function MONITOR_METHODS:start(fields)
     error("monitored operation_id must be an integer", 2)
   end
 
+  if fields.driver_connection_id ~= nil
+      and math.type(fields.driver_connection_id) ~= "integer"
+  then
+    error("monitored driver_connection_id must be an integer", 2)
+  end
+
   local command_name = fields.command:get_at(1)
 
   if not command_name then
@@ -252,6 +259,7 @@ function MONITOR_METHODS:start(fields)
     command_name = command_name,
     connection_id = fields.connection_id,
     database_name = fields.database_name,
+    driver_connection_id = fields.driver_connection_id,
     finished = false,
     monitor = monitor_state,
     operation_id = operation_id,

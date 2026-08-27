@@ -72,6 +72,7 @@ describe("command monitoring", function()
       bson.document({ { "ok", 0 }, { "errmsg", "bad filter" }, { "code", 2 } }),
     })
     local commands = command_executor.new(connection, {
+      driver_connection_id = 17,
       monitoring = events,
       server = "db.example:27018",
       server_host = "db.example",
@@ -112,6 +113,11 @@ describe("command monitoring", function()
     assert.are.equal(observed[5].data.requestId, observed[6].data.requestId)
     assert.are.equal("command", observed[1].component)
     assert.are.equal("debug", observed[1].level)
+
+    for _, event in ipairs(observed) do
+      assert.are.equal(17, event.data.driverConnectionId)
+    end
+
     assert.are.equal("app", observed[1].data.databaseName)
     assert.are.equal("ping", observed[1].data.commandName)
     assert.are.equal('{"ping":1,"$db":"app"}', observed[1].data.command)

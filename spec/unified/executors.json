@@ -2285,6 +2285,14 @@
       "activity": "LOG-002",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/logging/driver-connection-id.json::test[1]": {
+      "activity": "LOG-004",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/logging/driver-connection-id.json::test[2]": {
+      "activity": "LOG-004",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/logging/no-handshake-messages.json::test[1]": {
       "activity": "LOG-010",
       "environment": "live-replicaset"
