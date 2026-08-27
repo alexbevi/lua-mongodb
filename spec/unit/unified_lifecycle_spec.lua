@@ -190,6 +190,10 @@ describe("unified test lifecycle", function()
     local orchestrator = lifecycle.new({
       runtime = fake_runtime.new(),
       internal_client = internal_client,
+      assert_logs = function()
+        log[#log + 1] = "logs"
+        return true
+      end,
       assert_events = function()
         log[#log + 1] = "events"
         return true
@@ -249,6 +253,7 @@ describe("unified test lifecycle", function()
           { "operations", array({
             document({ { "name", "prepare" }, { "object", "client0" } }),
           }) },
+          { "expectLogMessages", array({}) },
           { "expectEvents", array({}) },
           { "outcome", array({
             document({ { "documents", expected_documents } }),
@@ -265,6 +270,7 @@ describe("unified test lifecycle", function()
       "session created",
       "operation",
       "failpoint off",
+      "logs",
       "events",
       "outcome",
       "observe",

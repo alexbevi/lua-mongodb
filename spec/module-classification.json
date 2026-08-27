@@ -320,6 +320,10 @@
       "path": "spec/support/mongodb/unified/lifecycle.lua",
       "stability": "test-only"
     },
+    "mongodb.unified.logs": {
+      "path": "spec/support/mongodb/unified/logs.lua",
+      "stability": "test-only"
+    },
     "mongodb.unified.runner": {
       "path": "spec/support/mongodb/unified/runner.lua",
       "stability": "test-only"

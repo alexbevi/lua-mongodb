@@ -7,6 +7,7 @@ local errors = require("mongodb.error")
 local event_module = require("mongodb.unified.events")
 local failpoints = require("mongodb.unified.failpoints")
 local lifecycle_module = require("mongodb.unified.lifecycle")
+local log_module = require("mongodb.unified.logs")
 
 local M = {}
 
@@ -38,6 +39,7 @@ local function client_factory(state)
       awaitMinPoolSizeMS = true,
       ignoreCommandMonitoringEvents = true,
       observeEvents = true,
+      observeLogMessages = true,
       observeSensitiveCommands = true,
       serverApi = true,
       uriOptions = true,
@@ -55,8 +57,16 @@ local function client_factory(state)
       return nil, err
     end
 
+    local log_collector
+    log_collector, err = log_module.new(specification)
+
+    if not log_collector then
+      return nil, err
+    end
+
     local options = {
       command_listeners = { collector.listener },
+      logging = log_collector:options(),
       pool_listeners = { collector.pool_listener },
       runtime = state.runtime,
     }
@@ -301,6 +311,7 @@ local function client_factory(state)
     end
 
     state.collectors[client] = collector
+    state.log_collectors[client] = log_collector
     return client
   end
 
@@ -2987,6 +2998,7 @@ function M.new(options)
     environment_topology = options.environment and options.environment.topology,
     initial_cluster_time = nil,
     internal_client = internal_client,
+    log_collectors = setmetatable({}, { __mode = "k" }),
     multiple_mongos_uri = options.multiple_mongos_uri,
     oidc_callback = options.oidc_callback,
     runtime = options.runtime,
@@ -3023,6 +3035,9 @@ function M.new(options)
   local lifecycle = lifecycle_module.new({
     assert_events = function(runner, expected, path)
       return event_module.assert_all(runner, expected, state.collectors, path)
+    end,
+    assert_logs = function(runner, expected, path)
+      return log_module.assert_all(runner, expected, state.log_collectors, path)
     end,
     environment = options.environment,
     entity_finalizers = {

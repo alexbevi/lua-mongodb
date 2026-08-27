@@ -9759,6 +9759,35 @@
       "notes": [],
       "started_at": "2026-08-27T14:05:41+00:00",
       "completed_at": "2026-08-27T14:12:59+00:00"
+    },
+    "LOG-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_logs_spec.lua'",
+          "exit_code": 2,
+          "summary": "The unified log expectation suite errored because mongodb.unified.logs did not exist; no cases ran",
+          "recorded_at": "2026-08-27T14:31:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_logs_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_driver_spec.lua'",
+          "exit_code": 0,
+          "summary": "25 unified log collector, lifecycle, and driver cases passed with 0 failures, errors, pending, or environment skips; 0 component fixtures became newly applicable before their logging emission owners",
+          "recorded_at": "2026-08-27T14:35:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_LINT='spec/support/mongodb/unified/logs.lua spec/support/mongodb/unified/lifecycle.lua spec/support/mongodb/unified/driver.lua spec/unit/unified_logs_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_driver_spec.lua' && make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.package.test_package spec.quality.test_coverage_gate planning.tests.test_readme_content' && python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 planning/update_readme_compatibility.py --check",
+          "exit_code": 0,
+          "summary": "Six touched Lua files passed lint; 152 capability, package-classification, coverage, and documentation contracts passed; capability, ledger, and README projections remained current",
+          "recorded_at": "2026-08-27T14:35:38+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T14:28:45+00:00",
+      "completed_at": "2026-08-27T14:35:39+00:00"
     }
   },
   "verified_references": {

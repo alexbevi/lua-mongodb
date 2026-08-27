@@ -1205,6 +1205,52 @@ describe("unified driver lifecycle events", function()
     end)
   end)
 
+  it("configures client log capture and evaluates empty expectations", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "single" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "tests", array({
+          document({
+            { "description", "Empty command log" },
+            { "operations", array({
+              document({
+                { "name", "createEntities" },
+                { "object", "testRunner" },
+                { "arguments", document({
+                  { "entities", array({
+                    document({
+                      { "client", document({
+                        { "id", "client" },
+                        { "observeLogMessages", document({
+                          { "command", "debug" },
+                        }) },
+                      }) },
+                    }),
+                  }) },
+                }) },
+              }),
+            }) },
+            { "expectLogMessages", array({
+              document({
+                { "client", "client" },
+                { "messages", array({}) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "empty-command-log.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal("debug", connections[2].options.logging.levels.command)
+      assert.are.equal("function", type(connections[2].options.logging.sink))
+      assert(lifecycle:close())
+    end)
+  end)
+
   it("closes an observed standalone client once and matches its topology events", function()
     with_fake_client(function(driver, connections)
       local lifecycle = assert(driver.new({

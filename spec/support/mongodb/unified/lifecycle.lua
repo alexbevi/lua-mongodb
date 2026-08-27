@@ -81,6 +81,20 @@ local function observe_entities(state, runner)
 end
 
 local function run_assertions(state, runner, test, path)
+  local has_logs, expected_logs = document_has(test, "expectLogMessages")
+
+  if has_logs then
+    if not state.assert_logs then
+      return nil, configuration_error("no log assertion adapter is configured", path)
+    end
+
+    local ok, err = state.assert_logs(runner, expected_logs, path .. ".expectLogMessages")
+
+    if ok == false or ok == nil and err ~= nil then
+      return nil, err or configuration_error("log assertion failed", path)
+    end
+  end
+
   local has_events, expected_events = document_has(test, "expectEvents")
 
   if has_events then
@@ -286,7 +300,9 @@ function M.new(options)
     error("unified lifecycle internal_client must be an adapter table", 2)
   end
 
-  for _, name in ipairs({ "assert_events", "entity_observer", "session_lsid" }) do
+  for _, name in ipairs({
+    "assert_events", "assert_logs", "entity_observer", "session_lsid",
+  }) do
     if options[name] ~= nil and type(options[name]) ~= "function" then
       error("unified lifecycle " .. name .. " must be a function", 2)
     end
@@ -296,6 +312,7 @@ function M.new(options)
 
   LIFECYCLE_STATES[lifecycle] = {
     assert_events = options.assert_events,
+    assert_logs = options.assert_logs,
     closed = false,
     entity_factories = options.entity_factories or {},
     entity_finalizers = options.entity_finalizers or {},
