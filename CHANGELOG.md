@@ -2,6 +2,26 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.3] - 2026-08-27
+
+Logging foundation release.
+
+### Added
+
+- Added opt-in structured logging configuration for standardized components and severity levels, with environment defaults, programmatic overrides, and runtime-owned output or custom sinks.
+- Added immutable structured event envelopes with relaxed Extended JSON rendering, redaction before Unicode-safe truncation, and sink-failure isolation.
+- Added shared logical operation identities that remain stable across retry attempts and bulk sub-operations.
+- Added unified-test support for ordered expected log messages, unordered ignored messages, and redacted mismatch diagnostics.
+
+### Conformance
+
+- Added exact passing evidence for the four shared logging-foundation requirements.
+- Assigned all 230 standardized component logging, backpressure, and OpenTelemetry cases to concrete release-sized owners without claiming their behavior in this release.
+
+### Release engineering
+
+- Added the generated v0.10.3 ownership projection to Full Conformance on Linux and requested macOS runs.
+
 ## [0.10.2] - 2026-08-26
 
 GSSAPI authentication release.

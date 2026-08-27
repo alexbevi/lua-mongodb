@@ -11,7 +11,7 @@ import unittest
 
 
 ROOT = Path(__file__).resolve().parents[2]
-ROCKSPEC = ROOT / "mongodb-0.10.2-1.rockspec"
+ROCKSPEC = ROOT / "mongodb-0.10.3-1.rockspec"
 SMOKE = ROOT / "spec" / "package" / "smoke.lua"
 COMPLETENESS = ROOT / "spec" / "package" / "completeness.lua"
 SOURCE_ROOT = ROOT / "src" / "mongodb"
@@ -134,7 +134,7 @@ def top_level_exports() -> set[str]:
 
 
 def local_source_rockspec(directory: Path) -> Path:
-  source_name = "lua-mongodb-0.10.2-1"
+  source_name = "lua-mongodb-0.10.3-1"
   archive = directory / f"{source_name}.tar.gz"
 
   with tarfile.open(archive, "w:gz") as package:

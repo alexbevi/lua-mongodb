@@ -9817,6 +9817,42 @@
       "notes": [],
       "started_at": "2026-08-27T14:52:37+00:00",
       "completed_at": "2026-08-27T15:01:05+00:00"
+    },
+    "REL-062": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "Release checklist still identifies the GSSAPI 0.10.2 release instead of the logging-foundation 0.10.3 release.",
+          "recorded_at": "2026-08-27T15:13:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 0,
+          "summary": "The release checklist reports v0.10.3 ready, requires ADV-009, LOG-008, LOG-009, LOG-001, and CON-014, and preserves the exact 230-case ownership boundary.",
+          "recorded_at": "2026-08-27T15:21:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus for release version unit tests, exact client metadata integration, release/package/workflow/documentation Python contracts, and touched-file lint",
+          "exit_code": 0,
+          "summary": "Twenty Lua version and handshake tests, the directly coupled client metadata case, 53 release/package/workflow/documentation contracts, isolated package installation, and six touched Lua files passed with no failures or lint warnings.",
+          "recorded_at": "2026-08-27T15:21:05+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make rockspec test-release-checklist test-v103-scope test-v102-scope test-release-scope; release artifact, workflow, README, syntax, diff, and prepared-tree source-rock validators",
+          "exit_code": 0,
+          "summary": "Rockspec, release checklist, v0.10.3 logging foundation, prior GSSAPI, production-core scope, README projection, Python/JSON/workflow syntax, and diff validators passed; two 1.87 MB prepared-tree source rocks were byte-identical and contained the versioned rockspec plus logging modules.",
+          "recorded_at": "2026-08-27T15:21:07+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T15:11:05+00:00",
+      "completed_at": "2026-08-27T15:21:12+00:00"
     }
   },
   "verified_references": {

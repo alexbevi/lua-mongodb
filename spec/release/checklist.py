@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report GSSAPI v0.10.2 release readiness."""
+"""Validate and report logging-foundation v0.10.3 release readiness."""
 
 from __future__ import annotations
 
@@ -23,6 +23,7 @@ from spec.v08 import scope as v08_scope  # noqa: E402
 from spec.v09 import scope as v09_scope  # noqa: E402
 from spec.v10 import scope as v10_scope  # noqa: E402
 from spec.v102 import scope as v102_scope  # noqa: E402
+from spec.v103 import scope as v103_scope  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
@@ -30,8 +31,8 @@ PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.10.2-1.rockspec"
-RELEASE_VERSION = "0.10.2"
+ROCKSPEC = ROOT / "mongodb-0.10.3-1.rockspec"
+RELEASE_VERSION = "0.10.3"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4153
@@ -180,6 +181,9 @@ V102_GATES = [
 ]
 V102_CONFORMANCE_ACTIVITY = "CON-013"
 V102_RELEASE_ACTIVITY = "REL-061"
+V103_GATES = ["ADV-009", "LOG-008", "LOG-009", "LOG-001"]
+V103_CONFORMANCE_ACTIVITY = "CON-014"
+V103_RELEASE_ACTIVITY = "REL-062"
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -188,7 +192,7 @@ OBJECTID_IDENTITIES = {"bson-objectid/objectid.md::post-fork-random"}
 
 
 class ChecklistError(ValueError):
-  """Raised when the GSSAPI release is not ready."""
+  """Raised when the logging-foundation release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -277,11 +281,11 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-26",
+    f"## [{RELEASE_VERSION}] - 2026-08-27",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: GSSAPI v0.10.2 release-ready.",
+    "Status: logging foundation v0.10.3 release-ready.",
   )
 
   return {
@@ -398,6 +402,20 @@ def generate() -> dict[str, Any]:
       "v0.10.2 release gate inventory does not match the track"
     )
 
+  logging_foundation_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-3-logging-foundation"
+  ]
+  if logging_foundation_track != [
+    *V103_GATES,
+    V103_CONFORMANCE_ACTIVITY,
+    V103_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError(
+      "v0.10.3 release gate inventory does not match the track"
+    )
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -474,6 +492,12 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
+  for activity_id in [*V103_GATES, V103_CONFORMANCE_ACTIVITY]:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.10.3 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
   csot_evidence = passed_owner_evidence(
     ledger.get("cases", {}),
     "CSOT-001",
@@ -501,6 +525,7 @@ def generate() -> dict[str, Any]:
   v09_report = v09_scope.generate()
   v10_report = v10_scope.generate()
   v102_report = v102_scope.generate()
+  v103_report = v103_scope.generate()
   statuses = scope_report.get("statuses", {})
   classified = sum(statuses.values())
   applicable_gaps = scope_report.get("deferred_by_scope", {}).get(
@@ -571,6 +596,8 @@ def generate() -> dict[str, Any]:
   if v102_summary["planned"] != 0:
     raise ChecklistError("v0.10.2 GSSAPI conformance still has planned requirements")
 
+  v103_summary = v103_report["summary"]
+
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
   fast_workflow = ROOT / ".github" / "workflows" / "ci.yml"
@@ -607,6 +634,7 @@ def generate() -> dict[str, Any]:
     "spec/v09/scope.py",
     "spec/v10/scope.py",
     "spec/v102/scope.py",
+    "spec/v103/scope.py",
     "--execution-report build/conformance/unified.json",
     "unified-linux-timing-sensitive-csot.json",
     "unified-pre-8.2.json",
@@ -646,6 +674,10 @@ def generate() -> dict[str, Any]:
       "completed_v0_10_2_gates": [
         *V102_GATES,
         V102_CONFORMANCE_ACTIVITY,
+      ],
+      "completed_v0_10_3_gates": [
+        *V103_GATES,
+        V103_CONFORMANCE_ACTIVITY,
       ],
       "conformance": {
         "applicable_gaps": applicable_gaps,
@@ -751,6 +783,16 @@ def generate() -> dict[str, Any]:
         ],
         "provider_claims": v102_report["provider_claims"],
       },
+      "v0_10_3_conformance": {
+        "classified_requirements": v103_summary["classified"],
+        "foundation_requirements": v103_report["evidence"][
+          "foundation_requirements"
+        ],
+        "passed_requirements": v103_summary["passed"],
+        "planned_requirements": v103_summary["planned"],
+        "standardized_cases": v103_report["evidence"]["standardized_cases"],
+        "unified_cases": v103_report["evidence"]["unified_cases"],
+      },
       "maintenance": {
         "activities": MAINTENANCE_GATES,
         "bson_objectid_requirements": len(objectid_evidence),
@@ -761,7 +803,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "gssapi-release-checklist",
+    "type": "logging-foundation-release-checklist",
   }
 
 
@@ -784,6 +826,7 @@ def main(argv: list[str] | None = None) -> int:
     v09_scope.ScopeError,
     v10_scope.ScopeError,
     v102_scope.ScopeError,
+    v103_scope.ScopeError,
   ) as exc:
     print(f"release checklist: {exc}")
     return 2

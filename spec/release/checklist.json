@@ -81,6 +81,13 @@
       "AUTH-040",
       "CON-013"
     ],
+    "completed_v0_10_3_gates": [
+      "ADV-009",
+      "LOG-008",
+      "LOG-009",
+      "LOG-001",
+      "CON-014"
+    ],
     "completed_v0_10_gates": [
       "ADV-006",
       "LB-001",
@@ -258,6 +265,14 @@
         }
       ]
     },
+    "v0_10_3_conformance": {
+      "classified_requirements": 234,
+      "foundation_requirements": 4,
+      "passed_requirements": 4,
+      "planned_requirements": 230,
+      "standardized_cases": 230,
+      "unified_cases": 24
+    },
     "v0_10_conformance": {
       "classified_requirements": 1042,
       "dedicated_cases": 40,
@@ -317,10 +332,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.10.2-1.rockspec",
-    "rockspec_version": "0.10.2-1",
-    "version": "0.10.2"
+    "rockspec": "mongodb-0.10.3-1.rockspec",
+    "rockspec_version": "0.10.3-1",
+    "version": "0.10.3"
   },
   "schema_version": 1,
-  "type": "gssapi-release-checklist"
+  "type": "logging-foundation-release-checklist"
 }

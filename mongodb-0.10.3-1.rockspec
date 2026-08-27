@@ -1,19 +1,20 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.10.2-1"
+version = "0.10.3-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.10.2",
+  tag = "v0.10.3",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.10.2 adds GSSAPI authentication through a packaged
-    adapter for the operating system's Kerberos library.
+    libmongoc. Version 0.10.3 adds opt-in structured logging configuration,
+    safe event envelopes, logical operation identities, and unified log
+    expectation support as the foundation for component logging.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",

@@ -49,7 +49,7 @@ describe("handshake client metadata", function()
     assert.are.same({ "application", "driver", "os", "platform" }, value:keys())
     assert.are.equal("metadata-spec", value:get("application"):get("name"))
     assert.are.equal("lua-mongodb", value:get("driver"):get("name"))
-    assert.are.equal("0.10.2", value:get("driver"):get("version"))
+    assert.are.equal("0.10.3", value:get("driver"):get("version"))
     assert.are.same(
       { "type", "name", "architecture", "version" },
       value:get("os"):keys()
@@ -252,7 +252,7 @@ describe("handshake client metadata", function()
     assert.are.equal(string.rep("p", 252), platform_truncated:get("platform"))
     assert.are.equal(string.rep("a", 128), platform_truncated:get("application"):get("name"))
     assert.are.equal("lua-mongodb", platform_truncated:get("driver"):get("name"))
-    assert.are.equal("0.10.2", platform_truncated:get("driver"):get("version"))
+    assert.are.equal("0.10.3", platform_truncated:get("driver"):get("version"))
     assert.are.equal("test-os", platform_truncated:get("os"):get("type"))
   end)
 
@@ -265,7 +265,7 @@ describe("handshake client metadata", function()
     local cases = {
       {
         expected_platform = "Lua 5.4|Library Platform|Framework Platform",
-        expected_version = "0.10.2|1.2|2.0",
+        expected_version = "0.10.3|1.2|2.0",
         update = {
           name = "framework",
           platform = "Framework Platform",
@@ -274,17 +274,17 @@ describe("handshake client metadata", function()
       },
       {
         expected_platform = "Lua 5.4|Library Platform",
-        expected_version = "0.10.2|1.2|2.0",
+        expected_version = "0.10.3|1.2|2.0",
         update = { name = "framework", version = "2.0" },
       },
       {
         expected_platform = "Lua 5.4|Library Platform|Framework Platform",
-        expected_version = "0.10.2|1.2",
+        expected_version = "0.10.3|1.2",
         update = { name = "framework", platform = "Framework Platform" },
       },
       {
         expected_platform = "Lua 5.4|Library Platform",
-        expected_version = "0.10.2|1.2",
+        expected_version = "0.10.3|1.2",
         update = { name = "framework" },
       },
     }
@@ -429,8 +429,8 @@ describe("handshake client metadata", function()
       bounded:get("driver"):get("name"):sub(1, #"lua-mongodb")
     )
     assert.are.equal(
-      "0.10.2",
-      bounded:get("driver"):get("version"):sub(1, #"0.10.2")
+      "0.10.3",
+      bounded:get("driver"):get("version"):sub(1, #"0.10.3")
     )
     assert.are.equal(string.rep("a", 128), bounded:get("application"):get("name"))
     assert.are.equal("test-os", bounded:get("os"):get("type"))
