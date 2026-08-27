@@ -378,8 +378,16 @@ def classify_case(
         owner = "LOG-010"
       elif fixture == "no-heartbeat-messages.json":
         owner = "LOG-011"
-      else:
+      elif fixture == "driver-connection-id.json":
         owner = "LOG-004"
+      elif fixture == "server-connection-id.json":
+        owner = "LOG-012"
+      elif fixture == "service-id.json":
+        owner = "LOG-013"
+      elif fixture == "operation-id.json":
+        owner = "LOG-014"
+      else:
+        raise LedgerError(f"unknown command logging fixture: {identity}")
     elif fixture in {"command.json", "find.json", "server-connection-id.json"}:
       owner = "LOG-005"
     elif fixture in {

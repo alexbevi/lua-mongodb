@@ -34124,12 +34124,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/operation-id.json::test[1]": {
-      "activity": "LOG-004",
+      "activity": "LOG-014",
       "fingerprint": "f4a31d92d2eb359877fe544464320e243b05d7a6b8bce1fb393d2727beb74fa7",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-004",
+      "runner": "pending:LOG-014",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/operation-id.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -34137,12 +34137,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/operation-id.json::test[2]": {
-      "activity": "LOG-004",
+      "activity": "LOG-014",
       "fingerprint": "ed90e91364c8062174e7ae6dc74d79e1c9a831147ba79eecf408daf8585bc54e",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-004",
+      "runner": "pending:LOG-014",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/operation-id.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -34358,12 +34358,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/server-connection-id.json::test[1]": {
-      "activity": "LOG-004",
+      "activity": "LOG-012",
       "fingerprint": "7e33849c6ef6cc025228c72289eb958e1a03ad2b26deb7589f98cc95f098b5e8",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-004",
+      "runner": "pending:LOG-012",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/server-connection-id.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -34371,12 +34371,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/service-id.json::test[1]": {
-      "activity": "LOG-004",
+      "activity": "LOG-013",
       "fingerprint": "bdd543e33b254857352ff96ea49213db50f439a451306dd39b6121569a76c090",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-004",
+      "runner": "pending:LOG-013",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/service-id.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -34384,12 +34384,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/service-id.json::test[2]": {
-      "activity": "LOG-004",
+      "activity": "LOG-013",
       "fingerprint": "b5c65aa71cd9cd3246af56ec911d9b9dd6e1e502326d8489e24c9f5b6aac6d80",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-004",
+      "runner": "pending:LOG-013",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/service-id.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
