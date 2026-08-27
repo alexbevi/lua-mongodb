@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2090,
-    "runnable": 2090
+    "passed": 2092,
+    "runnable": 2092
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37338,6 +37338,62 @@
         "match_operators": [],
         "operations": [
           "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/deleteMany.json::test[1]": {
+      "activity": "LOG-021",
+      "fingerprint": "89ba53d97824db52eeb9ce9534ad3c00a2ce1f40d6ebe480efdfed86d36643d0",
+      "requirements": {
+        "arguments": [
+          "deleteMany.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "deleteMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/deleteMany.json::test[2]": {
+      "activity": "LOG-021",
+      "fingerprint": "2402ca48221dde6f240990b4b11806b320fb4a90c155c60faf48628d255873a1",
+      "requirements": {
+        "arguments": [
+          "deleteMany.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "deleteMany"
         ],
         "special_operations": [],
         "topologies": []

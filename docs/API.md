@@ -223,6 +223,7 @@ write-error result.
 `delete_one` publishes a delete command whose sole delete specification has `limit = 1`, followed
 by the server reply. A reply containing `writeErrors` still produces a succeeded event while the
 collection operation returns its structured write error.
+`delete_many` follows the same contract with `limit = 0` in its delete specification.
 
 #### Structured logging configuration
 
