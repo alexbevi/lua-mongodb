@@ -202,6 +202,11 @@ programmatic option set is:
 | `write_concern` | empty | Table with optional `journal`, `w`, and `w_timeout_ms` fields. |
 | `zlib_compression_level` | -1 | Integer from -1 through 9. |
 
+Command listeners observe application command I/O. A successful `database:run_command` invokes
+`started` with the exact command document, command name, and database name, then invokes `succeeded`
+with the reply and the same command name. Both events share their request, operation, and connection
+identities. Handshakes and monitor heartbeats remain outside this listener path.
+
 #### Structured logging configuration
 
 The `logging` table accepts only these fields:

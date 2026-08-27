@@ -10139,6 +10139,28 @@
       "notes": [],
       "started_at": "2026-08-27T20:52:59+00:00",
       "completed_at": "2026-08-27T21:00:18+00:00"
+    },
+    "LOG-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_generic_command_monitoring_case_is_runnable'",
+          "exit_code": 2,
+          "summary": "The exact generic command-monitoring capability contract failed because command.json::test[1] was absent from the runnable manifest and executor registry; 1 focused contract ran and errored.",
+          "recorded_at": "2026-08-27T21:31:43+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/command.json' FOCUS_PYTHON='<three focused contracts>'",
+          "exit_code": 0,
+          "summary": "The exact generic command-monitoring case passed 1/1 against a live replica set with no environment skips, deferrals, or failures; 3 focused capability, ledger, and logging-scope contracts plus generated-file checks also passed.",
+          "recorded_at": "2026-08-27T21:33:33+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T21:31:23+00:00",
+      "completed_at": "2026-08-27T21:33:34+00:00"
     }
   },
   "verified_references": {

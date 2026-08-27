@@ -34426,13 +34426,13 @@
       "activity": "LOG-005",
       "fingerprint": "a91f62e69ef8cb837aa44340290048bdead0a995b1988fa1fa47618cd8cee3b4",
       "format": "unified",
-      "last_execution": null,
-      "required_environment": "live-mongodb",
-      "runner": "pending:LOG-005",
-      "scope": "additional",
+      "last_execution": "make test-unified",
+      "required_environment": "live-replicaset",
+      "runner": "spec/unified/execute.lua",
+      "scope": "production-core-v1",
       "source": "command-logging-and-monitoring/tests/monitoring/command.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/monitoring/deleteMany.json::test[1]": {
@@ -86764,9 +86764,9 @@
     "cases": 5524,
     "files": 2966,
     "statuses": {
-      "deferred_unsupported": 977,
+      "deferred_unsupported": 976,
       "excluded_scope": 98,
-      "passed": 4434,
+      "passed": 4435,
       "unsupported": 15
     },
     "suites": {

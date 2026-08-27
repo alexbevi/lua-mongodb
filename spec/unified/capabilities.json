@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2077,
-    "runnable": 2077
+    "passed": 2078,
+    "runnable": 2078
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37310,6 +37310,34 @@
         "operations": [
           "find",
           "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/command.json::test[1]": {
+      "activity": "LOG-005",
+      "fingerprint": "a91f62e69ef8cb837aa44340290048bdead0a995b1988fa1fa47618cd8cee3b4",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "runCommand"
         ],
         "special_operations": [],
         "topologies": []
