@@ -448,14 +448,35 @@
         "status": "passed"
       }
     ],
-    "logging/logging.md": {
-      "activity": "CON-017",
-      "last_execution": null,
-      "reason": "The v0.10.6 conformance closure owns the complete command, selection, SDAM, and CMAP logging specification.",
-      "required_environment": "deterministic-runtime",
-      "runner": "pending:CON-017",
-      "status": "deferred_unsupported"
-    },
+    "logging/logging.md": [
+      {
+        "id": "configuration",
+        "activity": "ADV-009",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/config_options_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua'",
+        "reason": "Deterministic configuration cases cover disabled defaults, every standardized component and severity, environment precedence and fallback, immutable programmatic overrides, and invalid-value handling.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/logging_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "destination",
+        "activity": "ADV-009",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/config_options_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua'",
+        "reason": "The public logging option and runtime output contract cover stdout, stderr, and caller-owned sink destinations without direct production access to operating-system streams or files.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/logging_spec.lua",
+        "status": "passed"
+      },
+      {
+        "id": "structured-events",
+        "activity": "LOG-008",
+        "last_execution": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/extended_json_spec.lua'",
+        "reason": "Structured-event cases cover exact field names, nil omission, relaxed Extended JSON, redaction before Unicode-safe truncation, disabled-level short-circuiting, and sink failure isolation.",
+        "required_environment": "deterministic-runtime",
+        "runner": "spec/unit/logging_spec.lua",
+        "status": "passed"
+      }
+    ],
     "message/OP_MSG.md": {
       "activity": "WIRE-001",
       "last_execution": "make test-focus FOCUS_UNIT='spec/unit/op_msg_spec.lua'",
@@ -495,6 +516,15 @@
       "required_environment": "none",
       "runner": "none:unsupported",
       "status": "unsupported"
+    },
+    "unified-test-format/unified-test-format.md": {
+      "id": "expected-log-messages",
+      "activity": "LOG-001",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/unified_logs_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_driver_spec.lua'",
+      "reason": "The unified runner captures through the public sink and covers component filtering, ordered expectations, unordered ignores, trailing extras, failure redaction, Extended JSON matching, and exact diagnostic paths.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/unified_logs_spec.lua",
+      "status": "passed"
     }
   }
 }

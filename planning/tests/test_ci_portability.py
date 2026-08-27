@@ -328,6 +328,10 @@ class CiPortabilityTests(unittest.TestCase):
       workflow,
     )
     self.assertIn(
+      "Validate exact v0.10.3 logging-foundation evidence",
+      workflow,
+    )
+    self.assertIn(
       "change-streams-disambiguatedPaths.json::test?1?",
       workflow,
     )
@@ -462,6 +466,10 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("Validate exact macOS v0.9 conformance evidence", aggregate)
     self.assertIn(
       "Validate exact macOS v0.10.2 GSSAPI conformance evidence",
+      aggregate,
+    )
+    self.assertIn(
+      "Validate exact macOS v0.10.3 logging-foundation evidence",
       aggregate,
     )
     self.assertIn("--allow-macos-ci-timing-skips", aggregate)

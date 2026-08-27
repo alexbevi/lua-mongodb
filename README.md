@@ -223,6 +223,10 @@ local client = assert(mongodb.client("mongodb://localhost:27017/app", {
 }))
 ```
 
+The configuration, sink, and structured event envelope are available independently of component
+emission. Command, server-selection, topology, and connection messages are introduced by their
+component-specific releases.
+
 An application that wants the standard environment variable to override its own default can
 read it before constructing the client:
 
@@ -641,7 +645,7 @@ The ordering follows the "onion model" classification of [MongoDB driver specifi
 | Programmability | [Stable API](https://alexbevi.com/specifications/versioned-api/versioned-api.html) | 🟢 | 100.0% |
 | Programmability | [Client-side encryption](https://alexbevi.com/specifications/client-side-encryption/client-side-encryption.html) | 🔴 | 0.0% |
 | Observability | [Command logging and monitoring](https://alexbevi.com/specifications/command-logging-and-monitoring/command-logging-and-monitoring.html) | 🟡 | 13.8% |
-| Observability | [Standardized logging](https://alexbevi.com/specifications/logging/logging.html) | 🔴 | 0.0% |
+| Observability | [Standardized logging](https://alexbevi.com/specifications/logging/logging.html) | 🟢 | 100.0% |
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |

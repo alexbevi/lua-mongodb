@@ -231,7 +231,10 @@ Without a custom sink, each enabled event is written through `runtime.output` as
 object with the same `component`, `level`, and `data` envelope. Logging is observational: document
 rendering, callback, and output failures are suppressed and cannot change the driver operation that
 produced the event. Logging component names are part of the supported configuration contract, but
-individual message contents may evolve within their specification requirements.
+individual message contents may evolve within their specification requirements. The configuration,
+sink, and event envelope are independent of component emission; command, server-selection,
+topology, and connection messages are enabled only by their component-specific implementation
+slices.
 
 `read_preference.mode` is `primary`, `primary_preferred`, `secondary`,
 `secondary_preferred`, or `nearest`. `tag_sets` is a dense array of string-to-string tables.

@@ -987,18 +987,46 @@
       "status": "passed",
       "suite": "gridfs"
     },
-    "logging/logging.md::document": {
-      "activity": "CON-017",
+    "logging/logging.md::configuration": {
+      "activity": "ADV-009",
       "fingerprint": "c860ca591144ef3fc5bfd623087d961ff384d1f6773d85af41fa892e8d6e671a",
       "format": "prose",
-      "last_execution": null,
-      "reason": "The v0.10.6 conformance closure owns the complete command, selection, SDAM, and CMAP logging specification.",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/config_options_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua'",
+      "reason": "Deterministic configuration cases cover disabled defaults, every standardized component and severity, environment precedence and fallback, immutable programmatic overrides, and invalid-value handling.",
       "required_environment": "deterministic-runtime",
-      "runner": "pending:CON-017",
+      "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "deferred_unsupported",
+      "status": "passed",
+      "suite": "logging"
+    },
+    "logging/logging.md::destination": {
+      "activity": "ADV-009",
+      "fingerprint": "c860ca591144ef3fc5bfd623087d961ff384d1f6773d85af41fa892e8d6e671a",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/config_options_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua'",
+      "reason": "The public logging option and runtime output contract cover stdout, stderr, and caller-owned sink destinations without direct production access to operating-system streams or files.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/logging_spec.lua",
+      "scope": "additional",
+      "source": "logging/logging.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "logging"
+    },
+    "logging/logging.md::structured-events": {
+      "activity": "LOG-008",
+      "fingerprint": "c860ca591144ef3fc5bfd623087d961ff384d1f6773d85af41fa892e8d6e671a",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/extended_json_spec.lua'",
+      "reason": "Structured-event cases cover exact field names, nil omission, relaxed Extended JSON, redaction before Unicode-safe truncation, disabled-level short-circuiting, and sink failure isolation.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/logging_spec.lua",
+      "scope": "additional",
+      "source": "logging/logging.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
       "suite": "logging"
     },
     "message/OP_MSG.md::document": {
@@ -1070,6 +1098,20 @@
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",
       "suite": "socks5-support"
+    },
+    "unified-test-format/unified-test-format.md::expected-log-messages": {
+      "activity": "LOG-001",
+      "fingerprint": "44e88282bb3b6427bd891cbde6ad3653852831d5fc0e7c2f429e9daa4d1d56a4",
+      "format": "prose",
+      "last_execution": "make test-focus FOCUS_UNIT='spec/unit/unified_logs_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_driver_spec.lua'",
+      "reason": "The unified runner captures through the public sink and covers component filtering, ordered expectations, unordered ignores, trailing extras, failure redaction, Extended JSON matching, and exact diagnostic paths.",
+      "required_environment": "deterministic-runtime",
+      "runner": "spec/unit/unified_logs_spec.lua",
+      "scope": "additional",
+      "source": "unified-test-format/unified-test-format.md",
+      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "status": "passed",
+      "suite": "unified-test-format"
     }
   },
   "schema_version": 1,
@@ -1438,13 +1480,13 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 3,
+      "deferred_unsupported": 2,
       "no_machine_cases": 1,
       "not_applicable": 2,
-      "passed": 48,
+      "passed": 52,
       "unsupported": 2
     },
-    "requirements": 56,
+    "requirements": 59,
     "suites": 50
   }
 }

@@ -9788,6 +9788,35 @@
       "notes": [],
       "started_at": "2026-08-27T14:28:45+00:00",
       "completed_at": "2026-08-27T14:35:39+00:00"
+    },
+    "CON-014": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v103.test_scope'",
+          "exit_code": 2,
+          "summary": "The v0.10.3 conformance contract failed to import because no logging-foundation scope generator or committed projection existed",
+          "recorded_at": "2026-08-27T14:55:08+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/unified_logs_spec.lua' FOCUS_PYTHON='spec.v103.test_scope spec.conformance.test_catalog spec.conformance.test_ledger spec.unified.test_cli spec.release.test_scope planning.tests.test_readme_compatibility planning.tests.test_readme_content planning.tests.test_ci_portability'",
+          "exit_code": 0,
+          "summary": "15 focused logging and unified Lua cases plus 199 conformance, capability, release-scope, documentation, and workflow contracts passed",
+          "recorded_at": "2026-08-27T15:01:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-v103-scope && python3 spec/conformance/catalog.py --check && python3 spec/conformance/ledger.py --check && python3 spec/unified/update_capabilities.py --check && python3 spec/release/scope.py --check && python3 planning/update_readme_compatibility.py --check && python3 -m py_compile spec/v103/scope.py spec/v103/test_scope.py && actionlint -ignore 'SC2129' .github/workflows/full-conformance.yml && git diff --check",
+          "exit_code": 0,
+          "summary": "The v0.10.3 scope reports four passing foundation requirements and 230 assigned cases; every catalog, ledger, capability, release-scope, README, Python syntax, workflow, and diff validator passed",
+          "recorded_at": "2026-08-27T15:01:04+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T14:52:37+00:00",
+      "completed_at": "2026-08-27T15:01:05+00:00"
     }
   },
   "verified_references": {

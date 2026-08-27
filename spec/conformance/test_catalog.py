@@ -65,7 +65,11 @@ class ConformanceCatalogTests(unittest.TestCase):
     requirement_sources = {value["source"] for value in requirements.values()}
     self.assertTrue(prose_sources <= requirement_sources)
     self.assertEqual(
-      {"auth/auth.md", "gridfs/gridfs-spec.md"},
+      {
+        "auth/auth.md",
+        "gridfs/gridfs-spec.md",
+        "unified-test-format/unified-test-format.md",
+      },
       requirement_sources - prose_sources,
     )
 
@@ -155,6 +159,32 @@ class ConformanceCatalogTests(unittest.TestCase):
     self.assertEqual("none", post_fork["required_environment"])
     self.assertEqual("spec/unit/bson_tagged_spec.lua", post_fork["runner"])
     self.assertIn("spec/unit/bson_tagged_spec.lua", post_fork["last_execution"])
+
+  def test_logging_foundation_requirements_have_exact_execution_evidence(self) -> None:
+    requirements = catalog.generate()["requirements"]
+    expected = {
+      "logging/logging.md::configuration": (
+        "ADV-009", "spec/unit/logging_spec.lua"
+      ),
+      "logging/logging.md::destination": (
+        "ADV-009", "spec/unit/logging_spec.lua"
+      ),
+      "logging/logging.md::structured-events": (
+        "LOG-008", "spec/unit/logging_spec.lua"
+      ),
+      "unified-test-format/unified-test-format.md::expected-log-messages": (
+        "LOG-001", "spec/unit/unified_logs_spec.lua"
+      ),
+    }
+
+    for identity, (activity, runner) in expected.items():
+      requirement = requirements[identity]
+
+      self.assertEqual(activity, requirement["activity"])
+      self.assertEqual("passed", requirement["status"])
+      self.assertEqual("deterministic-runtime", requirement["required_environment"])
+      self.assertEqual(runner, requirement["runner"])
+      self.assertIn(runner, requirement["last_execution"])
 
   def test_terminal_unsupported_requirements_have_no_pending_runner(self) -> None:
     requirements = catalog.generate()["requirements"]
