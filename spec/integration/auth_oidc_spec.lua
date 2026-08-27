@@ -142,6 +142,10 @@ describe("MONGODB-OIDC command execution", function()
             end,
           },
           getenv = function(name)
+            if name:match("^MONGODB_LOG_") then
+              return nil
+            end
+
             environment_calls = environment_calls + 1
             assert.are.equal("OIDC_TOKEN_FILE", name)
             return "/private/oidc-token"
