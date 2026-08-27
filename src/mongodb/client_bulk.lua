@@ -1,13 +1,13 @@
 local bson = require("mongodb.bson")
 local driver_options = require("mongodb.config.options")
 local errors = require("mongodb.error")
+local operation_id = require("mongodb.operation_id")
 
 local M = {}
 
 local MODEL_STATES = setmetatable({}, { __mode = "k" })
 local RESULT_MAP_STATES = setmetatable({}, { __mode = "k" })
 local RESULT_STATES = setmetatable({}, { __mode = "k" })
-local next_operation_id = 1
 
 local UPDATE_MODEL_OPTIONS = {
   array_filters = true,
@@ -99,13 +99,6 @@ local function number_value(value)
   if bson.is_exact(value) then
     return value:to_number()
   end
-end
-
-local function operation_id()
-  local value = next_operation_id
-
-  next_operation_id = value == 0x7fffffff and 1 or value + 1
-  return value
 end
 
 local function result_value(fields)
@@ -1343,7 +1336,7 @@ end
 
 local function execute_batches(state, command, batches, options)
   local full = result_accumulator(options)
-  local bulk_operation_id = operation_id()
+  local bulk_operation_id = operation_id.next()
 
   for _, batch in ipairs(batches) do
     local response, err = state.executor:command("admin", command, {

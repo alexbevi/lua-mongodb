@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_id = require("mongodb.operation_id")
 local operation_timeout = require("mongodb.operation_timeout")
 local runtime_contract = require("mongodb.runtime")
 
@@ -7,7 +8,6 @@ local M = {}
 
 local STATES = setmetatable({}, { __mode = "k" })
 local METHODS = {}
-local next_operation_id = 1
 local REAUTHENTICATION_REQUIRED_CODE = 391
 
 local RETRYABLE_CODES = {
@@ -33,13 +33,6 @@ local METATABLE = {
     error("MongoDB retry executors are immutable", 2)
   end,
 }
-
-local function operation_id()
-  local value = next_operation_id
-
-  next_operation_id = value == 0x7fffffff and 1 or value + 1
-  return value
-end
 
 local function attempt_options(options, id, deprioritized)
   local result = {}
@@ -189,7 +182,7 @@ function METHODS:command(database, command, options)
     )
   end
 
-  local id = options.operation_id or operation_id()
+  local id = options.operation_id or operation_id.next()
   local context = operation_timeout.current()
   local first_err
   local previous_err

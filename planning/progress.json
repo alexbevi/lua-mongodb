@@ -9730,6 +9730,35 @@
       "notes": [],
       "started_at": "2026-08-27T13:41:33+00:00",
       "completed_at": "2026-08-27T13:51:20+00:00"
+    },
+    "LOG-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/operation_id_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining allocator test errored because mongodb.operation_id did not exist; no test cases ran",
+          "recorded_at": "2026-08-27T14:07:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/operation_id_spec.lua spec/unit/retry_executor_spec.lua spec/unit/bulk_spec.lua spec/unit/client_bulk_spec.lua spec/unit/command_monitoring_spec.lua'",
+          "exit_code": 0,
+          "summary": "49 focused allocator, retry, collection-bulk, client-bulk, and monitoring cases passed with 0 failures, errors, pending, or environment skips; 6 logging operation-ID fixtures remain deferred to pending LOG-004 and SEL-003 emission slices",
+          "recorded_at": "2026-08-27T14:12:57+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_LINT='src/mongodb/operation_id.lua src/mongodb/retry_executor.lua src/mongodb/bulk.lua src/mongodb/client_bulk.lua spec/unit/operation_id_spec.lua spec/unit/bulk_spec.lua' && make test-architecture test-complexity && make test-focus FOCUS_PYTHON='spec.quality.test_coverage_gate spec.package.test_package planning.tests.test_readme_content' && luarocks --lua-version=5.4 lint mongodb-0.10.2-1.rockspec",
+          "exit_code": 0,
+          "summary": "Six touched Lua files passed lint; architecture and complexity ratchets passed; 24 coverage, isolated-package, classification, and documentation contracts passed; the new allocator measured 26/26 covered lines; rockspec lint passed",
+          "recorded_at": "2026-08-27T14:12:58+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T14:05:41+00:00",
+      "completed_at": "2026-08-27T14:12:59+00:00"
     }
   },
   "verified_references": {

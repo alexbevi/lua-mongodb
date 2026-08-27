@@ -192,6 +192,10 @@
       "path": "src/mongodb/network/transport.lua",
       "stability": "internal"
     },
+    "mongodb.operation_id": {
+      "path": "src/mongodb/operation_id.lua",
+      "stability": "internal"
+    },
     "mongodb.operation_timeout": {
       "path": "src/mongodb/operation_timeout.lua",
       "stability": "internal"

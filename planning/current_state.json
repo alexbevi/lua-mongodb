@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 346,
+    "completed": 347,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 41
+    "pending": 40
   },
   "active": [],
   "ready": [
-    "LOG-009",
+    "LOG-001",
     "ADV-010",
     "SFP-001"
   ],
@@ -44,7 +44,7 @@
     "ecosystem-hardening": [],
     "v0-10-2-gssapi": [],
     "v0-10-3-logging-foundation": [
-      "LOG-009"
+      "LOG-001"
     ],
     "v0-10-4-command-logging": [],
     "v0-10-5-server-selection-logging": [],
@@ -55,5 +55,5 @@
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "LOG-009"
+  "next_ready": "LOG-001"
 }

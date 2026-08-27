@@ -174,6 +174,13 @@ describe("collection bulk writes", function()
     assert.is_true(bson.is_document(commands[2].command:get("let")))
     assert.is_true(bson.is_document(commands[3].command:get("let")))
     assert.are.equal(2, #commands[2].options.sequences[1].documents)
+
+    for index = 2, #commands do
+      assert.are.equal(
+        commands[1].options.operation_id,
+        commands[index].options.operation_id
+      )
+    end
   end)
 
   it("continues unordered runs and remaps write errors to original indexes", function()

@@ -1,11 +1,11 @@
 local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
+local operation_id = require("mongodb.operation_id")
 
 local M = {}
 
 local MODEL_STATES = setmetatable({}, { __mode = "k" })
 local RESULT_STATES = setmetatable({}, { __mode = "k" })
-local next_operation_id = 1
 
 local MODEL_METATABLE = {
   __index = function(value, key)
@@ -128,13 +128,6 @@ local function number_value(value)
   if bson.is_exact(value) then
     return value:to_number()
   end
-end
-
-local function operation_id()
-  local value = next_operation_id
-
-  next_operation_id = value == 0x7fffffff and 1 or value + 1
-  return value
 end
 
 local function code_name(value)
@@ -955,7 +948,7 @@ local function execute_batches(state, operations, batches, options, acknowledged
     write_errors = {},
   }
   local processed = 0
-  local bulk_operation_id = operation_id()
+  local bulk_operation_id = operation_id.next()
 
   for batch_index, batch in ipairs(batches) do
     local batch_acknowledged = acknowledged

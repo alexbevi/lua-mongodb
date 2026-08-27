@@ -176,6 +176,10 @@
       "active": 131,
       "covered": 113
     },
+    "src/mongodb/operation_id.lua": {
+      "active": 26,
+      "covered": 26
+    },
     "src/mongodb/operation_timeout.lua": {
       "active": 166,
       "covered": 146
