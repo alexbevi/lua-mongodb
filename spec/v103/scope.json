@@ -4,6 +4,7 @@
     "command-logging-and-monitoring/tests/logging/command.json::test[2]": "LOG-002",
     "command-logging-and-monitoring/tests/logging/command.json::test[3]": "LOG-002",
     "command-logging-and-monitoring/tests/logging/command.json::test[4]": "LOG-002",
+    "command-logging-and-monitoring/tests/logging/no-handshake-messages.json::test[1]": "LOG-010",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[10]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[11]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[12]": "LOG-003",
@@ -49,7 +50,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 45
+    "unified_cases": 46
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

@@ -384,6 +384,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
     )
     is_command_lifecycle_logging_fixture = relative.as_posix() in {
       "command-logging-and-monitoring/tests/logging/command.json",
+      "command-logging-and-monitoring/tests/logging/no-handshake-messages.json",
       "command-logging-and-monitoring/tests/logging/redacted-commands.json",
       "command-logging-and-monitoring/tests/logging/unacknowledged-write.json",
     }

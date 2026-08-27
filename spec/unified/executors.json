@@ -2285,6 +2285,10 @@
       "activity": "LOG-002",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/logging/no-handshake-messages.json::test[1]": {
+      "activity": "LOG-010",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[1]": {
       "activity": "LOG-003",
       "environment": "live-replicaset"

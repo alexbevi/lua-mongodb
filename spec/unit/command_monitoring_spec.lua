@@ -52,7 +52,7 @@ local function clock(values)
 end
 
 describe("command monitoring", function()
-  it("logs command started, succeeded, failed, and unacknowledged outcomes", function()
+  it("suppresses handshakes and logs application command outcomes", function()
     local observed = {}
     local logger = assert(logging.new(fake_runtime.new(), {
       levels = { command = "debug" },

@@ -10007,6 +10007,28 @@
       "notes": [],
       "started_at": "2026-08-27T18:39:01+00:00",
       "completed_at": "2026-08-27T18:48:41+00:00"
+    },
+    "LOG-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/no-handshake-messages.json'",
+          "exit_code": 2,
+          "summary": "The exact upstream handshake-suppression fixture was discovered but rejected as unclassified, so the driver had no executable conformance claim for handshake log suppression.",
+          "recorded_at": "2026-08-27T19:06:43+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/no-handshake-messages.json'; make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_handshake_logging_suppression_case_is_runnable spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats spec.v103.test_scope.V103ScopeTests.test_generated_scope_closes_logging_foundation spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'; make test-unified-inventory; make test-complexity",
+          "exit_code": 0,
+          "summary": "The handshake fixture executed live with 1 passed, 0 environment-skipped, 0 deferred, and 0 failed. The command-monitoring unit file passed 8 tests, four focused generated-artifact contracts passed, the 130-test unified inventory passed, touched Lua lint reported 0 warnings, and the complexity baseline stayed current.",
+          "recorded_at": "2026-08-27T19:13:11+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T19:06:12+00:00",
+      "completed_at": "2026-08-27T19:13:17+00:00"
     }
   },
   "verified_references": {

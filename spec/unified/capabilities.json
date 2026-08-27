@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2068,
-    "runnable": 2068
+    "passed": 2069,
+    "runnable": 2069
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36569,6 +36569,37 @@
           "replicaset",
           "sharded"
         ]
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/no-handshake-messages.json::test[1]": {
+      "activity": "LOG-010",
+      "fingerprint": "6d4cb194a89719d59a154b5685ad6a7ce7f66c6834f59eb4adb194753cacacc6",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "runCommand.command",
+          "runCommand.commandName",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [
+          "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": []
       },
       "status": "runnable"
     },
