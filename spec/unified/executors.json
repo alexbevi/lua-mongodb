@@ -2269,6 +2269,26 @@
       "environment": "isolated-replicaset",
       "testCommands": true
     },
+    "command-logging-and-monitoring/tests/logging/command.json::test[1]": {
+      "activity": "LOG-002",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[2]": {
+      "activity": "LOG-002",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[3]": {
+      "activity": "LOG-002",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[4]": {
+      "activity": "LOG-002",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": {
+      "activity": "LOG-002",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[1]": {
       "activity": "REL-008",
       "environment": "live-standalone"

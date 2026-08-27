@@ -2,6 +2,8 @@ local bson = require("mongodb.bson")
 local command_executor = require("mongodb.command.executor")
 local command_security = require("mongodb.command.security")
 local errors = require("mongodb.error")
+local fake_runtime = require("mongodb.runtime.fake")
+local logging = require("mongodb.logging")
 local monitoring = require("mongodb.monitoring")
 local op_msg = require("mongodb.wire.op_msg")
 
@@ -50,6 +52,79 @@ local function clock(values)
 end
 
 describe("command monitoring", function()
+  it("logs command started, succeeded, failed, and unacknowledged outcomes", function()
+    local observed = {}
+    local logger = assert(logging.new(fake_runtime.new(), {
+      levels = { command = "debug" },
+      sink = function(event)
+        observed[#observed + 1] = event
+      end,
+    }))
+    local events = monitoring.new({
+      clock = clock({ 10, 10.25, 20, 20.5, 30, 30.75 }),
+      logger = logger,
+      listeners = {},
+    })
+    local connection = fake_connection({
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      bson.document({ { "ok", 1 }, { "value", 42 } }),
+      bson.document({ { "ok", 0 }, { "errmsg", "bad filter" }, { "code", 2 } }),
+    })
+    local commands = command_executor.new(connection, {
+      monitoring = events,
+      server = "db.example:27018",
+      server_host = "db.example",
+      server_port = 27018,
+    })
+
+    assert(commands:hello())
+    assert(commands:command("app", bson.document({ { "ping", 1 } })))
+    local response, err = commands:command(
+      "app",
+      bson.document({ { "find", "items" } })
+    )
+
+    assert.is_nil(response)
+    assert.is_true(errors.is(err, errors.CATEGORY.SERVER))
+    assert(commands:command("app", bson.document({ { "insert", "items" } }), {
+      no_response = true,
+    }))
+    assert.are.same({
+      "Command started",
+      "Command succeeded",
+      "Command started",
+      "Command failed",
+      "Command started",
+      "Command succeeded",
+    }, (function()
+      local messages = {}
+
+      for index, event in ipairs(observed) do
+        messages[index] = event.data.message
+      end
+
+      return messages
+    end)())
+    assert.are.equal(observed[1].data.requestId, observed[2].data.requestId)
+    assert.are.equal(observed[3].data.requestId, observed[4].data.requestId)
+    assert.are.equal(observed[5].data.requestId, observed[6].data.requestId)
+    assert.are.equal("command", observed[1].component)
+    assert.are.equal("debug", observed[1].level)
+    assert.are.equal("app", observed[1].data.databaseName)
+    assert.are.equal("ping", observed[1].data.commandName)
+    assert.are.equal('{"ping":1,"$db":"app"}', observed[1].data.command)
+    assert.are.equal(250, observed[2].data.durationMS)
+    assert.are.equal('{"ok":1,"value":42}', observed[2].data.reply)
+    assert.are.equal("find", observed[4].data.commandName)
+    assert.are.equal(500, observed[4].data.durationMS)
+    assert.matches("bad filter", observed[4].data.failure, 1, true)
+    assert.are.equal("db.example", observed[4].data.serverHost)
+    assert.are.equal(27018, observed[4].data.serverPort)
+    assert.are.equal("insert", observed[6].data.commandName)
+    assert.are.equal(750, observed[6].data.durationMS)
+    assert.are.equal('{"ok":1}', observed[6].data.reply)
+  end)
+
   it("runs the exact load-balanced serviceId event cases", function()
     local fixture = read_fixture("load-balancers/tests/event-monitoring.json")
     local service_id = bson.object_id("000000000000000000000001")

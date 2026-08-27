@@ -307,7 +307,20 @@ local function render_document(value, redacted, maximum)
     error("structured log document fields must be BSON documents", 2)
   end
 
-  local encoded, err = bson.json.encode(value, { mode = "relaxed" })
+  local bytes, err = bson.encode(value)
+
+  if not bytes then
+    error(tostring(err), 2)
+  end
+
+  value, err = bson.decode(bytes)
+
+  if not value then
+    error(tostring(err), 2)
+  end
+
+  local encoded
+  encoded, err = bson.json.encode(value, { mode = "relaxed" })
 
   if not encoded then
     error(tostring(err), 2)

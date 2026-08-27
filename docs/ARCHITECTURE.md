@@ -63,8 +63,13 @@ result on a Unicode code-point boundary and appends an uncounted ellipsis. The c
 check precedes all rendering work. Rendering, callback, and runtime-output failures are protected
 and reported only as an internal false result, so logging cannot change the observed driver
 operation. Default output is deterministic compact JSON, while a custom sink receives the immutable
-envelope. Command, selection, SDAM, and CMAP slices later decide when to emit these records without
-changing their existing execution decisions.
+envelope. Command lifecycle logging observes the existing command-monitor span. An enabled command
+logger activates that span even without command listeners, then emits one debug started record and
+one paired succeeded or failed record around the same request ID and monotonic duration. Client
+construction passes the already parsed host and port into the executor, avoiding address parsing in
+the logging layer. A successfully written unacknowledged OP_MSG finishes the span with the required
+synthetic `{ ok: 1 }` reply before returning the same reply to its caller. Selection, SDAM, and CMAP
+slices later decide when to emit their records without changing existing execution decisions.
 
 Unified conformance owns its structured-log collector entirely under `spec/support`. A client entity's
 `observeLogMessages` document becomes ordinary public logging configuration with a custom sink; production
@@ -289,7 +294,7 @@ SASL commands pass through the executor so normal deadlines, cancellation, and c
 
 ### Command monitoring
 
-`mongodb.monitoring` publishes immutable command-started, command-succeeded, and command-failed events synchronously around application command I/O. The executor supplies a single request ID to each correlated pair, accepts an optional operation ID for multi-command work, reports the database and connection identities, and reconstructs OP_MSG document sequences as arrays in the started event. `mongodb.operation_id` owns one process-wide positive integer sequence for logical operations. It wraps from 2147483647 to 1; retry executors retain one allocated value across attempts, and collection or client bulk execution retains one value across every batch. Callers may continue to supply an existing operation ID so nested retry execution observes rather than replaces the logical identity. These identities are available to command monitoring and later command or server-selection log emitters without affecting their payloads today. After a load-balanced handshake, every outcome in the correlated command pair carries that physical connection's validated `serviceId`; ordinary connections retain a nil service identifier. Durations come from an injected monotonic clock capability and cover the command exchange. Initial connection handshakes are excluded from command monitoring.
+`mongodb.monitoring` publishes immutable command-started, command-succeeded, and command-failed events synchronously around application command I/O. The executor supplies a single request ID to each correlated pair, accepts an optional operation ID for multi-command work, reports the database and connection identities, and reconstructs OP_MSG document sequences as arrays in the started event. The same span now emits command lifecycle logs through the client logger without making command listeners a prerequisite. `mongodb.operation_id` owns one process-wide positive integer sequence for logical operations. It wraps from 2147483647 to 1; retry executors retain one allocated value across attempts, and collection or client bulk execution retains one value across every batch. Callers may continue to supply an existing operation ID so nested retry execution observes rather than replaces the logical identity. These identities are available to command monitoring and later command-correlation or server-selection log emitters without allocating a second identity. After a load-balanced handshake, every outcome in the correlated command pair carries that physical connection's validated `serviceId`; ordinary connections retain a nil service identifier. Durations come from an injected monotonic clock capability and cover the command exchange. Initial connection handshakes are excluded from command monitoring and command logging.
 
 Listeners are copied at monitor construction and invoked in registration order. Each callback runs behind an isolated protected call, so listener failures cannot change command results or prevent later listeners from observing the event; an optional error callback receives listener failures under the same isolation rule. Event and BSON values are immutable, preventing one listener from changing what another listener observes.
 
@@ -361,7 +366,7 @@ Eligible acknowledged inserts, single updates/replacements/deletes, find-and-mod
 
 ### Single-document CRUD
 
-`mongodb.crud` builds single-document insert and find commands from collection state without importing a runtime-specific module. Insert prepends a lazily generated ObjectId only when `_id` is absent, leaving the caller's immutable BSON document unchanged. The command carries inherited write concern plus supported insert options; `w: 0` uses OP_MSG `moreToCome`, publishes no synthetic command-success event, and returns an unacknowledged immutable result. Acknowledged replies are inspected for both `writeErrors` and `writeConcernError`; structured `write` errors retain the numeric code, labels, complete immutable response, operation index, and unparsed `errInfo`.
+`mongodb.crud` builds single-document insert and find commands from collection state without importing a runtime-specific module. Insert prepends a lazily generated ObjectId only when `_id` is absent, leaving the caller's immutable BSON document unchanged. The command carries inherited write concern plus supported insert options; `w: 0` uses OP_MSG `moreToCome`, publishes the required synthetic command-success event and log after the complete write, and returns an unacknowledged immutable result. Acknowledged replies are inspected for both `writeErrors` and `writeConcernError`; structured `write` errors retain the numeric code, labels, complete immutable response, operation index, and unparsed `errInfo`.
 
 `find_one` accepts either an ordered filter or a scalar `_id`, maps validated options to their command names, and always appends `limit: 1` and `singleBatch: true` without a batch size. It returns the first document from `cursor.firstBatch`, returns `nil` when that batch is empty, and treats malformed cursor replies as protocol errors. Raw-data options are emitted only at the negotiated MongoDB 8.2 wire version. Awaitable and exhaust cursor modes remain outside this slice.
 

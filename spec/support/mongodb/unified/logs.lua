@@ -110,7 +110,9 @@ local function data_document(data)
   table.sort(entries, function(left, right)
     return left[1] < right[1]
   end)
-  return bson.document(entries)
+  local encoded = assert(bson.encode(bson.document(entries)))
+
+  return assert(bson.decode(encoded))
 end
 
 local function validate_expected_message(expected, path)

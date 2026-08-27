@@ -68,6 +68,7 @@ describe("unified log expectations", function()
       command = document({ { "find", "events" }, { "$db", "app" } }),
       commandName = "find",
       message = "Command started",
+      requestId = 42,
     }, {
       document_fields = { command = false },
     }))
@@ -86,6 +87,9 @@ describe("unified log expectations", function()
       expected_message("command", "debug", document({
         { "message", "Command started" },
         { "commandName", "find" },
+        { "requestId", document({
+          { "$$type", array({ "int", "long" }) },
+        }) },
         { "command", document({
           { "$$matchAsDocument", document({
             { "find", "events" },

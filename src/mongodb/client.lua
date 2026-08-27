@@ -492,6 +492,8 @@ local function open_executor(
     metadata = metadata,
     monitoring = monitor,
     server = server_address,
+    server_host = host.host,
+    server_port = host.port,
     server_api = config.server_api,
     zlib_compression_level = config.zlib_compression_level,
   })

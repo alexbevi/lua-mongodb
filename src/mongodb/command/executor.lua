@@ -418,6 +418,8 @@ local function execute(state, database, command, options)
       operation_id = options.operation_id,
       request_id = request_id,
       server_connection_id = state.server_connection_id,
+      server_host = state.server_host,
+      server_port = state.server_port,
       service_id = state.service_id,
     })
   end
@@ -434,7 +436,13 @@ local function execute(state, database, command, options)
   end
 
   if options.no_response then
-    return bson.document({ { "ok", 1 } })
+    local reply = bson.document({ { "ok", 1 } })
+
+    if span then
+      span:succeeded(reply)
+    end
+
+    return reply
   end
 
   return receive_response(state, request_id, options, span, sensitive)
@@ -713,6 +721,8 @@ function M.new(connection, options)
     request_ids = options.request_ids or op_msg.request_ids(),
     server = options.server,
     server_connection_id = nil,
+    server_host = options.server_host,
+    server_port = options.server_port,
     server_api = options.server_api,
     service_id = nil,
     zlib_compression_level = zlib_compression_level,

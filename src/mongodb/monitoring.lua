@@ -126,6 +126,53 @@ local function common_fields(span_state, event_type, duration_ms)
   return fields
 end
 
+local function common_log_fields(span_state, message, duration_ms)
+  local fields = {
+    commandName = span_state.command_name,
+    databaseName = span_state.database_name,
+    message = message,
+    requestId = span_state.request_id,
+    serverHost = span_state.server_host,
+    serverPort = span_state.server_port,
+  }
+
+  if duration_ms ~= nil then
+    fields.durationMS = duration_ms
+  end
+
+  return fields
+end
+
+local function emit_log(span_state, outcome, value, duration_ms)
+  local logger = span_state.monitor.logger
+
+  if logger == nil then
+    return
+  end
+
+  local messages = {
+    failed = "Command failed",
+    started = "Command started",
+    succeeded = "Command succeeded",
+  }
+  local fields = common_log_fields(span_state, messages[outcome], duration_ms)
+  local document_fields
+
+  if outcome == "started" then
+    fields.command = value
+    document_fields = { command = span_state.sensitive }
+  elseif outcome == "succeeded" then
+    fields.reply = value
+    document_fields = { reply = span_state.sensitive }
+  else
+    fields.failure = span_state.sensitive and redacted_failure(value) or value
+  end
+
+  logger:emit("command", "debug", fields, {
+    document_fields = document_fields,
+  })
+end
+
 local function finish(span, outcome, value)
   local span_state = SPAN_STATES[span]
 
@@ -148,6 +195,7 @@ local function finish(span, outcome, value)
 
   local event = new_event(fields)
 
+  emit_log(span_state, outcome, value, duration_ms)
   publish(span_state.monitor, outcome, event)
   return event
 end
@@ -210,6 +258,8 @@ function MONITOR_METHODS:start(fields)
     request_id = fields.request_id,
     sensitive = sensitive,
     server_connection_id = fields.server_connection_id,
+    server_host = fields.server_host,
+    server_port = fields.server_port,
     service_id = fields.service_id,
     started_at = monitor_state.clock:now(),
   }
@@ -217,12 +267,16 @@ function MONITOR_METHODS:start(fields)
   local event_fields = common_fields(SPAN_STATES[span], "command_started")
 
   event_fields.command = sensitive and empty_document() or fields.command
+  emit_log(SPAN_STATES[span], "started", fields.command)
   publish(monitor_state, "started", new_event(event_fields))
   return setmetatable(span, SPAN_METATABLE)
 end
 
 function MONITOR_METHODS:has_listeners()
-  return #MONITOR_STATES[self].listeners > 0
+  local state = MONITOR_STATES[self]
+
+  return #state.listeners > 0
+    or state.logger ~= nil and state.logger:enabled("command", "debug")
 end
 
 function M.new(options)
@@ -240,6 +294,14 @@ function M.new(options)
 
   if options.on_listener_error ~= nil and type(options.on_listener_error) ~= "function" then
     error("on_listener_error must be a function", 2)
+  end
+
+  if options.logger ~= nil
+      and (type(options.logger) ~= "table"
+        or type(options.logger.enabled) ~= "function"
+        or type(options.logger.emit) ~= "function")
+  then
+    error("command monitoring logger must support enabled and emit", 2)
   end
 
   local monitor = {}

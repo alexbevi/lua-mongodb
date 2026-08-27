@@ -232,9 +232,15 @@ object with the same `component`, `level`, and `data` envelope. Logging is obser
 rendering, callback, and output failures are suppressed and cannot change the driver operation that
 produced the event. Logging component names are part of the supported configuration contract, but
 individual message contents may evolve within their specification requirements. The configuration,
-sink, and event envelope are independent of component emission; command, server-selection,
-topology, and connection messages are enabled only by their component-specific implementation
-slices.
+sink, and event envelope are independent of component emission. The command component emits
+`Command started`, `Command succeeded`, and `Command failed` messages at `debug`. Every message
+contains `commandName`, `databaseName`, `requestId`, `serverHost`, and `serverPort`. Started
+messages add the relaxed Extended JSON `command`; succeeded messages add `durationMS` and the
+relaxed Extended JSON `reply`; failed messages add `durationMS` and `failure`. An unacknowledged
+write emits a succeeded message with an `{ "ok": 1 }` reply after the complete OP_MSG has been
+written. Each started message has exactly one terminal message with the same request ID. Initial
+handshakes remain excluded. Server-selection, topology, and connection messages are enabled only
+by their component-specific implementation slices.
 
 `read_preference.mode` is `primary`, `primary_preferred`, `secondary`,
 `secondary_preferred`, or `nearest`. `tag_sets` is a dense array of string-to-string tables.

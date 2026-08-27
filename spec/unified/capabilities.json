@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2047,
-    "runnable": 2047
+    "passed": 2052,
+    "runnable": 2052
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36444,6 +36444,160 @@
         "special_operations": [
           "assertCollectionExists"
         ],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[1]": {
+      "activity": "LOG-002",
+      "fingerprint": "e3c1acb9e78bf9b2b28009da25ef611f13906bfd261e37caab9dde485f3206ca",
+      "requirements": {
+        "arguments": [
+          "runCommand.command",
+          "runCommand.commandName"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$matchAsDocument",
+          "$$matchAsRoot",
+          "$$type"
+        ],
+        "operations": [
+          "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[2]": {
+      "activity": "LOG-002",
+      "fingerprint": "285529a7b095a186eb6ac8f737589833d66dbe0604dca8ebf4fc1cdeea8bae2e",
+      "requirements": {
+        "arguments": [
+          "find.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[3]": {
+      "activity": "LOG-002",
+      "fingerprint": "0ced73cc124249102f186ff2f5abe34a9672a5c44e3c73d6dc9807ca9cced82b",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "insertOne.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "commitTransaction",
+          "insertOne",
+          "startTransaction"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/command.json::test[4]": {
+      "activity": "LOG-002",
+      "fingerprint": "f5d2d63026141e4a0186f9eab6f4e023dc190562d94398b4a9b22c76d0c8cf45",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "insertOne.session"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database",
+          "session"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "abortTransaction",
+          "insertOne",
+          "startTransaction"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "replicaset",
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": {
+      "activity": "LOG-002",
+      "fingerprint": "9aa0c466f79ebc7d1a09618b74de088878cb96be29f630ce094740ea77c99495",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$matchAsDocument",
+          "$$matchAsRoot",
+          "$$type"
+        ],
+        "operations": [
+          "find",
+          "insertOne"
+        ],
+        "special_operations": [],
         "topologies": []
       },
       "status": "runnable"
