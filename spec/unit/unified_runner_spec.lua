@@ -144,6 +144,36 @@ describe("unified runner core", function()
     }), "$.operations[1]"))
   end)
 
+  it("classifies server write errors as non-client errors", function()
+    local runner = assert(unified.new({
+      runtime = fake_runtime.new(),
+      entity_factories = {
+        counter = function()
+          return {}
+        end,
+      },
+      operations = {
+        counter = {
+          fail = function()
+            return nil, errors.new({
+              category = errors.CATEGORY.WRITE,
+              message = "write failed",
+            })
+          end,
+        },
+      },
+    }))
+
+    assert(runner:create_entities(array({
+      document({ { "counter", document({ { "id", "counter0" } }) } }),
+    })))
+    assert(runner:execute(document({
+      { "name", "fail" },
+      { "object", "counter0" },
+      { "expectError", document({ { "isClientError", false } }) },
+    }), "$.operations[1]"))
+  end)
+
   it("supports unified match operators and rejects unknown operators", function()
     local runner = assert(unified.new({ runtime = fake_runtime.new() }))
     assert(runner:add_entity("expected0", "bson", bson.int32(4)))

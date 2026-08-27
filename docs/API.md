@@ -218,6 +218,8 @@ event; the collection operation still returns its structured MongoDB error.
 An `insert_one` publishes the encoded insert command and the server reply. Replies that contain
 `writeErrors` still produce a succeeded event, while the collection operation retains its existing
 write-error result.
+`insert_many` applies the same event contract to each emitted wire batch. A batch reply containing
+`writeErrors` is a command success even though the collection operation returns a write error.
 
 #### Structured logging configuration
 

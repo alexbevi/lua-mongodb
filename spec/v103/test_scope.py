@@ -27,7 +27,7 @@ class V103ScopeTests(unittest.TestCase):
       {
         "foundation_requirements": 4,
         "standardized_cases": 230,
-        "unified_cases": 64,
+        "unified_cases": 66,
       },
       generated["evidence"],
     )

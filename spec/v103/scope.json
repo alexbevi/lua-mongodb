@@ -37,6 +37,8 @@
     "command-logging-and-monitoring/tests/monitoring/find.json::test[4]": "LOG-016",
     "command-logging-and-monitoring/tests/monitoring/find.json::test[5]": "LOG-016",
     "command-logging-and-monitoring/tests/monitoring/find.json::test[6]": "LOG-017",
+    "command-logging-and-monitoring/tests/monitoring/insertMany.json::test[1]": "LOG-019",
+    "command-logging-and-monitoring/tests/monitoring/insertMany.json::test[2]": "LOG-019",
     "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[1]": "LOG-006",
     "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[2]": "LOG-006",
     "command-logging-and-monitoring/tests/monitoring/server-connection-id.json::test[1]": "LOG-018",
@@ -68,7 +70,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 64
+    "unified_cases": 66
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

@@ -10271,6 +10271,28 @@
       "notes": [],
       "started_at": "2026-08-27T23:01:54+00:00",
       "completed_at": "2026-08-27T23:03:41+00:00"
+    },
+    "LOG-019": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_insert_many_monitoring_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The exact insertMany monitoring contract failed because insertMany.json::test[1] and test[2] were absent from the unified capability manifest; 1 focused contract ran and errored.",
+          "recorded_at": "2026-08-27T23:15:55+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA_PATH='<lua54-user-path>' LUA_CPATH='<lua54-user-cpath>' make test-focus LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 BUSTED=/Users/alex/.luarocks/bin/busted LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/unified_runner_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/insertMany.json' FOCUS_PYTHON='<five focused conformance contracts>' FOCUS_LINT='spec/support/mongodb/unified/runner.lua spec/unit/unified_runner_spec.lua'",
+          "exit_code": 0,
+          "summary": "The focused unit file passed 7 checks; the exact insertMany monitoring fixture executed 2 cases with 2 passes and no failures, environment skips, or deferrals; all five conformance contracts and touched-file lint passed, and write-category errors were classified as server-origin without changing operation results.",
+          "recorded_at": "2026-08-27T23:20:16+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T23:15:32+00:00",
+      "completed_at": "2026-08-27T23:20:17+00:00"
     }
   },
   "verified_references": {

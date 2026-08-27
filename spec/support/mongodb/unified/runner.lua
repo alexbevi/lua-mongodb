@@ -947,6 +947,7 @@ end
 
 local function error_is_client(err)
   return err.category ~= errors.CATEGORY.SERVER
+    and err.category ~= errors.CATEGORY.WRITE
     and error_response(err) == nil
 end
 
