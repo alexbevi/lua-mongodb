@@ -209,6 +209,8 @@ identities. Handshakes and monitor heartbeats remain outside this listener path.
 
 Single-batch collection finds use the same listener path. The started event retains the filter and
 declared find options, while the succeeded event retains the server's cursor reply and first batch.
+If iteration requires another batch, listeners receive a correlated `getMore` started and succeeded
+pair with the cursor identifier, collection name, batch size, and server reply.
 
 #### Structured logging configuration
 

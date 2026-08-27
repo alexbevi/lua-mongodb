@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2081,
-    "runnable": 2081
+    "passed": 2082,
+    "runnable": 2082
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37439,7 +37439,6 @@
     "command-logging-and-monitoring/tests/monitoring/find.json::test[4]": {
       "activity": "LOG-016",
       "fingerprint": "feaad77a066e430db058397138d76cd05f5bdb84340aa175a7c054ff8d7e5ddf",
-      "reason": "getMore command monitoring awaits its v0.10.4 slice",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -37466,12 +37465,12 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "command-logging-and-monitoring/tests/monitoring/find.json::test[5]": {
       "activity": "LOG-016",
       "fingerprint": "8c42f483737885ff421145fc744268de6c67c52f826b290e46a59564d6712ffc",
-      "reason": "getMore command monitoring awaits its v0.10.4 slice",
+      "reason": "the server requirement capped at MongoDB 4.4.99 is below the MongoDB 7.0 production-core floor",
       "requirements": {
         "arguments": [
           "find.batchSize",
@@ -37502,7 +37501,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "excluded_scope"
     },
     "command-logging-and-monitoring/tests/monitoring/find.json::test[6]": {
       "activity": "LOG-017",

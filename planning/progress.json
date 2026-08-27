@@ -10183,6 +10183,28 @@
       "notes": [],
       "started_at": "2026-08-27T21:50:02+00:00",
       "completed_at": "2026-08-27T21:56:33+00:00"
+    },
+    "LOG-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_getmore_monitoring_case_and_server_floor_are_classified'",
+          "exit_code": 2,
+          "summary": "The exact getMore monitoring and server-floor contract failed because find.json::test[4] remained deferred instead of runnable; 1 focused contract ran and failed before reaching the below-floor assertion.",
+          "recorded_at": "2026-08-27T22:12:06+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/find.json' FOCUS_PYTHON='<four focused contracts>'",
+          "exit_code": 0,
+          "summary": "The exact find monitoring fixture executed 4 runnable cases against a live replica set: 4 passed, 0 environment-skipped, 0 failed, with the failed-find case deferred; 4 focused getMore, existing redaction, ledger, and logging-scope contracts also passed, and the pre-4.5 cursor-kill branch is an exact MongoDB 7.0 floor exclusion.",
+          "recorded_at": "2026-08-27T22:16:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T22:11:39+00:00",
+      "completed_at": "2026-08-27T22:16:46+00:00"
     }
   },
   "verified_references": {

@@ -2405,6 +2405,10 @@
       "activity": "LOG-015",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[4]": {
+      "activity": "LOG-016",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[1]": {
       "activity": "REL-008",
       "environment": "live-standalone"

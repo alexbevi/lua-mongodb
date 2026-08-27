@@ -130,9 +130,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 973,
-      "excluded_scope": 98,
-      "passed": 4438,
+      "deferred_unsupported": 971,
+      "excluded_scope": 99,
+      "passed": 4439,
       "unsupported": 15,
     }, generated["summary"]["statuses"])
 

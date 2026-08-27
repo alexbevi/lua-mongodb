@@ -291,9 +291,16 @@ TEST_OVERRIDES[
   "REL-053",
   "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
 )
-for index, owner in ((4, "LOG-016"), (5, "LOG-016"), (6, "LOG-017")):
-  identity = f"command-logging-and-monitoring/tests/monitoring/find.json::test[{index}]"
-  TEST_OVERRIDES[identity] = (owner, OWNER_REASONS[owner])
+TEST_OVERRIDES[
+  "command-logging-and-monitoring/tests/monitoring/find.json::test[5]"
+] = (
+  "LOG-016",
+  "the server requirement capped at MongoDB 4.4.99 is below the "
+  "MongoDB 7.0 production-core floor",
+)
+TEST_OVERRIDES[
+  "command-logging-and-monitoring/tests/monitoring/find.json::test[6]"
+] = ("LOG-017", OWNER_REASONS["LOG-017"])
 TEST_OVERRIDES.update({
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": (
     "AUTH-011",
@@ -352,6 +359,10 @@ TEST_OVERRIDES.update({
     None,
   ),
 })
+
+EXCLUDED_SCOPE_TESTS = {
+  "command-logging-and-monitoring/tests/monitoring/find.json::test[5]",
+}
 
 for index in range(1, 7):
   TEST_OVERRIDES[
@@ -1127,7 +1138,9 @@ def generate() -> dict[str, object]:
   for test in discovered:
     activity, reason = classify_test(test)
     status = "runnable" if reason is None else "deferred_unsupported"
-    if activity == "REL-053" and reason is not None:
+    if reason is not None and (
+      activity == "REL-053" or test["id"] in EXCLUDED_SCOPE_TESTS
+    ):
       status = "excluded_scope"
     tests[test["id"]] = {
       "activity": activity,
