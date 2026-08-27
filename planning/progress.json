@@ -9701,6 +9701,35 @@
       "reopened_after_commit": "eeed1caf797fc49b3ddbe38c062d3fa1c1033c59",
       "started_at": "2026-08-27T13:32:19+00:00",
       "completed_at": "2026-08-27T13:32:50+00:00"
+    },
+    "LOG-008": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua'",
+          "exit_code": 2,
+          "summary": "Five structured-event cases failed because the logger had no emit method; the six configuration cases remained green",
+          "recorded_at": "2026-08-27T13:45:07+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/extended_json_spec.lua'",
+          "exit_code": 0,
+          "summary": "16 focused renderer and Extended JSON cases passed; the renderer-specific LuaCov run covered 253/266 logging lines (95.11%)",
+          "recorded_at": "2026-08-27T13:51:18+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_LINT='src/mongodb/logging.lua spec/unit/logging_spec.lua' && make test-architecture test-complexity && make test-focus FOCUS_PYTHON='planning.tests.test_readme_content'",
+          "exit_code": 0,
+          "summary": "Touched Lua files passed lint, architecture and complexity ratchets passed, and all 16 documentation contract tests passed",
+          "recorded_at": "2026-08-27T13:51:19+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T13:41:33+00:00",
+      "completed_at": "2026-08-27T13:51:20+00:00"
     }
   },
   "verified_references": {

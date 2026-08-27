@@ -210,7 +210,7 @@ The `logging` table accepts only these fields:
 |---|---|
 | `levels` | Table whose keys are `all`, `command`, `connection`, `server_selection`, or `topology`, and whose values are `off`, `emergency`, `alert`, `critical`, `error`, `warn`, `notice`, `info`, `debug`, or `trace`, case-insensitively. A component value overrides `all`. |
 | `destination` | `stdout` or `stderr`, case-insensitively. Cannot be combined with `sink`. |
-| `sink` | Callback retained for the client lifetime and used instead of the runtime output destination. Cannot be combined with `destination`. |
+| `sink` | `sink(event)` callback retained for the client lifetime and used instead of the runtime output destination. Cannot be combined with `destination`. Callback failures are suppressed. |
 | `max_document_length` | Non-negative integer maximum for each logged Extended JSON document; the default is 1000 Unicode code points. |
 
 Programmatic fields override the corresponding environment values. The environment fallback
@@ -219,6 +219,19 @@ uses `MONGODB_LOG_ALL`, `MONGODB_LOG_COMMAND`, `MONGODB_LOG_CONNECTION`,
 `MONGODB_LOG_MAX_DOCUMENT_LENGTH`. Logging defaults to off and stderr. Invalid environment
 values are ignored, while invalid programmatic values return a configuration-category error
 from client construction.
+
+Each sink event is immutable and exposes `component`, `level`, and `data` fields. `component` is
+`command`, `connection`, `serverSelection`, or `topology`; `level` is the lowercase severity;
+and `data` is an immutable map whose field names and casing come directly from the corresponding
+MongoDB specification. Fields without values are omitted. BSON document fields are redacted when
+required, rendered as relaxed Extended JSON, and then truncated at the configured Unicode-code-point
+boundary with a trailing `...`. The ellipsis does not count toward the limit.
+
+Without a custom sink, each enabled event is written through `runtime.output` as one compact JSON
+object with the same `component`, `level`, and `data` envelope. Logging is observational: document
+rendering, callback, and output failures are suppressed and cannot change the driver operation that
+produced the event. Logging component names are part of the supported configuration contract, but
+individual message contents may evolve within their specification requirements.
 
 `read_preference.mode` is `primary`, `primary_preferred`, `secondary`,
 `secondary_preferred`, or `nearest`. `tag_sets` is a dense array of string-to-string tables.

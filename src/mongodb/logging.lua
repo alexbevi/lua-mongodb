@@ -1,3 +1,4 @@
+local bson = require("mongodb.bson")
 local errors = require("mongodb.error")
 
 local M = {}
@@ -7,6 +8,12 @@ local COMPONENTS = {
   connection = "MONGODB_LOG_CONNECTION",
   server_selection = "MONGODB_LOG_SERVER_SELECTION",
   topology = "MONGODB_LOG_TOPOLOGY",
+}
+local COMPONENT_NAMES = {
+  command = "command",
+  connection = "connection",
+  server_selection = "serverSelection",
+  topology = "topology",
 }
 local COMPONENT_ORDER = {
   "command",
@@ -239,6 +246,199 @@ function LOGGER_METHODS:output(value)
   end
 
   return state.runtime.output:write(state.destination, value)
+end
+
+local function readonly_map(values)
+  return setmetatable({}, {
+    __index = values,
+    __metatable = "mongodb.logging.event.data",
+    __newindex = function()
+      error("structured log events are immutable", 2)
+    end,
+    __pairs = function()
+      return next, values, nil
+    end,
+  })
+end
+
+local function readonly_event(component, level, data)
+  local values = {
+    component = component,
+    data = readonly_map(data),
+    level = level,
+  }
+
+  return setmetatable({}, {
+    __index = values,
+    __metatable = "mongodb.logging.event",
+    __newindex = function()
+      error("structured log events are immutable", 2)
+    end,
+    __pairs = function()
+      return next, values, nil
+    end,
+  })
+end
+
+local function truncate_document(text, maximum)
+  local length = utf8.len(text)
+
+  if length == nil then
+    error("rendered log document contains invalid UTF-8", 2)
+  end
+
+  if length <= maximum then
+    return text
+  end
+
+  if maximum == 0 then
+    return "..."
+  end
+
+  local offset = assert(utf8.offset(text, maximum + 1))
+
+  return text:sub(1, offset - 1) .. "..."
+end
+
+local function render_document(value, redacted, maximum)
+  if redacted then
+    value = bson.document({})
+  elseif not bson.is_document(value) then
+    error("structured log document fields must be BSON documents", 2)
+  end
+
+  local encoded, err = bson.json.encode(value, { mode = "relaxed" })
+
+  if not encoded then
+    error(tostring(err), 2)
+  end
+
+  return truncate_document(encoded, maximum)
+end
+
+local function render_data(fields, options, maximum)
+  if type(fields) ~= "table" then
+    error("structured log fields must be a table", 2)
+  end
+
+  options = options or {}
+
+  if type(options) ~= "table" then
+    error("structured log rendering options must be a table", 2)
+  end
+
+  for key in pairs(options) do
+    if key ~= "document_fields" then
+      error("unknown structured log rendering option", 2)
+    end
+  end
+
+  local document_fields = options.document_fields or {}
+
+  if type(document_fields) ~= "table" then
+    error("structured log document_fields must be a table", 2)
+  end
+
+  local rendered = {}
+
+  for field, value in pairs(fields) do
+    if type(field) ~= "string" or field == "" then
+      error("structured log field names must be non-empty strings", 2)
+    end
+
+    if value ~= nil then
+      local redacted = document_fields[field]
+
+      if redacted ~= nil then
+        if type(redacted) ~= "boolean" then
+          error("structured log document redaction flags must be boolean", 2)
+        end
+
+        value = render_document(value, redacted, maximum)
+      elseif errors.is(value) then
+        value = tostring(value)
+      end
+
+      rendered[field] = value
+    end
+  end
+
+  for field, redacted in pairs(document_fields) do
+    if type(field) ~= "string" or type(redacted) ~= "boolean" then
+      error("structured log document fields must map names to booleans", 2)
+    end
+  end
+
+  return rendered
+end
+
+local function ordered_document(values)
+  local keys = {}
+
+  for key in pairs(values) do
+    keys[#keys + 1] = key
+  end
+
+  table.sort(keys)
+  local entries = {}
+
+  for index, key in ipairs(keys) do
+    entries[index] = { key, values[key] }
+  end
+
+  return bson.document(entries)
+end
+
+local function encode_event(event)
+  local encoded, err = bson.json.encode(bson.document({
+    { "component", event.component },
+    { "level", event.level },
+    { "data", ordered_document(event.data) },
+  }), { mode = "relaxed" })
+
+  if not encoded then
+    error(tostring(err), 2)
+  end
+
+  return encoded
+end
+
+local function deliver_event(state, event)
+  if state.sink ~= nil then
+    return pcall(state.sink, event)
+  end
+
+  local encoded = encode_event(event)
+  local ok, written = pcall(
+    state.runtime.output.write,
+    state.runtime.output,
+    state.destination,
+    encoded
+  )
+
+  return ok and written ~= nil and written ~= false
+end
+
+function LOGGER_METHODS:emit(component, level, fields, options)
+  local enabled_ok, enabled = pcall(LOGGER_METHODS.enabled, self, component, level)
+
+  if not enabled_ok or not enabled then
+    return false
+  end
+
+  local state = LOGGER_STATES[self]
+  local ok, emitted = pcall(function()
+    local rendered = render_data(fields, options, state.max_document_length)
+    local event = readonly_event(
+      COMPONENT_NAMES[component],
+      string.lower(level),
+      rendered
+    )
+
+    return deliver_event(state, event)
+  end)
+
+  return ok and emitted == true
 end
 
 function M.new(runtime, options)
