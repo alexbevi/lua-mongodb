@@ -88,7 +88,16 @@ ADDITIONAL_REASONS = {
   "AUTH-018": "MONGODB-OIDC reauthentication is outside production-core v1",
   "AUTH-031": "GSSAPI credential normalization is additional authentication work",
   "AUTH-020": "MONGODB-AWS credential-source rules are outside production-core v1",
-  "ADV-009": "logging, telemetry, and backpressure are outside production-core v1",
+  **{
+    owner: "logging, telemetry, and backpressure are outside production-core v1"
+    for owner in {
+      "BP-001", "BP-004", "BP-005", "BP-006", "BP-007", "BP-008", "BP-009",
+      "CMAP-005", "CMAP-006", "CON-017",
+      "LOG-002", "LOG-003", "LOG-004", "LOG-005", "LOG-006", "LOG-007",
+      "OTEL-002", "OTEL-003", "OTEL-004",
+      "SDAM-009", "SDAM-010", "SEL-002", "SEL-003",
+    }
+  },
   "ADV-010": "client-side encryption requires a separate additional design",
   "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
   "LEG-001": "deprecated count retry behavior is outside production-core v1",

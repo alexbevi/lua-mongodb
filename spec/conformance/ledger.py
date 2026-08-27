@@ -39,11 +39,11 @@ DEFAULT_OWNERS = {
   "bson-binary-vector": "REL-002",
   "causal-consistency": "SES-001",
   "change-streams": "REL-051",
-  "client-backpressure": "ADV-009",
+  "client-backpressure": "BP-004",
   "client-side-encryption": "ADV-010",
   "client-side-operations-timeout": "TIME-001",
   "collection-management": "REL-021",
-  "command-logging-and-monitoring": "ADV-009",
+  "command-logging-and-monitoring": "LOG-002",
   "connection-monitoring-and-pooling": "CMAP-001",
   "crud": "REL-021",
   "gridfs": "ADV-002",
@@ -51,13 +51,13 @@ DEFAULT_OWNERS = {
   "initial-dns-seedlist-discovery": "ADV-014",
   "load-balancers": "ADV-006",
   "mongodb-handshake": "REL-006",
-  "open-telemetry": "ADV-009",
+  "open-telemetry": "OTEL-003",
   "read-write-concern": "REL-003",
   "retryable-reads": "RETRY-001",
   "retryable-writes": "RETRY-002",
   "run-command": "TXN-001",
   "server-discovery-and-monitoring": "SDAM-002",
-  "server-selection": "ADV-009",
+  "server-selection": "SEL-002",
   "sessions": "SES-001",
   "transactions": "TXN-001",
   "transactions-convenient-api": "TXN-002",
@@ -339,6 +339,84 @@ def classify_case(
       "make test-unit",
     )
 
+  if suite == "client-backpressure":
+    fixture = Path(path).name
+    index = int(identity.rsplit("[", 1)[1][:-1])
+
+    if fixture == "backpressure-connection-checkin.json":
+      owner = "BP-007"
+    elif fixture == "getMore-retried.json":
+      owner = "BP-007"
+    elif fixture == "backpressure-retry-loop.json":
+      if index <= 19:
+        owner = "BP-004"
+      elif index <= 37:
+        owner = "BP-005"
+      else:
+        owner = "BP-006"
+    elif fixture == "backpressure-retry-max-attempts.json":
+      if index <= 9:
+        owner = "BP-004"
+      elif index <= 18:
+        owner = "BP-005"
+      else:
+        owner = "BP-006"
+    else:
+      raise LedgerError(f"unknown client-backpressure fixture: {identity}")
+
+    return _deferred(case, owner, activities)
+
+  if suite == "command-logging-and-monitoring":
+    fixture = Path(path).name
+
+    if "/tests/logging/" in path:
+      if fixture in {"command.json", "unacknowledged-write.json"}:
+        owner = "LOG-002"
+      elif fixture in {
+        "no-handshake-messages.json",
+        "no-heartbeat-messages.json",
+        "redacted-commands.json",
+      }:
+        owner = "LOG-003"
+      else:
+        owner = "LOG-004"
+    elif fixture in {"command.json", "find.json", "server-connection-id.json"}:
+      owner = "LOG-005"
+    elif fixture in {
+      "deleteMany.json",
+      "deleteOne.json",
+      "insertMany.json",
+      "insertOne.json",
+      "updateMany.json",
+      "updateOne.json",
+    }:
+      owner = "LOG-006"
+    else:
+      owner = "LOG-007"
+
+    return _deferred(case, owner, activities)
+
+  if suite == "open-telemetry":
+    read_fixtures = {
+      "aggregate.json",
+      "count.json",
+      "distinct.json",
+      "find.json",
+      "find_without_query_text.json",
+      "list_collections.json",
+      "list_databases.json",
+      "list_indexes.json",
+    }
+
+    if "/tests/transaction/" in path:
+      owner = "OTEL-004"
+    elif Path(path).name in read_fixtures:
+      owner = "OTEL-002"
+    else:
+      owner = "OTEL-003"
+
+    return _deferred(case, owner, activities)
+
   if suite == "initial-dns-seedlist-discovery":
     if "/tests/replica-set/" in path:
       return _passed(
@@ -437,7 +515,7 @@ def classify_case(
       )
 
     owner_by_file = {
-      "client-backpressure-options.json": "ADV-009",
+      "client-backpressure-options.json": "BP-001",
       "compression-options.json": "ADV-004",
       "proxy-options.json": "ADV-012",
     }
@@ -499,6 +577,10 @@ def classify_case(
       "spec/unit/selection_spec.lua",
       "make test-focus FOCUS_UNIT='spec/unit/selection_spec.lua'",
     )
+
+  if suite == "server-selection" and "/logging/" in path:
+    owner = "SEL-003" if Path(path).name == "operation-id.json" else "SEL-002"
+    return _deferred(case, owner, activities)
 
   if suite == "max-staleness" or (
     suite == "server-selection"
@@ -741,7 +823,12 @@ def classify_case(
         environment,
       )
 
-    return _deferred(case, "ADV-009", activities)
+    owner = (
+      "CMAP-006"
+      if Path(path).name == "connection-pool-options.json"
+      else "CMAP-005"
+    )
+    return _deferred(case, owner, activities)
 
   if suite == "sessions":
     if "snapshot-sessions" in path:

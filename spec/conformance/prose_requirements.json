@@ -449,11 +449,11 @@
       }
     ],
     "logging/logging.md": {
-      "activity": "ADV-009",
+      "activity": "CON-017",
       "last_execution": null,
-      "reason": "Standardized driver logging remains owned by the additional observability activity.",
+      "reason": "The v0.10.6 conformance closure owns the complete command, selection, SDAM, and CMAP logging specification.",
       "required_environment": "deterministic-runtime",
-      "runner": "pending:ADV-009",
+      "runner": "pending:CON-017",
       "status": "deferred_unsupported"
     },
     "message/OP_MSG.md": {

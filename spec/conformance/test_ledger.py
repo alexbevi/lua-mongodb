@@ -2,12 +2,44 @@
 
 from __future__ import annotations
 
+from collections import Counter
 import unittest
 
 from spec.conformance import ledger
 
 
 class ConformanceLedgerTests(unittest.TestCase):
+  def test_observability_cases_have_release_sized_owners(self) -> None:
+    cases = ledger.generate()["cases"].values()
+    owners = Counter(case["activity"] for case in cases)
+
+    self.assertEqual(0, owners["ADV-009"])
+    expected = {
+      "BP-001": 6,
+      "BP-004": 28,
+      "BP-005": 27,
+      "BP-006": 45,
+      "BP-007": 3,
+      "BP-008": 9,
+      "BP-009": 5,
+      "CMAP-005": 2,
+      "CMAP-006": 5,
+      "LOG-002": 5,
+      "LOG-003": 18,
+      "LOG-004": 7,
+      "LOG-005": 8,
+      "LOG-006": 13,
+      "LOG-007": 4,
+      "OTEL-002": 9,
+      "OTEL-003": 12,
+      "OTEL-004": 3,
+      "SDAM-009": 4,
+      "SDAM-010": 6,
+      "SEL-002": 7,
+      "SEL-003": 4,
+    }
+    self.assertEqual(expected, {owner: owners[owner] for owner in expected})
+
   def test_validation_rejects_added_and_changed_cases(self) -> None:
     discovered = {
       "suite/tests/example.json::test[1]": {

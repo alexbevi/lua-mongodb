@@ -55,7 +55,28 @@ OWNER_REASONS = {
   "AUTH-011": "the test requires OIDC machine authentication",
   "AUTH-017": "the test requires OIDC speculative authentication",
   "AUTH-018": "the test requires OIDC operation reauthentication",
-  "ADV-009": "logging, telemetry, and backpressure are additional capabilities",
+  "LOG-002": "command lifecycle logging awaits its v0.10.4 slice",
+  "LOG-003": "command redaction and suppression await their v0.10.4 slice",
+  "LOG-004": "command log correlation awaits its v0.10.4 slice",
+  "LOG-005": "read command monitoring awaits its v0.10.4 slice",
+  "LOG-006": "write command monitoring awaits its v0.10.4 slice",
+  "LOG-007": "bulk command monitoring awaits its v0.10.4 slice",
+  "SEL-002": "server-selection lifecycle logging awaits its v0.10.5 slice",
+  "SEL-003": "server-selection operation correlation awaits its v0.10.5 slice",
+  "SDAM-009": "topology lifecycle logging awaits its v0.10.6 slice",
+  "SDAM-010": "heartbeat logging awaits its v0.10.6 slice",
+  "CMAP-005": "pool and connection logging await their v0.10.6 slice",
+  "CMAP-006": "pool configuration logging awaits its v0.10.6 slice",
+  "BP-001": "client-backpressure configuration awaits its v0.10.7 slice",
+  "BP-004": "client and database adaptive retries await their v0.10.7 slice",
+  "BP-005": "collection read adaptive retries await their v0.10.7 slice",
+  "BP-006": "collection write adaptive retries await their v0.10.7 slice",
+  "BP-007": "cursor retry and connection checkin behavior await their v0.10.7 slice",
+  "BP-008": "transaction backpressure awaits its v0.10.7 slice",
+  "BP-009": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+  "OTEL-002": "read operation tracing awaits its v0.10.8 slice",
+  "OTEL-003": "write and administration tracing await their v0.10.8 slice",
+  "OTEL-004": "transaction tracing awaits its v0.10.8 slice",
   "ADV-010": "client-side field-level and queryable encryption require a separate design",
   "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and below-floor server behavior are additional capabilities",
   "LEG-001": "deprecated count retry behavior awaits the dedicated legacy read slice",
@@ -677,7 +698,7 @@ for fixture, count in (
   for index in range(1, count + 1):
     TEST_OVERRIDES[
       f"transactions/tests/unified/{fixture}.json::test[{index}]"
-    ] = ("ADV-009", OWNER_REASONS["ADV-009"])
+    ] = ("BP-008", OWNER_REASONS["BP-008"])
 
 for index in range(1, 4):
   identity = f"transactions/tests/unified/client-bulkWrite.json::test[{index}]"
@@ -885,8 +906,15 @@ def classify_sdam(test: dict[str, Any]) -> tuple[str, str]:
     owner = v04_owners[fixture]
     return owner, OWNER_REASONS[owner]
 
-  if requirements["logs"] or "/logging-" in path or "/backpressure-" in path:
-    owner = "ADV-009"
+  if "/backpressure-" in path:
+    owner = "BP-009"
+  elif requirements["logs"] or "/logging-" in path:
+    index = int(test["id"].rsplit("[", 1)[1][:-1])
+    owner = (
+      "SDAM-009"
+      if fixture == "logging-loadbalanced.json" or index == 1
+      else "SDAM-010"
+    )
   elif "load-balanced" in topologies or "loadbalanced" in path:
     owner = "CON-010"
   elif {"sharded", "sharded-replicaset"} & topologies or "sharded-" in path:

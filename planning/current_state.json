@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "02a2903471081953d53c285c6dc339d7a47104da050d70bbf2f2d66441d983f7",
+  "plan_digest": "fbbb92f2209028cb23a5d0583b02d6bdfb23e7b5e7b6290f57a37dbbf42f4d56",
   "references": {
     "pymongo": {
       "expected": "d03d621ef5fe567f941f4c28395a376a1899f77c",
@@ -20,7 +20,7 @@
     "completed": 344,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 3
+    "pending": 41
   },
   "active": [],
   "ready": [
@@ -42,7 +42,15 @@
     "roadmap-clarity": [],
     "v0-10-1-maintenance": [],
     "ecosystem-hardening": [],
-    "v0-10-2-gssapi": []
+    "v0-10-2-gssapi": [],
+    "v0-10-3-logging-foundation": [
+      "ADV-009"
+    ],
+    "v0-10-4-command-logging": [],
+    "v0-10-5-server-selection-logging": [],
+    "v0-10-6-topology-pool-logging": [],
+    "v0-10-7-client-backpressure": [],
+    "v0-10-8-open-telemetry": []
   },
   "blocked": [],
   "needs_review": [],

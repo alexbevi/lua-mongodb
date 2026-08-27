@@ -71262,9 +71262,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-009",
       "fingerprint": "0d1fe85c7ce3f5f556e91869f5838ccc2f3aa9fbcb606d5e41738d9f93a3727c",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71299,9 +71299,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-009",
       "fingerprint": "d63a222da32b854ab7cb6cfc44c9b105a94f907888bc56317e3d29fb8d8fd0f1",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71336,9 +71336,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-009",
       "fingerprint": "d3b8df1a48f1f5283ed4e5cebc8876efa64ed95ed6b0b26051e811c94b7e447a",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71373,9 +71373,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-single.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-009",
       "fingerprint": "56054d7a0d1d4bd02ce3c71d4cb59598552da3bad2b9921ba85afe5f4c861d3e",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -71410,9 +71410,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-server-description-unchanged-on-min-pool-size-population-error.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-009",
       "fingerprint": "def9aa6056fa430e003c3c49bdd06216d7b88758eb8a2beb04c0db96df0c5b34",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72213,9 +72213,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-009",
       "fingerprint": "b3d13aec16ae924fddf6bda3ae6c7b40c83ff1f30181bd34c2b1b67cb01d033b",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72247,9 +72247,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-009",
       "fingerprint": "a9c67f66b8cf51d4aaa7ed316568bef80a3c9db5ad9783b082e4118a79c5708f",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72281,9 +72281,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-010",
       "fingerprint": "090730c7ce572e58ef7318e35a84fa75d29fdb5d80c6abc89abb75a3e9655c20",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72315,9 +72315,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[3]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-010",
       "fingerprint": "9b837a18ed79355901edac2b6a9cdee163792ee74f7b1e1f5c797765f30ee05c",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72350,9 +72350,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-009",
       "fingerprint": "748442acf2edbeb2ab62f840c5b8b7e17384362b5ee9b5a1afd9dfcb0a3ba2b9",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72384,9 +72384,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-010",
       "fingerprint": "55197a4ac557e2243f5b0b6249e0bfd26b61fed8eda2dd59f7d465fa13ff836f",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72418,9 +72418,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[3]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-010",
       "fingerprint": "62275d9cd13c910ffe2081851bdf5323f498c4ba6342bcb136c5d553c7ffe668",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72453,9 +72453,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-009",
       "fingerprint": "f783feb9842e976f4647e05bc9791d20b29558ab4d4a7cc8e8c20d947d33f721",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72487,9 +72487,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-010",
       "fingerprint": "9a80b9e3e54a22c9fc968644a7181dca6d8e16de8e358a14063ddd8f665fd2ac",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -72523,9 +72523,9 @@
       "status": "deferred_unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[3]": {
-      "activity": "ADV-009",
+      "activity": "SDAM-010",
       "fingerprint": "26d215e764523011228efc718c9c556163187a1cbe1cd0c0de404a1a1cc6bd61",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -75526,9 +75526,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/backpressure-retryable-abort.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "7adb8b5748c4b9b8ae4845fd930910d05211c5d16fe2daa4a4a90b8a07117a4c",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75569,9 +75569,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-abort.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "c07a5fb8c0e1ddc38d2be5db6019f80e4e7747806a4ccdb2a5d599bf7c377ff3",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75612,9 +75612,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-commit.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "2b1502f6da9e592e39082477e0fcbad93a15257ce6f961628e2b5bceb83562b6",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75655,9 +75655,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-commit.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "998673bb419dedf2e4a89e46a3fa29607d5cc2630df433b38ca21d1f2baa508f",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75698,9 +75698,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-reads.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "89d87a6ef480116656417f86508a0062edcfc32712e98fd52fe1d06e93c97604",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75744,9 +75744,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-reads.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "ba08fabace9da6e45847cdb8aa8fa6d3b339833896dc25dd7f71a761eafaa95e",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75788,9 +75788,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json::test[1]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "a3ec942ccca674213ede329ab2970431558248c9ad1727951b1189d80fa7e491",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75831,9 +75831,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json::test[2]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "6c112c980925323835a96163c23ff29ac5dfd9d91681154940af41311108b7f0",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -75872,9 +75872,9 @@
       "status": "deferred_unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json::test[3]": {
-      "activity": "ADV-009",
+      "activity": "BP-008",
       "fingerprint": "73a5f2fade1d41d0b9fc0c160607c8c880833b0f2a8e6f850a4e51de78d62928",
-      "reason": "logging, telemetry, and backpressure are additional capabilities",
+      "reason": "transaction backpressure awaits its v0.10.7 slice",
       "requirements": {
         "arguments": [
           "failPoint.client",

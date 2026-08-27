@@ -22,7 +22,32 @@ OUTPUT = ROOT / "spec" / "v10" / "scope.json"
 TRACK = "v0-10-load-balancing"
 CLOSURE_OWNER = "CON-010"
 RELEASE_OWNER = "REL-059"
-OPTIONAL_OWNERS = {"ADV-009", "ADV-010"}
+OPTIONAL_OWNERS = {
+  "ADV-010",
+  "BP-001",
+  "BP-004",
+  "BP-005",
+  "BP-006",
+  "BP-007",
+  "BP-008",
+  "BP-009",
+  "CMAP-005",
+  "CMAP-006",
+  "CON-017",
+  "LOG-002",
+  "LOG-003",
+  "LOG-004",
+  "LOG-005",
+  "LOG-006",
+  "LOG-007",
+  "OTEL-002",
+  "OTEL-003",
+  "OTEL-004",
+  "SDAM-009",
+  "SDAM-010",
+  "SEL-002",
+  "SEL-003",
+}
 LEGACY_EXCLUSION_OWNER = "REL-053"
 UPSTREAM_SKIP = (
   "load-balancers/tests/lb-connection-establishment.json::test[1]"
