@@ -66,8 +66,8 @@ describe("command monitoring", function()
       listeners = {},
     })
     local connection = fake_connection({
-      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
-      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      bson.document({ { "ok", 1 }, { "connectionId", 99 }, { "maxWireVersion", 25 } }),
+      bson.document({ { "ok", 1 }, { "connectionId", 99 }, { "maxWireVersion", 25 } }),
       bson.document({ { "ok", 1 }, { "value", 42 } }),
       bson.document({ { "ok", 0 }, { "errmsg", "bad filter" }, { "code", 2 } }),
     })
@@ -116,6 +116,7 @@ describe("command monitoring", function()
 
     for _, event in ipairs(observed) do
       assert.are.equal(17, event.data.driverConnectionId)
+      assert.are.equal(99, event.data.serverConnectionId)
     end
 
     assert.are.equal("app", observed[1].data.databaseName)

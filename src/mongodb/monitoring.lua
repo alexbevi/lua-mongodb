@@ -133,6 +133,7 @@ local function common_log_fields(span_state, message, duration_ms)
     driverConnectionId = span_state.driver_connection_id,
     message = message,
     requestId = span_state.request_id,
+    serverConnectionId = span_state.server_connection_id,
     serverHost = span_state.server_host,
     serverPort = span_state.server_port,
   }

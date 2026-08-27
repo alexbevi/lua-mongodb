@@ -239,9 +239,11 @@ messages add the relaxed Extended JSON `command`; succeeded messages add `durati
 relaxed Extended JSON `reply`; failed messages add `durationMS` and `failure`. An unacknowledged
 write emits a succeeded message with an `{ "ok": 1 }` reply after the complete OP_MSG has been
 written. For pooled commands, the pool's integer connection ID appears as `driverConnectionId` on
-the started message and its terminal succeeded or failed message. Each started message has exactly
-one terminal message with the same request ID. Connection handshakes and monitor heartbeats never
-enter command logs. Their independent CMAP and SDAM events remain available.
+the started message and its terminal succeeded or failed message. When the server returns a
+`connectionId` in its hello response, those messages also contain it as `serverConnectionId`. Each
+started message has exactly one terminal message with the same request ID. Connection handshakes
+and monitor heartbeats never enter command logs. Their independent CMAP and SDAM events remain
+available.
 Server-selection, topology, and connection messages are enabled only by their component-specific
 implementation slices.
 

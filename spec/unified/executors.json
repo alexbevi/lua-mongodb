@@ -2301,6 +2301,10 @@
       "activity": "LOG-011",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/logging/server-connection-id.json::test[1]": {
+      "activity": "LOG-012",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[1]": {
       "activity": "LOG-003",
       "environment": "live-replicaset"
