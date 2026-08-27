@@ -9621,6 +9621,42 @@
       "reopened_after_commit": "725951bec078ba97f02b77819fa5c89b2a5448cd",
       "started_at": "2026-08-26T23:17:03+00:00",
       "completed_at": "2026-08-26T23:19:40+00:00"
+    },
+    "ADV-009": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining logging configuration spec failed before executing because mongodb.logging did not exist.",
+          "recorded_at": "2026-08-27T13:05:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/logging_spec.lua spec/unit/config_options_spec.lua spec/unit/runtime_spec.lua spec/unit/copas_runtime_spec.lua'",
+          "exit_code": 0,
+          "summary": "46 focused logging, configuration, runtime-contract, fake-output, and Copas-output cases passed",
+          "recorded_at": "2026-08-27T13:18:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus with 11 touched Lua files under the Lua 5.4 Luacheck profile; make test-architecture test-complexity",
+          "exit_code": 0,
+          "summary": "11 touched files linted cleanly; five architecture boundary tests and the production dependency graph passed; the complexity baseline remained current",
+          "recorded_at": "2026-08-27T13:18:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='planning.tests.test_readme_content spec.quality.test_coverage_gate spec.package.test_package.PackageTests.test_every_shipped_module_and_top_level_export_is_classified'; make test-package rockspec; generated README, JSON, and diff validators",
+          "exit_code": 0,
+          "summary": "20 focused documentation, coverage, and package-classification contracts passed; five isolated source-rock package tests, rockspec lint, README projection, JSON syntax, and diff checks passed",
+          "recorded_at": "2026-08-27T13:18:11+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T13:03:16+00:00",
+      "completed_at": "2026-08-27T13:18:18+00:00"
     }
   },
   "verified_references": {

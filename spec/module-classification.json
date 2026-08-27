@@ -180,6 +180,10 @@
       "path": "src/mongodb/handshake/metadata.lua",
       "stability": "internal"
     },
+    "mongodb.logging": {
+      "path": "src/mongodb/logging.lua",
+      "stability": "internal"
+    },
     "mongodb.monitoring": {
       "path": "src/mongodb/monitoring.lua",
       "stability": "internal"

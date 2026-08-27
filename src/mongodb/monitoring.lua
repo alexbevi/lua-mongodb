@@ -246,6 +246,7 @@ function M.new(options)
 
   MONITOR_STATES[monitor] = {
     clock = clock,
+    logger = options.logger,
     listeners = dense_listeners(options.listeners or {}),
     on_listener_error = options.on_listener_error,
   }

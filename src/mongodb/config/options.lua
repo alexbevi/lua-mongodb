@@ -1,4 +1,5 @@
 local errors = require("mongodb.error")
+local logging = require("mongodb.logging")
 
 local M = {}
 
@@ -79,6 +80,7 @@ local PROGRAMMATIC_NAMES = {
   heartbeat_frequency_ms = true,
   local_threshold_ms = true,
   load_balanced = true,
+  logging = true,
   max_connecting = true,
   max_idle_time_ms = true,
   max_pool_size = true,
@@ -397,6 +399,10 @@ local function normalize_string(option, value)
   return validate_string(option, value, false)
 end
 
+local function normalize_logging(_, value)
+  return logging.normalize(value)
+end
+
 local function normalize_srv_service_name(_, value)
   return validate_srv_service_name(value)
 end
@@ -587,6 +593,7 @@ local OPTION_DESCRIPTORS = immutable_descriptor({
   heartbeat_frequency_ms = option_descriptor(normalize_heartbeat_frequency),
   journal = BOOLEAN_DESCRIPTOR,
   load_balanced = BOOLEAN_DESCRIPTOR,
+  logging = option_descriptor(normalize_logging),
   local_threshold_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,
   max_connecting = POSITIVE_INTEGER_DESCRIPTOR,
   max_idle_time_ms = NON_NEGATIVE_INTEGER_DESCRIPTOR,

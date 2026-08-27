@@ -164,6 +164,10 @@
       "active": 22,
       "covered": 21
     },
+    "src/mongodb/logging.lua": {
+      "active": 163,
+      "covered": 153
+    },
     "src/mongodb/monitoring.lua": {
       "active": 141,
       "covered": 125
@@ -305,7 +309,7 @@
   },
   "schema_version": 2,
   "total": {
-    "active": 27016,
-    "covered": 24481
+    "active": 27179,
+    "covered": 24634
   }
 }

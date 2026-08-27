@@ -34,9 +34,11 @@ describe("Copas runtime adapter", function()
     assert.is_boolean(adapter.metadata.files["/.dockerenv"])
 
     local facts = { environment = { VERCEL = "1" }, files = {} }
-    local injected = runtime.copas({ metadata = facts })
+    local output = { write = function() return true end }
+    local injected = runtime.copas({ metadata = facts, output = output })
 
     assert.are.equal(facts, injected.metadata)
+    assert.are.equal(output, injected.output)
   end)
 
   it("reads process identity dynamically through an injected provider", function()

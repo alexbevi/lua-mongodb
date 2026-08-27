@@ -7,6 +7,7 @@ local driver_options = require("mongodb.config.options")
 local dns_discovery = require("mongodb.discovery.dns")
 local errors = require("mongodb.error")
 local handshake_metadata = require("mongodb.handshake.metadata")
+local logging = require("mongodb.logging")
 local monitoring = require("mongodb.monitoring")
 local pool = require("mongodb.pool")
 local runtime_contract = require("mongodb.runtime")
@@ -885,10 +886,18 @@ function M.connect(uri, values)
   runtime = runtime or special.runtime or runtime_contract.copas()
 
   runtime_contract.validate(runtime)
+  local logger, logging_err = logging.new(runtime, config.logging)
+
+  if not logger then
+    return nil, logging_err
+  end
+
+  special.logger = logger
   local deadline = special.deadline
 
   local monitor = monitoring.new({
     clock = runtime.clock,
+    logger = logger,
     listeners = special.command_listeners or {},
     on_listener_error = special.on_listener_error,
   })

@@ -10,6 +10,11 @@ describe("runtime interface", function()
     assert.has_error(function()
       runtime.validate({})
     end, "runtime capability clock.now must be a function")
+
+    fake.output = nil
+    assert.has_error(function()
+      runtime.validate(fake)
+    end, "runtime capability output.write must be a function")
   end)
 
   it("validates optional GSSAPI DNS capabilities as a pair", function()
@@ -52,6 +57,18 @@ describe("runtime interface", function()
     fake:set_environment("AWS_SESSION_TOKEN", nil)
 
     assert.is_nil(fake.environment:get("AWS_SESSION_TOKEN"))
+  end)
+
+  it("isolates process output behind the runtime boundary", function()
+    local fake = fake_runtime.new()
+
+    assert(fake.output:write("stderr", "log entry"))
+    assert.are.same({
+      { destination = "stderr", value = "log entry" },
+    }, fake.calls.output)
+    assert.has_error(function()
+      fake.output:write("file", "log entry")
+    end, "output destination must be 'stdout' or 'stderr'")
   end)
 
   it("isolates bounded file and scripted HTTP capabilities", function()

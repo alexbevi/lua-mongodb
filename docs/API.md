@@ -167,6 +167,7 @@ programmatic option set is:
 | `heartbeat_listeners` | empty | Dense array of listener functions or event-callback tables for server-heartbeat events. |
 | `local_threshold_ms` | 15 | Non-negative integer latency-window threshold in milliseconds. |
 | `load_balanced` | false | Boolean; true requires one seed and excludes `direct_connection` and `replica_set`. |
+| `logging` | environment or off | Table configuring structured component levels, output, and document truncation as described below. |
 | `max_connecting` | 2 | Positive integer concurrent connection-creation limit per pool. |
 | `max_idle_time_ms` | 0 | Non-negative integer idle lifetime; zero disables idle-time expiry. |
 | `max_pool_size` | 100 | Non-negative integer pool limit; zero is unbounded. |
@@ -200,6 +201,24 @@ programmatic option set is:
 | `wait_queue_timeout_ms` | 0 | Non-negative integer pool checkout timeout; zero is unbounded. |
 | `write_concern` | empty | Table with optional `journal`, `w`, and `w_timeout_ms` fields. |
 | `zlib_compression_level` | -1 | Integer from -1 through 9. |
+
+#### Structured logging configuration
+
+The `logging` table accepts only these fields:
+
+| Field | Contract |
+|---|---|
+| `levels` | Table whose keys are `all`, `command`, `connection`, `server_selection`, or `topology`, and whose values are `off`, `emergency`, `alert`, `critical`, `error`, `warn`, `notice`, `info`, `debug`, or `trace`, case-insensitively. A component value overrides `all`. |
+| `destination` | `stdout` or `stderr`, case-insensitively. Cannot be combined with `sink`. |
+| `sink` | Callback retained for the client lifetime and used instead of the runtime output destination. Cannot be combined with `destination`. |
+| `max_document_length` | Non-negative integer maximum for each logged Extended JSON document; the default is 1000 Unicode code points. |
+
+Programmatic fields override the corresponding environment values. The environment fallback
+uses `MONGODB_LOG_ALL`, `MONGODB_LOG_COMMAND`, `MONGODB_LOG_CONNECTION`,
+`MONGODB_LOG_SERVER_SELECTION`, `MONGODB_LOG_TOPOLOGY`, `MONGODB_LOG_PATH`, and
+`MONGODB_LOG_MAX_DOCUMENT_LENGTH`. Logging defaults to off and stderr. Invalid environment
+values are ignored, while invalid programmatic values return a configuration-category error
+from client construction.
 
 `read_preference.mode` is `primary`, `primary_preferred`, `secondary`,
 `secondary_preferred`, or `nearest`. `tag_sets` is a dense array of string-to-string tables.
@@ -1553,7 +1572,7 @@ The advanced `mongodb.runtime` façade has these signatures:
 - `mongodb.runtime.copas([options]) -> runtime` constructs and validates the default adapter.
 - `mongodb.runtime.validate(runtime) -> runtime` returns the same table after structural
   validation; a missing capability or malformed optional provider raises.
-- `mongodb.runtime.required_capabilities() -> paths` returns a new array containing the 24
+- `mongodb.runtime.required_capabilities() -> paths` returns a new array containing the 25
   required dotted capability names.
 - `mongodb.runtime.deadline_after(runtime, duration) -> deadline` adds a finite non-negative
   duration to the adapter's monotonic clock.
@@ -1591,6 +1610,7 @@ same runtime's monotonic clock; nil means no deadline. Operational provider fail
 | `lock.new` | `runtime.lock:new() -> lock`. |
 | `process.identity` | `runtime.process:identity() -> positive_integer`; read dynamically. |
 | `environment.get` | `runtime.environment:get(name) -> string`; missing values return nil. |
+| `output.write` | `runtime.output:write(destination, value) -> true`; destination is `stdout` or `stderr`, and operational failure returns `nil, err`. |
 | `file.read` | `runtime.file:read(path [, options]) -> string`; operational failure returns `nil, err`. |
 | `http.request` | `runtime.http:request(request [, deadline [, cancellation]]) -> response`; operational failure returns `nil, err`. |
 | `dns.resolve_srv` | `runtime.dns:resolve_srv(name [, deadline [, cancellation]]) -> records`; operational failure returns `nil, err`. |

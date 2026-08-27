@@ -88,6 +88,7 @@ build = {
     ["mongodb.error"] = "src/mongodb/error.lua",
     ["mongodb.gridfs"] = "src/mongodb/gridfs.lua",
     ["mongodb.handshake.metadata"] = "src/mongodb/handshake/metadata.lua",
+    ["mongodb.logging"] = "src/mongodb/logging.lua",
     ["mongodb.monitoring"] = "src/mongodb/monitoring.lua",
     ["mongodb.operation_timeout"] = "src/mongodb/operation_timeout.lua",
     ["mongodb.network.transport"] = "src/mongodb/network/transport.lua",

@@ -526,6 +526,26 @@ local function new_environment_capability(owner)
   }
 end
 
+local function new_output_capability(owner)
+  return {
+    write = function(_, destination, value)
+      if destination ~= "stdout" and destination ~= "stderr" then
+        error("output destination must be 'stdout' or 'stderr'", 2)
+      end
+
+      if type(value) ~= "string" then
+        error("output value must be a string", 2)
+      end
+
+      owner.calls.output[#owner.calls.output + 1] = {
+        destination = destination,
+        value = value,
+      }
+      return true
+    end,
+  }
+end
+
 local function new_process_capability(owner)
   return {
     identity = function()
@@ -820,6 +840,7 @@ function M.new(options)
       environment = {},
       file = {},
       http = {},
+      output = {},
       tls = {},
     },
   }, FAKE_METATABLE)
@@ -834,6 +855,7 @@ function M.new(options)
   fake.lock = new_lock_capability(fake)
   fake.process = new_process_capability(fake)
   fake.environment = new_environment_capability(fake)
+  fake.output = new_output_capability(fake)
   fake.file = new_file_capability(fake)
   fake.http = new_http_capability(fake)
   fake.dns = new_dns_capability(fake)

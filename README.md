@@ -199,6 +199,41 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 
 For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults.
 
+### Structured logging
+
+Logging is off by default. Enable a minimum severity for every component with
+`MONGODB_LOG_ALL`, or set `MONGODB_LOG_COMMAND`, `MONGODB_LOG_CONNECTION`,
+`MONGODB_LOG_SERVER_SELECTION`, and `MONGODB_LOG_TOPOLOGY` independently. Accepted levels,
+from most to least severe, are `emergency`, `alert`, `critical`, `error`, `warn`, `notice`,
+`info`, `debug`, and `trace`; `off` disables a component. `MONGODB_LOG_PATH` accepts `stdout`
+or `stderr`, and `MONGODB_LOG_MAX_DOCUMENT_LENGTH` defaults to 1000. Invalid environment
+values are ignored without preventing client construction.
+
+The client `logging` option provides the same controls with `levels`, `destination`, and
+`max_document_length`. It can also accept a `sink` callback instead of a destination.
+Programmatic values take precedence over environment values:
+
+```lua
+local client = assert(mongodb.client("mongodb://localhost:27017/app", {
+  logging = {
+    levels = { all = "warn", command = "debug" },
+    destination = "stderr",
+    max_document_length = 2000,
+  },
+}))
+```
+
+An application that wants the standard environment variable to override its own default can
+read it before constructing the client:
+
+```lua
+local client = assert(mongodb.client("mongodb://localhost:27017/app", {
+  logging = {
+    levels = { all = os.getenv("MONGODB_LOG_ALL") or "warn" },
+  },
+}))
+```
+
 ### CRUD operations
 
 The following examples of [CRUD operations](https://www.mongodb.com/docs/manual/crud/) assume they run inside the `mongodb.run` callback above, before `client:close()`. [MongoDB documents](https://www.mongodb.com/docs/manual/core/document/) are represented by ordered [BSON values](https://www.mongodb.com/docs/manual/reference/bson-types/). Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.

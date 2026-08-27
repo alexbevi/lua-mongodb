@@ -23,6 +23,7 @@ RUNTIME_CAPABILITIES = (
   "lock.new",
   "process.identity",
   "environment.get",
+  "output.write",
   "file.read",
   "http.request",
   "dns.resolve_srv",

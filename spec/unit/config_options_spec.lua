@@ -44,6 +44,25 @@ describe("driver option normalization", function()
     assert.is_true(errors.is(err, errors.CATEGORY.CONFIGURATION))
   end)
 
+  it("normalizes immutable programmatic logging options", function()
+    local sink = function() end
+    local config = assert(options.normalize(nil, {
+      logging = {
+        levels = { all = "warn", command = "debug" },
+        max_document_length = 25,
+        sink = sink,
+      },
+    }))
+
+    assert.are.equal("warn", config.logging.levels.all)
+    assert.are.equal("debug", config.logging.levels.command)
+    assert.are.equal(25, config.logging.max_document_length)
+    assert.are.equal(sink, config.logging.sink)
+    assert.has_error(function()
+      config.logging.levels.command = "off"
+    end, "driver options are immutable")
+  end)
+
   it("rejects application names over 128 bytes as configuration errors", function()
     local config, err = options.normalize(nil, {
       app_name = string.rep("a", 129),

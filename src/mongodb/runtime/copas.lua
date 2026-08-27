@@ -21,6 +21,7 @@ local ALLOWED_OPTIONS = {
   http = true,
   lock_poll_interval = true,
   metadata = true,
+  output = true,
   socket = true,
   tls = true,
   wall_time = true,
@@ -188,6 +189,32 @@ local function new_environment_capability(getenv)
       end
 
       return value
+    end,
+  }
+end
+
+local function new_output_capability()
+  return {
+    write = function(_, destination, value)
+      if destination ~= "stdout" and destination ~= "stderr" then
+        error("output destination must be 'stdout' or 'stderr'", 2)
+      end
+
+      if type(value) ~= "string" then
+        error("output value must be a string", 2)
+      end
+
+      local stream = destination == "stdout" and io.stdout or io.stderr
+      local written, err = stream:write(value, "\n")
+
+      if not written then
+        return nil, errors.new({
+          category = errors.CATEGORY.INTERNAL,
+          message = "could not write MongoDB log output: " .. tostring(err),
+        })
+      end
+
+      return true
     end,
   }
 end
@@ -505,6 +532,7 @@ function M.new(options)
   adapter.lock = new_lock_capability(adapter, copas.lock, poll_interval)
   adapter.process = new_process_capability(raw_getpid)
   adapter.environment = new_environment_capability(raw_getenv)
+  adapter.output = options.output or new_output_capability()
   adapter.dns = options.dns or require("mongodb.runtime.copas_dns").new(adapter, {
     copas = copas,
     nameservers = options.dns_nameservers,
