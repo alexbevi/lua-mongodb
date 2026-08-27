@@ -10205,6 +10205,28 @@
       "notes": [],
       "started_at": "2026-08-27T22:11:39+00:00",
       "completed_at": "2026-08-27T22:16:46+00:00"
+    },
+    "LOG-017": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_failed_find_monitoring_case_is_runnable'",
+          "exit_code": 2,
+          "summary": "The exact failed-find monitoring contract failed because find.json::test[6] remained deferred instead of runnable; 1 focused contract ran and failed.",
+          "recorded_at": "2026-08-27T22:29:22+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/find.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_failed_find_monitoring_case_is_runnable spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats spec.v103.test_scope.V103ScopeTests.test_generated_scope_closes_logging_foundation'",
+          "exit_code": 0,
+          "summary": "Exact live find monitoring executed 5 cases with 5 passes, no failures, environment skips, or deferrals; the rejected-find case preserved the structured operational error while publishing correlated started and failed events, and all three focused conformance contracts passed.",
+          "recorded_at": "2026-08-27T22:33:35+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T22:29:01+00:00",
+      "completed_at": "2026-08-27T22:33:36+00:00"
     }
   },
   "verified_references": {

@@ -211,6 +211,8 @@ Single-batch collection finds use the same listener path. The started event reta
 declared find options, while the succeeded event retains the server's cursor reply and first batch.
 If iteration requires another batch, listeners receive a correlated `getMore` started and succeeded
 pair with the cursor identifier, collection name, batch size, and server reply.
+When the server rejects a find, listeners receive the started event followed by a correlated failed
+event; the collection operation still returns its structured MongoDB error.
 
 #### Structured logging configuration
 

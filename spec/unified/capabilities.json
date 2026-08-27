@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2082,
-    "runnable": 2082
+    "passed": 2083,
+    "runnable": 2083
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37506,7 +37506,6 @@
     "command-logging-and-monitoring/tests/monitoring/find.json::test[6]": {
       "activity": "LOG-017",
       "fingerprint": "7fcef33000f89effd50c8c64e02e09620cc418f5080cd18f978343f7f4d62375",
-      "reason": "failed find monitoring awaits its v0.10.4 slice",
       "requirements": {
         "arguments": [
           "find.filter"
@@ -37529,7 +37528,7 @@
         "special_operations": [],
         "topologies": []
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[10]": {
       "activity": "REL-008",

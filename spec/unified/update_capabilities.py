@@ -298,9 +298,6 @@ TEST_OVERRIDES[
   "the server requirement capped at MongoDB 4.4.99 is below the "
   "MongoDB 7.0 production-core floor",
 )
-TEST_OVERRIDES[
-  "command-logging-and-monitoring/tests/monitoring/find.json::test[6]"
-] = ("LOG-017", OWNER_REASONS["LOG-017"])
 TEST_OVERRIDES.update({
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": (
     "AUTH-011",
