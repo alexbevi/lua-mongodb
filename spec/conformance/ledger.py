@@ -388,19 +388,41 @@ def classify_case(
         owner = "LOG-014"
       else:
         raise LedgerError(f"unknown command logging fixture: {identity}")
-    elif fixture in {"command.json", "find.json", "server-connection-id.json"}:
+    elif fixture == "command.json":
       owner = "LOG-005"
-    elif fixture in {
-      "deleteMany.json",
-      "deleteOne.json",
-      "insertMany.json",
-      "insertOne.json",
-      "updateMany.json",
-      "updateOne.json",
-    }:
+    elif fixture == "find.json":
+      index = int(identity.rsplit("[", 1)[1][:-1])
+
+      if index <= 3:
+        owner = "LOG-015"
+      elif index <= 5:
+        owner = "LOG-016"
+      else:
+        owner = "LOG-017"
+    elif fixture == "server-connection-id.json":
+      owner = "LOG-018"
+    elif fixture == "insertOne.json":
       owner = "LOG-006"
-    else:
+    elif fixture == "insertMany.json":
+      owner = "LOG-019"
+    elif fixture == "deleteOne.json":
+      owner = "LOG-020"
+    elif fixture == "deleteMany.json":
+      owner = "LOG-021"
+    elif fixture == "updateOne.json":
+      owner = "LOG-022"
+    elif fixture == "updateMany.json":
+      owner = "LOG-023"
+    elif fixture == "bulkWrite.json":
       owner = "LOG-007"
+    elif fixture == "unacknowledgedBulkWrite.json":
+      owner = "LOG-024"
+    elif fixture == "unacknowledged-client-bulkWrite.json":
+      owner = "LOG-025"
+    elif fixture == "writeConcernError.json":
+      owner = "LOG-026"
+    else:
+      raise LedgerError(f"unknown command monitoring fixture: {identity}")
 
     return _deferred(case, owner, activities)
 

@@ -94,7 +94,9 @@ ADDITIONAL_REASONS = {
       "BP-001", "BP-004", "BP-005", "BP-006", "BP-007", "BP-008", "BP-009",
       "CMAP-005", "CMAP-006", "CON-017",
       "LOG-002", "LOG-003", "LOG-004", "LOG-005", "LOG-006", "LOG-007",
-      "LOG-010", "LOG-011", "LOG-012", "LOG-013", "LOG-014",
+      "LOG-010", "LOG-011", "LOG-012", "LOG-013", "LOG-014", "LOG-015",
+      "LOG-016", "LOG-017", "LOG-018", "LOG-019", "LOG-020", "LOG-021",
+      "LOG-022", "LOG-023", "LOG-024", "LOG-025", "LOG-026",
       "OTEL-002", "OTEL-003", "OTEL-004",
       "SDAM-009", "SDAM-010", "SEL-002", "SEL-003",
     }
