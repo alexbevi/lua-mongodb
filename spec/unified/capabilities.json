@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2083,
-    "runnable": 2083
+    "passed": 2084,
+    "runnable": 2084
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37810,6 +37810,36 @@
         ],
         "operations": [
           "runCommand"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/server-connection-id.json::test[1]": {
+      "activity": "LOG-018",
+      "fingerprint": "708a1e0290ccc6c9de31c31ae8a9fdc74249776b0c553c6ceca7a884c38c2bb8",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandFailedEvent",
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "find",
+          "insertOne"
         ],
         "special_operations": [],
         "topologies": []

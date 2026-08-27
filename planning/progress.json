@@ -10227,6 +10227,28 @@
       "notes": [],
       "started_at": "2026-08-27T22:29:01+00:00",
       "completed_at": "2026-08-27T22:33:36+00:00"
+    },
+    "LOG-018": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_server_connection_id_monitoring_case_is_runnable'",
+          "exit_code": 2,
+          "summary": "The exact server-connection-ID monitoring contract failed because server-connection-id.json::test[1] was absent from the unified capability manifest; 1 focused contract ran and errored.",
+          "recorded_at": "2026-08-27T22:47:46+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/server-connection-id.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_server_connection_id_monitoring_case_is_runnable spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats spec.v103.test_scope.V103ScopeTests.test_generated_scope_closes_logging_foundation spec.release.test_scope.ReleaseScopeTests.test_checked_in_scope_has_only_concrete_release_gaps_and_exclusions spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 0,
+          "summary": "The exact server-connection-ID monitoring fixture executed 1 case with 1 pass and no failures, environment skips, or deferrals; insert started/succeeded and rejected-find started/failed events all exposed the server identity, and all five focused conformance contracts passed.",
+          "recorded_at": "2026-08-27T22:51:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T22:47:20+00:00",
+      "completed_at": "2026-08-27T22:51:09+00:00"
     }
   },
   "verified_references": {

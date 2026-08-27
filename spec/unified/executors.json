@@ -2449,6 +2449,10 @@
       "activity": "REL-008",
       "environment": "live-standalone"
     },
+    "command-logging-and-monitoring/tests/monitoring/server-connection-id.json::test[1]": {
+      "activity": "LOG-018",
+      "environment": "live-replicaset"
+    },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",
       "environment": "live-standalone"

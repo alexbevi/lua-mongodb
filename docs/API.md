@@ -206,6 +206,8 @@ Command listeners observe application command I/O. A successful `database:run_co
 `started` with the exact command document, command name, and database name, then invokes `succeeded`
 with the reply and the same command name. Both events share their request, operation, and connection
 identities. Handshakes and monitor heartbeats remain outside this listener path.
+When the server's hello response contains `connectionId`, every started event and its terminal
+succeeded or failed event expose that value as `server_connection_id`.
 
 Single-batch collection finds use the same listener path. The started event retains the filter and
 declared find options, while the succeeded event retains the server's cursor reply and first batch.
