@@ -180,7 +180,6 @@
     "LOG-005": 8,
     "LOG-006": 13,
     "LOG-007": 4,
-    "LOG-011": 1,
     "OTEL-002": 9,
     "OTEL-003": 12,
     "OTEL-004": 3,
@@ -190,13 +189,13 @@
     "SEL-003": 4
   },
   "deferred_by_scope": {
-    "additional-exclusion": 985
+    "additional-exclusion": 984
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 985,
+    "deferred_unsupported": 984,
     "excluded_scope": 98,
-    "passed": 4426,
+    "passed": 4427,
     "unsupported": 15
   },
   "total_cases": 5524,

@@ -52,7 +52,7 @@ local function clock(values)
 end
 
 describe("command monitoring", function()
-  it("suppresses handshakes and logs application command outcomes", function()
+  it("suppresses handshake and heartbeat hello traffic from command logs", function()
     local observed = {}
     local logger = assert(logging.new(fake_runtime.new(), {
       levels = { command = "debug" },
@@ -67,6 +67,7 @@ describe("command monitoring", function()
     })
     local connection = fake_connection({
       bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
+      bson.document({ { "ok", 1 }, { "maxWireVersion", 25 } }),
       bson.document({ { "ok", 1 }, { "value", 42 } }),
       bson.document({ { "ok", 0 }, { "errmsg", "bad filter" }, { "code", 2 } }),
     })
@@ -77,6 +78,7 @@ describe("command monitoring", function()
       server_port = 27018,
     })
 
+    assert(commands:hello())
     assert(commands:hello())
     assert(commands:command("app", bson.document({ { "ping", 1 } })))
     local response, err = commands:command(

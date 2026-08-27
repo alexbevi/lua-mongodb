@@ -10029,6 +10029,28 @@
       "notes": [],
       "started_at": "2026-08-27T19:06:12+00:00",
       "completed_at": "2026-08-27T19:13:17+00:00"
+    },
+    "LOG-011": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/no-heartbeat-messages.json'",
+          "exit_code": 2,
+          "summary": "The exact upstream heartbeat-suppression fixture was discovered but rejected as unclassified, so the driver had no executable conformance claim for excluding monitor heartbeats from command logs.",
+          "recorded_at": "2026-08-27T19:26:21+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/no-heartbeat-messages.json'; make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_heartbeat_logging_suppression_case_is_runnable spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats spec.v103.test_scope.V103ScopeTests.test_generated_scope_closes_logging_foundation spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'; make test-unified-inventory; make test-complexity",
+          "exit_code": 0,
+          "summary": "The heartbeat fixture executed live with 1 passed, 0 environment-skipped, 0 deferred, and 0 failed. The command-monitoring unit file passed 8 tests, four focused generated-artifact contracts passed, the 131-test unified inventory passed, touched Lua lint reported 0 warnings, and the complexity baseline stayed current.",
+          "recorded_at": "2026-08-27T19:28:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T19:26:05+00:00",
+      "completed_at": "2026-08-27T19:28:50+00:00"
     }
   },
   "verified_references": {
