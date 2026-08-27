@@ -125,7 +125,11 @@ describe("unified log expectations", function()
     local runner, _, collectors, logger = setup()
 
     assert.is_true(logger:emit("command", "debug", {
-      failure = "",
+      failure = document({
+        { "code", 18 },
+        { "codeName", "AuthenticationFailed" },
+        { "errorLabels", array({ "HandshakeError" }) },
+      }),
       message = "Command failed",
     }))
     assert.is_true(logger:emit("command", "debug", {

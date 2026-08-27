@@ -242,6 +242,13 @@ written. Each started message has exactly one terminal message with the same req
 handshakes remain excluded. Server-selection, topology, and connection messages are enabled only
 by their component-specific implementation slices.
 
+Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
+`saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and
+`copydb`. They apply the same rule to `hello`, `ismaster`, and `isMaster` when the command contains
+`speculativeAuthenticate`. A sensitive server failure retains only `code`, `codeName`, and
+`errorLabels`. Network and other client-side failures remain visible because they contain no server
+authentication response.
+
 `read_preference.mode` is `primary`, `primary_preferred`, `secondary`,
 `secondary_preferred`, or `nearest`. `tag_sets` is a dense array of string-to-string tables.
 `max_staleness_seconds` is -1 or an integer of at least 90. Primary mode cannot use tags or

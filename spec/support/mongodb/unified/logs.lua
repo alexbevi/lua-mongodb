@@ -53,6 +53,7 @@ end
 function COLLECTOR_METHODS:options()
   return {
     levels = self.levels,
+    max_document_length = 10000,
     sink = function(event)
       if self.active then
         self.messages[#self.messages + 1] = event
@@ -156,11 +157,27 @@ local function validate_expected_message(expected, path)
 end
 
 local function failure_redacted(value)
-  return value == ""
-    or value == "{}"
-    or value == "{ }"
-    or bson.is_null(value)
-    or bson.is_document(value) and #value == 0
+  if value == "" or value == "{}" or value == "{ }" or bson.is_null(value) then
+    return true
+  end
+
+  if not bson.is_document(value) then
+    return false
+  end
+
+  local allowed = {
+    code = true,
+    codeName = true,
+    errorLabels = true,
+  }
+
+  for key in value:iter() do
+    if not allowed[key] then
+      return false
+    end
+  end
+
+  return true
 end
 
 local function match_message(runner, expected, actual, path)

@@ -4,6 +4,22 @@
     "command-logging-and-monitoring/tests/logging/command.json::test[2]": "LOG-002",
     "command-logging-and-monitoring/tests/logging/command.json::test[3]": "LOG-002",
     "command-logging-and-monitoring/tests/logging/command.json::test[4]": "LOG-002",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[10]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[11]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[12]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[13]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[14]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[15]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[16]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[1]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[2]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[3]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[4]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[5]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[6]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[7]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[8]": "LOG-003",
+    "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[9]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": "LOG-002",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": "BP-009",
@@ -33,7 +49,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 29
+    "unified_cases": 45
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

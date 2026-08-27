@@ -9964,6 +9964,49 @@
       "reopened_after_commit": "6e5c801717967569fa7200d9ac510ce4d41919b3",
       "started_at": "2026-08-27T17:58:32+00:00",
       "completed_at": "2026-08-27T18:03:34+00:00"
+    },
+    "LOG-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/redacted-commands.json'",
+          "exit_code": 1,
+          "summary": "The exact 16-case redaction fixture executed 14 applicable cases: 7 passed, 7 failed, 2 were skipped by their pinned maxServerVersion requirement, and 0 were deferred; the unified redaction contract was non-conformant.",
+          "recorded_at": "2026-08-27T18:41:56+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_logs_spec.lua spec/unit/command_monitoring_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/redacted-commands.json'",
+          "exit_code": 0,
+          "summary": "12 Lua tests passed; 14 applicable redaction cases executed and passed, 2 getnonce cases were skipped by their pinned maxServerVersion requirement, with 0 failures and 0 deferrals.",
+          "recorded_at": "2026-08-27T18:48:31+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_LINT='spec/support/mongodb/unified/logs.lua spec/unit/unified_logs_spec.lua'",
+          "exit_code": 0,
+          "summary": "Luacheck reported 0 warnings and 0 errors in the two touched Lua test-support files.",
+          "recorded_at": "2026-08-27T18:48:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-unified-inventory",
+          "exit_code": 0,
+          "summary": "All 129 unified CLI tests and every release scope, historical scope, checklist, conformance catalog, ledger, and README projection validator passed at 2068 runnable cases, 4425 ledger passes, and 986 deferrals.",
+          "recorded_at": "2026-08-27T18:48:33+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-complexity",
+          "exit_code": 0,
+          "summary": "The production complexity baseline remained current with 2 existing hotspots above 40 and a maximum score of 47.",
+          "recorded_at": "2026-08-27T18:48:34+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T18:39:01+00:00",
+      "completed_at": "2026-08-27T18:48:41+00:00"
     }
   },
   "verified_references": {
