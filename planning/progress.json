@@ -9890,36 +9890,60 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua --filter=logs.command.started'",
+          "command": "GitHub Actions CI Fast run 33099858650: make check-fast / make check-fast-runtime",
           "exit_code": 2,
-          "summary": "0 successes / 1 failure: no command log lifecycle events were emitted when command listeners were absent",
-          "recorded_at": "2026-08-27T17:35:37+00:00"
+          "summary": "32 unified CLI tests failed because their expected runnable and passed ratchets remained 2047 after five LOG-002 executors raised both counts to 2052",
+          "recorded_at": "2026-08-27T17:50:35+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua spec/unit/logging_spec.lua spec/unit/unified_logs_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/*.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_discovery_filters_and_rejects_unclassified_fixtures spec.unified.test_cli.UnifiedCliTests.test_discovery_includes_release_unified_fixture_locations'",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
           "exit_code": 0,
-          "summary": "23 unit successes; 5 unified command logging cases executed and passed on live-replicaset; 2 unified discovery tests passed; 0 failed, skipped, or deferred",
-          "recorded_at": "2026-08-27T17:42:46+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_LINT='src/mongodb/client.lua src/mongodb/command/executor.lua src/mongodb/logging.lua src/mongodb/monitoring.lua spec/support/mongodb/unified/logs.lua spec/unit/command_monitoring_spec.lua spec/unit/unified_logs_spec.lua'",
-          "exit_code": 0,
-          "summary": "7 touched Lua files passed Luacheck with 0 warnings and 0 errors",
-          "recorded_at": "2026-08-27T17:42:47+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-complexity && python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 planning/update_readme_compatibility.py --check",
-          "exit_code": 0,
-          "summary": "Complexity baseline current; unified capabilities, conformance ledger, and README compatibility projection current",
-          "recorded_at": "2026-08-27T17:42:47+00:00"
+          "summary": "All 128 unified CLI tests passed with the LOG-002 runnable and passed ratchets at 2052",
+          "recorded_at": "2026-08-27T17:51:18+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-27T17:34:30+00:00",
-      "completed_at": "2026-08-27T17:42:55+00:00"
+      "notes": [
+        "Requeued: CI Fast 33099858650 exposed 32 stale unified ratchet assertions after the runnable count increased from 2047 to 2052"
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-27T17:42:55+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua --filter=logs.command.started'",
+              "exit_code": 2,
+              "summary": "0 successes / 1 failure: no command log lifecycle events were emitted when command listeners were absent",
+              "recorded_at": "2026-08-27T17:35:37+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua spec/unit/logging_spec.lua spec/unit/unified_logs_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/*.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_discovery_filters_and_rejects_unclassified_fixtures spec.unified.test_cli.UnifiedCliTests.test_discovery_includes_release_unified_fixture_locations'",
+              "exit_code": 0,
+              "summary": "23 unit successes; 5 unified command logging cases executed and passed on live-replicaset; 2 unified discovery tests passed; 0 failed, skipped, or deferred",
+              "recorded_at": "2026-08-27T17:42:46+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-focus FOCUS_LINT='src/mongodb/client.lua src/mongodb/command/executor.lua src/mongodb/logging.lua src/mongodb/monitoring.lua spec/support/mongodb/unified/logs.lua spec/unit/command_monitoring_spec.lua spec/unit/unified_logs_spec.lua'",
+              "exit_code": 0,
+              "summary": "7 touched Lua files passed Luacheck with 0 warnings and 0 errors",
+              "recorded_at": "2026-08-27T17:42:47+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-complexity && python3 spec/unified/update_capabilities.py --check && python3 spec/conformance/ledger.py --check && python3 planning/update_readme_compatibility.py --check",
+              "exit_code": 0,
+              "summary": "Complexity baseline current; unified capabilities, conformance ledger, and README compatibility projection current",
+              "recorded_at": "2026-08-27T17:42:47+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "1b0bcbcf6177365cd17fd957d233b67f73e25b43",
+      "started_at": "2026-08-27T17:50:27+00:00",
+      "completed_at": "2026-08-27T17:51:18+00:00"
     }
   },
   "verified_references": {
