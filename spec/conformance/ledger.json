@@ -34098,12 +34098,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/no-handshake-messages.json::test[1]": {
-      "activity": "LOG-003",
+      "activity": "LOG-010",
       "fingerprint": "6d4cb194a89719d59a154b5685ad6a7ce7f66c6834f59eb4adb194753cacacc6",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-003",
+      "runner": "pending:LOG-010",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/no-handshake-messages.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -34111,12 +34111,12 @@
       "suite": "command-logging-and-monitoring"
     },
     "command-logging-and-monitoring/tests/logging/no-heartbeat-messages.json::test[1]": {
-      "activity": "LOG-003",
+      "activity": "LOG-011",
       "fingerprint": "876a6cd8cc05d24672c6cae607d7843d980e254c83d1a2b0199b936955651eba",
       "format": "unified",
       "last_execution": null,
       "required_environment": "live-mongodb",
-      "runner": "pending:LOG-003",
+      "runner": "pending:LOG-011",
       "scope": "additional",
       "source": "command-logging-and-monitoring/tests/logging/no-heartbeat-messages.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",

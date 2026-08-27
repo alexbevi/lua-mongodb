@@ -372,12 +372,12 @@ def classify_case(
     if "/tests/logging/" in path:
       if fixture in {"command.json", "unacknowledged-write.json"}:
         owner = "LOG-002"
-      elif fixture in {
-        "no-handshake-messages.json",
-        "no-heartbeat-messages.json",
-        "redacted-commands.json",
-      }:
+      elif fixture == "redacted-commands.json":
         owner = "LOG-003"
+      elif fixture == "no-handshake-messages.json":
+        owner = "LOG-010"
+      elif fixture == "no-heartbeat-messages.json":
+        owner = "LOG-011"
       else:
         owner = "LOG-004"
     elif fixture in {"command.json", "find.json", "server-connection-id.json"}:

@@ -40,6 +40,8 @@ OPTIONAL_OWNERS = {
   "LOG-005",
   "LOG-006",
   "LOG-007",
+  "LOG-010",
+  "LOG-011",
   "OTEL-002",
   "OTEL-003",
   "OTEL-004",

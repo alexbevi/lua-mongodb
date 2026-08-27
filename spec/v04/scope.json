@@ -61,6 +61,8 @@
     "LOG-005": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
     "LOG-006": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
     "LOG-007": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
+    "LOG-010": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
+    "LOG-011": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
     "OTEL-002": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
     "OTEL-003": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
     "OTEL-004": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
