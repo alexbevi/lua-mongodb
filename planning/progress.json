@@ -9890,21 +9890,22 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "GitHub Actions CI Fast run 33099858650: make check-fast / make check-fast-runtime",
+          "command": "GitHub Actions CI Fast run 33100552395: make check-fast / make check-fast-runtime",
           "exit_code": 2,
-          "summary": "32 unified CLI tests failed because their expected runnable and passed ratchets remained 2047 after five LOG-002 executors raised both counts to 2052",
-          "recorded_at": "2026-08-27T17:50:35+00:00"
+          "summary": "All 128 unified CLI tests passed; the next generated gate failed because spec/release/scope.json still projected five LOG-002 cases as deferred",
+          "recorded_at": "2026-08-27T17:58:44+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
+          "command": "make test-unified-inventory",
           "exit_code": 0,
-          "summary": "All 128 unified CLI tests passed with the LOG-002 runnable and passed ratchets at 2052",
-          "recorded_at": "2026-08-27T17:51:18+00:00"
+          "summary": "All unified CLI inventory, release scope/checklist, historical scopes, conformance catalog/ledger, and generated README projection pass with five LOG-002 command logging cases classified as executed.",
+          "recorded_at": "2026-08-27T18:03:33+00:00"
         }
       ],
       "notes": [
-        "Requeued: CI Fast 33099858650 exposed 32 stale unified ratchet assertions after the runnable count increased from 2047 to 2052"
+        "Requeued: CI Fast 33099858650 exposed 32 stale unified ratchet assertions after the runnable count increased from 2047 to 2052",
+        "Requeued: CI Fast 33100552395 passed all 128 unified CLI tests, then found spec/release/scope.json stale after five LOG-002 cases became passed"
       ],
       "reopen_history": [
         {
@@ -9939,11 +9940,30 @@
               "recorded_at": "2026-08-27T17:42:47+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-27T17:51:18+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "GitHub Actions CI Fast run 33099858650: make check-fast / make check-fast-runtime",
+              "exit_code": 2,
+              "summary": "32 unified CLI tests failed because their expected runnable and passed ratchets remained 2047 after five LOG-002 executors raised both counts to 2052",
+              "recorded_at": "2026-08-27T17:50:35+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli'",
+              "exit_code": 0,
+              "summary": "All 128 unified CLI tests passed with the LOG-002 runnable and passed ratchets at 2052",
+              "recorded_at": "2026-08-27T17:51:18+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "1b0bcbcf6177365cd17fd957d233b67f73e25b43",
-      "started_at": "2026-08-27T17:50:27+00:00",
-      "completed_at": "2026-08-27T17:51:18+00:00"
+      "reopened_after_commit": "6e5c801717967569fa7200d9ac510ce4d41919b3",
+      "started_at": "2026-08-27T17:58:32+00:00",
+      "completed_at": "2026-08-27T18:03:34+00:00"
     }
   },
   "verified_references": {

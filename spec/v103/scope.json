@@ -1,5 +1,10 @@
 {
   "capability_cases": {
+    "command-logging-and-monitoring/tests/logging/command.json::test[1]": "LOG-002",
+    "command-logging-and-monitoring/tests/logging/command.json::test[2]": "LOG-002",
+    "command-logging-and-monitoring/tests/logging/command.json::test[3]": "LOG-002",
+    "command-logging-and-monitoring/tests/logging/command.json::test[4]": "LOG-002",
+    "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": "LOG-002",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json::test[1]": "BP-009",
@@ -28,7 +33,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 24
+    "unified_cases": 29
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {
