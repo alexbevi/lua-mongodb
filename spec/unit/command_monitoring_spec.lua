@@ -81,7 +81,9 @@ describe("command monitoring", function()
 
     assert(commands:hello())
     assert(commands:hello())
-    assert(commands:command("app", bson.document({ { "ping", 1 } })))
+    assert(commands:command("app", bson.document({ { "ping", 1 } }), {
+      operation_id = 700,
+    }))
     local response, err = commands:command(
       "app",
       bson.document({ { "find", "items" } })
@@ -111,6 +113,10 @@ describe("command monitoring", function()
     assert.are.equal(observed[1].data.requestId, observed[2].data.requestId)
     assert.are.equal(observed[3].data.requestId, observed[4].data.requestId)
     assert.are.equal(observed[5].data.requestId, observed[6].data.requestId)
+    assert.are.equal(700, observed[1].data.operationId)
+    assert.are.equal(700, observed[2].data.operationId)
+    assert.are.equal(observed[3].data.requestId, observed[3].data.operationId)
+    assert.are.equal(observed[4].data.requestId, observed[4].data.operationId)
     assert.are.equal("command", observed[1].component)
     assert.are.equal("debug", observed[1].level)
 

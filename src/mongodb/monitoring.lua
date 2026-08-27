@@ -132,6 +132,7 @@ local function common_log_fields(span_state, message, duration_ms)
     databaseName = span_state.database_name,
     driverConnectionId = span_state.driver_connection_id,
     message = message,
+    operationId = span_state.operation_id,
     requestId = span_state.request_id,
     serverConnectionId = span_state.server_connection_id,
     serverHost = span_state.server_host,

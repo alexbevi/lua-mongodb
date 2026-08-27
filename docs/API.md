@@ -234,7 +234,9 @@ produced the event. Logging component names are part of the supported configurat
 individual message contents may evolve within their specification requirements. The configuration,
 sink, and event envelope are independent of component emission. The command component emits
 `Command started`, `Command succeeded`, and `Command failed` messages at `debug`. Every message
-contains `commandName`, `databaseName`, `requestId`, `serverHost`, and `serverPort`. Started
+contains `commandName`, `databaseName`, `requestId`, `operationId`, `serverHost`, and `serverPort`.
+A multi-command bulk operation reuses one operation ID across all of its command lifecycles. Other
+commands use their request-derived operation ID. Started
 messages add the relaxed Extended JSON `command`; succeeded messages add `durationMS` and the
 relaxed Extended JSON `reply`; failed messages add `durationMS` and `failure`. An unacknowledged
 write emits a succeeded message with an `{ "ok": 1 }` reply after the complete OP_MSG has been

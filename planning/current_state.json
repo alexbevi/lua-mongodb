@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 357,
+    "completed": 358,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 35
+    "pending": 34
   },
   "active": [],
   "ready": [
-    "LOG-014",
+    "LOG-005",
     "ADV-010",
     "SFP-001"
   ],
@@ -45,7 +45,7 @@
     "v0-10-2-gssapi": [],
     "v0-10-3-logging-foundation": [],
     "v0-10-4-command-logging": [
-      "LOG-014"
+      "LOG-005"
     ],
     "v0-10-5-server-selection-logging": [],
     "v0-10-6-topology-pool-logging": [],
@@ -55,5 +55,5 @@
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "LOG-014"
+  "next_ready": "LOG-005"
 }

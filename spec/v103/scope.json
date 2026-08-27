@@ -8,6 +8,8 @@
     "command-logging-and-monitoring/tests/logging/driver-connection-id.json::test[2]": "LOG-004",
     "command-logging-and-monitoring/tests/logging/no-handshake-messages.json::test[1]": "LOG-010",
     "command-logging-and-monitoring/tests/logging/no-heartbeat-messages.json::test[1]": "LOG-011",
+    "command-logging-and-monitoring/tests/logging/operation-id.json::test[1]": "LOG-014",
+    "command-logging-and-monitoring/tests/logging/operation-id.json::test[2]": "LOG-014",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[10]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[11]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[12]": "LOG-003",
@@ -56,7 +58,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 52
+    "unified_cases": 54
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

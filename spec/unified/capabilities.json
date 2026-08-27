@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2075,
-    "runnable": 2075
+    "passed": 2077,
+    "runnable": 2077
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -36688,6 +36688,58 @@
           "sharded",
           "single"
         ]
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/operation-id.json::test[1]": {
+      "activity": "LOG-014",
+      "fingerprint": "f4a31d92d2eb359877fe544464320e243b05d7a6b8bce1fb393d2727beb74fa7",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.requests"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/logging/operation-id.json::test[2]": {
+      "activity": "LOG-014",
+      "fingerprint": "ed90e91364c8062174e7ae6dc74d79e1c9a831147ba79eecf408daf8585bc54e",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.requests"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [],
+        "topologies": []
       },
       "status": "runnable"
     },
