@@ -193,6 +193,7 @@ describe("collection bulk writes", function()
           bson.document({
             { "index", 1 },
             { "code", 11000 },
+            { "codeName", "DuplicateKey" },
             { "errmsg", "duplicate key" },
           }),
         }) },
@@ -235,6 +236,7 @@ describe("collection bulk writes", function()
     assert.is_nil(written)
     assert.is_true(errors.is(err, errors.CATEGORY.WRITE))
     assert.are.equal(11000, err.code)
+    assert.are.equal("DuplicateKey", err.code_name)
     assert.are.equal(3, err.details.write_errors[1].index)
     assert.are.equal(2, err.details.partial_result.inserted_count)
     assert.are.equal(1, err.details.partial_result.matched_count)

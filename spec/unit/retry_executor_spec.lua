@@ -5,6 +5,24 @@ local operation_timeout = require("mongodb.operation_timeout")
 local fake_runtime = require("mongodb.runtime.fake")
 
 describe("retryable read executor", function()
+  it("passes through a non-document successful write response", function()
+    local underlying = {
+      close = function()
+        return true
+      end,
+      command = function()
+        return true
+      end,
+    }
+    local executor = retry_executor.new(underlying, { enabled_writes = true })
+
+    assert.is_true(executor:command(
+      "db",
+      bson.document({ { "insert", "items" } }),
+      { retryable_write = true }
+    ))
+  end)
+
   it("retries until the operation deadline under CSOT", function()
     local runtime = fake_runtime.new({ now = 0 })
     local calls = 0

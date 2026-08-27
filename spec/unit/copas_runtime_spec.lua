@@ -72,6 +72,57 @@ describe("Copas runtime adapter", function()
     assert.are.equal("second", adapter.environment:get("AWS_ACCESS_KEY_ID"))
   end)
 
+  it("writes process output through validated standard streams", function()
+    local original_stdout = io.stdout
+    local original_stderr = io.stderr
+    local writes = {}
+    local stream = {
+      write = function(_, value, suffix)
+        writes[#writes + 1] = { value, suffix }
+        return true
+      end,
+    }
+    local outcome = table.pack(pcall(function()
+      rawset(io, "stdout", stream)
+      rawset(io, "stderr", stream)
+
+      local adapter = runtime.copas()
+
+      assert.has_error(function()
+        adapter.output:write("file", "entry")
+      end, "output destination must be 'stdout' or 'stderr'")
+      assert.has_error(function()
+        adapter.output:write("stdout", {})
+      end, "output value must be a string")
+      assert(adapter.output:write("stdout", "first"))
+      assert(adapter.output:write("stderr", "second"))
+
+      rawset(io, "stdout", {
+        write = function()
+          return nil, "closed"
+        end,
+      })
+
+      local written, err = adapter.output:write("stdout", "third")
+
+      assert.is_nil(written)
+      assert.is_true(errors.is(err, errors.CATEGORY.INTERNAL))
+      assert.matches("closed", tostring(err), 1, true)
+    end))
+
+    rawset(io, "stdout", original_stdout)
+    rawset(io, "stderr", original_stderr)
+
+    if not outcome[1] then
+      error(outcome[2], 0)
+    end
+
+    assert.are.same({
+      { "first", "\n" },
+      { "second", "\n" },
+    }, writes)
+  end)
+
   it("reads bounded files through the default adapter", function()
     local path = os.tmpname()
     local file = assert(io.open(path, "wb"))

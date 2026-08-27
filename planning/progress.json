@@ -9823,36 +9823,67 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
-          "exit_code": 2,
-          "summary": "Release checklist still identifies the GSSAPI 0.10.2 release instead of the logging-foundation 0.10.3 release.",
-          "recorded_at": "2026-08-27T15:13:33+00:00"
+          "command": "GitHub Actions Full Conformance 33088250836 on 993ea2fbc6dd44b3ae93c12a60040806d35a5e6c",
+          "exit_code": 1,
+          "summary": "All 717 coverage-instrumented tests and 24 other release jobs passed, but Linux quality rejected stale per-file coverage ratios for bulk.lua, client_bulk.lua, retry_executor.lua, and the new Copas output capability.",
+          "recorded_at": "2026-08-27T16:21:14+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "Lua 5.4 targeted coverage for bulk, client bulk, retry executor, and Copas runtime; touched-file lint",
           "exit_code": 0,
-          "summary": "The release checklist reports v0.10.3 ready, requires ADV-009, LOG-008, LOG-009, LOG-001, and CON-014, and preserves the exact 230-case ownership boundary.",
-          "recorded_at": "2026-08-27T15:21:04+00:00"
+          "summary": "All 57 focused unit cases passed under Lua 5.4 with coverage; the exact previously missed code-name, minimum-wire-version, non-document response, and runtime output lines now execute, and all four touched specs lint cleanly.",
+          "recorded_at": "2026-08-27T16:27:01+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus for release version unit tests, exact client metadata integration, release/package/workflow/documentation Python contracts, and touched-file lint",
+          "command": "Exact failed-Linux coverage report analysis and ratio simulation; make test-release-checklist test-v103-scope; README, syntax, workflow, and diff validators",
           "exit_code": 0,
-          "summary": "Twenty Lua version and handshake tests, the directly coupled client metadata case, 53 release/package/workflow/documentation contracts, isolated package installation, and six touched Lua files passed with no failures or lint warnings.",
-          "recorded_at": "2026-08-27T15:21:05+00:00"
-        },
-        {
-          "phase": "green",
-          "command": "make rockspec test-release-checklist test-v103-scope test-v102-scope test-release-scope; release artifact, workflow, README, syntax, diff, and prepared-tree source-rock validators",
-          "exit_code": 0,
-          "summary": "Rockspec, release checklist, v0.10.3 logging foundation, prior GSSAPI, production-core scope, README projection, Python/JSON/workflow syntax, and diff validators passed; two 1.87 MB prepared-tree source rocks were byte-identical and contained the versioned rockspec plus logging modules.",
-          "recorded_at": "2026-08-27T15:21:07+00:00"
+          "summary": "The added paths lift the exact Linux metrics above every unchanged per-file ratchet without lowering the baseline; release and v0.10.3 scope contracts, README projection, Python/workflow syntax, and diff validation pass.",
+          "recorded_at": "2026-08-27T16:27:02+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-27T15:11:05+00:00",
-      "completed_at": "2026-08-27T15:21:12+00:00"
+      "notes": [
+        "Requeued: Full Conformance run 33088250836 failed the Linux coverage ratchet for four logging-foundation-touched modules after all tests and every other release job passed."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-27T15:21:12+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 2,
+              "summary": "Release checklist still identifies the GSSAPI 0.10.2 release instead of the logging-foundation 0.10.3 release.",
+              "recorded_at": "2026-08-27T15:13:33+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 0,
+              "summary": "The release checklist reports v0.10.3 ready, requires ADV-009, LOG-008, LOG-009, LOG-001, and CON-014, and preserves the exact 230-case ownership boundary.",
+              "recorded_at": "2026-08-27T15:21:04+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus for release version unit tests, exact client metadata integration, release/package/workflow/documentation Python contracts, and touched-file lint",
+              "exit_code": 0,
+              "summary": "Twenty Lua version and handshake tests, the directly coupled client metadata case, 53 release/package/workflow/documentation contracts, isolated package installation, and six touched Lua files passed with no failures or lint warnings.",
+              "recorded_at": "2026-08-27T15:21:05+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make rockspec test-release-checklist test-v103-scope test-v102-scope test-release-scope; release artifact, workflow, README, syntax, diff, and prepared-tree source-rock validators",
+              "exit_code": 0,
+              "summary": "Rockspec, release checklist, v0.10.3 logging foundation, prior GSSAPI, production-core scope, README projection, Python/JSON/workflow syntax, and diff validators passed; two 1.87 MB prepared-tree source rocks were byte-identical and contained the versioned rockspec plus logging modules.",
+              "recorded_at": "2026-08-27T15:21:07+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "993ea2fbc6dd44b3ae93c12a60040806d35a5e6c",
+      "started_at": "2026-08-27T16:19:36+00:00",
+      "completed_at": "2026-08-27T16:27:08+00:00"
     }
   },
   "verified_references": {

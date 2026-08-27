@@ -9,6 +9,36 @@ local session_executor = require("mongodb.session_executor")
 local session_module = require("mongodb.session")
 
 describe("client bulk writes", function()
+  it("rejects servers older than MongoDB 8.0", function()
+    local executor = {
+      close = function()
+        return true
+      end,
+      capabilities = function()
+        return {
+          max_bson_size = 16777216,
+          max_message_size = 48000000,
+          max_wire_version = 24,
+          max_write_batch_size = 100000,
+        }
+      end,
+      command = function()
+        error("unsupported client bulk write reached the command executor")
+      end,
+    }
+    local client = api.new_client(
+      executor,
+      assert(driver_options.normalize(nil, {}))
+    )
+    local result, err = client:bulk_write({
+      client_bulk.insert_one("app.events", bson.document({ { "_id", 1 } })),
+    })
+
+    assert.is_nil(result)
+    assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))
+    assert.matches("requires MongoDB 8.0", tostring(err), 1, true)
+  end)
+
   it("inserts across namespaces with deduplicated namespace information", function()
     local captured
     local next_id = 0
