@@ -9627,21 +9627,22 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "CI Fast 33076221587 portable Lua 5.4 and 5.5 lanes",
+          "command": "CI Fast 33076839177 spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready",
           "exit_code": 2,
-          "summary": "All four portable lanes failed because auth_oidc_spec expected OIDC_TOKEN_FILE as the first environment lookup but logging configuration read MONGODB_LOG_ALL first",
-          "recorded_at": "2026-08-27T13:25:41+00:00"
+          "summary": "The release checklist rejected the prematurely changed architecture status line because v0.10.2 remains the current release until the v0.10.3 release activity",
+          "recorded_at": "2026-08-27T13:32:27+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua'; touched-file lint under Lua 5.4",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready planning.tests.test_readme_content'; README projection and diff validators",
           "exit_code": 0,
-          "summary": "All four focused OIDC integration cases passed under Lua 5.5 and the adjusted integration fixture linted cleanly under Lua 5.4",
-          "recorded_at": "2026-08-27T13:26:12+00:00"
+          "summary": "The release checklist plus 16 documentation contracts passed with the current-release status restored; README projection and diff checks remained current",
+          "recorded_at": "2026-08-27T13:32:49+00:00"
         }
       ],
       "notes": [
-        "Requeued: CI Fast 33076221587 exposed an order-sensitive OIDC integration fake: logging configuration reads MONGODB_LOG_* before OIDC_TOKEN_FILE"
+        "Requeued: CI Fast 33076221587 exposed an order-sensitive OIDC integration fake: logging configuration reads MONGODB_LOG_* before OIDC_TOKEN_FILE",
+        "Requeued: CI Fast 33076839177 showed that the architecture status line must remain pinned to the current v0.10.2 release until the v0.10.3 release activity"
       ],
       "reopen_history": [
         {
@@ -9676,11 +9677,30 @@
               "recorded_at": "2026-08-27T13:18:11+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-27T13:26:13+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "CI Fast 33076221587 portable Lua 5.4 and 5.5 lanes",
+              "exit_code": 2,
+              "summary": "All four portable lanes failed because auth_oidc_spec expected OIDC_TOKEN_FILE as the first environment lookup but logging configuration read MONGODB_LOG_ALL first",
+              "recorded_at": "2026-08-27T13:25:41+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_INTEGRATION='spec/integration/auth_oidc_spec.lua'; touched-file lint under Lua 5.4",
+              "exit_code": 0,
+              "summary": "All four focused OIDC integration cases passed under Lua 5.5 and the adjusted integration fixture linted cleanly under Lua 5.4",
+              "recorded_at": "2026-08-27T13:26:12+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "989c9f40d88d25b1b4e02a636e3118ce84bc2235",
-      "started_at": "2026-08-27T13:25:25+00:00",
-      "completed_at": "2026-08-27T13:26:13+00:00"
+      "reopened_after_commit": "eeed1caf797fc49b3ddbe38c062d3fa1c1033c59",
+      "started_at": "2026-08-27T13:32:19+00:00",
+      "completed_at": "2026-08-27T13:32:50+00:00"
     }
   },
   "verified_references": {

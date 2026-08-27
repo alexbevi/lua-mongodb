@@ -1,6 +1,6 @@
 # Architecture
 
-Status: structured logging configuration implemented. This document must be updated in the same activity that changes an architectural contract.
+Status: GSSAPI v0.10.2 release-ready. This document must be updated in the same activity that changes an architectural contract.
 
 ## Design constraints
 
