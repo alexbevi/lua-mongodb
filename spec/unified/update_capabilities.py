@@ -291,6 +291,9 @@ TEST_OVERRIDES[
   "REL-053",
   "getnonce is capped below MongoDB 7.0 and is outside production-core v1",
 )
+for index, owner in ((4, "LOG-016"), (5, "LOG-016"), (6, "LOG-017")):
+  identity = f"command-logging-and-monitoring/tests/monitoring/find.json::test[{index}]"
+  TEST_OVERRIDES[identity] = (owner, OWNER_REASONS[owner])
 TEST_OVERRIDES.update({
   "auth/tests/unified/mongodb-oidc-no-retry.json::test[1]": (
     "AUTH-011",

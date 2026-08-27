@@ -207,6 +207,9 @@ Command listeners observe application command I/O. A successful `database:run_co
 with the reply and the same command name. Both events share their request, operation, and connection
 identities. Handshakes and monitor heartbeats remain outside this listener path.
 
+Single-batch collection finds use the same listener path. The started event retains the filter and
+declared find options, while the succeeded event retains the server's cursor reply and first batch.
+
 #### Structured logging configuration
 
 The `logging` table accepts only these fields:

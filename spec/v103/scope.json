@@ -31,6 +31,12 @@
     "command-logging-and-monitoring/tests/logging/service-id.json::test[2]": "LOG-013",
     "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": "LOG-002",
     "command-logging-and-monitoring/tests/monitoring/command.json::test[1]": "LOG-005",
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[1]": "LOG-015",
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[2]": "LOG-015",
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[3]": "LOG-015",
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[4]": "LOG-016",
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[5]": "LOG-016",
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[6]": "LOG-017",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json::test[1]": "BP-009",
@@ -59,7 +65,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 55
+    "unified_cases": 61
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

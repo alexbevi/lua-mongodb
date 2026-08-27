@@ -2393,6 +2393,18 @@
       "activity": "LOG-005",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[1]": {
+      "activity": "LOG-015",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[2]": {
+      "activity": "LOG-015",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/monitoring/find.json::test[3]": {
+      "activity": "LOG-015",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[1]": {
       "activity": "REL-008",
       "environment": "live-standalone"

@@ -10161,6 +10161,28 @@
       "notes": [],
       "started_at": "2026-08-27T21:31:23+00:00",
       "completed_at": "2026-08-27T21:33:34+00:00"
+    },
+    "LOG-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_single_batch_find_monitoring_cases_are_runnable'",
+          "exit_code": 2,
+          "summary": "The exact single-batch find monitoring contract failed because find.json::test[1] through test[3] were absent from the runnable manifest and executor registry; 1 focused contract ran and errored.",
+          "recorded_at": "2026-08-27T21:51:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/find.json' FOCUS_PYTHON='<three focused contracts>' FOCUS_LINT='spec/support/mongodb/unified/driver.lua'",
+          "exit_code": 0,
+          "summary": "The exact single-batch find monitoring fixture executed 3 runnable cases against a live replica set: 3 passed, 0 environment-skipped, 0 failed, with 3 later-slice cases explicitly deferred; 3 focused capability, ledger, and logging-scope contracts and touched-file lint also passed.",
+          "recorded_at": "2026-08-27T21:56:27+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T21:50:02+00:00",
+      "completed_at": "2026-08-27T21:56:33+00:00"
     }
   },
   "verified_references": {

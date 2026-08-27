@@ -1980,10 +1980,14 @@ local function find(_, collection, arguments)
       hint = "hint",
       let = "let",
       limit = "limit",
+      max = "max",
       maxAwaitTimeMS = "max_await_time_ms",
       maxTimeMS = "max_time_ms",
+      min = "min",
       projection = "projection",
       rawData = "raw_data",
+      returnKey = "return_key",
+      showRecordId = "show_record_id",
       skip = "skip",
       sort = "sort",
     }
@@ -3199,8 +3203,9 @@ function M.new(options)
         find = {
           arguments = {
             "allowDiskUse", "batchSize", "collation", "comment", "cursorType",
-            "filter", "hint", "let", "limit", "maxAwaitTimeMS", "maxTimeMS",
-            "projection", "rawData", "skip", "sort", "timeoutMode", "timeoutMS",
+            "filter", "hint", "let", "limit", "max", "maxAwaitTimeMS",
+            "maxTimeMS", "min", "projection", "rawData", "returnKey",
+            "showRecordId", "skip", "sort", "timeoutMode", "timeoutMS",
           },
           handler = find,
         },
