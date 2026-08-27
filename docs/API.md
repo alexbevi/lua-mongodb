@@ -220,6 +220,9 @@ An `insert_one` publishes the encoded insert command and the server reply. Repli
 write-error result.
 `insert_many` applies the same event contract to each emitted wire batch. A batch reply containing
 `writeErrors` is a command success even though the collection operation returns a write error.
+`delete_one` publishes a delete command whose sole delete specification has `limit = 1`, followed
+by the server reply. A reply containing `writeErrors` still produces a succeeded event while the
+collection operation returns its structured write error.
 
 #### Structured logging configuration
 
