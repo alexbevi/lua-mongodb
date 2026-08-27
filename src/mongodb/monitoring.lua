@@ -136,6 +136,7 @@ local function common_log_fields(span_state, message, duration_ms)
     serverConnectionId = span_state.server_connection_id,
     serverHost = span_state.server_host,
     serverPort = span_state.server_port,
+    serviceId = span_state.service_id and tostring(span_state.service_id),
   }
 
   if duration_ms ~= nil then

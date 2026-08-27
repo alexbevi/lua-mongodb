@@ -40,11 +40,11 @@ class V10ScopeTests(unittest.TestCase):
     self.assertEqual(committed, generated)
     self.assertEqual(
       {
-        "classified": 1042,
+        "classified": 1043,
         "excluded": 18,
-        "passed": 777,
+        "passed": 778,
         "planned": 245,
-        "supported": 777,
+        "supported": 778,
         "unsupported": 2,
       },
       generated["summary"],
@@ -52,8 +52,8 @@ class V10ScopeTests(unittest.TestCase):
     self.assertEqual(
       {
         "dedicated_cases": 40,
-        "exact_unified_cases": 738,
-        "run_on_branches": 1000,
+        "exact_unified_cases": 739,
+        "run_on_branches": 1001,
         "terminal_unsupported": 2,
       },
       generated["evidence"],

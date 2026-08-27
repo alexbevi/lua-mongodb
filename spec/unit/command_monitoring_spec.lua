@@ -137,9 +137,16 @@ describe("command monitoring", function()
   it("runs the exact load-balanced serviceId event cases", function()
     local fixture = read_fixture("load-balancers/tests/event-monitoring.json")
     local service_id = bson.object_id("000000000000000000000001")
+    local logs = {}
     local observed = {}
     local events = monitoring.new({
       clock = clock({ 1, 2, 3, 4 }),
+      logger = assert(logging.new(fake_runtime.new(), {
+        levels = { command = "debug" },
+        sink = function(event)
+          logs[#logs + 1] = event
+        end,
+      })),
       listeners = {
         {
           started = function(_, event)
@@ -177,6 +184,12 @@ describe("command monitoring", function()
 
     assert.is_nil(response)
     assert.is_true(errors.is(err, errors.CATEGORY.SERVER))
+    assert.are.equal(4, #logs)
+
+    for _, event in ipairs(logs) do
+      assert.are.equal(tostring(service_id), event.data.serviceId)
+    end
+
     assert.are.same({
       "command started and succeeded events include serviceId",
       "command failed events include serviceId",

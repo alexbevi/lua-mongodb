@@ -10095,6 +10095,28 @@
       "notes": [],
       "started_at": "2026-08-27T20:14:24+00:00",
       "completed_at": "2026-08-27T20:18:08+00:00"
+    },
+    "LOG-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/service-id.json'",
+          "exit_code": 1,
+          "summary": "Both exact service-ID cases executed: the non-load-balanced omission case passed, while the load-balanced case failed because serviceId was missing from its first command log message; 2 executed, 1 passed, 0 environment-skipped, 0 deferred, and 1 failed.",
+          "recorded_at": "2026-08-27T20:34:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/command_monitoring_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/logging/service-id.json' FOCUS_PYTHON='<three focused contracts>' FOCUS_LINT='src/mongodb/monitoring.lua spec/unit/command_monitoring_spec.lua'",
+          "exit_code": 0,
+          "summary": "Both defining unified cases passed 2/2 with no environment skips, deferrals, or failures; 8 command-monitoring unit tests, 3 focused Python contracts, and touched-file lint also passed.",
+          "recorded_at": "2026-08-27T20:37:17+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-27T20:32:54+00:00",
+      "completed_at": "2026-08-27T20:37:18+00:00"
     }
   },
   "verified_references": {

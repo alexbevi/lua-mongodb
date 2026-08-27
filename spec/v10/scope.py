@@ -72,13 +72,13 @@ TARGET_VERSION_EXECUTION_EXCLUSIONS = frozenset({
   "retryable-writes/tests/unified/insertOne-serverErrors.json::test[4]",
 })
 RATCHETS = {
-  "classified": 1042,
+  "classified": 1043,
   "dedicated_cases": 40,
-  "exact_unified_cases": 738,
+  "exact_unified_cases": 739,
   "excluded": 18,
   "out_of_track": 245,
-  "passed": 777,
-  "run_on_branches": 1000,
+  "passed": 778,
+  "run_on_branches": 1001,
   "unsupported": 2,
 }
 

@@ -25,6 +25,8 @@
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[8]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/redacted-commands.json::test[9]": "LOG-003",
     "command-logging-and-monitoring/tests/logging/server-connection-id.json::test[1]": "LOG-012",
+    "command-logging-and-monitoring/tests/logging/service-id.json::test[1]": "LOG-013",
+    "command-logging-and-monitoring/tests/logging/service-id.json::test[2]": "LOG-013",
     "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": "LOG-002",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": "BP-009",
@@ -54,7 +56,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 50
+    "unified_cases": 52
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

@@ -524,8 +524,8 @@
   },
   "evidence": {
     "dedicated_cases": 40,
-    "exact_unified_cases": 738,
-    "run_on_branches": 1000,
+    "exact_unified_cases": 739,
+    "run_on_branches": 1001,
     "terminal_unsupported": 2
   },
   "exact_unified_cases": [
@@ -565,6 +565,7 @@
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[7]",
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[8]",
     "change-streams/tests/unified/change-streams-resume-errorLabels.json::test[9]",
+    "command-logging-and-monitoring/tests/logging/service-id.json::test[1]",
     "crud/tests/unified/aggregate-write-readPreference.json::test[1]",
     "crud/tests/unified/aggregate-write-readPreference.json::test[2]",
     "crud/tests/unified/aggregate-write-readPreference.json::test[3]",
@@ -1313,6 +1314,7 @@
     "LEG-001": 17,
     "LEG-004": 3,
     "LEG-006": 2,
+    "LOG-013": 1,
     "REL-003": 2,
     "REL-005": 1,
     "REL-016": 4,
@@ -1330,13 +1332,13 @@
     "TXN-007": 2
   },
   "ratchets": {
-    "classified": 1042,
+    "classified": 1043,
     "dedicated_cases": 40,
-    "exact_unified_cases": 738,
+    "exact_unified_cases": 739,
     "excluded": 18,
     "out_of_track": 245,
-    "passed": 777,
-    "run_on_branches": 1000,
+    "passed": 778,
+    "run_on_branches": 1001,
     "unsupported": 2
   },
   "run_on_branches": {
@@ -11113,6 +11115,36 @@
         ]
       },
       "status": "deferred_unsupported"
+    },
+    "command-logging-and-monitoring/tests/logging/service-id.json::test[1]": {
+      "activity": "LOG-013",
+      "fingerprint": "bdd543e33b254857352ff96ea49213db50f439a451306dd39b6121569a76c090",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "find",
+          "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": [
+          "load-balanced"
+        ]
+      },
+      "status": "runnable"
     },
     "crud/tests/unified/aggregate-write-readPreference.json::test[1]": {
       "activity": "REL-016",
@@ -36894,11 +36926,11 @@
   },
   "schema_version": 1,
   "summary": {
-    "classified": 1042,
+    "classified": 1043,
     "excluded": 18,
-    "passed": 777,
+    "passed": 778,
     "planned": 245,
-    "supported": 777,
+    "supported": 778,
     "unsupported": 2
   },
   "terminal_unsupported": {
