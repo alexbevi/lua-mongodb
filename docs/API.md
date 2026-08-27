@@ -215,6 +215,9 @@ If iteration requires another batch, listeners receive a correlated `getMore` st
 pair with the cursor identifier, collection name, batch size, and server reply.
 When the server rejects a find, listeners receive the started event followed by a correlated failed
 event; the collection operation still returns its structured MongoDB error.
+An `insert_one` publishes the encoded insert command and the server reply. Replies that contain
+`writeErrors` still produce a succeeded event, while the collection operation retains its existing
+write-error result.
 
 #### Structured logging configuration
 

@@ -37,6 +37,8 @@
     "command-logging-and-monitoring/tests/monitoring/find.json::test[4]": "LOG-016",
     "command-logging-and-monitoring/tests/monitoring/find.json::test[5]": "LOG-016",
     "command-logging-and-monitoring/tests/monitoring/find.json::test[6]": "LOG-017",
+    "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[1]": "LOG-006",
+    "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[2]": "LOG-006",
     "command-logging-and-monitoring/tests/monitoring/server-connection-id.json::test[1]": "LOG-018",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": "BP-009",
@@ -66,7 +68,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 62
+    "unified_cases": 64
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

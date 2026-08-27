@@ -2413,6 +2413,14 @@
       "activity": "LOG-017",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[1]": {
+      "activity": "LOG-006",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[2]": {
+      "activity": "LOG-006",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[1]": {
       "activity": "REL-008",
       "environment": "live-standalone"

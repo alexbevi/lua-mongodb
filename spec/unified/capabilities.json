@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2084,
-    "runnable": 2084
+    "passed": 2086,
+    "runnable": 2086
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -37524,6 +37524,62 @@
         "match_operators": [],
         "operations": [
           "find"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[1]": {
+      "activity": "LOG-006",
+      "fingerprint": "c9b980868e8e189f26d2d4b3b1fca4aacb1027dd5dce84675309e05c06e67717",
+      "requirements": {
+        "arguments": [
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[2]": {
+      "activity": "LOG-006",
+      "fingerprint": "3e4231643991d6639b50eef03c37f654212fa484e4e80ffcdfcea69b43a74df8",
+      "requirements": {
+        "arguments": [
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "insertOne"
         ],
         "special_operations": [],
         "topologies": []
