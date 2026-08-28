@@ -89,10 +89,10 @@ TARGET_VERSION_EXECUTION_EXCLUSIONS = frozenset({
 RATCHETS = {
   "classified": 1044,
   "dedicated_cases": 40,
-  "exact_unified_cases": 740,
+  "exact_unified_cases": 741,
   "excluded": 18,
-  "out_of_track": 245,
-  "passed": 779,
+  "out_of_track": 244,
+  "passed": 780,
   "run_on_branches": 1002,
   "unsupported": 2,
 }

@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2112,
-    "runnable": 2112
+    "passed": 2116,
+    "runnable": 2116
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -73831,7 +73831,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]": {
       "activity": "SDAM-009",
       "fingerprint": "b3d13aec16ae924fddf6bda3ae6c7b40c83ff1f30181bd34c2b1b67cb01d033b",
-      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73860,12 +73859,11 @@
           "load-balanced"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[1]": {
       "activity": "SDAM-009",
       "fingerprint": "a9c67f66b8cf51d4aaa7ed316568bef80a3c9db5ad9783b082e4118a79c5708f",
-      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73894,7 +73892,7 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[2]": {
       "activity": "SDAM-010",
@@ -73968,7 +73966,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[1]": {
       "activity": "SDAM-009",
       "fingerprint": "748442acf2edbeb2ab62f840c5b8b7e17384362b5ee9b5a1afd9dfcb0a3ba2b9",
-      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73997,7 +73994,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[2]": {
       "activity": "SDAM-010",
@@ -74071,7 +74068,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[1]": {
       "activity": "SDAM-009",
       "fingerprint": "f783feb9842e976f4647e05bc9791d20b29558ab4d4a7cc8e8c20d947d33f721",
-      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -74100,7 +74096,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[2]": {
       "activity": "SDAM-010",

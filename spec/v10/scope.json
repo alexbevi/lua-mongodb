@@ -524,7 +524,7 @@
   },
   "evidence": {
     "dedicated_cases": 40,
-    "exact_unified_cases": 740,
+    "exact_unified_cases": 741,
     "run_on_branches": 1002,
     "terminal_unsupported": 2
   },
@@ -1056,6 +1056,7 @@
     "run-command/tests/unified/runCursorCommand.json::test[5]",
     "run-command/tests/unified/runCursorCommand.json::test[6]",
     "server-discovery-and-monitoring/tests/unified/loadbalanced-emit-topology-changed-before-close.json::test[1]",
+    "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]",
     "server-selection/tests/logging/load-balanced.json::test[1]",
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]",
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[2]",
@@ -1326,6 +1327,7 @@
     "REL-051": 22,
     "RETRY-001": 225,
     "RETRY-002": 75,
+    "SDAM-009": 1,
     "SEL-002": 1,
     "TXN-001": 163,
     "TXN-002": 30,
@@ -1336,10 +1338,10 @@
   "ratchets": {
     "classified": 1044,
     "dedicated_cases": 40,
-    "exact_unified_cases": 740,
+    "exact_unified_cases": 741,
     "excluded": 18,
-    "out_of_track": 245,
-    "passed": 779,
+    "out_of_track": 244,
+    "passed": 780,
     "run_on_branches": 1002,
     "unsupported": 2
   },
@@ -28082,7 +28084,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-loadbalanced.json::test[1]": {
       "activity": "SDAM-009",
       "fingerprint": "b3d13aec16ae924fddf6bda3ae6c7b40c83ff1f30181bd34c2b1b67cb01d033b",
-      "reason": "topology lifecycle logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -28111,7 +28112,7 @@
           "load-balanced"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-selection/tests/logging/load-balanced.json::test[1]": {
       "activity": "SEL-002",
@@ -36963,9 +36964,9 @@
   "summary": {
     "classified": 1044,
     "excluded": 18,
-    "passed": 779,
-    "planned": 245,
-    "supported": 779,
+    "passed": 780,
+    "planned": 244,
+    "supported": 780,
     "unsupported": 2
   },
   "terminal_unsupported": {

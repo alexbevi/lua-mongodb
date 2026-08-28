@@ -194,17 +194,16 @@
     "OTEL-002": 9,
     "OTEL-003": 12,
     "OTEL-004": 3,
-    "SDAM-009": 4,
     "SDAM-010": 6
   },
   "deferred_by_scope": {
-    "additional-exclusion": 941
+    "additional-exclusion": 937
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 941,
+    "deferred_unsupported": 937,
     "excluded_scope": 99,
-    "passed": 4469,
+    "passed": 4473,
     "unsupported": 15
   },
   "total_cases": 5524,

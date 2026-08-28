@@ -77,6 +77,56 @@ local function run_copas(callback)
 end
 
 describe("monitored topology", function()
+  it("logs topology and server lifecycle transitions in order", function()
+    local observed = {}
+    local runtime = fake_runtime.new()
+    local logger = assert(logging.new(runtime, {
+      levels = { topology = "debug" },
+      sink = function(event)
+        observed[#observed + 1] = event
+      end,
+    }))
+    local manager = topology.new({
+      logger = logger,
+      pool_factory = new_pool,
+      runtime = runtime,
+      seeds = { "standalone:27017" },
+      topology_id = "42",
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("standalone:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "maxWireVersion", 25 },
+    }), { duration = 0.01 }))
+    assert(manager:close())
+
+    local messages = {}
+
+    for index, event in ipairs(observed) do
+      messages[index] = event.data.message
+      assert.are.equal("42", event.data.topologyId)
+    end
+
+    assert.same({
+      "Starting topology monitoring",
+      "Topology description changed",
+      "Starting server monitoring",
+      "Topology description changed",
+      "Stopped server monitoring",
+      "Topology description changed",
+      "Stopped topology monitoring",
+    }, messages)
+    assert.are.equal("standalone", observed[3].data.serverHost)
+    assert.are.equal(27017, observed[3].data.serverPort)
+    assert.are.equal("standalone", observed[5].data.serverHost)
+    assert.are.equal(27017, observed[5].data.serverPort)
+    assert.is_string(observed[2].data.previousDescription)
+    assert.is_string(observed[2].data.newDescription)
+  end)
+
   it("publishes discovery changes and readies the server pool", function()
     local events = {}
     local ready_count = 0

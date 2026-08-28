@@ -295,8 +295,13 @@ is the MongoDB command name for application commands. Internal capability handsh
 selection messages. When an operation owns a logical operation ID, every selection message uses
 that value as `operationId`; the corresponding command logs use the same value, including across
 retry attempts and multi-command bulk operations. Server-selection lifecycle logging and operation
-correlation are available in version 0.10.5. Topology and connection messages are enabled only by
-their component-specific implementation slices. Server-selection messages describe the process of
+correlation are available in version 0.10.5. The `topology` component emits `Starting topology
+monitoring`, `Stopped topology monitoring`, `Starting server monitoring`, `Stopped server
+monitoring`, and `Topology description changed` at `debug`. Every message contains `topologyId`.
+Server-specific messages add `serverHost` and, for TCP addresses, `serverPort`; description-change
+messages add `previousDescription` and `newDescription`. Topology lifecycle logging is available in
+version 0.10.6. Heartbeat and connection messages remain assigned to their later implementation
+slices. Server-selection messages describe the process of
 choosing a server for an application operation; they do not replace command lifecycle messages or
 the independent SDAM monitoring events.
 

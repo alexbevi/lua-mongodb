@@ -249,6 +249,41 @@ local function selected_host_and_port(address)
   return host or address, port and tonumber(port) or nil
 end
 
+local function emit_topology_log(state, message, extra)
+  if state.logger == nil then
+    return
+  end
+
+  pcall(function()
+    local fields = {
+      message = message,
+      topologyId = state.topology_id,
+    }
+
+    for key, value in pairs(extra or {}) do
+      fields[key] = value
+    end
+
+    state.logger:emit("topology", "debug", fields)
+  end)
+end
+
+local function log_topology_change(state, previous_description, new_description)
+  emit_topology_log(state, "Topology description changed", {
+    newDescription = topology_summary(new_description),
+    previousDescription = topology_summary(previous_description),
+  })
+end
+
+local function log_server_monitoring(state, message, address)
+  local host, port = selected_host_and_port(address)
+
+  emit_topology_log(state, message, {
+    serverHost = host,
+    serverPort = port,
+  })
+end
+
 local function selection_succeeded(state, context, selected)
   local host, port = selected_host_and_port(selected.address)
 
@@ -390,6 +425,7 @@ local function add_server(state, address)
 
   state.servers[address] = server
   publish(state, "ServerOpening", { address = address })
+  log_server_monitoring(state, "Starting server monitoring", address)
   return server
 end
 
@@ -439,6 +475,7 @@ local function remove_server(state, address)
 
   state.servers[address] = nil
   publish(state, "ServerClosed", { address = address })
+  log_server_monitoring(state, "Stopped server monitoring", address)
   return true
 end
 
@@ -521,6 +558,7 @@ local function process_description(state, address, response, options)
       new_description = updated,
       previous_description = old_topology,
     })
+    log_topology_change(state, old_topology, updated)
   end
 
   return true
@@ -1107,10 +1145,12 @@ function MANAGER_METHODS:open(options)
   state.state = "open"
   state.background = options.background ~= false
   publish(state, "TopologyOpening")
+  emit_topology_log(state, "Starting topology monitoring")
   publish(state, "TopologyDescriptionChanged", {
     new_description = state.description,
     previous_description = state.description:closed(),
   })
+  log_topology_change(state, state.description:closed(), state.description)
 
   for _, address in ipairs(state.description:addresses()) do
     add_server(state, address)
@@ -1178,6 +1218,7 @@ function MANAGER_METHODS:rescan_srv()
       new_description = new_description,
       previous_description = old_description,
     })
+    log_topology_change(state, old_description, new_description)
   end
 
   state.lock:release()
@@ -1691,7 +1732,9 @@ function MANAGER_METHODS:close()
     remove_server(state, address)
   end
 
+  log_topology_change(state, old_description, new_description)
   publish(state, "TopologyClosed")
+  emit_topology_log(state, "Stopped topology monitoring")
   return true
 end
 
