@@ -177,14 +177,14 @@ class V04ScopeTests(unittest.TestCase):
 
     self.assertEqual(committed, generated)
     self.assertEqual(898, generated["summary"]["classified"])
-    self.assertEqual(873, generated["summary"]["passed"])
+    self.assertEqual(877, generated["summary"]["passed"])
     self.assertEqual(0, generated["summary"]["planned"])
-    self.assertEqual(25, generated["summary"]["excluded"])
-    self.assertEqual(873, generated["summary"]["supported"])
+    self.assertEqual(21, generated["summary"]["excluded"])
+    self.assertEqual(877, generated["summary"]["supported"])
     self.assertEqual(2, generated["schema_version"])
     self.assertEqual(scope.RATCHETS, generated["ratchets"])
     self.assertEqual(
-      {"exact_unified_cases": 366, "static_passing_cases": 507},
+      {"exact_unified_cases": 370, "static_passing_cases": 507},
       generated["evidence"],
     )
     self.assertEqual({}, generated["planned_by_activity"])
