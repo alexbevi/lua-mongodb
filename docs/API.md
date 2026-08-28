@@ -224,6 +224,9 @@ write-error result.
 by the server reply. A reply containing `writeErrors` still produces a succeeded event while the
 collection operation returns its structured write error.
 `delete_many` follows the same contract with `limit = 0` in its delete specification.
+`update_one` publishes one update specification with single-document semantics. Ordinary, upsert,
+and `writeErrors` replies all produce succeeded events; upsert identifiers and structured write
+errors remain available through the collection operation's existing result contract.
 
 #### Structured logging configuration
 

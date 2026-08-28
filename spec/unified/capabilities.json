@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2092,
-    "runnable": 2092
+    "passed": 2095,
+    "runnable": 2095
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -38064,6 +38064,98 @@
         "operations": [
           "find",
           "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/updateOne.json::test[1]": {
+      "activity": "LOG-022",
+      "fingerprint": "a609ad1929a096a983b30c633f67b62b59d6ca6836f045046b3b1ecd450c3651",
+      "requirements": {
+        "arguments": [
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/updateOne.json::test[2]": {
+      "activity": "LOG-022",
+      "fingerprint": "53c664c931749e004e8b0a481c8997bd6cf388d1cfbf744d2a934073b9252cab",
+      "requirements": {
+        "arguments": [
+          "updateOne.filter",
+          "updateOne.update",
+          "updateOne.upsert"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/updateOne.json::test[3]": {
+      "activity": "LOG-022",
+      "fingerprint": "e225798f16f717bfb8786803b625c08dac46aaa871b8c5515c67024f4fbd822b",
+      "requirements": {
+        "arguments": [
+          "updateOne.filter",
+          "updateOne.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateOne"
         ],
         "special_operations": [],
         "topologies": []
