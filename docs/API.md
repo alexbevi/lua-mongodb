@@ -235,6 +235,8 @@ For an unacknowledged collection bulk, the driver publishes a synthetic succeede
 no-response write. Its reply contains `ok = 1` and does not fabricate an affected-document count.
 An unacknowledged client `bulk_write` follows the same rule for its `bulkWrite` command. Its result
 exposes `acknowledged = false`; count and verbose-result fields remain absent.
+A reply containing `writeConcernError` is still a succeeded command event. If retry policy causes
+another attempt, each attempt publishes its own started and succeeded pair.
 
 #### Structured logging configuration
 

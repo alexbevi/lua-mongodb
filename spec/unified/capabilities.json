@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2100,
-    "runnable": 2100
+    "passed": 2101,
+    "runnable": 2101
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -38314,6 +38314,39 @@
         ],
         "special_operations": [],
         "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/writeConcernError.json::test[1]": {
+      "activity": "LOG-026",
+      "fingerprint": "e46a58fb9e3d8c5810cc16d5c54be5a92947fcaeee1afdac84eae5a70bd9ee42",
+      "requirements": {
+        "arguments": [
+          "failPoint.client",
+          "failPoint.failPoint",
+          "insertOne.document"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "failPoint"
+        ],
+        "topologies": [
+          "replicaset"
+        ]
       },
       "status": "runnable"
     },

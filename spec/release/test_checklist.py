@@ -268,7 +268,7 @@ class ReleaseChecklistTests(unittest.TestCase):
         "passed_requirements": 4,
         "planned_requirements": 230,
         "standardized_cases": 230,
-        "unified_cases": 78,
+        "unified_cases": 79,
       },
       report["gates"]["v0_10_3_conformance"],
     )

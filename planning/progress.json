@@ -10447,6 +10447,28 @@
       "notes": [],
       "started_at": "2026-08-28T00:40:13+00:00",
       "completed_at": "2026-08-28T00:44:04+00:00"
+    },
+    "LOG-026": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_write_concern_error_monitoring_case_is_runnable'",
+          "exit_code": 2,
+          "summary": "KeyError for the writeConcernError monitoring case because the fixture was absent from the generated manifest.",
+          "recorded_at": "2026-08-28T00:55:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/writeConcernError.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_write_concern_error_monitoring_case_is_runnable spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats spec.v103.test_scope.V103ScopeTests.test_generated_scope_closes_logging_foundation spec.release.test_scope.ReleaseScopeTests.test_checked_in_scope_has_only_concrete_release_gaps_and_exclusions spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'; LUA=/opt/homebrew/opt/lua@5.4/bin/lua5.4 LUACHECK=/Users/alex/.luarocks/bin/luacheck make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "The retryable write-concern-error monitoring case passed live (1 executed, 1 passed, 0 skipped, 0 deferred, 0 failed); five focused Python contracts, complexity, and all generated artifact validators passed.",
+          "recorded_at": "2026-08-28T00:56:24+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T00:54:49+00:00",
+      "completed_at": "2026-08-28T00:56:25+00:00"
     }
   },
   "verified_references": {
