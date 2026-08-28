@@ -255,7 +255,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     self.assertEqual({"unsupported": 1}, dict(counts["socks5-support"]))
 
     self.assertEqual(
-      {"passed": 3},
+      {"passed": 4},
       dict(counts["logging"]),
     )
 

@@ -223,6 +223,8 @@
     "classified": 234,
     "foundation_requirements": 4,
     "planned": 230,
+    "standardized_logging_cases": 93,
+    "standardized_logging_requirements": 5,
     "supported": 4,
     "unified_cases": 24
   },
@@ -465,6 +467,18 @@
     "uri-options/tests/client-backpressure-options.json::test[5]": "BP-001",
     "uri-options/tests/client-backpressure-options.json::test[6]": "BP-001"
   },
+  "standardized_logging_conformance": {
+    "cases": 93,
+    "requirement_statuses": {
+      "passed": 5
+    },
+    "requirements": 5,
+    "statuses": {
+      "excluded_scope": 2,
+      "passed": 89,
+      "unsupported": 2
+    }
+  },
   "summary": {
     "classified": 234,
     "passed": 4,
@@ -482,6 +496,7 @@
     "BP-009",
     "CMAP-005",
     "CMAP-006",
+    "CON-017",
     "LOG-001",
     "LOG-002",
     "LOG-003",

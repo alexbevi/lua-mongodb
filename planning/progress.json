@@ -10795,6 +10795,28 @@
       "notes": [],
       "started_at": "2026-08-28T18:59:35+00:00",
       "completed_at": "2026-08-28T19:13:01+00:00"
+    },
+    "CON-017": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v103.test_scope.V103ScopeTests.test_standardized_logging_scope_is_closed'",
+          "exit_code": 2,
+          "summary": "The logging scope report had no aggregate closure for the 93 component cases and five prose requirements.",
+          "recorded_at": "2026-08-28T19:35:02+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.v103.test_scope spec.conformance.test_catalog spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_compatibility planning.tests.test_readme_content'",
+          "exit_code": 0,
+          "summary": "All 52 focused conformance, ledger, release-checklist, and documentation tests passed; the aggregate closure reports 93 standardized logging cases with 89 passed, two excluded, two unsupported, and five passing prose requirements. The isolated package gate and generated-artifact checks also passed.",
+          "recorded_at": "2026-08-28T19:41:34+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T19:32:50+00:00",
+      "completed_at": "2026-08-28T19:41:35+00:00"
     }
   },
   "verified_references": {

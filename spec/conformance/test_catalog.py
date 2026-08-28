@@ -172,6 +172,9 @@ class ConformanceCatalogTests(unittest.TestCase):
       "logging/logging.md::structured-events": (
         "LOG-008", "spec/unit/logging_spec.lua"
       ),
+      "logging/logging.md::standardized-components": (
+        "CON-017", "spec/v103/scope.py"
+      ),
       "unified-test-format/unified-test-format.md::expected-log-messages": (
         "LOG-001", "spec/unit/unified_logs_spec.lua"
       ),
@@ -182,7 +185,12 @@ class ConformanceCatalogTests(unittest.TestCase):
 
       self.assertEqual(activity, requirement["activity"])
       self.assertEqual("passed", requirement["status"])
-      self.assertEqual("deterministic-runtime", requirement["required_environment"])
+      expected_environment = (
+        "full-conformance"
+        if identity.endswith("::standardized-components")
+        else "deterministic-runtime"
+      )
+      self.assertEqual(expected_environment, requirement["required_environment"])
       self.assertEqual(runner, requirement["runner"])
       self.assertIn(runner, requirement["last_execution"])
 

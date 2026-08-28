@@ -475,6 +475,15 @@
         "required_environment": "deterministic-runtime",
         "runner": "spec/unit/logging_spec.lua",
         "status": "passed"
+      },
+      {
+        "id": "standardized-components",
+        "activity": "CON-017",
+        "last_execution": "python3 spec/v103/scope.py --check && make test-focus FOCUS_PYTHON='spec.v103.test_scope.V103ScopeTests.test_standardized_logging_scope_is_closed'",
+        "reason": "The generated closure verifies exact evidence for every applicable command, topology, server-selection, and connection log case while retaining explicit exclusions and unsupported deprecated options.",
+        "required_environment": "full-conformance",
+        "runner": "spec/v103/scope.py",
+        "status": "passed"
       }
     ],
     "message/OP_MSG.md": {

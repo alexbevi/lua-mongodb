@@ -315,7 +315,9 @@ supported pool options whose configured values differ from their defaults: `maxI
 `minPoolSize`, `maxPoolSize`, `maxConnecting`, and `waitQueueTimeoutMS`. The deprecated
 `waitQueueSize` and `waitQueueMultiple` options are not supported. Server-selection messages
 describe the process of choosing a server for an application operation; they do not replace command
-lifecycle messages or the independent SDAM and CMAP events.
+lifecycle messages or the independent SDAM and CMAP events. Version 0.10.6 completes the applicable
+standardized command, server-selection, topology, and connection logging set for supported MongoDB
+versions.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

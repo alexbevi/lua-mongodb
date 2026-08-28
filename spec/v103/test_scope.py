@@ -86,6 +86,48 @@ class V103ScopeTests(unittest.TestCase):
         scope.load_activities(),
       )
 
+  def test_standardized_logging_scope_is_closed(self) -> None:
+    generated = scope.generate()
+
+    self.assertEqual(
+      {
+        "cases": 93,
+        "requirements": 5,
+        "requirement_statuses": {"passed": 5},
+        "statuses": {
+          "excluded_scope": 2,
+          "passed": 89,
+          "unsupported": 2,
+        },
+      },
+      generated["standardized_logging_conformance"],
+    )
+
+    cases = copy.deepcopy(scope.load_cases())
+    identity = next(
+      identity
+      for identity in cases
+      if identity.startswith(scope.SDAM_LOGGING_PREFIX)
+    )
+    cases[identity]["status"] = "deferred_unsupported"
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
+      scope.classify(
+        cases,
+        scope.load_requirements(),
+        scope.load_capabilities(),
+        scope.load_activities(),
+      )
+
+    requirements = copy.deepcopy(scope.load_requirements())
+    requirements[scope.STANDARDIZED_REQUIREMENT]["activity"] = "ADV-009"
+    with self.assertRaisesRegex(scope.ScopeError, "prose evidence"):
+      scope.classify(
+        scope.load_cases(),
+        requirements,
+        scope.load_capabilities(),
+        scope.load_activities(),
+      )
+
   def test_standardized_cases_have_release_sized_owners(self) -> None:
     generated = scope.generate()
 
