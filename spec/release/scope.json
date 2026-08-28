@@ -191,7 +191,6 @@
     "BP-009": 5,
     "CMAP-005": 2,
     "CMAP-006": 5,
-    "LOG-024": 1,
     "LOG-025": 1,
     "LOG-026": 1,
     "OTEL-002": 9,
@@ -203,13 +202,13 @@
     "SEL-003": 4
   },
   "deferred_by_scope": {
-    "additional-exclusion": 955
+    "additional-exclusion": 954
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 955,
+    "deferred_unsupported": 954,
     "excluded_scope": 99,
-    "passed": 4455,
+    "passed": 4456,
     "unsupported": 15
   },
   "total_cases": 5524,

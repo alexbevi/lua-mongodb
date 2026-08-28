@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2098,
-    "runnable": 2098
+    "passed": 2099,
+    "runnable": 2099
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -38093,6 +38093,38 @@
         "operations": [
           "find",
           "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/unacknowledgedBulkWrite.json::test[1]": {
+      "activity": "LOG-024",
+      "fingerprint": "abdac476a1f18c40aac0c0d860855a2e330bb167f28e4a5a4510cc8b9cbfc125",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.ordered",
+          "bulkWrite.requests",
+          "find.filter"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "bulkWrite",
+          "find"
         ],
         "special_operations": [],
         "topologies": []
