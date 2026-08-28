@@ -54,7 +54,7 @@ The [API reference and stability policy](docs/API.md) lists supported public and
 
 `planning/update_readme_compatibility.py` generates this table from the [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Green means every scored outcome passes. Yellow means passed and incomplete outcomes coexist. Red means no scored outcome passes.
 
-Tracked support % divides passes by scored outcomes. It omits `not_applicable`, `no_machine_cases`, terminal `unsupported`, and unified fixtures restricted to MongoDB versions older than the supported 7.0 floor. A bold dagger marks percentages affected by old-server omissions. A suite with no scored outcomes displays N/A, and the white badge marks a suite the project will not implement. The total combines all displayed outcomes rather than averaging suite percentages.
+Tracked support % divides passes by scored outcomes. It omits `not_applicable`, `no_machine_cases`, terminal `unsupported`, explicit unscored exclusions, and unified fixtures restricted to MongoDB versions older than the supported 7.0 floor. A bold dagger marks percentages with omitted fixtures. A suite with no scored outcomes displays N/A, and the white badge marks a suite the project will not implement. The total combines all displayed outcomes rather than averaging suite percentages.
 
 The "onion model" orders the [MongoDB driver specifications](https://alexbevi.com/specifications/) with serialization first and testability last.
 
@@ -80,8 +80,8 @@ The "onion model" orders the [MongoDB driver specifications](https://alexbevi.co
 | Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟢 | 100.0% |
 | Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 98.9% **†** |
 | Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 87.5% |
-| Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟡 | 97.5% |
-| Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟡 | 97.6% |
+| Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟢 | 100.0% **†** |
+| Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟢 | 100.0% **†** |
 | Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟢 | 100.0% |
 | Availability | [Max staleness](https://alexbevi.com/specifications/max-staleness/max-staleness.html) | 🟢 | 100.0% |
 | Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
@@ -105,12 +105,14 @@ The "onion model" orders the [MongoDB driver specifications](https://alexbevi.co
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **82.8%** **†** |
+|  | **Total** |  | **82.9%** **†** |
 
 > [!IMPORTANT]
-> **† Old-server fixtures excluded from scoring.**
+> **† Fixtures excluded from scoring.**
 >
 > Percentages marked **†** skip 106 upstream fixtures because their `runOnRequirements` restrict them to MongoDB versions older than the supported 7.0 floor. The affected suites are CRUD (74), Change streams (19), Command logging and monitoring (4), Retryable writes (3), Sessions (3), Server discovery and monitoring (2), and Client-side encryption (1). These fixtures remain classified in the conformance ledger but do not count toward the marked suite percentages or the total.
+>
+> The ledger also omits 3 explicit superseded or upstream-skipped fixtures from Authentication options and additional mechanisms (2), Load balancer support (1).
 <!-- END SPEC CONFORMANCE -->
 
 ## Getting started

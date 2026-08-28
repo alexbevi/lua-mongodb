@@ -22,6 +22,7 @@ END = "<!-- END SPEC CONFORMANCE -->"
 SPECIFICATIONS_URL = "https://alexbevi.com/specifications/"
 SUPPORTED_SERVER_FLOOR = (7, 0, 0)
 OLD_SERVER_ONLY_STATUS = "old_server_only"
+UNSCORED_EXCLUSION_STATUS = "unscored_exclusion"
 
 DRIVER_LAYERS = (
   ("Serialization", (
@@ -162,6 +163,7 @@ NON_EXECUTION_STATUSES = frozenset({
   "no_machine_cases",
   "not_applicable",
   OLD_SERVER_ONLY_STATUS,
+  UNSCORED_EXCLUSION_STATUS,
   "unsupported",
 })
 
@@ -309,7 +311,14 @@ def suite_counts(
         f"conformance case {identity} has no suite or status"
       )
 
-    if _is_old_server_only_fixture(
+    if case.get("support_scored") is False:
+      if status != "excluded_scope":
+        raise ReadmeCompatibilityError(
+          f"non-excluded conformance case is marked unscored: {identity}"
+        )
+
+      status = UNSCORED_EXCLUSION_STATUS
+    elif _is_old_server_only_fixture(
       identity,
       case,
       specifications_path,
@@ -441,13 +450,16 @@ def marked_percentage(
   if bold:
     percentage = f"**{percentage}**"
 
-  if counts.get(OLD_SERVER_ONLY_STATUS, 0) == 0:
+  if (
+    counts.get(OLD_SERVER_ONLY_STATUS, 0) == 0
+    and counts.get(UNSCORED_EXCLUSION_STATUS, 0) == 0
+  ):
     return percentage
 
   return f"{percentage} **†**"
 
 
-def old_server_note(counts: dict[str, Counter[str]]) -> str | None:
+def scoring_note(counts: dict[str, Counter[str]]) -> str | None:
   labels = {
     suite: label
     for _, entries in DRIVER_LAYERS
@@ -462,30 +474,57 @@ def old_server_note(counts: dict[str, Counter[str]]) -> str | None:
     key=lambda item: (-item[0], item[1].lower()),
   )
 
-  if not affected:
+  exclusions = sorted(
+    (
+      (outcomes[UNSCORED_EXCLUSION_STATUS], labels[suite])
+      for suite, outcomes in counts.items()
+      if outcomes[UNSCORED_EXCLUSION_STATUS] > 0
+    ),
+    key=lambda item: (-item[0], item[1].lower()),
+  )
+
+  if not affected and not exclusions:
     return None
 
-  total = sum(count for count, _ in affected)
-  suites = ", ".join(
-    f"{label} ({count})"
-    for count, label in affected[:-1]
-  )
-
-  if len(affected) > 1:
-    suites = f"{suites}, and {affected[-1][1]} ({affected[-1][0]})"
-  else:
-    suites = f"{affected[0][1]} ({affected[0][0]})"
-
-  return (
+  note = (
     "> [!IMPORTANT]\n"
-    "> **† Old-server fixtures excluded from scoring.**\n"
-    ">\n"
-    f"> Percentages marked **†** skip {total} upstream fixtures because "
-    "their `runOnRequirements` restrict them to MongoDB versions older than "
-    f"the supported 7.0 floor. The affected suites are {suites}. These fixtures "
-    "remain classified in the conformance ledger but do not count toward the "
-    "marked suite percentages or the total."
+    "> **† Fixtures excluded from scoring.**\n"
   )
+
+  if affected:
+    total = sum(count for count, _ in affected)
+    suites = ", ".join(
+      f"{label} ({count})"
+      for count, label in affected[:-1]
+    )
+
+    if len(affected) > 1:
+      suites = f"{suites}, and {affected[-1][1]} ({affected[-1][0]})"
+    else:
+      suites = f"{affected[0][1]} ({affected[0][0]})"
+
+    note = (
+      f"{note}>\n"
+      f"> Percentages marked **†** skip {total} upstream fixtures because "
+      "their `runOnRequirements` restrict them to MongoDB versions older than "
+      f"the supported 7.0 floor. The affected suites are {suites}. These fixtures "
+      "remain classified in the conformance ledger but do not count toward the "
+      "marked suite percentages or the total."
+    )
+
+  if exclusions:
+    exclusion_total = sum(count for count, _ in exclusions)
+    exclusion_suites = ", ".join(
+      f"{label} ({count})"
+      for count, label in exclusions
+    )
+    note = (
+      f"{note}\n>\n"
+      f"> The ledger also omits {exclusion_total} explicit superseded or "
+      f"upstream-skipped fixtures from {exclusion_suites}."
+    )
+
+  return note
 
 
 def render_table(
@@ -570,7 +609,7 @@ def render_table(
     f"|  | **Total** |  | {marked_percentage(total_counts, bold=True)} |"
   )
 
-  note = old_server_note(counts)
+  note = scoring_note(counts)
 
   if note is not None:
     lines.extend(("", note))

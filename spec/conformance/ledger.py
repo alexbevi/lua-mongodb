@@ -247,8 +247,10 @@ def _excluded(
   runner: str,
   evidence: str,
   reason: str,
+  *,
+  support_scored: bool = True,
 ) -> dict[str, Any]:
-  return {
+  result = {
     **case,
     "activity": activity,
     "last_execution": evidence,
@@ -258,6 +260,11 @@ def _excluded(
     "scope": "superseded",
     "status": "excluded_scope",
   }
+
+  if not support_scored:
+    result["support_scored"] = False
+
+  return result
 
 
 def _unsupported(
@@ -508,6 +515,7 @@ def classify_case(
         "spec/support/auth_config_runner.lua",
         "make test-focus FOCUS_UNIT='spec/unit/config_credentials_spec.lua'",
         "retained legacy assertion was superseded by DRIVERS-3131, which prohibits explicit MONGODB-AWS URI credentials",
+        support_scored=False,
       )
 
     if owner in {
@@ -714,6 +722,7 @@ def classify_case(
         "spec/integration/load_balancer_spec.lua",
         "make test-focus FOCUS_INTEGRATION='spec/integration/load_balancer_spec.lua'",
         "the upstream case has a skipReason because load balancers do not reject loadBalanced=false",
+        support_scored=False,
       )
     elif fixture == "non-lb-connection-establishment.json":
       return _passed(
@@ -977,7 +986,12 @@ def validate_cases(
       if value.get(key) != source[key]:
         raise LedgerError(f"conformance {key} is stale for {identity}")
 
-    expected_fields = required | (
+    optional_fields = (
+      {"support_scored"}
+      if value.get("support_scored") is False
+      else set()
+    )
+    expected_fields = required | optional_fields | (
       {"reason"}
       if value.get("status") in {"excluded_scope", "unsupported"}
       else set()
@@ -1010,6 +1024,12 @@ def validate_cases(
     if value["status"] == "excluded_scope":
       if not isinstance(value["reason"], str) or not value["reason"].strip():
         raise LedgerError(f"excluded case has no reason: {identity}")
+
+      if "support_scored" in value and value["support_scored"] is not False:
+        raise LedgerError(f"excluded case has invalid scoring metadata: {identity}")
+
+    elif "support_scored" in value:
+      raise LedgerError(f"non-excluded case has scoring metadata: {identity}")
 
     if value["status"] == "unsupported":
       if activity_states[activity] not in {"completed", "in_progress"}:

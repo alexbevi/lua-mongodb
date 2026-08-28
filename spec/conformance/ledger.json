@@ -480,7 +480,8 @@
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "excluded_scope",
-      "suite": "auth"
+      "suite": "auth",
+      "support_scored": false
     },
     "auth/tests/legacy/connection-string.json::test[44]": {
       "activity": "AUTH-020",
@@ -494,7 +495,8 @@
       "source": "auth/tests/legacy/connection-string.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "excluded_scope",
-      "suite": "auth"
+      "suite": "auth",
+      "support_scored": false
     },
     "auth/tests/legacy/connection-string.json::test[45]": {
       "activity": "AUTH-020",
@@ -44687,7 +44689,8 @@
       "source": "load-balancers/tests/lb-connection-establishment.json",
       "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "excluded_scope",
-      "suite": "load-balancers"
+      "suite": "load-balancers",
+      "support_scored": false
     },
     "load-balancers/tests/non-lb-connection-establishment.json::test[1]": {
       "activity": "LB-003",

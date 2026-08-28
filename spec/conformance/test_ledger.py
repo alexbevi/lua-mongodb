@@ -180,6 +180,7 @@ class ConformanceLedgerTests(unittest.TestCase):
     ]
     self.assertEqual("LB-003", skipped_connection["activity"])
     self.assertEqual("excluded_scope", skipped_connection["status"])
+    self.assertIs(False, skipped_connection["support_scored"])
     self.assertIn("skipReason", skipped_connection["reason"])
 
     transaction_cursor = generated["cases"][
@@ -428,6 +429,7 @@ class ConformanceLedgerTests(unittest.TestCase):
       ["excluded_scope", "excluded_scope"],
       [case["status"] for case in superseded_aws],
     )
+    self.assertTrue(all(case["support_scored"] is False for case in superseded_aws))
     self.assertTrue(all(case["reason"] for case in superseded_aws))
     self.assertTrue(all(case["last_execution"] for case in superseded_aws))
 
