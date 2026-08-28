@@ -174,6 +174,42 @@ describe("unified runner core", function()
     }), "$.operations[1]"))
   end)
 
+  it("classifies write wrappers around network errors as client errors", function()
+    local runner = assert(unified.new({
+      runtime = fake_runtime.new(),
+      entity_factories = {
+        counter = function()
+          return {}
+        end,
+      },
+      operations = {
+        counter = {
+          fail = function()
+            local cause = errors.new({
+              category = errors.CATEGORY.NETWORK,
+              message = "connection closed",
+            })
+
+            return nil, errors.new({
+              category = errors.CATEGORY.WRITE,
+              cause = cause,
+              message = "bulk write failed",
+            })
+          end,
+        },
+      },
+    }))
+
+    assert(runner:create_entities(array({
+      document({ { "counter", document({ { "id", "counter0" } }) } }),
+    })))
+    assert(runner:execute(document({
+      { "name", "fail" },
+      { "object", "counter0" },
+      { "expectError", document({ { "isClientError", true } }) },
+    }), "$.operations[1]"))
+  end)
+
   it("supports unified match operators and rejects unknown operators", function()
     local runner = assert(unified.new({ runtime = fake_runtime.new() }))
     assert(runner:add_entity("expected0", "bson", bson.int32(4)))

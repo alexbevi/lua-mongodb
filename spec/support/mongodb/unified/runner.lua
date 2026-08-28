@@ -946,9 +946,11 @@ local function error_response(err)
 end
 
 local function error_is_client(err)
-  return err.category ~= errors.CATEGORY.SERVER
-    and err.category ~= errors.CATEGORY.WRITE
-    and error_response(err) == nil
+  if err.category == errors.CATEGORY.WRITE then
+    return err.cause ~= nil and error_is_client(err.cause)
+  end
+
+  return err.category ~= errors.CATEGORY.SERVER and error_response(err) == nil
 end
 
 local function assert_expected_error(

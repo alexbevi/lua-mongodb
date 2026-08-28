@@ -10497,22 +10497,53 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_runner_spec.lua'",
           "exit_code": 2,
-          "summary": "The release checklist still reported the logging-foundation 0.10.3 contract instead of the command-logging 0.10.4 release and its exact completed command gates.",
-          "recorded_at": "2026-08-28T01:29:38+00:00"
+          "summary": "The unified runner classified a WRITE wrapper around a NETWORK cause as a server-side error, reproducing the Full Conformance isClientError failures.",
+          "recorded_at": "2026-08-28T12:04:49+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content planning.tests.test_readme_compatibility'",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_runner_spec.lua' FOCUS_LINT='spec/support/mongodb/unified/runner.lua spec/unit/unified_runner_spec.lua' && make test-focus FOCUS_UNIFIED='retryable-writes/tests/unified/client-bulkWrite-clientErrors.json client-side-operations-timeout/tests/retryability-legacy-timeouts.json'",
           "exit_code": 0,
-          "summary": "The 0.10.4 release checklist, publication guards, release scope, workflow and documentation contracts passed (59 tests). Focused version unit, live client integration, and touched-file lint passed with 26 examples and zero failures; isolated package installation, rockspec lint, generated scope/checklist, README projection, and JSON/Python validators also passed. The immutable source-rock builder remains intentionally commit-bound and is owned by CI on the exact release commit.",
-          "recorded_at": "2026-08-28T01:35:08+00:00"
+          "summary": "The cause-aware error-origin regression passed with 8 unit examples and zero lint warnings. The two failed fixture families executed 52 cases: 52 passed, 0 environment-skipped, 0 deferred, and 0 failed, covering all three Full Conformance failures.",
+          "recorded_at": "2026-08-28T12:06:37+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='retryable-writes/tests/unified/client-bulkWrite-clientErrors.json' && make test-focus FOCUS_UNIFIED='client-side-operations-timeout/tests/retryability-legacy-timeouts.json'",
+          "exit_code": 0,
+          "summary": "Corrected exact command record: the client-bulk fixture passed 2/2 and the legacy-timeout fixture passed 50/50, with zero skips, deferrals, or failures in either run.",
+          "recorded_at": "2026-08-28T12:06:53+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-28T01:28:26+00:00",
-      "completed_at": "2026-08-28T01:35:15+00:00"
+      "notes": [
+        "Requeued: Full Conformance run 33133649465 exposed cause-insensitive unified isClientError classification for WRITE wrappers around network and socket-timeout failures."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-28T01:35:15+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 2,
+              "summary": "The release checklist still reported the logging-foundation 0.10.3 contract instead of the command-logging 0.10.4 release and its exact completed command gates.",
+              "recorded_at": "2026-08-28T01:29:38+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content planning.tests.test_readme_compatibility'",
+              "exit_code": 0,
+              "summary": "The 0.10.4 release checklist, publication guards, release scope, workflow and documentation contracts passed (59 tests). Focused version unit, live client integration, and touched-file lint passed with 26 examples and zero failures; isolated package installation, rockspec lint, generated scope/checklist, README projection, and JSON/Python validators also passed. The immutable source-rock builder remains intentionally commit-bound and is owned by CI on the exact release commit.",
+              "recorded_at": "2026-08-28T01:35:08+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "bb2759396fe6367d5440db68d75b29ef2d201168",
+      "started_at": "2026-08-28T12:04:23+00:00",
+      "completed_at": "2026-08-28T12:07:07+00:00"
     }
   },
   "verified_references": {
