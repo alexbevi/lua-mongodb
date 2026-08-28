@@ -10491,6 +10491,28 @@
       "notes": [],
       "started_at": "2026-08-28T01:06:33+00:00",
       "completed_at": "2026-08-28T01:15:47+00:00"
+    },
+    "REL-063": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "The release checklist still reported the logging-foundation 0.10.3 contract instead of the command-logging 0.10.4 release and its exact completed command gates.",
+          "recorded_at": "2026-08-28T01:29:38+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content planning.tests.test_readme_compatibility'",
+          "exit_code": 0,
+          "summary": "The 0.10.4 release checklist, publication guards, release scope, workflow and documentation contracts passed (59 tests). Focused version unit, live client integration, and touched-file lint passed with 26 examples and zero failures; isolated package installation, rockspec lint, generated scope/checklist, README projection, and JSON/Python validators also passed. The immutable source-rock builder remains intentionally commit-bound and is owned by CI on the exact release commit.",
+          "recorded_at": "2026-08-28T01:35:08+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T01:28:26+00:00",
+      "completed_at": "2026-08-28T01:35:15+00:00"
     }
   },
   "verified_references": {

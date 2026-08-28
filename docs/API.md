@@ -285,6 +285,7 @@ same request ID. Connection handshakes and monitor heartbeats never enter comman
 independent CMAP and SDAM events remain available.
 This surface covers every pinned command logging and monitoring case applicable to the MongoDB 7.0
 production floor; the two older cursor-kill and `getnonce` branches are outside that floor.
+The complete command component and monitoring surface is available in version 0.10.4.
 Server-selection, topology, and connection messages are enabled only by their component-specific
 implementation slices.
 

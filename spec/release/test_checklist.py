@@ -1,4 +1,4 @@
-"""Contract tests for the logging-foundation v0.10.3 release checklist."""
+"""Contract tests for the command-logging v0.10.4 release checklist."""
 
 import unittest
 
@@ -10,8 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("logging-foundation-release-checklist", report["type"])
-    self.assertEqual("0.10.3", report["release"]["version"])
+    self.assertEqual("command-logging-release-checklist", report["type"])
+    self.assertEqual("0.10.4", report["release"]["version"])
     self.assertEqual(
       {
         "activities": ["CSOT-001", "BSON-010"],
@@ -25,8 +25,8 @@ class ReleaseChecklistTests(unittest.TestCase):
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 4153)
-    self.assertLessEqual(conformance["additional_exclusions"], 1371)
+    self.assertGreaterEqual(conformance["passed_cases"], 4458)
+    self.assertLessEqual(conformance["additional_exclusions"], 1051)
     self.assertEqual(15, conformance["unsupported_cases"])
     self.assertEqual(
       conformance["classified_cases"],
@@ -276,6 +276,45 @@ class ReleaseChecklistTests(unittest.TestCase):
         "unified_cases": 79,
       },
       report["gates"]["v0_10_3_conformance"],
+    )
+    self.assertEqual(
+      [
+        "LOG-002",
+        "LOG-003",
+        "LOG-010",
+        "LOG-011",
+        "LOG-004",
+        "LOG-012",
+        "LOG-013",
+        "LOG-014",
+        "LOG-005",
+        "LOG-015",
+        "LOG-016",
+        "LOG-017",
+        "LOG-018",
+        "LOG-006",
+        "LOG-019",
+        "LOG-020",
+        "LOG-021",
+        "LOG-022",
+        "LOG-023",
+        "LOG-007",
+        "LOG-024",
+        "LOG-025",
+        "LOG-026",
+        "CON-015",
+      ],
+      report["gates"]["completed_v0_10_4_gates"],
+    )
+    self.assertEqual(
+      {
+        "command_cases": 65,
+        "command_statuses": {
+          "excluded_scope": 2,
+          "passed": 63,
+        },
+      },
+      report["gates"]["v0_10_4_conformance"],
     )
     self.assertEqual(
       [

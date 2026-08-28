@@ -88,6 +88,32 @@
       "LOG-001",
       "CON-014"
     ],
+    "completed_v0_10_4_gates": [
+      "LOG-002",
+      "LOG-003",
+      "LOG-010",
+      "LOG-011",
+      "LOG-004",
+      "LOG-012",
+      "LOG-013",
+      "LOG-014",
+      "LOG-005",
+      "LOG-015",
+      "LOG-016",
+      "LOG-017",
+      "LOG-018",
+      "LOG-006",
+      "LOG-019",
+      "LOG-020",
+      "LOG-021",
+      "LOG-022",
+      "LOG-023",
+      "LOG-007",
+      "LOG-024",
+      "LOG-025",
+      "LOG-026",
+      "CON-015"
+    ],
     "completed_v0_10_gates": [
       "ADV-006",
       "LB-001",
@@ -278,6 +304,13 @@
       "standardized_cases": 230,
       "unified_cases": 79
     },
+    "v0_10_4_conformance": {
+      "command_cases": 65,
+      "command_statuses": {
+        "excluded_scope": 2,
+        "passed": 63
+      }
+    },
     "v0_10_conformance": {
       "classified_requirements": 1043,
       "dedicated_cases": 40,
@@ -337,10 +370,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.10.3-1.rockspec",
-    "rockspec_version": "0.10.3-1",
-    "version": "0.10.3"
+    "rockspec": "mongodb-0.10.4-1.rockspec",
+    "rockspec_version": "0.10.4-1",
+    "version": "0.10.4"
   },
   "schema_version": 1,
-  "type": "logging-foundation-release-checklist"
+  "type": "command-logging-release-checklist"
 }

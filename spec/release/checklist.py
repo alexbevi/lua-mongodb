@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report logging-foundation v0.10.3 release readiness."""
+"""Validate and report command-logging v0.10.4 release readiness."""
 
 from __future__ import annotations
 
@@ -31,12 +31,12 @@ PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.10.3-1.rockspec"
-RELEASE_VERSION = "0.10.3"
+ROCKSPEC = ROOT / "mongodb-0.10.4-1.rockspec"
+RELEASE_VERSION = "0.10.4"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 4153
-MAXIMUM_ADDITIONAL_EXCLUSIONS = 1371
+MINIMUM_PASSED_CASES = 4458
+MAXIMUM_ADDITIONAL_EXCLUSIONS = 1051
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -184,6 +184,33 @@ V102_RELEASE_ACTIVITY = "REL-061"
 V103_GATES = ["ADV-009", "LOG-008", "LOG-009", "LOG-001"]
 V103_CONFORMANCE_ACTIVITY = "CON-014"
 V103_RELEASE_ACTIVITY = "REL-062"
+V104_GATES = [
+  "LOG-002",
+  "LOG-003",
+  "LOG-010",
+  "LOG-011",
+  "LOG-004",
+  "LOG-012",
+  "LOG-013",
+  "LOG-014",
+  "LOG-005",
+  "LOG-015",
+  "LOG-016",
+  "LOG-017",
+  "LOG-018",
+  "LOG-006",
+  "LOG-019",
+  "LOG-020",
+  "LOG-021",
+  "LOG-022",
+  "LOG-023",
+  "LOG-007",
+  "LOG-024",
+  "LOG-025",
+  "LOG-026",
+]
+V104_CONFORMANCE_ACTIVITY = "CON-015"
+V104_RELEASE_ACTIVITY = "REL-063"
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -192,7 +219,7 @@ OBJECTID_IDENTITIES = {"bson-objectid/objectid.md::post-fork-random"}
 
 
 class ChecklistError(ValueError):
-  """Raised when the logging-foundation release is not ready."""
+  """Raised when the command-logging release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -285,7 +312,7 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: logging foundation v0.10.3 release-ready.",
+    "Status: command logging v0.10.4 release-ready.",
   )
 
   return {
@@ -416,6 +443,20 @@ def generate() -> dict[str, Any]:
       "v0.10.3 release gate inventory does not match the track"
     )
 
+  command_logging_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-4-command-logging"
+  ]
+  if command_logging_track != [
+    *V104_GATES,
+    V104_CONFORMANCE_ACTIVITY,
+    V104_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError(
+      "v0.10.4 release gate inventory does not match the track"
+    )
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -495,6 +536,12 @@ def generate() -> dict[str, Any]:
   for activity_id in [*V103_GATES, V103_CONFORMANCE_ACTIVITY]:
     if activity_id not in activities:
       raise ChecklistError(f"unknown v0.10.3 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
+  for activity_id in [*V104_GATES, V104_CONFORMANCE_ACTIVITY]:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.10.4 gate activity: {activity_id}")
 
     completed_activity(progress, activity_id)
 
@@ -679,6 +726,10 @@ def generate() -> dict[str, Any]:
         *V103_GATES,
         V103_CONFORMANCE_ACTIVITY,
       ],
+      "completed_v0_10_4_gates": [
+        *V104_GATES,
+        V104_CONFORMANCE_ACTIVITY,
+      ],
       "conformance": {
         "applicable_gaps": applicable_gaps,
         "classified_cases": classified,
@@ -795,6 +846,10 @@ def generate() -> dict[str, Any]:
         "standardized_cases": v103_report["evidence"]["standardized_cases"],
         "unified_cases": v103_report["evidence"]["unified_cases"],
       },
+      "v0_10_4_conformance": {
+        "command_cases": v103_report["command_conformance"]["cases"],
+        "command_statuses": v103_report["command_conformance"]["statuses"],
+      },
       "maintenance": {
         "activities": MAINTENANCE_GATES,
         "bson_objectid_requirements": len(objectid_evidence),
@@ -805,7 +860,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "logging-foundation-release-checklist",
+    "type": "command-logging-release-checklist",
   }
 
 

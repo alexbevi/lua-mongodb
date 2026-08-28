@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.4] - 2026-08-27
+
+Command logging and monitoring release.
+
+### Added
+
+- Added command started, succeeded, and failed log messages with stable request and operation identifiers, driver and server connection identifiers, and load-balanced service identifiers.
+- Added command monitoring for generic commands, find and getMore lifecycles, insert, update, delete, collection and client bulk writes, unacknowledged writes, and write concern errors.
+- Added shared redaction for sensitive commands and server failures, with handshakes and monitor heartbeats excluded from command logs.
+
+### Conformance
+
+- Closed all 65 pinned command logging and monitoring cases with 63 exact passes and two named target-version exclusions below the MongoDB 7.0 production floor.
+
+### Release engineering
+
+- Added the exact v0.10.4 command gate and conformance inventory to the guarded release checklist.
+
 ## [0.10.3] - 2026-08-27
 
 Logging foundation release.
