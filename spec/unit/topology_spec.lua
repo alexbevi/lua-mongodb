@@ -181,12 +181,12 @@ describe("monitored topology", function()
       logger = logger,
       pool_factory = new_pool,
       runtime = runtime,
-      seeds = { "standalone:27017" },
+      seeds = { "[::1]:27017" },
       type = "Single",
     })
 
     assert(manager:open({ background = false }))
-    assert(manager:process_hello("standalone:27017", bson.document({
+    assert(manager:process_hello("[::1]:27017", bson.document({
       { "ok", 1 },
       { "isWritablePrimary", true },
       { "maxWireVersion", 25 },
@@ -197,7 +197,7 @@ describe("monitored topology", function()
       timeout_ms = 0,
     })
 
-    assert.are.equal("standalone:27017", selected.address)
+    assert.are.equal("[::1]:27017", selected.address)
     assert.are.equal("ready", selected_pool.state)
     assert.are.equal(2, #observed)
     assert.are.equal("Server selection started", observed[1].data.message)
@@ -205,8 +205,55 @@ describe("monitored topology", function()
     assert.are.equal("insert", observed[1].data.operation)
     assert.are.equal(700, observed[1].data.operationId)
     assert.are.equal(700, observed[2].data.operationId)
-    assert.are.equal("standalone", observed[2].data.serverHost)
+    assert.are.equal("::1", observed[2].data.serverHost)
     assert.are.equal(27017, observed[2].data.serverPort)
+    assert(manager:close())
+  end)
+
+  it("rejects a logger that does not implement the logging contract", function()
+    assert.has_error(function()
+      topology.new({
+        logger = {},
+        pool_factory = new_pool,
+        runtime = fake_runtime.new(),
+        seeds = { "standalone:27017" },
+        type = "Single",
+      })
+    end, "logger must be a mongodb logger")
+  end)
+
+  it("logs selection failure without duplicating the topology description", function()
+    local observed = {}
+    local runtime = fake_runtime.new()
+    local logger = assert(logging.new(runtime, {
+      levels = { server_selection = "debug" },
+      sink = function(event)
+        observed[#observed + 1] = event
+      end,
+    }))
+    local manager = topology.new({
+      logger = logger,
+      pool_factory = new_pool,
+      runtime = runtime,
+      seeds = { "unknown:27017" },
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    local selected, err = manager:select_server("read", nil, {
+      operation_name = "find",
+      timeout_ms = 0,
+    })
+
+    assert.is_nil(selected)
+    assert.is_true(errors.is(err, errors.CATEGORY.SERVER_SELECTION))
+    assert.is_true(err.timeout)
+    assert.are.equal(2, #observed)
+    assert.are.equal("Server selection started", observed[1].data.message)
+    assert.are.equal("Server selection failed", observed[2].data.message)
+    assert.are.equal("find", observed[2].data.operation)
+    assert.is_truthy(observed[2].data.topologyDescription:find("Single", 1, true))
+    assert.is_falsy(observed[2].data.failure:find("final topology", 1, true))
     assert(manager:close())
   end)
 

@@ -10616,22 +10616,46 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "command": "GitHub Actions Full Conformance run 33182822701: make check-fast test-coverage",
           "exit_code": 2,
-          "summary": "1 release checklist contract executed; failed because the checked-in report still identified v0.10.4 command logging instead of v0.10.5 server-selection logging.",
-          "recorded_at": "2026-08-28T14:40:15+00:00"
+          "summary": "All 724 coverage tests passed with 1 expected GSSAPI pending, then the coverage gate failed because src/mongodb/topology.lua regressed from the 747/831 line baseline to 851/950 after server-selection logging.",
+          "recorded_at": "2026-08-28T15:47:36+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='--filter=applies.appended.wrapper.metadata.only.to.new.connections spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope spec.v103.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content spec.package.test_package' FOCUS_LINT='src/mongodb/handshake/metadata.lua'; make rockspec; generated release, v103 scope, release scope, and README validators",
+          "command": "make test-focus with topology logging filters, full spec/unit/topology_spec.lua on Lua 5.4 and 5.5, Lua 5.4 touched-file lint; focused LuaCov probe",
           "exit_code": 0,
-          "summary": "85 focused contracts passed: 20 version/handshake unit, 1 exact metadata integration, 59 release/scope/workflow/docs, and 5 isolated package tests; 0 skipped, deferred, or failed. The checked server-selection projection has 11 executed and passed cases with 0 skipped, deferred, or failed. Lua 5.4 touched-file lint, rockspec lint, the 0.10.5 release checklist, release scope, v103 scope, and README compatibility validators all passed; complete Full Conformance remains CI-owned for the exact release commit.",
-          "recorded_at": "2026-08-28T14:48:57+00:00"
+          "summary": "31 topology unit contracts passed on Lua 5.4 and Lua 5.5 with 0 pending, deferred, or failed; the three defining logging cases passed individually; Lua 5.4 touched-file lint reported 0 warnings and 0 errors. The focused Lua 5.4 coverage probe raised src/mongodb/topology.lua from 786/940 to 789/940 covered active lines by exercising the bracketed IPv6 serverHost path, logger validation, and selection-failure logging.",
+          "recorded_at": "2026-08-28T15:57:13+00:00"
         }
       ],
-      "notes": [],
-      "started_at": "2026-08-28T14:39:42+00:00",
-      "completed_at": "2026-08-28T14:49:11+00:00"
+      "notes": [
+        "Requeued: Full Conformance run 33182822701 failed the Linux quality gate because src/mongodb/topology.lua line coverage regressed from 747/831 to 851/950 after server-selection logging."
+      ],
+      "reopen_history": [
+        {
+          "completed_at": "2026-08-28T14:49:11+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+              "exit_code": 2,
+              "summary": "1 release checklist contract executed; failed because the checked-in report still identified v0.10.4 command logging instead of v0.10.5 server-selection logging.",
+              "recorded_at": "2026-08-28T14:40:15+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='--filter=applies.appended.wrapper.metadata.only.to.new.connections spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope spec.v103.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content spec.package.test_package' FOCUS_LINT='src/mongodb/handshake/metadata.lua'; make rockspec; generated release, v103 scope, release scope, and README validators",
+              "exit_code": 0,
+              "summary": "85 focused contracts passed: 20 version/handshake unit, 1 exact metadata integration, 59 release/scope/workflow/docs, and 5 isolated package tests; 0 skipped, deferred, or failed. The checked server-selection projection has 11 executed and passed cases with 0 skipped, deferred, or failed. Lua 5.4 touched-file lint, rockspec lint, the 0.10.5 release checklist, release scope, v103 scope, and README compatibility validators all passed; complete Full Conformance remains CI-owned for the exact release commit.",
+              "recorded_at": "2026-08-28T14:48:57+00:00"
+            }
+          ]
+        }
+      ],
+      "reopened_after_commit": "88321997006d751a737b9fecbe56fc089dd5f0e1",
+      "started_at": "2026-08-28T15:47:22+00:00",
+      "completed_at": "2026-08-28T15:57:14+00:00"
     }
   },
   "verified_references": {
