@@ -2,6 +2,7 @@ local bson = require("mongodb.bson")
 local copas = require("copas")
 local errors = require("mongodb.error")
 local fake_runtime = require("mongodb.runtime.fake")
+local logging = require("mongodb.logging")
 local pool = require("mongodb.pool")
 local runtime_module = require("mongodb.runtime")
 local sdam_runner = require("spec.support.sdam_runner")
@@ -163,6 +164,46 @@ describe("monitored topology", function()
     assert.are.equal("Mongos", selected.type)
     assert.are.equal("mongos:27017", selected.address)
     assert.are.equal("ready", selected_pool.state)
+    assert(manager:close())
+  end)
+
+  it("keeps successful selection independent of log sink failures", function()
+    local observed = {}
+    local runtime = fake_runtime.new()
+    local logger = assert(logging.new(runtime, {
+      levels = { server_selection = "debug" },
+      sink = function(event)
+        observed[#observed + 1] = event
+        error("selection log sink failed")
+      end,
+    }))
+    local manager = topology.new({
+      logger = logger,
+      pool_factory = new_pool,
+      runtime = runtime,
+      seeds = { "standalone:27017" },
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:process_hello("standalone:27017", bson.document({
+      { "ok", 1 },
+      { "isWritablePrimary", true },
+      { "maxWireVersion", 25 },
+    }), { duration = 0.01 }))
+    local selected, selected_pool = manager:select_server("write", nil, {
+      operation_name = "insert",
+      timeout_ms = 0,
+    })
+
+    assert.are.equal("standalone:27017", selected.address)
+    assert.are.equal("ready", selected_pool.state)
+    assert.are.equal(2, #observed)
+    assert.are.equal("Server selection started", observed[1].data.message)
+    assert.are.equal("Server selection succeeded", observed[2].data.message)
+    assert.are.equal("insert", observed[1].data.operation)
+    assert.are.equal("standalone", observed[2].data.serverHost)
+    assert.are.equal(27017, observed[2].data.serverPort)
     assert(manager:close())
   end)
 

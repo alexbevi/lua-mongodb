@@ -7421,6 +7421,13 @@
     "server-discovery-and-monitoring/tests/unified/rediscover-quickly-after-step-down.json::test[1]": {"activity": "REL-040", "environment": "isolated-replicaset", "replicaSetMembers": 3},
     "server-discovery-and-monitoring/tests/unified/replicaset-emit-topology-changed-before-close.json::test[1]": {"activity": "REL-041", "environment": "live-replicaset"},
     "server-discovery-and-monitoring/tests/unified/sharded-emit-topology-changed-before-close.json::test[1]": {"activity": "SDAM-004", "environment": "live-sharded", "mongoses": 2},
-    "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": {"activity": "REL-041", "environment": "live-standalone"}
+    "server-discovery-and-monitoring/tests/unified/standalone-emit-topology-changed-before-close.json::test[1]": {"activity": "REL-041", "environment": "live-standalone"},
+    "server-selection/tests/logging/load-balanced.json::test[1]": {"activity": "SEL-002", "environment": "live-load-balanced"},
+    "server-selection/tests/logging/replica-set.json::test[1]": {"activity": "SEL-002", "environment": "live-replicaset"},
+    "server-selection/tests/logging/replica-set.json::test[2]": {"activity": "SEL-002", "environment": "live-replicaset"},
+    "server-selection/tests/logging/sharded.json::test[1]": {"activity": "SEL-002", "environment": "live-sharded"},
+    "server-selection/tests/logging/sharded.json::test[2]": {"activity": "SEL-002", "environment": "live-sharded"},
+    "server-selection/tests/logging/standalone.json::test[1]": {"activity": "SEL-002", "environment": "live-standalone"},
+    "server-selection/tests/logging/standalone.json::test[2]": {"activity": "SEL-002", "environment": "live-standalone"}
   }
 }

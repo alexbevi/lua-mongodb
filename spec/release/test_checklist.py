@@ -103,13 +103,13 @@ class ReleaseChecklistTests(unittest.TestCase):
     )
     self.assertEqual(
       {
-        "classified_requirements": 1043,
+        "classified_requirements": 1044,
         "dedicated_cases": 40,
-        "exact_unified_cases": 739,
+        "exact_unified_cases": 740,
         "excluded_requirements": 18,
         "optional_requirements": 245,
-        "passed_requirements": 778,
-        "run_on_branches": 1001,
+        "passed_requirements": 779,
+        "run_on_branches": 1002,
         "unsupported_requirements": 2,
       },
       report["gates"]["v0_10_conformance"],
@@ -273,7 +273,7 @@ class ReleaseChecklistTests(unittest.TestCase):
         "passed_requirements": 4,
         "planned_requirements": 230,
         "standardized_cases": 230,
-        "unified_cases": 79,
+        "unified_cases": 86,
       },
       report["gates"]["v0_10_3_conformance"],
     )

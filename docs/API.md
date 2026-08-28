@@ -286,8 +286,15 @@ independent CMAP and SDAM events remain available.
 This surface covers every pinned command logging and monitoring case applicable to the MongoDB 7.0
 production floor; the two older cursor-kill and `getnonce` branches are outside that floor.
 The complete command component and monitoring surface is available in version 0.10.4.
-Server-selection, topology, and connection messages are enabled only by their component-specific
-implementation slices.
+The `serverSelection` component emits `Server selection started`, `Server selection succeeded`,
+and `Server selection failed` at `debug`. It emits `Waiting for suitable server to become
+available` once per selection attempt at `info`. Every message contains `selector`, `operation`,
+and `topologyDescription`. A success adds `serverHost` and, for TCP addresses, `serverPort`.
+A waiting message adds the integer `remainingTimeMS`, and a failure adds `failure`. The operation
+is the MongoDB command name for application commands. Internal capability handshakes do not emit
+selection messages. Server-selection lifecycle logging is available in version 0.10.5;
+operation-ID correlation is added by its separate correlation contract. Topology and connection
+messages are enabled only by their component-specific implementation slices.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

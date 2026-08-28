@@ -138,6 +138,139 @@ local function publish_heartbeat(state, event_type, fields)
   return publish(state, event_type, fields, true)
 end
 
+local function tag_set_summary(tag_set)
+  local keys = {}
+
+  for key in pairs(tag_set) do
+    keys[#keys + 1] = key
+  end
+
+  table.sort(keys)
+  local values = {}
+
+  for index, key in ipairs(keys) do
+    values[index] = tostring(key) .. "=" .. tostring(tag_set[key])
+  end
+
+  return "{" .. table.concat(values, ",") .. "}"
+end
+
+local function selector_summary(operation, preference, server_address)
+  if server_address then
+    return "server address " .. server_address
+  elseif operation == "write" then
+    return "writable server"
+  end
+
+  local mode = preference and preference.mode or "primary"
+  local configured_tag_sets = preference
+    and (preference.tag_sets or preference.tags) or { {} }
+  local max_staleness = preference
+    and (preference.max_staleness_seconds or preference.maxStalenessSeconds) or -1
+  local tag_sets = {}
+
+  for index, tag_set in ipairs(configured_tag_sets) do
+    tag_sets[index] = tag_set_summary(tag_set)
+  end
+
+  return string.format(
+    "read preference {mode=%s, tagSets=[%s], maxStalenessSeconds=%s}",
+    tostring(mode),
+    table.concat(tag_sets, ","),
+    tostring(max_staleness)
+  )
+end
+
+local function topology_summary(description)
+  local servers = {}
+
+  for _, address in ipairs(description:addresses()) do
+    local server = description:server(address)
+    local value = address .. "=" .. server.type
+
+    if server.error then
+      value = value .. "(" .. server.error.message .. ")"
+    end
+
+    servers[#servers + 1] = value
+  end
+
+  return description.type .. "{" .. table.concat(servers, ", ") .. "}"
+end
+
+local function selection_log_context(operation, preference, options)
+  if options.operation_name == "hello" then
+    return nil
+  end
+
+  local ok, selector = pcall(
+    selector_summary,
+    operation,
+    preference,
+    options.server_address
+  )
+
+  return {
+    operation = options.operation_name or operation,
+    selector = ok and selector or "unrepresentable selector",
+  }
+end
+
+local function emit_selection_log(state, context, level, message, extra)
+  if state.logger == nil or context == nil then
+    return
+  end
+
+  pcall(function()
+    local fields = {
+      message = message,
+      operation = context.operation,
+      selector = context.selector,
+      topologyDescription = topology_summary(state.description),
+    }
+
+    for key, value in pairs(extra or {}) do
+      fields[key] = value
+    end
+
+    state.logger:emit("server_selection", level, fields)
+  end)
+end
+
+local function selected_host_and_port(address)
+  if address:sub(1, 1) == "[" then
+    local close = assert(address:find("]", 2, true))
+    return address:sub(2, close - 1), tonumber(address:sub(close + 2))
+  end
+
+  local host, port = address:match("^(.*):(%d+)$")
+  return host or address, port and tonumber(port) or nil
+end
+
+local function selection_succeeded(state, context, selected)
+  local host, port = selected_host_and_port(selected.address)
+
+  emit_selection_log(state, context, "debug", "Server selection succeeded", {
+    serverHost = host,
+    serverPort = port,
+  })
+  return selected, state.servers[selected.address].pool
+end
+
+local function failure_summary(err)
+  local message = tostring(err)
+  local marker = message:find("; final topology:", 1, true)
+
+  return marker and message:sub(1, marker - 1) or message
+end
+
+local function selection_failed(state, context, err)
+  emit_selection_log(state, context, "debug", "Server selection failed", {
+    failure = failure_summary(err),
+  })
+  return nil, err
+end
+
 local function validate_listeners(name, listeners)
   listeners = listeners or {}
 
@@ -776,6 +909,12 @@ local function monitoring_mode(options)
   return mode
 end
 
+local function validate_logger(logger)
+  if logger ~= nil and getmetatable(logger) ~= "mongodb.logging" then
+    error("logger must be a mongodb logger", 3)
+  end
+end
+
 function M.new(options)
   if type(options) ~= "table" then
     error("topology manager options must be a table", 2)
@@ -786,6 +925,7 @@ function M.new(options)
     heartbeat_frequency_ms = true,
     heartbeat_listeners = true,
     is_faas = true,
+    logger = true,
     listeners = true,
     min_heartbeat_frequency_ms = true,
     on_listener_error = true,
@@ -830,6 +970,8 @@ function M.new(options)
   if options.on_server_close ~= nil and type(options.on_server_close) ~= "function" then
     error("on_server_close must be a function", 2)
   end
+
+  validate_logger(options.logger)
 
   local srv
 
@@ -910,6 +1052,7 @@ function M.new(options)
     description = description,
     heartbeat_frequency_ms = heartbeat_frequency_ms,
     heartbeat_listeners = heartbeat_listeners,
+    logger = options.logger,
     listeners = listeners,
     lock = options.runtime.lock:new(),
     min_heartbeat_frequency_ms = min_heartbeat_frequency_ms,
@@ -1366,6 +1509,12 @@ function MANAGER_METHODS:select_server(operation, preference, options)
     error("server_address must be a string", 2)
   end
 
+  if options.operation_name ~= nil
+      and (type(options.operation_name) ~= "string" or options.operation_name == "")
+  then
+    error("operation_name must be a non-empty string", 2)
+  end
+
   local pinned_selector
 
   if options.server_address then
@@ -1390,6 +1539,11 @@ function MANAGER_METHODS:select_server(operation, preference, options)
       (options.timeout_ms or 30000) / 1000
     )
   end
+
+  local log_context = selection_log_context(operation, preference, options)
+  local logged_waiting = false
+
+  emit_selection_log(state, log_context, "debug", "Server selection started")
 
   while true do
     local counts = {}
@@ -1419,7 +1573,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
       )
 
       if not candidates then
-        return nil, candidate_err
+        return selection_failed(state, log_context, candidate_err)
       end
 
       selected = selection.choose(candidates, {
@@ -1429,7 +1583,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
     end
 
     if selected and state.servers[selected.address] then
-      return selected, state.servers[selected.address].pool
+      return selection_succeeded(state, log_context, selected)
     end
 
     local ok = runtime_contract.check(
@@ -1439,7 +1593,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
     )
 
     if not ok then
-      return selection.select(state.description, operation, preference, {
+      local final, final_err = selection.select(state.description, operation, preference, {
         deprioritized_servers = options.deprioritized_servers,
         heartbeat_frequency_ms = state.heartbeat_frequency_ms,
         local_threshold_ms = options.local_threshold_ms,
@@ -1447,6 +1601,25 @@ function MANAGER_METHODS:select_server(operation, preference, options)
         selector = pinned_selector,
         timeout_ms = math.max(0, (deadline - state.runtime.clock:now()) * 1000),
       })
+
+      if final then
+        return final, final_err
+      end
+
+      return selection_failed(state, log_context, final_err)
+    end
+
+    if not logged_waiting then
+      local remaining = runtime_contract.remaining(state.runtime, deadline)
+
+      emit_selection_log(
+        state,
+        log_context,
+        "info",
+        "Waiting for suitable server to become available",
+        { remainingTimeMS = math.max(0, math.floor((remaining or 0) * 1000)) }
+      )
+      logged_waiting = true
     end
 
     self:request_check_all()
@@ -1464,7 +1637,7 @@ function MANAGER_METHODS:select_server(operation, preference, options)
     )
 
     if not slept then
-      return nil, sleep_err
+      return selection_failed(state, log_context, sleep_err)
     end
   end
 end

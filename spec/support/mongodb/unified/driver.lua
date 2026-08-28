@@ -391,6 +391,18 @@ local function exact_number(value)
   return value
 end
 
+local UNIFIED_READ_PREFERENCE_MODES = {
+  Nearest = "nearest",
+  Primary = "primary",
+  PrimaryPreferred = "primary_preferred",
+  Secondary = "secondary",
+  SecondaryPreferred = "secondary_preferred",
+}
+
+local function unified_read_preference_mode(mode)
+  return UNIFIED_READ_PREFERENCE_MODES[mode] or mode
+end
+
 local function bucket_tag_sets(value, path)
   if value == nil then
     return nil
@@ -508,7 +520,7 @@ local function bucket_factory(runner, specification)
         max_staleness_seconds = exact_number(
           read_preference:get("maxStalenessSeconds")
         ),
-        mode = read_preference:get("mode"),
+        mode = unified_read_preference_mode(read_preference:get("mode")),
         tag_sets = tag_sets,
       }
     end
@@ -598,14 +610,25 @@ local function collection_factory(runner, specification)
 
     if read_preference then
       local max_staleness = read_preference:get("maxStalenessSeconds")
+      local tag_sets
 
       if bson.is_exact(max_staleness) then
         max_staleness = max_staleness:to_number()
       end
 
+      tag_sets, err = bucket_tag_sets(
+        read_preference:get("tagSets"),
+        "$.collection.collectionOptions.readPreference.tagSets"
+      )
+
+      if err then
+        return nil, err
+      end
+
       options.read_preference = {
         max_staleness_seconds = max_staleness,
-        mode = read_preference:get("mode"),
+        mode = unified_read_preference_mode(read_preference:get("mode")),
+        tag_sets = tag_sets,
       }
     end
 
@@ -783,7 +806,7 @@ local function convert_read_preference(value)
 
   return {
     max_staleness_seconds = max_staleness,
-    mode = value:get("mode"),
+    mode = unified_read_preference_mode(value:get("mode")),
     tag_sets = #tag_sets > 0 and tag_sets or nil,
   }
 end

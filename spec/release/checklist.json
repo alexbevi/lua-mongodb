@@ -261,10 +261,10 @@
       "CON-009"
     ],
     "conformance": {
-      "additional_exclusions": 1051,
+      "additional_exclusions": 1044,
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 4458,
+      "passed_cases": 4465,
       "unsupported_cases": 15
     },
     "maintenance": {
@@ -302,7 +302,7 @@
       "passed_requirements": 4,
       "planned_requirements": 230,
       "standardized_cases": 230,
-      "unified_cases": 79
+      "unified_cases": 86
     },
     "v0_10_4_conformance": {
       "command_cases": 65,
@@ -312,13 +312,13 @@
       }
     },
     "v0_10_conformance": {
-      "classified_requirements": 1043,
+      "classified_requirements": 1044,
       "dedicated_cases": 40,
-      "exact_unified_cases": 739,
+      "exact_unified_cases": 740,
       "excluded_requirements": 18,
       "optional_requirements": 245,
-      "passed_requirements": 778,
-      "run_on_branches": 1001,
+      "passed_requirements": 779,
+      "run_on_branches": 1002,
       "unsupported_requirements": 2
     },
     "v0_4_conformance": {

@@ -524,8 +524,8 @@
   },
   "evidence": {
     "dedicated_cases": 40,
-    "exact_unified_cases": 739,
-    "run_on_branches": 1001,
+    "exact_unified_cases": 740,
+    "run_on_branches": 1002,
     "terminal_unsupported": 2
   },
   "exact_unified_cases": [
@@ -1056,6 +1056,7 @@
     "run-command/tests/unified/runCursorCommand.json::test[5]",
     "run-command/tests/unified/runCursorCommand.json::test[6]",
     "server-discovery-and-monitoring/tests/unified/loadbalanced-emit-topology-changed-before-close.json::test[1]",
+    "server-selection/tests/logging/load-balanced.json::test[1]",
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]",
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[2]",
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[3]",
@@ -1325,6 +1326,7 @@
     "REL-051": 22,
     "RETRY-001": 225,
     "RETRY-002": 75,
+    "SEL-002": 1,
     "TXN-001": 163,
     "TXN-002": 30,
     "TXN-003": 7,
@@ -1332,13 +1334,13 @@
     "TXN-007": 2
   },
   "ratchets": {
-    "classified": 1043,
+    "classified": 1044,
     "dedicated_cases": 40,
-    "exact_unified_cases": 739,
+    "exact_unified_cases": 740,
     "excluded": 18,
     "out_of_track": 245,
-    "passed": 778,
-    "run_on_branches": 1001,
+    "passed": 779,
+    "run_on_branches": 1002,
     "unsupported": 2
   },
   "run_on_branches": {
@@ -28111,6 +28113,39 @@
       },
       "status": "deferred_unsupported"
     },
+    "server-selection/tests/logging/load-balanced.json::test[1]": {
+      "activity": "SEL-002",
+      "fingerprint": "7db7d88c4b8745336674161e407fd5149f89a7264bfd5b6741133488db8cae2a",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "load-balanced"
+        ]
+      },
+      "status": "runnable"
+    },
     "transactions-convenient-api/tests/unified/callback-aborts.json::test[1]": {
       "activity": "TXN-002",
       "fingerprint": "3fa60a8d35285243cc8d1be2d5133e28484240f488d9ac73337a460dae7a79c1",
@@ -36926,11 +36961,11 @@
   },
   "schema_version": 1,
   "summary": {
-    "classified": 1043,
+    "classified": 1044,
     "excluded": 18,
-    "passed": 778,
+    "passed": 779,
     "planned": 245,
-    "supported": 778,
+    "supported": 779,
     "unsupported": 2
   },
   "terminal_unsupported": {

@@ -70,6 +70,13 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[1]": "SDAM-009",
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[2]": "SDAM-010",
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[3]": "SDAM-010",
+    "server-selection/tests/logging/load-balanced.json::test[1]": "SEL-002",
+    "server-selection/tests/logging/replica-set.json::test[1]": "SEL-002",
+    "server-selection/tests/logging/replica-set.json::test[2]": "SEL-002",
+    "server-selection/tests/logging/sharded.json::test[1]": "SEL-002",
+    "server-selection/tests/logging/sharded.json::test[2]": "SEL-002",
+    "server-selection/tests/logging/standalone.json::test[1]": "SEL-002",
+    "server-selection/tests/logging/standalone.json::test[2]": "SEL-002",
     "transactions/tests/unified/backpressure-retryable-abort.json::test[1]": "BP-008",
     "transactions/tests/unified/backpressure-retryable-abort.json::test[2]": "BP-008",
     "transactions/tests/unified/backpressure-retryable-commit.json::test[1]": "BP-008",
@@ -90,7 +97,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 79
+    "unified_cases": 86
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

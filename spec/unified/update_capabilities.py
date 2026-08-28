@@ -600,6 +600,19 @@ for index in (1, 2):
     None if identity in EXECUTOR_TESTS else OWNER_REASONS["CBW-011"],
   )
 
+for fixture, count in (
+  ("load-balanced", 1),
+  ("replica-set", 2),
+  ("sharded", 2),
+  ("standalone", 2),
+):
+  for index in range(1, count + 1):
+    identity = f"server-selection/tests/logging/{fixture}.json::test[{index}]"
+    TEST_OVERRIDES[identity] = (
+      "SEL-002",
+      None if identity in EXECUTOR_TESTS else OWNER_REASONS["SEL-002"],
+    )
+
 for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
   for index in range(1, 3):
     TEST_OVERRIDES[

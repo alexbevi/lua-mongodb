@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2101,
-    "runnable": 2101
+    "passed": 2108,
+    "runnable": 2108
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -74780,6 +74780,249 @@
         ],
         "special_operations": [
           "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/load-balanced.json::test[1]": {
+      "activity": "SEL-002",
+      "fingerprint": "7db7d88c4b8745336674161e407fd5149f89a7264bfd5b6741133488db8cae2a",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "load-balanced"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/replica-set.json::test[1]": {
+      "activity": "SEL-002",
+      "fingerprint": "b1b4a519988f478df1fd50e7ffeb845fdec179bd8445892e015caf28899c6e93",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "replicaset"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/replica-set.json::test[2]": {
+      "activity": "SEL-002",
+      "fingerprint": "5c24818338f671ecaddd92232b72e4ade165afd4f3f80f9f4ae010cd54c29024",
+      "requirements": {
+        "arguments": [
+          "find.filter",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "find"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "replicaset"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/sharded.json::test[1]": {
+      "activity": "SEL-002",
+      "fingerprint": "907f16b95d2c0b19b858ee8ddc8356cb47e137375d0d0fa1496e16bf465a17c0",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/sharded.json::test[2]": {
+      "activity": "SEL-002",
+      "fingerprint": "9f64854f5ecf4458daf6c3d77563a249b6b5fc3a5ea86f2954455d0b5b515c89",
+      "requirements": {
+        "arguments": [
+          "failPoint.client",
+          "failPoint.failPoint",
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "failPoint",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "sharded"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/standalone.json::test[1]": {
+      "activity": "SEL-002",
+      "fingerprint": "5d23fa345be4f0c8751aafbd2a7c8733b97e208d93dfc9eb4fc063732ac6c9b0",
+      "requirements": {
+        "arguments": [
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/standalone.json::test[2]": {
+      "activity": "SEL-002",
+      "fingerprint": "8d3bf06ce33fd6e238b5ec73b5c957bc358a032bde8d99e65f6b0457b5ed3225",
+      "requirements": {
+        "arguments": [
+          "failPoint.client",
+          "failPoint.failPoint",
+          "insertOne.document",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "insertOne"
+        ],
+        "special_operations": [
+          "failPoint",
           "waitForEvent"
         ],
         "topologies": [

@@ -10544,6 +10544,28 @@
       "reopened_after_commit": "bb2759396fe6367d5440db68d75b29ef2d201168",
       "started_at": "2026-08-28T12:04:23+00:00",
       "completed_at": "2026-08-28T12:07:07+00:00"
+    },
+    "SEL-002": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='server-selection/tests/logging/standalone.json'",
+          "exit_code": 1,
+          "summary": "The runnable standalone success case executed and failed because no server-selection lifecycle messages were observed; 1 executed, 0 passed, 0 environment-skipped, 1 deferred, and 1 failed.",
+          "recorded_at": "2026-08-28T13:18:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua' FOCUS_UNIFIED='server-selection/tests/logging/*.json' FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.v103.test_scope' FOCUS_LINT='<five touched Lua files>'; make test-architecture; make test-complexity",
+          "exit_code": 0,
+          "summary": "All 7 pinned selection lifecycle cases passed across standalone, replica-set, sharded, and load-balanced environments with 0 skips, deferrals, or failures; 29 topology unit tests, 167 focused Python contracts, touched-file lint, 5 architecture checks, and the unchanged complexity baseline passed.",
+          "recorded_at": "2026-08-28T13:33:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T13:14:22+00:00",
+      "completed_at": "2026-08-28T13:33:36+00:00"
     }
   },
   "verified_references": {

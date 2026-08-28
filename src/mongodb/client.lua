@@ -591,6 +591,7 @@ local function load_balanced_capabilities(manager, config, special)
   local selected, pool_or_err = manager:select_server("write", nil, {
     cancellation = special.cancellation,
     deadline = special.deadline,
+    operation_name = "hello",
     timeout_ms = config.server_selection_timeout_ms,
   })
 
@@ -744,6 +745,7 @@ local function connect_topology(
     is_faas = handshake_metadata.is_faas(
       runtime.metadata and runtime.metadata.environment or {}
     ),
+    logger = special.logger,
     listeners = special.sdam_listeners or {},
     on_listener_error = special.on_listener_error,
     on_server_close = function(server_address)
@@ -813,7 +815,7 @@ local function connect_topology(
       local selected, selection_err = manager:select_server(
         "write",
         nil,
-        { timeout_ms = 0 }
+        { operation_name = "hello", timeout_ms = 0 }
       )
 
       assert(selected == nil)

@@ -188,7 +188,7 @@ local function refresh_socket_deadline(options)
   end
 end
 
-local function select_connection(state, operation, options)
+local function select_connection(state, operation, options, operation_name)
   local pin = options and options.pinned_connection
 
   if pin ~= nil then
@@ -222,6 +222,7 @@ local function select_connection(state, operation, options)
       deadline = deadline,
       deprioritized_servers = options and options.deprioritized_servers,
       local_threshold_ms = state.local_threshold_ms,
+      operation_name = operation_name or operation,
       server_address = options and options.server_address,
       timeout_ms = state.server_selection_timeout_ms,
     }
@@ -349,7 +350,8 @@ function METHODS:command(database, command, options)
   local selected, err, using_pin = select_connection(
     state,
     operation_for(command, options),
-    options
+    options,
+    command:keys()[1]
   )
 
   if not selected then
@@ -399,7 +401,12 @@ function METHODS:measure(database, command, options)
   end
 
   local state = EXECUTOR_STATES[self]
-  local selected, err = select_connection(state, operation_for(command, options), options)
+  local selected, err = select_connection(
+    state,
+    operation_for(command, options),
+    options,
+    command:keys()[1]
+  )
 
   if not selected then
     return nil, err
@@ -428,7 +435,7 @@ function METHODS:capabilities()
     return state.capabilities
   end
 
-  local selected, err = select_connection(state, "write")
+  local selected, err = select_connection(state, "write", nil, "hello")
 
   if not selected then
     return nil, err
