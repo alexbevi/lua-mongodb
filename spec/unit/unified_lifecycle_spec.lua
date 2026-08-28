@@ -194,6 +194,10 @@ describe("unified test lifecycle", function()
         log[#log + 1] = "logs"
         return true
       end,
+      freeze_logs = function()
+        log[#log + 1] = "logs frozen"
+        return true
+      end,
       assert_events = function()
         log[#log + 1] = "events"
         return true
@@ -269,6 +273,7 @@ describe("unified test lifecycle", function()
       "client created",
       "session created",
       "operation",
+      "logs frozen",
       "failpoint off",
       "logs",
       "events",

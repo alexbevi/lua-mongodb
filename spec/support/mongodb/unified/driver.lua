@@ -3070,6 +3070,9 @@ function M.new(options)
     assert_logs = function(runner, expected, path)
       return log_module.assert_all(runner, expected, state.log_collectors, path)
     end,
+    freeze_logs = function()
+      return log_module.disable_all(state.log_collectors)
+    end,
     environment = options.environment,
     entity_finalizers = {
       changeStream = finalize_cursor,

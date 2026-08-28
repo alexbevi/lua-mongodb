@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2122,
-    "runnable": 2122
+    "passed": 2124,
+    "runnable": 2124
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -38346,6 +38346,69 @@
         ],
         "topologies": [
           "replicaset"
+        ]
+      },
+      "status": "runnable"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[1]": {
+      "activity": "CMAP-005",
+      "fingerprint": "24033bc1e277dbbd4b84f768e51c0c24e1d5b3f914ca5ed815650908deb91d4e",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "listDatabases.filter"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "close",
+          "listDatabases"
+        ],
+        "special_operations": [
+          "createEntities"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[2]": {
+      "activity": "CMAP-005",
+      "fingerprint": "c375c15b0ca420ee3b9992fb141d2842b0f430c913ccbcd93e95aefadd060b24",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "failPoint.client",
+          "failPoint.failPoint",
+          "listDatabases.filter"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$exists",
+          "$$type"
+        ],
+        "operations": [
+          "listDatabases"
+        ],
+        "special_operations": [
+          "createEntities",
+          "failPoint"
+        ],
+        "topologies": [
+          "single"
         ]
       },
       "status": "runnable"

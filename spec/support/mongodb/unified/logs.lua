@@ -253,6 +253,14 @@ local function retained_messages(runner, actual, ignored, path)
   return retained
 end
 
+function M.disable_all(collectors)
+  for _, collector in pairs(collectors) do
+    collector:disable()
+  end
+
+  return true
+end
+
 function M.assert_all(runner, expected_groups, collectors, path)
   path = path or "$.expectLogMessages"
 
@@ -260,9 +268,7 @@ function M.assert_all(runner, expected_groups, collectors, path)
     return configuration_error("expected log groups must be an array", path)
   end
 
-  for _, collector in pairs(collectors) do
-    collector:disable()
-  end
+  M.disable_all(collectors)
 
   for group_index, group in expected_groups:iter() do
     local group_path = path .. "[" .. group_index .. "]"

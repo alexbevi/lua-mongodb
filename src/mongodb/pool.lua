@@ -35,6 +35,31 @@ local CHECKOUT_PURPOSES = {
   other = true,
   transaction = true,
 }
+local CONNECTION_LOG_MESSAGES = {
+  ConnectionCheckedIn = "Connection checked in",
+  ConnectionCheckedOut = "Connection checked out",
+  ConnectionCheckOutFailed = "Connection checkout failed",
+  ConnectionCheckOutStarted = "Connection checkout started",
+  ConnectionClosed = "Connection closed",
+  ConnectionCreated = "Connection created",
+  ConnectionPoolCleared = "Connection pool cleared",
+  ConnectionPoolClosed = "Connection pool closed",
+  ConnectionPoolCreated = "Connection pool created",
+  ConnectionPoolReady = "Connection pool ready",
+  ConnectionReady = "Connection ready",
+}
+local CONNECTION_CLOSED_REASONS = {
+  error = "An error occurred while using the connection",
+  idle = "Connection has been available but unused for longer than the configured "
+    .. "max idle time",
+  poolClosed = "Connection pool was closed",
+  stale = "Connection became stale because the pool was cleared",
+}
+local CHECKOUT_FAILED_REASONS = {
+  connectionError = "An error occurred while trying to establish a new connection",
+  poolClosed = "Connection pool was closed",
+  timeout = "Wait queue timeout elapsed without a connection becoming available",
+}
 
 local EVENT_METATABLE = {
   __index = function(value, key)
@@ -124,7 +149,63 @@ local function new_event(fields)
   return setmetatable(value, EVENT_METATABLE)
 end
 
-local function publish(state, event_type, fields)
+local function host_and_port(address)
+  if address:sub(1, 1) == "[" then
+    local close = assert(address:find("]", 2, true))
+
+    return address:sub(2, close - 1), tonumber(address:sub(close + 2))
+  end
+
+  local host, port = address:match("^(.*):(%d+)$")
+
+  return host or address, port and tonumber(port) or nil
+end
+
+local function emit_connection_log(state, event_type, fields, event_err)
+  if state.logger == nil then
+    return
+  end
+
+  local message = CONNECTION_LOG_MESSAGES[event_type]
+
+  if message == nil then
+    return
+  end
+
+  local host, port = host_and_port(state.address)
+  local data = {
+    message = message,
+    serverHost = host,
+    serverPort = port,
+  }
+
+  if event_type == "ConnectionPoolCleared" then
+    data.serviceId = fields.service_id and tostring(fields.service_id)
+  elseif event_type == "ConnectionCreated" or event_type == "ConnectionCheckedIn" then
+    data.driverConnectionId = fields.connection_id
+  elseif event_type == "ConnectionReady" or event_type == "ConnectionCheckedOut" then
+    data.driverConnectionId = fields.connection_id
+    data.durationMS = fields.duration_ms
+  elseif event_type == "ConnectionClosed" then
+    data.driverConnectionId = fields.connection_id
+    data.reason = CONNECTION_CLOSED_REASONS[fields.reason]
+
+    if fields.reason == "error" then
+      data.error = event_err or fields.reason
+    end
+  elseif event_type == "ConnectionCheckOutFailed" then
+    data.durationMS = fields.duration_ms
+    data.reason = CHECKOUT_FAILED_REASONS[fields.reason]
+
+    if fields.reason == "connectionError" then
+      data.error = event_err
+    end
+  end
+
+  state.logger:emit("connection", "debug", data)
+end
+
+local function publish(state, event_type, fields, event_err)
   fields = fields or {}
   fields.address = state.address
   fields.type = event_type
@@ -148,6 +229,8 @@ local function publish(state, event_type, fields)
       end
     end
   end
+
+  emit_connection_log(state, event_type, fields, event_err)
 
   return event
 end
@@ -311,13 +394,13 @@ local function close_resource(resource)
   end
 end
 
-local function finish_close(state, connection, reason)
+local function finish_close(state, connection, reason, err)
   local connection_state = CONNECTION_STATES[connection]
 
   publish(state, "ConnectionClosed", {
     connection_id = connection_state.id,
     reason = reason,
-  })
+  }, err)
 
   if not connection_state.resource_closed then
     connection_state.resource_closed = true
@@ -453,7 +536,7 @@ local function establish(
         reported = callback_ok and type(decision) == "boolean"
       end
 
-      finish_close(state, connection, "error")
+      finish_close(state, connection, "error", connect_err)
     end
 
     return nil, connect_err, detached, reported
@@ -568,6 +651,7 @@ local function validate_options(options)
   local allowed = {
     address = true,
     connect = true,
+    logger = true,
     listeners = true,
     load_balanced = true,
     max_connecting = true,
@@ -602,6 +686,10 @@ local function validate_options(options)
   end
 
   runtime_contract.validate(options.runtime)
+
+  if options.logger ~= nil and getmetatable(options.logger) ~= "mongodb.logging" then
+    error("logger must be a mongodb logger", 3)
+  end
 
   for _, name in ipairs({ "on_connection_error", "on_listener_error" }) do
     if options[name] ~= nil and type(options[name]) ~= "function" then
@@ -655,6 +743,7 @@ function M.new(options)
     generation = 0,
     in_use = {},
     in_use_count = 0,
+    logger = options.logger,
     listeners = normalize_listeners(options.listeners),
     load_balanced = options.load_balanced == true,
     lock = options.runtime.lock:new(),
@@ -740,7 +829,7 @@ local function checkout_failed(state, reason, started_at, err, counted, reported
   publish(state, "ConnectionCheckOutFailed", {
     duration_ms = duration_ms(state, started_at),
     reason = reason,
-  })
+  }, err)
   return nil, err, reported
 end
 
@@ -1285,7 +1374,7 @@ function POOL_METHODS:maintain()
       end
 
       if detached then
-        finish_close(state, connection, "error")
+        finish_close(state, connection, "error", establish_err)
       end
 
       schedule_maintenance(self, true)

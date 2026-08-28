@@ -304,10 +304,16 @@ version 0.10.6. The same component emits `Server heartbeat started`, `Server hea
 and `Server heartbeat failed` at `debug`. These records include `awaited`, `driverConnectionId`, and
 the server address. Completion records add `durationMS`; success adds the relaxed Extended JSON
 `reply` and `serverConnectionId` when known, while failure adds `failure`. Heartbeat logging is
-available in version 0.10.6. Connection messages remain assigned to their later implementation
-slices. Server-selection messages describe the process of choosing a server for an application
-operation; they do not replace command lifecycle messages or the independent SDAM monitoring
-events.
+available in version 0.10.6. The `connection` component emits pool created, ready, cleared, and
+closed messages; connection created, ready, and closed messages; and checkout started, failed,
+checked-out, and checked-in messages at `debug`. Every record contains the server address.
+Connection records add `driverConnectionId`; connection-ready, checked-out, and checkout-failed
+records add `durationMS`. Pool clear records add a hexadecimal `serviceId` in load-balanced mode.
+Close and checkout failures add their standardized `reason`, plus `error` for connection errors.
+CMAP lifecycle logging is available in version 0.10.6. Pool-created configuration fields are
+assigned to the pool configuration slice. Server-selection messages describe the process of
+choosing a server for an application operation; they do not replace command lifecycle messages or
+the independent SDAM and CMAP events.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

@@ -55,6 +55,8 @@
     "command-logging-and-monitoring/tests/monitoring/updateOne.json::test[2]": "LOG-022",
     "command-logging-and-monitoring/tests/monitoring/updateOne.json::test[3]": "LOG-022",
     "command-logging-and-monitoring/tests/monitoring/writeConcernError.json::test[1]": "LOG-026",
+    "connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[1]": "CMAP-005",
+    "connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[2]": "CMAP-005",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": "BP-009",
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json::test[1]": "BP-009",
@@ -101,7 +103,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 90
+    "unified_cases": 92
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

@@ -189,20 +189,19 @@
     "BP-007": 3,
     "BP-008": 9,
     "BP-009": 5,
-    "CMAP-005": 2,
     "CMAP-006": 5,
     "OTEL-002": 9,
     "OTEL-003": 12,
     "OTEL-004": 3
   },
   "deferred_by_scope": {
-    "additional-exclusion": 931
+    "additional-exclusion": 929
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 931,
+    "deferred_unsupported": 929,
     "excluded_scope": 99,
-    "passed": 4479,
+    "passed": 4481,
     "unsupported": 15
   },
   "total_cases": 5524,

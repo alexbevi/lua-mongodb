@@ -118,6 +118,22 @@ local function run_assertions(state, runner, test, path)
   return true
 end
 
+local function freeze_logs(state, runner, test, path)
+  local has_logs = document_has(test, "expectLogMessages")
+
+  if not has_logs or state.freeze_logs == nil then
+    return true
+  end
+
+  local ok, err = state.freeze_logs(runner, path .. ".expectLogMessages")
+
+  if ok == false or ok == nil and err ~= nil then
+    return nil, err or configuration_error("log collection could not be frozen", path)
+  end
+
+  return true
+end
+
 local function execute_test(state, document, test, index)
   local path = "$.tests[" .. index .. "]"
   local skip_reason = test:get("skipReason")
@@ -162,6 +178,13 @@ local function execute_test(state, document, test, index)
   end))
   local ok = main[1]
   local failure = main[2]
+  local frozen, freeze_err = freeze_logs(state, runner, test, path)
+
+  if not frozen and ok then
+    ok = false
+    failure = freeze_err
+  end
+
   local finalized, finalize_err = runner:run_finalizers()
 
   if not finalized and ok then
@@ -301,7 +324,7 @@ function M.new(options)
   end
 
   for _, name in ipairs({
-    "assert_events", "assert_logs", "entity_observer", "session_lsid",
+    "assert_events", "assert_logs", "entity_observer", "freeze_logs", "session_lsid",
   }) do
     if options[name] ~= nil and type(options[name]) ~= "function" then
       error("unified lifecycle " .. name .. " must be a function", 2)
@@ -318,6 +341,7 @@ function M.new(options)
     entity_finalizers = options.entity_finalizers or {},
     entity_observer = options.entity_observer,
     environment = options.environment or {},
+    freeze_logs = options.freeze_logs,
     internal_client = options.internal_client,
     operations = options.operations or {},
     runtime = options.runtime,

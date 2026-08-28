@@ -1,5 +1,6 @@
 local bson = require("mongodb.bson")
 local fake_runtime = require("mongodb.runtime.fake")
+local logging = require("mongodb.logging")
 local pool = require("mongodb.pool")
 local cmap_runner = require("spec.support.cmap_runner")
 local copas = require("copas")
@@ -105,6 +106,58 @@ describe("CMAP connection pools", function()
     assert.are.equal("ConnectionCheckedOut", events[#events].type)
     assert(connection:check_in())
     assert(connection_pool:close())
+  end)
+
+  it("logs pool and connection lifecycle transitions", function()
+    local runtime = fake_runtime.new()
+    local observed = {}
+    local logger = assert(logging.new(runtime, {
+      levels = { connection = "debug" },
+      sink = function(event)
+        observed[#observed + 1] = event
+      end,
+    }))
+    local connection_pool = pool.new({
+      address = "server.example:27017",
+      connect = function()
+        runtime:advance(0.0125)
+        return { close = function() end }
+      end,
+      logger = logger,
+      runtime = runtime,
+    })
+
+    assert(connection_pool:ready())
+    local connection = assert(connection_pool:check_out())
+
+    assert(connection_pool:check_in(connection))
+    assert(connection_pool:close())
+    local messages = {}
+
+    for index, event in ipairs(observed) do
+      messages[index] = event.data.message
+    end
+
+    assert.same({
+      "Connection pool created",
+      "Connection pool ready",
+      "Connection checkout started",
+      "Connection created",
+      "Connection ready",
+      "Connection checked out",
+      "Connection checked in",
+      "Connection closed",
+      "Connection pool closed",
+    }, messages)
+    assert.are.equal("connection", observed[1].component)
+    assert.are.equal("server.example", observed[1].data.serverHost)
+    assert.are.equal(27017, observed[1].data.serverPort)
+    assert.are.equal(1, observed[4].data.driverConnectionId)
+    assert.near(12.5, observed[5].data.durationMS, 0.000001)
+    assert.are.equal(1, observed[6].data.driverConnectionId)
+    assert.is_number(observed[6].data.durationMS)
+    assert.are.equal(1, observed[7].data.driverConnectionId)
+    assert.are.equal("Connection pool was closed", observed[8].data.reason)
   end)
 
   it("publishes check-in before close after interrupting an in-use connection", function()

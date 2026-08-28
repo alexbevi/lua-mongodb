@@ -714,6 +714,7 @@ local function connect_topology(
           true
         )
       end,
+      logger = special.logger,
       listeners = special.pool_listeners or {},
       load_balanced = config.load_balanced,
       max_connecting = config.max_connecting,

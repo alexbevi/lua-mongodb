@@ -10744,6 +10744,28 @@
       "notes": [],
       "started_at": "2026-08-28T17:45:15+00:00",
       "completed_at": "2026-08-28T17:56:30+00:00"
+    },
+    "CMAP-005": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=logs.pool.and.connection.lifecycle.transitions spec/unit/pool_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining CMAP logging contract failed because pool.new rejected the logger option before it could project lifecycle transitions.",
+          "recorded_at": "2026-08-28T18:14:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/pool_spec.lua spec/unit/unified_lifecycle_spec.lua spec/unit/unified_logs_spec.lua spec/unit/unified_driver_spec.lua'; make test-focus FOCUS_UNIFIED='connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[[][12]]'; make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.release.test_scope spec.release.test_checklist spec.v103.test_scope planning.tests.test_readme_content'; Lua 5.4 touched-file lint; make test-complexity; generated-artifact --check validators",
+          "exit_code": 0,
+          "summary": "38 directly coupled Lua contracts and 187 Python contracts passed; both exact CMAP lifecycle logging cases passed with 0 environment skips, 0 deferrals, and 0 failures across standalone and authenticated standalone environments. Lua 5.4 lint reported 0 warnings and 0 errors; complexity and all unified capability, ledger, release, historical scope, README, checklist, Python syntax, and diff validators passed.",
+          "recorded_at": "2026-08-28T18:27:43+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T18:14:27+00:00",
+      "completed_at": "2026-08-28T18:27:49+00:00"
     }
   },
   "verified_references": {

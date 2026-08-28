@@ -432,6 +432,9 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       "command-logging-and-monitoring/tests/logging/service-id.json",
       "command-logging-and-monitoring/tests/logging/unacknowledged-write.json",
     }
+    is_connection_logging_fixture = relative.as_posix() == (
+      "connection-monitoring-and-pooling/tests/logging/connection-logging.json"
+    )
     is_server_selection_logging_fixture = relative.as_posix() in {
       "server-selection/tests/logging/load-balanced.json",
       "server-selection/tests/logging/operation-id.json",
@@ -463,6 +466,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       or is_update_one_monitoring_fixture
       or is_write_concern_error_monitoring_fixture
       or is_command_lifecycle_logging_fixture
+      or is_connection_logging_fixture
       or is_server_selection_logging_fixture
     ):
       continue
