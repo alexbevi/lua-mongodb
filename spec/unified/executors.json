@@ -3,6 +3,9 @@
   "tests": {
     "connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[1]": {"activity": "CMAP-005", "environment": "live-standalone"},
     "connection-monitoring-and-pooling/tests/logging/connection-logging.json::test[2]": {"activity": "CMAP-005", "environment": "live-authenticated-standalone", "testCommands": true},
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[1]": {"activity": "CMAP-006", "environment": "live-standalone"},
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[2]": {"activity": "CMAP-006", "environment": "live-standalone"},
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[3]": {"activity": "CMAP-006", "environment": "live-standalone"},
     "causal-consistency/tests/causal-consistency-clientBulkWrite.json::test[1]": {"activity": "CBW-009", "environment": "live-replicaset"},
     "client-side-operations-timeout/tests/bulkWrite.json::test[1]": {"activity": "CBW-012", "environment": "isolated-replicaset", "testCommands": true},
     "client-side-operations-timeout/tests/gridfs-advanced.json::test[1]": {"activity": "GFS-012", "environment": "isolated-replicaset", "testCommands": true},

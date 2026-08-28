@@ -130,10 +130,10 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 929,
+      "deferred_unsupported": 924,
       "excluded_scope": 99,
-      "passed": 4481,
-      "unsupported": 15,
+      "passed": 4484,
+      "unsupported": 17,
     }, generated["summary"]["statuses"])
 
     compression_options = [
@@ -160,6 +160,26 @@ class ConformanceLedgerTests(unittest.TestCase):
       and case["required_environment"] == "none"
       and case["last_execution"] is None
       for case in proxy_options
+    ))
+
+    pool_options = [
+      case for case in generated["cases"].values()
+      if case["source"]
+        == "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json"
+    ]
+    self.assertEqual(5, len(pool_options))
+    self.assertTrue(all(
+      case["activity"] == "CMAP-006"
+      and case["status"] == "passed"
+      and case["runner"] == "spec/unified/execute.lua"
+      for case in pool_options[:3]
+    ))
+    self.assertTrue(all(
+      case["activity"] == "CMAP-006"
+      and case["status"] == "unsupported"
+      and case["runner"] == "none:unsupported"
+      and "deprecated" in case["reason"]
+      for case in pool_options[3:]
     ))
 
     connection_cases = [

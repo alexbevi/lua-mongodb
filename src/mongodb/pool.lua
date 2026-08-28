@@ -35,6 +35,20 @@ local CHECKOUT_PURPOSES = {
   other = true,
   transaction = true,
 }
+local POOL_OPTION_DEFAULTS = {
+  max_connecting = 2,
+  max_idle_time_ms = 0,
+  max_pool_size = 100,
+  min_pool_size = 0,
+  wait_queue_timeout_ms = 0,
+}
+local POOL_LOG_OPTION_NAMES = {
+  max_connecting = "maxConnecting",
+  max_idle_time_ms = "maxIdleTimeMS",
+  max_pool_size = "maxPoolSize",
+  min_pool_size = "minPoolSize",
+  wait_queue_timeout_ms = "waitQueueTimeoutMS",
+}
 local CONNECTION_LOG_MESSAGES = {
   ConnectionCheckedIn = "Connection checked in",
   ConnectionCheckedOut = "Connection checked out",
@@ -142,6 +156,18 @@ local function readonly_copy(values)
   })
 end
 
+local function non_default_pool_options(normalized)
+  local configured = {}
+
+  for name, default in pairs(POOL_OPTION_DEFAULTS) do
+    if normalized[name] ~= default then
+      configured[name] = normalized[name]
+    end
+  end
+
+  return readonly_copy(configured)
+end
+
 local function new_event(fields)
   local value = {}
 
@@ -179,7 +205,11 @@ local function emit_connection_log(state, event_type, fields, event_err)
     serverPort = port,
   }
 
-  if event_type == "ConnectionPoolCleared" then
+  if event_type == "ConnectionPoolCreated" then
+    for name, value in pairs(fields.options or {}) do
+      data[POOL_LOG_OPTION_NAMES[name]] = value
+    end
+  elseif event_type == "ConnectionPoolCleared" then
     data.serviceId = fields.service_id and tostring(fields.service_id)
   elseif event_type == "ConnectionCreated" or event_type == "ConnectionCheckedIn" then
     data.driverConnectionId = fields.connection_id
@@ -755,7 +785,7 @@ function M.new(options)
     next_connection_id = 1,
     on_connection_error = options.on_connection_error,
     on_listener_error = options.on_listener_error,
-    options = readonly_copy(normalized),
+    options = non_default_pool_options(normalized),
     operation_count = 0,
     pending = {},
     pending_count = 0,

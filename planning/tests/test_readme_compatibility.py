@@ -112,7 +112,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **82.9%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
     self.assertIn("> [!IMPORTANT]", table)
     self.assertIn("**† Fixtures excluded from scoring.**", table)
     self.assertIn(
@@ -125,6 +125,11 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "The ledger also omits 3 explicit superseded or upstream-skipped "
       "fixtures from Authentication options and additional mechanisms (2), "
       "Load balancer support (1).",
+      table,
+    )
+    self.assertIn(
+      "The ledger excludes 17 terminal unsupported fixtures from scoring in "
+      "URI options (15), Connection monitoring and pooling (2).",
       table,
     )
 
@@ -152,10 +157,10 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
     self.assertIn(
       "| Communication | [URI options](https://alexbevi.com/specifications/"
-      "uri-options/uri-options.html) | 🟡 | 95.8% |",
+      "uri-options/uri-options.html) | 🟡 | 95.8% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **82.9%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
 
     readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
     self.assertIn("⚪ Will Not Implement", readme)
@@ -223,7 +228,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **82.9%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"

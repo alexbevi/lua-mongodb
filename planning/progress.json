@@ -10766,6 +10766,35 @@
       "notes": [],
       "started_at": "2026-08-28T18:14:27+00:00",
       "completed_at": "2026-08-28T18:27:49+00:00"
+    },
+    "CMAP-006": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=logs.only.configured.pool.options.when.the.pool.is.created spec/unit/pool_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining pool-created logging contract failed because the connection log contained no configured pool option fields.",
+          "recorded_at": "2026-08-28T19:00:36+00:00"
+        },
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=logs.only.configured.pool.options.when.the.pool.is.created spec/unit/pool_spec.lua'",
+          "exit_code": 2,
+          "summary": "The pool-created log omitted every configured supported pool option.",
+          "recorded_at": "2026-08-28T19:12:59+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_UNIT='spec/unit/pool_spec.lua' FOCUS_UNIFIED='connection-monitoring-and-pooling/tests/logging/connection-pool-options.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_cmap_pool_option_logging_cases_have_exact_outcomes spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats planning.tests.test_readme_compatibility' FOCUS_LINT='src/mongodb/pool.lua spec/unit/pool_spec.lua spec/support/mongodb/unified/driver.lua'",
+          "exit_code": 0,
+          "summary": "All 14 pool cases passed; three applicable live pool-option cases passed, two deprecated cases remained terminal unsupported, nine focused Python validators passed, and touched Lua files had no lint findings.",
+          "recorded_at": "2026-08-28T19:13:00+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T18:59:35+00:00",
+      "completed_at": "2026-08-28T19:13:01+00:00"
     }
   },
   "verified_references": {

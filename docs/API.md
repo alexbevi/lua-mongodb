@@ -310,10 +310,12 @@ checked-out, and checked-in messages at `debug`. Every record contains the serve
 Connection records add `driverConnectionId`; connection-ready, checked-out, and checkout-failed
 records add `durationMS`. Pool clear records add a hexadecimal `serviceId` in load-balanced mode.
 Close and checkout failures add their standardized `reason`, plus `error` for connection errors.
-CMAP lifecycle logging is available in version 0.10.6. Pool-created configuration fields are
-assigned to the pool configuration slice. Server-selection messages describe the process of
-choosing a server for an application operation; they do not replace command lifecycle messages or
-the independent SDAM and CMAP events.
+CMAP lifecycle logging is available in version 0.10.6. A pool-created record includes only
+supported pool options whose configured values differ from their defaults: `maxIdleTimeMS`,
+`minPoolSize`, `maxPoolSize`, `maxConnecting`, and `waitQueueTimeoutMS`. The deprecated
+`waitQueueSize` and `waitQueueMultiple` options are not supported. Server-selection messages
+describe the process of choosing a server for an application operation; they do not replace command
+lifecycle messages or the independent SDAM and CMAP events.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

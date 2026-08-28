@@ -71,7 +71,7 @@ The "onion model" orders the [MongoDB driver specifications](https://alexbevi.co
 | Serialization | [BSON corpus](https://alexbevi.com/specifications/bson-corpus/bson-corpus.html) | 🟢 | 100.0% |
 | Serialization | [BSON binary vector](https://alexbevi.com/specifications/bson-binary-vector/bson-binary-vector.html) | 🟢 | 100.0% |
 | Communication | [Connection string](https://alexbevi.com/specifications/connection-string/connection-string-spec.html) | 🟢 | 100.0% |
-| Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 95.8% |
+| Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 95.8% **†** |
 | Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
 | Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟢 | 100.0% |
 | Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | ⚪ | N/A |
@@ -79,7 +79,7 @@ The "onion model" orders the [MongoDB driver specifications](https://alexbevi.co
 | Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | ⚪ | N/A |
 | Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟢 | 100.0% |
 | Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 98.9% **†** |
-| Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟡 | 87.5% |
+| Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟢 | 100.0% **†** |
 | Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟢 | 100.0% **†** |
 | Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟢 | 100.0% **†** |
 | Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟢 | 100.0% |
@@ -105,7 +105,7 @@ The "onion model" orders the [MongoDB driver specifications](https://alexbevi.co
 | Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
 | Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
 | Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **82.9%** **†** |
+|  | **Total** |  | **83.0%** **†** |
 
 > [!IMPORTANT]
 > **† Fixtures excluded from scoring.**
@@ -113,6 +113,8 @@ The "onion model" orders the [MongoDB driver specifications](https://alexbevi.co
 > Percentages marked **†** skip 106 upstream fixtures because their `runOnRequirements` restrict them to MongoDB versions older than the supported 7.0 floor. The affected suites are CRUD (74), Change streams (19), Command logging and monitoring (4), Retryable writes (3), Sessions (3), Server discovery and monitoring (2), and Client-side encryption (1). These fixtures remain classified in the conformance ledger but do not count toward the marked suite percentages or the total.
 >
 > The ledger also omits 3 explicit superseded or upstream-skipped fixtures from Authentication options and additional mechanisms (2), Load balancer support (1).
+>
+> The ledger excludes 17 terminal unsupported fixtures from scoring in URI options (15), Connection monitoring and pooling (2).
 <!-- END SPEC CONFORMANCE -->
 
 ## Getting started

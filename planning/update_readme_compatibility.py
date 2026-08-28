@@ -450,9 +450,14 @@ def marked_percentage(
   if bold:
     percentage = f"**{percentage}**"
 
+  scored = sum(
+    count for status, count in counts.items()
+    if status not in NON_EXECUTION_STATUSES
+  )
   if (
     counts.get(OLD_SERVER_ONLY_STATUS, 0) == 0
     and counts.get(UNSCORED_EXCLUSION_STATUS, 0) == 0
+    and (counts.get("unsupported", 0) == 0 or scored == 0)
   ):
     return percentage
 
@@ -482,8 +487,20 @@ def scoring_note(counts: dict[str, Counter[str]]) -> str | None:
     ),
     key=lambda item: (-item[0], item[1].lower()),
   )
+  unsupported = sorted(
+    (
+      (outcomes["unsupported"], labels[suite])
+      for suite, outcomes in counts.items()
+      if outcomes["unsupported"] > 0
+      and any(
+        count > 0 and status not in NON_EXECUTION_STATUSES
+        for status, count in outcomes.items()
+      )
+    ),
+    key=lambda item: (-item[0], item[1].lower()),
+  )
 
-  if not affected and not exclusions:
+  if not affected and not exclusions and not unsupported:
     return None
 
   note = (
@@ -522,6 +539,18 @@ def scoring_note(counts: dict[str, Counter[str]]) -> str | None:
       f"{note}\n>\n"
       f"> The ledger also omits {exclusion_total} explicit superseded or "
       f"upstream-skipped fixtures from {exclusion_suites}."
+    )
+
+  if unsupported:
+    unsupported_total = sum(count for count, _ in unsupported)
+    unsupported_suites = ", ".join(
+      f"{label} ({count})"
+      for count, label in unsupported
+    )
+    note = (
+      f"{note}\n>\n"
+      f"> The ledger excludes {unsupported_total} terminal unsupported "
+      f"fixtures from scoring in {unsupported_suites}."
     )
 
   return note

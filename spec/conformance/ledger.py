@@ -314,6 +314,14 @@ def classify_case(
         execution["environment"],
       )
 
+    if value["status"] == "unsupported":
+      return _unsupported(
+        case,
+        value["activity"],
+        activities,
+        value["reason"],
+      )
+
     row = _deferred(case, value["activity"], activities, "spec/unified/run.py")
     row["status"] = value["status"]
 

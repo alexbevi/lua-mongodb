@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2124,
-    "runnable": 2124
+    "passed": 2127,
+    "runnable": 2127
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -38412,6 +38412,158 @@
         ]
       },
       "status": "runnable"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[1]": {
+      "activity": "CMAP-006",
+      "fingerprint": "c3a6adabd0a8e986cf33e8c63e424c56e93a5b837ef1d7438d47a13b26abcffb",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [],
+        "special_operations": [
+          "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[2]": {
+      "activity": "CMAP-006",
+      "fingerprint": "c93268e8c79c68882bf6589ae81df7d15cde1158c7291167c3f51ea9c567f240",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [],
+        "special_operations": [
+          "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[3]": {
+      "activity": "CMAP-006",
+      "fingerprint": "b94125d1a6bd32c8d618bc6c6fc6bc61914b20c14927fb94f2d38f9b26d962f4",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [],
+        "special_operations": [
+          "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[4]": {
+      "activity": "CMAP-006",
+      "fingerprint": "a0638ee6f2ed9d15af1c44495338e4a98a591ff4d10673d00a988b857869c506",
+      "reason": "deprecated waitQueueSize is not supported because CMAP prohibits drivers from adding it when it was not already implemented",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [],
+        "special_operations": [
+          "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "unsupported"
+    },
+    "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json::test[5]": {
+      "activity": "CMAP-006",
+      "fingerprint": "a4c4ae743a20854afe7808e61d90612fb36289efce485be3fec73885d3617df8",
+      "reason": "deprecated waitQueueMultiple is not supported because CMAP prohibits drivers from adding it when it was not already implemented",
+      "requirements": {
+        "arguments": [
+          "createEntities.entities",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [],
+        "special_operations": [
+          "createEntities",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "unsupported"
     },
     "crud/tests/unified/aggregate-allowdiskuse.json::test[1]": {
       "activity": "UTF-013",

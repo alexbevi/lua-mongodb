@@ -70,7 +70,12 @@ MACOS_CI_TIMING_SENSITIVE_CSOT = frozenset({
 LINUX_CI_FOCUSED_CSOT = frozenset({
   "client-side-operations-timeout/tests/command-execution.json::test[3]",
 })
-VALID_STATUSES = {"deferred_unsupported", "excluded_scope", "runnable"}
+VALID_STATUSES = {
+  "deferred_unsupported",
+  "excluded_scope",
+  "runnable",
+  "unsupported",
+}
 REPORT_VERSION = 2
 SLOWEST_FIXTURE_GROUP_LIMIT = 10
 IDENTITY_SHARDED_FIXTURES = frozenset({
@@ -432,9 +437,10 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       "command-logging-and-monitoring/tests/logging/service-id.json",
       "command-logging-and-monitoring/tests/logging/unacknowledged-write.json",
     }
-    is_connection_logging_fixture = relative.as_posix() == (
-      "connection-monitoring-and-pooling/tests/logging/connection-logging.json"
-    )
+    is_connection_logging_fixture = relative.as_posix() in {
+      "connection-monitoring-and-pooling/tests/logging/connection-logging.json",
+      "connection-monitoring-and-pooling/tests/logging/connection-pool-options.json",
+    }
     is_server_selection_logging_fixture = relative.as_posix() in {
       "server-selection/tests/logging/load-balanced.json",
       "server-selection/tests/logging/operation-id.json",
@@ -889,6 +895,7 @@ def build_report(
     "invalid_or_incompatible": 0,
     "passed": 0,
     "selected": len(classifications),
+    "unsupported": 0,
   }
 
   for classification in classifications:
@@ -898,6 +905,8 @@ def build_report(
       summary["deferred_unsupported"] += 1
     elif item["status"] == "excluded_scope":
       summary["excluded_scope"] += 1
+    elif item["status"] == "unsupported":
+      summary["unsupported"] += 1
     elif execute is not None:
       status, detail = execute(item)
       item["status"] = status
@@ -1956,7 +1965,8 @@ def finish_report(report: dict[str, Any], destination: str | None) -> int:
     f"unified execution: {summary['executed']} executed, "
     f"{summary['passed']} passed, {summary['failed']} failed, "
     f"{summary['environment_skipped']} environment-skipped, "
-    f"{summary['deferred_unsupported']} deferred-unsupported; "
+    f"{summary['deferred_unsupported']} deferred-unsupported, "
+    f"{summary['unsupported']} unsupported; "
     f"conformant={str(summary['conformant']).lower()}",
     file=sys.stderr if destination == "-" else sys.stdout,
   )

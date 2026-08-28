@@ -281,6 +281,20 @@ TEST_OVERRIDES = {
   identity: (value["activity"], None)
   for identity, value in EXECUTOR_TESTS.items()
 }
+TERMINAL_UNSUPPORTED_TESTS = {
+  "connection-monitoring-and-pooling/tests/logging/"
+    "connection-pool-options.json::test[4]": (
+      "deprecated waitQueueSize is not supported because CMAP prohibits drivers "
+      "from adding it when it was not already implemented"
+    ),
+  "connection-monitoring-and-pooling/tests/logging/"
+    "connection-pool-options.json::test[5]": (
+      "deprecated waitQueueMultiple is not supported because CMAP prohibits drivers "
+      "from adding it when it was not already implemented"
+    ),
+}
+for identity, reason in TERMINAL_UNSUPPORTED_TESTS.items():
+  TEST_OVERRIDES[identity] = ("CMAP-006", reason)
 for index in (79, 82, 85):
   TEST_OVERRIDES[
     f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
@@ -1154,7 +1168,10 @@ def generate() -> dict[str, object]:
 
   for test in discovered:
     activity, reason = classify_test(test)
-    status = "runnable" if reason is None else "deferred_unsupported"
+    if test["id"] in TERMINAL_UNSUPPORTED_TESTS:
+      status = "unsupported"
+    else:
+      status = "runnable" if reason is None else "deferred_unsupported"
     if reason is not None and (
       activity == "REL-053" or test["id"] in EXCLUDED_SCOPE_TESTS
     ):

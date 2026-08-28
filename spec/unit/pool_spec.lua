@@ -160,6 +160,56 @@ describe("CMAP connection pools", function()
     assert.are.equal("Connection pool was closed", observed[8].data.reason)
   end)
 
+  it("logs only configured pool options when the pool is created", function()
+    local runtime = fake_runtime.new()
+    local observed = {}
+    local logger = assert(logging.new(runtime, {
+      levels = { connection = "debug" },
+      sink = function(event)
+        observed[#observed + 1] = event
+      end,
+    }))
+    local configured = pool.new({
+      address = "server.example:27017",
+      connect = function()
+        return { close = function() end }
+      end,
+      logger = logger,
+      max_connecting = 5,
+      max_idle_time_ms = 10000,
+      max_pool_size = 5,
+      min_pool_size = 1,
+      runtime = runtime,
+      wait_queue_timeout_ms = 2000,
+    })
+    local defaults = pool.new({
+      address = "server.example:27017",
+      connect = function()
+        return { close = function() end }
+      end,
+      logger = logger,
+      runtime = runtime,
+    })
+
+    assert.same({
+      maxConnecting = 5,
+      maxIdleTimeMS = 10000,
+      maxPoolSize = 5,
+      message = "Connection pool created",
+      minPoolSize = 1,
+      serverHost = "server.example",
+      serverPort = 27017,
+      waitQueueTimeoutMS = 2000,
+    }, observed[1].data)
+    assert.same({
+      message = "Connection pool created",
+      serverHost = "server.example",
+      serverPort = 27017,
+    }, observed[2].data)
+    assert(configured:close())
+    assert(defaults:close())
+  end)
+
   it("publishes check-in before close after interrupting an in-use connection", function()
     local runtime = fake_runtime.new()
     local closed = 0
