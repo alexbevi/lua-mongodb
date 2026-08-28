@@ -382,6 +382,9 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
     is_security_monitoring_fixture = relative.as_posix() == (
       "command-logging-and-monitoring/tests/monitoring/redacted-commands.json"
     )
+    is_collection_bulk_monitoring_fixture = relative.as_posix() == (
+      "command-logging-and-monitoring/tests/monitoring/bulkWrite.json"
+    )
     is_command_monitoring_fixture = relative.as_posix() == (
       "command-logging-and-monitoring/tests/monitoring/command.json"
     )
@@ -430,6 +433,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
       or is_snapshot_session_fixture
       or is_client_bulk_causal_fixture
       or is_security_monitoring_fixture
+      or is_collection_bulk_monitoring_fixture
       or is_command_monitoring_fixture
       or is_delete_many_monitoring_fixture
       or is_delete_one_monitoring_fixture

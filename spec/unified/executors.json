@@ -2389,6 +2389,10 @@
       "activity": "LOG-002",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/monitoring/bulkWrite.json::test[1]": {
+      "activity": "LOG-007",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/command.json::test[1]": {
       "activity": "LOG-005",
       "environment": "live-replicaset"

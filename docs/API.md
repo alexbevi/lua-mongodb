@@ -229,6 +229,8 @@ and `writeErrors` replies all produce succeeded events; upsert identifiers and s
 errors remain available through the collection operation's existing result contract.
 `update_many` follows the same event and result contract with `multi = true` in its update
 specification.
+A mixed collection `bulk_write` publishes one correlated lifecycle for each emitted wire command
+in execution order. Batching and result aggregation are unchanged by observation.
 
 #### Structured logging configuration
 

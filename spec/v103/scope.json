@@ -30,6 +30,7 @@
     "command-logging-and-monitoring/tests/logging/service-id.json::test[1]": "LOG-013",
     "command-logging-and-monitoring/tests/logging/service-id.json::test[2]": "LOG-013",
     "command-logging-and-monitoring/tests/logging/unacknowledged-write.json::test[1]": "LOG-002",
+    "command-logging-and-monitoring/tests/monitoring/bulkWrite.json::test[1]": "LOG-007",
     "command-logging-and-monitoring/tests/monitoring/command.json::test[1]": "LOG-005",
     "command-logging-and-monitoring/tests/monitoring/deleteMany.json::test[1]": "LOG-021",
     "command-logging-and-monitoring/tests/monitoring/deleteMany.json::test[2]": "LOG-021",
@@ -79,7 +80,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 75
+    "unified_cases": 76
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {
