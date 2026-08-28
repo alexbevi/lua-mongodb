@@ -10662,21 +10662,22 @@
       "evidence": [
         {
           "phase": "red",
-          "command": "GitHub Actions CI Fast run 33193690599, portable verification",
+          "command": "GitHub Actions CI Fast run 33194318602, release checklist verification",
           "exit_code": 2,
-          "summary": "All four portable lanes failed because spec/v04/scope.json and its exact-count contract still classified the four newly runnable topology-lifecycle cases as excluded.",
-          "recorded_at": "2026-08-28T17:21:30+00:00"
+          "summary": "All four portable lanes reached the release checklist and failed because it still required 245 optional v0.10 cases after SDAM-009 reduced the generated count to 244.",
+          "recorded_at": "2026-08-28T17:30:29+00:00"
         },
         {
           "phase": "green",
-          "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope'; python3 spec/v04/scope.py --check",
+          "command": "Projected spec.release.checklist.generate with SDAM-009 completed; python3 -m py_compile spec/release/checklist.py spec/release/test_checklist.py",
           "exit_code": 0,
-          "summary": "All 8 v0.4 scope contracts passed and the refreshed 877-passing/21-excluded projection is current.",
-          "recorded_at": "2026-08-28T17:21:31+00:00"
+          "summary": "The release checklist generated with the refreshed v0.4 and v0.10 counts, and both touched Python files compiled.",
+          "recorded_at": "2026-08-28T17:30:30+00:00"
         }
       ],
       "notes": [
-        "Requeued: CI Fast exposed a stale generated spec/v04 scope after the four SDAM logging fixtures became runnable."
+        "Requeued: CI Fast exposed a stale generated spec/v04 scope after the four SDAM logging fixtures became runnable.",
+        "Requeued: CI Fast exposed the release checklist optional-case count was not lowered after the v0.10 scope moved one topology lifecycle case to passing."
       ],
       "reopen_history": [
         {
@@ -10697,11 +10698,30 @@
               "recorded_at": "2026-08-28T17:10:23+00:00"
             }
           ]
+        },
+        {
+          "completed_at": "2026-08-28T17:21:31+00:00",
+          "evidence": [
+            {
+              "phase": "red",
+              "command": "GitHub Actions CI Fast run 33193690599, portable verification",
+              "exit_code": 2,
+              "summary": "All four portable lanes failed because spec/v04/scope.json and its exact-count contract still classified the four newly runnable topology-lifecycle cases as excluded.",
+              "recorded_at": "2026-08-28T17:21:30+00:00"
+            },
+            {
+              "phase": "green",
+              "command": "make test-focus FOCUS_PYTHON='spec.v04.test_scope'; python3 spec/v04/scope.py --check",
+              "exit_code": 0,
+              "summary": "All 8 v0.4 scope contracts passed and the refreshed 877-passing/21-excluded projection is current.",
+              "recorded_at": "2026-08-28T17:21:31+00:00"
+            }
+          ]
         }
       ],
-      "reopened_after_commit": "c19229de2996cd13cda34fdb135e783a5cd29d89",
-      "started_at": "2026-08-28T17:20:41+00:00",
-      "completed_at": "2026-08-28T17:21:31+00:00"
+      "reopened_after_commit": "4259d96d9b97b245e16f5f2f9498c8ffdc4cf5cc",
+      "started_at": "2026-08-28T17:28:52+00:00",
+      "completed_at": "2026-08-28T17:30:31+00:00"
     }
   },
   "verified_references": {

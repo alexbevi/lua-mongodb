@@ -41,9 +41,9 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(
       {
         "classified_cases": 898,
-        "excluded_cases": 25,
-        "exact_unified_cases": 366,
-        "passed_cases": 873,
+        "excluded_cases": 21,
+        "exact_unified_cases": 370,
+        "passed_cases": 877,
         "read_write_concern_passed": 48,
         "target_version_exclusions": 6,
       },
@@ -105,10 +105,10 @@ class ReleaseChecklistTests(unittest.TestCase):
       {
         "classified_requirements": 1044,
         "dedicated_cases": 40,
-        "exact_unified_cases": 740,
+        "exact_unified_cases": 741,
         "excluded_requirements": 18,
-        "optional_requirements": 245,
-        "passed_requirements": 779,
+        "optional_requirements": 244,
+        "passed_requirements": 780,
         "run_on_branches": 1002,
         "unsupported_requirements": 2,
       },
