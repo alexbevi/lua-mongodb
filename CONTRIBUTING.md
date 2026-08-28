@@ -24,7 +24,7 @@ git submodule update --init --recursive
 Install the runtime and common test dependencies used by CI:
 
 ```sh
-luarocks install --only-deps mongodb-0.10.4-1.rockspec
+luarocks install --only-deps mongodb-0.10.5-1.rockspec
 luarocks install busted 2.3.0-1
 luarocks install lua-csnappy 0.1.5-2
 luarocks install lua-zstd 0.2.0-1

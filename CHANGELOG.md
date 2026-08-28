@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [0.10.5] - 2026-08-28
+
+Server selection logging release.
+
+### Added
+
+- Added server selection started, waiting, succeeded, and failed log messages across standalone, replica-set, sharded, and load-balanced topologies.
+- Added selector, topology, timing, selected-server, and failure details without changing selection results or timeout behavior.
+- Reused each logical operation identifier across server selection and command logs, including retries and bulk operations.
+
+### Conformance
+
+- Closed all 11 pinned server selection logging cases with exact passing evidence.
+
+### Release engineering
+
+- Added the exact v0.10.5 server selection gate and conformance inventory to the guarded release checklist.
+
 ## [0.10.4] - 2026-08-27
 
 Command logging and monitoring release.

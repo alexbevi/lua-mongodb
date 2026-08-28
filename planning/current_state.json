@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 378,
+    "completed": 379,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 26
+    "pending": 25
   },
   "active": [],
   "ready": [
-    "REL-064",
+    "SDAM-009",
     "ADV-010",
     "SFP-001"
   ],
@@ -45,15 +45,15 @@
     "v0-10-2-gssapi": [],
     "v0-10-3-logging-foundation": [],
     "v0-10-4-command-logging": [],
-    "v0-10-5-server-selection-logging": [
-      "REL-064"
+    "v0-10-5-server-selection-logging": [],
+    "v0-10-6-topology-pool-logging": [
+      "SDAM-009"
     ],
-    "v0-10-6-topology-pool-logging": [],
     "v0-10-7-client-backpressure": [],
     "v0-10-8-open-telemetry": []
   },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "REL-064"
+  "next_ready": "SDAM-009"
 }

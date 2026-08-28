@@ -1,4 +1,4 @@
-"""Contract tests for the command-logging v0.10.4 release checklist."""
+"""Contract tests for the server-selection-logging v0.10.5 release checklist."""
 
 import unittest
 
@@ -10,8 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("command-logging-release-checklist", report["type"])
-    self.assertEqual("0.10.4", report["release"]["version"])
+    self.assertEqual("server-selection-logging-release-checklist", report["type"])
+    self.assertEqual("0.10.5", report["release"]["version"])
     self.assertEqual(
       {
         "activities": ["CSOT-001", "BSON-010"],
@@ -315,6 +315,17 @@ class ReleaseChecklistTests(unittest.TestCase):
         },
       },
       report["gates"]["v0_10_4_conformance"],
+    )
+    self.assertEqual(
+      ["SEL-002", "SEL-003", "CON-016"],
+      report["gates"]["completed_v0_10_5_gates"],
+    )
+    self.assertEqual(
+      {
+        "server_selection_cases": 11,
+        "server_selection_statuses": {"passed": 11},
+      },
+      report["gates"]["v0_10_5_conformance"],
     )
     self.assertEqual(
       [

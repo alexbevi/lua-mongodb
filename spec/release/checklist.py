@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report command-logging v0.10.4 release readiness."""
+"""Validate and report server-selection-logging v0.10.5 release readiness."""
 
 from __future__ import annotations
 
@@ -31,8 +31,8 @@ PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.10.4-1.rockspec"
-RELEASE_VERSION = "0.10.4"
+ROCKSPEC = ROOT / "mongodb-0.10.5-1.rockspec"
+RELEASE_VERSION = "0.10.5"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
 MINIMUM_PASSED_CASES = 4458
@@ -211,6 +211,9 @@ V104_GATES = [
 ]
 V104_CONFORMANCE_ACTIVITY = "CON-015"
 V104_RELEASE_ACTIVITY = "REL-063"
+V105_GATES = ["SEL-002", "SEL-003"]
+V105_CONFORMANCE_ACTIVITY = "CON-016"
+V105_RELEASE_ACTIVITY = "REL-064"
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -219,7 +222,7 @@ OBJECTID_IDENTITIES = {"bson-objectid/objectid.md::post-fork-random"}
 
 
 class ChecklistError(ValueError):
-  """Raised when the command-logging release is not ready."""
+  """Raised when the server-selection-logging release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -308,11 +311,11 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "CHANGELOG.md",
-    f"## [{RELEASE_VERSION}] - 2026-08-27",
+    f"## [{RELEASE_VERSION}] - 2026-08-28",
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: command logging v0.10.4 release-ready.",
+    "Status: server selection logging v0.10.5 release-ready.",
   )
 
   return {
@@ -457,6 +460,20 @@ def generate() -> dict[str, Any]:
       "v0.10.4 release gate inventory does not match the track"
     )
 
+  server_selection_logging_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-5-server-selection-logging"
+  ]
+  if server_selection_logging_track != [
+    *V105_GATES,
+    V105_CONFORMANCE_ACTIVITY,
+    V105_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError(
+      "v0.10.5 release gate inventory does not match the track"
+    )
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -542,6 +559,12 @@ def generate() -> dict[str, Any]:
   for activity_id in [*V104_GATES, V104_CONFORMANCE_ACTIVITY]:
     if activity_id not in activities:
       raise ChecklistError(f"unknown v0.10.4 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
+  for activity_id in [*V105_GATES, V105_CONFORMANCE_ACTIVITY]:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.10.5 gate activity: {activity_id}")
 
     completed_activity(progress, activity_id)
 
@@ -644,6 +667,15 @@ def generate() -> dict[str, Any]:
     raise ChecklistError("v0.10.2 GSSAPI conformance still has planned requirements")
 
   v103_summary = v103_report["summary"]
+  server_selection_conformance = v103_report["server_selection_conformance"]
+
+  if server_selection_conformance != {
+    "cases": 11,
+    "statuses": {"passed": 11},
+  }:
+    raise ChecklistError(
+      "v0.10.5 server selection logging conformance is incomplete"
+    )
 
   compatibility = matrix.validate(matrix.load())
   profiles = sum(len(server["profiles"]) for server in compatibility["servers"])
@@ -729,6 +761,10 @@ def generate() -> dict[str, Any]:
       "completed_v0_10_4_gates": [
         *V104_GATES,
         V104_CONFORMANCE_ACTIVITY,
+      ],
+      "completed_v0_10_5_gates": [
+        *V105_GATES,
+        V105_CONFORMANCE_ACTIVITY,
       ],
       "conformance": {
         "applicable_gaps": applicable_gaps,
@@ -850,6 +886,10 @@ def generate() -> dict[str, Any]:
         "command_cases": v103_report["command_conformance"]["cases"],
         "command_statuses": v103_report["command_conformance"]["statuses"],
       },
+      "v0_10_5_conformance": {
+        "server_selection_cases": server_selection_conformance["cases"],
+        "server_selection_statuses": server_selection_conformance["statuses"],
+      },
       "maintenance": {
         "activities": MAINTENANCE_GATES,
         "bson_objectid_requirements": len(objectid_evidence),
@@ -860,7 +900,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "command-logging-release-checklist",
+    "type": "server-selection-logging-release-checklist",
   }
 
 

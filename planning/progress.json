@@ -10610,6 +10610,28 @@
       "notes": [],
       "started_at": "2026-08-28T14:15:57+00:00",
       "completed_at": "2026-08-28T14:19:41+00:00"
+    },
+    "REL-064": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "1 release checklist contract executed; failed because the checked-in report still identified v0.10.4 command logging instead of v0.10.5 server-selection logging.",
+          "recorded_at": "2026-08-28T14:40:15+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='--filter=applies.appended.wrapper.metadata.only.to.new.connections spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope spec.v103.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content spec.package.test_package' FOCUS_LINT='src/mongodb/handshake/metadata.lua'; make rockspec; generated release, v103 scope, release scope, and README validators",
+          "exit_code": 0,
+          "summary": "85 focused contracts passed: 20 version/handshake unit, 1 exact metadata integration, 59 release/scope/workflow/docs, and 5 isolated package tests; 0 skipped, deferred, or failed. The checked server-selection projection has 11 executed and passed cases with 0 skipped, deferred, or failed. Lua 5.4 touched-file lint, rockspec lint, the 0.10.5 release checklist, release scope, v103 scope, and README compatibility validators all passed; complete Full Conformance remains CI-owned for the exact release commit.",
+          "recorded_at": "2026-08-28T14:48:57+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T14:39:42+00:00",
+      "completed_at": "2026-08-28T14:49:11+00:00"
     }
   },
   "verified_references": {
