@@ -96,6 +96,7 @@ RATCHETS = {
   "unified_cases": 24,
 }
 COMMAND_SUITE = "command-logging-and-monitoring"
+SERVER_SELECTION_LOGGING_PREFIX = "server-selection/tests/logging/"
 COMMAND_EXCLUSIONS = {
   "command-logging-and-monitoring/tests/monitoring/find.json::test[5]": (
     "the server requirement capped at MongoDB 4.4.99 is below the MongoDB 7.0 "
@@ -231,6 +232,41 @@ def command_conformance(
   }
 
 
+def server_selection_conformance(
+  cases: dict[str, dict[str, Any]],
+  activities: dict[str, dict[str, str]],
+) -> dict[str, Any]:
+  selection_cases = {
+    identity: case
+    for identity, case in cases.items()
+    if identity.startswith(SERVER_SELECTION_LOGGING_PREFIX)
+  }
+
+  for identity, case in sorted(selection_cases.items()):
+    if case.get("status") != "passed":
+      raise ScopeError(f"server selection logging case is not closed: {identity}")
+    if not case.get("last_execution") or str(case.get("runner", "")).startswith(
+      ("none:", "pending:")
+    ):
+      raise ScopeError(f"server selection logging case lacks exact evidence: {identity}")
+
+    owner = case.get("activity")
+    activity = activities.get(owner)
+    if (
+      owner not in {"SEL-002", "SEL-003"}
+      or not activity
+      or activity.get("status") != "completed"
+    ):
+      raise ScopeError(f"server selection logging owner is incomplete: {identity}")
+
+  return {
+    "cases": len(selection_cases),
+    "statuses": dict(sorted(Counter(
+      case["status"] for case in selection_cases.values()
+    ).items())),
+  }
+
+
 def classify(
   cases: dict[str, dict[str, Any]],
   requirements: dict[str, dict[str, Any]],
@@ -302,6 +338,10 @@ def classify(
     "planned_by_suite": dict(sorted(planned_by_suite.items())),
     "ratchets": RATCHETS,
     "schema_version": 1,
+    "server_selection_conformance": server_selection_conformance(
+      cases,
+      activities,
+    ),
     "standardized_cases": standardized,
     "summary": {
       "classified": len(foundation) + len(standardized),

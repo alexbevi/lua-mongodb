@@ -58,6 +58,34 @@ class V103ScopeTests(unittest.TestCase):
       generated["command_conformance"],
     )
 
+  def test_server_selection_logging_scope_is_closed(self) -> None:
+    generated = scope.generate()
+
+    self.assertEqual(
+      {
+        "cases": 11,
+        "statuses": {
+          "passed": 11,
+        },
+      },
+      generated["server_selection_conformance"],
+    )
+
+    cases = copy.deepcopy(scope.load_cases())
+    identity = next(
+      identity
+      for identity in cases
+      if identity.startswith(scope.SERVER_SELECTION_LOGGING_PREFIX)
+    )
+    cases[identity]["status"] = "deferred_unsupported"
+    with self.assertRaisesRegex(scope.ScopeError, re.escape(identity)):
+      scope.classify(
+        cases,
+        scope.load_requirements(),
+        scope.load_capabilities(),
+        scope.load_activities(),
+      )
+
   def test_standardized_cases_have_release_sized_owners(self) -> None:
     generated = scope.generate()
 

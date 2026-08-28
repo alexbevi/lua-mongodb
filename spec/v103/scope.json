@@ -220,6 +220,12 @@
     "unified_cases": 24
   },
   "schema_version": 1,
+  "server_selection_conformance": {
+    "cases": 11,
+    "statuses": {
+      "passed": 11
+    }
+  },
   "standardized_cases": {
     "client-backpressure/tests/backpressure-connection-checkin.json::test[1]": "BP-007",
     "client-backpressure/tests/backpressure-retry-loop.json::test[10]": "BP-004",

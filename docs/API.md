@@ -296,7 +296,9 @@ selection messages. When an operation owns a logical operation ID, every selecti
 that value as `operationId`; the corresponding command logs use the same value, including across
 retry attempts and multi-command bulk operations. Server-selection lifecycle logging and operation
 correlation are available in version 0.10.5. Topology and connection messages are enabled only by
-their component-specific implementation slices.
+their component-specific implementation slices. Server-selection messages describe the process of
+choosing a server for an application operation; they do not replace command lifecycle messages or
+the independent SDAM monitoring events.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

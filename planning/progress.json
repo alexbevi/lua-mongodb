@@ -10588,6 +10588,28 @@
       "notes": [],
       "started_at": "2026-08-28T13:50:31+00:00",
       "completed_at": "2026-08-28T14:00:44+00:00"
+    },
+    "CON-016": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v103.test_scope.V103ScopeTests.test_server_selection_logging_scope_is_closed'",
+          "exit_code": 1,
+          "summary": "The closure contract errored because the generated logging scope had no server_selection_conformance evidence; 1 executed, 0 passed, 0 skipped, and 1 error.",
+          "recorded_at": "2026-08-28T14:16:16+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='server-selection/tests/logging/*.json'; focused v0.10.3 scope, ledger, release-scope, checklist, README, documentation, capability, and package validators",
+          "exit_code": 0,
+          "summary": "All 11 pinned server-selection logging cases executed and passed across standalone, replica-set, sharded, and load-balanced environments with 0 failures, environment skips, or deferrals; 43 focused conformance/documentation contracts and all 5 package gates passed; capability, ledger, release-scope, v0.10.3 scope, README projection, checklist, and diff validators were current.",
+          "recorded_at": "2026-08-28T14:19:40+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T14:15:57+00:00",
+      "completed_at": "2026-08-28T14:19:41+00:00"
     }
   },
   "verified_references": {

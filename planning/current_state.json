@@ -17,14 +17,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 377,
+    "completed": 378,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 27
+    "pending": 26
   },
   "active": [],
   "ready": [
-    "CON-016",
+    "REL-064",
     "ADV-010",
     "SFP-001"
   ],
@@ -46,7 +46,7 @@
     "v0-10-3-logging-foundation": [],
     "v0-10-4-command-logging": [],
     "v0-10-5-server-selection-logging": [
-      "CON-016"
+      "REL-064"
     ],
     "v0-10-6-topology-pool-logging": [],
     "v0-10-7-client-backpressure": [],
@@ -55,5 +55,5 @@
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "CON-016"
+  "next_ready": "REL-064"
 }
