@@ -80,6 +80,13 @@
     "transactions/tests/unified/backpressure-retryable-writes.json::test[2]": "BP-008",
     "transactions/tests/unified/backpressure-retryable-writes.json::test[3]": "BP-008"
   },
+  "command_conformance": {
+    "cases": 65,
+    "statuses": {
+      "excluded_scope": 2,
+      "passed": 63
+    }
+  },
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,

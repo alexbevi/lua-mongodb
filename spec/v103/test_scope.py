@@ -44,6 +44,20 @@ class V103ScopeTests(unittest.TestCase):
       for identity, requirement in generated["foundation_requirements"].items()
     })
 
+  def test_command_logging_scope_is_closed(self) -> None:
+    generated = scope.generate()
+
+    self.assertEqual(
+      {
+        "cases": 65,
+        "statuses": {
+          "excluded_scope": 2,
+          "passed": 63,
+        },
+      },
+      generated["command_conformance"],
+    )
+
   def test_standardized_cases_have_release_sized_owners(self) -> None:
     generated = scope.generate()
 

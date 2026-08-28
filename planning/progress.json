@@ -10469,6 +10469,28 @@
       "notes": [],
       "started_at": "2026-08-28T00:54:49+00:00",
       "completed_at": "2026-08-28T00:56:25+00:00"
+    },
+    "CON-015": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.v103.test_scope.V103ScopeTests.test_command_logging_scope_is_closed'",
+          "exit_code": 2,
+          "summary": "KeyError for command_conformance because the logging-foundation scope report had no command-suite closure invariant.",
+          "recorded_at": "2026-08-28T01:08:00+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='command-logging-and-monitoring/*'",
+          "exit_code": 0,
+          "summary": "Focused command logging/monitoring execution was conformant: 61 passed on the current environments, 2 mutually exclusive version branches environment-skipped, 0 failed, and 0 deferred. The closure unit, release scope/checklist, README/API/architecture validators, capability/ledger/generated checks, and isolated source-rock package tests also passed.",
+          "recorded_at": "2026-08-28T01:15:39+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T01:06:33+00:00",
+      "completed_at": "2026-08-28T01:15:47+00:00"
     }
   },
   "verified_references": {

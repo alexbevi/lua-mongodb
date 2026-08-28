@@ -785,6 +785,8 @@ def generate() -> dict[str, Any]:
       },
       "v0_10_3_conformance": {
         "classified_requirements": v103_summary["classified"],
+        "command_cases": v103_report["command_conformance"]["cases"],
+        "command_statuses": v103_report["command_conformance"]["statuses"],
         "foundation_requirements": v103_report["evidence"][
           "foundation_requirements"
         ],

@@ -95,6 +95,16 @@ RATCHETS = {
   "supported": 4,
   "unified_cases": 24,
 }
+COMMAND_SUITE = "command-logging-and-monitoring"
+COMMAND_EXCLUSIONS = {
+  "command-logging-and-monitoring/tests/monitoring/find.json::test[5]": (
+    "the server requirement capped at MongoDB 4.4.99 is below the MongoDB 7.0 "
+    "production-core floor"
+  ),
+  "command-logging-and-monitoring/tests/monitoring/redacted-commands.json::test[4]": (
+    "getnonce is capped below MongoDB 7.0 and is outside production-core v1"
+  ),
+}
 
 
 class ScopeError(ValueError):
@@ -180,6 +190,47 @@ def validate_scope_ratchets(report: dict[str, Any]) -> None:
       )
 
 
+def command_conformance(
+  cases: dict[str, dict[str, Any]],
+  activities: dict[str, dict[str, str]],
+) -> dict[str, Any]:
+  command_cases = {
+    identity: case
+    for identity, case in cases.items()
+    if case.get("suite") == COMMAND_SUITE
+  }
+  exclusions = {
+    identity: case.get("reason")
+    for identity, case in command_cases.items()
+    if case.get("status") == "excluded_scope"
+  }
+  if exclusions != COMMAND_EXCLUSIONS:
+    raise ScopeError("command logging scope exclusions changed")
+
+  for identity, case in sorted(command_cases.items()):
+    status = case.get("status")
+    if status not in {"passed", "excluded_scope"}:
+      raise ScopeError(f"command logging case is not closed: {identity}")
+    if status == "passed" and (
+      not case.get("last_execution")
+      or str(case.get("runner", "")).startswith(("none:", "pending:"))
+    ):
+      raise ScopeError(f"command logging case lacks exact evidence: {identity}")
+
+    owner = case.get("activity")
+    if str(owner).startswith("LOG-"):
+      activity = activities.get(owner)
+      if not activity or activity.get("status") != "completed":
+        raise ScopeError(f"command logging owner is incomplete: {identity}")
+
+  return {
+    "cases": len(command_cases),
+    "statuses": dict(sorted(Counter(
+      case["status"] for case in command_cases.values()
+    ).items())),
+  }
+
+
 def classify(
   cases: dict[str, dict[str, Any]],
   requirements: dict[str, dict[str, Any]],
@@ -240,6 +291,7 @@ def classify(
   planned_by_suite = Counter(case["suite"] for case in candidates.values())
   report = {
     "capability_cases": dict(sorted(capability_cases.items())),
+    "command_conformance": command_conformance(cases, activities),
     "evidence": {
       "foundation_requirements": len(foundation),
       "standardized_cases": len(standardized),

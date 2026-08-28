@@ -264,6 +264,11 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(
       {
         "classified_requirements": 234,
+        "command_cases": 65,
+        "command_statuses": {
+          "excluded_scope": 2,
+          "passed": 63,
+        },
         "foundation_requirements": 4,
         "passed_requirements": 4,
         "planned_requirements": 230,
