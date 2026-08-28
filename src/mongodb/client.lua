@@ -675,7 +675,7 @@ local function connect_topology(
     end
 
     monitor_capabilities = hello
-    return hello.document
+    return hello.document, nil, nil, hello.connection_id
   end
 
   local function rtt_check(server_address, fields)

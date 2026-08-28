@@ -249,7 +249,7 @@ local function selected_host_and_port(address)
   return host or address, port and tonumber(port) or nil
 end
 
-local function emit_topology_log(state, message, extra)
+local function emit_topology_log(state, message, extra, options)
   if state.logger == nil then
     return
   end
@@ -264,7 +264,7 @@ local function emit_topology_log(state, message, extra)
       fields[key] = value
     end
 
-    state.logger:emit("topology", "debug", fields)
+    state.logger:emit("topology", "debug", fields, options)
   end)
 end
 
@@ -282,6 +282,24 @@ local function log_server_monitoring(state, message, address)
     serverHost = host,
     serverPort = port,
   })
+end
+
+local function number_value(value)
+  if type(value) == "number" then
+    return value
+  end
+
+  if bson.is_exact(value) then
+    return value:to_number()
+  end
+end
+
+local function log_heartbeat(state, message, address, fields, options)
+  local host, port = selected_host_and_port(address)
+
+  fields.serverHost = host
+  fields.serverPort = port
+  emit_topology_log(state, message, fields, options)
 end
 
 local function selection_succeeded(state, context, selected)
@@ -415,6 +433,8 @@ local function add_server(state, address)
     check_cancellation = nil,
     check_requested = false,
     last_check_at = nil,
+    monitor_connection_id = nil,
+    monitor_server_connection_id = nil,
     pool = created,
     rtt_cancellation = nil,
     rtt_sleep_cancellation = nil,
@@ -427,6 +447,15 @@ local function add_server(state, address)
   publish(state, "ServerOpening", { address = address })
   log_server_monitoring(state, "Starting server monitoring", address)
   return server
+end
+
+local function monitor_connection_id(state, server)
+  if server.monitor_connection_id == nil then
+    server.monitor_connection_id = state.next_monitor_connection_id
+    state.next_monitor_connection_id = state.next_monitor_connection_id + 1
+  end
+
+  return server.monitor_connection_id
 end
 
 
@@ -594,10 +623,20 @@ local function process_check_result(state, address, response, err, fields)
   fields = fields or {}
   local duration = fields.duration or 0
   local awaited = fields.awaited == true
+  local driver_connection_id = fields.driver_connection_id
   local rtt_sample = fields.rtt_sample
   local succeeded = response ~= nil
 
   if response then
+    local server_connection_id = fields.server_connection_id
+      or number_value(response:get("connectionId"))
+
+    if math.type(server_connection_id) == "integer" then
+      server.monitor_server_connection_id = server_connection_id
+    else
+      server_connection_id = nil
+    end
+
     if rtt_sample == nil and not awaited then
       rtt_sample = fields.round_trip_time or duration * 1000
     end
@@ -608,6 +647,13 @@ local function process_check_result(state, address, response, err, fields)
       duration = duration,
       reply = response,
     })
+    log_heartbeat(state, "Server heartbeat succeeded", address, {
+      awaited = awaited,
+      driverConnectionId = driver_connection_id,
+      durationMS = duration * 1000,
+      reply = response,
+      serverConnectionId = server_connection_id,
+    }, { document_fields = { reply = false } })
   else
     if not errors.is(err) then
       err = topology_error("server heartbeat failed", { server = address })
@@ -619,6 +665,15 @@ local function process_check_result(state, address, response, err, fields)
       duration = duration,
       error = err,
     })
+    log_heartbeat(state, "Server heartbeat failed", address, {
+      awaited = awaited,
+      driverConnectionId = driver_connection_id,
+      durationMS = duration * 1000,
+      failure = err,
+      serverConnectionId = server.monitor_server_connection_id,
+    })
+    server.monitor_connection_id = nil
+    server.monitor_server_connection_id = nil
     response = bson.document({})
   end
 
@@ -673,17 +728,24 @@ local function monitor_once(state, address)
     and current.type ~= sdam.SERVER_TYPE.UNKNOWN
     and current.topology_version ~= nil
   local started_at = state.runtime.clock:now()
+  local driver_connection_id = monitor_connection_id(state, server)
 
   publish_heartbeat(state, "ServerHeartbeatStarted", {
     address = address,
     awaited = awaited,
   })
+  log_heartbeat(state, "Server heartbeat started", address, {
+    awaited = awaited,
+    driverConnectionId = driver_connection_id,
+    serverConnectionId = server.monitor_server_connection_id,
+  })
   local check_cancellation = state.runtime.cancellation:new()
 
   server.check_cancellation = check_cancellation
-  local response, check_err, round_trip_time = state.check(address, {
+  local response, check_err, round_trip_time, server_connection_id = state.check(address, {
     awaited = awaited,
     cancellation = check_cancellation,
+    id = driver_connection_id,
     max_await_time_ms = awaited and state.heartbeat_frequency_ms or nil,
     topology_version = awaited and current.topology_version or nil,
   })
@@ -700,8 +762,10 @@ local function monitor_once(state, address)
 
   local processed = process_check_result(state, address, response, check_err, {
     awaited = awaited,
+    driver_connection_id = driver_connection_id,
     duration = duration,
     round_trip_time = round_trip_time,
+    server_connection_id = server_connection_id,
     success = response ~= nil,
     timeout = errors.is(check_err) and check_err:is_timeout(),
   })
@@ -1096,6 +1160,7 @@ function M.new(options)
     listeners = listeners,
     lock = options.runtime.lock:new(),
     min_heartbeat_frequency_ms = min_heartbeat_frequency_ms,
+    next_monitor_connection_id = 1,
     on_listener_error = options.on_listener_error,
     on_server_close = options.on_server_close,
     pool_factory = options.pool_factory or no_op_pool,
@@ -1248,9 +1313,17 @@ function MANAGER_METHODS:process_hello(address, response, options)
     error("hello processing options must be a table", 2)
   end
 
+  local server = state.servers[normalized]
+  local driver_connection_id = monitor_connection_id(state, server)
+
   publish_heartbeat(state, "ServerHeartbeatStarted", {
     address = normalized,
     awaited = options.awaited == true,
+  })
+  log_heartbeat(state, "Server heartbeat started", normalized, {
+    awaited = options.awaited == true,
+    driverConnectionId = driver_connection_id,
+    serverConnectionId = server.monitor_server_connection_id,
   })
   local success = #response > 0
   local heartbeat_err
@@ -1263,6 +1336,7 @@ function MANAGER_METHODS:process_hello(address, response, options)
 
   return process_check_result(state, normalized, success and response or nil, heartbeat_err, {
     awaited = options.awaited == true,
+    driver_connection_id = driver_connection_id,
     duration = options.duration or 0,
     round_trip_time = options.round_trip_time,
     rtt_sample = options.round_trip_time,

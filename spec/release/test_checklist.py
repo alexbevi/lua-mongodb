@@ -41,9 +41,9 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(
       {
         "classified_cases": 898,
-        "excluded_cases": 21,
-        "exact_unified_cases": 370,
-        "passed_cases": 877,
+        "excluded_cases": 15,
+        "exact_unified_cases": 376,
+        "passed_cases": 883,
         "read_write_concern_passed": 48,
         "target_version_exclusions": 6,
       },

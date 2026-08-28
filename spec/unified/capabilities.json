@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2116,
-    "runnable": 2116
+    "passed": 2122,
+    "runnable": 2122
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -73897,7 +73897,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[2]": {
       "activity": "SDAM-010",
       "fingerprint": "090730c7ce572e58ef7318e35a84fa75d29fdb5d80c6abc89abb75a3e9655c20",
-      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73926,12 +73925,11 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-replicaset.json::test[3]": {
       "activity": "SDAM-010",
       "fingerprint": "9b837a18ed79355901edac2b6a9cdee163792ee74f7b1e1f5c797765f30ee05c",
-      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73961,7 +73959,7 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[1]": {
       "activity": "SDAM-009",
@@ -73999,7 +73997,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[2]": {
       "activity": "SDAM-010",
       "fingerprint": "55197a4ac557e2243f5b0b6249e0bfd26b61fed8eda2dd59f7d465fa13ff836f",
-      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -74028,12 +74025,11 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[3]": {
       "activity": "SDAM-010",
       "fingerprint": "62275d9cd13c910ffe2081851bdf5323f498c4ba6342bcb136c5d553c7ffe668",
-      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -74063,7 +74059,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[1]": {
       "activity": "SDAM-009",
@@ -74101,7 +74097,6 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[2]": {
       "activity": "SDAM-010",
       "fingerprint": "9a80b9e3e54a22c9fc968644a7181dca6d8e16de8e358a14063ddd8f665fd2ac",
-      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -74132,12 +74127,11 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[3]": {
       "activity": "SDAM-010",
       "fingerprint": "26d215e764523011228efc718c9c556163187a1cbe1cd0c0de404a1a1cc6bd61",
-      "reason": "heartbeat logging awaits its v0.10.6 slice",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -74167,7 +74161,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/minPoolSize-error.json::test[1]": {
       "activity": "REL-038",

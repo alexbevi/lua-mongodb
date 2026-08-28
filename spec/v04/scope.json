@@ -1,13 +1,12 @@
 {
   "evidence": {
-    "exact_unified_cases": 370,
+    "exact_unified_cases": 376,
     "static_passing_cases": 507
   },
   "excluded_by_activity": {
     "BP-008": 9,
     "BP-009": 5,
-    "LEG-003": 1,
-    "SDAM-010": 6
+    "LEG-003": 1
   },
   "exclusion_reasons": {
     "ADV-006": "load-balanced deployment behavior is outside the v0.4 sharded target",
@@ -110,8 +109,8 @@
       "passed": 21
     },
     "server-discovery-and-monitoring": {
-      "excluded": 11,
-      "passed": 448
+      "excluded": 5,
+      "passed": 454
     },
     "sessions": {
       "passed": 39
@@ -123,10 +122,10 @@
   },
   "summary": {
     "classified": 898,
-    "excluded": 21,
-    "passed": 877,
+    "excluded": 15,
+    "passed": 883,
     "planned": 0,
-    "supported": 877
+    "supported": 883
   },
   "target_owners": [
     "ADV-005",

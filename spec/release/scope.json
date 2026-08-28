@@ -193,17 +193,16 @@
     "CMAP-006": 5,
     "OTEL-002": 9,
     "OTEL-003": 12,
-    "OTEL-004": 3,
-    "SDAM-010": 6
+    "OTEL-004": 3
   },
   "deferred_by_scope": {
-    "additional-exclusion": 937
+    "additional-exclusion": 931
   },
   "schema_version": 1,
   "statuses": {
-    "deferred_unsupported": 937,
+    "deferred_unsupported": 931,
     "excluded_scope": 99,
-    "passed": 4473,
+    "passed": 4479,
     "unsupported": 15
   },
   "total_cases": 5524,

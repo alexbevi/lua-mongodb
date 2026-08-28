@@ -300,10 +300,14 @@ monitoring`, `Stopped topology monitoring`, `Starting server monitoring`, `Stopp
 monitoring`, and `Topology description changed` at `debug`. Every message contains `topologyId`.
 Server-specific messages add `serverHost` and, for TCP addresses, `serverPort`; description-change
 messages add `previousDescription` and `newDescription`. Topology lifecycle logging is available in
-version 0.10.6. Heartbeat and connection messages remain assigned to their later implementation
-slices. Server-selection messages describe the process of
-choosing a server for an application operation; they do not replace command lifecycle messages or
-the independent SDAM monitoring events.
+version 0.10.6. The same component emits `Server heartbeat started`, `Server heartbeat succeeded`,
+and `Server heartbeat failed` at `debug`. These records include `awaited`, `driverConnectionId`, and
+the server address. Completion records add `durationMS`; success adds the relaxed Extended JSON
+`reply` and `serverConnectionId` when known, while failure adds `failure`. Heartbeat logging is
+available in version 0.10.6. Connection messages remain assigned to their later implementation
+slices. Server-selection messages describe the process of choosing a server for an application
+operation; they do not replace command lifecycle messages or the independent SDAM monitoring
+events.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

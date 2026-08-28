@@ -83,7 +83,9 @@ describe("monitored topology", function()
     local logger = assert(logging.new(runtime, {
       levels = { topology = "debug" },
       sink = function(event)
-        observed[#observed + 1] = event
+        if not event.data.message:match("^Server heartbeat") then
+          observed[#observed + 1] = event
+        end
       end,
     }))
     local manager = topology.new({
@@ -125,6 +127,83 @@ describe("monitored topology", function()
     assert.are.equal(27017, observed[5].data.serverPort)
     assert.is_string(observed[2].data.previousDescription)
     assert.is_string(observed[2].data.newDescription)
+  end)
+
+  it("logs successful and failed heartbeats with connection metadata", function()
+    local observed = {}
+    local runtime = fake_runtime.new()
+    local attempts = 0
+    local logger = assert(logging.new(runtime, {
+      levels = { topology = "debug" },
+      sink = function(event)
+        if event.data.message:match("^Server heartbeat") then
+          observed[#observed + 1] = event
+        end
+      end,
+    }))
+    local manager = topology.new({
+      check = function(_, fields)
+        attempts = attempts + 1
+        assert.are.equal(1, fields.id)
+
+        if attempts == 1 then
+          runtime:advance(0.0125)
+          local response = bson.document({
+            { "ok", 1 },
+            { "isWritablePrimary", true },
+            { "maxWireVersion", 25 },
+            { "connectionId", 17 },
+          })
+
+          return response, nil, nil, 17
+        end
+
+        runtime:advance(0.005)
+        return nil, errors.new({
+          category = errors.CATEGORY.NETWORK,
+          message = "monitor connection closed",
+        })
+      end,
+      logger = logger,
+      pool_factory = new_pool,
+      runtime = runtime,
+      seeds = { "standalone:27017" },
+      topology_id = "42",
+      type = "Single",
+    })
+
+    assert(manager:open({ background = false }))
+    assert(manager:check_server("standalone:27017"))
+    assert(manager:check_server("standalone:27017"))
+
+    assert.same({
+      "Server heartbeat started",
+      "Server heartbeat succeeded",
+      "Server heartbeat started",
+      "Server heartbeat failed",
+    }, (function()
+      local messages = {}
+
+      for index, event in ipairs(observed) do
+        messages[index] = event.data.message
+      end
+
+      return messages
+    end)())
+    assert.is_false(observed[1].data.awaited)
+    assert.are.equal(1, observed[1].data.driverConnectionId)
+    assert.are.equal("standalone", observed[1].data.serverHost)
+    assert.are.equal(27017, observed[1].data.serverPort)
+    assert.are.equal("42", observed[1].data.topologyId)
+    assert.near(12.5, observed[2].data.durationMS, 0.000001)
+    assert.are.equal(17, observed[2].data.serverConnectionId)
+    local reply = assert(bson.json.decode(observed[2].data.reply))
+
+    assert.are.equal(1, reply:get("ok"):to_number())
+    assert.are.equal(17, observed[3].data.serverConnectionId)
+    assert.near(5, observed[4].data.durationMS, 0.000001)
+    assert.are.equal(1, observed[4].data.driverConnectionId)
+    assert.matches("monitor connection closed", observed[4].data.failure, 1, true)
   end)
 
   it("publishes discovery changes and readies the server pool", function()

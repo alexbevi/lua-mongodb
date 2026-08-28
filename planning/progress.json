@@ -10722,6 +10722,28 @@
       "reopened_after_commit": "4259d96d9b97b245e16f5f2f9498c8ffdc4cf5cc",
       "started_at": "2026-08-28T17:28:52+00:00",
       "completed_at": "2026-08-28T17:30:31+00:00"
+    },
+    "SDAM-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='--filter=logs.successful.and.failed.heartbeats.with.connection.metadata spec/unit/topology_spec.lua'",
+          "exit_code": 2,
+          "summary": "The defining heartbeat logging contract failed because the monitor check had no driver connection ID and emitted no standardized heartbeat records.",
+          "recorded_at": "2026-08-28T17:47:52+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua'; make test-focus FOCUS_UNIFIED='server-discovery-and-monitoring/tests/unified/logging-*.json::test[[][23]]'; make test-focus FOCUS_PYTHON='spec.unified.test_cli spec.conformance.test_ledger spec.v04.test_scope spec.release.test_scope spec.release.test_checklist planning.tests.test_readme_content'; Lua 5.4 touched-file lint; make test-complexity; all release-scope and generated-artifact --check validators",
+          "exit_code": 0,
+          "summary": "33 topology unit contracts and 188 coupled Python contracts passed; all 6 exact heartbeat logging cases passed with 0 environment skips, 0 deferrals, and 0 failures across standalone, three-member replica-set, and sharded environments. Lua 5.4 lint reported 0 warnings and 0 errors; complexity and all generated capability, ledger, release, historical scope, README, and checklist validators passed.",
+          "recorded_at": "2026-08-28T17:56:29+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T17:45:15+00:00",
+      "completed_at": "2026-08-28T17:56:30+00:00"
     }
   },
   "verified_references": {
