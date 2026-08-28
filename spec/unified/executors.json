@@ -2485,6 +2485,14 @@
       "activity": "LOG-018",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/monitoring/updateMany.json::test[1]": {
+      "activity": "LOG-023",
+      "environment": "live-replicaset"
+    },
+    "command-logging-and-monitoring/tests/monitoring/updateMany.json::test[2]": {
+      "activity": "LOG-023",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/updateOne.json::test[1]": {
       "activity": "LOG-022",
       "environment": "live-replicaset"

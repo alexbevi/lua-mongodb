@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2095,
-    "runnable": 2095
+    "passed": 2097,
+    "runnable": 2097
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -38064,6 +38064,67 @@
         "operations": [
           "find",
           "insertOne"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/updateMany.json::test[1]": {
+      "activity": "LOG-023",
+      "fingerprint": "962e47deb7447f7f9a08ff0e69a9040f3325b3949e899e988d2ca5ca1b1c4070",
+      "requirements": {
+        "arguments": [
+          "updateMany.filter",
+          "updateMany.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateMany"
+        ],
+        "special_operations": [],
+        "topologies": []
+      },
+      "status": "runnable"
+    },
+    "command-logging-and-monitoring/tests/monitoring/updateMany.json::test[2]": {
+      "activity": "LOG-023",
+      "fingerprint": "10fd29f910fc63360c52688a0b6dd872aec79dd5abdd52f9daa2cd877ea68076",
+      "requirements": {
+        "arguments": [
+          "updateMany.filter",
+          "updateMany.update"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [
+          "commandStartedEvent",
+          "commandSucceededEvent"
+        ],
+        "has_outcome": false,
+        "logs": false,
+        "match_operators": [
+          "$$type",
+          "$$unsetOrMatches"
+        ],
+        "operations": [
+          "updateMany"
         ],
         "special_operations": [],
         "topologies": []

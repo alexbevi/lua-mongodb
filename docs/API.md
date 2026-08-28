@@ -227,6 +227,8 @@ collection operation returns its structured write error.
 `update_one` publishes one update specification with single-document semantics. Ordinary, upsert,
 and `writeErrors` replies all produce succeeded events; upsert identifiers and structured write
 errors remain available through the collection operation's existing result contract.
+`update_many` follows the same event and result contract with `multi = true` in its update
+specification.
 
 #### Structured logging configuration
 
