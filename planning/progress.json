@@ -10425,6 +10425,28 @@
       "notes": [],
       "started_at": "2026-08-28T00:29:37+00:00",
       "completed_at": "2026-08-28T00:31:04+00:00"
+    },
+    "LOG-025": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_unacknowledged_client_bulk_monitoring_case_is_runnable'",
+          "exit_code": 2,
+          "summary": "KeyError for the unacknowledged client bulkWrite monitoring case because the fixture was absent from the generated manifest.",
+          "recorded_at": "2026-08-28T00:40:32+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "Lua 5.4 make test-focus FOCUS_UNIT='spec/unit/client_bulk_spec.lua' FOCUS_UNIFIED='command-logging-and-monitoring/tests/monitoring/unacknowledged-client-bulkWrite.json' FOCUS_PYTHON='spec.unified.test_cli.UnifiedCliTests.test_unacknowledged_client_bulk_monitoring_case_is_runnable spec.conformance.test_ledger.ConformanceLedgerTests.test_generated_ledger_covers_required_normative_formats spec.v103.test_scope.V103ScopeTests.test_generated_scope_closes_logging_foundation spec.release.test_scope.ReleaseScopeTests.test_checked_in_scope_has_only_concrete_release_gaps_and_exclusions spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready' FOCUS_LINT='spec/support/mongodb/unified/driver.lua'; make test-complexity; generated artifact validators",
+          "exit_code": 0,
+          "summary": "Client bulk unit tests passed (23/23); the unacknowledged client bulkWrite monitoring case passed live (1 executed, 1 passed, 0 skipped, 0 deferred, 0 failed); five focused Python contracts, touched-file lint, complexity, and all generated artifact validators passed.",
+          "recorded_at": "2026-08-28T00:44:03+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T00:40:13+00:00",
+      "completed_at": "2026-08-28T00:44:04+00:00"
     }
   },
   "verified_references": {

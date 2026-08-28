@@ -233,6 +233,8 @@ A mixed collection `bulk_write` publishes one correlated lifecycle for each emit
 in execution order. Batching and result aggregation are unchanged by observation.
 For an unacknowledged collection bulk, the driver publishes a synthetic succeeded event after the
 no-response write. Its reply contains `ok = 1` and does not fabricate an affected-document count.
+An unacknowledged client `bulk_write` follows the same rule for its `bulkWrite` command. Its result
+exposes `acknowledged = false`; count and verbose-result fields remain absent.
 
 #### Structured logging configuration
 

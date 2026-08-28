@@ -2748,6 +2748,10 @@ local function bulk_result(value)
 end
 
 local function client_bulk_result(value)
+  if not value.acknowledged then
+    return bson.document({ { "acknowledged", false } })
+  end
+
   local entries = {
     { "acknowledged", value.acknowledged },
     { "deletedCount", value.deleted_count },

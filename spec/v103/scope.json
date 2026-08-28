@@ -47,6 +47,7 @@
     "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[1]": "LOG-006",
     "command-logging-and-monitoring/tests/monitoring/insertOne.json::test[2]": "LOG-006",
     "command-logging-and-monitoring/tests/monitoring/server-connection-id.json::test[1]": "LOG-018",
+    "command-logging-and-monitoring/tests/monitoring/unacknowledged-client-bulkWrite.json::test[1]": "LOG-025",
     "command-logging-and-monitoring/tests/monitoring/unacknowledgedBulkWrite.json::test[1]": "LOG-024",
     "command-logging-and-monitoring/tests/monitoring/updateMany.json::test[1]": "LOG-023",
     "command-logging-and-monitoring/tests/monitoring/updateMany.json::test[2]": "LOG-023",
@@ -81,7 +82,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 77
+    "unified_cases": 78
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {

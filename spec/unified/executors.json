@@ -2489,6 +2489,10 @@
       "activity": "LOG-018",
       "environment": "live-replicaset"
     },
+    "command-logging-and-monitoring/tests/monitoring/unacknowledged-client-bulkWrite.json::test[1]": {
+      "activity": "LOG-025",
+      "environment": "live-replicaset"
+    },
     "command-logging-and-monitoring/tests/monitoring/unacknowledgedBulkWrite.json::test[1]": {
       "activity": "LOG-024",
       "environment": "live-replicaset"
