@@ -192,6 +192,7 @@ describe("monitored topology", function()
       { "maxWireVersion", 25 },
     }), { duration = 0.01 }))
     local selected, selected_pool = manager:select_server("write", nil, {
+      operation_id = 700,
       operation_name = "insert",
       timeout_ms = 0,
     })
@@ -202,6 +203,8 @@ describe("monitored topology", function()
     assert.are.equal("Server selection started", observed[1].data.message)
     assert.are.equal("Server selection succeeded", observed[2].data.message)
     assert.are.equal("insert", observed[1].data.operation)
+    assert.are.equal(700, observed[1].data.operationId)
+    assert.are.equal(700, observed[2].data.operationId)
     assert.are.equal("standalone", observed[2].data.serverHost)
     assert.are.equal(27017, observed[2].data.serverPort)
     assert(manager:close())

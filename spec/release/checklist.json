@@ -261,10 +261,10 @@
       "CON-009"
     ],
     "conformance": {
-      "additional_exclusions": 1044,
+      "additional_exclusions": 1040,
       "applicable_gaps": 0,
       "classified_cases": 5524,
-      "passed_cases": 4465,
+      "passed_cases": 4469,
       "unsupported_cases": 15
     },
     "maintenance": {
@@ -302,7 +302,7 @@
       "passed_requirements": 4,
       "planned_requirements": 230,
       "standardized_cases": 230,
-      "unified_cases": 86
+      "unified_cases": 90
     },
     "v0_10_4_conformance": {
       "command_cases": 65,

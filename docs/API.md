@@ -292,9 +292,11 @@ available` once per selection attempt at `info`. Every message contains `selecto
 and `topologyDescription`. A success adds `serverHost` and, for TCP addresses, `serverPort`.
 A waiting message adds the integer `remainingTimeMS`, and a failure adds `failure`. The operation
 is the MongoDB command name for application commands. Internal capability handshakes do not emit
-selection messages. Server-selection lifecycle logging is available in version 0.10.5;
-operation-ID correlation is added by its separate correlation contract. Topology and connection
-messages are enabled only by their component-specific implementation slices.
+selection messages. When an operation owns a logical operation ID, every selection message uses
+that value as `operationId`; the corresponding command logs use the same value, including across
+retry attempts and multi-command bulk operations. Server-selection lifecycle logging and operation
+correlation are available in version 0.10.5. Topology and connection messages are enabled only by
+their component-specific implementation slices.
 
 Command logs replace command and reply documents with `{}` for `authenticate`, `saslStart`,
 `saslContinue`, `getnonce`, `createUser`, `updateUser`, `copydbgetnonce`, `copydbsaslstart`, and

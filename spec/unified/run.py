@@ -434,6 +434,7 @@ def discover_fixtures(source: Path, includes: list[str] | None = None) -> list[s
     }
     is_server_selection_logging_fixture = relative.as_posix() in {
       "server-selection/tests/logging/load-balanced.json",
+      "server-selection/tests/logging/operation-id.json",
       "server-selection/tests/logging/replica-set.json",
       "server-selection/tests/logging/sharded.json",
       "server-selection/tests/logging/standalone.json",

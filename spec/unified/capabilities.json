@@ -1,8 +1,8 @@
 {
   "ratchets": {
     "classified": 1940,
-    "passed": 2108,
-    "runnable": 2108
+    "passed": 2112,
+    "runnable": 2112
   },
   "schema_version": 2,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
@@ -74817,6 +74817,144 @@
         ],
         "topologies": [
           "load-balanced"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/operation-id.json::test[1]": {
+      "activity": "SEL-003",
+      "fingerprint": "c4281c9e49d1342af22ddad32fdafef85567353b990edf897fadd684c4b5d539",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.requests",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/operation-id.json::test[2]": {
+      "activity": "SEL-003",
+      "fingerprint": "a813a2f8c6b5a78c001abc43e8ddf7aa0b526eedb1dd602b9397df4b158ce179",
+      "requirements": {
+        "arguments": [
+          "bulkWrite.requests",
+          "failPoint.client",
+          "failPoint.failPoint",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "bulkWrite"
+        ],
+        "special_operations": [
+          "failPoint",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/operation-id.json::test[3]": {
+      "activity": "SEL-003",
+      "fingerprint": "87f9ef9ecde2ad73e4e7c68e86ba89e4929bcf6322efbe5ee7b2b7339053fd78",
+      "requirements": {
+        "arguments": [
+          "clientBulkWrite.models",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "clientBulkWrite"
+        ],
+        "special_operations": [
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
+        ]
+      },
+      "status": "runnable"
+    },
+    "server-selection/tests/logging/operation-id.json::test[4]": {
+      "activity": "SEL-003",
+      "fingerprint": "02913254678807fb57b7117f0f5a8d02e8b9aba639d0d74a60b778849d2b90d4",
+      "requirements": {
+        "arguments": [
+          "clientBulkWrite.models",
+          "failPoint.client",
+          "failPoint.failPoint",
+          "waitForEvent.client",
+          "waitForEvent.count",
+          "waitForEvent.event"
+        ],
+        "entities": [
+          "client",
+          "collection",
+          "database"
+        ],
+        "events": [],
+        "has_outcome": false,
+        "logs": true,
+        "match_operators": [
+          "$$type"
+        ],
+        "operations": [
+          "clientBulkWrite"
+        ],
+        "special_operations": [
+          "failPoint",
+          "waitForEvent"
+        ],
+        "topologies": [
+          "single"
         ]
       },
       "status": "runnable"

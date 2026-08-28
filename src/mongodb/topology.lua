@@ -212,6 +212,7 @@ local function selection_log_context(operation, preference, options)
 
   return {
     operation = options.operation_name or operation,
+    operation_id = options.operation_id,
     selector = ok and selector or "unrepresentable selector",
   }
 end
@@ -225,6 +226,7 @@ local function emit_selection_log(state, context, level, message, extra)
     local fields = {
       message = message,
       operation = context.operation,
+      operationId = context.operation_id,
       selector = context.selector,
       topologyDescription = topology_summary(state.description),
     }

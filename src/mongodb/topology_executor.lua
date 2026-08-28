@@ -222,6 +222,7 @@ local function select_connection(state, operation, options, operation_name)
       deadline = deadline,
       deprioritized_servers = options and options.deprioritized_servers,
       local_threshold_ms = state.local_threshold_ms,
+      operation_id = options and options.operation_id,
       operation_name = operation_name or operation,
       server_address = options and options.server_address,
       timeout_ms = state.server_selection_timeout_ms,

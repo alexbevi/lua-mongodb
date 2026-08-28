@@ -10566,6 +10566,28 @@
       "notes": [],
       "started_at": "2026-08-28T13:14:22+00:00",
       "completed_at": "2026-08-28T13:33:36+00:00"
+    },
+    "SEL-003": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIFIED='server-selection/tests/logging/operation-id.json'",
+          "exit_code": 1,
+          "summary": "The runnable successful collection bulk case executed and failed because server-selection messages lacked operationId; 1 executed, 0 passed, 0 environment-skipped, 3 deferred, and 1 failed.",
+          "recorded_at": "2026-08-28T13:51:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/topology_spec.lua spec/unit/operation_id_spec.lua spec/unit/retry_executor_spec.lua spec/unit/command_monitoring_spec.lua'; make test-focus for both exact operation-ID unified fixtures; focused artifact contracts; touched-file lint; architecture and generated validators",
+          "exit_code": 0,
+          "summary": "50 directly coupled unit cases passed; all 4 server-selection and both 2 command operation-ID cases passed with 0 skips, deferrals, or failures; 191 unified/artifact/documentation contracts passed after exact ratchet updates; touched-file lint, architecture, capability, ledger, release-scope, v0.10, v0.10.3, README projection, checklist, and diff validators passed. The slice adds no control-flow branch; exact predecessor CI reports the unchanged two-hotspot complexity baseline current on both Lua 5.4.9 lanes.",
+          "recorded_at": "2026-08-28T14:00:44+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T13:50:31+00:00",
+      "completed_at": "2026-08-28T14:00:44+00:00"
     }
   },
   "verified_references": {

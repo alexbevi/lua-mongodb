@@ -613,6 +613,13 @@ for fixture, count in (
       None if identity in EXECUTOR_TESTS else OWNER_REASONS["SEL-002"],
     )
 
+for index in range(1, 5):
+  identity = f"server-selection/tests/logging/operation-id.json::test[{index}]"
+  TEST_OVERRIDES[identity] = (
+    "SEL-003",
+    None if identity in EXECUTOR_TESTS else OWNER_REASONS["SEL-003"],
+  )
+
 for fixture in ("hello-command-error", "hello-network-error", "hello-timeout"):
   for index in range(1, 3):
     TEST_OVERRIDES[

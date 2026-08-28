@@ -71,6 +71,10 @@
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[2]": "SDAM-010",
     "server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[3]": "SDAM-010",
     "server-selection/tests/logging/load-balanced.json::test[1]": "SEL-002",
+    "server-selection/tests/logging/operation-id.json::test[1]": "SEL-003",
+    "server-selection/tests/logging/operation-id.json::test[2]": "SEL-003",
+    "server-selection/tests/logging/operation-id.json::test[3]": "SEL-003",
+    "server-selection/tests/logging/operation-id.json::test[4]": "SEL-003",
     "server-selection/tests/logging/replica-set.json::test[1]": "SEL-002",
     "server-selection/tests/logging/replica-set.json::test[2]": "SEL-002",
     "server-selection/tests/logging/sharded.json::test[1]": "SEL-002",
@@ -97,7 +101,7 @@
   "evidence": {
     "foundation_requirements": 4,
     "standardized_cases": 230,
-    "unified_cases": 86
+    "unified_cases": 90
   },
   "foundation_requirements": {
     "logging/logging.md::configuration": {
