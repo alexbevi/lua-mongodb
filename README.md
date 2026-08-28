@@ -1,8 +1,8 @@
 # MongoDB Lua driver
 
-A coroutine-aware MongoDB driver written in Lua without binding or wrapping `libmongoc`. It supports Lua 5.4 and Lua 5.5, standalone servers, [replica sets](https://www.mongodb.com/docs/manual/replication/), [sharded clusters](https://www.mongodb.com/docs/manual/sharding/), and load-balanced deployments. The implementation follows the [MongoDB driver specifications](https://github.com/mongodb/specifications), with a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) checkout as its behavioral reference.
+A coroutine-aware MongoDB driver written in Lua without binding or wrapping `libmongoc`. It supports Lua 5.4 and Lua 5.5, standalone servers, [replica sets](https://www.mongodb.com/docs/manual/replication/), [sharded clusters](https://www.mongodb.com/docs/manual/sharding/), and load-balanced deployments. The [MongoDB driver specifications](https://github.com/mongodb/specifications) define its behavior, with a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) checkout as a reference.
 
-MongoDB specifications are normative. Architecture decisions live in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), the reproducible implementation method lives in [`planning/strategy.md`](planning/strategy.md), and the executable roadmap lives in [`planning/plan.json`](planning/plan.json).
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for design decisions, [`planning/strategy.md`](planning/strategy.md) for the implementation method, and [`planning/plan.json`](planning/plan.json) for the roadmap.
 
 Report potential vulnerabilities privately through the repository's [security policy](SECURITY.md).
 Development setup and review expectations are in the [contribution guide](CONTRIBUTING.md).
@@ -14,7 +14,7 @@ Development setup and review expectations are in the [contribution guide](CONTRI
 - [LuaSocket](https://lunarmodules.github.io/luasocket/) 3.1 or later, before 4.0.
 - [LuaSec](https://github.com/lunarmodules/luasec) 1.3.x.
 - `getpid` 0.1.0, `sha1` 0.5, `md5` 1.3, `lua-cryptorandom` 0.0.6, and `lua-zlib` 1.4 or compatible releases.
-- Optional Snappy and Zstandard wire compression use `lua-csnappy` 0.1.5 and `lua-zstd` 0.2 or compatible releases; `lua-zstd` also requires the Zstandard library and development headers.
+- Optional Snappy and Zstandard compression use `lua-csnappy` 0.1.5 and `lua-zstd` 0.2 or compatible releases. `lua-zstd` also needs the Zstandard library and development headers.
 - OpenSSL libraries and development headers required by the TLS dependency and by `lua-cryptorandom` on supported Unix-like platforms.
 
 LuaRocks resolves the Lua dependencies declared by the rockspec. MongoDB Server is not a build dependency.
@@ -28,12 +28,7 @@ luarocks install lua-zstd
 
 ## Platform support
 
-The release rock and default Copas runtime are verified on Linux and macOS. Windows and other
-untested operating systems are not supported. The pure-Lua driver core still reaches clocks,
-networking, TLS, entropy, and other platform services through the runtime boundary. A custom
-runtime adapter is an extension point, not a platform support claim. A new operating system
-becomes supported only after its dependencies, package installation, runtime behavior, and
-network integration are covered by recurring project CI.
+The release rock and default Copas runtime are verified on Linux and macOS. Windows and other untested operating systems are not supported. Platform services such as clocks, networking, TLS, and entropy stay behind the runtime adapter. A custom runtime adapter is an extension point, not a platform support claim. Supporting another operating system requires recurring package and network CI.
 
 ## Building and installing
 
@@ -49,17 +44,15 @@ From a source checkout, build and install the checked-in rockspec with:
 luarocks make
 ```
 
-`make test-package` builds a source rock from the current checkout, installs it into an isolated LuaRocks tree, verifies that every production module is packaged, and exercises the documented public API without workspace module paths.
+`make test-package` builds a source rock, installs it in an isolated LuaRocks tree, and checks its modules and public API without workspace paths.
 
 Release rockspecs are built and verified from immutable release tags before publication.
 
-The [API reference and stability policy](docs/API.md) identifies supported public and
-runtime-extension entry points. Modules installed as implementation dependencies are not public
-merely because they can be loaded with `require`.
+The [API reference and stability policy](docs/API.md) lists supported public and runtime-extension entry points. Packaged internal modules are not public API.
 
 ## Getting started
 
-The driver runs network operations through a coroutine-aware runtime. For standalone programs, `mongodb.run` starts the default Copas scheduler and runs the application callback inside it. Applications that already own a Copas loop may create clients directly inside that loop instead. The examples use `assert` for brevity; production applications should handle the structured error returned as the second result of a failed operation.
+Network operations run inside a coroutine-aware runtime. In a standalone program, `mongodb.run` owns the default Copas loop and invokes the application callback. An application with its own Copas loop can create clients inside that loop. Run the shorter constructor examples in one of these loops. The examples use `assert` for brevity; production code should handle the structured error returned as the second result of a failed operation.
 
 ### Connecting
 
@@ -81,11 +74,11 @@ mongodb.run(function()
 end)
 ```
 
-Set the optional handshake application name with the URI `appName` option or the idiomatic `app_name` client option. Names are limited to 128 bytes. The driver sends that name with its fixed driver identity and runtime OS/platform facts only in the initial handshake on each newly established socket.
+Set the handshake application name with the URI `appName` option or the `app_name` client option. Names can be up to 128 bytes and appear only in the initial handshake on each new socket.
 
-For a DNS seedlist, use a `mongodb+srv` URI. Before opening a MongoDB socket, the driver resolves the URI hostname's SRV records and optional TXT defaults, validates every returned hostname against the URI's parent domain, and enables TLS unless the URI explicitly sets `tls=false` (or its `ssl` alias). Unknown and sharded topologies continue polling SRV records at the DNS TTL cadence, with a 60-second minimum, so mongos additions and removals do not require a client restart.
+For a DNS seedlist, use a `mongodb+srv` URI. The driver resolves SRV records and optional TXT defaults, rejects hostnames outside the URI's parent domain, and enables TLS unless the URI sets `tls=false` or `ssl=false`. Unknown and sharded topologies poll SRV records at the DNS TTL, with a 60-second minimum.
 
-An ordinary one-seed URI may also point to mongos. The client discovers the sharded topology and executes ordinary and cursor commands through the monitored mongos pool.
+A one-seed URI may also point to mongos. The client discovers and monitors the sharded topology.
 
 Set `loadBalanced=true` when connecting to a load-balanced endpoint. The client then uses a service-aware pool and keeps cursor and [transaction](https://www.mongodb.com/docs/manual/core/transactions/) connections pinned when required.
 
@@ -105,7 +98,7 @@ mongodb.run(function()
 end)
 ```
 
-Wire compression is opt-in and negotiated independently on every connection. Enable Zstandard, Snappy, or zlib with the `compressors` option; when several compressors are listed, their order defines client preference. Zstandard and Snappy are advertised only when their optional providers are installed, and an unavailable configured provider is reported in `client.warnings`. `zlibCompressionLevel` accepts `-1` (the default) through `9`. A server with no common compressor remains usable without compression, while handshake, [authentication](https://www.mongodb.com/docs/manual/core/authentication/), and user-management commands always remain uncompressed.
+Wire compression is opt-in and negotiated per connection. List Zstandard, Snappy, or zlib in preference order with `compressors`. The driver advertises Zstandard and Snappy only when their providers are installed and reports missing providers in `client.warnings`. `zlibCompressionLevel` accepts `-1` through `9`. A connection with no common compressor remains usable; handshake, [authentication](https://www.mongodb.com/docs/manual/core/authentication/), and user-management commands stay uncompressed.
 
 ```lua
 local client = assert(mongodb.client(
@@ -115,9 +108,9 @@ local client = assert(mongodb.client(
 
 #### Authentication
 
-Select an authentication mechanism with standard MongoDB URI options. Credentials and tokens are kept out of structured errors, and runtime-backed mechanisms resolve workload credentials when a connection authenticates.
+Select an authentication mechanism with MongoDB URI options. Structured errors redact credentials and tokens. Workload mechanisms resolve credentials when a connection authenticates.
 
-**SCRAM.** A username and password use SCRAM automatically: the driver negotiates SCRAM-SHA-256 when the server supports it and otherwise falls back to SCRAM-SHA-1. Use `authMechanism` to require a specific version, and percent-encode reserved characters in credentials.
+**SCRAM.** A username and password select SCRAM automatically. The driver prefers SCRAM-SHA-256 and falls back to SCRAM-SHA-1. Set `authMechanism` to require one version, and percent-encode reserved characters in credentials.
 
 ```lua
 local client = assert(mongodb.client(
@@ -138,7 +131,7 @@ local client = assert(mongodb.client(
 ))
 ```
 
-**OIDC.** `MONGODB-OIDC` supports the `azure`, `gcp`, and `k8s` built-in environments, as well as programmatic machine and human callbacks. This Kubernetes example reads the service-account token through the runtime adapter.
+**OIDC.** `MONGODB-OIDC` has built-in `azure`, `gcp`, and `k8s` environments plus programmatic machine and human callbacks. This Kubernetes example reads the service-account token through the runtime adapter.
 
 ```lua
 local client = assert(mongodb.client(
@@ -147,9 +140,9 @@ local client = assert(mongodb.client(
 ))
 ```
 
-For callback-based OIDC, configure exactly one function-valued `OIDC_CALLBACK` or `OIDC_HUMAN_CALLBACK` in the programmatic `auth_mechanism_properties` table. `ALLOWED_HOSTS` is accepted only with a human callback; when omitted, it defaults to the MongoDB service domains and local loopback hosts required by the authentication specification. Azure and GCP environments require `TOKEN_RESOURCE`.
+For callback-based OIDC, set one function-valued `OIDC_CALLBACK` or `OIDC_HUMAN_CALLBACK` in `auth_mechanism_properties`. `ALLOWED_HOSTS` works only with a human callback and otherwise defaults to the MongoDB service domains and local loopback hosts. Azure and GCP require `TOKEN_RESOURCE`.
 
-**MONGODB-AWS.** Select `MONGODB-AWS` without embedding credentials in the URI. At authentication time the driver checks `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and optional `AWS_SESSION_TOKEN` first; without them, it uses configured web-identity or ECS credentials, then EC2 metadata.
+**MONGODB-AWS.** Select `MONGODB-AWS` without putting credentials in the URI. The driver checks `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and optional `AWS_SESSION_TOKEN`, followed by web identity, ECS credentials, and EC2 metadata.
 
 ```lua
 local client = assert(mongodb.client(
@@ -157,7 +150,7 @@ local client = assert(mongodb.client(
 ))
 ```
 
-**GSSAPI.** Live authentication is verified with Lua 5.4 on Ubuntu 24.04. The default runtime can load the operating system's GSSAPI library on Linux and macOS, but macOS and Lua 5.5 remain unclaimed until they have recurring live profiles. Omit the password to use the current Kerberos ticket cache. Password credentials are accepted only when the installed library reports that capability. Each application connection owns its GSSAPI context, including during concurrent authentication.
+**GSSAPI.** Live authentication is verified with Lua 5.4 on Ubuntu 24.04. The default runtime loads the operating system's GSSAPI library on Linux or macOS when available, but macOS and Lua 5.5 do not yet have recurring live authentication coverage. Omit the password to use the Kerberos ticket cache. Password credentials require support from the installed library. Each connection owns its GSSAPI context.
 
 ```lua
 local client = assert(mongodb.client(
@@ -167,7 +160,7 @@ local client = assert(mongodb.client(
 ))
 ```
 
-For an LDAP-compatible deployment, select SASL PLAIN explicitly. Its authentication source defaults to the URI database, or `$external` when the URI has no database. Because PLAIN sends the password inside the TLS-protected SASL exchange, enable and validate TLS in production:
+For an LDAP-compatible deployment, select SASL PLAIN. Its authentication source defaults to the URI database, or `$external` when the URI has no database. PLAIN relies on TLS to protect the password, so enable and validate TLS in production:
 
 ```lua
 local client = assert(mongodb.client(
@@ -178,7 +171,7 @@ local client = assert(mongodb.client(
 
 ### URI options
 
-URI option names use the standard MongoDB spelling and are case-insensitive. When the same setting is supplied in the client options table, the idiomatic `snake_case` client option takes precedence over the URI. The driver accepts these URI options:
+URI option names use MongoDB spelling and are case-insensitive. A `snake_case` client option overrides the same URI setting. The driver accepts:
 
 | Area | URI options |
 | --- | --- |
@@ -195,23 +188,15 @@ URI option names use the standard MongoDB spelling and are case-insensitive. Whe
 >
 > SOCKS5 proxy transport is not supported. The `proxyHost`, `proxyPort`, `proxyUsername`, and `proxyPassword` options are unavailable.
 
-`serverMonitoringMode=auto` uses streaming monitoring except in a detected FaaS environment, where it uses polling. `stream` requests streaming on servers that support awaitable hello and falls back to polling on older servers; `poll` always waits `heartbeatFrequencyMS` after a successful check.
+`serverMonitoringMode=auto` uses streaming except in a detected FaaS environment. `stream` falls back to polling when a server lacks awaitable hello support. `poll` waits `heartbeatFrequencyMS` after each successful check.
 
-For `mongodb+srv`, `srvServiceName` changes the service label queried in `_service._tcp.hostname` and defaults to `mongodb`. `srvMaxHosts=0` (the default) keeps every valid SRV result; a positive value selects at most that many results and cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may provide at most one TXT record containing only `authSource`, `replicaSet`, or `loadBalanced`; explicit URI or client options override those TXT defaults.
+For `mongodb+srv`, `srvServiceName` sets the `_service._tcp.hostname` service label and defaults to `mongodb`. `srvMaxHosts=0` keeps every valid SRV result. A positive limit cannot be combined with `replicaSet` or `loadBalanced=true`. DNS may supply one TXT record containing `authSource`, `replicaSet`, or `loadBalanced`; URI and client options override it.
 
 ### Structured logging
 
-Logging is off by default. Enable a minimum severity for every component with
-`MONGODB_LOG_ALL`, or set `MONGODB_LOG_COMMAND`, `MONGODB_LOG_CONNECTION`,
-`MONGODB_LOG_SERVER_SELECTION`, and `MONGODB_LOG_TOPOLOGY` independently. Accepted levels,
-from most to least severe, are `emergency`, `alert`, `critical`, `error`, `warn`, `notice`,
-`info`, `debug`, and `trace`; `off` disables a component. `MONGODB_LOG_PATH` accepts `stdout`
-or `stderr`, and `MONGODB_LOG_MAX_DOCUMENT_LENGTH` defaults to 1000. Invalid environment
-values are ignored without preventing client construction.
+Logging is off by default. Set a minimum severity with `MONGODB_LOG_ALL` or configure `MONGODB_LOG_COMMAND`, `MONGODB_LOG_CONNECTION`, `MONGODB_LOG_SERVER_SELECTION`, and `MONGODB_LOG_TOPOLOGY` separately. Levels are `emergency`, `alert`, `critical`, `error`, `warn`, `notice`, `info`, `debug`, and `trace`; `off` disables a component. `MONGODB_LOG_PATH` accepts `stdout` or `stderr`, and `MONGODB_LOG_MAX_DOCUMENT_LENGTH` defaults to 1000. Invalid environment values are ignored.
 
-The client `logging` option provides the same controls with `levels`, `destination`, and
-`max_document_length`. It can also accept a `sink` callback instead of a destination.
-Programmatic values take precedence over environment values:
+The client `logging` table accepts `levels`, `destination`, and `max_document_length`, or a `sink` callback in place of a destination. Programmatic values override environment values:
 
 ```lua
 local client = assert(mongodb.client("mongodb://localhost:27017/app", {
@@ -223,24 +208,11 @@ local client = assert(mongodb.client("mongodb://localhost:27017/app", {
 }))
 ```
 
-The configuration, sink, and structured event envelope are available independently of component
-emission. Command, server-selection, topology, and connection messages are introduced by their
-component-specific releases.
-
-An application that wants the standard environment variable to override its own default can
-read it before constructing the client:
-
-```lua
-local client = assert(mongodb.client("mongodb://localhost:27017/app", {
-  logging = {
-    levels = { all = os.getenv("MONGODB_LOG_ALL") or "warn" },
-  },
-}))
-```
+The `command` component emits start, success, and failure messages at `debug` and redacts sensitive command documents. The `connection`, `server_selection`, and `topology` settings are accepted but do not emit messages yet.
 
 ### CRUD operations
 
-The following examples of [CRUD operations](https://www.mongodb.com/docs/manual/crud/) assume they run inside the `mongodb.run` callback above, before `client:close()`. [MongoDB documents](https://www.mongodb.com/docs/manual/core/document/) are represented by ordered [BSON values](https://www.mongodb.com/docs/manual/reference/bson-types/). Collection methods return immutable result values with counts and generated identifiers. A cursor can be consumed with `:iter()` and closes automatically when exhausted.
+These [CRUD](https://www.mongodb.com/docs/manual/crud/) examples run inside the earlier `mongodb.run` callback, before `client:close()`. [MongoDB documents](https://www.mongodb.com/docs/manual/core/document/) use ordered [BSON values](https://www.mongodb.com/docs/manual/reference/bson-types/). Collection methods return immutable results. `cursor:iter()` closes an exhausted cursor but cannot report iteration errors; use `cursor:next()` when errors matter.
 
 ```lua
 local doc = mongodb.bson.document
@@ -271,18 +243,14 @@ for matching_user in cursor:iter() do
 end
 ```
 
-For a capped collection, pass `cursor_type = "tailable"` to `find`, or use
-`cursor_type = "tailable_await"` to let the server wait for new data before
-returning an empty batch. Each `next()` call checks at most one server batch,
-so an empty live batch returns `nil` without closing the cursor and the
-application can poll again later. Set `max_await_time_ms` to bound each server
-wait; when `timeout_ms` is also positive, the maximum await time must be lower
-than that client timeout:
+For a capped collection, set `cursor_type = "tailable"`, or use `tailable_await` to let the server wait for data. Each `next()` checks at most one batch. An empty live batch returns `nil` without closing the cursor. `max_await_time_ms` bounds each server wait and must be lower than a positive `timeout_ms`:
 
 ```lua
 local events = client:database("app"):collection("events")
 local cursor = assert(events:find(nil, { cursor_type = "tailable" }))
-local event = cursor:next()
+local event, err = cursor:next()
+
+assert(not err, err)
 
 if event then
   print(event)
@@ -291,7 +259,7 @@ end
 assert(cursor:close())
 ```
 
-For reporting reads, `aggregate` accepts an ordered BSON array of [aggregation pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/) stages and returns the same cursor type as `find`. This pipeline filters active users, groups them by team, and orders the busiest teams first:
+`aggregate` accepts an ordered BSON array of [pipeline](https://www.mongodb.com/docs/manual/core/aggregation-pipeline/) stages and returns a cursor. This pipeline counts active users by team:
 
 ```lua
 local active_users_by_team = assert(users:aggregate(mongodb.bson.array({
@@ -308,24 +276,13 @@ for team in active_users_by_team:iter() do
 end
 ```
 
-Database-level pipelines use `database:aggregate` and return the same cursor type. For example, an administrative pipeline can enumerate one local session without naming a collection:
+Use `database:aggregate` for pipelines that do not target one collection.
 
-```lua
-local sessions = assert(client:database("admin"):aggregate(mongodb.bson.array({
-  doc({ { "$listLocalSessions", doc({}) } }),
-  doc({ { "$limit", 1 } }),
-})))
+Use `collection:count_documents` for an exact query count and `collection:estimated_document_count` for a metadata estimate. The compatibility-only `collection:count` method sends the legacy command and can be inaccurate during sharded migrations.
 
-for session_document in sessions:iter() do
-  print(session_document)
-end
-```
+The compatibility-only `collection:map_reduce` accepts JavaScript strings or `mongodb.bson.code` values. Prefer aggregation pipelines in new code.
 
-For counts, prefer `collection:count_documents(filter, options)` for an exact query count or `collection:estimated_document_count(options)` for a fast metadata estimate. The deprecated `collection:count(filter, options)` method remains available for compatibility and sends the legacy `count` command directly; its result can be inaccurate on a sharded cluster while orphaned documents or chunk migrations are present.
-
-The deprecated `collection:map_reduce(map, reduce, out, options)` helper accepts JavaScript strings or `mongodb.bson.code` values. An inline output document such as `doc({ { "inline", 1 } })` returns the result documents as a BSON array; output-producing forms return the server's result collection name or document. Prefer aggregation pipelines for new applications.
-
-Once the example work is complete, delete the inserted document using its generated identifier:
+Delete the inserted document by its generated identifier:
 
 ```lua
 local deleted = assert(users:delete_one(
@@ -336,7 +293,7 @@ print(deleted.deleted_count)
 
 ### Change streams
 
-On a replica set or sharded deployment, `collection:watch` opens a [change stream](https://www.mongodb.com/docs/manual/changeStreams/) for one collection, `database:watch` observes every collection in that database, and `client:watch` observes every database in the cluster. Their pipeline is appended after the required `$changeStream` stage. Stage options use `snake_case`, while batch size, collation, comments, maximum await time, and sessions follow the corresponding aggregate and cursor options. `database:create_collection` and `database:modify_collection` accept the ordered `change_stream_pre_and_post_images` document supported by MongoDB 6.0 and later. `collection:rename` accepts a destination name plus optional `drop_target`, `comment`, and `session`, and applies the collection's inherited write concern. The returned stream yields change-event documents and owns its server cursor, so close it when iteration stops early. `next()` waits across empty live batches; `try_next()` performs at most one `getMore` and returns `nil` when that batch is empty so an application can cooperatively do other work. `timeout_ms` limits stream establishment and each iteration separately; one iteration budget covers both `getMore` and any resume attempt. A positive timeout requires a lower `max_await_time_ms`, which is further bounded by the remaining timeout budget. A timed-out stream remains usable, and its next iteration attempts to resume it. `resume_token()` returns the immutable token the driver would use to resume after the latest returned document or empty batch. A resumable iteration failure recreates the stream once, preserving `start_after` until the first event and otherwise using the cached token or qualifying `start_at_operation_time`; terminal errors and a failed recreation are returned directly.
+On a replica set or sharded deployment, `collection:watch` opens a [change stream](https://www.mongodb.com/docs/manual/changeStreams/) for one collection. `database:watch` covers a database, and `client:watch` covers the cluster. `next()` waits across empty batches, while `try_next()` checks once and may return `nil` on a live stream. `timeout_ms` applies separately to opening and each iteration, and `max_await_time_ms` must be lower than a positive timeout. The driver attempts one resume after a resumable read failure. Close a stream when iteration stops early.
 
 ```lua
 local events = assert(users:watch(mongodb.bson.array({
@@ -358,16 +315,11 @@ assert(database_events:close())
 
 local cluster_events = assert(client:watch())
 assert(cluster_events:close())
-
-assert(users:rename("archived_users", {
-  comment = "archive users",
-  drop_target = true,
-}))
 ```
 
 ### Bulk operations
 
-[Bulk writes](https://www.mongodb.com/docs/manual/core/bulk-write-operations/) combine insert, update, replace, and delete models. The driver batches those models within server limits and merges their results. Ordered execution stops at the first write error; use `{ ordered = false }` when independent models may continue after an error.
+[Bulk writes](https://www.mongodb.com/docs/manual/core/bulk-write-operations/) combine insert, update, replace, and delete models. The driver batches models within server limits and merges their results. Ordered execution stops at the first write error; set `ordered = false` to continue independent models.
 
 ```lua
 local doc = mongodb.bson.document
@@ -387,9 +339,9 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
-Pass `{ verbose_results = true }` to populate immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Summary results omit those maps. Command options also accept `ordered`, `bypass_document_validation`, `comment`, `let`, and an operation-level `write_concern`; an operation concern overrides the client default.
+Collection bulk options include `ordered`, `bypass_document_validation`, `comment`, and `let`. Write concern comes from the collection handle.
 
-MongoDB 8.0 and newer also accept one client-level bulk command spanning several namespaces. Client bulk models are separate from collection bulk models. The API supports insert, update-one, update-many, replacement, delete-one, and delete-many models and returns immutable summary or verbose results. Set `timeout_ms` to bound the complete client bulk operation, including all batches, one retry, and result-cursor cleanup. An unacknowledged `write_concern = { w = 0 }` requires `ordered = false` and no verbose results; its immutable result exposes `acknowledged = false` without count or per-model result fields.
+MongoDB 8.0 and newer support client bulk writes across namespaces. These use separate `mongodb.client_bulk` models. `timeout_ms` covers every batch, eligible retries, and internal result-cursor cleanup.
 
 ```lua
 local client_bulk = mongodb.client_bulk
@@ -420,11 +372,13 @@ print(written.modified_count)
 print(written.deleted_count)
 ```
 
-An individual client bulk failure returns `nil` and a structured write error. Its immutable `details.write_errors` array is ordered by the models' original 1-based positions; each entry exposes the server code, message, optional `errInfo` details, and failed wire operation. Ordered execution reports its first individual failure, while unordered execution reports every observed individual failure. When at least one model is known to have succeeded, `details.partial_result` exposes the same immutable summary or verbose result shape; it is absent when the first ordered model or every unordered model failed.
+Set `verbose_results = true` to add immutable `insert_results`, `update_results`, and `delete_results` maps keyed by each model's original 1-based position. Client bulk options also accept `ordered`, `bypass_document_validation`, `comment`, `let`, and an operation-level `write_concern`. An unacknowledged write concern requires `ordered = false` and summary results.
+
+A client bulk failure returns `nil` and a structured write error. `details.write_errors` follows original model order, and `details.partial_result` reports confirmed successes when any exist.
 
 ### Generic commands
 
-`database:run_command` returns one command reply. For a command whose reply owns a server cursor, use `database:run_cursor_command`; it executes the initial command eagerly and returns the same cursor type used by collection reads. Its `batch_size`, `max_await_time_ms`, and `comment` options apply to subsequent `getMore` commands.
+`database:run_command` returns one reply. Use `database:run_cursor_command` when the reply owns a server cursor. Its `batch_size`, `max_await_time_ms`, and `comment` options apply to later `getMore` commands.
 
 ```lua
 local db = client:database("app")
@@ -440,9 +394,9 @@ end
 
 ### Index management
 
-`collection:create_index` creates one [index](https://www.mongodb.com/docs/manual/indexes/) from an ordered key document and returns its name. Use `mongodb.index_model` with `collection:create_indexes` to create several indexes together; `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Key directions may be ascending (`1`), descending (`-1`), `text`, `hashed`, `2d`, `2dsphere`, or `geoHaystack`.
+`collection:create_index` creates one [index](https://www.mongodb.com/docs/manual/indexes/) from an ordered key document and returns its name. Use `mongodb.index_model` with `create_indexes` for a batch. `list_indexes`, `drop_index`, and `drop_indexes` manage existing indexes. Valid directions are `1`, `-1`, `text`, `hashed`, `2d`, `2dsphere`, and `geoHaystack`.
 
-MongoDB's [index properties guide](https://www.mongodb.com/docs/manual/core/indexes/index-properties/) covers case-insensitive, hidden, partial, sparse, TTL, and unique indexes. Configure those properties with `collation`, `hidden`, `partial_filter_expression`, `sparse`, `expire_after_seconds`, and `unique`, respectively. Not every property is compatible with every index type; MongoDB validates the final combination.
+Index options include `collation`, `hidden`, `partial_filter_expression`, `sparse`, `expire_after_seconds`, and `unique`. See MongoDB's [index properties guide](https://www.mongodb.com/docs/manual/core/indexes/index-properties/) for valid combinations.
 
 This example creates a case-insensitive unique index only for active users:
 
@@ -459,7 +413,7 @@ print(email_index)
 
 #### Search indexes
 
-`collection:create_search_index` creates one standard or vector [Search index](https://www.mongodb.com/docs/search/index/manage-indexes/) and returns the server-reported name. `collection:create_search_indexes` accepts an ordered Lua array of those models and returns the corresponding immutable name list. `collection:list_search_indexes` returns a cursor over every Search index or an optional name filter and accepts the normal aggregation options. `collection:update_search_index` replaces the definition of a named Search index, and `collection:drop_search_index` idempotently removes one by name. A model is an ordered BSON document with a required `definition` and optional `name` and `type` fields.
+`collection:create_search_index` creates a standard or vector [Search index](https://www.mongodb.com/docs/search/index/manage-indexes/) and returns its server-reported name. A model is a BSON document with `definition` plus optional `name` and `type` fields. The collection also supports batch creation, listing, update, and drop methods.
 
 ```lua
 local search_name = assert(users:create_search_index(doc({
@@ -473,10 +427,7 @@ local search_name = assert(users:create_search_index(doc({
 
 ### GridFS
 
-[GridFS](https://www.mongodb.com/docs/manual/core/gridfs/) stores files in bounded BSON chunks. Upload from a byte string, query
-stored file documents through a cursor, then open an immutable download stream
-by id. Download streams support bounded `read` calls plus the standard Lua
-`seek`, `tell`, and `close` methods.
+[GridFS](https://www.mongodb.com/docs/manual/core/gridfs/) stores files in BSON chunks. A bucket can upload a byte string, query file documents, and open a download stream by id. Download streams support `read`, `seek`, `tell`, and `close`.
 
 ```lua
 local bucket = assert(client:database("app"):gridfs_bucket())
@@ -504,10 +455,10 @@ end
 
 ### Transactions
 
-Transactions require a replica-set-backed deployment, reached directly with a URI such as `mongodb://localhost:27017/bank?replicaSet=rs0` or through one or more mongos routers. The driver provides both APIs described in the [MongoDB transaction API guide](https://www.mongodb.com/docs/manual/core/transactions-in-applications/):
+Transactions require a replica set or sharded deployment. The driver implements both APIs from the [MongoDB transaction guide](https://www.mongodb.com/docs/manual/core/transactions-in-applications/):
 
-- **Callback API:** `with_transaction` owns start, commit, abort, and the specification retries for transient transaction and unknown commit-result errors. Prefer it for most transactions, and keep the callback safe to run more than once.
-- **Core API:** `start_transaction`, `commit_transaction`, and `abort_transaction` expose the lifecycle directly. Use it when the application needs custom control over error handling and retries.
+- `with_transaction` handles start, commit, abort, and required retries. Keep its callback safe to run more than once.
+- `start_transaction`, `commit_transaction`, and `abort_transaction` expose direct control for custom error handling.
 
 Pass the active session to every operation with either API.
 
@@ -584,23 +535,25 @@ assert(session:end_session())
 assert(transferred, err)
 ```
 
-`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions default causal consistency off, reject an explicit `causal_consistency = true`, require `snapshot = true` when initialized with a BSON timestamp through `snapshot_time`, reject command execution against servers older than MongoDB 5.0, and send snapshot read concern on every command. The first snapshot read captures its server timestamp for every later command; an explicit `snapshot_time` is used from the first command. `session:get_snapshot_time()` reads that immutable BSON timestamp and returns `nil` when the session has no snapshot time.
+`client:start_session` accepts `causal_consistency`, `snapshot`, `snapshot_time`, `default_transaction_options`, and `timeout_ms`. Snapshot sessions disable causal consistency and require MongoDB 5.0 or newer. `session:get_snapshot_time()` returns the timestamp chosen by the first snapshot read, an explicit `snapshot_time`, or `nil` before one exists.
 
 ### Errors and resource lifetimes
 
-Operational methods return a value on success or `nil, err` with a structured error on failure. Errors expose stable categories, labels, timeout and retryability flags, and server details without including protected command values in diagnostic strings.
+Operational methods return a value on success or `nil, err` on failure. Structured errors include a category, labels, timeout and retryability flags, and server details without protected command values.
 
-Clients, cursors, and sessions have explicit idempotent close methods. Closing a client releases its owned cursors, sessions, connection pools, monitor tasks, connections, and sockets; applications should still close resources as soon as their useful lifetime ends.
+Clients, cursors, and sessions have idempotent close methods. Close resources promptly; client close is the final cleanup for its cursors, sessions, pools, monitors, connections, and sockets.
 
 ## Examples
 
-The self-contained [`examples`](examples/README.md) learning path installs the public LuaRocks driver and covers connection setup, BSON application modeling, transactions, and a two-window LÖVE Pong demo driven by change streams. The examples do not add source-checkout module paths.
+The [`examples`](examples/README.md) use the public LuaRocks package for connection setup, BSON data, transactions, and two-window LÖVE Pong driven by change streams. They do not load modules from the source checkout.
 
 ## Specification compatibility
 
-Compatibility comes from the checked-in [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Machine-fixture rows use ledger cases, and named prose-only rows use catalog requirement outcomes. A suite is green when every support-scored outcome passes, yellow when passes and incomplete scored outcomes coexist, and red when no scored outcome passes. Tracked support % divides passed outcomes by all scored outcomes. The calculation omits `not_applicable`, `no_machine_cases`, terminal `unsupported`, and unified fixtures restricted to MongoDB versions older than the supported 7.0 floor. An asterisk marks percentages affected by old-server omissions. A suite containing only omitted outcomes displays N/A; the white badge marks a suite the project will not implement. The total uses the same calculation across all displayed scored outcomes instead of averaging suite percentages. `planning/update_readme_compatibility.py` generates the table.
+`planning/update_readme_compatibility.py` generates this table from the [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Green means every scored outcome passes. Yellow means passed and incomplete outcomes coexist. Red means no scored outcome passes.
 
-The ordering follows the "onion model" classification of [MongoDB driver specifications](https://alexbevi.com/specifications/), from serialization at the core through communication, connectivity, authentication, availability, resilience, programmability, observability, and testability.
+Tracked support % divides passes by scored outcomes. It omits `not_applicable`, `no_machine_cases`, terminal `unsupported`, and unified fixtures restricted to MongoDB versions older than the supported 7.0 floor. An asterisk marks percentages affected by old-server omissions. A suite with no scored outcomes displays N/A, and the white badge marks a suite the project will not implement. The total combines all displayed outcomes rather than averaging suite percentages.
+
+The "onion model" orders the [MongoDB driver specifications](https://alexbevi.com/specifications/) with serialization first and testability last.
 
 > [!NOTE]
 > Legend:\
@@ -665,7 +618,7 @@ python3 planning/update_plan.py check --strict --pushed
 python3 planning/update_plan.py next
 ```
 
-The standard verification gates are:
+The main verification targets are:
 
 ```sh
 make test-unit
@@ -679,14 +632,14 @@ make lint
 make check
 ```
 
-For ordinary local changes, prefer the narrow selector-driven target instead of the full gate:
+For a local change, run the narrow selector-driven target:
 
 ```sh
-make test-focus FOCUS_UNIT=spec/unit/example_spec.lua \
-  FOCUS_LINT="src/mongodb/example.lua spec/unit/example_spec.lua"
+make test-focus FOCUS_UNIT=spec/unit/config_options_spec.lua \
+  FOCUS_LINT="src/mongodb/config/options.lua spec/unit/config_options_spec.lua"
 ```
 
-Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for the directly affected boundary. GitHub Actions runs the fast portable gates plus representative standalone, replica-set, and sharded compatibility rows after each push; the Full Conformance workflow runs complete unified and coverage gates plus all nine server/topology compatibility rows before release and on its schedule.
+Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for other boundaries. GitHub Actions runs portable gates and representative live rows after each push. Full Conformance owns complete unified, coverage, and server/topology compatibility checks.
 
 See [`planning/README.md`](planning/README.md) for roadmap commands and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for implementation details and design decisions.
 
