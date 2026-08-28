@@ -2,6 +2,35 @@
 
 This file records changes that affect people who use the published driver. Internal test evidence, fixture inventories, and release automation belong in project records instead.
 
+## [0.10.6] - 2026-08-28
+
+Topology and connection logging complete the driver's standardized logging components.
+
+### Added
+
+- Topology lifecycle, server-description change, and heartbeat messages for standalone, replica-set, sharded, and load-balanced deployments.
+- Connection-pool, connection, checkout, and check-in lifecycle messages, including load-balanced service identifiers where required.
+- Non-default pool configuration fields for supported size, idle-time, connection-establishment, and wait-queue options.
+
+### Conformance
+
+- Closed the five logging requirements and 93 component cases: 89 pass, two old-server command branches are excluded, and two deprecated pool options are unsupported.
+
+### Example
+
+Enable topology and connection logs together to follow monitoring and pool activity:
+
+```lua
+local client = assert(mongodb.client("mongodb://localhost:27017/app", {
+  logging = {
+    levels = {
+      connection = "debug",
+      topology = "debug",
+    },
+  },
+}))
+```
+
 ## [0.10.5] - 2026-08-28
 
 Server selection logging shows where an operation waited and which server it chose.

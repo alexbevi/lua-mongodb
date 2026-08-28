@@ -275,7 +275,7 @@ local client = assert(mongodb.client("mongodb://localhost:27017/app", {
 }))
 ```
 
-The `command` component emits start, success, and failure messages at `debug` and redacts sensitive command documents. The `connection`, `server_selection`, and `topology` settings are accepted but do not emit messages yet.
+The `command`, `connection`, `server_selection`, and `topology` components emit their standardized lifecycle messages at `debug`. Command messages redact sensitive command and reply documents.
 
 ### CRUD operations
 

@@ -12,13 +12,13 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[2]
 BUILDER = ROOT / "spec" / "release" / "source_rock.py"
-ROCKSPEC = ROOT / "mongodb-0.10.5-1.rockspec"
+ROCKSPEC = ROOT / "mongodb-0.10.6-1.rockspec"
 
 
 class SourceRockTests(unittest.TestCase):
   def test_builder_omits_reference_submodule_payloads(self) -> None:
     with tempfile.TemporaryDirectory() as directory:
-      output = Path(directory) / "mongodb-0.10.5-1.src.rock"
+      output = Path(directory) / "mongodb-0.10.6-1.src.rock"
       command = [
         sys.executable,
         str(BUILDER),

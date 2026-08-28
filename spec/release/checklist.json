@@ -119,6 +119,13 @@
       "SEL-003",
       "CON-016"
     ],
+    "completed_v0_10_6_gates": [
+      "SDAM-009",
+      "SDAM-010",
+      "CMAP-005",
+      "CMAP-006",
+      "CON-017"
+    ],
     "completed_v0_10_gates": [
       "ADV-006",
       "LB-001",
@@ -322,6 +329,18 @@
         "passed": 11
       }
     },
+    "v0_10_6_conformance": {
+      "cases": 93,
+      "requirement_statuses": {
+        "passed": 5
+      },
+      "requirements": 5,
+      "statuses": {
+        "excluded_scope": 2,
+        "passed": 89,
+        "unsupported": 2
+      }
+    },
     "v0_10_conformance": {
       "classified_requirements": 1044,
       "dedicated_cases": 40,
@@ -381,10 +400,10 @@
   "ready": true,
   "release": {
     "package": "mongodb",
-    "rockspec": "mongodb-0.10.5-1.rockspec",
-    "rockspec_version": "0.10.5-1",
-    "version": "0.10.5"
+    "rockspec": "mongodb-0.10.6-1.rockspec",
+    "rockspec_version": "0.10.6-1",
+    "version": "0.10.6"
   },
   "schema_version": 1,
-  "type": "server-selection-logging-release-checklist"
+  "type": "standardized-logging-release-checklist"
 }

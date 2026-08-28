@@ -1,4 +1,4 @@
-"""Contract tests for the server-selection-logging v0.10.5 release checklist."""
+"""Contract tests for the standardized-logging v0.10.6 release checklist."""
 
 import unittest
 
@@ -10,8 +10,8 @@ class ReleaseChecklistTests(unittest.TestCase):
     report = checklist.generate()
 
     self.assertTrue(report["ready"])
-    self.assertEqual("server-selection-logging-release-checklist", report["type"])
-    self.assertEqual("0.10.5", report["release"]["version"])
+    self.assertEqual("standardized-logging-release-checklist", report["type"])
+    self.assertEqual("0.10.6", report["release"]["version"])
     self.assertEqual(
       {
         "activities": ["CSOT-001", "BSON-010"],
@@ -25,8 +25,8 @@ class ReleaseChecklistTests(unittest.TestCase):
 
     self.assertEqual(0, conformance["applicable_gaps"])
     self.assertEqual(5524, conformance["classified_cases"])
-    self.assertGreaterEqual(conformance["passed_cases"], 4458)
-    self.assertLessEqual(conformance["additional_exclusions"], 1051)
+    self.assertGreaterEqual(conformance["passed_cases"], 4484)
+    self.assertLessEqual(conformance["additional_exclusions"], 1023)
     self.assertEqual(17, conformance["unsupported_cases"])
     self.assertEqual(
       conformance["classified_cases"],
@@ -326,6 +326,23 @@ class ReleaseChecklistTests(unittest.TestCase):
         "server_selection_statuses": {"passed": 11},
       },
       report["gates"]["v0_10_5_conformance"],
+    )
+    self.assertEqual(
+      ["SDAM-009", "SDAM-010", "CMAP-005", "CMAP-006", "CON-017"],
+      report["gates"]["completed_v0_10_6_gates"],
+    )
+    self.assertEqual(
+      {
+        "cases": 93,
+        "requirements": 5,
+        "requirement_statuses": {"passed": 5},
+        "statuses": {
+          "excluded_scope": 2,
+          "passed": 89,
+          "unsupported": 2,
+        },
+      },
+      report["gates"]["v0_10_6_conformance"],
     )
     self.assertEqual(
       [

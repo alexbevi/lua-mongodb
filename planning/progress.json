@@ -10817,6 +10817,28 @@
       "notes": [],
       "started_at": "2026-08-28T19:32:50+00:00",
       "completed_at": "2026-08-28T19:41:35+00:00"
+    },
+    "REL-065": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.release.test_checklist.ReleaseChecklistTests.test_checked_in_release_is_ready'",
+          "exit_code": 2,
+          "summary": "The 0.10.6 release contract failed because the checked checklist still identified the 0.10.5 server-selection release and did not require the five topology/pool logging gates or exact 93-case standardized logging closure.",
+          "recorded_at": "2026-08-28T20:00:53+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/project_spec.lua spec/unit/handshake_metadata_spec.lua spec/unit/command_executor_spec.lua' FOCUS_INTEGRATION='--filter=applies.appended.wrapper.metadata.only.to.new.connections spec/integration/client_api_spec.lua' FOCUS_PYTHON='spec.release.test_checklist spec.release.test_publish spec.release.test_scope spec.v103.test_scope planning.tests.test_ci_portability planning.tests.test_readme_content spec.package.test_package' FOCUS_LINT='src/mongodb/handshake/metadata.lua' LUACHECK=/Users/alex/.luarocks/bin/luacheck",
+          "exit_code": 0,
+          "summary": "All 86 focused contracts passed: 20 version and handshake unit tests, one exact metadata integration test, and 65 release, publication-guard, conformance, workflow, documentation, and isolated-package tests; 0 pending or failed. Lua 5.4 touched-file lint was clean. The checked closure has 93 standardized logging cases with 89 passed, two excluded, two unsupported, and five passing prose requirements; rockspec and generated artifact validators also passed.",
+          "recorded_at": "2026-08-28T20:09:48+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-28T19:59:57+00:00",
+      "completed_at": "2026-08-28T20:09:48+00:00"
     }
   },
   "verified_references": {

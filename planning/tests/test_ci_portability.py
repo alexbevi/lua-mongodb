@@ -127,13 +127,13 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("ZSTD_DIR=", workflow[openssl:dependencies])
     self.assertIn("GITHUB_ENV", workflow[openssl:dependencies])
     self.assertIn(
-      'luarocks install --only-deps mongodb-0.10.5-1.rockspec '
+      'luarocks install --only-deps mongodb-0.10.6-1.rockspec '
       'OPENSSL_DIR="$OPENSSL_DIR" CRYPTO_DIR="$CRYPTO_DIR"',
       workflow,
     )
     self.assertIn('if test -n "${OPENSSL_DIR:-}"; then', workflow)
     self.assertIn(
-      "else\n            luarocks install --only-deps mongodb-0.10.5-1.rockspec",
+      "else\n            luarocks install --only-deps mongodb-0.10.6-1.rockspec",
       workflow,
     )
 
@@ -328,7 +328,7 @@ class CiPortabilityTests(unittest.TestCase):
       workflow,
     )
     self.assertIn(
-      "Validate exact v0.10.5 server-selection logging evidence",
+      "Validate exact v0.10.6 standardized logging evidence",
       workflow,
     )
     self.assertIn(
@@ -469,7 +469,7 @@ class CiPortabilityTests(unittest.TestCase):
       aggregate,
     )
     self.assertIn(
-      "Validate exact macOS v0.10.5 server-selection logging evidence",
+      "Validate exact macOS v0.10.6 standardized logging evidence",
       aggregate,
     )
     self.assertIn("--allow-macos-ci-timing-skips", aggregate)

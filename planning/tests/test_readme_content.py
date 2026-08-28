@@ -140,7 +140,7 @@ class ReadmeContentTests(unittest.TestCase):
       "Linux and macOS",
       "A running Docker daemon is required only for the image-backed live compatibility matrix",
       "git submodule update --init --recursive",
-      "luarocks install --only-deps mongodb-0.10.5-1.rockspec",
+      "luarocks install --only-deps mongodb-0.10.6-1.rockspec",
       "FOCUS_UNIT",
       "FOCUS_INTEGRATION",
       "FOCUS_UNIFIED",

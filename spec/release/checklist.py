@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and report server-selection-logging v0.10.5 release readiness."""
+"""Validate and report standardized-logging v0.10.6 release readiness."""
 
 from __future__ import annotations
 
@@ -31,12 +31,12 @@ PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
 CATALOG = ROOT / "spec" / "conformance" / "catalog.json"
 OUTPUT = ROOT / "spec" / "release" / "checklist.json"
-ROCKSPEC = ROOT / "mongodb-0.10.5-1.rockspec"
-RELEASE_VERSION = "0.10.5"
+ROCKSPEC = ROOT / "mongodb-0.10.6-1.rockspec"
+RELEASE_VERSION = "0.10.6"
 ROCKSPEC_VERSION = f"{RELEASE_VERSION}-1"
 CLASSIFIED_CASES = 5524
-MINIMUM_PASSED_CASES = 4458
-MAXIMUM_ADDITIONAL_EXCLUSIONS = 1051
+MINIMUM_PASSED_CASES = 4484
+MAXIMUM_ADDITIONAL_EXCLUSIONS = 1023
 AUDITS = {
   "cleanup": ["REL-042", "REL-043"],
   "packaging": ["REL-007"],
@@ -214,6 +214,9 @@ V104_RELEASE_ACTIVITY = "REL-063"
 V105_GATES = ["SEL-002", "SEL-003"]
 V105_CONFORMANCE_ACTIVITY = "CON-016"
 V105_RELEASE_ACTIVITY = "REL-064"
+V106_GATES = ["SDAM-009", "SDAM-010", "CMAP-005", "CMAP-006"]
+V106_CONFORMANCE_ACTIVITY = "CON-017"
+V106_RELEASE_ACTIVITY = "REL-065"
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -222,7 +225,7 @@ OBJECTID_IDENTITIES = {"bson-objectid/objectid.md::post-fork-random"}
 
 
 class ChecklistError(ValueError):
-  """Raised when the server-selection-logging release is not ready."""
+  """Raised when the standardized-logging release is not ready."""
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -315,7 +318,7 @@ def release_metadata() -> dict[str, str]:
   )
   require_text(
     ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: server selection logging v0.10.5 release-ready.",
+    "Status: standardized logging v0.10.6 release-ready.",
   )
 
   return {
@@ -474,6 +477,20 @@ def generate() -> dict[str, Any]:
       "v0.10.5 release gate inventory does not match the track"
     )
 
+  topology_pool_logging_track = [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-6-topology-pool-logging"
+  ]
+  if topology_pool_logging_track != [
+    *V106_GATES,
+    V106_CONFORMANCE_ACTIVITY,
+    V106_RELEASE_ACTIVITY,
+  ]:
+    raise ChecklistError(
+      "v0.10.6 release gate inventory does not match the track"
+    )
+
   production_core = [
     activity["id"]
     for activity in plan.get("activities", [])
@@ -565,6 +582,12 @@ def generate() -> dict[str, Any]:
   for activity_id in [*V105_GATES, V105_CONFORMANCE_ACTIVITY]:
     if activity_id not in activities:
       raise ChecklistError(f"unknown v0.10.5 gate activity: {activity_id}")
+
+    completed_activity(progress, activity_id)
+
+  for activity_id in [*V106_GATES, V106_CONFORMANCE_ACTIVITY]:
+    if activity_id not in activities:
+      raise ChecklistError(f"unknown v0.10.6 gate activity: {activity_id}")
 
     completed_activity(progress, activity_id)
 
@@ -668,6 +691,9 @@ def generate() -> dict[str, Any]:
 
   v103_summary = v103_report["summary"]
   server_selection_conformance = v103_report["server_selection_conformance"]
+  standardized_logging_conformance = v103_report[
+    "standardized_logging_conformance"
+  ]
 
   if server_selection_conformance != {
     "cases": 11,
@@ -675,6 +701,20 @@ def generate() -> dict[str, Any]:
   }:
     raise ChecklistError(
       "v0.10.5 server selection logging conformance is incomplete"
+    )
+
+  if standardized_logging_conformance != {
+    "cases": 93,
+    "requirements": 5,
+    "requirement_statuses": {"passed": 5},
+    "statuses": {
+      "excluded_scope": 2,
+      "passed": 89,
+      "unsupported": 2,
+    },
+  }:
+    raise ChecklistError(
+      "v0.10.6 standardized logging conformance is incomplete"
     )
 
   compatibility = matrix.validate(matrix.load())
@@ -765,6 +805,10 @@ def generate() -> dict[str, Any]:
       "completed_v0_10_5_gates": [
         *V105_GATES,
         V105_CONFORMANCE_ACTIVITY,
+      ],
+      "completed_v0_10_6_gates": [
+        *V106_GATES,
+        V106_CONFORMANCE_ACTIVITY,
       ],
       "conformance": {
         "applicable_gaps": applicable_gaps,
@@ -890,6 +934,7 @@ def generate() -> dict[str, Any]:
         "server_selection_cases": server_selection_conformance["cases"],
         "server_selection_statuses": server_selection_conformance["statuses"],
       },
+      "v0_10_6_conformance": standardized_logging_conformance,
       "maintenance": {
         "activities": MAINTENANCE_GATES,
         "bson_objectid_requirements": len(objectid_evidence),
@@ -900,7 +945,7 @@ def generate() -> dict[str, Any]:
     "ready": True,
     "release": release_metadata(),
     "schema_version": 1,
-    "type": "server-selection-logging-release-checklist",
+    "type": "standardized-logging-release-checklist",
   }
 
 

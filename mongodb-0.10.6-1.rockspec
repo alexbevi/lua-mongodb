@@ -1,20 +1,19 @@
 rockspec_format = "3.0"
 
 package = "mongodb"
-version = "0.10.5-1"
+version = "0.10.6-1"
 
 source = {
   url = "git+https://github.com/alexbevi/lua-mongodb.git",
-  tag = "v0.10.5",
+  tag = "v0.10.6",
 }
 
 description = {
   summary = "Pure-Lua MongoDB driver",
   detailed = [[
     A coroutine-aware MongoDB driver implemented in Lua without wrapping
-    libmongoc. Version 0.10.5 adds correlated server-selection lifecycle
-    logging across standalone, replica-set, sharded, and load-balanced
-    topologies.
+    libmongoc. Version 0.10.6 completes standardized logging with topology,
+    heartbeat, connection-pool, connection, and checkout lifecycle messages.
   ]],
   homepage = "https://github.com/alexbevi/lua-mongodb",
   license = "Apache-2.0",
