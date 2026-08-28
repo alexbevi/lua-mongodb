@@ -136,6 +136,24 @@ artifact and planning command catalog lives in `planning/README.md`.
 Every upstream fixture must execute or retain an explicit deferral with a reason. Unknown unified
 operations are failures; never turn one into a silent skip.
 
+## Changelog entries
+
+Update `CHANGELOG.md` when a published-driver change affects users. Write for someone deciding
+whether to upgrade, not for the implementation record.
+
+- Keep releases in reverse chronological order under `## [VERSION] - YYYY-MM-DD`.
+- Use relevant headings such as `Added`, `Changed`, `Fixed`, `Deprecated`, `Removed`, and
+  `Security`. Omit empty headings.
+- Describe observable behavior, affected users, new requirements, and required migration steps.
+- Add a short `Example` for a new public API or option when code explains it better than prose.
+  Use only public entry points and keep the snippet valid under a supported Lua version.
+- Leave activity identifiers, fixture counts, conformance evidence, CI jobs, checklist gates, and
+  publication mechanics in their owning planning, test, architecture, or release artifacts.
+
+Do not copy commit subjects or roadmap summaries into the changelog. Combine related work into
+one release-level explanation and remove implementation details that do not change how callers
+use the driver.
+
 ## CI and review evidence
 
 `CI Fast` runs after every push. It executes `make check-fast` on Linux and macOS under Lua 5.4,

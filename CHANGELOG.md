@@ -1,80 +1,74 @@
 # Changelog
 
-All notable changes to this project are documented in this file.
+This file records changes that affect people who use the published driver. Internal test evidence, fixture inventories, and release automation belong in project records instead.
 
 ## [0.10.5] - 2026-08-28
 
-Server selection logging release.
+Server selection logging shows where an operation waited and which server it chose.
 
 ### Added
 
-- Added server selection started, waiting, succeeded, and failed log messages across standalone, replica-set, sharded, and load-balanced topologies.
-- Added selector, topology, timing, selected-server, and failure details without changing selection results or timeout behavior.
-- Reused each logical operation identifier across server selection and command logs, including retries and bulk operations.
+- `server_selection` started, waiting, succeeded, and failed messages across standalone, replica-set, sharded, and load-balanced deployments.
+- Selector, topology, timing, selected-server, and failure fields in each message.
+- One logical operation identifier across related server selection and command messages, including retries and bulk writes.
 
-### Conformance
+### Example
 
-- Closed all 11 pinned server selection logging cases with exact passing evidence.
+Enable command and server selection logs together to follow one operation through both components:
 
-### Release engineering
-
-- Added the exact v0.10.5 server selection gate and conformance inventory to the guarded release checklist.
+```lua
+local client = assert(mongodb.client("mongodb://localhost:27017/app", {
+  logging = {
+    levels = {
+      command = "debug",
+      server_selection = "debug",
+    },
+  },
+}))
+```
 
 ## [0.10.4] - 2026-08-27
 
-Command logging and monitoring release.
+Command logging and monitoring expose command lifecycles without leaking sensitive fields.
 
 ### Added
 
-- Added command started, succeeded, and failed log messages with stable request and operation identifiers, driver and server connection identifiers, and load-balanced service identifiers.
-- Added command monitoring for generic commands, find and getMore lifecycles, insert, update, delete, collection and client bulk writes, unacknowledged writes, and write concern errors.
-- Added shared redaction for sensitive commands and server failures, with handshakes and monitor heartbeats excluded from command logs.
-
-### Conformance
-
-- Closed all 65 pinned command logging and monitoring cases with 63 exact passes and two named target-version exclusions below the MongoDB 7.0 production floor.
-
-### Release engineering
-
-- Added the exact v0.10.4 command gate and conformance inventory to the guarded release checklist.
+- Command started, succeeded, and failed messages with stable request, operation, connection, and load-balanced service identifiers.
+- Monitoring for generic commands, cursors, CRUD, collection and client bulk writes, unacknowledged writes, and write concern errors.
+- Shared redaction for sensitive commands and server failures. Handshakes and monitor heartbeats stay outside command logs.
 
 ## [0.10.3] - 2026-08-27
 
-Logging foundation release.
+This release introduced the configuration and event model used by component logging in later releases.
 
 ### Added
 
-- Added opt-in structured logging configuration for standardized components and severity levels, with environment defaults, programmatic overrides, and runtime-owned output or custom sinks.
-- Added immutable structured event envelopes with relaxed Extended JSON rendering, redaction before Unicode-safe truncation, and sink-failure isolation.
-- Added shared logical operation identities that remain stable across retry attempts and bulk sub-operations.
-- Added unified-test support for ordered expected log messages, unordered ignored messages, and redacted mismatch diagnostics.
-
-### Conformance
-
-- Added exact passing evidence for the four shared logging-foundation requirements.
-- Assigned all 230 standardized component logging, backpressure, and OpenTelemetry cases to concrete release-sized owners without claiming their behavior in this release.
-
-### Release engineering
-
-- Added the generated v0.10.3 ownership projection to Full Conformance on Linux and requested macOS runs.
+- Logging levels, destinations, environment defaults, programmatic overrides, and custom sinks.
+- Immutable event documents with relaxed Extended JSON, redaction before Unicode-safe truncation, and sink-failure isolation.
+- Logical operation identifiers that remain stable through retries and bulk sub-operations.
 
 ## [0.10.2] - 2026-08-26
 
-GSSAPI authentication release.
+GSSAPI authentication supports Kerberos credentials supplied by the operating system or, when supported by its library, a password.
 
 ### Added
 
-- Added GSSAPI credential normalization, service-host canonicalization, and SASL authentication with default Kerberos credentials or a password when the operating-system library supports it.
-- Added a packaged runtime adapter that loads the operating system's GSSAPI library on Linux and macOS without a link-time Kerberos dependency.
+- GSSAPI credential normalization, service-host canonicalization, and SASL authentication.
+- A runtime provider that loads the operating system's GSSAPI library on Linux and macOS without a link-time Kerberos dependency.
 
-### Conformance
+Live GSSAPI authentication was verified with Lua 5.4 on Ubuntu 24.04. The macOS and Lua 5.5 package paths were not live authentication support claims for this release.
 
-- Added exact passing evidence for eleven pinned GSSAPI configuration cases and ten normative requirements.
-- Added recurring live default-credential, password, canonical-host, explicit-host, replica-set, and concurrent-context coverage on Lua 5.4 and Ubuntu 24.04.
+### Example
 
-### Release engineering
+Omit the password to use the current Kerberos ticket cache:
 
-- Added GSSAPI modules to the source rock and release checks while limiting the live provider support claim to its recurring Ubuntu 24.04 and Lua 5.4 profile.
+```lua
+local client = assert(mongodb.client(
+  "mongodb://user%40EXAMPLE.COM@db.example.com/"
+    .. "?authMechanism=GSSAPI"
+    .. "&authMechanismProperties=SERVICE_NAME:mongodb"
+))
+```
 
 ## [0.10.1] - 2026-08-25
 
@@ -82,212 +76,224 @@ Maintenance release.
 
 ### Fixed
 
-- Ignored deprecated index `maxTimeMS` options when a client-side operation timeout is configured, allowing the central CSOT deadline to derive the command budget.
-- Refreshed the five-byte ObjectId process value after a fork while retaining the generator's wrapping counter.
+- Deprecated index `maxTimeMS` options no longer override a configured client-side operation timeout.
+- ObjectId generation refreshes its five-byte process value after a fork while retaining the wrapping counter.
 
 ### Dependencies
 
-- Added the pinned `getpid` 0.1.0-1 provider behind the runtime process-identity capability.
-
-### Conformance
-
-- Added exact passing evidence for the three deprecated-index CSOT cases and the normative ObjectId post-fork uniqueness requirement.
+- ObjectId process identity now uses the runtime-backed `getpid` 0.1.0-1 provider.
 
 ## [0.10.0] - 2026-08-25
 
-Load balancing release.
+Load-balanced deployments use service-aware pools and keep connections pinned when cursors or transactions require it.
 
 ### Added
 
-- Added static load-balanced topology and server selection with single-endpoint validation, service-aware connection pools, and per-service pool generations.
-- Added load-balanced command-cursor pinning, including network-error cleanup, server-error retention, explicit kill cleanup, and checkout-purpose monitoring.
-- Added transaction and session connection ownership, including ordinary-error retention, transient-error unpinning, commit retry on a fresh connection, abort cleanup, repinning, and shared cursor ownership.
+- Static load-balanced topology and server selection with single-endpoint validation and per-service pool generations.
+- Connection pinning for command cursors, sessions, and transactions, with cleanup after network failures, aborts, and cursor close.
+- Transaction retry behavior that can unpin and select a fresh connection before another commit attempt.
 
-### Conformance
+### Example
 
-- Closed 39 of 40 dedicated load-balancer cases; the remaining upstream case retains its normative skip reason.
-- Added exact passing evidence for all 738 runnable unified identities whose `runOnRequirements` include load-balanced topology.
-- Classified OCSP and SOCKS5 as intentionally unsupported capabilities.
+Set `loadBalanced=true` for a load-balanced endpoint:
 
-### Release engineering
-
-- Added the generated v0.10 load-balancing projection to Full Conformance on Linux and requested macOS runs.
-- Added the exact-commit v0.10 LuaRocks release checklist and publication guards.
+```lua
+local client = assert(mongodb.client(
+  "mongodb://lb.example.com/?loadBalanced=true"
+))
+```
 
 ## [0.9.0] - 2026-08-24
 
-GridFS release.
+GridFS stores and retrieves files through bucket, upload-stream, and download-stream APIs.
 
 ### Added
 
-- Added immutable configurable GridFS buckets with public upload streams, readable-source uploads, required-index management, abort, and operation-wide timeout handling.
-- Added validated download streams with bounded reads, seeking, filename revisions, and destination-copy APIs that preserve caller-owned streams.
-- Added deletion and renaming by id or filename, cursor-based files discovery, and whole-bucket drop with specification-defined ordering and structured errors.
+- Configurable GridFS buckets, byte-string and readable-source uploads, required-index management, abort, and operation-wide timeouts.
+- Download streams with bounded reads, seeking, filename revisions, and destination-copy methods that leave caller-owned streams open.
+- Delete and rename operations by id or filename, cursor-based file discovery, and whole-bucket drop.
 
-### Conformance
+### Example
 
-- All 39 pinned GridFS fixtures, 34 directly coupled retryable-read cases, and 25 GridFS timeout cases have exact unified executors and passing evidence.
-- Fifteen normative GridFS API requirements have exact passing runner, environment, and completed-owner evidence.
+Upload a string and read it back by id:
 
-### Release engineering
+```lua
+local bucket = assert(client:database("app"):gridfs_bucket())
+local file_id = assert(bucket:upload_from_stream(
+  "greeting.txt",
+  "Hello from GridFS!"
+))
+local download = assert(bucket:open_download_stream(file_id))
 
-- Added the generated v0.9 GridFS projection to Full Conformance, requiring all 98 machine identities to pass in the authoritative Linux and manual macOS aggregate reports.
-- Added GridFS prose evidence to the generated compatibility projection and v0.9 exact-commit LuaRocks release checklist.
+print(assert(download:read()))
+assert(download:close())
+```
 
 ## [0.8.0] - 2026-08-20
 
-Wire compression release.
+Wire compression is negotiated independently for each connection.
 
 ### Added
 
-- Added ordered `snappy`, `zlib`, and `zstd` compressor configuration, including zlib levels from `-1` through `9` and warnings for unavailable optional providers.
-- Added pure-Lua OP_COMPRESSED framing and validation around runtime codec adapters, with compressor-specific identifiers, response-envelope decoding, and structured protocol errors for malformed messages.
-- Added per-connection compressor negotiation and command execution with the specification-required uncompressed authentication, handshake, and user-management commands.
+- Ordered `snappy`, `zlib`, and `zstd` compressor configuration, zlib levels from `-1` through `9`, and warnings for unavailable optional providers.
+- OP_COMPRESSED request and response handling with structured errors for malformed messages.
+- Uncompressed authentication, handshake, and user-management commands as required by the MongoDB compression specification.
 
-### Conformance
+Zlib is a required dependency. Snappy and Zstandard need their optional Lua providers.
 
-- All five pinned compression option cases and all eleven normative OP_COMPRESSED requirements have exact passing evidence.
-- Zlib-compressed live round trips pass across the MongoDB 7.0, 8.0, and 8.2 standalone, replica-set, and sharded compatibility matrix.
+### Example
 
-### Release engineering
+List compressors in client preference order:
 
-- Added optional Snappy and Zstandard package-test providers while retaining zlib as the required runtime codec.
-- Added the generated v0.8 conformance projection to Full Conformance and the exact-commit LuaRocks release checklist.
+```lua
+local client = assert(mongodb.client(
+  "mongodb://db.example.com/app"
+    .. "?compressors=zstd,snappy,zlib"
+    .. "&zlibCompressionLevel=6"
+))
+```
 
 ## [0.7.0] - 2026-08-19
 
-Client bulk write release.
+Client bulk writes can modify several namespaces in one operation on MongoDB 8.0 or newer.
 
 ### Added
 
-- Added client-level bulk writes across multiple namespaces with insert, update, replace, and delete models.
-- Added ordered and unordered execution, summary and verbose results, individual write and write-concern errors, partial results, and server result-cursor handling.
-- Added command-size and batch-count splitting, sessions, transactions, retryable writes, unacknowledged writes, Stable API, sharded transaction pinning, and client-side operation timeouts.
+- Insert, update, replace, and delete models for client-level bulk writes.
+- Ordered and unordered execution, summary and verbose results, partial results, and individual write and write concern errors.
+- Batch splitting, sessions, transactions, retryable and unacknowledged writes, Stable API options, sharded transaction pinning, and client-side operation timeouts.
 
-### Conformance
+### Example
 
-- All 71 v0.7 client bulk-write cases have exact unified executors across standalone, replica-set, and sharded profiles.
-- The v0.7 surface has no deferred or target-version-excluded identities within its MongoDB 8.0–8.2 feature floor.
+Use `mongodb.client_bulk` models with `client:bulk_write`:
 
-### Release engineering
+```lua
+local doc = mongodb.bson.document
+local client_bulk = mongodb.client_bulk
+local result = assert(client:bulk_write({
+  client_bulk.insert_one(
+    "app.users",
+    doc({ { "name", "Ada" } })
+  ),
+  client_bulk.update_one(
+    "app.accounts",
+    doc({ { "owner", "Ada" } }),
+    doc({ { "$set", doc({ { "active", true } }) } })
+  ),
+}))
 
-- Added the generated v0.7 conformance projection to Full Conformance and the exact-commit LuaRocks release checklist.
+print(result.inserted_count, result.modified_count)
+```
 
 ## [0.6.0] - 2026-08-18
 
-Legacy APIs release.
+Legacy command and cursor APIs are available for applications that still depend on them.
 
 ### Added
 
-- Added the deprecated collection `count` command with inherited concerns, read preference, retryable reads, and client-side operation timeouts.
-- Added legacy collection mapReduce with inline and output modes, inherited concerns, and the specification-required single-attempt read behavior.
-- Added database aggregation cursors with read/write pipeline routing, retries, timeouts, empty-batch continuation, and server-returned namespace handling.
-- Added tailable and awaitData find cursors with nonblocking empty-batch polling, option validation, bounded wait budgets, and cancellation through runtime adapters.
+- The deprecated collection `count` command with inherited concerns, read preference, retryable reads, and client-side operation timeouts.
+- Legacy collection mapReduce with inline and output modes and its required single-attempt read behavior.
+- Database aggregation cursors with read/write pipeline routing, retries, timeouts, and empty-batch continuation.
+- Tailable and awaitData find cursors with nonblocking empty-batch polling, bounded waits, and runtime cancellation.
 
-### Conformance
-
-- All 81 applicable v0.6 legacy API cases have exact unified executors across standalone, replica-set, authenticated, and isolated profiles.
-- Ninety-two old-server-only cases are exact target-version exclusions, and three command-cursor timeout cases are explicit pinned-PyMongo behavioral exclusions.
-
-### Release engineering
-
-- Added the generated v0.6 conformance projection to Full Conformance and the exact-commit LuaRocks release checklist.
+Prefer `count_documents`, aggregation pipelines, and ordinary cursors in new code.
 
 ## [0.5.0] - 2026-08-18
 
-Change streams release.
+Change streams watch collection, database, or cluster changes on replica-set and sharded deployments.
 
 ### Added
 
-- Added collection, database, and cluster change streams with pipeline and cursor options, blocking and non-blocking iteration, immutable resume-token access, and one-attempt resumability.
-- Added change-stream operation timeouts, comments, expanded events, namespace types, disambiguated update paths, pre/post-image events, and image configuration for collection creation and modification.
-- Added collection rename support with inherited write concern and rename/invalidate change-event coverage.
+- Collection, database, and cluster streams with pipeline options, blocking and nonblocking iteration, resume-token access, and one resume attempt after an eligible error.
+- Operation timeouts, comments, expanded events, namespace types, disambiguated update paths, and pre-image and post-image events.
+- Collection rename with inherited write concern and rename and invalidate events.
 
-### Conformance
+### Example
 
-- All 170 v0.5 cases within the MongoDB 7.0–8.2 release floor have exact unified executors across standalone, replica-set, authenticated, isolated, and sharded profiles.
-- Nineteen legacy-only cases remain explicit `ADV-011` exclusions: two pre-4.4 comment branches, sixteen MongoDB 4.2 resumable-code branches, and one pre-7.0 StaleShardVersion label branch.
+Read the next change for a collection:
 
-### Release engineering
+```lua
+local stream = assert(users:watch())
+local event, err = stream:next()
+assert(event, err)
 
-- Added a generated v0.5 change-stream scope and exact Full Conformance evidence across the pinned MongoDB 8.2 primary and focused MongoDB 8.0.16 version branch.
+print(event:get("operationType"))
+assert(stream:close())
+```
 
 ## [0.4.0] - 2026-08-17
 
-Sharded parity release.
+Sharded deployment support arrived with snapshot sessions and Search index management.
 
 ### Added
 
-- Added snapshot sessions with server-version enforcement, transaction rejection, snapshot read concerns, and stable snapshot-time capture and access.
-- Added create, list, update, and drop Search index operations, including multi-index creation and concern omission.
-- Added sharded discovery, monitoring modes and recovery, `srvMaxHosts`, command execution through mongos, transaction pinning and unpinning, and recovery-token forwarding.
-- Added pool-clear handling for authentication, application, and monitor failures, including optional interruption of in-use connections.
+- Snapshot sessions with server-version checks, transaction rejection, snapshot read concerns, and stable snapshot-time access.
+- Create, list, update, and drop operations for standard and vector Search indexes.
+- Sharded discovery, monitoring modes, `srvMaxHosts`, command execution through mongos, transaction pinning, and recovery-token forwarding.
+- Pool clearing after authentication, application, and monitor failures, with optional interruption of checked-out connections.
 
-### Conformance
+### Example
 
-- All 851 applicable v0.4 cases pass: 355 through exact unified execution and 496 through deterministic runners; 47 non-target cases retain explicit later owners or target-version exclusions.
-- All 48 modern read/write-concern cases pass, and the pinned MongoDB 7.0, 8.0, and 8.2 compatibility matrix covers standalone, replica-set, and sharded deployments.
+Use one server timestamp for every read in a snapshot session:
 
-### Release engineering
+```lua
+local session = assert(client:start_session({ snapshot = true }))
+local user = assert(users:find_one(
+  mongodb.bson.document({}),
+  { session = session }
+))
 
-- Added exact sharded Full Conformance, dual-version index evidence, and guarded v0.4.0 LuaRocks publication metadata.
+print(session:get_snapshot_time())
+assert(session:end_session())
+```
 
 ## [0.3.0] - 2026-08-14
 
-Authentication release.
+Authentication expanded beyond SCRAM to X.509, PLAIN, AWS, and OIDC mechanisms.
 
 ### Added
 
-- Added SASL PLAIN and MONGODB-X509 authentication with credential-safe structured failures and shared sensitive-command monitoring redaction.
-- Added the pure-Lua MONGODB-AWS SASL conversation and credential resolution from environment variables, web identity, ECS/container endpoints, and EC2 metadata, including bounded runtime-adapter I/O and refreshable provider caching.
-- Added MONGODB-OIDC machine and human callbacks, allowed-host enforcement, coordinated access/refresh-token caching, and built-in test, Kubernetes, Azure, and GCP providers.
-- Added cached-token speculative OIDC authentication and same-connection reauthentication with one operation retry on server code 391.
+- SASL PLAIN and MONGODB-X509 authentication with credential-safe errors and sensitive-command redaction.
+- MONGODB-AWS credential lookup through environment variables, web identity, ECS endpoints, and EC2 metadata.
+- MONGODB-OIDC machine and human callbacks, allowed-host checks, access and refresh token caching, and built-in Kubernetes, Azure, and GCP providers.
+- Cached-token speculative OIDC authentication and one same-connection reauthentication retry after server code 391.
 
-### Conformance
+### Example
 
-- All six pinned OIDC no-retry read, write, speculative-authentication, and reauthentication cases pass through the deterministic public-driver loopback.
-- The generated ledger classifies 5,524 normative cases: 3,671 pass, 1,851 remain assigned to named post-v1 capabilities, and two are superseded exclusions.
+Let MONGODB-AWS resolve workload credentials outside the URI:
 
-### Release engineering
-
-- Updated the exact-commit release checklist, LuaRocks package, portable workflows, and public documentation for version 0.3.0.
+```lua
+local client = assert(mongodb.client(
+  "mongodb://db.example.com/?authMechanism=MONGODB-AWS"
+))
+```
 
 ## [0.2.0] - 2026-08-13
 
-DNS seedlist release.
+DNS seedlist discovery supports `mongodb+srv` connection strings and periodic SRV polling.
 
 ### Added
 
-- Parsed and validated `mongodb+srv` connection strings, including `srvServiceName`, `srvMaxHosts`, implicit TLS, and the allowed `authSource`, `replicaSet`, and `loadBalanced` TXT defaults.
-- Added coroutine-safe SRV and TXT resolution to the Copas runtime adapter with UDP queries, TCP fallback for truncated replies, deadline/cancellation support, and injectable deterministic DNS providers.
-- Resolved and validated initial SRV seedlists before opening MongoDB sockets, including parent-domain security, explicit-option precedence, and randomized host limits.
-- Polled SRV records for Unknown and Sharded topologies using bounded TTL cadence while preserving unchanged servers and safely reconciling additions and removals.
+- `srvServiceName`, `srvMaxHosts`, implicit TLS, and the allowed `authSource`, `replicaSet`, and `loadBalanced` TXT defaults.
+- Coroutine-safe SRV and TXT resolution with UDP queries, TCP fallback for truncated replies, deadlines, and cancellation.
+- Parent-domain validation, explicit-option precedence, randomized host limits, and topology updates at the DNS TTL with a 60-second minimum.
 
-### Conformance
+### Example
 
-- All 40 pinned replica-set initial DNS seedlist fixtures and all 13 normative SRV polling prose cases pass.
-- The generated ledger classifies 5,524 normative cases: 3,610 pass and 1,914 remain assigned to named post-v1 capabilities.
+Use the SRV hostname published by a deployment:
 
-### Release engineering
-
-- Publication validates the exact release commit against complete Linux, macOS, unified, coverage, packaging, and six-row compatibility evidence before creating or verifying the immutable tag and LuaRocks/GitHub artifacts.
+```lua
+local client = assert(mongodb.client(
+  "mongodb+srv://db.example.com/app"
+))
+```
 
 ## [0.1.0] - 2026-08-09
 
-Initial production-core v1 release.
+Initial release.
 
 ### Added
 
-- Pure-Lua BSON, Extended JSON, OP_MSG, SDAM, CMAP, server selection, CRUD, collection bulk writes, administration, sessions, retries, transactions, monitoring, and client-side operation timeout.
-- Coroutine-aware Copas 4.11 runtime with LuaSocket networking, LuaSec TLS, and luaossl cryptography behind runtime adapters.
+- Pure-Lua BSON, Extended JSON, OP_MSG, SDAM, CMAP, server selection, CRUD, collection bulk writes, administration, sessions, retries, transactions, monitoring, and client-side operation timeouts.
+- A coroutine-aware Copas runtime with LuaSocket networking, LuaSec TLS, and luaossl cryptography behind runtime adapters.
 - Standalone and replica-set support for MongoDB Community Server 7.0, 8.0, and 8.2 with SCRAM and TLS profiles.
-- Generated conformance, compatibility, coverage, packaging, security-redaction, resource-cleanup, and release-readiness gates.
-
-### Scope
-
-- The release ledger classifies 5,524 normative cases: 3,559 pass and 1,965 are explicitly assigned to named post-v1 capabilities.
-- Change streams, GridFS, SRV discovery, wire compression, sharded and load-balanced deployments, client bulk write, additional authentication mechanisms, observability extensions, proxy support, and client-side encryption remain post-v1.
-
-### Release engineering
-
-- Added a guarded GitHub Actions dry run and idempotent LuaRocks publication path with exact-commit full-conformance, immutable-tag, isolated-install, public-install, and GitHub-release verification.
