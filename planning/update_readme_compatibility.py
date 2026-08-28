@@ -431,13 +431,20 @@ def specification_url(suite: str) -> str:
   return f"{SPECIFICATIONS_URL}{document[:-3]}.html"
 
 
-def marked_percentage(counts: dict[str, int]) -> str:
+def marked_percentage(
+  counts: dict[str, int],
+  *,
+  bold: bool = False,
+) -> str:
   percentage = supported_percentage(counts)
+
+  if bold:
+    percentage = f"**{percentage}**"
 
   if counts.get(OLD_SERVER_ONLY_STATUS, 0) == 0:
     return percentage
 
-  return f"{percentage}\\*"
+  return f"{percentage} **†**"
 
 
 def old_server_note(counts: dict[str, Counter[str]]) -> str | None:
@@ -470,8 +477,10 @@ def old_server_note(counts: dict[str, Counter[str]]) -> str | None:
     suites = f"{affected[0][1]} ({affected[0][0]})"
 
   return (
-    "> [!NOTE]\n"
-    f"> \\* The marked percentages skip {total} upstream fixtures because "
+    "> [!IMPORTANT]\n"
+    "> **† Old-server fixtures excluded from scoring.**\n"
+    ">\n"
+    f"> Percentages marked **†** skip {total} upstream fixtures because "
     "their `runOnRequirements` restrict them to MongoDB versions older than "
     f"the supported 7.0 floor. The affected suites are {suites}. These fixtures "
     "remain classified in the conformance ledger but do not count toward the "
@@ -558,7 +567,7 @@ def render_table(
       )
 
   lines.append(
-    f"|  | **Total** |  | **{marked_percentage(total_counts)}** |"
+    f"|  | **Total** |  | {marked_percentage(total_counts, bold=True)} |"
   )
 
   note = old_server_note(counts)

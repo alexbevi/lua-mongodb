@@ -84,17 +84,19 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "[CRUD](https://alexbevi.com/specifications/crud/crud.html) | "
-      "🟢 | 100.0%\\* |",
+      "🟢 | 100.0% **†** |",
       table,
     )
     self.assertIn(
       "[Change streams](https://alexbevi.com/specifications/change-streams/"
-      "change-streams.html) | 🟢 | 100.0%\\* |",
+      "change-streams.html) | 🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **82.4%\\*** |", table)
+    self.assertIn("|  | **Total** |  | **82.4%** **†** |", table)
+    self.assertIn("> [!IMPORTANT]", table)
+    self.assertIn("**† Old-server fixtures excluded from scoring.**", table)
     self.assertIn(
-      "The marked percentages skip 106 upstream fixtures because their "
+      "Percentages marked **†** skip 106 upstream fixtures because their "
       "`runOnRequirements` restrict them to MongoDB versions older than the "
       "supported 7.0 floor",
       table,
@@ -127,7 +129,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "uri-options/uri-options.html) | 🟡 | 95.8% |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **82.4%\\*** |", table)
+    self.assertIn("|  | **Total** |  | **82.4%** **†** |", table)
 
     readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
     self.assertIn("⚪ Will Not Implement", readme)
@@ -194,7 +196,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **82.4%\\*** |", table)
+    self.assertIn("|  | **Total** |  | **82.4%** **†** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"
