@@ -64,6 +64,61 @@ describe("find cursor lifecycle", function()
     assert.are.equal(1, release_count)
   end)
 
+  it("collects documents into bounded lists", function()
+    local responses = {
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(41) },
+          { "ns", "app.users" },
+          { "firstBatch", bson.array({
+            bson.document({ { "n", 1 } }),
+          }) },
+        }) },
+      }),
+      bson.document({
+        { "ok", 1 },
+        { "cursor", bson.document({
+          { "id", bson.int64(0) },
+          { "ns", "app.users" },
+          { "nextBatch", bson.array({
+            bson.document({ { "n", 2 } }),
+            bson.document({ { "n", 3 } }),
+          }) },
+        }) },
+      }),
+    }
+    local executor = {
+      close = function() return true end,
+      command = function()
+        return table.remove(responses, 1)
+      end,
+    }
+    local client = api.new_client(executor, assert(driver_options.normalize()))
+    local cursor = assert(client:database("app"):collection("users"):find())
+
+    assert.has_error(function()
+      cursor:to_list(0)
+    end, "cursor list length must be a positive integer")
+    assert.has_error(function()
+      cursor:to_list(1.5)
+    end, "cursor list length must be a positive integer")
+
+    local first = assert(cursor:to_list(2))
+
+    assert.are.equal(2, #first)
+    assert.are.equal(1, first[1]:get("n"))
+    assert.are.equal(2, first[2]:get("n"))
+    assert.is_false(cursor:is_closed())
+
+    local rest = assert(cursor:to_list())
+
+    assert.are.equal(1, #rest)
+    assert.are.equal(3, rest[1]:get("n"))
+    assert.is_true(cursor:is_closed())
+    assert.are.same({}, assert(cursor:to_list()))
+  end)
+
   it("returns an initial zero-id cursor pin immediately", function()
     local release_count = 0
     local pin = {
@@ -342,7 +397,7 @@ describe("find cursor lifecycle", function()
 
     assert.is_true(commands[1]:get("tailable"))
     assert.is_nil(commands[1]:get("awaitData"))
-    assert.is_nil(cursor:next())
+    assert.are.same({}, assert(cursor:to_list()))
     assert.is_false(cursor:is_closed())
     assert.are.equal(1, assert(cursor:next()):get("_id"))
     assert.is_true(cursor:is_closed())
@@ -789,9 +844,9 @@ describe("find cursor lifecycle", function()
     }
     local client = api.new_client(executor, assert(driver_options.normalize()))
     local cursor = assert(client:database("app"):collection("logs"):find())
-    local document, err = cursor:next()
+    local documents, err = cursor:to_list()
 
-    assert.is_nil(document)
+    assert.is_nil(documents)
     assert.is_true(errors.is(err, errors.CATEGORY.NETWORK))
     assert.is_true(cursor:is_closed())
 
@@ -809,6 +864,7 @@ describe("find cursor lifecycle", function()
     assert.is_true(client:close())
     assert.is_true(executor.closed)
     assert.is_true(cursor:is_closed())
+    local document
     document, err = cursor:next()
     assert.is_nil(document)
     assert.is_true(errors.is(err, errors.CATEGORY.CLIENT))

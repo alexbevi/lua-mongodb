@@ -339,6 +339,30 @@ function CURSOR_METHODS:iter()
   end
 end
 
+function CURSOR_METHODS:to_list(length)
+  if length ~= nil and (math.type(length) ~= "integer" or length < 1) then
+    error("cursor list length must be a positive integer", 2)
+  end
+
+  local documents = {}
+
+  while length == nil or #documents < length do
+    local document, err = self:next()
+
+    if err then
+      return nil, err
+    end
+
+    if document == nil then
+      break
+    end
+
+    documents[#documents + 1] = document
+  end
+
+  return documents
+end
+
 function CURSOR_METHODS:is_closed()
   return CURSOR_STATES[self].closed
 end

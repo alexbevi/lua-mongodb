@@ -858,6 +858,13 @@ Generic Lua iteration stops when its first value is nil.
 `next()` loop when failures must be handled, and do not use `iter()` to poll a tailable cursor
 because an empty live batch ends the loop even though the cursor remains open.
 
+`cursor:to_list([length]) -> documents | nil, err`
+
+This collects BSON documents into a Lua list and preserves operational errors. With no length,
+it reads until exhaustion or until a tailable cursor returns an empty live batch. A positive
+integer length reads at most that many documents. Reaching the length leaves a live cursor open
+so a later call can collect the remaining documents. An exhausted cursor returns an empty list.
+
 `cursor:is_closed() -> boolean`
 
 This reports local lifecycle state without performing I/O. Normal exhaustion, explicit close,
