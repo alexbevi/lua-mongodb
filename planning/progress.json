@@ -10875,6 +10875,56 @@
       "notes": [],
       "started_at": "2026-08-31T02:21:48+00:00",
       "completed_at": "2026-08-31T02:27:54+00:00"
+    },
+    "CI-013": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_driver_spec.lua --filter leaves.heartbeat.timing.unchanged'",
+          "exit_code": 2,
+          "summary": "The non-heartbeat-observing unified client received the 500 ms test-runner interval instead of leaving the production heartbeat default unchanged; 1 focused contract ran and failed.",
+          "recorded_at": "2026-08-31T13:37:07+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_driver_spec.lua'",
+          "exit_code": 0,
+          "summary": "All 20 unified-driver unit contracts passed, including heartbeat-observing acceleration, unchanged timing for other clients, and explicit heartbeatFrequencyMS authority.",
+          "recorded_at": "2026-08-31T13:40:09+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='*server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[[]3[]]'",
+          "exit_code": 0,
+          "summary": "The exact standalone failing-heartbeat case executed and passed in about 1.04 seconds with 0 environment skips, deferrals, or failures.",
+          "recorded_at": "2026-08-31T13:40:10+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='*server-discovery-and-monitoring/tests/unified/logging-sharded.json::test[[]3[]]'",
+          "exit_code": 0,
+          "summary": "The exact sharded failing-heartbeat case executed and passed in about 1.13 seconds with 0 environment skips, deferrals, or failures.",
+          "recorded_at": "2026-08-31T13:40:11+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='*server-discovery-and-monitoring/tests/unified/auth-network-timeout-error.json::test[[]1[]]'",
+          "exit_code": 0,
+          "summary": "The exact authenticated network-timeout case executed and passed with one required pool-clear event and 0 environment skips, deferrals, or failures.",
+          "recorded_at": "2026-08-31T13:40:12+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_LINT='spec/support/mongodb/unified/driver.lua spec/unit/unified_driver_spec.lua'",
+          "exit_code": 0,
+          "summary": "Lua 5.4 touched-file lint passed with 0 warnings and 0 errors in both files.",
+          "recorded_at": "2026-08-31T13:40:13+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-31T03:08:09+00:00",
+      "completed_at": "2026-08-31T13:40:23+00:00"
     }
   },
   "verified_references": {

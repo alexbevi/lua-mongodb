@@ -1164,7 +1164,7 @@ describe("unified driver lifecycle events", function()
     end)
   end)
 
-  it("uses a reduced heartbeat interval for unified clients by default", function()
+  it("uses a reduced heartbeat interval for heartbeat-observing unified clients", function()
     with_fake_client(function(driver, connections)
       local lifecycle = assert(driver.new({
         environment = { topology = "single" },
@@ -1182,7 +1182,10 @@ describe("unified driver lifecycle events", function()
                 { "arguments", document({
                   { "entities", array({
                     document({
-                      { "client", document({ { "id", "client" } }) },
+                      { "client", document({
+                        { "id", "client" },
+                        { "observeEvents", array({ "serverHeartbeatFailedEvent" }) },
+                      }) },
                     }),
                   }) },
                 }) },
@@ -1194,6 +1197,40 @@ describe("unified driver lifecycle events", function()
 
       assert.are.equal(1, report.summary.passed)
       assert.are.equal(500, connections[2].options.heartbeat_frequency_ms)
+      assert(lifecycle:close())
+    end)
+  end)
+
+  it("leaves heartbeat timing unchanged for other unified clients", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "single" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "tests", array({
+          document({
+            { "description", "Default heartbeat interval" },
+            { "operations", array({
+              document({
+                { "name", "createEntities" },
+                { "object", "testRunner" },
+                { "arguments", document({
+                  { "entities", array({
+                    document({
+                      { "client", document({ { "id", "client" } }) },
+                    }),
+                  }) },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "default-monitor-interval.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.is_nil(connections[2].options.heartbeat_frequency_ms)
       assert(lifecycle:close())
     end)
   end)
