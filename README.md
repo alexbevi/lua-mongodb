@@ -2,7 +2,8 @@
 
 A coroutine-aware MongoDB driver written in Lua without binding or wrapping `libmongoc`. It supports Lua 5.4 and Lua 5.5, standalone servers, [replica sets](https://www.mongodb.com/docs/manual/replication/), [sharded clusters](https://www.mongodb.com/docs/manual/sharding/), and load-balanced deployments. The [MongoDB driver specifications](https://github.com/mongodb/specifications) define its behavior, with a pinned [PyMongo](https://pymongo.readthedocs.io/en/stable/) checkout as a reference.
 
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for design decisions, [`planning/strategy.md`](planning/strategy.md) for the implementation method, and [`planning/plan.json`](planning/plan.json) for the roadmap.
+The [API reference](docs/API.md) lists supported entry points and stability guarantees. The
+[architecture guide](docs/ARCHITECTURE.md) records the design boundaries behind them.
 
 Report potential vulnerabilities privately through the repository's [security policy](SECURITY.md).
 Development setup and review expectations are in the [contribution guide](CONTRIBUTING.md).
@@ -49,73 +50,6 @@ luarocks make
 Release rockspecs are built and verified from immutable release tags before publication.
 
 The [API reference and stability policy](docs/API.md) lists supported public and runtime-extension entry points. Packaged internal modules are not public API.
-
-## Specification compatibility
-
-`planning/update_readme_compatibility.py` generates this table from the [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Green means every scored outcome passes. Yellow means passed and incomplete outcomes coexist. Red means no scored outcome passes.
-
-Tracked support % divides passes by scored outcomes. It omits `not_applicable`, `no_machine_cases`, terminal `unsupported`, explicit unscored exclusions, and unified fixtures restricted to MongoDB versions older than the supported 7.0 floor. A bold dagger marks percentages with omitted fixtures. A suite with no scored outcomes displays N/A, and the white badge marks a suite the project will not implement. The total combines all displayed outcomes rather than averaging suite percentages.
-
-The "onion model" orders the [MongoDB driver specifications](https://alexbevi.com/specifications/) with serialization first and testability last.
-
-> [!NOTE]
-> Legend:\
-> 🟢 Fully Implemented / Validated\
-> 🟡 Partially Implemented\
-> 🔴 Not Implemented\
-> ⚪ Will Not Implement
-
-<!-- BEGIN SPEC CONFORMANCE -->
-| Driver layer | Specification suite | Status | Tracked support % |
-| --- | --- | :---: | ---: |
-| Serialization | [BSON corpus](https://alexbevi.com/specifications/bson-corpus/bson-corpus.html) | 🟢 | 100.0% |
-| Serialization | [BSON binary vector](https://alexbevi.com/specifications/bson-binary-vector/bson-binary-vector.html) | 🟢 | 100.0% |
-| Communication | [Connection string](https://alexbevi.com/specifications/connection-string/connection-string-spec.html) | 🟢 | 100.0% |
-| Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 95.8% **†** |
-| Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
-| Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟢 | 100.0% |
-| Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | ⚪ | N/A |
-| Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
-| Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | ⚪ | N/A |
-| Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟢 | 100.0% |
-| Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 98.9% **†** |
-| Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟢 | 100.0% **†** |
-| Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟢 | 100.0% **†** |
-| Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟢 | 100.0% **†** |
-| Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟢 | 100.0% |
-| Availability | [Max staleness](https://alexbevi.com/specifications/max-staleness/max-staleness.html) | 🟢 | 100.0% |
-| Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
-| Resilience | [Retryable reads](https://alexbevi.com/specifications/retryable-reads/retryable-reads.html) | 🟢 | 100.0% |
-| Resilience | [Retryable writes](https://alexbevi.com/specifications/retryable-writes/retryable-writes.html) | 🟢 | 100.0% **†** |
-| Resilience | [Client-side operations timeout](https://alexbevi.com/specifications/client-side-operations-timeout/client-side-operations-timeout.html) | 🟡 | 99.4% |
-| Resilience | [Sessions](https://alexbevi.com/specifications/sessions/driver-sessions.html) | 🟢 | 100.0% **†** |
-| Resilience | [Causal consistency](https://alexbevi.com/specifications/causal-consistency/causal-consistency.html) | 🟢 | 100.0% |
-| Resilience | [Transactions](https://alexbevi.com/specifications/transactions/transactions.html) | 🟡 | 96.5% |
-| Resilience | [Convenient transactions API](https://alexbevi.com/specifications/transactions-convenient-api/transactions-convenient-api.html) | 🟢 | 100.0% |
-| Programmability | [CRUD](https://alexbevi.com/specifications/crud/crud.html) | 🟢 | 100.0% **†** |
-| Programmability | [Collection management](https://alexbevi.com/specifications/enumerate-collections/enumerate-collections.html) | 🟢 | 100.0% |
-| Programmability | [Index management](https://alexbevi.com/specifications/index-management/index-management.html) | 🟢 | 100.0% |
-| Programmability | [Read/write concern](https://alexbevi.com/specifications/read-write-concern/read-write-concern.html) | 🟢 | 100.0% |
-| Programmability | [Change streams](https://alexbevi.com/specifications/change-streams/change-streams.html) | 🟢 | 100.0% **†** |
-| Programmability | [GridFS](https://alexbevi.com/specifications/gridfs/gridfs-spec.html) | 🟢 | 100.0% |
-| Programmability | [Stable API](https://alexbevi.com/specifications/versioned-api/versioned-api.html) | 🟢 | 100.0% |
-| Programmability | [Client-side encryption](https://alexbevi.com/specifications/client-side-encryption/client-side-encryption.html) | 🔴 | 0.0% **†** |
-| Observability | [Command logging and monitoring](https://alexbevi.com/specifications/command-logging-and-monitoring/command-logging-and-monitoring.html) | 🟢 | 100.0% **†** |
-| Observability | [Standardized logging](https://alexbevi.com/specifications/logging/logging.html) | 🟢 | 100.0% |
-| Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
-| Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
-| Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
-|  | **Total** |  | **83.0%** **†** |
-
-> [!IMPORTANT]
-> **† Fixtures excluded from scoring.**
->
-> Percentages marked **†** skip 106 upstream fixtures because their `runOnRequirements` restrict them to MongoDB versions older than the supported 7.0 floor. The affected suites are CRUD (74), Change streams (19), Command logging and monitoring (4), Retryable writes (3), Sessions (3), Server discovery and monitoring (2), and Client-side encryption (1). These fixtures remain classified in the conformance ledger but do not count toward the marked suite percentages or the total.
->
-> The ledger also omits 3 explicit superseded or upstream-skipped fixtures from Authentication options and additional mechanisms (2), Load balancer support (1).
->
-> The ledger excludes 17 terminal unsupported fixtures from scoring in URI options (15), Connection monitoring and pooling (2).
-<!-- END SPEC CONFORMANCE -->
 
 ## Getting started
 
@@ -614,40 +548,95 @@ Clients, cursors, and sessions have idempotent close methods. Close resources pr
 
 The [`examples`](examples/README.md) use the public LuaRocks package for connection setup, BSON data, transactions, and two-window LÖVE Pong driven by change streams. They do not load modules from the source checkout.
 
+## Specification compatibility
+
+`planning/update_readme_compatibility.py` generates this table from the [conformance ledger](spec/conformance/ledger.json) and [accepted-specification catalog](spec/conformance/catalog.json). Green means every scored outcome passes. Yellow means passed and incomplete outcomes coexist. Red means no scored outcome passes.
+
+Tracked support % divides passes by scored outcomes. It omits `not_applicable`, `no_machine_cases`, terminal `unsupported`, explicit unscored exclusions, and unified fixtures restricted to MongoDB versions older than the supported 7.0 floor. A bold dagger marks percentages with omitted fixtures. A suite with no scored outcomes displays N/A, and the white badge marks a suite the project will not implement. The total combines all displayed outcomes rather than averaging suite percentages.
+
+The "onion model" orders the [MongoDB driver specifications](https://alexbevi.com/specifications/) with serialization first and testability last.
+
+> [!NOTE]
+> Legend:\
+> 🟢 Fully Implemented / Validated\
+> 🟡 Partially Implemented\
+> 🔴 Not Implemented\
+> ⚪ Will Not Implement
+
+<!-- BEGIN SPEC CONFORMANCE -->
+| Driver layer | Specification suite | Status | Tracked support % |
+| --- | --- | :---: | ---: |
+| Serialization | [BSON corpus](https://alexbevi.com/specifications/bson-corpus/bson-corpus.html) | 🟢 | 100.0% |
+| Serialization | [BSON binary vector](https://alexbevi.com/specifications/bson-binary-vector/bson-binary-vector.html) | 🟢 | 100.0% |
+| Communication | [Connection string](https://alexbevi.com/specifications/connection-string/connection-string-spec.html) | 🟢 | 100.0% |
+| Communication | [URI options](https://alexbevi.com/specifications/uri-options/uri-options.html) | 🟡 | 95.8% **†** |
+| Communication | [Handshake metadata propagation](https://alexbevi.com/specifications/mongodb-handshake/handshake.html) | 🟢 | 100.0% |
+| Communication | [Initial DNS seedlist discovery](https://alexbevi.com/specifications/initial-dns-seedlist-discovery/initial-dns-seedlist-discovery.html) | 🟢 | 100.0% |
+| Communication | [OCSP support](https://alexbevi.com/specifications/ocsp-support/ocsp-support.html) | ⚪ | N/A |
+| Communication | [Wire compression](https://alexbevi.com/specifications/compression/OP_COMPRESSED.html) | 🟢 | 100.0% |
+| Communication | [SOCKS5 proxy support](https://alexbevi.com/specifications/socks5-support/socks5.html) | ⚪ | N/A |
+| Communication | [Command execution](https://alexbevi.com/specifications/run-command/run-command.html) | 🟢 | 100.0% |
+| Connectivity | [Server discovery and monitoring](https://alexbevi.com/specifications/server-discovery-and-monitoring/server-discovery-and-monitoring.html) | 🟡 | 98.9% **†** |
+| Connectivity | [Connection monitoring and pooling](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🟢 | 100.0% **†** |
+| Connectivity | [Load balancer support](https://alexbevi.com/specifications/load-balancers/load-balancers.html) | 🟢 | 100.0% **†** |
+| Authentication | [Authentication options and additional mechanisms](https://alexbevi.com/specifications/auth/auth.html) | 🟢 | 100.0% **†** |
+| Availability | [Server selection](https://alexbevi.com/specifications/server-selection/server-selection.html) | 🟢 | 100.0% |
+| Availability | [Max staleness](https://alexbevi.com/specifications/max-staleness/max-staleness.html) | 🟢 | 100.0% |
+| Availability | [Periodic SRV polling](https://alexbevi.com/specifications/polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.html) | 🟢 | 100.0% |
+| Resilience | [Retryable reads](https://alexbevi.com/specifications/retryable-reads/retryable-reads.html) | 🟢 | 100.0% |
+| Resilience | [Retryable writes](https://alexbevi.com/specifications/retryable-writes/retryable-writes.html) | 🟢 | 100.0% **†** |
+| Resilience | [Client-side operations timeout](https://alexbevi.com/specifications/client-side-operations-timeout/client-side-operations-timeout.html) | 🟡 | 99.4% |
+| Resilience | [Sessions](https://alexbevi.com/specifications/sessions/driver-sessions.html) | 🟢 | 100.0% **†** |
+| Resilience | [Causal consistency](https://alexbevi.com/specifications/causal-consistency/causal-consistency.html) | 🟢 | 100.0% |
+| Resilience | [Transactions](https://alexbevi.com/specifications/transactions/transactions.html) | 🟡 | 96.5% |
+| Resilience | [Convenient transactions API](https://alexbevi.com/specifications/transactions-convenient-api/transactions-convenient-api.html) | 🟢 | 100.0% |
+| Programmability | [CRUD](https://alexbevi.com/specifications/crud/crud.html) | 🟢 | 100.0% **†** |
+| Programmability | [Collection management](https://alexbevi.com/specifications/enumerate-collections/enumerate-collections.html) | 🟢 | 100.0% |
+| Programmability | [Index management](https://alexbevi.com/specifications/index-management/index-management.html) | 🟢 | 100.0% |
+| Programmability | [Read/write concern](https://alexbevi.com/specifications/read-write-concern/read-write-concern.html) | 🟢 | 100.0% |
+| Programmability | [Change streams](https://alexbevi.com/specifications/change-streams/change-streams.html) | 🟢 | 100.0% **†** |
+| Programmability | [GridFS](https://alexbevi.com/specifications/gridfs/gridfs-spec.html) | 🟢 | 100.0% |
+| Programmability | [Stable API](https://alexbevi.com/specifications/versioned-api/versioned-api.html) | 🟢 | 100.0% |
+| Programmability | [Client-side encryption](https://alexbevi.com/specifications/client-side-encryption/client-side-encryption.html) | 🔴 | 0.0% **†** |
+| Observability | [Command logging and monitoring](https://alexbevi.com/specifications/command-logging-and-monitoring/command-logging-and-monitoring.html) | 🟢 | 100.0% **†** |
+| Observability | [Standardized logging](https://alexbevi.com/specifications/logging/logging.html) | 🟢 | 100.0% |
+| Observability | [Client backpressure](https://alexbevi.com/specifications/connection-monitoring-and-pooling/connection-monitoring-and-pooling.html) | 🔴 | 0.0% |
+| Observability | [OpenTelemetry](https://alexbevi.com/specifications/open-telemetry/open-telemetry.html) | 🔴 | 0.0% |
+| Testability | [Unified test format](https://alexbevi.com/specifications/unified-test-format/unified-test-format.html) | 🟢 | 100.0% |
+|  | **Total** |  | **83.0%** **†** |
+
+> [!IMPORTANT]
+> **† Fixtures excluded from scoring.**
+>
+> Percentages marked **†** skip 106 upstream fixtures because their `runOnRequirements` restrict them to MongoDB versions older than the supported 7.0 floor. The affected suites are CRUD (74), Change streams (19), Command logging and monitoring (4), Retryable writes (3), Sessions (3), Server discovery and monitoring (2), and Client-side encryption (1). These fixtures remain classified in the conformance ledger but do not count toward the marked suite percentages or the total.
+>
+> The ledger also omits 3 explicit superseded or upstream-skipped fixtures from Authentication options and additional mechanisms (2), Load balancer support (1).
+>
+> The ledger excludes 17 terminal unsupported fixtures from scoring in URI options (15), Connection monitoring and pooling (2).
+<!-- END SPEC CONFORMANCE -->
+
 ## Development
 
-After cloning, initialize the pinned normative and reference repositories:
+After cloning, initialize the pinned specification and behavioral-reference repositories:
 
 ```sh
 git submodule update --init --recursive
-python3 planning/update_plan.py check --strict --pushed
-python3 planning/update_plan.py next
 ```
 
-The main verification targets are:
-
-```sh
-make test-unit
-make test-integration
-make test-unified
-make test-conformance
-make test-quality
-make test-compatibility
-make test-package
-make lint
-make check
-```
-
-For a local change, run the narrow selector-driven target:
+For a local change, start with the narrow selector-driven target:
 
 ```sh
 make test-focus FOCUS_UNIT=spec/unit/config_options_spec.lua \
   FOCUS_LINT="src/mongodb/config/options.lua spec/unit/config_options_spec.lua"
 ```
 
-Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for other boundaries. GitHub Actions runs portable gates and representative live rows after each push. Full Conformance owns complete unified, coverage, and server/topology compatibility checks.
+Use `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, or `FOCUS_PYTHON` for other boundaries. Run
+`make test-architecture` when production dependencies change and `make test-complexity` when Lua
+control flow changes. `make check-fast` matches the required portable gate. `make check-full` adds
+complete live unified execution and coverage for release work.
 
-See [`planning/README.md`](planning/README.md) for roadmap commands and [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for implementation details and design decisions.
+The [contribution guide](CONTRIBUTING.md) covers setup, focused selectors, generated files, and
+review expectations.
 
 ## License
 

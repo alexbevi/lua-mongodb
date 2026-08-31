@@ -54,6 +54,16 @@ class DocumentationStructureTests(unittest.TestCase):
       with self.subTest(target=target):
         self.assertIn(target, targets)
 
+  def test_readme_puts_usage_before_conformance_details(self) -> None:
+    text = README.read_text(encoding="utf-8")
+    headings = [
+      text.index("## Getting started"),
+      text.index("## Examples"),
+      text.index("## Specification compatibility"),
+      text.index("## Development"),
+    ]
+    self.assertEqual(headings, sorted(headings))
+
   def test_security_policy_has_a_private_reporting_route(self) -> None:
     policy = SECURITY.read_text(encoding="utf-8")
 
