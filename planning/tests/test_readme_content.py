@@ -41,26 +41,11 @@ class DocumentationStructureTests(unittest.TestCase):
         with self.subTest(document=document.name, target=target):
           self.assertTrue((document.parent / path).exists(), target)
 
-  def test_readme_links_public_policies(self) -> None:
-    targets = set(markdown_links(README))
-
-    for target in (
-      "CONTRIBUTING.md",
-      "SECURITY.md",
-      "docs/API.md",
-      "docs/ARCHITECTURE.md",
-      "examples/README.md",
-    ):
-      with self.subTest(target=target):
-        self.assertIn(target, targets)
-
   def test_readme_puts_usage_before_conformance_details(self) -> None:
     text = README.read_text(encoding="utf-8")
     headings = [
       text.index("## Getting started"),
-      text.index("## Examples"),
       text.index("## Specification compatibility"),
-      text.index("## Development"),
     ]
     self.assertEqual(headings, sorted(headings))
 

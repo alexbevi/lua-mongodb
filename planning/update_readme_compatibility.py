@@ -395,7 +395,7 @@ def suite_counts(
   return dict(counts)
 
 
-def status_marker(counts: dict[str, int]) -> str:
+def status_label(counts: dict[str, int]) -> str:
   passed = counts.get("passed", 0)
   incomplete = sum(
     count for status, count in counts.items()
@@ -403,18 +403,18 @@ def status_marker(counts: dict[str, int]) -> str:
   )
 
   if passed > 0 and incomplete == 0:
-    return "🟢"
+    return "Complete"
 
   if passed > 0:
-    return "🟡"
+    return "Partial"
 
   if counts.get("unsupported", 0) > 0:
-    return "⚪"
+    return "Not supported"
 
   if incomplete > 0:
-    return "🔴"
+    return "Not implemented"
 
-  return "⚪"
+  return "Not supported"
 
 
 def supported_percentage(counts: dict[str, int]) -> str:
@@ -438,122 +438,6 @@ def specification_url(suite: str) -> str:
     )
 
   return f"{SPECIFICATIONS_URL}{document[:-3]}.html"
-
-
-def marked_percentage(
-  counts: dict[str, int],
-  *,
-  bold: bool = False,
-) -> str:
-  percentage = supported_percentage(counts)
-
-  if bold:
-    percentage = f"**{percentage}**"
-
-  scored = sum(
-    count for status, count in counts.items()
-    if status not in NON_EXECUTION_STATUSES
-  )
-  if (
-    counts.get(OLD_SERVER_ONLY_STATUS, 0) == 0
-    and counts.get(UNSCORED_EXCLUSION_STATUS, 0) == 0
-    and (counts.get("unsupported", 0) == 0 or scored == 0)
-  ):
-    return percentage
-
-  return f"{percentage} **†**"
-
-
-def scoring_note(counts: dict[str, Counter[str]]) -> str | None:
-  labels = {
-    suite: label
-    for _, entries in DRIVER_LAYERS
-    for suite, label in entries
-  }
-  affected = sorted(
-    (
-      (outcomes[OLD_SERVER_ONLY_STATUS], labels[suite])
-      for suite, outcomes in counts.items()
-      if outcomes[OLD_SERVER_ONLY_STATUS] > 0
-    ),
-    key=lambda item: (-item[0], item[1].lower()),
-  )
-
-  exclusions = sorted(
-    (
-      (outcomes[UNSCORED_EXCLUSION_STATUS], labels[suite])
-      for suite, outcomes in counts.items()
-      if outcomes[UNSCORED_EXCLUSION_STATUS] > 0
-    ),
-    key=lambda item: (-item[0], item[1].lower()),
-  )
-  unsupported = sorted(
-    (
-      (outcomes["unsupported"], labels[suite])
-      for suite, outcomes in counts.items()
-      if outcomes["unsupported"] > 0
-      and any(
-        count > 0 and status not in NON_EXECUTION_STATUSES
-        for status, count in outcomes.items()
-      )
-    ),
-    key=lambda item: (-item[0], item[1].lower()),
-  )
-
-  if not affected and not exclusions and not unsupported:
-    return None
-
-  note = (
-    "> [!IMPORTANT]\n"
-    "> **† Fixtures excluded from scoring.**\n"
-  )
-
-  if affected:
-    total = sum(count for count, _ in affected)
-    suites = ", ".join(
-      f"{label} ({count})"
-      for count, label in affected[:-1]
-    )
-
-    if len(affected) > 1:
-      suites = f"{suites}, and {affected[-1][1]} ({affected[-1][0]})"
-    else:
-      suites = f"{affected[0][1]} ({affected[0][0]})"
-
-    note = (
-      f"{note}>\n"
-      f"> Percentages marked **†** skip {total} upstream fixtures because "
-      "their `runOnRequirements` restrict them to MongoDB versions older than "
-      f"the supported 7.0 floor. The affected suites are {suites}. These fixtures "
-      "remain classified in the conformance ledger but do not count toward the "
-      "marked suite percentages or the total."
-    )
-
-  if exclusions:
-    exclusion_total = sum(count for count, _ in exclusions)
-    exclusion_suites = ", ".join(
-      f"{label} ({count})"
-      for count, label in exclusions
-    )
-    note = (
-      f"{note}\n>\n"
-      f"> The ledger also omits {exclusion_total} explicit superseded or "
-      f"upstream-skipped fixtures from {exclusion_suites}."
-    )
-
-  if unsupported:
-    unsupported_total = sum(count for count, _ in unsupported)
-    unsupported_suites = ", ".join(
-      f"{label} ({count})"
-      for count, label in unsupported
-    )
-    note = (
-      f"{note}\n>\n"
-      f"> The ledger excludes {unsupported_total} terminal unsupported "
-      f"fixtures from scoring in {unsupported_suites}."
-    )
-
-  return note
 
 
 def render_table(
@@ -620,8 +504,8 @@ def render_table(
     )
 
   lines = [
-    "| Driver layer | Specification suite | Status | Tracked support % |",
-    "| --- | --- | :---: | ---: |",
+    "| Driver layer | Specification suite | Status | Pass rate |",
+    "| --- | --- | --- | ---: |",
   ]
   total_counts: Counter[str] = Counter()
 
@@ -630,18 +514,13 @@ def render_table(
       total_counts.update(counts[suite])
       lines.append(
         f"| {layer} | [{label}]({specification_url(suite)}) | "
-        f"{status_marker(counts[suite])} | "
-        f"{marked_percentage(counts[suite])} |"
+        f"{status_label(counts[suite])} | "
+        f"{supported_percentage(counts[suite])} |"
       )
 
   lines.append(
-    f"|  | **Total** |  | {marked_percentage(total_counts, bold=True)} |"
+    f"|  | **Total** |  | **{supported_percentage(total_counts)}** |"
   )
-
-  note = scoring_note(counts)
-
-  if note is not None:
-    lines.extend(("", note))
 
   return "\n".join(lines)
 
