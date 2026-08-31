@@ -46,10 +46,11 @@ def make_checkout(root: Path) -> tuple[Path, str, str]:
   return checkout, first, second
 
 
-def write_plan(root: Path, first: str) -> Path:
-  path = root / "plan.json"
+def write_references(root: Path, first: str) -> Path:
+  path = root / "references.json"
   path.write_text(
     json.dumps({
+      "schema_version": 1,
       "references": {
         "source": {
           "path": "source",
@@ -73,45 +74,47 @@ class ReferenceUpdateTests(unittest.TestCase):
     with tempfile.TemporaryDirectory() as temporary:
       root = Path(temporary)
       checkout, first, second = make_checkout(root)
-      plan_path = write_plan(root, first)
+      references_path = write_references(root, first)
 
       summary = update_references.advance_reference(
         "source",
         second,
         root=root,
-        plan_path=plan_path,
+        references_path=references_path,
         generator_commands=(),
       )
 
       self.assertEqual(second, git(checkout, "rev-parse", "HEAD"))
-      plan = json.loads(plan_path.read_text(encoding="utf-8"))
-      self.assertEqual(second, plan["references"]["source"]["commit"])
+      references = json.loads(references_path.read_text(encoding="utf-8"))
+      self.assertEqual(second, references["references"]["source"]["commit"])
       self.assertEqual({"M": 1}, summary)
 
   def test_advance_rejects_dirty_or_drifted_checkout(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
       root = Path(temporary)
       checkout, first, second = make_checkout(root)
-      plan_path = write_plan(root, first)
+      references_path = write_references(root, first)
       (checkout / "untracked").write_text("dirty", encoding="utf-8")
 
       with self.assertRaisesRegex(update_references.ReferenceUpdateError, "dirty"):
         update_references.advance_reference(
-          "source", second, root=root, plan_path=plan_path, generator_commands=(),
+          "source", second, root=root, references_path=references_path,
+          generator_commands=(),
         )
 
       (checkout / "untracked").unlink()
       git(checkout, "checkout", "--detach", second)
       with self.assertRaisesRegex(update_references.ReferenceUpdateError, "expected"):
         update_references.advance_reference(
-          "source", second, root=root, plan_path=plan_path, generator_commands=(),
+          "source", second, root=root, references_path=references_path,
+          generator_commands=(),
         )
 
   def test_advance_requires_fast_forward_by_default(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
       root = Path(temporary)
       checkout, first, second = make_checkout(root)
-      plan_path = write_plan(root, second)
+      references_path = write_references(root, second)
       git(checkout, "checkout", "--detach", first)
       (checkout / "other.py").write_text("value = 1\n", encoding="utf-8")
       git(checkout, "add", "other.py")
@@ -121,7 +124,8 @@ class ReferenceUpdateTests(unittest.TestCase):
 
       with self.assertRaisesRegex(update_references.ReferenceUpdateError, "descendant"):
         update_references.advance_reference(
-          "source", divergent, root=root, plan_path=plan_path, generator_commands=(),
+          "source", divergent, root=root, references_path=references_path,
+          generator_commands=(),
         )
 
 

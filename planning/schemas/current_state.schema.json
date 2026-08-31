@@ -3,11 +3,12 @@
   "$id": "current_state.schema.json",
   "title": "Generated Lua MongoDB driver state",
   "type": "object",
-  "required": ["schema_version", "plan_id", "plan_digest", "references", "counts", "active", "ready", "ready_by_track", "blocked", "needs_review", "stale", "next_ready"],
+  "required": ["schema_version", "plan_id", "plan_digest", "reference_digest", "references", "counts", "active", "ready", "ready_by_track", "blocked", "needs_review", "stale", "next_ready"],
   "properties": {
     "schema_version": {"const": 1},
     "plan_id": {"type": "string"},
     "plan_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reference_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
     "references": {
       "type": "object",
       "additionalProperties": {

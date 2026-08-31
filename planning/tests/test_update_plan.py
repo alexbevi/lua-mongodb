@@ -115,6 +115,17 @@ class JsonTests(unittest.TestCase):
       with self.assertRaisesRegex(update_plan.PlanError, "malformed JSON"):
         update_plan.read_json(malformed)
 
+  def test_reference_pin_does_not_change_roadmap_digest(self) -> None:
+    first = minimal_plan()
+    second = copy.deepcopy(first)
+    second["references"]["source"]["commit"] = "1" * 40
+
+    self.assertEqual(update_plan.digest_plan(first), update_plan.digest_plan(second))
+    self.assertNotEqual(
+      update_plan.digest_references(first["references"]),
+      update_plan.digest_references(second["references"]),
+    )
+
 
 class GraphTests(unittest.TestCase):
   def test_unknown_dependency_and_cycle_are_rejected(self) -> None:

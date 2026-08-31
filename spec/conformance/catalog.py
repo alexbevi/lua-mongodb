@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "planning" / "specifications" / "source"
 PLAN = ROOT / "planning" / "plan.json"
+REFERENCES = ROOT / "planning" / "references.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LAYERS = ROOT / "spec" / "conformance" / "onion_layers.json"
 REQUIREMENTS = ROOT / "spec" / "conformance" / "prose_requirements.json"
@@ -98,10 +99,10 @@ def _load_layers(path: Path = LAYERS) -> dict[str, str]:
   return suites
 
 
-def _specifications_commit(path: Path = PLAN) -> str:
+def _specifications_commit(path: Path = REFERENCES) -> str:
   try:
-    plan = json.loads(path.read_text(encoding="utf-8"))
-    commit = plan["references"]["specifications"]["commit"]
+    document = json.loads(path.read_text(encoding="utf-8"))
+    commit = document["references"]["specifications"]["commit"]
   except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
     raise CatalogError(f"could not load pinned specifications commit: {exc}") from exc
 

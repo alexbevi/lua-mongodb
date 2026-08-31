@@ -1,10 +1,10 @@
 # Executable roadmap
 
-`plan.json` is the reviewed, mostly immutable activity DAG. `progress.json` stores mutable activity status and evidence. `current_state.json` is a deterministic generated summary; never edit it by hand.
+`plan.json` is the reviewed, mostly immutable activity DAG. `references.json` stores reference pins and mapped landmarks. `progress.json` stores mutable activity status and evidence. `current_state.json` is a deterministic generated summary; never edit it by hand.
 
 [`strategy.md`](strategy.md) documents the reproducible, specification-driven implementation and conformance method used by this project and intended for reuse by drivers in other languages.
 
-The reference checkouts are pinned in `plan.json` and registered as Git submodules:
+The reference checkouts are pinned in `references.json` and registered as Git submodules:
 
 - `planning/pymongo` is the behavioral and structural reference.
 - `planning/specifications` is the normative source and unified fixture corpus.

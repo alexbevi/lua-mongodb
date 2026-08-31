@@ -1,0 +1,49 @@
+{
+  "$schema": "./schemas/references.schema.json",
+  "schema_version": 1,
+  "references": {
+    "pymongo": {
+      "path": "planning/pymongo",
+      "url": "https://github.com/mongodb/mongo-python-driver.git",
+      "commit": "d03d621ef5fe567f941f4c28395a376a1899f77c",
+      "mappings": [
+        {"name": "bson", "path": "bson/__init__.py"},
+        {"name": "objectid", "path": "bson/objectid.py", "symbol": "ObjectId"},
+        {"name": "decimal128", "path": "bson/decimal128.py", "symbol": "Decimal128"},
+        {"name": "extended-json", "path": "bson/json_util.py"},
+        {"name": "errors", "path": "pymongo/errors.py", "symbol": "PyMongoError"},
+        {"name": "uri", "path": "pymongo/synchronous/uri_parser.py", "symbol": "parse_uri"},
+        {"name": "wire", "path": "pymongo/message.py", "symbol": "_op_msg"},
+        {"name": "compression", "path": "pymongo/compression_support.py"},
+        {"name": "network", "path": "pymongo/network_layer.py"},
+        {"name": "auth", "path": "pymongo/synchronous/auth.py"},
+        {"name": "topology", "path": "pymongo/synchronous/topology.py", "symbol": "Topology"},
+        {"name": "pool", "path": "pymongo/synchronous/pool.py", "symbol": "Pool"},
+        {"name": "client", "path": "pymongo/synchronous/mongo_client.py", "symbol": "MongoClient"},
+        {"name": "client-bulk", "path": "pymongo/synchronous/client_bulk.py", "symbol": "_ClientBulk"},
+        {"name": "change-stream", "path": "pymongo/synchronous/change_stream.py", "symbol": "ChangeStream"},
+        {"name": "gridfs", "path": "gridfs/synchronous/grid_file.py", "symbol": "GridFSBucket"},
+        {"name": "collection", "path": "pymongo/synchronous/collection.py", "symbol": "Collection"},
+        {"name": "database", "path": "pymongo/synchronous/database.py", "symbol": "Database"},
+        {"name": "cursor", "path": "pymongo/synchronous/cursor.py", "symbol": "Cursor"},
+        {"name": "sessions", "path": "pymongo/synchronous/client_session.py", "symbol": "ClientSession"},
+        {"name": "monitoring", "path": "pymongo/monitoring.py"},
+        {"name": "logger", "path": "pymongo/logger.py"},
+        {"name": "unified-runner", "path": "test/unified_format.py", "symbol": "UnifiedSpecTestMixinV1"},
+        {"name": "unified-shared", "path": "test/unified_format_shared.py"},
+        {"name": "spec-runner-utils", "path": "test/utils_spec_runner.py"}
+      ]
+    },
+    "specifications": {
+      "path": "planning/specifications",
+      "url": "https://github.com/mongodb/specifications.git",
+      "commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
+      "mappings": [
+        {"name": "source", "path": "source"},
+        {"name": "unified-format", "path": "source/unified-test-format"},
+        {"name": "unified-meta-tests", "path": "source/unified-test-format/tests"},
+        {"name": "unified-schema-1.28", "path": "source/unified-test-format/schema-1.28.json"}
+      ]
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "references.schema.json",
+  "title": "Lua MongoDB driver reference lock",
+  "type": "object",
+  "required": ["schema_version", "references"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "references": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "object",
+        "required": ["path", "url", "commit", "mappings"],
+        "properties": {
+          "path": {"type": "string"},
+          "url": {"type": "string"},
+          "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "mappings": {"type": "array"}
+        }
+      }
+    }
+  }
+}

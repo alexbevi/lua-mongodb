@@ -16,7 +16,7 @@ from typing import Iterable, Sequence
 
 PLANNING_DIR = Path(__file__).resolve().parent
 ROOT = PLANNING_DIR.parent
-PLAN_PATH = PLANNING_DIR / "plan.json"
+REFERENCES_PATH = PLANNING_DIR / "references.json"
 UPDATE_PLAN_SPEC = importlib.util.spec_from_file_location(
   "planning_update_plan", PLANNING_DIR / "update_plan.py",
 )
@@ -75,7 +75,7 @@ def require_git(
   return result.stdout.strip()
 
 
-def read_plan(path: Path) -> dict:
+def read_document(path: Path) -> dict:
   try:
     value = json.loads(path.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as exc:
@@ -161,15 +161,15 @@ def advance_reference(
   commit: str,
   *,
   root: Path = ROOT,
-  plan_path: Path = PLAN_PATH,
+  references_path: Path = REFERENCES_PATH,
   allow_non_fast_forward: bool = False,
   generator_commands: Sequence[Sequence[str]] | None = None,
 ) -> dict[str, int]:
   if not re.fullmatch(r"[0-9a-f]{40}", commit):
     raise ReferenceUpdateError("new commit must be a full lowercase 40-character SHA")
 
-  plan = read_plan(plan_path)
-  references = plan.get("references", {})
+  document = read_document(references_path)
+  references = document.get("references", {})
   if name not in references:
     raise ReferenceUpdateError(f"unknown reference: {name}")
   reference = references[name]
@@ -200,7 +200,7 @@ def advance_reference(
   summary = change_summary(checkout, old, commit)
   require_git(checkout, ["checkout", "--detach", commit], "could not update checkout")
   reference["commit"] = commit
-  update_plan.atomic_write(plan_path, plan)
+  update_plan.atomic_write(references_path, document)
 
   commands = generator_commands
   if commands is None:
@@ -211,7 +211,7 @@ def advance_reference(
 
 def build_parser() -> argparse.ArgumentParser:
   parser = argparse.ArgumentParser(description=__doc__)
-  parser.add_argument("reference", help="reference name from planning/plan.json")
+  parser.add_argument("reference", help="reference name from planning/references.json")
   parser.add_argument("commit", help="new full commit SHA")
   parser.add_argument(
     "--allow-non-fast-forward",

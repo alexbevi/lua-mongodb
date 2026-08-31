@@ -25,6 +25,7 @@ from typing import Any, Iterable
 PLANNING_DIR = Path(__file__).resolve().parent
 ROOT = PLANNING_DIR.parent
 PLAN_PATH = PLANNING_DIR / "plan.json"
+REFERENCES_PATH = PLANNING_DIR / "references.json"
 PROGRESS_PATH = PLANNING_DIR / "progress.json"
 STATE_PATH = PLANNING_DIR / "current_state.json"
 STATUSES = {"pending", "in_progress", "blocked", "completed", "needs_review"}
@@ -72,8 +73,26 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
 
 
 def digest_plan(plan: dict[str, Any]) -> str:
-  canonical = json.dumps(plan, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+  roadmap = {key: value for key, value in plan.items() if key != "references"}
+  canonical = json.dumps(roadmap, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
   return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def digest_references(references: dict[str, Any]) -> str:
+  canonical = json.dumps(
+    references, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+  )
+  return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def read_references(path: Path = REFERENCES_PATH) -> dict[str, Any]:
+  document = read_json(path)
+  if document.get("schema_version") != 1:
+    raise PlanError("references.schema_version must be 1")
+  references = document.get("references")
+  if not isinstance(references, dict) or not references:
+    raise PlanError("references.references must be a non-empty object")
+  return references
 
 
 def activity_map(plan: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -465,6 +484,7 @@ def compute_state(plan: dict[str, Any], progress: dict[str, Any]) -> dict[str, A
     "schema_version": 1,
     "plan_id": plan["plan_id"],
     "plan_digest": actual_digest,
+    "reference_digest": digest_references(plan.get("references", {})),
     "references": public_references,
     "counts": counts,
     "active": active,
@@ -573,7 +593,9 @@ def git_commit_issues(
 
 
 def load_documents() -> tuple[dict[str, Any], dict[str, Any]]:
-  return read_json(PLAN_PATH), read_json(PROGRESS_PATH)
+  plan = read_json(PLAN_PATH)
+  plan["references"] = read_references()
+  return plan, read_json(PROGRESS_PATH)
 
 
 def assert_valid_core(plan: dict[str, Any], progress: dict[str, Any]) -> None:
