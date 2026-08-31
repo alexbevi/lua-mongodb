@@ -124,7 +124,8 @@
       "SDAM-010",
       "CMAP-005",
       "CMAP-006",
-      "CON-017"
+      "CON-017",
+      "CI-012"
     ],
     "completed_v0_10_gates": [
       "ADV-006",

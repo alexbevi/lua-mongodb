@@ -217,6 +217,7 @@ V105_RELEASE_ACTIVITY = "REL-064"
 V106_GATES = ["SDAM-009", "SDAM-010", "CMAP-005", "CMAP-006"]
 V106_CONFORMANCE_ACTIVITY = "CON-017"
 V106_RELEASE_ACTIVITY = "REL-065"
+V106_STABILIZATION_ACTIVITY = "CI-012"
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -481,6 +482,7 @@ def generate() -> dict[str, Any]:
     *V106_GATES,
     V106_CONFORMANCE_ACTIVITY,
     V106_RELEASE_ACTIVITY,
+    V106_STABILIZATION_ACTIVITY,
   ]:
     raise ChecklistError(
       "v0.10.6 release gate inventory does not match the track"
@@ -580,7 +582,11 @@ def generate() -> dict[str, Any]:
 
     completed_activity(progress, activity_id)
 
-  for activity_id in [*V106_GATES, V106_CONFORMANCE_ACTIVITY]:
+  for activity_id in [
+    *V106_GATES,
+    V106_CONFORMANCE_ACTIVITY,
+    V106_STABILIZATION_ACTIVITY,
+  ]:
     if activity_id not in activities:
       raise ChecklistError(f"unknown v0.10.6 gate activity: {activity_id}")
 
@@ -804,6 +810,7 @@ def generate() -> dict[str, Any]:
       "completed_v0_10_6_gates": [
         *V106_GATES,
         V106_CONFORMANCE_ACTIVITY,
+        V106_STABILIZATION_ACTIVITY,
       ],
       "conformance": {
         "applicable_gaps": applicable_gaps,

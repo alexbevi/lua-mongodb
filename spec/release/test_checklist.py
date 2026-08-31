@@ -328,7 +328,14 @@ class ReleaseChecklistTests(unittest.TestCase):
       report["gates"]["v0_10_5_conformance"],
     )
     self.assertEqual(
-      ["SDAM-009", "SDAM-010", "CMAP-005", "CMAP-006", "CON-017"],
+      [
+        "SDAM-009",
+        "SDAM-010",
+        "CMAP-005",
+        "CMAP-006",
+        "CON-017",
+        "CI-012",
+      ],
       report["gates"]["completed_v0_10_6_gates"],
     )
     self.assertEqual(

@@ -1164,6 +1164,40 @@ describe("unified driver lifecycle events", function()
     end)
   end)
 
+  it("uses a reduced heartbeat interval for unified clients by default", function()
+    with_fake_client(function(driver, connections)
+      local lifecycle = assert(driver.new({
+        environment = { topology = "single" },
+        runtime = fake_runtime.new(),
+        uri = "mongodb://a:27017",
+      }))
+      local report = assert(lifecycle:run_file(document({
+        { "tests", array({
+          document({
+            { "description", "Reduced unified heartbeat interval" },
+            { "operations", array({
+              document({
+                { "name", "createEntities" },
+                { "object", "testRunner" },
+                { "arguments", document({
+                  { "entities", array({
+                    document({
+                      { "client", document({ { "id", "client" } }) },
+                    }),
+                  }) },
+                }) },
+              }),
+            }) },
+          }),
+        }) },
+      }), "reduced-monitor-interval.json"))
+
+      assert.are.equal(1, report.summary.passed)
+      assert.are.equal(500, connections[2].options.heartbeat_frequency_ms)
+      assert(lifecycle:close())
+    end)
+  end)
+
   it("forwards monitor timing URI options", function()
     with_fake_client(function(driver, connections)
       local lifecycle = assert(driver.new({

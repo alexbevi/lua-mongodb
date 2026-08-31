@@ -66,6 +66,7 @@ local function client_factory(state)
 
     local options = {
       command_listeners = { collector.listener },
+      heartbeat_frequency_ms = 500,
       logging = log_collector:options(),
       pool_listeners = { collector.pool_listener },
       runtime = state.runtime,

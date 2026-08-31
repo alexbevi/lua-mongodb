@@ -10839,6 +10839,42 @@
       "notes": [],
       "started_at": "2026-08-28T19:59:57+00:00",
       "completed_at": "2026-08-28T20:09:48+00:00"
+    },
+    "CI-012": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_UNIT='spec/unit/unified_driver_spec.lua --filter reduced.heartbeat.interval'",
+          "exit_code": 1,
+          "summary": "Unified clients omitted the permitted 500 ms test-runner heartbeat default.",
+          "recorded_at": "2026-08-31T02:22:48+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIT=spec/unit/unified_driver_spec.lua",
+          "exit_code": 0,
+          "summary": "All 19 unified-driver unit tests passed, including the reduced default and explicit heartbeat override.",
+          "recorded_at": "2026-08-31T02:27:24+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_UNIFIED='*server-discovery-and-monitoring/tests/unified/logging-standalone.json::test[[]3[]]' and sharded equivalent",
+          "exit_code": 0,
+          "summary": "The exact standalone and sharded failing-heartbeat fixtures each passed in about 1.15 seconds.",
+          "recorded_at": "2026-08-31T02:27:25+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus LUACHECK=/Users/alex/.luarocks/bin/luacheck FOCUS_LINT='spec/support/mongodb/unified/driver.lua spec/unit/unified_driver_spec.lua'",
+          "exit_code": 0,
+          "summary": "Lua 5.4 touched-file lint passed with zero warnings and errors.",
+          "recorded_at": "2026-08-31T02:27:26+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-08-31T02:21:48+00:00",
+      "completed_at": "2026-08-31T02:27:54+00:00"
     }
   },
   "verified_references": {

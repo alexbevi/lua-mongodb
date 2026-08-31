@@ -296,6 +296,11 @@ and cleanup. The unified runner executes upstream fixtures through public driver
 objects. Live jobs add real server versions, topologies, authentication, TLS,
 packaging, and platform boundaries.
 
+Unified-test clients use a 500 ms heartbeat interval unless a fixture supplies
+`heartbeatFrequencyMS`. This test-runner-only default keeps failpoint-driven
+heartbeat events within the Unified Test Format's ten-second `waitForEvent`
+deadline without changing production client defaults.
+
 Unknown unified entities, operations, arguments, events, or match operators are
 failures. Unsupported cases require an explicit reason and owner. Generated
 catalogs, ledgers, compatibility projections, coverage baselines, and scope
