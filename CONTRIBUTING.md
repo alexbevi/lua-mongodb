@@ -129,6 +129,17 @@ artifact command catalog lives in [the planning guide](planning/README.md).
 Every upstream fixture must execute or retain an explicit deferral with a reason. Unknown unified
 operations are failures and must not become silent skips.
 
+## Release boundaries
+
+Choose a release around a coherent change set that users can understand, adopt, and describe in an
+upgrade note. A roadmap activity, completed track, conformance closure, or CI improvement can supply
+release evidence, but none of them requires a new version by itself. Group related implementation
+commits when they deliver one user-facing outcome.
+
+Once a release scope is selected, its checklist verifies the exact commit, package, compatibility
+evidence, and publication metadata. Qualification should confirm an already green change set, not
+decide what the release is about.
+
 ## Changelog entries
 
 Update `CHANGELOG.md` when a published-driver change affects users. Write for someone deciding

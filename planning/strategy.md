@@ -62,7 +62,11 @@ The activity workflow is:
 9. Complete the activity and commit its exact subject with exactly one `Plan-Activity` trailer.
 10. Push the commit, run `check --strict --pushed`, and require the per-commit `CI Fast` GitHub Actions run to pass before selecting another activity. The next `start` transition independently refuses to proceed until all completed activity commits are unique and remote-reachable. Scheduled full-conformance status is release evidence and does not pause an otherwise green ordinary slice.
 
-Do not use a release activity to construct missing conformance infrastructure or discover broad semantic gaps. Release hardening should verify a matrix that is already green.
+A release boundary comes from a coherent user-facing change set, not from the shape of the roadmap.
+Completing an activity, track, conformance family, or CI improvement can provide release evidence
+without requiring a version or publication event. After the scope is chosen, release hardening
+should verify a matrix that is already green rather than construct missing infrastructure or
+discover broad semantic gaps.
 
 ## Local and CI verification
 
