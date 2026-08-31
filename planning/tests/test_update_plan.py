@@ -503,7 +503,11 @@ class CommitTests(unittest.TestCase):
       progress = progress_for(plan, {"TST-001": "completed"})
       progress["activities"]["TST-001"]["reopened_after_commit"] = boundary
 
-      self.assertEqual(update_plan.git_commit_issues(plan, progress, root), [])
+      with mock.patch.object(update_plan, "run_git", wraps=update_plan.run_git) as run_git:
+        self.assertEqual(update_plan.git_commit_issues(plan, progress, root), [])
+      self.assertFalse(any(
+        call.args[1][0] == "merge-base" for call in run_git.call_args_list
+      ))
 
   def test_strict_commit_check_rejects_multiple_activity_trailers(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
@@ -535,13 +539,22 @@ class CommitTests(unittest.TestCase):
       (root / "file").write_text("ok", encoding="utf-8")
       git(root, "add", "file")
       git(root, "commit", "-m", "feat(test): implement TST-001", "-m", "Plan-Activity: TST-001")
-      plan = minimal_plan()
-      progress = progress_for(plan, {"TST-001": "completed"})
+      (root / "file").write_text("second", encoding="utf-8")
+      git(root, "add", "file")
+      git(root, "commit", "-m", "feat(test): implement TST-002", "-m", "Plan-Activity: TST-002")
+      plan = minimal_plan([activity("TST-001"), activity("TST-002")])
+      progress = progress_for(plan, {"TST-001": "completed", "TST-002": "completed"})
       self.assertTrue(any("not present on a remote" in issue for issue in update_plan.git_commit_issues(
         plan, progress, root, require_pushed=True,
       )))
       git(root, "push", "-u", "origin", "main")
-      self.assertEqual(update_plan.git_commit_issues(plan, progress, root, require_pushed=True), [])
+      with mock.patch.object(update_plan, "run_git", wraps=update_plan.run_git) as run_git:
+        self.assertEqual(update_plan.git_commit_issues(plan, progress, root, require_pushed=True), [])
+      remote_scans = [
+        call.args[1] for call in run_git.call_args_list
+        if call.args[1][0] in {"for-each-ref", "rev-list"}
+      ]
+      self.assertEqual(remote_scans, [["rev-list", "--remotes"]])
 
 
 if __name__ == "__main__":

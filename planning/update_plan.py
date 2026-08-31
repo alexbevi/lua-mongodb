@@ -394,18 +394,23 @@ def compute_state(
   }
 
 
-def remote_refs_containing(root: Path, commit: str) -> list[str]:
-  result = run_git(root, [
-    "for-each-ref", f"--contains={commit}", "--format=%(refname)", "refs/remotes",
-  ])
+def remote_reachable_commits(root: Path) -> set[str]:
+  result = run_git(root, ["rev-list", "--remotes"])
   if result.returncode != 0:
-    return []
-  return [line for line in result.stdout.splitlines() if line]
+    return set()
+  return {line for line in result.stdout.splitlines() if line}
 
 
-def predates_commit_policy(root: Path, commit: str) -> bool:
-  result = run_git(root, ["merge-base", "--is-ancestor", commit, COMMIT_POLICY_BASELINE])
-  return result.returncode == 0
+def reachable_commits(start: str, edges: dict[str, set[str]]) -> set[str]:
+  reached: set[str] = set()
+  pending = list(edges.get(start, set()))
+  while pending:
+    commit = pending.pop()
+    if commit in reached:
+      continue
+    reached.add(commit)
+    pending.extend(edges.get(commit, set()))
+  return reached
 
 
 def git_commit_issues(
@@ -415,14 +420,25 @@ def git_commit_issues(
   probe = run_git(root, ["rev-parse", "--show-toplevel"])
   if probe.returncode != 0:
     return ["strict commit validation requires a Git repository"]
-  log = run_git(root, ["log", "--format=%H%x1f%s%x1f%B%x1e", "--all"])
+  log = run_git(root, ["log", "--format=%H%x1f%P%x1f%s%x1f%B%x1e", "--all"])
   if log.returncode != 0:
     return [f"could not inspect Git history: {log.stderr.strip()}"]
   commits: list[tuple[str, str, str]] = []
+  parents_by_commit: dict[str, set[str]] = {}
+  children_by_commit: dict[str, set[str]] = {}
   for record in log.stdout.split("\x1e"):
-    fields = record.strip().split("\x1f", 2)
-    if len(fields) == 3:
-      commits.append((fields[0], fields[1], fields[2]))
+    fields = record.strip().split("\x1f", 3)
+    if len(fields) == 4:
+      commit, parent_text, subject, body = fields
+      parents = set(parent_text.split())
+      commits.append((commit, subject, body))
+      parents_by_commit[commit] = parents
+      for parent in parents:
+        children_by_commit.setdefault(parent, set()).add(commit)
+  remote_commits = remote_reachable_commits(root) if require_pushed else set()
+  commits_before_policy = reachable_commits(COMMIT_POLICY_BASELINE, parents_by_commit)
+  commits_before_policy.add(COMMIT_POLICY_BASELINE)
+  descendants_by_boundary: dict[str, set[str]] = {}
   issues: list[str] = []
   for activity in plan["activities"]:
     activity_id = activity["id"]
@@ -433,13 +449,12 @@ def git_commit_issues(
     eligible_commits = commits
 
     if reopen_boundary:
+      descendants = descendants_by_boundary.setdefault(
+        reopen_boundary, reachable_commits(reopen_boundary, children_by_commit),
+      )
       eligible_commits = [
         item for item in commits
-        if item[0] != reopen_boundary
-        and run_git(
-          root,
-          ["merge-base", "--is-ancestor", reopen_boundary, item[0]],
-        ).returncode == 0
+        if item[0] in descendants
       ]
 
     trailer = f"Plan-Activity: {activity_id}"
@@ -459,7 +474,7 @@ def git_commit_issues(
     commit, _, body = exact[0]
     policy_era_extras = [
       item for item in matching
-      if item[0] != commit and not predates_commit_policy(root, item[0])
+      if item[0] != commit and item[0] not in commits_before_policy
     ]
     if policy_era_extras:
       issues.append(f"completed activity {activity_id} trailer is reused by another commit")
@@ -469,7 +484,7 @@ def git_commit_issues(
     ]
     if activity_trailers != [trailer]:
       issues.append(f"completed activity {activity_id} commit has multiple Plan-Activity trailers")
-    if require_pushed and not remote_refs_containing(root, commit):
+    if require_pushed and commit not in remote_commits:
       issues.append(f"completed activity {activity_id} commit {commit[:12]} is not present on a remote-tracking ref")
   return issues
 
