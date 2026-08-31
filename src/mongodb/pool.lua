@@ -1222,6 +1222,8 @@ function POOL_METHODS:clear(interrupt_in_use_connections, service_id)
   local prior_state = state.state
   local cleared_generation = generation_for(state, service_id)
 
+  -- A generation bump marks existing connections stale without scanning them.
+  -- A load-balanced service clear must leave other services and waiters alone.
   if service_id then
     local key = service_key(service_id)
 
@@ -1253,6 +1255,8 @@ function POOL_METHODS:clear(interrupt_in_use_connections, service_id)
     for _, connection in ipairs(in_use) do
       local connection_state = CONNECTION_STATES[connection]
 
+      -- Compare with the generation before the bump so a connection created
+      -- after this clear cannot be interrupted by it.
       if connection_matches_service(connection_state, service_id)
           and connection_state.generation <= cleared_generation
       then
@@ -1279,6 +1283,8 @@ function POOL_METHODS:clear(interrupt_in_use_connections, service_id)
     })
   end
 
+  -- Socket closure happens outside the pool lock so interruption cannot block
+  -- checkouts, check-ins, or a later clear.
   for _, connection in ipairs(available) do
     finish_close(state, connection, "stale")
   end

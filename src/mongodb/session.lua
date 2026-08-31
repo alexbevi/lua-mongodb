@@ -479,6 +479,9 @@ local function finish_transaction(session, name, options)
   end
 
   local retrying_commit = false
+
+  -- An explicit second commit is a retry of the same transaction. The executor
+  -- uses this flag to apply the retry write concern without reopening the body.
   if name == "commitTransaction" and transaction.state == "committed" then
     transaction.state = "in_progress"
     retrying_commit = true
@@ -510,6 +513,8 @@ local function finish_transaction(session, name, options)
   end
 
   if err and name == "commitTransaction" then
+    -- A failed commit may have reached the server. These labels preserve the
+    -- separate retry contracts for the command and for its uncertain outcome.
     if errors.is(err, errors.CATEGORY.NETWORK)
         or errors.is(err, errors.CATEGORY.TIMEOUT)
     then

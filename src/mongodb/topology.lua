@@ -1433,6 +1433,8 @@ local function application_error_generation(fields, pool)
 end
 
 local function application_error_is_stale(state, address, fields, generation, pool)
+  -- Application errors belong to the connection generation and topology
+  -- version that observed them; older errors cannot invalidate newer state.
   if generation ~= pool_generation(pool, fields.service_id) then
     return true
   end
@@ -1581,6 +1583,8 @@ function MANAGER_METHODS:handle_application_error(address, fields)
   local pool = server.pool
   local generation = application_error_generation(fields, pool)
 
+  -- Before a load-balanced handshake completes there is no serviceId whose
+  -- pool generation could be cleared, so the load-balancer rules ignore it.
   if state.description.type == sdam.TOPOLOGY_TYPE.LOAD_BALANCED
       and fields.when == "beforeHandshakeCompletes"
       and fields.service_id == nil
