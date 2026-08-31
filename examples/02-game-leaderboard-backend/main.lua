@@ -5,38 +5,6 @@ local doc = bson.document
 local array = bson.array
 local int64 = bson.int64
 
-local function collect(cursor, transform)
-  local values = {}
-
-  while true do
-    local value, err = cursor:next()
-
-    if err then
-      if not cursor:is_closed() then
-        cursor:close()
-      end
-
-      return nil, err
-    end
-
-    if not value then
-      break
-    end
-
-    values[#values + 1] = transform(value)
-  end
-
-  if not cursor:is_closed() then
-    local closed, err = cursor:close()
-
-    if not closed then
-      return nil, err
-    end
-  end
-
-  return values
-end
-
 local function fail(client, err)
   client:close()
   return nil, err
@@ -171,13 +139,21 @@ local function run_leaderboard()
       return fail(client, err)
     end
 
-    local ranking
-    ranking, err = collect(cursor, function(player)
-      return player:get("display_name") .. ": "
-        .. player:get("high_score"):to_number()
-    end)
+    local ranking = {}
 
-    if not ranking then
+    while true do
+      local player
+      player, err = cursor:next()
+
+      if not player then
+        break
+      end
+
+      ranking[#ranking + 1] = player:get("display_name") .. ": "
+        .. player:get("high_score"):to_number()
+    end
+
+    if err then
       return fail(client, err)
     end
 
@@ -196,17 +172,27 @@ local function run_leaderboard()
       return fail(client, err)
     end
 
-    local season_rows
-    season_rows, err = collect(cursor, function(season)
-      return {
-        name = season:get("_id"),
-        total_score = season:get("total_score"):to_number(),
-        player_count = season:get("player_count"):to_number(),
-      }
-    end)
+    local season_rows = {}
 
-    if not season_rows then
+    while true do
+      local season
+      season, err = cursor:next()
+
+      if not season then
+        break
+      end
+
+      season_rows[#season_rows + 1] = season
+    end
+
+    if err then
       return fail(client, err)
+    end
+
+    local season = season_rows[1]
+
+    if not season then
+      return fail(client, "season aggregation returned no results")
     end
 
     local transferred
@@ -247,9 +233,9 @@ local function run_leaderboard()
       print(index .. ". " .. line)
     end
 
-    local season = season_rows[1]
-    print("Season " .. season.name .. ": " .. season.total_score
-      .. " points across " .. season.player_count .. " players")
+    print("Season " .. season:get("_id") .. ": "
+      .. season:get("total_score"):to_number() .. " points across "
+      .. season:get("player_count"):to_number() .. " players")
     print("Transferred 25 credits: " .. ada_after:get("display_name") .. " "
       .. ada_after:get("credits"):to_number() .. ", "
       .. lin_after:get("display_name") .. " "

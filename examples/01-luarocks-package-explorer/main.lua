@@ -4,38 +4,6 @@ local bson = mongodb.bson
 local doc = bson.document
 local array = bson.array
 
-local function collect(cursor, transform)
-  local values = {}
-
-  while true do
-    local value, err = cursor:next()
-
-    if err then
-      if not cursor:is_closed() then
-        cursor:close()
-      end
-
-      return nil, err
-    end
-
-    if not value then
-      break
-    end
-
-    values[#values + 1] = transform(value)
-  end
-
-  if not cursor:is_closed() then
-    local closed, err = cursor:close()
-
-    if not closed then
-      return nil, err
-    end
-  end
-
-  return values
-end
-
 local function fail(client, err)
   client:close()
   return nil, err
@@ -62,13 +30,21 @@ local function explore_packages()
       return fail(client, err)
     end
 
-    local package_lines
-    package_lines, err = collect(cursor, function(package_doc)
-      return package_doc:get("name")
-        .. ": " .. package_doc:get("latest_release")
-    end)
+    local package_lines = {}
 
-    if not package_lines then
+    while true do
+      local package_doc
+      package_doc, err = cursor:next()
+
+      if not package_doc then
+        break
+      end
+
+      package_lines[#package_lines + 1] = package_doc:get("name")
+        .. ": " .. package_doc:get("latest_release")
+    end
+
+    if err then
       return fail(client, err)
     end
 
@@ -96,12 +72,20 @@ local function explore_packages()
       return fail(client, err)
     end
 
-    local networking_packages
-    networking_packages, err = collect(cursor, function(package_doc)
-      return package_doc:get("name")
-    end)
+    local networking_packages = {}
 
-    if not networking_packages then
+    while true do
+      local package_doc
+      package_doc, err = cursor:next()
+
+      if not package_doc then
+        break
+      end
+
+      networking_packages[#networking_packages + 1] = package_doc:get("name")
+    end
+
+    if err then
       return fail(client, err)
     end
 
@@ -141,15 +125,24 @@ local function explore_packages()
       return fail(client, err)
     end
 
-    local dependency_lines
-    dependency_lines, err = collect(cursor, function(dependency)
+    local dependency_lines = {}
+
+    while true do
+      local dependency
+      dependency, err = cursor:next()
+
+      if not dependency then
+        break
+      end
+
       local count = dependency:get("dependency_count"):to_number()
       local noun = count == 1 and "package" or "packages"
 
-      return dependency:get("_id") .. ": " .. count .. " " .. noun
-    end)
+      dependency_lines[#dependency_lines + 1] = dependency:get("_id")
+        .. ": " .. count .. " " .. noun
+    end
 
-    if not dependency_lines then
+    if err then
       return fail(client, err)
     end
 

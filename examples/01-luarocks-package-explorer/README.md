@@ -100,10 +100,10 @@ Between the reads and aggregation, `update_one` adds a release document and
 changes `latest_release`. Run `seed.lua` before `main.lua` to reset the example
 and keep the modified count and output deterministic.
 
-Both programs handle the driver's `value` or `nil, err` contract. On failure,
-they close the active cursor and client before reporting the error. Exhausted
-cursors close automatically. `main.lua` checks `is_closed()` before closing a
-cursor early.
+Both programs handle the driver's `value` or `nil, err` contract. `main.lua`
+uses `cursor:next()` so iteration errors remain visible, and exhausted cursors
+close automatically. On failure, closing the client also closes any active
+cursor before the error is reported.
 
 ## Cleanup
 
