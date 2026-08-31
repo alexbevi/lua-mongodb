@@ -32,11 +32,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua ${{ matrix.lua-version }}
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -76,11 +78,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -126,11 +130,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -180,11 +184,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -253,11 +257,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Download unified shard evidence
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -346,11 +350,13 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
           fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -432,11 +438,11 @@ jobs:
     timeout-minutes: 75
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -497,11 +503,11 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -566,11 +572,11 @@ jobs:
     timeout-minutes: 10
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Download macOS unified shard evidence
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
@@ -663,11 +669,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13

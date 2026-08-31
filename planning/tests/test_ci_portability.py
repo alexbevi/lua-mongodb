@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[2]
 MAKEFILE = ROOT / "Makefile"
 WORKFLOW = ROOT / ".github" / "workflows" / "ci.yml"
 FULL_WORKFLOW = ROOT / ".github" / "workflows" / "full-conformance.yml"
+RELEASE_WORKFLOW = ROOT / ".github" / "workflows" / "release.yml"
+SPECIFICATIONS_ACTION = ROOT / ".github" / "actions" / "init-specifications" / "action.yml"
 DEPENDABOT = ROOT / ".github" / "dependabot.yml"
 WORKFLOWS = tuple(sorted((ROOT / ".github" / "workflows").glob("*.yml")))
 
@@ -25,6 +27,36 @@ DOWNLOAD_ARTIFACT_PIN = (
 
 
 class CiPortabilityTests(unittest.TestCase):
+  def test_jobs_initialize_only_the_references_they_use(self) -> None:
+    fast = WORKFLOW.read_text(encoding="utf-8")
+    full = FULL_WORKFLOW.read_text(encoding="utf-8")
+    release = RELEASE_WORKFLOW.read_text(encoding="utf-8")
+    action = SPECIFICATIONS_ACTION.read_text(encoding="utf-8")
+
+    self.assertEqual(1, fast.count("submodules: recursive"))
+    self.assertIn("  reference-integrity:", fast)
+    self.assertIn("planning/update_plan.py check-references", fast)
+    self.assertIn("uses: ./.github/actions/init-specifications", fast)
+    for start, end in (
+      ("  compatibility-smoke:", "  gssapi-live:"),
+      ("  gssapi-live:", "  examples:"),
+    ):
+      job = fast[fast.index(start):fast.index(end)]
+      self.assertNotIn("submodules:", job)
+      self.assertNotIn("init-specifications", job)
+    examples = fast[fast.index("  examples:"):]
+    self.assertNotIn("submodules:", examples)
+    self.assertNotIn("init-specifications", examples)
+
+    self.assertNotIn("submodules: recursive", full)
+    compatibility = full[full.index("  compatibility:"):]
+    self.assertNotIn("init-specifications", compatibility)
+    self.assertNotIn("submodules:", release)
+    self.assertIn(
+      "git submodule update --init --depth 1 -- planning/specifications",
+      action,
+    )
+
   def test_remote_actions_use_full_sha_pins_with_version_comments(self) -> None:
     for workflow in WORKFLOWS:
       for line_number, line in enumerate(
