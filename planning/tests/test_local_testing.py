@@ -92,6 +92,11 @@ class LocalTestingTests(unittest.TestCase):
       1,
       "the composed unified gates must not validate every fixture twice",
     )
+    self.assertIn("update-spec-artifacts: check-python", makefile)
+    self.assertIn(
+      '"$(PYTHON)" planning/update_spec_artifacts.py',
+      makefile,
+    )
 
 
 if __name__ == "__main__":

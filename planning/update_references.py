@@ -25,21 +25,7 @@ update_plan = importlib.util.module_from_spec(UPDATE_PLAN_SPEC)
 UPDATE_PLAN_SPEC.loader.exec_module(update_plan)
 
 SPECIFICATION_GENERATORS: tuple[tuple[str, ...], ...] = (
-  ("spec/unified/update_capabilities.py",),
-  ("spec/conformance/catalog.py",),
-  ("spec/conformance/ledger.py",),
-  ("spec/release/scope.py",),
-  ("spec/v04/scope.py",),
-  ("spec/v05/scope.py",),
-  ("spec/v06/scope.py",),
-  ("spec/v07/scope.py",),
-  ("spec/v08/scope.py",),
-  ("spec/v09/scope.py",),
-  ("spec/v10/scope.py",),
-  ("spec/v102/scope.py",),
-  ("spec/v103/scope.py",),
-  ("planning/update_readme_compatibility.py",),
-  ("planning/update_plan.py", "refresh"),
+  ("planning/update_spec_artifacts.py",),
 )
 REFERENCE_GENERATORS: tuple[tuple[str, ...], ...] = (
   ("planning/update_plan.py", "refresh"),
