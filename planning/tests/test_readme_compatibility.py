@@ -8,27 +8,27 @@ from planning import update_readme_compatibility as readme_compatibility
 class ReadmeCompatibilityTests(unittest.TestCase):
   def test_status_is_derived_from_conformance_results(self) -> None:
     self.assertEqual(
-      "Complete",
-      readme_compatibility.status_label({"passed": 3}),
+      "🟢",
+      readme_compatibility.status_marker({"passed": 3}),
     )
     self.assertEqual(
-      "Partial",
-      readme_compatibility.status_label({
+      "🟡",
+      readme_compatibility.status_marker({
         "passed": 2,
         "deferred_unsupported": 1,
       }),
     )
     self.assertEqual(
-      "Not implemented",
-      readme_compatibility.status_label({"deferred_unsupported": 3}),
+      "🔴",
+      readme_compatibility.status_marker({"deferred_unsupported": 3}),
     )
     self.assertEqual(
-      "Not supported",
-      readme_compatibility.status_label({"unsupported": 1}),
+      "⚪",
+      readme_compatibility.status_marker({"unsupported": 1}),
     )
     self.assertEqual(
-      "Not supported",
-      readme_compatibility.status_label({
+      "⚪",
+      readme_compatibility.status_marker({
         "no_machine_cases": 1,
         "not_applicable": 2,
       }),
@@ -93,23 +93,23 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "[CRUD](https://alexbevi.com/specifications/crud/crud.html) | "
-      "Complete | 100.0% |",
+      "🟢 | 100.0% |",
       table,
     )
     self.assertIn(
       "[Change streams](https://alexbevi.com/specifications/change-streams/"
-      "change-streams.html) | Complete | 100.0% |",
+      "change-streams.html) | 🟢 | 100.0% |",
       table,
     )
     self.assertIn(
       "[Load balancer support](https://alexbevi.com/specifications/"
-      "load-balancers/load-balancers.html) | Complete | 100.0% |",
+      "load-balancers/load-balancers.html) | 🟢 | 100.0% |",
       table,
     )
     self.assertIn(
       "[Authentication options and additional mechanisms]"
       "(https://alexbevi.com/specifications/auth/auth.html) | "
-      "Complete | 100.0% |",
+      "🟢 | 100.0% |",
       table,
     )
     self.assertIn("|  | **Total** |  | **83.0%** |", table)
@@ -117,8 +117,8 @@ class ReadmeCompatibilityTests(unittest.TestCase):
 
   def test_terminal_unsupported_rows_are_unscored(self) -> None:
     self.assertEqual(
-      "Not supported",
-      readme_compatibility.status_label({"unsupported": 1}),
+      "⚪",
+      readme_compatibility.status_marker({"unsupported": 1}),
     )
     self.assertEqual(
       "N/A",
@@ -128,34 +128,41 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "| Communication | [OCSP support](https://alexbevi.com/specifications/"
-      "ocsp-support/ocsp-support.html) | Not supported | N/A |",
+      "ocsp-support/ocsp-support.html) | ⚪ | N/A |",
       table,
     )
     self.assertIn(
       "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
       "specifications/socks5-support/socks5.html) | "
-      "Not supported | N/A |",
+      "⚪ | N/A |",
       table,
     )
     self.assertIn(
       "| Communication | [URI options](https://alexbevi.com/specifications/"
-      "uri-options/uri-options.html) | Partial | 95.8% |",
+      "uri-options/uri-options.html) | 🟡 | 95.8% |",
       table,
     )
     self.assertIn("|  | **Total** |  | **83.0%** |", table)
 
-  def test_terminal_unsupported_table_rows_use_plain_status(self) -> None:
+  def test_terminal_unsupported_table_rows_use_badge_only(self) -> None:
     table = readme_compatibility.render_table()
 
     self.assertIn(
       "| Communication | [OCSP support](https://alexbevi.com/specifications/"
-      "ocsp-support/ocsp-support.html) | Not supported | N/A |",
+      "ocsp-support/ocsp-support.html) | ⚪ | N/A |",
       table,
     )
     self.assertIn(
       "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
-      "specifications/socks5-support/socks5.html) | Not supported | N/A |",
+      "specifications/socks5-support/socks5.html) | ⚪ | N/A |",
       table,
+    )
+
+    readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
+    self.assertIn(
+      "> 🟢 Complete · 🟡 Partial · 🔴 Not implemented · "
+      "⚪ Will not implement",
+      readme,
     )
 
   def test_table_follows_the_onion_and_covers_every_suite(self) -> None:
@@ -188,26 +195,26 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     self.assertNotIn("Tests Passing", table)
     self.assertIn(
       "| Serialization | [BSON corpus](https://alexbevi.com/specifications/"
-      "bson-corpus/bson-corpus.html) | Complete | 100.0% |",
+      "bson-corpus/bson-corpus.html) | 🟢 | 100.0% |",
       table,
     )
     self.assertIn(
       "| Authentication | [Authentication options and additional mechanisms]"
       "(https://alexbevi.com/specifications/auth/auth.html) | "
-      "Complete | 100.0% |",
+      "🟢 | 100.0% |",
       table,
     )
     self.assertRegex(
       table,
       r"\| Resilience \| \[Client-side operations timeout\]"
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
-      r"client-side-operations-timeout\.html\) \| Partial \| \d+\.\d% \|",
+      r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
     self.assertIn("|  | **Total** |  | **83.0%** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"
-      "connection-monitoring-and-pooling.html) | Not implemented | 0.0% |",
+      "connection-monitoring-and-pooling.html) | 🔴 | 0.0% |",
       table,
     )
     self.assertNotIn("Atlas SFP testing", table)
@@ -242,14 +249,14 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "| Communication | [OCSP support](https://alexbevi.com/specifications/"
-      "ocsp-support/ocsp-support.html) | Not supported | N/A |",
+      "ocsp-support/ocsp-support.html) | ⚪ | N/A |",
       table,
     )
     self.assertIn("[Wire compression]", table)
     self.assertIn(
       "| Communication | [SOCKS5 proxy support](https://alexbevi.com/"
       "specifications/socks5-support/socks5.html) | "
-      "Not supported | N/A |",
+      "⚪ | N/A |",
       table,
     )
     self.assertIn("[Standardized logging]", table)

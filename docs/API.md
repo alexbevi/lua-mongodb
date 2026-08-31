@@ -107,8 +107,8 @@ contracts are specified below.
 The first argument must be a database handle from this driver. Recognized options are
 `bucket_name`, `chunk_size_bytes`, `disable_md5`, `read_concern`, `read_preference`,
 `timeout_ms`, and `write_concern`. Invalid option value combinations return a configuration
-error; an invalid database value, non-table options value, or unknown option raises. GridFS
-methods and ownership rules remain in the [GridFS guide](../README.md#gridfs).
+error; an invalid database value, non-table options value, or unknown option raises. See
+[GridFS buckets and ownership](#gridfs-buckets-and-ownership) for the bucket API.
 
 ### `mongodb.index_model`
 
@@ -116,8 +116,8 @@ methods and ownership rules remain in the [GridFS guide](../README.md#gridfs).
 
 `keys` must be a non-empty ordered BSON document with valid index directions. The constructor
 returns an immutable model whose `name` is explicit or deterministically generated. Invalid
-keys, option names, or option values are programmer errors and raise. Index options and model
-properties remain in the [index guide](../README.md#index-management).
+keys, option names, or option values are programmer errors and raise. See
+[Index models](#index-models) for model properties.
 
 ### `mongodb.run`
 

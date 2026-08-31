@@ -395,7 +395,7 @@ def suite_counts(
   return dict(counts)
 
 
-def status_label(counts: dict[str, int]) -> str:
+def status_marker(counts: dict[str, int]) -> str:
   passed = counts.get("passed", 0)
   incomplete = sum(
     count for status, count in counts.items()
@@ -403,18 +403,18 @@ def status_label(counts: dict[str, int]) -> str:
   )
 
   if passed > 0 and incomplete == 0:
-    return "Complete"
+    return "🟢"
 
   if passed > 0:
-    return "Partial"
+    return "🟡"
 
   if counts.get("unsupported", 0) > 0:
-    return "Not supported"
+    return "⚪"
 
   if incomplete > 0:
-    return "Not implemented"
+    return "🔴"
 
-  return "Not supported"
+  return "⚪"
 
 
 def supported_percentage(counts: dict[str, int]) -> str:
@@ -514,7 +514,7 @@ def render_table(
       total_counts.update(counts[suite])
       lines.append(
         f"| {layer} | [{label}]({specification_url(suite)}) | "
-        f"{status_label(counts[suite])} | "
+        f"{status_marker(counts[suite])} | "
         f"{supported_percentage(counts[suite])} |"
       )
 
