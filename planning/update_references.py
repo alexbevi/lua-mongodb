@@ -28,7 +28,7 @@ SPECIFICATION_GENERATORS: tuple[tuple[str, ...], ...] = (
   ("planning/update_spec_artifacts.py",),
 )
 REFERENCE_GENERATORS: tuple[tuple[str, ...], ...] = (
-  ("planning/update_plan.py", "refresh"),
+  ("planning/update_plan.py", "render-state"),
 )
 
 

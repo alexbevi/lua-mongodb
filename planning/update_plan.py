@@ -609,14 +609,14 @@ def save_progress_and_state(plan: dict[str, Any], progress: dict[str, Any]) -> N
   atomic_write(STATE_PATH, compute_state(plan, progress))
 
 
-def command_refresh(_: argparse.Namespace) -> int:
+def command_render_state(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
   progress["plan_digest"] = digest_plan(plan)
   progress.pop("verified_references", None)
   atomic_write(PROGRESS_PATH, progress)
   atomic_write(STATE_PATH, compute_state(plan, progress))
-  print("refreshed planning/current_state.json")
+  print("rendered planning/current_state.json")
   return 0
 
 
@@ -631,7 +631,10 @@ def command_check(arguments: argparse.Namespace) -> int:
     try:
       existing_state = read_json(STATE_PATH)
       if existing_state != state:
-        issues.append("planning/current_state.json is not the deterministic generated state; run refresh")
+        issues.append(
+          "planning/current_state.json is not the deterministic generated state; "
+          "run render-state"
+        )
     except PlanError as exc:
       issues.append(str(exc))
     if arguments.pushed and not arguments.strict:
@@ -941,8 +944,11 @@ def build_parser() -> argparse.ArgumentParser:
   complete.add_argument("activity_id")
   complete.set_defaults(function=command_complete)
 
-  refresh = subparsers.add_parser("refresh", help="regenerate deterministic state")
-  refresh.set_defaults(function=command_refresh)
+  render = subparsers.add_parser("render-state", help="regenerate deterministic state")
+  render.set_defaults(function=command_render_state)
+
+  refresh = subparsers.add_parser("refresh", help="compatibility alias for render-state")
+  refresh.set_defaults(function=command_render_state)
 
   report = subparsers.add_parser("reference-report", help="inspect pinned reference mappings")
   report.set_defaults(function=command_reference_report)

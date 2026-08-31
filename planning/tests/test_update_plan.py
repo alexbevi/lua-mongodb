@@ -126,6 +126,14 @@ class JsonTests(unittest.TestCase):
       update_plan.digest_references(second["references"]),
     )
 
+  def test_render_state_has_a_refresh_compatibility_alias(self) -> None:
+    parser = update_plan.build_parser()
+
+    render = parser.parse_args(["render-state"])
+    refresh = parser.parse_args(["refresh"])
+    self.assertIs(update_plan.command_render_state, render.function)
+    self.assertIs(update_plan.command_render_state, refresh.function)
+
 
 class GraphTests(unittest.TestCase):
   def test_unknown_dependency_and_cycle_are_rejected(self) -> None:

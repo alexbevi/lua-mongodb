@@ -11,7 +11,7 @@ description: Review upstream PyMongo and MongoDB specifications changes, repin t
 4. Review changes to every mapped path and symbol plus unified-test schemas, runner behavior, and applicable specification suites.
 5. Update submodule pins, plan reference metadata, mappings, and `planning/reference_architecture.md` together. Do not silently accept removed or renamed symbols.
 6. Mark completed or active activities affected by semantic drift as `needs_review`; preserve evidence and explain each impact in progress notes.
-7. Run `refresh`, `reference-report`, planning tests, skill validation, and `check --strict`.
+7. Run `render-state`, `reference-report`, planning tests, skill validation, and `check --strict`.
 8. Commit the verified refresh as `chore(planning): refresh MongoDB references` with the appropriate `Plan-Activity` trailer when the plan assigns one.
 
 Keep this workflow separate from driver implementation. Do not repin merely to repair local checkout drift.

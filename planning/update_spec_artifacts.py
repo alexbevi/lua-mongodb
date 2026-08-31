@@ -25,7 +25,7 @@ ARTIFACT_COMMANDS: tuple[tuple[str, ...], ...] = (
   ("spec/v102/scope.py",),
   ("spec/v103/scope.py",),
   ("planning/update_readme_compatibility.py",),
-  ("planning/update_plan.py", "refresh"),
+  ("planning/update_plan.py", "render-state"),
 )
 
 
