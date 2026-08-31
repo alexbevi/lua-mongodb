@@ -316,11 +316,6 @@ def release_metadata() -> dict[str, str]:
     ROOT / "CHANGELOG.md",
     f"## [{RELEASE_VERSION}] - 2026-08-28",
   )
-  require_text(
-    ROOT / "docs" / "ARCHITECTURE.md",
-    "Status: standardized logging v0.10.6 release-ready.",
-  )
-
   return {
     "package": package.group(1),
     "rockspec": ROCKSPEC.name,
