@@ -160,7 +160,6 @@ def _has_machine_fixtures(source: Path, suite: str) -> bool:
 def _generate_requirements(
   documents: dict[str, dict[str, str]],
   suites: dict[str, dict[str, Any]],
-  specifications_commit: str,
 ) -> dict[str, dict[str, Any]]:
   classifications = _load_requirement_manifest()
   activities = _load_activities()
@@ -270,7 +269,6 @@ def _generate_requirements(
           "not_applicable": "not-applicable",
         }.get(status, activities[activity]["scope"]),
         "source": source,
-        "specifications_commit": specifications_commit,
         "suite": document["suite"],
       }
 
@@ -307,7 +305,7 @@ def generate(
     }
 
   specifications_commit = _specifications_commit()
-  requirements = _generate_requirements(documents, suites, specifications_commit)
+  requirements = _generate_requirements(documents, suites)
   requirement_statuses = {
     status: sum(value["status"] == status for value in requirements.values())
     for status in sorted(VALID_REQUIREMENT_STATUSES)

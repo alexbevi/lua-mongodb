@@ -197,6 +197,7 @@
     "additional-exclusion": 924
   },
   "schema_version": 1,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "statuses": {
     "deferred_unsupported": 924,
     "excluded_scope": 99,

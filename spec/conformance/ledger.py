@@ -981,7 +981,7 @@ def validate_cases(
   required = {
     "activity", "fingerprint", "format", "last_execution",
     "required_environment", "runner", "scope", "source",
-    "specifications_commit", "status", "suite",
+    "status", "suite",
   }
 
   for identity, source in discovered.items():
@@ -1093,9 +1093,6 @@ def generate() -> dict[str, Any]:
     identity: classify_case(identity, case, activities, capabilities["tests"])
     for identity, case in discovered.items()
   }
-
-  for value in classified.values():
-    value["specifications_commit"] = commit
 
   files = discover_files()
 

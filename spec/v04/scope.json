@@ -94,6 +94,7 @@
     "supported": 851
   },
   "schema_version": 2,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "suites": {
     "index-management": {
       "passed": 19

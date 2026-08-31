@@ -9,7 +9,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -22,7 +21,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -35,7 +33,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -48,7 +45,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -61,7 +57,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -74,7 +69,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -87,7 +81,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -100,7 +93,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -113,7 +105,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -126,7 +117,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "production-core-v1",
       "source": "auth/tests/legacy/connection-string.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -139,7 +129,6 @@
       "runner": "spec/support/config_runner.lua",
       "scope": "production-core-v1",
       "source": "uri-options/tests/auth-options.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "uri-options"
     }
@@ -159,7 +148,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -173,7 +161,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -187,7 +174,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -201,7 +187,6 @@
       "runner": "spec/unit/runtime_gssapi_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -215,7 +200,6 @@
       "runner": "spec/unit/auth_gssapi_hostname_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -229,7 +213,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -243,7 +226,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -257,7 +239,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -271,7 +252,6 @@
       "runner": "spec/unit/auth_gssapi_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -285,7 +265,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     }
@@ -306,6 +285,7 @@
     "supported": 21
   },
   "schema_version": 1,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "suites": {
     "auth": {
       "passed": 20

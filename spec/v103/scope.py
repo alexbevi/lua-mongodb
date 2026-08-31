@@ -7,10 +7,15 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import sys
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from spec.conformance.provenance import specifications_commit  # noqa: E402
+
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
@@ -479,12 +484,14 @@ def classify(
 
 
 def generate() -> dict[str, Any]:
-  return classify(
+  report = classify(
     load_cases(),
     load_requirements(),
     load_capabilities(),
     load_activities(),
   )
+  report["specifications_commit"] = specifications_commit(LEDGER)
+  return report
 
 
 def main(argv: list[str] | None = None) -> int:
