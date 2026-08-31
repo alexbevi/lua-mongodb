@@ -1,13 +1,13 @@
 # Contributing
 
-Changes are developed as small, test-first roadmap activities. Before proposing implementation,
-read the [architecture](docs/ARCHITECTURE.md), [implementation strategy](planning/strategy.md),
-and [agent working agreement](AGENTS.md). MongoDB specifications are normative; the pinned
-PyMongo checkout is the behavioral reference when the specification leaves implementation detail
-open. Use idiomatic Lua boundaries rather than copying Python structure.
+Thank you for improving the Lua MongoDB driver. Start with the smallest change that fixes one
+observable behavior. MongoDB specifications are normative. The pinned PyMongo checkout is the
+behavioral reference when a specification leaves an implementation detail open, but the Lua
+implementation should keep idiomatic Lua boundaries.
 
-Report a suspected vulnerability through the private route in the
-[security policy](SECURITY.md), not through a public contribution.
+Read the [architecture](docs/ARCHITECTURE.md) before changing production boundaries. Report a
+suspected vulnerability through the private route in the [security policy](SECURITY.md), not in a
+public issue or pull request.
 
 ## Development environment
 
@@ -15,7 +15,7 @@ The supported development matrix is Lua 5.4 and Lua 5.5 with a 64-bit `lua_Integ
 macOS. Install LuaRocks 3.13, Python 3, OpenSSL development files, and Zstandard development files.
 The default runtime also requires the dependencies declared in the current rockspec.
 
-Clone the two pinned reference repositories without moving their commits:
+Clone the pinned reference repositories without moving their commits:
 
 ```sh
 git submodule update --init --recursive
@@ -38,56 +38,51 @@ luarocks install luacov 0.17.0-1
 ```
 
 Luacheck 1.2 does not execute under Lua 5.5, so the Lua 5.5 lane uses
-`make check-fast-runtime` and leaves source lint to the Lua 5.4 lane.
+`make check-fast-runtime` and leaves source lint to the Lua 5.4 lane. On macOS, pass the Homebrew
+OpenSSL and Zstandard prefixes when native modules cannot discover them. The CI workflow contains
+the current setup commands.
 
-On macOS, pass the Homebrew OpenSSL and Zstandard prefixes when native modules cannot discover
-them; `.github/workflows/ci.yml` is the executable setup reference. Deterministic unit tests and
-most loopback integration tests do not need MongoDB Server. Live unified and compatibility work
-uses the exact MongoDB versions and topologies selected by the CI workflows.
-
-A running Docker daemon is required only for the image-backed live compatibility matrix. For
-example, `make test-compatibility-live COMPATIBILITY_ENTRY=mongodb-7.0-standalone` provisions the
-exact pinned image and profile from `spec/compatibility/matrix.json`. The complete matrix covers
-MongoDB 7.0, 8.0, and 8.2 across standalone, replica-set, and sharded topologies; leave broad
-matrix execution to CI unless diagnosing that infrastructure.
-
-Do not edit either pinned submodule or move a reference commit during ordinary implementation.
-A reference refresh is a separate maintainer-authorized activity.
-
-## Activity and commit workflow
-
-Coordinate a roadmap activity and any required track with the maintainer before writing code.
-Only one activity may be in progress. Validate state and select the agreed activity with the
-commands documented in `planning/README.md`:
+Deterministic unit tests and most loopback integration tests do not need MongoDB Server. A running
+Docker daemon is needed only for the image-backed live compatibility matrix. For example:
 
 ```sh
-python3 planning/update_plan.py check --strict --pushed
-python3 planning/update_plan.py next --track TRACK
-python3 planning/update_plan.py start ID --track TRACK
+make test-compatibility-live COMPATIBILITY_ENTRY=mongodb-7.0-standalone
 ```
 
-Add the smallest test that defines one independently useful behavior and run it to establish a
-failure. Record that command with `record-test --phase red`, implement only the behavior needed
-for the slice, then record focused passing evidence with `record-test --phase green`. Update
-architecture, classifications, compatibility evidence, and public documentation only when the
-behavior changes those contracts.
+Leave the complete version and topology matrix to CI unless you are diagnosing its infrastructure.
+Do not edit either pinned submodule or move a reference commit during an ordinary contribution.
 
-After the focused checks pass, complete the activity and regenerate planning state:
+## Making a change
 
-```sh
-python3 planning/update_plan.py complete ID
-python3 planning/update_plan.py refresh
-```
+Use this path for an ordinary pull request:
 
-Use the activity's exact Conventional Commit subject and exactly one `Plan-Activity: ID` trailer.
-Never commit a red test state or combine unrelated cleanup with the activity. Push the commit,
-run `python3 planning/update_plan.py check --strict --pushed`, and wait for its `CI Fast` run
-before starting another activity.
+1. Choose one independently useful behavior or documentation correction.
+2. Add or update the smallest test that demonstrates the behavior. For a bug, run it once to
+   confirm that it fails for the expected reason.
+3. Implement only the change needed to make that test pass.
+4. Run the focused test and any directly affected checks.
+5. Update public documentation, architecture, classifications, or generated evidence only when
+   their contracts changed.
+6. Commit the passing slice with a Conventional Commit subject.
+
+Do not combine unrelated cleanup with the change. A normal contribution does not need a roadmap
+activity, planning track, planning-state update, or `Plan-Activity` trailer.
+
+### Maintainer roadmap work
+
+Some maintainer-assigned work is tied to an existing roadmap activity. Only use that workflow when
+a maintainer has assigned the activity and its declared track. In that case, follow
+[the agent working agreement](AGENTS.md) and [the planning command guide](planning/README.md),
+including red and green evidence, the exact commit subject and trailer, the pushed-state check, and
+the required `CI Fast` result.
+
+Do not create a planning activity for an ordinary contribution. Never edit
+`planning/current_state.json` by hand.
 
 ## Focused local verification
 
 `make test-focus` is the ordinary local entry point. Select the narrowest boundaries that can
-falsify the change; selectors can be combined:
+falsify the change. Selectors can be combined:
 
 ```sh
 make test-focus FOCUS_UNIT=spec/unit/error_spec.lua
@@ -100,28 +95,26 @@ make test-focus FOCUS_UNIT=spec/unit/error_spec.lua \
 
 The available selectors are `FOCUS_UNIT`, `FOCUS_INTEGRATION`, `FOCUS_UNIFIED`, `FOCUS_PYTHON`,
 and `FOCUS_LINT`. Add `make test-architecture` when production dependencies or runtime boundaries
-change. Add `make test-complexity` when production control flow changes. Run the validator owned
-by any generated artifact, rockspec, or workflow touched by the slice.
+change. Add `make test-complexity` when production control flow changes. Run the validator owned by
+any generated artifact, rockspec, or workflow touched by the change.
 
 The broader compositions have distinct roles:
 
-- `make check-fast-runtime` runs portable verification for the active Lua runtime without lint
-  or the complexity ratchet.
+- `make check-fast-runtime` runs portable verification for the active Lua runtime without lint or
+  the complexity ratchet.
 - `make check-fast` adds lint and complexity and is the required fast gate under Lua 5.4.
-- `make check-full` adds complete live unified execution and coverage; `make check` is its release
+- `make check-full` adds complete live unified execution and coverage. `make check` is its release
   alias.
 
-Do not run broad suites locally for an ordinary slice. They are appropriate for test-infrastructure
-changes, release preparation, cross-cutting primitives without a trustworthy focused boundary,
-or CI-only failure diagnosis.
+Broad suites are useful for test-infrastructure changes, release preparation, cross-cutting
+primitives without a trustworthy focused boundary, and CI-only failure diagnosis. They are not
+normally needed for a small pull request.
 
-## Generated files and pinned evidence
+## Generated files and upstream fixtures
 
-Never edit `planning/current_state.json`; `planning/update_plan.py refresh` derives it from the
-validated plan and progress records. Update activity status and test evidence only through
-`planning/update_plan.py`. Do not edit generated conformance, scope, capability, compatibility,
-coverage, complexity, or Unicode-table outputs by hand; change their source and use the owning
-generator or its `--check` mode. The central checks include:
+Do not edit generated conformance, scope, capability, compatibility, coverage, complexity, or
+Unicode-table outputs by hand. Change their source and run the owning generator or its `--check`
+mode. Common checks include:
 
 ```sh
 python3 spec/conformance/catalog.py --check
@@ -131,10 +124,10 @@ python3 planning/update_readme_compatibility.py --check
 
 When conformance-ledger or projected catalog status changes, run
 `python3 planning/update_readme_compatibility.py` and commit the resulting README table. The full
-artifact and planning command catalog lives in `planning/README.md`.
+artifact command catalog lives in [the planning guide](planning/README.md).
 
 Every upstream fixture must execute or retain an explicit deferral with a reason. Unknown unified
-operations are failures; never turn one into a silent skip.
+operations are failures and must not become silent skips.
 
 ## Changelog entries
 
@@ -147,21 +140,17 @@ whether to upgrade, not for the implementation record.
 - Describe observable behavior, affected users, new requirements, and required migration steps.
 - Add a short `Example` for a new public API or option when code explains it better than prose.
   Use only public entry points and keep the snippet valid under a supported Lua version.
-- Leave activity identifiers, fixture counts, conformance evidence, CI jobs, checklist gates, and
-  publication mechanics in their owning planning, test, architecture, or release artifacts.
+- Leave activity identifiers, fixture counts, CI jobs, checklist gates, and publication mechanics
+  in their owning planning, test, architecture, or release artifacts.
 
-Do not copy commit subjects or roadmap summaries into the changelog. Combine related work into
-one release-level explanation and remove implementation details that do not change how callers
-use the driver.
+Combine related work into one release-level explanation. Do not copy commit subjects or roadmap
+summaries into the changelog.
 
 ## CI and review evidence
 
 `CI Fast` runs after every push. It executes `make check-fast` on Linux and macOS under Lua 5.4,
-runtime verification under Lua 5.5, installed-rock examples, and live compatibility boundary
-rows. Fix a required failure before another activity begins.
+runtime verification under Lua 5.5, installed-rock examples, and live compatibility boundary rows.
 
-`Full Conformance` is scheduled and can be requested manually for an exact commit. It owns
-complete live unified execution, coverage, the full server/topology matrix, nightly Linux
-evidence, and weekly macOS evidence. Ordinary activities do not wait for it, but a known failure
-is release-blocking. Release publication requires the complete exact-commit evidence described in
-the architecture and release checklist.
+`Full Conformance` is scheduled and can be requested manually for an exact commit. It owns complete
+live unified execution, coverage, the full server and topology matrix, nightly Linux evidence, and
+weekly macOS evidence. A known failure blocks a release.
