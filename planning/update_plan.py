@@ -419,12 +419,16 @@ def status_for(progress: dict[str, Any], activity_id: str) -> str:
   return progress.get("activities", {}).get(activity_id, {}).get("status", "pending")
 
 
-def compute_state(
-  plan: dict[str, Any], progress: dict[str, Any],
-  reference_report: dict[str, dict[str, Any]] | None = None,
-) -> dict[str, Any]:
+def reference_issues(report: dict[str, dict[str, Any]]) -> list[str]:
+  return [
+    f"{name}: {issue}"
+    for name, details in report.items()
+    for issue in details["issues"]
+  ]
+
+
+def compute_state(plan: dict[str, Any], progress: dict[str, Any]) -> dict[str, Any]:
   activities = activity_map(plan)
-  report = reference_report if reference_report is not None else inspect_reference_locks(plan)
   counts = {status: 0 for status in sorted(STATUSES)}
   active: list[str] = []
   blocked: list[str] = []
@@ -452,15 +456,9 @@ def compute_state(
   actual_digest = digest_plan(plan)
   if progress.get("plan_digest") != actual_digest:
     stale.append("progress plan_digest does not match plan.json")
-  for name, details in report.items():
-    stale.extend(f"{name}: {issue}" for issue in details["issues"])
   public_references = {
-    name: {
-      "expected": details["expected"],
-      "actual": details["actual"],
-      "status": details["status"],
-    }
-    for name, details in report.items()
+    name: {"commit": reference["commit"]}
+    for name, reference in plan.get("references", {}).items()
   }
   return {
     "$schema": "./schemas/current_state.schema.json",
@@ -585,22 +583,17 @@ def assert_valid_core(plan: dict[str, Any], progress: dict[str, Any]) -> None:
 
 
 def save_progress_and_state(plan: dict[str, Any], progress: dict[str, Any]) -> None:
-  report = inspect_reference_locks(plan)
   atomic_write(PROGRESS_PATH, progress)
-  atomic_write(STATE_PATH, compute_state(plan, progress, report))
+  atomic_write(STATE_PATH, compute_state(plan, progress))
 
 
 def command_refresh(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
   progress["plan_digest"] = digest_plan(plan)
-  report = inspect_reference_locks(plan)
-  progress["verified_references"] = {
-    name: {"commit": details["actual"], "status": details["status"]}
-    for name, details in report.items()
-  }
+  progress.pop("verified_references", None)
   atomic_write(PROGRESS_PATH, progress)
-  atomic_write(STATE_PATH, compute_state(plan, progress, report))
+  atomic_write(STATE_PATH, compute_state(plan, progress))
   print("refreshed planning/current_state.json")
   return 0
 
@@ -610,7 +603,8 @@ def command_check(arguments: argparse.Namespace) -> int:
     plan, progress = load_documents()
     issues = validate_plan(plan) + validate_progress(plan, progress)
     report = inspect_reference_locks(plan)
-    state = compute_state(plan, progress, report)
+    issues.extend(reference_issues(report))
+    state = compute_state(plan, progress)
     issues.extend(state["stale"])
     try:
       existing_state = read_json(STATE_PATH)
@@ -636,6 +630,9 @@ def command_check(arguments: argparse.Namespace) -> int:
 def command_next(arguments: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
+  issues = reference_issues(inspect_reference_locks(plan))
+  if issues:
+    raise PlanError("; ".join(issues))
   state = compute_state(plan, progress)
   if state["stale"]:
     raise PlanError("state is stale; run check and resolve reference or digest issues")
@@ -863,11 +860,7 @@ def command_check_references(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
   report = inspect_reference_contents(plan)
-  issues = [
-    f"{name}: {issue}"
-    for name, details in report.items()
-    for issue in details["issues"]
-  ]
+  issues = reference_issues(report)
   if issues:
     for issue in dict.fromkeys(issues):
       print(f"ERROR: {issue}", file=sys.stderr)

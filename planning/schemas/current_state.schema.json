@@ -8,6 +8,17 @@
     "schema_version": {"const": 1},
     "plan_id": {"type": "string"},
     "plan_digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "references": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["commit"],
+        "properties": {
+          "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+        },
+        "additionalProperties": false
+      }
+    },
     "counts": {"type": "object"},
     "active": {"type": "array", "items": {"type": "string"}},
     "ready": {"type": "array", "items": {"type": "string"}},

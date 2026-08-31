@@ -10950,15 +10950,5 @@
       "started_at": "2026-08-31T13:51:58+00:00",
       "completed_at": "2026-08-31T13:54:04+00:00"
     }
-  },
-  "verified_references": {
-    "pymongo": {
-      "commit": "d03d621ef5fe567f941f4c28395a376a1899f77c",
-      "status": "ok"
-    },
-    "specifications": {
-      "commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "ok"
-    }
   }
 }

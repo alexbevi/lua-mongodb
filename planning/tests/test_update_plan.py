@@ -93,7 +93,6 @@ def progress_for(plan: dict, statuses: dict[str, str] | None = None) -> dict:
       item["id"]: {"status": statuses.get(item["id"], "pending"), "evidence": [], "notes": []}
       for item in plan["activities"] if item["id"] in statuses
     },
-    "verified_references": {},
   }
 
 
@@ -134,17 +133,15 @@ class GraphTests(unittest.TestCase):
       activity("TST-002", ["TST-001"]),
     ])
     progress = progress_for(plan, {"TST-001": "completed"})
-    report = {
-      "source": {
-        "expected": "0" * 40, "actual": "0" * 40,
-        "status": "ok", "issues": [], "path": "source",
-      }
-    }
-    first = update_plan.compute_state(plan, progress, report)
-    second = update_plan.compute_state(plan, progress, report)
+    first = update_plan.compute_state(plan, progress)
+    second = update_plan.compute_state(plan, progress)
     self.assertEqual(first, second)
     self.assertEqual(first["ready"], ["TST-002"])
     self.assertEqual(first["next_ready"], "TST-002")
+    self.assertEqual(
+      {"source": {"commit": "0" * 40}},
+      first["references"],
+    )
 
   def test_track_declarations_and_membership_are_validated(self) -> None:
     plan = tracked_plan()
@@ -178,14 +175,7 @@ class GraphTests(unittest.TestCase):
   def test_state_groups_ready_activities_by_track(self) -> None:
     plan = tracked_plan()
     progress = progress_for(plan, {"PRE-001": "completed"})
-    report = {
-      "source": {
-        "expected": "0" * 40, "actual": "0" * 40,
-        "status": "ok", "issues": [], "path": "source",
-      }
-    }
-
-    state = update_plan.compute_state(plan, progress, report)
+    state = update_plan.compute_state(plan, progress)
 
     self.assertEqual(state["ready"], ["ADV-001", "PLN-001"])
     self.assertEqual(state["ready_by_track"], {"lua-hardening": ["PLN-001"]})
@@ -194,20 +184,26 @@ class GraphTests(unittest.TestCase):
   def test_next_selects_only_the_requested_track(self) -> None:
     plan = tracked_plan()
     progress = progress_for(plan, {"PRE-001": "completed"})
-    report = {
-      "source": {
-        "expected": "0" * 40, "actual": "0" * 40,
-        "status": "ok", "issues": [], "path": "source",
-      }
-    }
-    state = update_plan.compute_state(plan, progress, report)
+    state = update_plan.compute_state(plan, progress)
     parsed = update_plan.build_parser().parse_args([
       "next", "--track", "lua-hardening",
     ])
     self.assertEqual("lua-hardening", parsed.track)
+    lock_report = {
+      "source": {
+        "expected": "0" * 40,
+        "actual": "0" * 40,
+        "status": "ok",
+        "issues": [],
+        "path": "source",
+      },
+    }
 
     with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)), \
-        mock.patch.object(update_plan, "compute_state", return_value=state):
+        mock.patch.object(update_plan, "compute_state", return_value=state), \
+        mock.patch.object(
+          update_plan, "inspect_reference_locks", return_value=lock_report,
+        ):
       output = io.StringIO()
       with contextlib.redirect_stdout(output):
         result = update_plan.command_next(argparse.Namespace(
