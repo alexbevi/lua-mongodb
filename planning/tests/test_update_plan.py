@@ -434,6 +434,50 @@ class ReferenceTests(unittest.TestCase):
       report = update_plan.inspect_references(plan, root)
       self.assertTrue(any("missing mapped symbol" in issue for issue in report["source"]["issues"]))
 
+  def test_lock_inspection_validates_gitlink_path_and_url_without_checkout(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      base = Path(temporary)
+      upstream = base / "upstream"
+      upstream.mkdir()
+      git(upstream, "init", "-b", "main")
+      git(upstream, "config", "user.name", "Test")
+      git(upstream, "config", "user.email", "test@example.invalid")
+      (upstream / "landmark.py").write_text(
+        "class Landmark:\n  pass\n", encoding="utf-8",
+      )
+      git(upstream, "add", "landmark.py")
+      git(upstream, "commit", "-m", "first")
+      commit = git(upstream, "rev-parse", "HEAD")
+
+      root = base / "repository"
+      root.mkdir()
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      git(
+        root,
+        "-c", "protocol.file.allow=always",
+        "submodule", "add", str(upstream), "source",
+      )
+      git(root, "add", ".gitmodules", "source")
+      git(root, "commit", "-m", "pin source")
+
+      plan = minimal_plan()
+      plan["references"]["source"]["commit"] = commit
+      plan["references"]["source"]["url"] = str(upstream)
+      self.assertEqual(
+        "ok", update_plan.inspect_reference_locks(plan, root)["source"]["status"],
+      )
+
+      git(root, "submodule", "deinit", "-f", "source")
+      self.assertEqual(
+        "ok", update_plan.inspect_reference_locks(plan, root)["source"]["status"],
+      )
+
+      plan["references"]["source"]["url"] = "https://example.invalid/wrong.git"
+      report = update_plan.inspect_reference_locks(plan, root)
+      self.assertTrue(any("URL" in issue for issue in report["source"]["issues"]))
+
 
 class CommitTests(unittest.TestCase):
   def test_strict_commit_check_requires_exact_subject_and_trailer(self) -> None:

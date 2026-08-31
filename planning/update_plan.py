@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import configparser
 import datetime as dt
 import hashlib
 import json
@@ -288,6 +289,79 @@ def declared_symbols(source: str) -> set[str]:
   }
 
 
+def submodule_declarations(root: Path) -> dict[str, dict[str, str]]:
+  path = root / ".gitmodules"
+  parser = configparser.ConfigParser()
+  try:
+    with path.open("r", encoding="utf-8") as handle:
+      parser.read_file(handle)
+  except (OSError, configparser.Error):
+    return {}
+
+  declarations: dict[str, dict[str, str]] = {}
+  for section in parser.sections():
+    if not section.startswith("submodule "):
+      continue
+    relative = parser.get(section, "path", fallback="")
+    url = parser.get(section, "url", fallback="")
+    if relative:
+      declarations[relative] = {"section": section, "url": url}
+  return declarations
+
+
+def inspect_reference_locks(
+  plan: dict[str, Any], root: Path = ROOT,
+) -> dict[str, dict[str, Any]]:
+  report: dict[str, dict[str, Any]] = {}
+  declarations = submodule_declarations(root)
+  for name, reference in plan.get("references", {}).items():
+    relative = Path(reference["path"])
+    relative_text = str(relative)
+    expected = reference["commit"]
+    issues: list[str] = []
+    actual: str | None = None
+    declaration = declarations.get(relative_text)
+    if declaration is None:
+      issues.append(f"{relative} is not registered in .gitmodules")
+    elif declaration["url"] != reference["url"]:
+      issues.append(
+        f".gitmodules URL is {declaration['url']}, expected {reference['url']}"
+      )
+
+    status = run_git(root, ["submodule", "status", "--", relative_text])
+    line = status.stdout.rstrip("\n")
+    if status.returncode != 0 or not line:
+      issues.append(f"missing Git submodule entry for {relative}")
+    elif len(line) < 41 or not re.fullmatch(r"[0-9a-f]{40}", line[1:41]):
+      issues.append(f"malformed Git submodule status for {relative}")
+    else:
+      actual = line[1:41]
+      if line[0] == "U":
+        issues.append(f"Git submodule entry for {relative} has merge conflicts")
+
+      checkout = root / relative
+      head = run_git(checkout, ["rev-parse", "--show-toplevel", "HEAD"])
+      head_lines = head.stdout.splitlines()
+      if head.returncode == 0 and len(head_lines) == 2:
+        try:
+          is_checkout = Path(head_lines[0]).resolve() == checkout.resolve()
+        except OSError:
+          is_checkout = False
+        if is_checkout and re.fullmatch(r"[0-9a-f]{40}", head_lines[1]):
+          actual = head_lines[1]
+      if actual != expected:
+        issues.append(f"Git submodule is {actual}, expected {expected}")
+
+    report[name] = {
+      "path": relative_text,
+      "expected": expected,
+      "actual": actual,
+      "status": "ok" if not issues else "stale",
+      "issues": issues,
+    }
+  return report
+
+
 def inspect_references(plan: dict[str, Any], root: Path = ROOT) -> dict[str, dict[str, Any]]:
   report: dict[str, dict[str, Any]] = {}
   for name, reference in plan.get("references", {}).items():
@@ -330,6 +404,17 @@ def inspect_references(plan: dict[str, Any], root: Path = ROOT) -> dict[str, dic
   return report
 
 
+def inspect_reference_contents(
+  plan: dict[str, Any], root: Path = ROOT,
+) -> dict[str, dict[str, Any]]:
+  locks = inspect_reference_locks(plan, root)
+  contents = inspect_references(plan, root)
+  for name, details in contents.items():
+    details["issues"] = [*locks[name]["issues"], *details["issues"]]
+    details["status"] = "ok" if not details["issues"] else "stale"
+  return contents
+
+
 def status_for(progress: dict[str, Any], activity_id: str) -> str:
   return progress.get("activities", {}).get(activity_id, {}).get("status", "pending")
 
@@ -339,7 +424,7 @@ def compute_state(
   reference_report: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
   activities = activity_map(plan)
-  report = reference_report if reference_report is not None else inspect_references(plan)
+  report = reference_report if reference_report is not None else inspect_reference_locks(plan)
   counts = {status: 0 for status in sorted(STATUSES)}
   active: list[str] = []
   blocked: list[str] = []
@@ -500,7 +585,7 @@ def assert_valid_core(plan: dict[str, Any], progress: dict[str, Any]) -> None:
 
 
 def save_progress_and_state(plan: dict[str, Any], progress: dict[str, Any]) -> None:
-  report = inspect_references(plan)
+  report = inspect_reference_locks(plan)
   atomic_write(PROGRESS_PATH, progress)
   atomic_write(STATE_PATH, compute_state(plan, progress, report))
 
@@ -509,7 +594,7 @@ def command_refresh(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
   progress["plan_digest"] = digest_plan(plan)
-  report = inspect_references(plan)
+  report = inspect_reference_locks(plan)
   progress["verified_references"] = {
     name: {"commit": details["actual"], "status": details["status"]}
     for name, details in report.items()
@@ -524,7 +609,7 @@ def command_check(arguments: argparse.Namespace) -> int:
   try:
     plan, progress = load_documents()
     issues = validate_plan(plan) + validate_progress(plan, progress)
-    report = inspect_references(plan)
+    report = inspect_reference_locks(plan)
     state = compute_state(plan, progress, report)
     issues.extend(state["stale"])
     try:
@@ -769,9 +854,26 @@ def command_complete(arguments: argparse.Namespace) -> int:
 def command_reference_report(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
-  report = inspect_references(plan)
+  report = inspect_reference_contents(plan)
   print(json.dumps(report, indent=2))
   return 1 if any(item["status"] != "ok" for item in report.values()) else 0
+
+
+def command_check_references(_: argparse.Namespace) -> int:
+  plan, progress = load_documents()
+  assert_valid_core(plan, progress)
+  report = inspect_reference_contents(plan)
+  issues = [
+    f"{name}: {issue}"
+    for name, details in report.items()
+    for issue in details["issues"]
+  ]
+  if issues:
+    for issue in dict.fromkeys(issues):
+      print(f"ERROR: {issue}", file=sys.stderr)
+    return 1
+  print("reference locks, checkouts, paths, and symbols are valid")
+  return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -829,6 +931,11 @@ def build_parser() -> argparse.ArgumentParser:
 
   report = subparsers.add_parser("reference-report", help="inspect pinned reference mappings")
   report.set_defaults(function=command_reference_report)
+
+  deep_check = subparsers.add_parser(
+    "check-references", help="validate reference checkouts, paths, and symbols",
+  )
+  deep_check.set_defaults(function=command_check_references)
   return parser
 
 

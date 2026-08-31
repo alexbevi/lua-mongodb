@@ -23,6 +23,7 @@ python3 planning/update_plan.py unblock ID
 python3 planning/update_plan.py complete ID
 python3 planning/update_plan.py refresh
 python3 planning/update_plan.py reference-report
+python3 planning/update_plan.py check-references
 python3 planning/update_references.py REFERENCE COMMIT [--allow-non-fast-forward]
 python3 planning/update_readme_compatibility.py [--check]
 python3 spec/conformance/catalog.py [--check]
@@ -43,7 +44,7 @@ make test-generated
 make test-complexity
 ```
 
-`check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
+`check` validates document shape, dependencies, cycles, generated state, and reference locks. `check-references` additionally inspects the initialized checkouts and every mapped path and Python symbol. `--strict` requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
 
 `update_references.py` advances one pin, rejects dirty or drifted checkouts, checks commit ancestry and mapped landmarks, and regenerates the affected artifacts. It leaves the resulting changes unstaged for review.
 
