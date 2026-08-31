@@ -45,9 +45,39 @@ class DocumentationStructureTests(unittest.TestCase):
     text = README.read_text(encoding="utf-8")
     headings = [
       text.index("## Getting started"),
-      text.index("## Specification compatibility"),
+      text.index("## MongoDB drivers specification compatibility"),
     ]
     self.assertEqual(headings, sorted(headings))
+
+  def test_readme_examples_cover_distinct_authentication(self) -> None:
+    text = README.read_text(encoding="utf-8")
+    examples = text.split("## Examples", 1)[1]
+    examples = examples.split(
+      "## MongoDB drivers specification compatibility",
+      1,
+    )[0]
+
+    for heading in (
+      "### Transactions",
+      "### Client bulk writes",
+      "### Change streams",
+      "### GridFS",
+    ):
+      with self.subTest(heading=heading):
+        self.assertIn(heading, examples)
+
+    for authentication in (
+      "SCRAM",
+      "MONGODB-X509",
+      "MONGODB-OIDC",
+      "MONGODB-AWS",
+    ):
+      with self.subTest(authentication=authentication):
+        self.assertIn(authentication, examples)
+
+    self.assertIn("compressors=zlib", examples)
+    self.assertIn("compressors=zstd", examples)
+    self.assertEqual(4, examples.count("--[["))
 
   def test_security_policy_has_a_private_reporting_route(self) -> None:
     policy = SECURITY.read_text(encoding="utf-8")

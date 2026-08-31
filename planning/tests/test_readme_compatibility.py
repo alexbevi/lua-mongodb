@@ -68,7 +68,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       }),
     )
 
-  def test_unscored_fixtures_remain_classified(self) -> None:
+  def test_unscored_fixtures_are_disclosed(self) -> None:
     counts = readme_compatibility.suite_counts()
 
     self.assertEqual(74, counts["crud"]["old_server_only"])
@@ -93,27 +93,45 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     table = readme_compatibility.render_table()
     self.assertIn(
       "[CRUD](https://alexbevi.com/specifications/crud/crud.html) | "
-      "🟢 | 100.0% |",
+      "🟢 | 100.0% **†** |",
       table,
     )
     self.assertIn(
       "[Change streams](https://alexbevi.com/specifications/change-streams/"
-      "change-streams.html) | 🟢 | 100.0% |",
+      "change-streams.html) | 🟢 | 100.0% **†** |",
       table,
     )
     self.assertIn(
       "[Load balancer support](https://alexbevi.com/specifications/"
-      "load-balancers/load-balancers.html) | 🟢 | 100.0% |",
+      "load-balancers/load-balancers.html) | 🟢 | 100.0% **†** |",
       table,
     )
     self.assertIn(
       "[Authentication options and additional mechanisms]"
       "(https://alexbevi.com/specifications/auth/auth.html) | "
-      "🟢 | 100.0% |",
+      "🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **83.0%** |", table)
-    self.assertNotIn("†", table)
+    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
+    self.assertIn("> [!IMPORTANT]", table)
+    self.assertIn("**† Fixtures excluded from scoring.**", table)
+    self.assertIn(
+      "Percentages marked **†** skip 106 upstream fixtures because their "
+      "`runOnRequirements` restrict them to MongoDB versions older than the "
+      "supported 7.0 floor",
+      table,
+    )
+    self.assertIn(
+      "The ledger also omits 3 explicit superseded or upstream-skipped "
+      "fixtures from Authentication options and additional mechanisms (2), "
+      "Load balancer support (1).",
+      table,
+    )
+    self.assertIn(
+      "The ledger excludes 17 terminal unsupported fixtures from scoring in "
+      "URI options (15), Connection monitoring and pooling (2).",
+      table,
+    )
 
   def test_terminal_unsupported_rows_are_unscored(self) -> None:
     self.assertEqual(
@@ -139,10 +157,10 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
     self.assertIn(
       "| Communication | [URI options](https://alexbevi.com/specifications/"
-      "uri-options/uri-options.html) | 🟡 | 95.8% |",
+      "uri-options/uri-options.html) | 🟡 | 95.8% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **83.0%** |", table)
+    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
 
   def test_terminal_unsupported_table_rows_use_badge_only(self) -> None:
     table = readme_compatibility.render_table()
@@ -201,7 +219,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     self.assertIn(
       "| Authentication | [Authentication options and additional mechanisms]"
       "(https://alexbevi.com/specifications/auth/auth.html) | "
-      "🟢 | 100.0% |",
+      "🟢 | 100.0% **†** |",
       table,
     )
     self.assertRegex(
@@ -210,7 +228,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **83.0%** |", table)
+    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"
