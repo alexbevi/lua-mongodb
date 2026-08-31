@@ -6,6 +6,23 @@ from spec.release import checklist
 
 
 class ReleaseChecklistTests(unittest.TestCase):
+  def test_v0_10_6_track_includes_both_stabilization_activities(self):
+    plan = checklist.load_json(checklist.PLAN)
+
+    self.assertEqual(
+      [
+        "SDAM-009",
+        "SDAM-010",
+        "CMAP-005",
+        "CMAP-006",
+        "CON-017",
+        "REL-065",
+        "CI-012",
+        "CI-013",
+      ],
+      checklist.v106_track_activity_ids(plan),
+    )
+
   def test_checked_in_release_is_ready(self):
     report = checklist.generate()
 
@@ -335,6 +352,7 @@ class ReleaseChecklistTests(unittest.TestCase):
         "CMAP-006",
         "CON-017",
         "CI-012",
+        "CI-013",
       ],
       report["gates"]["completed_v0_10_6_gates"],
     )

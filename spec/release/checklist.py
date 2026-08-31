@@ -217,7 +217,7 @@ V105_RELEASE_ACTIVITY = "REL-064"
 V106_GATES = ["SDAM-009", "SDAM-010", "CMAP-005", "CMAP-006"]
 V106_CONFORMANCE_ACTIVITY = "CON-017"
 V106_RELEASE_ACTIVITY = "REL-065"
-V106_STABILIZATION_ACTIVITY = "CI-012"
+V106_STABILIZATION_ACTIVITIES = ["CI-012", "CI-013"]
 CSOT_IDENTITIES = {
   f"client-side-operations-timeout/tests/deprecated-options.json::test[{index}]"
   for index in (79, 82, 85)
@@ -260,6 +260,14 @@ def completed_activity(progress: dict[str, Any], activity_id: str) -> None:
 
   if not green:
     raise ChecklistError(f"release activity has no green evidence: {activity_id}")
+
+
+def v106_track_activity_ids(plan: dict[str, Any]) -> list[str]:
+  return [
+    activity["id"]
+    for activity in plan.get("activities", [])
+    if activity.get("track") == "v0-10-6-topology-pool-logging"
+  ]
 
 
 def passed_owner_evidence(
@@ -473,16 +481,12 @@ def generate() -> dict[str, Any]:
       "v0.10.5 release gate inventory does not match the track"
     )
 
-  topology_pool_logging_track = [
-    activity["id"]
-    for activity in plan.get("activities", [])
-    if activity.get("track") == "v0-10-6-topology-pool-logging"
-  ]
+  topology_pool_logging_track = v106_track_activity_ids(plan)
   if topology_pool_logging_track != [
     *V106_GATES,
     V106_CONFORMANCE_ACTIVITY,
     V106_RELEASE_ACTIVITY,
-    V106_STABILIZATION_ACTIVITY,
+    *V106_STABILIZATION_ACTIVITIES,
   ]:
     raise ChecklistError(
       "v0.10.6 release gate inventory does not match the track"
@@ -585,7 +589,7 @@ def generate() -> dict[str, Any]:
   for activity_id in [
     *V106_GATES,
     V106_CONFORMANCE_ACTIVITY,
-    V106_STABILIZATION_ACTIVITY,
+    *V106_STABILIZATION_ACTIVITIES,
   ]:
     if activity_id not in activities:
       raise ChecklistError(f"unknown v0.10.6 gate activity: {activity_id}")
@@ -810,7 +814,7 @@ def generate() -> dict[str, Any]:
       "completed_v0_10_6_gates": [
         *V106_GATES,
         V106_CONFORMANCE_ACTIVITY,
-        V106_STABILIZATION_ACTIVITY,
+        *V106_STABILIZATION_ACTIVITIES,
       ],
       "conformance": {
         "applicable_gaps": applicable_gaps,
