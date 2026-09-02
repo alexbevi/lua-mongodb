@@ -11,12 +11,14 @@ from pathlib import Path
 import re
 import subprocess
 import sys
-from typing import Iterable, Sequence
+from typing import Any, Iterable, Sequence
 
 
 PLANNING_DIR = Path(__file__).resolve().parent
 ROOT = PLANNING_DIR.parent
 REFERENCES_PATH = PLANNING_DIR / "references.json"
+PLAN_PATH = PLANNING_DIR / "plan.json"
+PROGRESS_PATH = PLANNING_DIR / "progress.json"
 UPDATE_PLAN_SPEC = importlib.util.spec_from_file_location(
   "planning_update_plan", PLANNING_DIR / "update_plan.py",
 )
@@ -86,7 +88,7 @@ def require_commit(checkout: Path, commit: str) -> None:
     return
   fetched = run_git(
     checkout,
-    ["fetch", "--no-tags", "--depth=1", "origin", commit],
+    ["fetch", "--no-tags", "origin", commit],
   )
   if fetched.returncode != 0:
     detail = fetched.stderr.strip() or fetched.stdout.strip()
@@ -124,6 +126,160 @@ def change_summary(checkout: Path, old: str, new: str) -> dict[str, int]:
     if line:
       counts[line.split("\t", 1)[0][0]] += 1
   return dict(sorted(counts.items()))
+
+
+def changed_paths(checkout: Path, old: str, new: str) -> list[dict[str, str]]:
+  output = require_git(
+    checkout,
+    ["diff", "--name-status", "--no-renames", "-z", old, new, "--"],
+    "could not compare reference paths",
+  )
+  fields = output.split("\0")
+  if fields and fields[-1] == "":
+    fields.pop()
+  if len(fields) % 2 != 0:
+    raise ReferenceUpdateError("could not parse changed reference paths")
+  return [
+    {"status": fields[index][0], "path": fields[index + 1]}
+    for index in range(0, len(fields), 2)
+  ]
+
+
+def changed_commits(checkout: Path, old: str, new: str) -> list[str]:
+  output = require_git(
+    checkout,
+    ["rev-list", "--reverse", "--topo-order", f"{old}..{new}"],
+    "could not list reference commits",
+  )
+  return output.splitlines() if output else []
+
+
+def object_id(checkout: Path, commit: str, path: str) -> str | None:
+  result = run_git(checkout, ["rev-parse", f"{commit}:{path}"])
+  return result.stdout.strip() if result.returncode == 0 else None
+
+
+def roadmap_impacts(
+  changed_mappings: set[str],
+  plan_path: Path,
+  progress_path: Path,
+) -> list[dict[str, Any]]:
+  if not changed_mappings or not plan_path.exists() or not progress_path.exists():
+    return []
+  try:
+    plan = json.loads(plan_path.read_text(encoding="utf-8"))
+    progress = json.loads(progress_path.read_text(encoding="utf-8"))
+  except (OSError, json.JSONDecodeError) as exc:
+    raise ReferenceUpdateError(f"could not read roadmap impact inputs: {exc}") from exc
+
+  records = progress.get("activities", {})
+  impacts = []
+  for activity in plan.get("activities", []):
+    mappings = sorted(changed_mappings.intersection(activity.get("references", [])))
+    if not mappings:
+      continue
+    activity_id = activity["id"]
+    impacts.append({
+      "id": activity_id,
+      "mappings": mappings,
+      "status": records.get(activity_id, {}).get("status", "pending"),
+    })
+  return sorted(impacts, key=lambda value: value["id"])
+
+
+def analyze_reference(
+  name: str,
+  commit: str,
+  *,
+  root: Path = ROOT,
+  references_path: Path = REFERENCES_PATH,
+  plan_path: Path = PLAN_PATH,
+  progress_path: Path = PROGRESS_PATH,
+  allow_non_fast_forward: bool = False,
+) -> dict[str, Any]:
+  """Report the Git, mapping, and roadmap impact without moving a pin."""
+  if not re.fullmatch(r"[0-9a-f]{40}", commit):
+    raise ReferenceUpdateError("new commit must be a full lowercase 40-character SHA")
+
+  document = read_document(references_path)
+  references = document.get("references", {})
+  if name not in references:
+    raise ReferenceUpdateError(f"unknown reference: {name}")
+  reference = references[name]
+  checkout = resolve_checkout(root, reference["path"])
+  if not checkout.exists():
+    raise ReferenceUpdateError(f"missing reference checkout: {reference['path']}")
+
+  dirty = require_git(checkout, ["status", "--porcelain"], "could not inspect checkout")
+  if dirty:
+    raise ReferenceUpdateError(f"reference checkout is dirty: {reference['path']}")
+
+  old = reference["commit"]
+  actual = require_git(checkout, ["rev-parse", "HEAD"], "could not read checkout HEAD")
+  if actual != old:
+    raise ReferenceUpdateError(f"reference HEAD is {actual}, expected {old}")
+
+  require_commit(checkout, commit)
+  ancestry = run_git(checkout, ["merge-base", "--is-ancestor", old, commit])
+  if ancestry.returncode != 0 and not allow_non_fast_forward:
+    raise ReferenceUpdateError(
+      f"new {name} commit is not a descendant of the current pin; "
+      "pass --allow-non-fast-forward to override",
+    )
+
+  validate_mappings(checkout, reference, commit)
+  paths = changed_paths(checkout, old, commit)
+  landmarks = []
+  changed_mapping_ids = set()
+  for mapping in reference.get("mappings", []):
+    mapping_id = f"{name}:{mapping['name']}"
+    changed = object_id(checkout, old, mapping["path"]) != object_id(
+      checkout, commit, mapping["path"],
+    )
+    if changed:
+      changed_mapping_ids.add(mapping_id)
+    landmarks.append({
+      "changed": changed,
+      "id": mapping_id,
+      "path": mapping["path"],
+      "symbol": mapping.get("symbol"),
+    })
+
+  impacts = roadmap_impacts(changed_mapping_ids, plan_path, progress_path)
+  return {
+    "affected_activities": impacts,
+    "changed_paths": paths,
+    "commits": changed_commits(checkout, old, commit),
+    "from_commit": old,
+    "mapped_landmarks": landmarks,
+    "reference": name,
+    "review_candidates": [
+      impact["id"] for impact in impacts
+      if impact["status"] in {"completed", "in_progress", "needs_review"}
+    ],
+    "schema_version": 1,
+    "to_commit": commit,
+    "valid": True,
+  }
+
+
+def render_impact(report: dict[str, Any], output_format: str) -> str:
+  if output_format == "json":
+    return json.dumps(report, indent=2, sort_keys=True)
+  if not report.get("valid"):
+    return f"dry run failed: {'; '.join(report.get('errors', []))}"
+  changed = Counter(value["status"] for value in report["changed_paths"])
+  summary = ", ".join(
+    f"{status}={count}" for status, count in sorted(changed.items())
+  ) or "none"
+  return "\n".join((
+    f"dry run: {report['reference']} {report['from_commit']} -> {report['to_commit']}",
+    f"upstream commits: {len(report['commits'])}",
+    f"changed paths: {summary}",
+    f"changed mappings: {sum(value['changed'] for value in report['mapped_landmarks'])}",
+    f"affected activities: {len(report['affected_activities'])}",
+    f"review candidates: {len(report['review_candidates'])}",
+  ))
 
 
 def run_generators(root: Path, commands: Sequence[Sequence[str]]) -> None:
@@ -204,18 +360,50 @@ def build_parser() -> argparse.ArgumentParser:
     action="store_true",
     help="allow a pin that does not descend from the current commit",
   )
+  parser.add_argument(
+    "--dry-run",
+    action="store_true",
+    help="report candidate impact without moving the pin",
+  )
+  parser.add_argument(
+    "--format",
+    choices=("text", "json"),
+    default="text",
+    help="dry-run output format",
+  )
   return parser
 
 
 def main(argv: list[str] | None = None) -> int:
   arguments = build_parser().parse_args(argv)
   try:
+    if arguments.dry_run:
+      report = analyze_reference(
+        arguments.reference,
+        arguments.commit,
+        allow_non_fast_forward=arguments.allow_non_fast_forward,
+      )
+      print(render_impact(report, arguments.format))
+      return 0
+    if arguments.format != "text":
+      raise ReferenceUpdateError("--format requires --dry-run")
     summary = advance_reference(
       arguments.reference,
       arguments.commit,
       allow_non_fast_forward=arguments.allow_non_fast_forward,
     )
   except ReferenceUpdateError as exc:
+    if arguments.dry_run:
+      report = {
+        "errors": [str(exc)],
+        "reference": arguments.reference,
+        "schema_version": 1,
+        "to_commit": arguments.commit,
+        "valid": False,
+      }
+      output = render_impact(report, arguments.format)
+      print(output, file=sys.stdout if arguments.format == "json" else sys.stderr)
+      return 1
     print(f"reference update: {exc}", file=sys.stderr)
     return 1
 

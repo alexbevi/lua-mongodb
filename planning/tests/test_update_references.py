@@ -69,7 +69,95 @@ def write_references(root: Path, first: str) -> Path:
   return path
 
 
+def write_plan(root: Path) -> tuple[Path, Path]:
+  planning = root / "planning"
+  planning.mkdir(exist_ok=True)
+  plan_path = planning / "plan.json"
+  progress_path = planning / "progress.json"
+  plan_path.write_text(
+    json.dumps({
+      "activities": [{
+        "id": "REF-001",
+        "references": ["source:landmark"],
+      }],
+    }),
+    encoding="utf-8",
+  )
+  progress_path.write_text(
+    json.dumps({
+      "activities": {
+        "REF-001": {"status": "completed"},
+      },
+    }),
+    encoding="utf-8",
+  )
+  return plan_path, progress_path
+
+
 class ReferenceUpdateTests(unittest.TestCase):
+  def test_dry_run_reports_candidate_impact_without_moving_pin(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      checkout, first, second = make_checkout(root)
+      references_path = write_references(root, first)
+      plan_path, progress_path = write_plan(root)
+      references_before = references_path.read_bytes()
+
+      report = update_references.analyze_reference(
+        "source",
+        second,
+        root=root,
+        references_path=references_path,
+        plan_path=plan_path,
+        progress_path=progress_path,
+      )
+
+      self.assertEqual(first, git(checkout, "rev-parse", "HEAD"))
+      self.assertEqual(references_before, references_path.read_bytes())
+      self.assertEqual(first, report["from_commit"])
+      self.assertEqual(second, report["to_commit"])
+      self.assertEqual([second], report["commits"])
+      self.assertEqual(
+        [{"path": "landmark.py", "status": "M"}],
+        report["changed_paths"],
+      )
+      self.assertEqual(
+        [{
+          "changed": True,
+          "id": "source:landmark",
+          "path": "landmark.py",
+          "symbol": "Landmark",
+        }],
+        report["mapped_landmarks"],
+      )
+      self.assertEqual(
+        [{
+          "id": "REF-001",
+          "mappings": ["source:landmark"],
+          "status": "completed",
+        }],
+        report["affected_activities"],
+      )
+      self.assertEqual(["REF-001"], report["review_candidates"])
+      self.assertTrue(report["valid"])
+
+  def test_dry_run_cli_flags_parse_without_changing_apply_defaults(self) -> None:
+    parser = update_references.build_parser()
+
+    dry_run = parser.parse_args([
+      "source",
+      "a" * 40,
+      "--dry-run",
+      "--format",
+      "json",
+    ])
+    apply = parser.parse_args(["source", "b" * 40])
+
+    self.assertTrue(dry_run.dry_run)
+    self.assertEqual("json", dry_run.format)
+    self.assertFalse(apply.dry_run)
+    self.assertEqual("text", apply.format)
+
   def test_advance_updates_checkout_and_plan_pin(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
       root = Path(temporary)
