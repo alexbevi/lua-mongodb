@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from contextlib import contextmanager
+import hashlib
 import importlib.util
 import json
 from pathlib import Path
@@ -378,7 +379,198 @@ def render_impact(report: dict[str, Any], output_format: str) -> str:
         f"added={len(delta['added'])}, removed={len(delta['removed'])}, "
         f"changed={len(delta['changed'])}"
       )
+  simulation = report.get("simulation")
+  if simulation:
+    lines.extend((
+      f"generator simulation: {'passed' if simulation['valid'] else 'failed'}",
+      f"generated files: {len(simulation['generated_files'])}",
+      f"repeatable: {'yes' if simulation['repeatable'] else 'no'}",
+    ))
   return "\n".join(lines)
+
+
+def submodule_name(root: Path, relative: str) -> str:
+  output = require_git(
+    root,
+    ["config", "-f", ".gitmodules", "--get-regexp", r"^submodule\..*\.path$"],
+    "could not inspect submodule declarations",
+  )
+  for line in output.splitlines():
+    key, value = line.split(None, 1)
+    if value == relative:
+      return key.removeprefix("submodule.").removesuffix(".path")
+  raise ReferenceUpdateError(f"reference path is not a declared submodule: {relative}")
+
+
+@contextmanager
+def temporary_project_clone(
+  root: Path,
+  reference: dict[str, Any],
+) -> Iterable[Path]:
+  base_commit = require_git(root, ["rev-parse", "HEAD"], "could not read project HEAD")
+  with tempfile.TemporaryDirectory(prefix="lua-mongodb-project-") as temporary:
+    sandbox = Path(temporary) / "project"
+    cloned = subprocess.run(
+      ["git", "clone", "--shared", "--no-checkout", "--quiet", str(root), str(sandbox)],
+      check=False,
+      text=True,
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE,
+    )
+    if cloned.returncode != 0:
+      detail = cloned.stderr.strip() or cloned.stdout.strip()
+      raise ReferenceUpdateError(f"could not create project sandbox: {detail}")
+    require_git(
+      sandbox,
+      ["checkout", "--detach", "--quiet", base_commit],
+      "could not check out project sandbox",
+    )
+
+    relative = reference["path"]
+    name = submodule_name(sandbox, relative)
+    local_checkout = resolve_checkout(root, relative)
+    require_git(
+      sandbox,
+      ["config", f"submodule.{name}.url", str(local_checkout)],
+      "could not configure sandbox reference source",
+    )
+    require_git(
+      sandbox,
+      [
+        "-c", "protocol.file.allow=always", "submodule", "update", "--init", "--",
+        relative,
+      ],
+      "could not initialize sandbox reference",
+    )
+    yield sandbox
+
+
+def file_content_id(path: Path) -> str | None:
+  if path.is_file():
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+  if path.is_dir():
+    result = run_git(path, ["rev-parse", "HEAD"])
+    return result.stdout.strip() if result.returncode == 0 else None
+  return None
+
+
+def project_changes(root: Path) -> list[dict[str, Any]]:
+  output = require_git(
+    root,
+    ["diff", "--name-status", "--no-renames", "-z", "HEAD", "--"],
+    "could not inspect simulated project changes",
+  )
+  fields = output.split("\0")
+  if fields and fields[-1] == "":
+    fields.pop()
+  if len(fields) % 2 != 0:
+    raise ReferenceUpdateError("could not parse simulated project changes")
+  statuses = {
+    fields[index + 1]: fields[index][0]
+    for index in range(0, len(fields), 2)
+  }
+  untracked = require_git(
+    root,
+    ["ls-files", "--others", "--exclude-standard", "-z"],
+    "could not inspect simulated untracked files",
+  )
+  for path in filter(None, untracked.split("\0")):
+    statuses[path] = "A"
+  return [
+    {
+      "content_id": file_content_id(root / path),
+      "path": path,
+      "status": statuses[path],
+    }
+    for path in sorted(statuses)
+  ]
+
+
+def execute_generators(
+  root: Path,
+  commands: Sequence[Sequence[str]],
+) -> list[dict[str, Any]]:
+  results = []
+  for command in commands:
+    result = subprocess.run(
+      [sys.executable, *command],
+      cwd=root,
+      check=False,
+      text=True,
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE,
+    )
+    entry: dict[str, Any] = {
+      "command": " ".join(command),
+      "exit_code": result.returncode,
+    }
+    if result.returncode != 0:
+      detail = (result.stderr.strip() or result.stdout.strip()).replace(str(root), ".")
+      entry["error"] = detail
+    results.append(entry)
+    if result.returncode != 0:
+      break
+  return results
+
+
+def simulate_reference_update(
+  name: str,
+  commit: str,
+  *,
+  root: Path = ROOT,
+  references_path: Path = REFERENCES_PATH,
+  allow_non_fast_forward: bool = False,
+  generator_commands: Sequence[Sequence[str]] | None = None,
+) -> dict[str, Any]:
+  clean = require_git(
+    root,
+    ["status", "--porcelain=v1", "--untracked-files=all"],
+    "could not inspect project checkout",
+  )
+  if clean:
+    raise ReferenceUpdateError("dry-run generator simulation requires a clean project checkout")
+
+  document = read_document(references_path)
+  references = document.get("references", {})
+  if name not in references:
+    raise ReferenceUpdateError(f"unknown reference: {name}")
+  reference = references[name]
+  relative_references = references_path.resolve().relative_to(root.resolve())
+  commands = generator_commands
+  if commands is None:
+    commands = SPECIFICATION_GENERATORS if name == "specifications" else REFERENCE_GENERATORS
+
+  with temporary_project_clone(root, reference) as sandbox:
+    sandbox_references = sandbox / relative_references
+    if commit != reference["commit"]:
+      advance_reference(
+        name,
+        commit,
+        root=sandbox,
+        references_path=sandbox_references,
+        allow_non_fast_forward=allow_non_fast_forward,
+        generator_commands=(),
+      )
+
+    first_results = execute_generators(sandbox, commands)
+    first_changes = project_changes(sandbox)
+    first_passed = all(result["exit_code"] == 0 for result in first_results)
+    second_results = execute_generators(sandbox, commands) if first_passed else []
+    second_changes = project_changes(sandbox)
+    second_passed = all(result["exit_code"] == 0 for result in second_results)
+    repeatable = first_passed and second_passed and first_changes == second_changes
+    excluded = {relative_references.as_posix(), reference["path"]}
+    generated = [
+      change for change in first_changes
+      if change["path"] not in excluded
+    ]
+    return {
+      "first_run": first_results,
+      "generated_files": generated,
+      "repeatable": repeatable,
+      "second_run": second_results,
+      "valid": first_passed and second_passed and repeatable,
+    }
 
 
 def run_generators(root: Path, commands: Sequence[Sequence[str]]) -> None:
@@ -482,8 +674,14 @@ def main(argv: list[str] | None = None) -> int:
         arguments.commit,
         allow_non_fast_forward=arguments.allow_non_fast_forward,
       )
+      report["simulation"] = simulate_reference_update(
+        arguments.reference,
+        arguments.commit,
+        allow_non_fast_forward=arguments.allow_non_fast_forward,
+      )
+      report["valid"] = report["valid"] and report["simulation"]["valid"]
       print(render_impact(report, arguments.format))
-      return 0
+      return 0 if report["valid"] else 1
     if arguments.format != "text":
       raise ReferenceUpdateError("--format requires --dry-run")
     summary = advance_reference(

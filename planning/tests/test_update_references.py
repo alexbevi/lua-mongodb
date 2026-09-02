@@ -136,7 +136,117 @@ def write_plan(root: Path) -> tuple[Path, Path]:
   return plan_path, progress_path
 
 
+def make_project_with_reference(
+  root: Path,
+  generator_source: str,
+) -> tuple[Path, Path, str, str]:
+  upstream_root = root / "upstream-root"
+  upstream_root.mkdir()
+  checkout, first, second = make_checkout(upstream_root)
+  project = root / "project"
+  project.mkdir()
+  git(project, "init", "-b", "main")
+  git(project, "config", "user.name", "Test")
+  git(project, "config", "user.email", "test@example.invalid")
+  planning = project / "planning"
+  planning.mkdir()
+  (planning / "generate.py").write_text(generator_source, encoding="utf-8")
+  (planning / "references.json").write_text(
+    json.dumps({
+      "schema_version": 1,
+      "references": {
+        "source": {
+          "path": "planning/source",
+          "url": str(checkout),
+          "commit": first,
+          "mappings": [{
+            "name": "landmark",
+            "path": "landmark.py",
+            "symbol": "Landmark",
+          }],
+        },
+      },
+    }),
+    encoding="utf-8",
+  )
+  (project / "generated.txt").write_text("old\n", encoding="utf-8")
+  git(
+    project,
+    "-c",
+    "protocol.file.allow=always",
+    "submodule",
+    "add",
+    str(checkout),
+    "planning/source",
+  )
+  git(project, "add", ".")
+  git(project, "commit", "-m", "project")
+  return project, checkout, first, second
+
+
 class ReferenceUpdateTests(unittest.TestCase):
+  def test_dry_run_simulates_repeatable_generators_in_isolation(self) -> None:
+    generator = """\
+import json
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+references = json.loads((root / "planning/references.json").read_text())
+commit = references["references"]["source"]["commit"]
+(root / "generated.txt").write_text(commit + "\\n")
+"""
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      project, checkout, first, second = make_project_with_reference(root, generator)
+      status_before = git(project, "status", "--porcelain=v1")
+
+      simulation = update_references.simulate_reference_update(
+        "source",
+        second,
+        root=project,
+        references_path=project / "planning" / "references.json",
+        generator_commands=(("planning/generate.py",),),
+      )
+
+      self.assertTrue(simulation["valid"])
+      self.assertTrue(simulation["repeatable"])
+      self.assertEqual(
+        ["generated.txt"],
+        [value["path"] for value in simulation["generated_files"]],
+      )
+      self.assertEqual(status_before, git(project, "status", "--porcelain=v1"))
+      self.assertEqual(first, git(checkout, "rev-parse", "HEAD"))
+      references = json.loads(
+        (project / "planning" / "references.json").read_text(encoding="utf-8")
+      )
+      self.assertEqual(first, references["references"]["source"]["commit"])
+
+  def test_dry_run_rejects_nonrepeatable_generation(self) -> None:
+    generator = """\
+from pathlib import Path
+
+target = Path(__file__).resolve().parents[1] / "generated.txt"
+value = int(target.read_text().strip() or "0") if target.exists() else 0
+target.write_text(str(value + 1) + "\\n")
+"""
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      project, _, _, second = make_project_with_reference(root, generator)
+      (project / "generated.txt").write_text("0\n", encoding="utf-8")
+      git(project, "add", "generated.txt")
+      git(project, "commit", "-m", "reset generated value")
+
+      simulation = update_references.simulate_reference_update(
+        "source",
+        second,
+        root=project,
+        references_path=project / "planning" / "references.json",
+        generator_commands=(("planning/generate.py",),),
+      )
+
+      self.assertFalse(simulation["valid"])
+      self.assertFalse(simulation["repeatable"])
+
   def test_inventory_delta_reports_added_removed_and_changed_identities(self) -> None:
     before = {
       "removed": {"fingerprint": "old"},
