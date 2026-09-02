@@ -517,6 +517,17 @@ def project_changes(root: Path) -> list[dict[str, Any]]:
   ]
 
 
+def generator_failure_detail(
+  result: subprocess.CompletedProcess[str],
+  root: Path,
+) -> str:
+  return "\n".join(
+    value.strip().replace(str(root), ".")
+    for value in (result.stdout, result.stderr)
+    if value.strip()
+  )
+
+
 def execute_generators(
   root: Path,
   commands: Sequence[Sequence[str]],
@@ -536,8 +547,7 @@ def execute_generators(
       "exit_code": result.returncode,
     }
     if result.returncode != 0:
-      detail = (result.stderr.strip() or result.stdout.strip()).replace(str(root), ".")
-      entry["error"] = detail
+      entry["error"] = generator_failure_detail(result, root)
     results.append(entry)
     if result.returncode != 0:
       break
@@ -648,7 +658,7 @@ def run_generators(root: Path, commands: Sequence[Sequence[str]]) -> None:
       stderr=subprocess.PIPE,
     )
     if result.returncode != 0:
-      detail = result.stderr.strip() or result.stdout.strip()
+      detail = generator_failure_detail(result, root)
       rendered = " ".join(command)
       raise ReferenceUpdateError(f"artifact regeneration failed at {rendered}: {detail}")
 

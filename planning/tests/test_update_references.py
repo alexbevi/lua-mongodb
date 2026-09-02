@@ -260,10 +260,13 @@ commit = references["references"]["source"]["commit"]
 
   def test_reviewed_repeatable_failure_moves_only_the_pin(self) -> None:
     generator = """\
+import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[1]
 (root / "generated.txt").write_text("partial\\n")
+print("classification detail")
+print("generator failure", file=sys.stderr)
 raise SystemExit("unclassified candidate")
 """
     with tempfile.TemporaryDirectory() as temporary:
@@ -282,6 +285,10 @@ raise SystemExit("unclassified candidate")
 
       self.assertFalse(report["valid"])
       self.assertTrue(report["simulation"]["repeatable"])
+      error = report["simulation"]["first_run"][0]["error"]
+      self.assertIn("classification detail", error)
+      self.assertIn("generator failure", error)
+      self.assertIn("unclassified candidate", error)
       self.assertIn(
         "generator simulation: failed",
         update_references.render_impact(report, "text"),
