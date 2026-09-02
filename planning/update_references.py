@@ -5,12 +5,14 @@ from __future__ import annotations
 
 import argparse
 from collections import Counter
+from contextlib import contextmanager
 import importlib.util
 import json
 from pathlib import Path
 import re
 import subprocess
 import sys
+import tempfile
 from typing import Any, Iterable, Sequence
 
 
@@ -187,6 +189,88 @@ def roadmap_impacts(
   return sorted(impacts, key=lambda value: value["id"])
 
 
+def inventory_delta(
+  before: dict[str, dict[str, Any]],
+  after: dict[str, dict[str, Any]],
+) -> dict[str, list[dict[str, Any]]]:
+  before_ids = set(before)
+  after_ids = set(after)
+  return {
+    "added": [
+      {"identity": identity, **after[identity]}
+      for identity in sorted(after_ids - before_ids)
+    ],
+    "removed": [
+      {"identity": identity, **before[identity]}
+      for identity in sorted(before_ids - after_ids)
+    ],
+    "changed": [
+      {"identity": identity, "from": before[identity], "to": after[identity]}
+      for identity in sorted(before_ids & after_ids)
+      if before[identity] != after[identity]
+    ],
+  }
+
+
+def discover_specification_inventory(source: Path) -> dict[str, dict[str, Any]]:
+  if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+  from spec.conformance import catalog, ledger
+  from spec.unified import run
+
+  try:
+    unified_tests = {
+      value["id"]: {
+        "fingerprint": value["fingerprint"],
+        "fixture": value["fixture"],
+        "requirements": value["requirements"],
+      }
+      for value in run.discover_tests(source)
+    }
+    return {
+      "accepted_documents": catalog.discover_accepted_documents(source),
+      "cases": ledger.discover_cases(source),
+      "fixture_files": ledger.discover_files(source),
+      "unified_tests": unified_tests,
+    }
+  except (OSError, UnicodeDecodeError, catalog.CatalogError,
+          ledger.LedgerError, run.CapabilityError) as exc:
+    raise ReferenceUpdateError(f"could not inventory specifications: {exc}") from exc
+
+
+@contextmanager
+def temporary_worktree(checkout: Path, commit: str) -> Iterable[Path]:
+  with tempfile.TemporaryDirectory(prefix="lua-mongodb-reference-") as temporary:
+    worktree = Path(temporary) / "checkout"
+    require_git(
+      checkout,
+      ["worktree", "add", "--detach", str(worktree), commit],
+      "could not materialize candidate reference",
+    )
+    try:
+      yield worktree
+    finally:
+      require_git(
+        checkout,
+        ["worktree", "remove", "--force", str(worktree)],
+        "could not remove candidate reference worktree",
+      )
+
+
+def specification_inventory_delta(
+  checkout: Path,
+  old: str,
+  new: str,
+) -> dict[str, dict[str, list[dict[str, Any]]]]:
+  before = discover_specification_inventory(checkout / "source")
+  with temporary_worktree(checkout, new) as candidate:
+    after = discover_specification_inventory(candidate / "source")
+  return {
+    name: inventory_delta(before[name], after[name])
+    for name in sorted(before)
+  }
+
+
 def analyze_reference(
   name: str,
   commit: str,
@@ -246,7 +330,7 @@ def analyze_reference(
     })
 
   impacts = roadmap_impacts(changed_mapping_ids, plan_path, progress_path)
-  return {
+  report = {
     "affected_activities": impacts,
     "changed_paths": paths,
     "commits": changed_commits(checkout, old, commit),
@@ -261,6 +345,11 @@ def analyze_reference(
     "to_commit": commit,
     "valid": True,
   }
+  if name == "specifications":
+    report["specification_inventory"] = specification_inventory_delta(
+      checkout, old, commit,
+    )
+  return report
 
 
 def render_impact(report: dict[str, Any], output_format: str) -> str:
@@ -272,14 +361,24 @@ def render_impact(report: dict[str, Any], output_format: str) -> str:
   summary = ", ".join(
     f"{status}={count}" for status, count in sorted(changed.items())
   ) or "none"
-  return "\n".join((
+  lines = [
     f"dry run: {report['reference']} {report['from_commit']} -> {report['to_commit']}",
     f"upstream commits: {len(report['commits'])}",
     f"changed paths: {summary}",
     f"changed mappings: {sum(value['changed'] for value in report['mapped_landmarks'])}",
     f"affected activities: {len(report['affected_activities'])}",
     f"review candidates: {len(report['review_candidates'])}",
-  ))
+  ]
+  if "specification_inventory" in report:
+    inventory = report["specification_inventory"]
+    for name in ("accepted_documents", "fixture_files", "cases", "unified_tests"):
+      delta = inventory[name]
+      lines.append(
+        f"{name.replace('_', ' ')}: "
+        f"added={len(delta['added'])}, removed={len(delta['removed'])}, "
+        f"changed={len(delta['changed'])}"
+      )
+  return "\n".join(lines)
 
 
 def run_generators(root: Path, commands: Sequence[Sequence[str]]) -> None:

@@ -46,6 +46,48 @@ def make_checkout(root: Path) -> tuple[Path, str, str]:
   return checkout, first, second
 
 
+def make_specifications_checkout(root: Path) -> tuple[Path, str, str]:
+  checkout = root / "specifications"
+  fixture = checkout / "source" / "example" / "tests" / "unified" / "case.json"
+  document = checkout / "source" / "example" / "example.md"
+  fixture.parent.mkdir(parents=True)
+  document.parent.mkdir(parents=True, exist_ok=True)
+  git(checkout, "init", "-b", "main")
+  git(checkout, "config", "user.name", "Test")
+  git(checkout, "config", "user.email", "test@example.invalid")
+  document.write_text("# Example\n\n- Status: Accepted\n", encoding="utf-8")
+  fixture.write_text(
+    json.dumps({
+      "description": "example",
+      "schemaVersion": "1.0",
+      "createEntities": [],
+      "tests": [{"description": "first", "operations": []}],
+    }),
+    encoding="utf-8",
+  )
+  git(checkout, "add", ".")
+  git(checkout, "commit", "-m", "first")
+  first = git(checkout, "rev-parse", "HEAD")
+  document.write_text("# Example\n\n- Status: Accepted\n\nChanged.\n", encoding="utf-8")
+  fixture.write_text(
+    json.dumps({
+      "description": "example",
+      "schemaVersion": "1.0",
+      "createEntities": [],
+      "tests": [
+        {"description": "first changed", "operations": []},
+        {"description": "second", "operations": []},
+      ],
+    }),
+    encoding="utf-8",
+  )
+  git(checkout, "add", ".")
+  git(checkout, "commit", "-m", "second")
+  second = git(checkout, "rev-parse", "HEAD")
+  git(checkout, "checkout", "--detach", first)
+  return checkout, first, second
+
+
 def write_references(root: Path, first: str) -> Path:
   path = root / "references.json"
   path.write_text(
@@ -95,6 +137,62 @@ def write_plan(root: Path) -> tuple[Path, Path]:
 
 
 class ReferenceUpdateTests(unittest.TestCase):
+  def test_inventory_delta_reports_added_removed_and_changed_identities(self) -> None:
+    before = {
+      "removed": {"fingerprint": "old"},
+      "changed": {"fingerprint": "old"},
+    }
+    after = {
+      "added": {"fingerprint": "new"},
+      "changed": {"fingerprint": "new"},
+    }
+
+    delta = update_references.inventory_delta(before, after)
+
+    self.assertEqual(
+      [{"fingerprint": "new", "identity": "added"}],
+      delta["added"],
+    )
+    self.assertEqual(
+      [{"fingerprint": "old", "identity": "removed"}],
+      delta["removed"],
+    )
+    self.assertEqual(
+      [{
+        "from": {"fingerprint": "old"},
+        "identity": "changed",
+        "to": {"fingerprint": "new"},
+      }],
+      delta["changed"],
+    )
+
+  def test_specification_inventory_reports_every_identity_family(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      checkout, first, second = make_specifications_checkout(root)
+
+      impact = update_references.specification_inventory_delta(
+        checkout,
+        first,
+        second,
+      )
+
+      self.assertEqual(
+        ["example/example.md"],
+        [value["identity"] for value in impact["accepted_documents"]["changed"]],
+      )
+      self.assertEqual(
+        ["example/tests/unified/case.json"],
+        [value["identity"] for value in impact["fixture_files"]["changed"]],
+      )
+      self.assertEqual(1, len(impact["cases"]["added"]))
+      self.assertEqual(1, len(impact["cases"]["changed"]))
+      self.assertEqual(1, len(impact["unified_tests"]["added"]))
+      self.assertEqual(1, len(impact["unified_tests"]["changed"]))
+      self.assertEqual(first, git(checkout, "rev-parse", "HEAD"))
+      worktrees = git(checkout, "worktree", "list", "--porcelain")
+      self.assertEqual(1, worktrees.count("worktree "))
+
   def test_dry_run_reports_candidate_impact_without_moving_pin(self) -> None:
     with tempfile.TemporaryDirectory() as temporary:
       root = Path(temporary)
