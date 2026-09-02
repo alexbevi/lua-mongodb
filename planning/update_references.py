@@ -272,6 +272,93 @@ def specification_inventory_delta(
   }
 
 
+def inventory_suites(entry: dict[str, Any]) -> list[str]:
+  values = [entry]
+  if "from" in entry or "to" in entry:
+    values = [entry[key] for key in ("from", "to") if key in entry]
+  suites = set()
+  for value in values:
+    suite = value.get("suite")
+    if not suite:
+      source = value.get("fixture") or value.get("source")
+      if source:
+        suite = source.split("/", 1)[0]
+    if suite:
+      suites.add(suite)
+  if not suites:
+    identity = entry.get("identity", "")
+    if "/" in identity:
+      suites.add(identity.split("/", 1)[0])
+  if not suites:
+    raise ReferenceUpdateError(
+      f"could not identify specification suite for {entry.get('identity', 'entry')}",
+    )
+  return sorted(suites)
+
+
+def propose_plan_items(report: dict[str, Any]) -> list[dict[str, Any]]:
+  """Derive compact review work from a reference impact report."""
+  items = []
+  inventory = report.get("specification_inventory")
+  if inventory:
+    families = (
+      "accepted_documents",
+      "cases",
+      "fixture_files",
+      "unified_tests",
+    )
+    changes = ("added", "changed", "removed")
+    counts: dict[str, dict[str, dict[str, int]]] = {}
+    for family in families:
+      for change in changes:
+        for entry in inventory[family][change]:
+          for suite in inventory_suites(entry):
+            suite_counts = counts.setdefault(suite, {
+              name: {kind: 0 for kind in changes}
+              for name in families
+            })
+            suite_counts[family][change] += 1
+    items.extend({
+      "change_counts": counts[suite],
+      "key": f"specifications:{suite}",
+      "kind": "specification_suite_review",
+      "title": f"Review {suite} specification changes",
+    } for suite in sorted(counts))
+
+  impacts = report.get("affected_activities", [])
+  candidates = set(report.get("review_candidates", []))
+  for mapping in sorted(
+    (value for value in report.get("mapped_landmarks", []) if value["changed"]),
+    key=lambda value: value["id"],
+  ):
+    affected = [
+      activity for activity in impacts
+      if mapping["id"] in activity["mappings"]
+    ]
+    items.append({
+      "affected_activity_count": len(affected),
+      "key": mapping["id"],
+      "kind": "reference_mapping_review",
+      "review_candidate_count": sum(
+        activity["id"] in candidates for activity in affected
+      ),
+      "title": f"Review {mapping['id']} reference mapping changes",
+    })
+
+  failed_commands = sorted({
+    result["command"]
+    for result in report.get("simulation", {}).get("first_run", [])
+    if result["exit_code"] != 0
+  })
+  items.extend({
+    "command": command,
+    "key": f"generator:{command}",
+    "kind": "generator_failure",
+    "title": f"Resolve {command} generator failure",
+  } for command in failed_commands)
+  return items
+
+
 def analyze_reference(
   name: str,
   commit: str,
@@ -389,6 +476,12 @@ def render_impact(report: dict[str, Any], output_format: str) -> str:
       f"generated files: {len(simulation['generated_files'])}",
       f"repeatable: {'yes' if simulation['repeatable'] else 'no'}",
     ))
+  proposals = report.get("proposed_plan_items", [])
+  lines.append(f"proposed plan items: {len(proposals)}")
+  lines.extend(
+    f"{index}. {item['title']}"
+    for index, item in enumerate(proposals, start=1)
+  )
   if report.get("impact_digest"):
     lines.append(f"impact digest: {report['impact_digest']}")
   return "\n".join(lines)
@@ -643,6 +736,7 @@ def build_impact_report(
     generator_commands=generator_commands,
   )
   report["valid"] = report["valid"] and report["simulation"]["valid"]
+  report["proposed_plan_items"] = propose_plan_items(report)
   report["impact_digest"] = impact_digest(report)
   return report
 

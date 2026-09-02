@@ -185,6 +185,119 @@ def make_project_with_reference(
 
 
 class ReferenceUpdateTests(unittest.TestCase):
+  def test_proposed_plan_items_group_review_work(self) -> None:
+    report = {
+      "affected_activities": [
+        {
+          "id": "REF-001",
+          "mappings": ["source:landmark"],
+          "status": "completed",
+        },
+        {
+          "id": "REF-002",
+          "mappings": ["source:landmark"],
+          "status": "pending",
+        },
+      ],
+      "mapped_landmarks": [
+        {"changed": True, "id": "source:landmark"},
+        {"changed": False, "id": "source:stable"},
+      ],
+      "review_candidates": ["REF-001"],
+      "simulation": {
+        "first_run": [{"command": "planning/generate.py", "exit_code": 1}],
+        "generated_files": [],
+        "repeatable": True,
+        "valid": False,
+      },
+      "specification_inventory": {
+        "accepted_documents": {
+          "added": [],
+          "removed": [],
+          "changed": [{
+            "identity": "alpha/alpha.md",
+            "from": {"suite": "alpha", "fingerprint": "old"},
+            "to": {"suite": "alpha", "fingerprint": "new"},
+          }],
+        },
+        "fixture_files": {
+          "added": [{"identity": "alpha/tests/new.json", "suite": "alpha"}],
+          "removed": [],
+          "changed": [],
+        },
+        "cases": {
+          "added": [],
+          "removed": [],
+          "changed": [],
+        },
+        "unified_tests": {
+          "added": [{
+            "identity": "beta/tests/unified/case.json::test[1]",
+            "fixture": "beta/tests/unified/case.json",
+          }],
+          "removed": [],
+          "changed": [],
+        },
+      },
+    }
+
+    items = update_references.propose_plan_items(report)
+
+    self.assertEqual(
+      [
+        {
+          "change_counts": {
+            "accepted_documents": {"added": 0, "changed": 1, "removed": 0},
+            "cases": {"added": 0, "changed": 0, "removed": 0},
+            "fixture_files": {"added": 1, "changed": 0, "removed": 0},
+            "unified_tests": {"added": 0, "changed": 0, "removed": 0},
+          },
+          "key": "specifications:alpha",
+          "kind": "specification_suite_review",
+          "title": "Review alpha specification changes",
+        },
+        {
+          "change_counts": {
+            "accepted_documents": {"added": 0, "changed": 0, "removed": 0},
+            "cases": {"added": 0, "changed": 0, "removed": 0},
+            "fixture_files": {"added": 0, "changed": 0, "removed": 0},
+            "unified_tests": {"added": 1, "changed": 0, "removed": 0},
+          },
+          "key": "specifications:beta",
+          "kind": "specification_suite_review",
+          "title": "Review beta specification changes",
+        },
+        {
+          "affected_activity_count": 2,
+          "key": "source:landmark",
+          "kind": "reference_mapping_review",
+          "review_candidate_count": 1,
+          "title": "Review source:landmark reference mapping changes",
+        },
+        {
+          "command": "planning/generate.py",
+          "key": "generator:planning/generate.py",
+          "kind": "generator_failure",
+          "title": "Resolve planning/generate.py generator failure",
+        },
+      ],
+      items,
+    )
+
+    report["proposed_plan_items"] = items
+    text = update_references.render_impact({
+      **report,
+      "changed_paths": [],
+      "commits": [],
+      "from_commit": "a" * 40,
+      "reference": "source",
+      "to_commit": "b" * 40,
+      "valid": False,
+    }, "text")
+    self.assertIn("proposed plan items: 4", text)
+    self.assertIn("1. Review alpha specification changes", text)
+    self.assertIn("4. Resolve planning/generate.py generator failure", text)
+
   def test_impact_digest_is_canonical_and_reviewable(self) -> None:
     first = {
       "valid": True,
