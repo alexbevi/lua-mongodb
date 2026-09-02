@@ -408,6 +408,52 @@ class EvidenceTests(unittest.TestCase):
     )
     save.assert_called_once_with(plan, progress)
 
+  def test_review_marks_completed_or_active_work_without_losing_evidence(self) -> None:
+    plan = minimal_plan()
+    for previous_status in ("completed", "in_progress"):
+      with self.subTest(previous_status=previous_status):
+        progress = progress_for(plan, {"TST-001": previous_status})
+        record = progress["activities"]["TST-001"]
+        record["evidence"] = [{"phase": "green", "exit_code": 0}]
+
+        with mock.patch.object(
+          update_plan, "load_documents", return_value=(plan, progress),
+        ), mock.patch.object(update_plan, "save_progress_and_state") as save:
+          result = update_plan.command_review(argparse.Namespace(
+            activity_id="TST-001",
+            reason="pinned reference behavior changed",
+          ))
+
+        self.assertEqual(0, result)
+        self.assertEqual("needs_review", record["status"])
+        self.assertEqual([{"phase": "green", "exit_code": 0}], record["evidence"])
+        self.assertEqual(
+          [f"Needs review from {previous_status}: pinned reference behavior changed"],
+          record["notes"],
+        )
+        save.assert_called_once_with(plan, progress)
+
+    pending = progress_for(plan, {"TST-001": "pending"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, pending)):
+      with self.assertRaisesRegex(update_plan.PlanError, "cannot mark for review"):
+        update_plan.command_review(argparse.Namespace(
+          activity_id="TST-001",
+          reason="not completed or active",
+        ))
+
+  def test_review_command_requires_a_reason(self) -> None:
+    parser = update_plan.build_parser()
+
+    arguments = parser.parse_args([
+      "review",
+      "TST-001",
+      "--reason",
+      "reference changed",
+    ])
+
+    self.assertIs(update_plan.command_review, arguments.function)
+    self.assertEqual("reference changed", arguments.reason)
+
 
 class ReferenceTests(unittest.TestCase):
   def make_reference(self, root: Path) -> tuple[dict, str, str]:

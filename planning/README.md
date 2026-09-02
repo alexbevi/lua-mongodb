@@ -16,6 +16,7 @@ python3 planning/update_plan.py check [--strict [--pushed]]
 python3 planning/update_plan.py next [--track TRACK] [--json]
 python3 planning/update_plan.py start ID [--track TRACK]
 python3 planning/update_plan.py requeue ID --reason "..."
+python3 planning/update_plan.py review ID --reason "..."
 python3 planning/update_plan.py record-test ID --phase red --command "..." --exit-code 1 --summary "..."
 python3 planning/update_plan.py record-test ID --phase green --command "..." --exit-code 0 --summary "..."
 python3 planning/update_plan.py block ID --reason "..."
@@ -94,5 +95,7 @@ The unified specification runner is test-only support under `spec/support/mongod
 `spec/sharded_environment.py` is the shared test-only owner for an ephemeral replica-set-backed sharded deployment. It starts one config server, one shard, and one mongos; verifies exact topology, version, and host facts; and tears down every process after success or partial startup failure. Unified executor entries may select `live-sharded`; externally managed clusters must provide the same facts contract. Full Conformance installs both `mongod` and `mongos`, while driver networking remains behind the normal runtime adapter.
 
 Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
+
+Use `review` during a reference refresh when changed upstream semantics may invalidate completed or active work. It preserves the activity's evidence, records its previous status and the review reason, and exposes the activity through `current_state.json` without deciding whether implementation must be reopened.
 
 Use [`prompt_goal.md`](prompt_goal.md) to launch the incremental production-core implementation.

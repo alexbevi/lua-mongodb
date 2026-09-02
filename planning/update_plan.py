@@ -780,6 +780,28 @@ def command_requeue(arguments: argparse.Namespace) -> int:
   return 0
 
 
+def command_review(arguments: argparse.Namespace) -> int:
+  plan, progress = load_documents()
+  assert_valid_core(plan, progress)
+  require_activity(plan, arguments.activity_id)
+  record = ensure_record(progress, arguments.activity_id)
+  previous_status = record["status"]
+  if previous_status not in {"completed", "in_progress"}:
+    raise PlanError(
+      f"cannot mark for review from {previous_status}: {arguments.activity_id}",
+    )
+  reason = arguments.reason.strip()
+  if not reason:
+    raise PlanError("review reason must not be empty")
+  record["status"] = "needs_review"
+  record.setdefault("notes", []).append(
+    f"Needs review from {previous_status}: {reason}",
+  )
+  save_progress_and_state(plan, progress)
+  print(f"marked {arguments.activity_id} for review")
+  return 0
+
+
 def command_record_test(arguments: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
@@ -922,6 +944,13 @@ def build_parser() -> argparse.ArgumentParser:
   requeue.add_argument("activity_id")
   requeue.add_argument("--reason", required=True)
   requeue.set_defaults(function=command_requeue)
+
+  review = subparsers.add_parser(
+    "review", help="mark completed or active work as needing semantic review",
+  )
+  review.add_argument("activity_id")
+  review.add_argument("--reason", required=True)
+  review.set_defaults(function=command_review)
 
   record = subparsers.add_parser("record-test", help="record red or green test evidence")
   record.add_argument("activity_id")
