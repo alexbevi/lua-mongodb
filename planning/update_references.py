@@ -359,7 +359,7 @@ def analyze_reference(
 def render_impact(report: dict[str, Any], output_format: str) -> str:
   if output_format == "json":
     return json.dumps(report, indent=2, sort_keys=True)
-  if not report.get("valid"):
+  if not report.get("valid") and report.get("errors"):
     return f"dry run failed: {'; '.join(report.get('errors', []))}"
   changed = Counter(value["status"] for value in report["changed_paths"])
   summary = ", ".join(
@@ -408,8 +408,11 @@ def impact_digest(report: dict[str, Any]) -> str:
 def require_expected_impact(report: dict[str, Any], expected: str) -> None:
   if not re.fullmatch(r"[0-9a-f]{64}", expected):
     raise ReferenceUpdateError("reviewed impact digest must be 64 lowercase hex characters")
-  if not report.get("valid"):
-    raise ReferenceUpdateError("reviewed impact no longer validates")
+  simulation = report.get("simulation")
+  if not report.get("valid") and (
+    not simulation or not simulation.get("repeatable")
+  ):
+    raise ReferenceUpdateError("reviewed impact is not repeatable")
   actual = impact_digest(report)
   if actual != expected:
     raise ReferenceUpdateError(
@@ -583,10 +586,10 @@ def simulate_reference_update(
     first_results = execute_generators(sandbox, commands)
     first_changes = project_changes(sandbox)
     first_passed = all(result["exit_code"] == 0 for result in first_results)
-    second_results = execute_generators(sandbox, commands) if first_passed else []
+    second_results = execute_generators(sandbox, commands)
     second_changes = project_changes(sandbox)
     second_passed = all(result["exit_code"] == 0 for result in second_results)
-    repeatable = first_passed and second_passed and first_changes == second_changes
+    repeatable = first_results == second_results and first_changes == second_changes
     excluded = {relative_references.as_posix(), reference["path"]}
     generated = [
       change for change in first_changes
@@ -714,7 +717,7 @@ def advance_reviewed_reference(
   progress_path: Path = PROGRESS_PATH,
   allow_non_fast_forward: bool = False,
   generator_commands: Sequence[Sequence[str]] | None = None,
-) -> dict[str, int]:
+) -> dict[str, Any]:
   report = build_impact_report(
     name,
     commit,
@@ -726,14 +729,24 @@ def advance_reviewed_reference(
     generator_commands=generator_commands,
   )
   require_expected_impact(report, expected_impact)
-  return advance_reference(
+  artifacts_regenerated = report["simulation"]["valid"]
+  commands: Sequence[Sequence[str]] = ()
+  if artifacts_regenerated:
+    commands = generator_commands if generator_commands is not None else (
+      SPECIFICATION_GENERATORS if name == "specifications" else REFERENCE_GENERATORS
+    )
+  summary = advance_reference(
     name,
     commit,
     root=root,
     references_path=references_path,
     allow_non_fast_forward=allow_non_fast_forward,
-    generator_commands=generator_commands,
+    generator_commands=commands,
   )
+  return {
+    "artifacts_regenerated": artifacts_regenerated,
+    "summary": summary,
+  }
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -765,6 +778,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv: list[str] | None = None) -> int:
   arguments = build_parser().parse_args(argv)
+  artifacts_regenerated = True
   try:
     if arguments.dry_run and arguments.expect_impact:
       raise ReferenceUpdateError("--expect-impact cannot be combined with --dry-run")
@@ -779,12 +793,14 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.format != "text":
       raise ReferenceUpdateError("--format requires --dry-run")
     if arguments.expect_impact:
-      summary = advance_reviewed_reference(
+      reviewed = advance_reviewed_reference(
         arguments.reference,
         arguments.commit,
         arguments.expect_impact,
         allow_non_fast_forward=arguments.allow_non_fast_forward,
       )
+      summary = reviewed["summary"]
+      artifacts_regenerated = reviewed["artifacts_regenerated"]
     else:
       summary = advance_reference(
         arguments.reference,
@@ -809,6 +825,11 @@ def main(argv: list[str] | None = None) -> int:
 
   changes = ", ".join(f"{status}={count}" for status, count in summary.items()) or "none"
   print(f"updated {arguments.reference} to {arguments.commit}; upstream changes: {changes}")
+  if not artifacts_regenerated:
+    print(
+      "reviewed generator failures remain; update classifications and run "
+      "make update-spec-artifacts",
+    )
   return 0
 
 

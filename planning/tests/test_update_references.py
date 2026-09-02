@@ -242,7 +242,7 @@ commit = references["references"]["source"]["commit"]
         generator_commands=(("planning/generate.py",),),
       )
 
-      summary = update_references.advance_reviewed_reference(
+      result = update_references.advance_reviewed_reference(
         "source",
         second,
         report["impact_digest"],
@@ -253,9 +253,53 @@ commit = references["references"]["source"]["commit"]
         generator_commands=(("planning/generate.py",),),
       )
 
-      self.assertEqual({"M": 1}, summary)
+      self.assertEqual({"M": 1}, result["summary"])
+      self.assertTrue(result["artifacts_regenerated"])
       self.assertEqual(second, git(project / "planning" / "source", "rev-parse", "HEAD"))
       self.assertEqual(second + "\n", (project / "generated.txt").read_text())
+
+  def test_reviewed_repeatable_failure_moves_only_the_pin(self) -> None:
+    generator = """\
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+(root / "generated.txt").write_text("partial\\n")
+raise SystemExit("unclassified candidate")
+"""
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      project, _, _, second = make_project_with_reference(root, generator)
+      references_path = project / "planning" / "references.json"
+      report = update_references.build_impact_report(
+        "source",
+        second,
+        root=project,
+        references_path=references_path,
+        plan_path=project / "planning" / "plan.json",
+        progress_path=project / "planning" / "progress.json",
+        generator_commands=(("planning/generate.py",),),
+      )
+
+      self.assertFalse(report["valid"])
+      self.assertTrue(report["simulation"]["repeatable"])
+      self.assertIn(
+        "generator simulation: failed",
+        update_references.render_impact(report, "text"),
+      )
+      result = update_references.advance_reviewed_reference(
+        "source",
+        second,
+        report["impact_digest"],
+        root=project,
+        references_path=references_path,
+        plan_path=project / "planning" / "plan.json",
+        progress_path=project / "planning" / "progress.json",
+        generator_commands=(("planning/generate.py",),),
+      )
+
+      self.assertFalse(result["artifacts_regenerated"])
+      self.assertEqual(second, git(project / "planning" / "source", "rev-parse", "HEAD"))
+      self.assertEqual("old\n", (project / "generated.txt").read_text())
 
   def test_dry_run_simulates_repeatable_generators_in_isolation(self) -> None:
     generator = """\
