@@ -24,7 +24,7 @@ python3 planning/update_plan.py complete ID
 python3 planning/update_plan.py render-state
 python3 planning/update_plan.py reference-report
 python3 planning/update_plan.py check-references
-python3 planning/update_references.py REFERENCE COMMIT [--dry-run [--format text|json]] [--allow-non-fast-forward]
+python3 planning/update_references.py REFERENCE COMMIT [--dry-run [--format text|json] | --expect-impact DIGEST] [--allow-non-fast-forward]
 make update-spec-artifacts
 python3 planning/update_readme_compatibility.py [--check]
 python3 spec/conformance/catalog.py [--check]
@@ -47,7 +47,7 @@ make test-complexity
 
 `check` validates document shape, dependencies, cycles, generated state, and reference locks. `check-references` additionally inspects the initialized checkouts and every mapped path and Python symbol. `--strict` requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `render-state` only regenerates derived state; it never changes plan definitions or reference pins. `refresh` remains as a compatibility alias.
 
-`update_references.py --dry-run` reports the candidate commits, changed paths and landmarks, and affected roadmap activities without moving the checkout or pin. A specifications report also inventories every added, removed, or changed accepted document, fixture file, conformance case, and unified test. From a clean project checkout, the command runs the same generators twice in an isolated local clone and rejects different results. Without `--dry-run`, the command advances one pin, rejects dirty or drifted checkouts, checks commit ancestry and mapped landmarks, and regenerates the affected artifacts. It leaves the resulting changes unstaged for review.
+`update_references.py --dry-run` reports the candidate commits, changed paths and landmarks, and affected roadmap activities without moving the checkout or pin. A specifications report also inventories every added, removed, or changed accepted document, fixture file, conformance case, and unified test. From a clean project checkout, the command runs the same generators twice in an isolated local clone and rejects different results. The report's impact digest covers the candidate, roadmap inputs, and simulated outputs; `--expect-impact DIGEST` repeats the dry run and advances the pin only when that reviewed digest still matches. An unguarded update remains available for recovery and advances one pin after checking checkout state, ancestry, and mapped landmarks. Every update leaves its changes unstaged for review.
 
 `make update-spec-artifacts` regenerates unified capabilities, the catalog and ledger, release scopes, README compatibility, and planning state in dependency order. It stops at the first failed classification or generator.
 

@@ -346,6 +346,9 @@ def analyze_reference(
     "to_commit": commit,
     "valid": True,
   }
+  project_head = run_git(root, ["rev-parse", "HEAD"])
+  if project_head.returncode == 0:
+    report["project_commit"] = project_head.stdout.strip()
   if name == "specifications":
     report["specification_inventory"] = specification_inventory_delta(
       checkout, old, commit,
@@ -386,7 +389,32 @@ def render_impact(report: dict[str, Any], output_format: str) -> str:
       f"generated files: {len(simulation['generated_files'])}",
       f"repeatable: {'yes' if simulation['repeatable'] else 'no'}",
     ))
+  if report.get("impact_digest"):
+    lines.append(f"impact digest: {report['impact_digest']}")
   return "\n".join(lines)
+
+
+def impact_digest(report: dict[str, Any]) -> str:
+  payload = {key: value for key, value in report.items() if key != "impact_digest"}
+  encoded = json.dumps(
+    payload,
+    ensure_ascii=False,
+    separators=(",", ":"),
+    sort_keys=True,
+  ).encode("utf-8")
+  return hashlib.sha256(encoded).hexdigest()
+
+
+def require_expected_impact(report: dict[str, Any], expected: str) -> None:
+  if not re.fullmatch(r"[0-9a-f]{64}", expected):
+    raise ReferenceUpdateError("reviewed impact digest must be 64 lowercase hex characters")
+  if not report.get("valid"):
+    raise ReferenceUpdateError("reviewed impact no longer validates")
+  actual = impact_digest(report)
+  if actual != expected:
+    raise ReferenceUpdateError(
+      f"reviewed impact digest is {actual}, expected {expected}",
+    )
 
 
 def submodule_name(root: Path, relative: str) -> str:
@@ -573,6 +601,39 @@ def simulate_reference_update(
     }
 
 
+def build_impact_report(
+  name: str,
+  commit: str,
+  *,
+  root: Path = ROOT,
+  references_path: Path = REFERENCES_PATH,
+  plan_path: Path = PLAN_PATH,
+  progress_path: Path = PROGRESS_PATH,
+  allow_non_fast_forward: bool = False,
+  generator_commands: Sequence[Sequence[str]] | None = None,
+) -> dict[str, Any]:
+  report = analyze_reference(
+    name,
+    commit,
+    root=root,
+    references_path=references_path,
+    plan_path=plan_path,
+    progress_path=progress_path,
+    allow_non_fast_forward=allow_non_fast_forward,
+  )
+  report["simulation"] = simulate_reference_update(
+    name,
+    commit,
+    root=root,
+    references_path=references_path,
+    allow_non_fast_forward=allow_non_fast_forward,
+    generator_commands=generator_commands,
+  )
+  report["valid"] = report["valid"] and report["simulation"]["valid"]
+  report["impact_digest"] = impact_digest(report)
+  return report
+
+
 def run_generators(root: Path, commands: Sequence[Sequence[str]]) -> None:
   for command in commands:
     result = subprocess.run(
@@ -642,6 +703,39 @@ def advance_reference(
   return summary
 
 
+def advance_reviewed_reference(
+  name: str,
+  commit: str,
+  expected_impact: str,
+  *,
+  root: Path = ROOT,
+  references_path: Path = REFERENCES_PATH,
+  plan_path: Path = PLAN_PATH,
+  progress_path: Path = PROGRESS_PATH,
+  allow_non_fast_forward: bool = False,
+  generator_commands: Sequence[Sequence[str]] | None = None,
+) -> dict[str, int]:
+  report = build_impact_report(
+    name,
+    commit,
+    root=root,
+    references_path=references_path,
+    plan_path=plan_path,
+    progress_path=progress_path,
+    allow_non_fast_forward=allow_non_fast_forward,
+    generator_commands=generator_commands,
+  )
+  require_expected_impact(report, expected_impact)
+  return advance_reference(
+    name,
+    commit,
+    root=root,
+    references_path=references_path,
+    allow_non_fast_forward=allow_non_fast_forward,
+    generator_commands=generator_commands,
+  )
+
+
 def build_parser() -> argparse.ArgumentParser:
   parser = argparse.ArgumentParser(description=__doc__)
   parser.add_argument("reference", help="reference name from planning/references.json")
@@ -662,33 +756,41 @@ def build_parser() -> argparse.ArgumentParser:
     default="text",
     help="dry-run output format",
   )
+  parser.add_argument(
+    "--expect-impact",
+    help="apply only when a fresh dry run has this impact digest",
+  )
   return parser
 
 
 def main(argv: list[str] | None = None) -> int:
   arguments = build_parser().parse_args(argv)
   try:
+    if arguments.dry_run and arguments.expect_impact:
+      raise ReferenceUpdateError("--expect-impact cannot be combined with --dry-run")
     if arguments.dry_run:
-      report = analyze_reference(
+      report = build_impact_report(
         arguments.reference,
         arguments.commit,
         allow_non_fast_forward=arguments.allow_non_fast_forward,
       )
-      report["simulation"] = simulate_reference_update(
-        arguments.reference,
-        arguments.commit,
-        allow_non_fast_forward=arguments.allow_non_fast_forward,
-      )
-      report["valid"] = report["valid"] and report["simulation"]["valid"]
       print(render_impact(report, arguments.format))
       return 0 if report["valid"] else 1
     if arguments.format != "text":
       raise ReferenceUpdateError("--format requires --dry-run")
-    summary = advance_reference(
-      arguments.reference,
-      arguments.commit,
-      allow_non_fast_forward=arguments.allow_non_fast_forward,
-    )
+    if arguments.expect_impact:
+      summary = advance_reviewed_reference(
+        arguments.reference,
+        arguments.commit,
+        arguments.expect_impact,
+        allow_non_fast_forward=arguments.allow_non_fast_forward,
+      )
+    else:
+      summary = advance_reference(
+        arguments.reference,
+        arguments.commit,
+        allow_non_fast_forward=arguments.allow_non_fast_forward,
+      )
   except ReferenceUpdateError as exc:
     if arguments.dry_run:
       report = {
@@ -698,6 +800,7 @@ def main(argv: list[str] | None = None) -> int:
         "to_commit": arguments.commit,
         "valid": False,
       }
+      report["impact_digest"] = impact_digest(report)
       output = render_impact(report, arguments.format)
       print(output, file=sys.stdout if arguments.format == "json" else sys.stderr)
       return 1

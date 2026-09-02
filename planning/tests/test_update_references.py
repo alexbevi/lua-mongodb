@@ -185,6 +185,78 @@ def make_project_with_reference(
 
 
 class ReferenceUpdateTests(unittest.TestCase):
+  def test_impact_digest_is_canonical_and_reviewable(self) -> None:
+    first = {
+      "valid": True,
+      "reference": "source",
+      "changed_paths": [{"status": "M", "path": "landmark.py"}],
+    }
+    reordered = {
+      "changed_paths": [{"path": "landmark.py", "status": "M"}],
+      "reference": "source",
+      "valid": True,
+    }
+
+    digest = update_references.impact_digest(first)
+
+    self.assertEqual(digest, update_references.impact_digest(reordered))
+    update_references.require_expected_impact(first, digest)
+    with self.assertRaisesRegex(
+      update_references.ReferenceUpdateError,
+      "reviewed impact digest",
+    ):
+      update_references.require_expected_impact(first, "0" * 64)
+
+  def test_expected_impact_cli_flag_is_separate_from_dry_run(self) -> None:
+    arguments = update_references.build_parser().parse_args([
+      "source",
+      "a" * 40,
+      "--expect-impact",
+      "b" * 64,
+    ])
+
+    self.assertFalse(arguments.dry_run)
+    self.assertEqual("b" * 64, arguments.expect_impact)
+
+  def test_reviewed_impact_applies_the_exact_simulated_update(self) -> None:
+    generator = """\
+import json
+from pathlib import Path
+
+root = Path(__file__).resolve().parents[1]
+references = json.loads((root / "planning/references.json").read_text())
+commit = references["references"]["source"]["commit"]
+(root / "generated.txt").write_text(commit + "\\n")
+"""
+    with tempfile.TemporaryDirectory() as temporary:
+      root = Path(temporary)
+      project, _, _, second = make_project_with_reference(root, generator)
+      references_path = project / "planning" / "references.json"
+      report = update_references.build_impact_report(
+        "source",
+        second,
+        root=project,
+        references_path=references_path,
+        plan_path=project / "planning" / "plan.json",
+        progress_path=project / "planning" / "progress.json",
+        generator_commands=(("planning/generate.py",),),
+      )
+
+      summary = update_references.advance_reviewed_reference(
+        "source",
+        second,
+        report["impact_digest"],
+        root=project,
+        references_path=references_path,
+        plan_path=project / "planning" / "plan.json",
+        progress_path=project / "planning" / "progress.json",
+        generator_commands=(("planning/generate.py",),),
+      )
+
+      self.assertEqual({"M": 1}, summary)
+      self.assertEqual(second, git(project / "planning" / "source", "rev-parse", "HEAD"))
+      self.assertEqual(second + "\n", (project / "generated.txt").read_text())
+
   def test_dry_run_simulates_repeatable_generators_in_isolation(self) -> None:
     generator = """\
 import json
