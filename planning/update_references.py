@@ -780,7 +780,7 @@ def analyze_reference(
 def render_impact(
   report: dict[str, Any],
   output_format: str,
-  show: str = "relevant",
+  show: str = "actionable",
 ) -> str:
   if output_format == "json":
     return json.dumps(report, indent=2, sort_keys=True)
@@ -853,7 +853,9 @@ def render_impact(
     )
   )
   visible = set(PROPOSAL_DISPOSITIONS)
-  if show == "relevant":
+  if show == "actionable":
+    visible = {"actionable", "blocked"}
+  elif show == "relevant":
     visible.remove("informational")
   for disposition in PROPOSAL_DISPOSITIONS:
     grouped = [
@@ -867,7 +869,16 @@ def render_impact(
         f"{index}. {item['title']}"
         for index, item in enumerate(grouped, start=1)
       )
-  if show == "relevant" and proposal_counts["informational"]:
+  hidden = [
+    disposition for disposition in PROPOSAL_DISPOSITIONS
+    if disposition not in visible and proposal_counts[disposition]
+  ]
+  if show == "actionable" and hidden:
+    lines.append(
+      f"{' and '.join(hidden)} changes hidden; "
+      "pass --show relevant or --show all"
+    )
+  elif show == "relevant" and hidden:
     lines.append("informational changes hidden; pass --show all")
   if report.get("impact_digest"):
     lines.append(f"impact digest: {report['impact_digest']}")
@@ -1332,8 +1343,8 @@ def build_parser() -> argparse.ArgumentParser:
   )
   parser.add_argument(
     "--show",
-    choices=("relevant", "all"),
-    default="relevant",
+    choices=("actionable", "relevant", "all"),
+    default="actionable",
     help="include informational proposals in dry-run text output",
   )
   parser.add_argument(
@@ -1368,7 +1379,7 @@ def main(argv: list[str] | None = None) -> int:
       ) else 1
     if arguments.format != "text":
       raise ReferenceUpdateError("--format requires --dry-run")
-    if arguments.show != "relevant":
+    if arguments.show != "actionable":
       raise ReferenceUpdateError("--show requires --dry-run")
     if arguments.verify:
       raise ReferenceUpdateError("--verify requires --dry-run")

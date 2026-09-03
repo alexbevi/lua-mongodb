@@ -326,6 +326,12 @@ class ReferenceUpdateTests(unittest.TestCase):
         "kind": "reference_path_review",
         "reason": "only documentation changed",
         "title": "Review documentation changes",
+      }, {
+        "disposition": "deferred",
+        "key": "specifications:future",
+        "kind": "specification_suite_review",
+        "reason": "all changed evidence belongs to pending activities",
+        "title": "Review future specification changes",
       }],
       "reference": "source",
       "review_candidates": [],
@@ -334,11 +340,15 @@ class ReferenceUpdateTests(unittest.TestCase):
     }
 
     filtered = update_references.render_impact(report, "text")
+    relevant = update_references.render_impact(report, "text", "relevant")
     complete = update_references.render_impact(report, "text", "all")
 
     self.assertIn("informational=1", filtered)
     self.assertNotIn("Review documentation changes", filtered)
-    self.assertIn("informational changes hidden; pass --show all", filtered)
+    self.assertNotIn("Review future specification changes", filtered)
+    self.assertIn("deferred and informational changes hidden", filtered)
+    self.assertIn("Review future specification changes", relevant)
+    self.assertNotIn("Review documentation changes", relevant)
     self.assertIn("Review documentation changes", complete)
 
   def test_specification_ownership_replaces_umbrella_activity_impacts(self) -> None:
@@ -891,7 +901,7 @@ target.write_text(str(value + 1) + "\\n")
 
     self.assertTrue(dry_run.dry_run)
     self.assertEqual("json", dry_run.format)
-    self.assertEqual("relevant", dry_run.show)
+    self.assertEqual("actionable", dry_run.show)
     self.assertFalse(dry_run.verify)
     self.assertFalse(apply.dry_run)
     self.assertEqual("text", apply.format)
