@@ -56,6 +56,8 @@ The report separates repeatable artifact generation from behavior verification. 
 
 When repeatable artifact generation fails, the dry run checks preceding commits from newest to oldest until it finds the nearest passing waypoint. The report names that commit and the first failure after it. Passing targets do not run the extra simulations.
 
+Changed paths and commits are split into source review and informational categories. PyMongo tests, automation, documentation, and lockfiles remain in JSON and contribute to the impact digest, but their counts stay separate from driver source changes.
+
 `make update-spec-artifacts` regenerates unified capabilities, the catalog and ledger, release scopes, README compatibility, and planning state in dependency order. It stops at the first failed classification or generator.
 
 Generated scope checks accept added cases when their existing owner is still pending and the cases remain deferred. Removed cases, unowned cases, ownership changes, and additions assigned to completed or active owners still require review.

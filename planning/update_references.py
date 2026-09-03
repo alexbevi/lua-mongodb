@@ -158,6 +158,66 @@ def changed_commits(checkout: Path, old: str, new: str) -> list[str]:
   return output.splitlines() if output else []
 
 
+def reference_path_category(reference: str, path: str) -> str:
+  if path.startswith((".github/", ".evergreen/")):
+    return "automation"
+  if path.startswith(("test/", "tests/")):
+    return "tests"
+  if path == "uv.lock" or path.endswith((".lock", ".lockb")):
+    return "dependencies"
+  if path in {"README.md", "CONTRIBUTING.md"} or path.startswith("doc/"):
+    return "documentation"
+  if reference == "pymongo" and path.startswith(("bson/", "gridfs/", "pymongo/")):
+    return "source"
+  if reference == "specifications" and path.startswith("source/"):
+    return "specification"
+  if reference in {"pymongo", "specifications"}:
+    return "tooling"
+  return "reference"
+
+
+def summarize_reference_paths(
+  reference: str,
+  paths: list[dict[str, str]],
+) -> dict[str, Any]:
+  categories = Counter(
+    reference_path_category(reference, value["path"]) for value in paths
+  )
+  review_categories = {"reference", "source", "specification"}
+  review = sum(
+    count for category, count in categories.items()
+    if category in review_categories
+  )
+  return {
+    "categories": dict(sorted(categories.items())),
+    "informational": len(paths) - review,
+    "review": review,
+  }
+
+
+def commit_summaries(
+  reference: str,
+  checkout: Path,
+  commits: list[str],
+) -> list[dict[str, Any]]:
+  summaries = []
+  for commit in commits:
+    paths = changed_paths(checkout, f"{commit}^", commit)
+    path_summary = summarize_reference_paths(reference, paths)
+    subject = require_git(
+      checkout,
+      ["show", "-s", "--format=%s", commit],
+      f"could not read reference commit {commit}",
+    )
+    summaries.append({
+      "commit": commit,
+      "disposition": "review" if path_summary["review"] else "informational",
+      "path_summary": path_summary,
+      "subject": subject,
+    })
+  return summaries
+
+
 def object_id(checkout: Path, commit: str, path: str) -> str | None:
   result = run_git(checkout, ["rev-parse", f"{commit}:{path}"])
   return result.stdout.strip() if result.returncode == 0 else None
@@ -688,13 +748,16 @@ def analyze_reference(
       "symbol": mapping.get("symbol"),
     })
 
+  commits = changed_commits(checkout, old, commit)
   impacts = roadmap_impacts(changed_mapping_ids, plan_path, progress_path)
   report = {
     "affected_activities": impacts,
     "changed_paths": paths,
-    "commits": changed_commits(checkout, old, commit),
+    "commit_summaries": commit_summaries(name, checkout, commits),
+    "commits": commits,
     "from_commit": old,
     "mapped_landmarks": landmarks,
+    "path_summary": summarize_reference_paths(name, paths),
     "reference": name,
     "review_candidates": [
       impact["id"] for impact in impacts
@@ -729,12 +792,23 @@ def render_impact(
   ) or "none"
   lines = [
     f"dry run: {report['reference']} {report['from_commit']} -> {report['to_commit']}",
-    f"upstream commits: {len(report['commits'])}",
+    f"upstream commits: {len(report['commits'])} "
+    f"(review={sum(value['disposition'] == 'review' for value in report.get('commit_summaries', []))}, "
+    f"informational={sum(value['disposition'] == 'informational' for value in report.get('commit_summaries', []))})",
     f"changed paths: {summary}",
+    f"review paths: {report.get('path_summary', {}).get('review', len(report['changed_paths']))}",
+    f"informational paths: {report.get('path_summary', {}).get('informational', 0)}",
     f"changed mappings: {sum(value['changed'] for value in report['mapped_landmarks'])}",
     f"affected activities: {len(report['affected_activities'])}",
     f"review candidates: {len(report['review_candidates'])}",
   ]
+  categories = report.get("path_summary", {}).get("categories", {})
+  if categories:
+    lines.append(
+      "path categories: " + ", ".join(
+        f"{category}={count}" for category, count in sorted(categories.items())
+      )
+    )
   if "specification_inventory" in report:
     inventory = report["specification_inventory"]
     for name in ("accepted_documents", "fixture_files", "cases", "unified_tests"):

@@ -574,6 +574,34 @@ class ReferenceUpdateTests(unittest.TestCase):
     )
     self.assertEqual([commits[1], commits[0]], checked)
 
+  def test_pymongo_paths_separate_source_from_support_changes(self) -> None:
+    paths = [
+      {"path": ".evergreen/config.yml", "status": "M"},
+      {"path": ".github/workflows/test.yml", "status": "M"},
+      {"path": "README.md", "status": "M"},
+      {"path": "bson/__init__.py", "status": "M"},
+      {"path": "pymongo/client.py", "status": "M"},
+      {"path": "test/test_client.py", "status": "M"},
+      {"path": "uv.lock", "status": "M"},
+    ]
+
+    summary = update_references.summarize_reference_paths("pymongo", paths)
+
+    self.assertEqual(
+      {
+        "categories": {
+          "automation": 2,
+          "dependencies": 1,
+          "documentation": 1,
+          "source": 2,
+          "tests": 1,
+        },
+        "informational": 5,
+        "review": 2,
+      },
+      summary,
+    )
+
   def test_expected_impact_cli_flag_is_separate_from_dry_run(self) -> None:
     arguments = update_references.build_parser().parse_args([
       "source",
@@ -815,6 +843,16 @@ target.write_text(str(value + 1) + "\\n")
       self.assertEqual(first, report["from_commit"])
       self.assertEqual(second, report["to_commit"])
       self.assertEqual([second], report["commits"])
+      self.assertEqual(
+        {
+          "categories": {"reference": 1},
+          "informational": 0,
+          "review": 1,
+        },
+        report["path_summary"],
+      )
+      self.assertEqual("second", report["commit_summaries"][0]["subject"])
+      self.assertEqual("review", report["commit_summaries"][0]["disposition"])
       self.assertEqual(
         [{"path": "landmark.py", "status": "M"}],
         report["changed_paths"],
