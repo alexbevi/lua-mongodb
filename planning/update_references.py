@@ -273,6 +273,126 @@ def specification_inventory_delta(
   }
 
 
+def activity_statuses(root: Path) -> dict[str, str]:
+  path = root / "planning" / "progress.json"
+  if not path.exists():
+    return {}
+  document = read_document(path)
+  return {
+    activity_id: record.get("status", "pending")
+    for activity_id, record in document.get("activities", {}).items()
+  }
+
+
+def specification_ownership_snapshot(root: Path) -> dict[str, dict[str, Any]]:
+  ledger_path = root / "spec" / "conformance" / "ledger.json"
+  catalog_path = root / "spec" / "conformance" / "catalog.json"
+  if not ledger_path.exists() or not catalog_path.exists():
+    return {}
+  ledger = read_document(ledger_path)
+  catalog = read_document(catalog_path)
+  statuses = activity_statuses(root)
+  records = {}
+  suite_activities: dict[str, dict[str, str]] = {}
+
+  def add_owned(record_type: str, identity: str, value: dict[str, Any]) -> None:
+    activity = value.get("activity")
+    suite = value.get("suite")
+    record = {
+      "activity": activity,
+      "activity_status": statuses.get(activity, "pending"),
+      "conformance_status": value.get("status"),
+      "fingerprint": value.get("fingerprint"),
+      "record_type": record_type,
+      "source_identity": identity,
+      "suite": suite,
+    }
+    records[f"{record_type}:{identity}"] = record
+    if activity and suite:
+      suite_activities.setdefault(suite, {})[activity] = record["activity_status"]
+
+  for identity, case in ledger.get("cases", {}).items():
+    add_owned("case", identity, case)
+  for identity, requirement in catalog.get("requirements", {}).items():
+    add_owned("requirement", identity, requirement)
+  for identity, document in catalog.get("documents", {}).items():
+    suite = document.get("suite")
+    records[f"document:{identity}"] = {
+      "activities": [
+        {"id": activity, "status": status}
+        for activity, status in sorted(suite_activities.get(suite, {}).items())
+      ],
+      "fingerprint": document.get("fingerprint"),
+      "record_type": "document",
+      "source_identity": identity,
+      "suite": suite,
+    }
+  return records
+
+
+def specification_ownership_delta(
+  before_root: Path,
+  after_root: Path,
+) -> dict[str, list[dict[str, Any]]]:
+  return inventory_delta(
+    specification_ownership_snapshot(before_root),
+    specification_ownership_snapshot(after_root),
+  )
+
+
+def ownership_records(entry: dict[str, Any]) -> list[dict[str, Any]]:
+  values = [entry]
+  if "from" in entry or "to" in entry:
+    values = [entry[key] for key in ("from", "to") if key in entry]
+  records = []
+  for value in values:
+    if value.get("activity"):
+      records.append({
+        "id": value["activity"],
+        "status": value["activity_status"],
+      })
+    records.extend(value.get("activities", []))
+  return records
+
+
+def apply_specification_activity_impacts(report: dict[str, Any]) -> None:
+  ownership = report.get("simulation", {}).get("specification_ownership")
+  if ownership is None:
+    return
+  report["mapping_affected_activities"] = report.get("affected_activities", [])
+  grouped: dict[str, dict[str, Any]] = {}
+  for change in ("added", "changed", "removed"):
+    for entry in ownership[change]:
+      values = [entry]
+      if change == "changed":
+        values = [entry["from"], entry["to"]]
+      source_identities = sorted({
+        value["source_identity"] for value in values
+      })
+      suites = sorted({value["suite"] for value in values if value.get("suite")})
+      for owner in ownership_records(entry):
+        impact = grouped.setdefault(owner["id"], {
+          "id": owner["id"],
+          "identities": set(),
+          "status": owner["status"],
+          "suites": set(),
+        })
+        impact["identities"].update(source_identities)
+        impact["suites"].update(suites)
+  report["affected_activities"] = [
+    {
+      **impact,
+      "identities": sorted(impact["identities"]),
+      "suites": sorted(impact["suites"]),
+    }
+    for _, impact in sorted(grouped.items())
+  ]
+  report["review_candidates"] = [
+    impact["id"] for impact in report["affected_activities"]
+    if impact["status"] in {"completed", "in_progress", "needs_review"}
+  ]
+
+
 def inventory_suites(entry: dict[str, Any]) -> list[str]:
   values = [entry]
   if "from" in entry or "to" in entry:
@@ -319,16 +439,39 @@ def propose_plan_items(report: dict[str, Any]) -> list[dict[str, Any]]:
               for name in families
             })
             suite_counts[family][change] += 1
-    items.extend({
-      "change_counts": counts[suite],
-      "disposition": "actionable",
-      "key": f"specifications:{suite}",
-      "kind": "specification_suite_review",
-      "reason": "the specification inventory changed",
-      "title": f"Review {suite} specification changes",
-    } for suite in sorted(counts))
+    for suite in sorted(counts):
+      owners = sorted({
+        impact["id"] for impact in report.get("affected_activities", [])
+        if suite in impact.get("suites", [])
+      })
+      owner_statuses = {
+        impact["status"] for impact in report.get("affected_activities", [])
+        if impact["id"] in owners
+      }
+      deferred = bool(owners) and owner_statuses == {"pending"}
+      active = sum(
+        status in {"completed", "in_progress", "needs_review"}
+        for status in owner_statuses
+      )
+      items.append({
+        "change_counts": counts[suite],
+        "disposition": "deferred" if deferred else "actionable",
+        "key": f"specifications:{suite}",
+        "kind": "specification_suite_review",
+        "owners": owners,
+        "reason": (
+          "all changed evidence belongs to pending activities"
+          if deferred else (
+            f"{active} completed or active activities own changed evidence"
+            if active else "the specification inventory changed"
+          )
+        ),
+        "title": f"Review {suite} specification changes",
+      })
 
-  impacts = report.get("affected_activities", [])
+  impacts = report.get(
+    "mapping_affected_activities", report.get("affected_activities", [])
+  )
   candidates = set(report.get("review_candidates", []))
   for mapping in sorted(
     (value for value in report.get("mapped_landmarks", []) if value["changed"]),
@@ -338,14 +481,22 @@ def propose_plan_items(report: dict[str, Any]) -> list[dict[str, Any]]:
       activity for activity in impacts
       if mapping["id"] in activity["mappings"]
     ]
+    exact_specification_ownership = (
+      report.get("reference") == "specifications"
+      and "specification_ownership" in report.get("simulation", {})
+    )
     items.append({
       "affected_activity_count": len(affected),
-      "disposition": "actionable" if any(
-        activity["id"] in candidates for activity in affected
-      ) else "informational",
+      "disposition": "informational" if exact_specification_ownership else (
+        "actionable" if any(
+          activity["id"] in candidates for activity in affected
+        ) else "informational"
+      ),
       "key": mapping["id"],
       "kind": "reference_mapping_review",
-      "reason": (
+      "reason": "exact specification ownership supersedes this broad mapping" if (
+        exact_specification_ownership
+      ) else (
         f"{sum(activity['id'] in candidates for activity in affected)} "
         "completed or active activity cites this mapping"
         if any(activity["id"] in candidates for activity in affected)
@@ -713,6 +864,9 @@ def simulate_reference_update(
   if commands is None:
     commands = SPECIFICATION_GENERATORS if name == "specifications" else REFERENCE_GENERATORS
 
+  before_ownership = (
+    specification_ownership_snapshot(root) if name == "specifications" else None
+  )
   with temporary_project_clone(root, reference) as sandbox:
     sandbox_references = sandbox / relative_references
     if commit != reference["commit"]:
@@ -727,6 +881,12 @@ def simulate_reference_update(
 
     first_results = execute_generators(sandbox, commands)
     first_changes = project_changes(sandbox)
+    ownership = None
+    if before_ownership is not None:
+      ownership = inventory_delta(
+        before_ownership,
+        specification_ownership_snapshot(sandbox),
+      )
     first_passed = all(result["exit_code"] == 0 for result in first_results)
     second_results = execute_generators(sandbox, commands)
     second_changes = project_changes(sandbox)
@@ -737,13 +897,16 @@ def simulate_reference_update(
       change for change in first_changes
       if change["path"] not in excluded
     ]
-    return {
+    simulation = {
       "first_run": first_results,
       "generated_files": generated,
       "repeatable": repeatable,
       "second_run": second_results,
       "valid": first_passed and second_passed and repeatable,
     }
+    if ownership is not None:
+      simulation["specification_ownership"] = ownership
+    return simulation
 
 
 def build_impact_report(
@@ -775,6 +938,8 @@ def build_impact_report(
     generator_commands=generator_commands,
   )
   report["valid"] = report["valid"] and report["simulation"]["valid"]
+  if name == "specifications":
+    apply_specification_activity_impacts(report)
   report["proposed_plan_items"] = propose_plan_items(report)
   report["impact_digest"] = impact_digest(report)
   return report

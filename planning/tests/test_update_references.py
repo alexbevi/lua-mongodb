@@ -255,6 +255,7 @@ class ReferenceUpdateTests(unittest.TestCase):
           "disposition": "actionable",
           "key": "specifications:alpha",
           "kind": "specification_suite_review",
+          "owners": [],
           "reason": "the specification inventory changed",
           "title": "Review alpha specification changes",
         },
@@ -268,6 +269,7 @@ class ReferenceUpdateTests(unittest.TestCase):
           "disposition": "actionable",
           "key": "specifications:beta",
           "kind": "specification_suite_review",
+          "owners": [],
           "reason": "the specification inventory changed",
           "title": "Review beta specification changes",
         },
@@ -338,6 +340,100 @@ class ReferenceUpdateTests(unittest.TestCase):
     self.assertNotIn("Review documentation changes", filtered)
     self.assertIn("informational changes hidden; pass --show all", filtered)
     self.assertIn("Review documentation changes", complete)
+
+  def test_specification_ownership_replaces_umbrella_activity_impacts(self) -> None:
+    report = {
+      "affected_activities": [{
+        "id": "EVERYTHING-001",
+        "mappings": ["specifications:source"],
+        "status": "completed",
+      }],
+      "mapped_landmarks": [{
+        "changed": True,
+        "id": "specifications:source",
+      }],
+      "reference": "specifications",
+      "review_candidates": ["EVERYTHING-001"],
+      "simulation": {
+        "specification_ownership": {
+          "added": [{
+            "activity": "FUTURE-001",
+            "activity_status": "pending",
+            "conformance_status": "deferred_unsupported",
+            "identity": "case:beta/tests/new.json::case",
+            "record_type": "case",
+            "source_identity": "beta/tests/new.json::case",
+            "suite": "beta",
+          }],
+          "changed": [{
+            "from": {
+              "activity": "DONE-001",
+              "activity_status": "completed",
+              "conformance_status": "passed",
+              "record_type": "case",
+              "source_identity": "alpha/tests/case.json::case",
+              "suite": "alpha",
+            },
+            "identity": "case:alpha/tests/case.json::case",
+            "to": {
+              "activity": "DONE-001",
+              "activity_status": "completed",
+              "conformance_status": "passed",
+              "record_type": "case",
+              "source_identity": "alpha/tests/case.json::case",
+              "suite": "alpha",
+            },
+          }],
+          "removed": [],
+        },
+      },
+      "specification_inventory": {
+        family: {"added": [], "changed": [], "removed": []}
+        for family in (
+          "accepted_documents", "cases", "fixture_files", "unified_tests"
+        )
+      },
+    }
+    report["specification_inventory"]["cases"]["added"] = [{
+      "identity": "beta/tests/new.json::case",
+      "suite": "beta",
+    }]
+    report["specification_inventory"]["cases"]["changed"] = [{
+      "from": {"suite": "alpha"},
+      "identity": "alpha/tests/case.json::case",
+      "to": {"suite": "alpha"},
+    }]
+
+    update_references.apply_specification_activity_impacts(report)
+    items = update_references.propose_plan_items(report)
+
+    self.assertEqual(
+      [
+        {
+          "id": "DONE-001",
+          "identities": ["alpha/tests/case.json::case"],
+          "status": "completed",
+          "suites": ["alpha"],
+        },
+        {
+          "id": "FUTURE-001",
+          "identities": ["beta/tests/new.json::case"],
+          "status": "pending",
+          "suites": ["beta"],
+        },
+      ],
+      report["affected_activities"],
+    )
+    self.assertEqual(["DONE-001"], report["review_candidates"])
+    self.assertEqual("actionable", items[0]["disposition"])
+    self.assertEqual(["DONE-001"], items[0]["owners"])
+    self.assertEqual("deferred", items[1]["disposition"])
+    self.assertEqual(["FUTURE-001"], items[1]["owners"])
+    self.assertEqual("informational", items[2]["disposition"])
+    self.assertEqual(
+      "exact specification ownership supersedes this broad mapping",
+      items[2]["reason"],
+    )
 
   def test_impact_digest_is_canonical_and_reviewable(self) -> None:
     first = {
