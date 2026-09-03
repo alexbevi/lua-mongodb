@@ -35,6 +35,7 @@ SPECIFICATION_GENERATORS: tuple[tuple[str, ...], ...] = (
 REFERENCE_GENERATORS: tuple[tuple[str, ...], ...] = (
   ("planning/update_plan.py", "render-state"),
 )
+PROPOSAL_DISPOSITIONS = ("actionable", "blocked", "deferred", "informational")
 
 
 class ReferenceUpdateError(Exception):
@@ -320,8 +321,10 @@ def propose_plan_items(report: dict[str, Any]) -> list[dict[str, Any]]:
             suite_counts[family][change] += 1
     items.extend({
       "change_counts": counts[suite],
+      "disposition": "actionable",
       "key": f"specifications:{suite}",
       "kind": "specification_suite_review",
+      "reason": "the specification inventory changed",
       "title": f"Review {suite} specification changes",
     } for suite in sorted(counts))
 
@@ -337,25 +340,36 @@ def propose_plan_items(report: dict[str, Any]) -> list[dict[str, Any]]:
     ]
     items.append({
       "affected_activity_count": len(affected),
+      "disposition": "actionable" if any(
+        activity["id"] in candidates for activity in affected
+      ) else "informational",
       "key": mapping["id"],
       "kind": "reference_mapping_review",
+      "reason": (
+        f"{sum(activity['id'] in candidates for activity in affected)} "
+        "completed or active activity cites this mapping"
+        if any(activity["id"] in candidates for activity in affected)
+        else "no completed or active activity cites this mapping"
+      ),
       "review_candidate_count": sum(
         activity["id"] in candidates for activity in affected
       ),
       "title": f"Review {mapping['id']} reference mapping changes",
     })
 
-  failed_commands = sorted({
-    result["command"]
+  failed_commands = {
+    result["command"]: result["exit_code"]
     for result in report.get("simulation", {}).get("first_run", [])
     if result["exit_code"] != 0
-  })
+  }
   items.extend({
     "command": command,
+    "disposition": "blocked",
     "key": f"generator:{command}",
     "kind": "generator_failure",
+    "reason": f"the simulated generator exited with status {failed_commands[command]}",
     "title": f"Resolve {command} generator failure",
-  } for command in failed_commands)
+  } for command in sorted(failed_commands))
   return items
 
 
@@ -443,7 +457,11 @@ def analyze_reference(
   return report
 
 
-def render_impact(report: dict[str, Any], output_format: str) -> str:
+def render_impact(
+  report: dict[str, Any],
+  output_format: str,
+  show: str = "relevant",
+) -> str:
   if output_format == "json":
     return json.dumps(report, indent=2, sort_keys=True)
   if not report.get("valid") and report.get("errors"):
@@ -477,11 +495,32 @@ def render_impact(report: dict[str, Any], output_format: str) -> str:
       f"repeatable: {'yes' if simulation['repeatable'] else 'no'}",
     ))
   proposals = report.get("proposed_plan_items", [])
-  lines.append(f"proposed plan items: {len(proposals)}")
-  lines.extend(
-    f"{index}. {item['title']}"
-    for index, item in enumerate(proposals, start=1)
+  proposal_counts = Counter(
+    item.get("disposition", "actionable") for item in proposals
   )
+  lines.append(
+    "proposed plan items: " + ", ".join(
+      f"{disposition}={proposal_counts[disposition]}"
+      for disposition in PROPOSAL_DISPOSITIONS
+    )
+  )
+  visible = set(PROPOSAL_DISPOSITIONS)
+  if show == "relevant":
+    visible.remove("informational")
+  for disposition in PROPOSAL_DISPOSITIONS:
+    grouped = [
+      item for item in proposals
+      if item.get("disposition", "actionable") == disposition
+      and disposition in visible
+    ]
+    if grouped:
+      lines.append(f"{disposition}:")
+      lines.extend(
+        f"{index}. {item['title']}"
+        for index, item in enumerate(grouped, start=1)
+      )
+  if show == "relevant" and proposal_counts["informational"]:
+    lines.append("informational changes hidden; pass --show all")
   if report.get("impact_digest"):
     lines.append(f"impact digest: {report['impact_digest']}")
   return "\n".join(lines)
@@ -874,6 +913,12 @@ def build_parser() -> argparse.ArgumentParser:
     help="dry-run output format",
   )
   parser.add_argument(
+    "--show",
+    choices=("relevant", "all"),
+    default="relevant",
+    help="include informational proposals in dry-run text output",
+  )
+  parser.add_argument(
     "--expect-impact",
     help="apply only when a fresh dry run has this impact digest",
   )
@@ -892,10 +937,12 @@ def main(argv: list[str] | None = None) -> int:
         arguments.commit,
         allow_non_fast_forward=arguments.allow_non_fast_forward,
       )
-      print(render_impact(report, arguments.format))
+      print(render_impact(report, arguments.format, arguments.show))
       return 0 if report["valid"] else 1
     if arguments.format != "text":
       raise ReferenceUpdateError("--format requires --dry-run")
+    if arguments.show != "relevant":
+      raise ReferenceUpdateError("--show requires --dry-run")
     if arguments.expect_impact:
       reviewed = advance_reviewed_reference(
         arguments.reference,
@@ -921,7 +968,7 @@ def main(argv: list[str] | None = None) -> int:
         "valid": False,
       }
       report["impact_digest"] = impact_digest(report)
-      output = render_impact(report, arguments.format)
+      output = render_impact(report, arguments.format, arguments.show)
       print(output, file=sys.stdout if arguments.format == "json" else sys.stderr)
       return 1
     print(f"reference update: {exc}", file=sys.stderr)

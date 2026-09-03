@@ -252,8 +252,10 @@ class ReferenceUpdateTests(unittest.TestCase):
             "fixture_files": {"added": 1, "changed": 0, "removed": 0},
             "unified_tests": {"added": 0, "changed": 0, "removed": 0},
           },
+          "disposition": "actionable",
           "key": "specifications:alpha",
           "kind": "specification_suite_review",
+          "reason": "the specification inventory changed",
           "title": "Review alpha specification changes",
         },
         {
@@ -263,21 +265,27 @@ class ReferenceUpdateTests(unittest.TestCase):
             "fixture_files": {"added": 0, "changed": 0, "removed": 0},
             "unified_tests": {"added": 1, "changed": 0, "removed": 0},
           },
+          "disposition": "actionable",
           "key": "specifications:beta",
           "kind": "specification_suite_review",
+          "reason": "the specification inventory changed",
           "title": "Review beta specification changes",
         },
         {
           "affected_activity_count": 2,
+          "disposition": "actionable",
           "key": "source:landmark",
           "kind": "reference_mapping_review",
+          "reason": "1 completed or active activity cites this mapping",
           "review_candidate_count": 1,
           "title": "Review source:landmark reference mapping changes",
         },
         {
           "command": "planning/generate.py",
+          "disposition": "blocked",
           "key": "generator:planning/generate.py",
           "kind": "generator_failure",
+          "reason": "the simulated generator exited with status 1",
           "title": "Resolve planning/generate.py generator failure",
         },
       ],
@@ -294,9 +302,42 @@ class ReferenceUpdateTests(unittest.TestCase):
       "to_commit": "b" * 40,
       "valid": False,
     }, "text")
-    self.assertIn("proposed plan items: 4", text)
+    self.assertIn(
+      "proposed plan items: actionable=3, blocked=1, deferred=0, informational=0",
+      text,
+    )
+    self.assertIn("actionable:", text)
     self.assertIn("1. Review alpha specification changes", text)
-    self.assertIn("4. Resolve planning/generate.py generator failure", text)
+    self.assertIn("blocked:", text)
+    self.assertIn("1. Resolve planning/generate.py generator failure", text)
+
+  def test_text_output_hides_informational_proposals_by_default(self) -> None:
+    report = {
+      "affected_activities": [],
+      "changed_paths": [],
+      "commits": [],
+      "from_commit": "a" * 40,
+      "mapped_landmarks": [],
+      "proposed_plan_items": [{
+        "disposition": "informational",
+        "key": "reference:docs",
+        "kind": "reference_path_review",
+        "reason": "only documentation changed",
+        "title": "Review documentation changes",
+      }],
+      "reference": "source",
+      "review_candidates": [],
+      "to_commit": "b" * 40,
+      "valid": True,
+    }
+
+    filtered = update_references.render_impact(report, "text")
+    complete = update_references.render_impact(report, "text", "all")
+
+    self.assertIn("informational=1", filtered)
+    self.assertNotIn("Review documentation changes", filtered)
+    self.assertIn("informational changes hidden; pass --show all", filtered)
+    self.assertIn("Review documentation changes", complete)
 
   def test_impact_digest_is_canonical_and_reviewable(self) -> None:
     first = {
@@ -599,6 +640,7 @@ target.write_text(str(value + 1) + "\\n")
 
     self.assertTrue(dry_run.dry_run)
     self.assertEqual("json", dry_run.format)
+    self.assertEqual("relevant", dry_run.show)
     self.assertFalse(apply.dry_run)
     self.assertEqual("text", apply.format)
 
