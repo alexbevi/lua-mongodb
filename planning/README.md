@@ -54,6 +54,8 @@ Specification activity impact comes from the candidate ledger and catalog rather
 
 The report separates repeatable artifact generation from behavior verification. It proposes the recorded local commands for changed passing evidence owned by completed or active activities. `--verify` runs those commands inside the isolated candidate checkout; external-environment work remains a review item.
 
+When repeatable artifact generation fails, the dry run checks preceding commits from newest to oldest until it finds the nearest passing waypoint. The report names that commit and the first failure after it. Passing targets do not run the extra simulations.
+
 `make update-spec-artifacts` regenerates unified capabilities, the catalog and ledger, release scopes, README compatibility, and planning state in dependency order. It stops at the first failed classification or generator.
 
 Generated scope checks accept added cases when their existing owner is still pending and the cases remain deferred. Removed cases, unowned cases, ownership changes, and additions assigned to completed or active owners still require review.

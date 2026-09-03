@@ -550,6 +550,30 @@ class ReferenceUpdateTests(unittest.TestCase):
       update_references.impact_digest(passed),
     )
 
+  def test_failed_target_reports_the_nearest_green_waypoint(self) -> None:
+    commits = ["1" * 40, "2" * 40, "3" * 40]
+    checked = []
+
+    def artifact_passes(commit: str) -> bool:
+      checked.append(commit)
+      return commit == commits[0]
+
+    waypoint = update_references.find_green_waypoint(
+      "0" * 40,
+      commits,
+      artifact_passes,
+    )
+
+    self.assertEqual(
+      {
+        "checked_commits": 2,
+        "first_failing_commit": commits[1],
+        "last_green_commit": commits[0],
+      },
+      waypoint,
+    )
+    self.assertEqual([commits[1], commits[0]], checked)
+
   def test_expected_impact_cli_flag_is_separate_from_dry_run(self) -> None:
     arguments = update_references.build_parser().parse_args([
       "source",

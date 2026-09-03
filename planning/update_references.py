@@ -14,7 +14,7 @@ import re
 import subprocess
 import sys
 import tempfile
-from typing import Any, Iterable, Sequence
+from typing import Any, Callable, Iterable, Sequence
 
 
 PLANNING_DIR = Path(__file__).resolve().parent
@@ -438,6 +438,29 @@ def build_behavior_verification(
   }
 
 
+def find_green_waypoint(
+  from_commit: str,
+  commits: list[str],
+  artifact_passes: Callable[[str], bool],
+) -> dict[str, Any]:
+  first_failing = commits[-1]
+  checked = 0
+  for candidate in reversed(commits[:-1]):
+    checked += 1
+    if artifact_passes(candidate):
+      return {
+        "checked_commits": checked,
+        "first_failing_commit": first_failing,
+        "last_green_commit": candidate,
+      }
+    first_failing = candidate
+  return {
+    "checked_commits": checked,
+    "first_failing_commit": commits[0],
+    "last_green_commit": from_commit,
+  }
+
+
 def apply_specification_activity_impacts(report: dict[str, Any]) -> None:
   ownership = report.get("simulation", {}).get("specification_ownership")
   if ownership is None:
@@ -739,6 +762,12 @@ def render_impact(
       f"verify: {proposal['command']}"
       for proposal in verification["commands"]
     )
+  waypoint = report.get("waypoint")
+  if waypoint:
+    lines.extend((
+      f"last green waypoint: {waypoint['last_green_commit']}",
+      f"first failing commit: {waypoint['first_failing_commit']}",
+    ))
   proposals = report.get("proposed_plan_items", [])
   proposal_counts = Counter(
     item.get("disposition", "actionable") for item in proposals
@@ -1028,6 +1057,7 @@ def build_impact_report(
   progress_path: Path = PROGRESS_PATH,
   allow_non_fast_forward: bool = False,
   generator_commands: Sequence[Sequence[str]] | None = None,
+  find_waypoint: bool = True,
   run_verifications: bool = False,
 ) -> dict[str, Any]:
   report = analyze_reference(
@@ -1068,6 +1098,28 @@ def build_impact_report(
     required=behavior_required,
     ran=run_verifications,
   )
+  if (
+    find_waypoint
+    and report["artifact_status"] == "failed"
+    and report["simulation"]["repeatable"]
+    and report["commits"]
+  ):
+    def artifact_passes(candidate: str) -> bool:
+      simulation = simulate_reference_update(
+        name,
+        candidate,
+        root=root,
+        references_path=references_path,
+        allow_non_fast_forward=allow_non_fast_forward,
+        generator_commands=generator_commands,
+      )
+      return simulation["valid"]
+
+    report["waypoint"] = find_green_waypoint(
+      report["from_commit"],
+      report["commits"],
+      artifact_passes,
+    )
   report["impact_digest"] = impact_digest(report)
   return report
 
