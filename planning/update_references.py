@@ -11,6 +11,7 @@ import importlib.util
 import json
 from pathlib import Path
 import re
+import shlex
 import subprocess
 import sys
 import tempfile
@@ -431,6 +432,7 @@ def propose_verification_commands(
           "completed", "in_progress", "needs_review",
         }
         or value.get("conformance_status") != "passed"
+        or not verification_command_covers_identity(value)
       ):
         continue
       proposal = grouped.setdefault(command, {
@@ -449,6 +451,41 @@ def propose_verification_commands(
     }
     for command, value in sorted(grouped.items())
   ]
+
+
+def verification_command_covers_identity(value: dict[str, Any]) -> bool:
+  command = value.get("last_execution")
+  if not command:
+    return False
+  if value.get("record_type") != "case":
+    return True
+  source_identity = value["source_identity"]
+  source_path = source_identity.partition("::")[0]
+  if source_identity in command or source_path in command:
+    return True
+  try:
+    words = set(shlex.split(command))
+  except ValueError:
+    return False
+  return bool({"test-unified", "test-unified-meta"} & words)
+
+
+def unverified_behavior_identities(
+  ownership: dict[str, list[dict[str, Any]]],
+) -> list[str]:
+  identities = set()
+  for change in ("added", "changed"):
+    for entry in ownership[change]:
+      value = entry["to"] if change == "changed" else entry
+      if (
+        value.get("activity_status") in {
+          "completed", "in_progress", "needs_review",
+        }
+        and value.get("conformance_status") == "passed"
+        and not verification_command_covers_identity(value)
+      ):
+        identities.add(value["source_identity"])
+  return sorted(identities)
 
 
 def execute_verification_commands(
@@ -483,11 +520,14 @@ def build_behavior_verification(
   *,
   required: bool,
   ran: bool,
+  unverified_identities: Sequence[str] = (),
 ) -> dict[str, Any]:
   if not ran:
     execution_status = "not_run" if commands else "unavailable"
   elif any(result["exit_code"] != 0 for result in results):
     execution_status = "failed"
+  elif unverified_identities:
+    execution_status = "partial"
   else:
     execution_status = "passed"
   return {
@@ -495,6 +535,7 @@ def build_behavior_verification(
     "execution_status": execution_status,
     "results": results,
     "status": "required" if required else "not_required",
+    "unverified_identities": list(unverified_identities),
   }
 
 
@@ -831,10 +872,16 @@ def render_impact(
       f"behavior verification: {verification['status']}",
       f"verification commands: {len(verification['commands'])} "
       f"({verification['execution_status']})",
+      f"unverified changed identities: "
+      f"{len(verification.get('unverified_identities', []))}",
     ))
     lines.extend(
       f"verify: {proposal['command']}"
       for proposal in verification["commands"]
+    )
+    lines.extend(
+      f"unverified: {identity}"
+      for identity in verification.get("unverified_identities", [])
     )
   waypoint = report.get("waypoint")
   if waypoint:
@@ -1173,6 +1220,11 @@ def build_impact_report(
       "added": [], "changed": [], "removed": [],
     })
   )
+  unverified_identities = unverified_behavior_identities(
+    report["simulation"].get("specification_ownership", {
+      "added": [], "changed": [], "removed": [],
+    })
+  )
   behavior_required = any(
     item["disposition"] == "actionable"
     for item in report["proposed_plan_items"]
@@ -1182,6 +1234,7 @@ def build_impact_report(
     report["simulation"].pop("verification_results", []),
     required=behavior_required,
     ran=run_verifications,
+    unverified_identities=unverified_identities,
   )
   if (
     find_waypoint

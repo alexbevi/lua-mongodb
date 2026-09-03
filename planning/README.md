@@ -52,7 +52,7 @@ make test-complexity
 
 Specification activity impact comes from the candidate ledger and catalog rather than the broad `specifications:source` mapping. Mapping-level impact remains in JSON as informational evidence. A change owned only by pending activities is deferred; changes to completed or active ownership remain actionable.
 
-The report separates repeatable artifact generation from behavior verification. It proposes the recorded local commands for changed passing evidence owned by completed or active activities. `--verify` runs those commands inside the isolated candidate checkout; external-environment work remains a review item.
+The report separates repeatable artifact generation from behavior verification. It proposes the recorded local commands for changed passing evidence owned by completed or active activities. A case command must discover its suite or name the changed source; otherwise the report lists that identity as unverified. `--verify` runs the usable commands inside the isolated candidate checkout; external-environment work remains a review item.
 
 When repeatable artifact generation fails, the dry run checks preceding commits from newest to oldest until it finds the nearest passing waypoint. The report names that commit and the first failure after it. Passing targets do not run the extra simulations.
 

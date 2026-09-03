@@ -451,12 +451,32 @@ class ReferenceUpdateTests(unittest.TestCase):
         "activity": "DONE-001",
         "activity_status": "completed",
         "conformance_status": "passed",
-        "identity": "case:alpha/tests/new.json::case",
+        "identity": "requirement:alpha/alpha.md::rule",
         "last_execution": "make test-focus FOCUS_UNIT=spec/unit/alpha_spec.lua",
+        "record_type": "requirement",
+        "required_environment": "none",
+        "source_identity": "alpha/alpha.md::rule",
+        "suite": "alpha",
+      }, {
+        "activity": "DONE-002",
+        "activity_status": "completed",
+        "conformance_status": "passed",
+        "identity": "case:beta/tests/new.json::case",
+        "last_execution": "make test-unit",
+        "record_type": "case",
+        "required_environment": "deterministic-runtime",
+        "source_identity": "beta/tests/new.json::case",
+        "suite": "beta",
+      }, {
+        "activity": "DONE-003",
+        "activity_status": "completed",
+        "conformance_status": "passed",
+        "identity": "case:gamma/tests/new.json::case",
+        "last_execution": "make test-unified-meta",
         "record_type": "case",
         "required_environment": "none",
-        "source_identity": "alpha/tests/new.json::case",
-        "suite": "alpha",
+        "source_identity": "gamma/tests/new.json::case",
+        "suite": "gamma",
       }],
       "changed": [{
         "from": {
@@ -487,13 +507,22 @@ class ReferenceUpdateTests(unittest.TestCase):
     commands = update_references.propose_verification_commands(ownership)
 
     self.assertEqual(
-      [{
-        "command": "make test-focus FOCUS_UNIT=spec/unit/alpha_spec.lua",
-        "identities": ["alpha/tests/new.json::case"],
-        "required_environments": ["none"],
-      }],
+      [
+        {
+          "command": "make test-focus FOCUS_UNIT=spec/unit/alpha_spec.lua",
+          "identities": ["alpha/alpha.md::rule"],
+          "required_environments": ["none"],
+        },
+        {
+          "command": "make test-unified-meta",
+          "identities": ["gamma/tests/new.json::case"],
+          "required_environments": ["none"],
+        },
+      ],
       commands,
     )
+    unverified = update_references.unverified_behavior_identities(ownership)
+    self.assertEqual(["beta/tests/new.json::case"], unverified)
     report = {
       "artifact_status": "passed",
       "behavior_verification": update_references.build_behavior_verification(
@@ -501,12 +530,25 @@ class ReferenceUpdateTests(unittest.TestCase):
         [],
         required=True,
         ran=False,
+        unverified_identities=unverified,
       ),
       "valid": True,
     }
     self.assertEqual("passed", report["artifact_status"])
     self.assertEqual("required", report["behavior_verification"]["status"])
     self.assertEqual("not_run", report["behavior_verification"]["execution_status"])
+    self.assertEqual(
+      ["beta/tests/new.json::case"],
+      report["behavior_verification"]["unverified_identities"],
+    )
+    partial = update_references.build_behavior_verification(
+      commands,
+      [{"command": item["command"], "exit_code": 0} for item in commands],
+      required=True,
+      ran=True,
+      unverified_identities=unverified,
+    )
+    self.assertEqual("partial", partial["execution_status"])
 
   def test_impact_digest_is_canonical_and_reviewable(self) -> None:
     first = {
