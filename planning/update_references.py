@@ -303,7 +303,9 @@ def specification_ownership_snapshot(root: Path) -> dict[str, dict[str, Any]]:
       "activity_status": statuses.get(activity, "pending"),
       "conformance_status": value.get("status"),
       "fingerprint": value.get("fingerprint"),
+      "last_execution": value.get("last_execution"),
       "record_type": record_type,
+      "required_environment": value.get("required_environment"),
       "source_identity": identity,
       "suite": suite,
     }
@@ -353,6 +355,87 @@ def ownership_records(entry: dict[str, Any]) -> list[dict[str, Any]]:
       })
     records.extend(value.get("activities", []))
   return records
+
+
+def propose_verification_commands(
+  ownership: dict[str, list[dict[str, Any]]],
+) -> list[dict[str, Any]]:
+  grouped: dict[str, dict[str, set[str]]] = {}
+  for change in ("added", "changed"):
+    for entry in ownership[change]:
+      value = entry["to"] if change == "changed" else entry
+      command = value.get("last_execution")
+      if (
+        not command
+        or value.get("activity_status") not in {
+          "completed", "in_progress", "needs_review",
+        }
+        or value.get("conformance_status") != "passed"
+      ):
+        continue
+      proposal = grouped.setdefault(command, {
+        "identities": set(),
+        "required_environments": set(),
+      })
+      proposal["identities"].add(value["source_identity"])
+      environment = value.get("required_environment")
+      if environment:
+        proposal["required_environments"].add(environment)
+  return [
+    {
+      "command": command,
+      "identities": sorted(value["identities"]),
+      "required_environments": sorted(value["required_environments"]),
+    }
+    for command, value in sorted(grouped.items())
+  ]
+
+
+def execute_verification_commands(
+  root: Path,
+  commands: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+  results = []
+  for proposal in commands:
+    result = subprocess.run(
+      proposal["command"],
+      cwd=root,
+      executable="/bin/sh",
+      shell=True,
+      check=False,
+      text=True,
+      stdout=subprocess.PIPE,
+      stderr=subprocess.PIPE,
+    )
+    entry = {
+      "command": proposal["command"],
+      "exit_code": result.returncode,
+    }
+    if result.returncode != 0:
+      entry["error"] = generator_failure_detail(result, root)
+    results.append(entry)
+  return results
+
+
+def build_behavior_verification(
+  commands: list[dict[str, Any]],
+  results: list[dict[str, Any]],
+  *,
+  required: bool,
+  ran: bool,
+) -> dict[str, Any]:
+  if not ran:
+    execution_status = "not_run" if commands else "unavailable"
+  elif any(result["exit_code"] != 0 for result in results):
+    execution_status = "failed"
+  else:
+    execution_status = "passed"
+  return {
+    "commands": commands,
+    "execution_status": execution_status,
+    "results": results,
+    "status": "required" if required else "not_required",
+  }
 
 
 def apply_specification_activity_impacts(report: dict[str, Any]) -> None:
@@ -641,10 +724,21 @@ def render_impact(
   simulation = report.get("simulation")
   if simulation:
     lines.extend((
-      f"generator simulation: {'passed' if simulation['valid'] else 'failed'}",
+      f"artifact generation: {report.get('artifact_status', 'passed' if simulation['valid'] else 'failed')}",
       f"generated files: {len(simulation['generated_files'])}",
       f"repeatable: {'yes' if simulation['repeatable'] else 'no'}",
     ))
+  verification = report.get("behavior_verification")
+  if verification:
+    lines.extend((
+      f"behavior verification: {verification['status']}",
+      f"verification commands: {len(verification['commands'])} "
+      f"({verification['execution_status']})",
+    ))
+    lines.extend(
+      f"verify: {proposal['command']}"
+      for proposal in verification["commands"]
+    )
   proposals = report.get("proposed_plan_items", [])
   proposal_counts = Counter(
     item.get("disposition", "actionable") for item in proposals
@@ -679,6 +773,13 @@ def render_impact(
 
 def impact_digest(report: dict[str, Any]) -> str:
   payload = {key: value for key, value in report.items() if key != "impact_digest"}
+  verification = payload.get("behavior_verification")
+  if verification:
+    payload["behavior_verification"] = {
+      **verification,
+      "execution_status": "not_run" if verification["commands"] else "unavailable",
+      "results": [],
+    }
   encoded = json.dumps(
     payload,
     ensure_ascii=False,
@@ -845,6 +946,7 @@ def simulate_reference_update(
   references_path: Path = REFERENCES_PATH,
   allow_non_fast_forward: bool = False,
   generator_commands: Sequence[Sequence[str]] | None = None,
+  run_verifications: bool = False,
 ) -> dict[str, Any]:
   clean = require_git(
     root,
@@ -882,11 +984,13 @@ def simulate_reference_update(
     first_results = execute_generators(sandbox, commands)
     first_changes = project_changes(sandbox)
     ownership = None
+    verification_commands = []
     if before_ownership is not None:
       ownership = inventory_delta(
         before_ownership,
         specification_ownership_snapshot(sandbox),
       )
+      verification_commands = propose_verification_commands(ownership)
     first_passed = all(result["exit_code"] == 0 for result in first_results)
     second_results = execute_generators(sandbox, commands)
     second_changes = project_changes(sandbox)
@@ -897,12 +1001,17 @@ def simulate_reference_update(
       change for change in first_changes
       if change["path"] not in excluded
     ]
+    verification_results = (
+      execute_verification_commands(sandbox, verification_commands)
+      if run_verifications else []
+    )
     simulation = {
       "first_run": first_results,
       "generated_files": generated,
       "repeatable": repeatable,
       "second_run": second_results,
       "valid": first_passed and second_passed and repeatable,
+      "verification_results": verification_results,
     }
     if ownership is not None:
       simulation["specification_ownership"] = ownership
@@ -919,6 +1028,7 @@ def build_impact_report(
   progress_path: Path = PROGRESS_PATH,
   allow_non_fast_forward: bool = False,
   generator_commands: Sequence[Sequence[str]] | None = None,
+  run_verifications: bool = False,
 ) -> dict[str, Any]:
   report = analyze_reference(
     name,
@@ -936,11 +1046,28 @@ def build_impact_report(
     references_path=references_path,
     allow_non_fast_forward=allow_non_fast_forward,
     generator_commands=generator_commands,
+    run_verifications=run_verifications,
   )
   report["valid"] = report["valid"] and report["simulation"]["valid"]
+  report["artifact_status"] = "passed" if report["simulation"]["valid"] else "failed"
   if name == "specifications":
     apply_specification_activity_impacts(report)
   report["proposed_plan_items"] = propose_plan_items(report)
+  verification_commands = propose_verification_commands(
+    report["simulation"].get("specification_ownership", {
+      "added": [], "changed": [], "removed": [],
+    })
+  )
+  behavior_required = any(
+    item["disposition"] == "actionable"
+    for item in report["proposed_plan_items"]
+  )
+  report["behavior_verification"] = build_behavior_verification(
+    verification_commands,
+    report["simulation"].pop("verification_results", []),
+    required=behavior_required,
+    ran=run_verifications,
+  )
   report["impact_digest"] = impact_digest(report)
   return report
 
@@ -1084,6 +1211,11 @@ def build_parser() -> argparse.ArgumentParser:
     help="include informational proposals in dry-run text output",
   )
   parser.add_argument(
+    "--verify",
+    action="store_true",
+    help="run proposed local verification commands in the dry-run sandbox",
+  )
+  parser.add_argument(
     "--expect-impact",
     help="apply only when a fresh dry run has this impact digest",
   )
@@ -1101,13 +1233,19 @@ def main(argv: list[str] | None = None) -> int:
         arguments.reference,
         arguments.commit,
         allow_non_fast_forward=arguments.allow_non_fast_forward,
+        run_verifications=arguments.verify,
       )
       print(render_impact(report, arguments.format, arguments.show))
-      return 0 if report["valid"] else 1
+      return 0 if (
+        report["valid"]
+        and report["behavior_verification"]["execution_status"] != "failed"
+      ) else 1
     if arguments.format != "text":
       raise ReferenceUpdateError("--format requires --dry-run")
     if arguments.show != "relevant":
       raise ReferenceUpdateError("--show requires --dry-run")
+    if arguments.verify:
+      raise ReferenceUpdateError("--verify requires --dry-run")
     if arguments.expect_impact:
       reviewed = advance_reviewed_reference(
         arguments.reference,

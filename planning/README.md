@@ -25,7 +25,7 @@ python3 planning/update_plan.py complete ID
 python3 planning/update_plan.py render-state
 python3 planning/update_plan.py reference-report
 python3 planning/update_plan.py check-references
-python3 planning/update_references.py REFERENCE COMMIT [--dry-run [--format text|json] [--show relevant|all] | --expect-impact DIGEST] [--allow-non-fast-forward]
+python3 planning/update_references.py REFERENCE COMMIT [--dry-run [--format text|json] [--show relevant|all] [--verify] | --expect-impact DIGEST] [--allow-non-fast-forward]
 make update-spec-artifacts
 python3 planning/update_readme_compatibility.py [--check]
 python3 spec/conformance/catalog.py [--check]
@@ -51,6 +51,8 @@ make test-complexity
 `update_references.py --dry-run` reports the candidate commits, changed paths and landmarks, and affected roadmap activities without moving the checkout or pin. A specifications report also inventories every added, removed, or changed accepted document, fixture file, conformance case, and unified test. Its proposed plan items group that detail into one review per changed specification suite or reference mapping and one repair per failed generator. Text output groups proposals by disposition and hides informational entries unless `--show all` is passed; JSON always retains them. From a clean project checkout, the command runs the same generators twice in an isolated local clone and rejects different results. The report's impact digest covers the candidate, roadmap inputs, simulated outputs, and proposals; `--expect-impact DIGEST` repeats the dry run and advances the pin only when that reviewed digest still matches. When the simulation found repeatable classification or generator failures, the guarded update moves only the pin and leaves the live generated files untouched for the subsequent gap work. An unguarded update remains available for recovery and advances one pin after checking checkout state, ancestry, and mapped landmarks. Every update leaves its changes unstaged for review.
 
 Specification activity impact comes from the candidate ledger and catalog rather than the broad `specifications:source` mapping. Mapping-level impact remains in JSON as informational evidence. A change owned only by pending activities is deferred; changes to completed or active ownership remain actionable.
+
+The report separates repeatable artifact generation from behavior verification. It proposes the recorded local commands for changed passing evidence owned by completed or active activities. `--verify` runs those commands inside the isolated candidate checkout; external-environment work remains a review item.
 
 `make update-spec-artifacts` regenerates unified capabilities, the catalog and ledger, release scopes, README compatibility, and planning state in dependency order. It stops at the first failed classification or generator.
 

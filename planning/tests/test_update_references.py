@@ -435,6 +435,69 @@ class ReferenceUpdateTests(unittest.TestCase):
       items[2]["reason"],
     )
 
+  def test_behavior_verification_is_separate_from_artifact_generation(self) -> None:
+    ownership = {
+      "added": [{
+        "activity": "DONE-001",
+        "activity_status": "completed",
+        "conformance_status": "passed",
+        "identity": "case:alpha/tests/new.json::case",
+        "last_execution": "make test-focus FOCUS_UNIT=spec/unit/alpha_spec.lua",
+        "record_type": "case",
+        "required_environment": "none",
+        "source_identity": "alpha/tests/new.json::case",
+        "suite": "alpha",
+      }],
+      "changed": [{
+        "from": {
+          "activity": "FUTURE-001",
+          "activity_status": "pending",
+          "conformance_status": "deferred_unsupported",
+          "last_execution": None,
+          "record_type": "case",
+          "required_environment": "deterministic-runtime",
+          "source_identity": "beta/tests/case.json::case",
+          "suite": "beta",
+        },
+        "identity": "case:beta/tests/case.json::case",
+        "to": {
+          "activity": "FUTURE-001",
+          "activity_status": "pending",
+          "conformance_status": "deferred_unsupported",
+          "last_execution": None,
+          "record_type": "case",
+          "required_environment": "deterministic-runtime",
+          "source_identity": "beta/tests/case.json::case",
+          "suite": "beta",
+        },
+      }],
+      "removed": [],
+    }
+
+    commands = update_references.propose_verification_commands(ownership)
+
+    self.assertEqual(
+      [{
+        "command": "make test-focus FOCUS_UNIT=spec/unit/alpha_spec.lua",
+        "identities": ["alpha/tests/new.json::case"],
+        "required_environments": ["none"],
+      }],
+      commands,
+    )
+    report = {
+      "artifact_status": "passed",
+      "behavior_verification": update_references.build_behavior_verification(
+        commands,
+        [],
+        required=True,
+        ran=False,
+      ),
+      "valid": True,
+    }
+    self.assertEqual("passed", report["artifact_status"])
+    self.assertEqual("required", report["behavior_verification"]["status"])
+    self.assertEqual("not_run", report["behavior_verification"]["execution_status"])
+
   def test_impact_digest_is_canonical_and_reviewable(self) -> None:
     first = {
       "valid": True,
@@ -456,6 +519,36 @@ class ReferenceUpdateTests(unittest.TestCase):
       "reviewed impact digest",
     ):
       update_references.require_expected_impact(first, "0" * 64)
+
+  def test_verification_results_do_not_change_the_impact_digest(self) -> None:
+    command = {
+      "command": "make test-focus FOCUS_UNIT=spec/unit/example_spec.lua",
+      "identities": ["example/tests/case.json::case"],
+      "required_environments": ["none"],
+    }
+    not_run = {
+      "behavior_verification": {
+        "commands": [command],
+        "execution_status": "not_run",
+        "results": [],
+        "status": "required",
+      },
+      "valid": True,
+    }
+    passed = {
+      "behavior_verification": {
+        "commands": [command],
+        "execution_status": "passed",
+        "results": [{"command": command["command"], "exit_code": 0}],
+        "status": "required",
+      },
+      "valid": True,
+    }
+
+    self.assertEqual(
+      update_references.impact_digest(not_run),
+      update_references.impact_digest(passed),
+    )
 
   def test_expected_impact_cli_flag_is_separate_from_dry_run(self) -> None:
     arguments = update_references.build_parser().parse_args([
@@ -540,7 +633,7 @@ raise SystemExit("unclassified candidate")
       self.assertIn("generator failure", error)
       self.assertIn("unclassified candidate", error)
       self.assertIn(
-        "generator simulation: failed",
+        "artifact generation: failed",
         update_references.render_impact(report, "text"),
       )
       result = update_references.advance_reviewed_reference(
@@ -737,6 +830,7 @@ target.write_text(str(value + 1) + "\\n")
     self.assertTrue(dry_run.dry_run)
     self.assertEqual("json", dry_run.format)
     self.assertEqual("relevant", dry_run.show)
+    self.assertFalse(dry_run.verify)
     self.assertFalse(apply.dry_run)
     self.assertEqual("text", apply.format)
 
