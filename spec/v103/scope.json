@@ -164,6 +164,7 @@
       "suite": "unified-test-format"
     }
   },
+  "pending_owner_growth": {},
   "planned_by_activity": {
     "BP-001": 6,
     "BP-004": 28,

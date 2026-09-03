@@ -146,6 +146,24 @@ class V103ScopeTests(unittest.TestCase):
       },
       generated["planned_by_suite"],
     )
+    self.assertEqual({}, generated["pending_owner_growth"])
+
+  def test_pending_owners_accept_new_cases_without_hiding_other_drift(self) -> None:
+    activities = scope.load_activities()
+    pending_growth = dict(scope.PLANNED_OWNER_COUNTS)
+    pending_growth["OTEL-003"] += 2
+
+    scope.validate_planned_owner_counts(pending_growth, activities)
+
+    removal = dict(scope.PLANNED_OWNER_COUNTS)
+    removal["OTEL-003"] -= 1
+    with self.assertRaisesRegex(scope.ScopeError, "lost 1 classified case"):
+      scope.validate_planned_owner_counts(removal, activities)
+
+    completed_growth = dict(scope.PLANNED_OWNER_COUNTS)
+    completed_growth["LOG-002"] += 1
+    with self.assertRaisesRegex(scope.ScopeError, "completed owner LOG-002 gained 1"):
+      scope.validate_planned_owner_counts(completed_growth, activities)
 
   def test_stale_umbrella_or_foundation_evidence_fails_closure(self) -> None:
     cases = copy.deepcopy(scope.load_cases())

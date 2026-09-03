@@ -52,6 +52,8 @@ make test-complexity
 
 `make update-spec-artifacts` regenerates unified capabilities, the catalog and ledger, release scopes, README compatibility, and planning state in dependency order. It stops at the first failed classification or generator.
 
+Generated scope checks accept added cases when their existing owner is still pending and the cases remain deferred. Removed cases, unowned cases, ownership changes, and additions assigned to completed or active owners still require review.
+
 Named tracks provide an execution view over the same activity DAG. Each declaration identifies its entry, terminal, and prerequisite activity, and tracked activities name their declaration explicitly. `next --track TRACK` considers only ready members of that track; `current_state.json` exposes the same deterministic grouping as `ready_by_track`. Track selection does not change dependencies, statuses, or global plan order, and unscoped `next` retains its original first-ready behavior.
 
 Starting an additional task requires `start ID --track TRACK`. The track must be declared and the activity must belong to it, so authorization for one goal cannot spill into unrelated ready activities. Production-core starts remain backward compatible without a track. The agent retains the user's single track authorization across its loop and reasserts that scope on each start.
