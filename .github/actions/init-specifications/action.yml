@@ -1,0 +1,8 @@
+name: Initialize pinned specifications
+description: Initialize only the normative specifications checkout.
+
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: git submodule update --init --depth 1 -- planning/specifications

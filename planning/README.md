@@ -1,10 +1,10 @@
 # Executable roadmap
 
-`plan.json` is the reviewed, mostly immutable activity DAG. `progress.json` stores mutable activity status and evidence. `current_state.json` is a deterministic generated summary; never edit it by hand.
+`plan.json` is the reviewed, mostly immutable activity DAG. `references.json` stores reference pins and mapped landmarks. `progress.json` stores mutable activity status and evidence. `current_state.json` is a deterministic generated summary; never edit it by hand.
 
 [`strategy.md`](strategy.md) documents the reproducible, specification-driven implementation and conformance method used by this project and intended for reuse by drivers in other languages.
 
-The reference checkouts are pinned in `plan.json` and registered as Git submodules:
+The reference checkouts are pinned in `references.json` and registered as Git submodules:
 
 - `planning/pymongo` is the behavioral and structural reference.
 - `planning/specifications` is the normative source and unified fixture corpus.
@@ -16,13 +16,17 @@ python3 planning/update_plan.py check [--strict [--pushed]]
 python3 planning/update_plan.py next [--track TRACK] [--json]
 python3 planning/update_plan.py start ID [--track TRACK]
 python3 planning/update_plan.py requeue ID --reason "..."
+python3 planning/update_plan.py review ID --reason "..."
 python3 planning/update_plan.py record-test ID --phase red --command "..." --exit-code 1 --summary "..."
 python3 planning/update_plan.py record-test ID --phase green --command "..." --exit-code 0 --summary "..."
 python3 planning/update_plan.py block ID --reason "..."
 python3 planning/update_plan.py unblock ID
 python3 planning/update_plan.py complete ID
-python3 planning/update_plan.py refresh
+python3 planning/update_plan.py render-state
 python3 planning/update_plan.py reference-report
+python3 planning/update_plan.py check-references
+python3 planning/update_references.py REFERENCE COMMIT [--dry-run [--format text|json] [--show actionable|relevant|all] [--verify] | --expect-impact DIGEST] [--allow-non-fast-forward]
+make update-spec-artifacts
 python3 planning/update_readme_compatibility.py [--check]
 python3 spec/conformance/catalog.py [--check]
 python3 spec/v04/scope.py [--check]
@@ -42,7 +46,21 @@ make test-generated
 make test-complexity
 ```
 
-`check` validates document shape, dependencies, cycles, generated state, and pinned references. `--strict` additionally requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `refresh` only regenerates derived state; it never changes plan definitions or reference pins.
+`check` validates document shape, dependencies, cycles, generated state, and reference locks. `check-references` additionally inspects the initialized checkouts and every mapped path and Python symbol. `--strict` requires exactly one commit with the completed activity's exact subject and exactly one matching `Plan-Activity` trailer, and rejects new reuse of that trailer. Published CI follow-up commits at or before the commit-policy baseline in `update_plan.py` are retained as an explicit history-only exception. `--strict --pushed` also requires the canonical commit to be reachable from a remote-tracking ref. Starting another activity applies the pushed check automatically. `render-state` only regenerates derived state; it never changes plan definitions or reference pins. `refresh` remains as a compatibility alias.
+
+`update_references.py --dry-run` reports the candidate commits, changed paths and landmarks, and affected roadmap activities without moving the checkout or pin. A specifications report also inventories every added, removed, or changed accepted document, fixture file, conformance case, and unified test. Its proposed plan items group that detail into one review per changed specification suite or reference mapping and one repair per failed generator. Text output defaults to actionable and blocked items. `--show relevant` adds deferred items, while `--show all` also adds informational entries. JSON always retains every item. From a clean project checkout, the command runs the same generators twice in an isolated local clone and rejects different results. The report's impact digest covers the candidate, roadmap inputs, simulated outputs, and proposals; `--expect-impact DIGEST` repeats the dry run and advances the pin only when that reviewed digest still matches. When the simulation found repeatable classification or generator failures, the guarded update moves only the pin and leaves the live generated files untouched for the subsequent gap work. An unguarded update remains available for recovery and advances one pin after checking checkout state, ancestry, and mapped landmarks. Every update leaves its changes unstaged for review.
+
+Specification activity impact comes from the candidate ledger and catalog rather than the broad `specifications:source` mapping. Mapping-level impact remains in JSON as informational evidence. A change owned only by pending activities is deferred; changes to completed or active ownership remain actionable.
+
+The report separates repeatable artifact generation from behavior verification. It proposes the recorded local commands for changed passing evidence owned by completed or active activities. A case command must discover its suite or name the changed source; otherwise the report lists that identity as unverified. `--verify` runs the usable commands inside the isolated candidate checkout; external-environment work remains a review item.
+
+When repeatable artifact generation fails, the dry run checks preceding commits from newest to oldest until it finds the nearest passing waypoint. The report names that commit and the first failure after it. Passing targets do not run the extra simulations.
+
+Changed paths and commits are split into source review and informational categories. PyMongo tests, automation, documentation, and lockfiles remain in JSON and contribute to the impact digest, but their counts stay separate from driver source changes.
+
+`make update-spec-artifacts` regenerates unified capabilities, the catalog and ledger, release scopes, README compatibility, and planning state in dependency order. It stops at the first failed classification or generator.
+
+Generated scope checks accept added cases when their existing owner is still pending and the cases remain deferred. Removed cases, unowned cases, ownership changes, and additions assigned to completed or active owners still require review.
 
 Named tracks provide an execution view over the same activity DAG. Each declaration identifies its entry, terminal, and prerequisite activity, and tracked activities name their declaration explicitly. `next --track TRACK` considers only ready members of that track; `current_state.json` exposes the same deterministic grouping as `ready_by_track`. Track selection does not change dependencies, statuses, or global plan order, and unscoped `next` retains its original first-ready behavior.
 
@@ -87,5 +105,7 @@ The unified specification runner is test-only support under `spec/support/mongod
 `spec/sharded_environment.py` is the shared test-only owner for an ephemeral replica-set-backed sharded deployment. It starts one config server, one shard, and one mongos; verifies exact topology, version, and host facts; and tears down every process after success or partial startup failure. Unified executor entries may select `live-sharded`; externally managed clusters must provide the same facts contract. Full Conformance installs both `mongod` and `mongos`, while driver networking remains behind the normal runtime adapter.
 
 Use `requeue` when an in-progress activity must return to pending before implementation continues, such as when reviewed roadmap dependencies need to be inserted ahead of it. The command preserves existing evidence and records the reason; it is not a substitute for `block` when work is genuinely blocked.
+
+Use `review` during a reference refresh when changed upstream semantics may invalidate completed or active work. It preserves the activity's evidence, records its previous status and the review reason, and exposes the activity through `current_state.json` without deciding whether implementation must be reopened.
 
 Use [`prompt_goal.md`](prompt_goal.md) to launch the incremental production-core implementation.

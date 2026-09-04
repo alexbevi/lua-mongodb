@@ -83,7 +83,6 @@ class ConformanceCatalogTests(unittest.TestCase):
       "runner",
       "scope",
       "source",
-      "specifications_commit",
       "status",
       "suite",
     }
@@ -97,6 +96,7 @@ class ConformanceCatalogTests(unittest.TestCase):
       self.assertTrue(requirement["runner"])
       self.assertTrue(requirement["scope"])
       self.assertTrue(requirement["reason"])
+      self.assertNotIn("specifications_commit", requirement)
 
       if requirement["status"] == "passed":
         self.assertTrue(requirement["last_execution"])

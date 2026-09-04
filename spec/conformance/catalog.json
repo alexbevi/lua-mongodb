@@ -297,7 +297,6 @@
       "runner": "pending:SFP-001",
       "scope": "additional",
       "source": "atlas-sfp-testing/atlas-sfp-testing.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "deferred_unsupported",
       "suite": "atlas-sfp-testing"
     },
@@ -311,7 +310,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -325,7 +323,6 @@
       "runner": "spec/support/auth_config_runner.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -339,7 +336,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -353,7 +349,6 @@
       "runner": "spec/unit/runtime_gssapi_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -367,7 +362,6 @@
       "runner": "spec/unit/auth_gssapi_hostname_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -381,7 +375,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -395,7 +388,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -409,7 +401,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -423,7 +414,6 @@
       "runner": "spec/unit/auth_gssapi_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -437,7 +427,6 @@
       "runner": "spec/integration/auth_gssapi_live_spec.lua",
       "scope": "additional",
       "source": "auth/auth.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "auth"
     },
@@ -451,7 +440,6 @@
       "runner": "none:no-machine-cases",
       "scope": "prose-only",
       "source": "benchmarking/benchmarking.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "no_machine_cases",
       "suite": "benchmarking"
     },
@@ -465,7 +453,6 @@
       "runner": "pending:ADV-010",
       "scope": "additional",
       "source": "bson-binary-encrypted/binary-encrypted.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "deferred_unsupported",
       "suite": "bson-binary-encrypted"
     },
@@ -479,7 +466,6 @@
       "runner": "none:not-applicable",
       "scope": "not-applicable",
       "source": "bson-binary-uuid/uuid.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "not_applicable",
       "suite": "bson-binary-uuid"
     },
@@ -493,7 +479,6 @@
       "runner": "spec/unit/bson_exact_spec.lua",
       "scope": "foundation",
       "source": "bson-decimal128/decimal128.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "bson-decimal128"
     },
@@ -507,7 +492,6 @@
       "runner": "spec/unit/bson_tagged_spec.lua",
       "scope": "additional",
       "source": "bson-objectid/objectid.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "bson-objectid"
     },
@@ -521,7 +505,6 @@
       "runner": "spec/unit/bson_tagged_spec.lua",
       "scope": "additional",
       "source": "bson-objectid/objectid.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "bson-objectid"
     },
@@ -535,7 +518,6 @@
       "runner": "spec/unit/bson_tagged_spec.lua",
       "scope": "additional",
       "source": "bson-objectid/objectid.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "bson-objectid"
     },
@@ -549,7 +531,6 @@
       "runner": "spec/unit/crud_mutations_spec.lua",
       "scope": "standalone-core",
       "source": "collation/collation.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "collation"
     },
@@ -563,7 +544,6 @@
       "runner": "spec/support/config_runner.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -577,7 +557,6 @@
       "runner": "spec/unit/op_compressed_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -591,7 +570,6 @@
       "runner": "spec/unit/command_executor_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -605,7 +583,6 @@
       "runner": "spec/unit/command_executor_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -619,7 +596,6 @@
       "runner": "spec/unit/op_compressed_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -633,7 +609,6 @@
       "runner": "spec/compatibility/sharded_probe.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -647,7 +622,6 @@
       "runner": "spec/unit/snappy_runtime_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -661,7 +635,6 @@
       "runner": "spec/compatibility/probe.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -675,7 +648,6 @@
       "runner": "spec/integration/client_api_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -689,7 +661,6 @@
       "runner": "spec/unit/zlib_runtime_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -703,7 +674,6 @@
       "runner": "spec/unit/zstandard_runtime_spec.lua",
       "scope": "additional",
       "source": "compression/OP_COMPRESSED.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "compression"
     },
@@ -717,7 +687,6 @@
       "runner": "none:not-applicable",
       "scope": "not-applicable",
       "source": "dbref/dbref.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "not_applicable",
       "suite": "dbref"
     },
@@ -731,7 +700,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "additional",
       "source": "enumerate-collections/enumerate-collections.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "enumerate-collections"
     },
@@ -745,7 +713,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "additional",
       "source": "enumerate-databases/enumerate-databases.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "enumerate-databases"
     },
@@ -759,7 +726,6 @@
       "runner": "spec/unit/extended_json_spec.lua",
       "scope": "foundation",
       "source": "extended-json/extended-json.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "extended-json"
     },
@@ -773,7 +739,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "standalone-core",
       "source": "find_getmore_killcursors_commands/find_getmore_killcursors_commands.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "find_getmore_killcursors_commands"
     },
@@ -787,7 +752,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -801,7 +765,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -815,7 +778,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -829,7 +791,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -843,7 +804,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -857,7 +817,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -871,7 +830,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -885,7 +843,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -899,7 +856,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -913,7 +869,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -927,7 +882,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -941,7 +895,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -955,7 +908,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -969,7 +921,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -983,7 +934,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -997,7 +947,6 @@
       "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -1011,7 +960,6 @@
       "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -1025,7 +973,6 @@
       "runner": "spec/v103/scope.py",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -1039,7 +986,6 @@
       "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -1053,7 +999,6 @@
       "runner": "spec/unit/op_msg_spec.lua",
       "scope": "standalone-core",
       "source": "message/OP_MSG.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "message"
     },
@@ -1067,7 +1012,6 @@
       "runner": "none:unsupported",
       "scope": "additional",
       "source": "ocsp-support/ocsp-support.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",
       "suite": "ocsp-support"
     },
@@ -1081,7 +1025,6 @@
       "runner": "spec/support/dns_polling_runner.lua",
       "scope": "additional",
       "source": "polling-srv-records-for-mongos-discovery/polling-srv-records-for-mongos-discovery.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "polling-srv-records-for-mongos-discovery"
     },
@@ -1095,7 +1038,6 @@
       "runner": "spec/unit/crud_mutations_spec.lua",
       "scope": "standalone-core",
       "source": "server_write_commands/server_write_commands.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "server_write_commands"
     },
@@ -1109,7 +1051,6 @@
       "runner": "none:unsupported",
       "scope": "additional",
       "source": "socks5-support/socks5.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",
       "suite": "socks5-support"
     },
@@ -1123,7 +1064,6 @@
       "runner": "spec/unit/unified_logs_spec.lua",
       "scope": "additional",
       "source": "unified-test-format/unified-test-format.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "unified-test-format"
     }

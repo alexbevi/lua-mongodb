@@ -32,6 +32,7 @@
     "client-side-operations-timeout/tests/runCursorCommand.json::test[6]": "the fixture omits commandName and timeoutMS while expecting a client timeout, and the pinned behavioral reference requires command_name for createCommandCursor"
   },
   "schema_version": 1,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "suites": {
     "change-streams": {
       "excluded": 19

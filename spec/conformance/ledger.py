@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "planning" / "specifications" / "source"
 PLAN = ROOT / "planning" / "plan.json"
+REFERENCES = ROOT / "planning" / "references.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 CAPABILITIES = ROOT / "spec" / "unified" / "capabilities.json"
 EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
@@ -186,6 +187,7 @@ def discover_cases(source: Path = SOURCE) -> dict[str, dict[str, Any]]:
 def load_activities() -> tuple[dict[str, dict[str, str]], str]:
   try:
     plan = json.loads(PLAN.read_text(encoding="utf-8"))
+    references = json.loads(REFERENCES.read_text(encoding="utf-8"))
     progress = json.loads(PROGRESS.read_text(encoding="utf-8"))
   except (OSError, json.JSONDecodeError) as exc:
     raise LedgerError(f"could not load roadmap state: {exc}") from exc
@@ -200,7 +202,7 @@ def load_activities() -> tuple[dict[str, dict[str, str]], str]:
       "status": records.get(identity, {}).get("status", "pending"),
     }
 
-  return activities, plan["references"]["specifications"]["commit"]
+  return activities, references["references"]["specifications"]["commit"]
 
 
 def _passed(
@@ -981,7 +983,7 @@ def validate_cases(
   required = {
     "activity", "fingerprint", "format", "last_execution",
     "required_environment", "runner", "scope", "source",
-    "specifications_commit", "status", "suite",
+    "status", "suite",
   }
 
   for identity, source in discovered.items():
@@ -1093,9 +1095,6 @@ def generate() -> dict[str, Any]:
     identity: classify_case(identity, case, activities, capabilities["tests"])
     for identity, case in discovered.items()
   }
-
-  for value in classified.values():
-    value["specifications_commit"] = commit
 
   files = discover_files()
 

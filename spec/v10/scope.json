@@ -9,7 +9,6 @@
       "runner": "spec/unit/api_handles_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -22,7 +21,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -35,7 +33,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -48,7 +45,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -61,7 +57,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -74,7 +69,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -87,7 +81,6 @@
       "runner": "spec/unit/cursor_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -100,7 +93,6 @@
       "runner": "spec/unit/api_handles_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -113,7 +105,6 @@
       "runner": "spec/unit/api_handles_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -126,7 +117,6 @@
       "runner": "spec/unit/api_handles_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/cursors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -139,7 +129,6 @@
       "runner": "spec/unit/command_monitoring_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/event-monitoring.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -152,7 +141,6 @@
       "runner": "spec/unit/command_monitoring_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/event-monitoring.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -165,7 +153,6 @@
       "runner": "spec/unit/command_monitoring_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/event-monitoring.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -179,7 +166,6 @@
       "runner": "spec/integration/load_balancer_spec.lua",
       "scope": "superseded",
       "source": "load-balancers/tests/lb-connection-establishment.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "excluded_scope",
       "suite": "load-balancers",
       "support_scored": false
@@ -193,7 +179,6 @@
       "runner": "spec/integration/load_balancer_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/non-lb-connection-establishment.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -206,7 +191,6 @@
       "runner": "spec/integration/load_balancer_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/non-lb-connection-establishment.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -219,7 +203,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/sdam-error-handling.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -232,7 +215,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/sdam-error-handling.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -245,7 +227,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/sdam-error-handling.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -258,7 +239,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/sdam-error-handling.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -271,7 +251,6 @@
       "runner": "spec/unit/topology_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/server-selection.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -284,7 +263,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -297,7 +275,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -310,7 +287,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -323,7 +299,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -336,7 +311,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -349,7 +323,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -362,7 +335,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -375,7 +347,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -388,7 +359,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -401,7 +371,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -414,7 +383,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -427,7 +395,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -440,7 +407,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -453,7 +419,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -466,7 +431,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -479,7 +443,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -492,7 +455,6 @@
       "runner": "spec/unit/session_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/transactions.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -505,7 +467,6 @@
       "runner": "spec/unit/pool_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/wait-queue-timeouts.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     },
@@ -518,7 +479,6 @@
       "runner": "spec/unit/pool_spec.lua",
       "scope": "production-core-v1",
       "source": "load-balancers/tests/wait-queue-timeouts.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "load-balancers"
     }
@@ -36962,6 +36922,7 @@
     }
   },
   "schema_version": 1,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "summary": {
     "classified": 1044,
     "excluded": 18,
@@ -36981,7 +36942,6 @@
       "runner": "none:unsupported",
       "scope": "additional",
       "source": "ocsp-support/ocsp-support.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",
       "suite": "ocsp-support"
     },
@@ -36995,7 +36955,6 @@
       "runner": "none:unsupported",
       "scope": "additional",
       "source": "socks5-support/socks5.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "unsupported",
       "suite": "socks5-support"
     }

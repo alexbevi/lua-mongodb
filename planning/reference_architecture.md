@@ -54,4 +54,4 @@ Default-provider support is recorded per Lua version and operating system only a
 
 ## Pinned reference landmarks
 
-`planning/update_plan.py` verifies the commit and the paths/symbols recorded in `plan.json`. A missing symbol or commit drift makes current state stale and requires an explicit reference refresh; it never rewrites the plan automatically.
+`planning/references.json` records each pin and mapped landmark. `planning/update_plan.py check` verifies the reference locks, while `check-references` inspects the initialized checkouts and mapped paths or symbols. Neither command changes a pin.

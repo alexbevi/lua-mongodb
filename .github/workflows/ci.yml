@@ -12,6 +12,18 @@ permissions:
   contents: read
 
 jobs:
+  reference-integrity:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository and pinned references
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          submodules: recursive
+
+      - name: Verify pinned reference contents
+        run: python3 planning/update_plan.py check-references
+
   portable:
     strategy:
       fail-fast: false
@@ -36,7 +48,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          submodules: recursive
+
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
 
       - name: Install Lua ${{ matrix.lua-version }}
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -101,11 +115,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -136,11 +147,8 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
@@ -198,11 +206,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check out repository and pinned references
+      - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          fetch-depth: 0
-          submodules: recursive
 
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13

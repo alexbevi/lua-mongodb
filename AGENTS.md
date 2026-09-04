@@ -18,7 +18,7 @@ Keep commits small. Each commit must be the smallest practical vertical slice th
 4. Implement only enough production behavior for the slice, preserving public contracts.
 5. Run the narrowest effective local verification with `make test-focus`: the defining test, directly coupled integration or unified cases, touched-file lint, and any validator for generated artifacts changed by the slice. Record green evidence. Do not run full suites locally for an ordinary slice.
 6. Update `docs/ARCHITECTURE.md`, spec classifications, and compatibility evidence when behavior changes. Keep implementation design, internal behavior, and detailed verification evidence out of `README.md`; that file is limited to the project overview, public API outline, scope, generated specification-compatibility table, development entry points, and license. When the conformance ledger changes, run `python3 planning/update_readme_compatibility.py` and commit the resulting table.
-7. Complete and refresh state through `update_plan.py`.
+7. Complete the activity and render state through `update_plan.py`.
 8. Commit one self-contained, verifiable unit with the activity's exact Conventional Commit subject and exactly one `Plan-Activity: ID` trailer, then push that commit.
 9. Run `python3 planning/update_plan.py check --strict --pushed`, then wait for the pushed `CI Fast` GitHub Actions run. Resolve any required fast-job failure before starting another activity. Do not wait for the scheduled `Full Conformance` workflow during an ordinary slice; its Linux, weekly macOS, coverage, and complete compatibility evidence is authoritative for release readiness, and a known full-conformance failure must be resolved before release.
 

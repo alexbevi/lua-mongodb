@@ -16,6 +16,7 @@ from spec.unified import run  # noqa: E402
 
 
 PLAN = ROOT / "planning" / "plan.json"
+REFERENCES = ROOT / "planning" / "references.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 OUTPUT = ROOT / "spec" / "unified" / "capabilities.json"
 EXECUTORS = ROOT / "spec" / "unified" / "executors.json"
@@ -1161,8 +1162,8 @@ def classify_test(test: dict[str, Any]) -> tuple[str, str | None]:
 
 
 def generate() -> dict[str, object]:
-  plan = json.loads(PLAN.read_text(encoding="utf-8"))
-  commit = plan["references"]["specifications"]["commit"]
+  references = json.loads(REFERENCES.read_text(encoding="utf-8"))
+  commit = references["references"]["specifications"]["commit"]
   discovered = run.discover_tests(run.DEFAULT_SOURCE)
   tests = {}
 

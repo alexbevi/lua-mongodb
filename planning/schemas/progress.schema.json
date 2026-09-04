@@ -3,7 +3,7 @@
   "$id": "progress.schema.json",
   "title": "Lua MongoDB driver progress",
   "type": "object",
-  "required": ["schema_version", "plan_id", "plan_digest", "activities", "verified_references"],
+  "required": ["schema_version", "plan_id", "plan_digest", "activities"],
   "properties": {
     "schema_version": {"const": 1},
     "plan_id": {"type": "string"},
@@ -19,8 +19,6 @@
           "notes": {"type": "array", "items": {"type": "string"}}
         }
       }
-    },
-    "verified_references": {"type": "object"}
+    }
   }
 }
-

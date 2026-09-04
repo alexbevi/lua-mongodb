@@ -15,7 +15,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-advanced.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -28,7 +27,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-advanced.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -41,7 +39,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-advanced.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -54,7 +51,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-advanced.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -67,7 +63,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-advanced.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -80,7 +75,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-advanced.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -93,7 +87,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -106,7 +99,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -119,7 +111,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -132,7 +123,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -145,7 +135,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -158,7 +147,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -171,7 +159,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -184,7 +171,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -197,7 +183,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-find.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -210,7 +195,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-find.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -223,7 +207,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -236,7 +219,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -249,7 +231,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -262,7 +243,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -275,7 +255,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -288,7 +267,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -301,7 +279,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -314,7 +291,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -327,7 +303,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "client-side-operations-timeout/tests/gridfs-upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "client-side-operations-timeout"
     },
@@ -340,7 +315,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -353,7 +327,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -366,7 +339,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -379,7 +351,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -392,7 +363,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/delete.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -405,7 +375,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/deleteByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -418,7 +387,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/deleteByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -431,7 +399,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -444,7 +411,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -457,7 +423,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -470,7 +435,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -483,7 +447,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -496,7 +459,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -509,7 +471,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -522,7 +483,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -535,7 +495,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -548,7 +507,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -561,7 +519,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -574,7 +531,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -587,7 +543,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -600,7 +555,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -613,7 +567,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -626,7 +579,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -639,7 +591,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -652,7 +603,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -665,7 +615,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -678,7 +627,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/rename.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -691,7 +639,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/rename.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -704,7 +651,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/renameByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -717,7 +663,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/renameByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -730,7 +675,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload-disableMD5.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -743,7 +687,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload-disableMD5.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -756,7 +699,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -769,7 +711,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -782,7 +723,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -795,7 +735,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -808,7 +747,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -821,7 +759,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -834,7 +771,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "gridfs/tests/upload.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -847,7 +783,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -860,7 +795,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -873,7 +807,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -886,7 +819,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -899,7 +831,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -912,7 +843,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -925,7 +855,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -938,7 +867,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -951,7 +879,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -964,7 +891,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -977,7 +903,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -990,7 +915,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1003,7 +927,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1016,7 +939,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1029,7 +951,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1042,7 +963,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1055,7 +975,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-download.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1068,7 +987,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1081,7 +999,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1094,7 +1011,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1107,7 +1023,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1120,7 +1035,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1133,7 +1047,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1146,7 +1059,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1159,7 +1071,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1172,7 +1083,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1185,7 +1095,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1198,7 +1107,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1211,7 +1119,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1224,7 +1131,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName-serverErrors.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1237,7 +1143,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1250,7 +1155,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1263,7 +1167,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     },
@@ -1276,7 +1179,6 @@
       "runner": "spec/unified/execute.lua",
       "scope": "production-core-v1",
       "source": "retryable-reads/tests/unified/gridfs-downloadByName.json",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "retryable-reads"
     }
@@ -1309,7 +1211,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1323,7 +1224,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1337,7 +1237,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1351,7 +1250,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1365,7 +1263,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1379,7 +1276,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1393,7 +1289,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1407,7 +1302,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1421,7 +1315,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1435,7 +1328,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1449,7 +1341,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1463,7 +1354,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1477,7 +1367,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1491,7 +1380,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     },
@@ -1505,7 +1393,6 @@
       "runner": "spec/unit/gridfs_spec.lua",
       "scope": "additional",
       "source": "gridfs/gridfs-spec.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "gridfs"
     }
@@ -1520,6 +1407,7 @@
     "supported": 113
   },
   "schema_version": 1,
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "suites": {
     "client-side-operations-timeout": {
       "passed": 25

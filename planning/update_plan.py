@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import configparser
 import datetime as dt
 import hashlib
 import json
@@ -24,6 +25,7 @@ from typing import Any, Iterable
 PLANNING_DIR = Path(__file__).resolve().parent
 ROOT = PLANNING_DIR.parent
 PLAN_PATH = PLANNING_DIR / "plan.json"
+REFERENCES_PATH = PLANNING_DIR / "references.json"
 PROGRESS_PATH = PLANNING_DIR / "progress.json"
 STATE_PATH = PLANNING_DIR / "current_state.json"
 STATUSES = {"pending", "in_progress", "blocked", "completed", "needs_review"}
@@ -71,8 +73,26 @@ def atomic_write(path: Path, value: dict[str, Any]) -> None:
 
 
 def digest_plan(plan: dict[str, Any]) -> str:
-  canonical = json.dumps(plan, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+  roadmap = {key: value for key, value in plan.items() if key != "references"}
+  canonical = json.dumps(roadmap, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
   return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def digest_references(references: dict[str, Any]) -> str:
+  canonical = json.dumps(
+    references, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+  )
+  return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def read_references(path: Path = REFERENCES_PATH) -> dict[str, Any]:
+  document = read_json(path)
+  if document.get("schema_version") != 1:
+    raise PlanError("references.schema_version must be 1")
+  references = document.get("references")
+  if not isinstance(references, dict) or not references:
+    raise PlanError("references.references must be a non-empty object")
+  return references
 
 
 def activity_map(plan: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -288,6 +308,79 @@ def declared_symbols(source: str) -> set[str]:
   }
 
 
+def submodule_declarations(root: Path) -> dict[str, dict[str, str]]:
+  path = root / ".gitmodules"
+  parser = configparser.ConfigParser()
+  try:
+    with path.open("r", encoding="utf-8") as handle:
+      parser.read_file(handle)
+  except (OSError, configparser.Error):
+    return {}
+
+  declarations: dict[str, dict[str, str]] = {}
+  for section in parser.sections():
+    if not section.startswith("submodule "):
+      continue
+    relative = parser.get(section, "path", fallback="")
+    url = parser.get(section, "url", fallback="")
+    if relative:
+      declarations[relative] = {"section": section, "url": url}
+  return declarations
+
+
+def inspect_reference_locks(
+  plan: dict[str, Any], root: Path = ROOT,
+) -> dict[str, dict[str, Any]]:
+  report: dict[str, dict[str, Any]] = {}
+  declarations = submodule_declarations(root)
+  for name, reference in plan.get("references", {}).items():
+    relative = Path(reference["path"])
+    relative_text = str(relative)
+    expected = reference["commit"]
+    issues: list[str] = []
+    actual: str | None = None
+    declaration = declarations.get(relative_text)
+    if declaration is None:
+      issues.append(f"{relative} is not registered in .gitmodules")
+    elif declaration["url"] != reference["url"]:
+      issues.append(
+        f".gitmodules URL is {declaration['url']}, expected {reference['url']}"
+      )
+
+    status = run_git(root, ["submodule", "status", "--", relative_text])
+    line = status.stdout.rstrip("\n")
+    if status.returncode != 0 or not line:
+      issues.append(f"missing Git submodule entry for {relative}")
+    elif len(line) < 41 or not re.fullmatch(r"[0-9a-f]{40}", line[1:41]):
+      issues.append(f"malformed Git submodule status for {relative}")
+    else:
+      actual = line[1:41]
+      if line[0] == "U":
+        issues.append(f"Git submodule entry for {relative} has merge conflicts")
+
+      checkout = root / relative
+      head = run_git(checkout, ["rev-parse", "--show-toplevel", "HEAD"])
+      head_lines = head.stdout.splitlines()
+      if head.returncode == 0 and len(head_lines) == 2:
+        try:
+          is_checkout = Path(head_lines[0]).resolve() == checkout.resolve()
+        except OSError:
+          is_checkout = False
+        if is_checkout and re.fullmatch(r"[0-9a-f]{40}", head_lines[1]):
+          actual = head_lines[1]
+      if actual != expected:
+        issues.append(f"Git submodule is {actual}, expected {expected}")
+
+    report[name] = {
+      "path": relative_text,
+      "expected": expected,
+      "actual": actual,
+      "status": "ok" if not issues else "stale",
+      "issues": issues,
+    }
+  return report
+
+
 def inspect_references(plan: dict[str, Any], root: Path = ROOT) -> dict[str, dict[str, Any]]:
   report: dict[str, dict[str, Any]] = {}
   for name, reference in plan.get("references", {}).items():
@@ -330,16 +423,31 @@ def inspect_references(plan: dict[str, Any], root: Path = ROOT) -> dict[str, dic
   return report
 
 
+def inspect_reference_contents(
+  plan: dict[str, Any], root: Path = ROOT,
+) -> dict[str, dict[str, Any]]:
+  locks = inspect_reference_locks(plan, root)
+  contents = inspect_references(plan, root)
+  for name, details in contents.items():
+    details["issues"] = [*locks[name]["issues"], *details["issues"]]
+    details["status"] = "ok" if not details["issues"] else "stale"
+  return contents
+
+
 def status_for(progress: dict[str, Any], activity_id: str) -> str:
   return progress.get("activities", {}).get(activity_id, {}).get("status", "pending")
 
 
-def compute_state(
-  plan: dict[str, Any], progress: dict[str, Any],
-  reference_report: dict[str, dict[str, Any]] | None = None,
-) -> dict[str, Any]:
+def reference_issues(report: dict[str, dict[str, Any]]) -> list[str]:
+  return [
+    f"{name}: {issue}"
+    for name, details in report.items()
+    for issue in details["issues"]
+  ]
+
+
+def compute_state(plan: dict[str, Any], progress: dict[str, Any]) -> dict[str, Any]:
   activities = activity_map(plan)
-  report = reference_report if reference_report is not None else inspect_references(plan)
   counts = {status: 0 for status in sorted(STATUSES)}
   active: list[str] = []
   blocked: list[str] = []
@@ -367,21 +475,16 @@ def compute_state(
   actual_digest = digest_plan(plan)
   if progress.get("plan_digest") != actual_digest:
     stale.append("progress plan_digest does not match plan.json")
-  for name, details in report.items():
-    stale.extend(f"{name}: {issue}" for issue in details["issues"])
   public_references = {
-    name: {
-      "expected": details["expected"],
-      "actual": details["actual"],
-      "status": details["status"],
-    }
-    for name, details in report.items()
+    name: {"commit": reference["commit"]}
+    for name, reference in plan.get("references", {}).items()
   }
   return {
     "$schema": "./schemas/current_state.schema.json",
     "schema_version": 1,
     "plan_id": plan["plan_id"],
     "plan_digest": actual_digest,
+    "reference_digest": digest_references(plan.get("references", {})),
     "references": public_references,
     "counts": counts,
     "active": active,
@@ -490,7 +593,9 @@ def git_commit_issues(
 
 
 def load_documents() -> tuple[dict[str, Any], dict[str, Any]]:
-  return read_json(PLAN_PATH), read_json(PROGRESS_PATH)
+  plan = read_json(PLAN_PATH)
+  plan["references"] = read_references()
+  return plan, read_json(PROGRESS_PATH)
 
 
 def assert_valid_core(plan: dict[str, Any], progress: dict[str, Any]) -> None:
@@ -500,23 +605,18 @@ def assert_valid_core(plan: dict[str, Any], progress: dict[str, Any]) -> None:
 
 
 def save_progress_and_state(plan: dict[str, Any], progress: dict[str, Any]) -> None:
-  report = inspect_references(plan)
   atomic_write(PROGRESS_PATH, progress)
-  atomic_write(STATE_PATH, compute_state(plan, progress, report))
+  atomic_write(STATE_PATH, compute_state(plan, progress))
 
 
-def command_refresh(_: argparse.Namespace) -> int:
+def command_render_state(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
   progress["plan_digest"] = digest_plan(plan)
-  report = inspect_references(plan)
-  progress["verified_references"] = {
-    name: {"commit": details["actual"], "status": details["status"]}
-    for name, details in report.items()
-  }
+  progress.pop("verified_references", None)
   atomic_write(PROGRESS_PATH, progress)
-  atomic_write(STATE_PATH, compute_state(plan, progress, report))
-  print("refreshed planning/current_state.json")
+  atomic_write(STATE_PATH, compute_state(plan, progress))
+  print("rendered planning/current_state.json")
   return 0
 
 
@@ -524,13 +624,17 @@ def command_check(arguments: argparse.Namespace) -> int:
   try:
     plan, progress = load_documents()
     issues = validate_plan(plan) + validate_progress(plan, progress)
-    report = inspect_references(plan)
-    state = compute_state(plan, progress, report)
+    report = inspect_reference_locks(plan)
+    issues.extend(reference_issues(report))
+    state = compute_state(plan, progress)
     issues.extend(state["stale"])
     try:
       existing_state = read_json(STATE_PATH)
       if existing_state != state:
-        issues.append("planning/current_state.json is not the deterministic generated state; run refresh")
+        issues.append(
+          "planning/current_state.json is not the deterministic generated state; "
+          "run render-state"
+        )
     except PlanError as exc:
       issues.append(str(exc))
     if arguments.pushed and not arguments.strict:
@@ -551,6 +655,9 @@ def command_check(arguments: argparse.Namespace) -> int:
 def command_next(arguments: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
+  issues = reference_issues(inspect_reference_locks(plan))
+  if issues:
+    raise PlanError("; ".join(issues))
   state = compute_state(plan, progress)
   if state["stale"]:
     raise PlanError("state is stale; run check and resolve reference or digest issues")
@@ -673,6 +780,28 @@ def command_requeue(arguments: argparse.Namespace) -> int:
   return 0
 
 
+def command_review(arguments: argparse.Namespace) -> int:
+  plan, progress = load_documents()
+  assert_valid_core(plan, progress)
+  require_activity(plan, arguments.activity_id)
+  record = ensure_record(progress, arguments.activity_id)
+  previous_status = record["status"]
+  if previous_status not in {"completed", "in_progress"}:
+    raise PlanError(
+      f"cannot mark for review from {previous_status}: {arguments.activity_id}",
+    )
+  reason = arguments.reason.strip()
+  if not reason:
+    raise PlanError("review reason must not be empty")
+  record["status"] = "needs_review"
+  record.setdefault("notes", []).append(
+    f"Needs review from {previous_status}: {reason}",
+  )
+  save_progress_and_state(plan, progress)
+  print(f"marked {arguments.activity_id} for review")
+  return 0
+
+
 def command_record_test(arguments: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
@@ -769,9 +898,22 @@ def command_complete(arguments: argparse.Namespace) -> int:
 def command_reference_report(_: argparse.Namespace) -> int:
   plan, progress = load_documents()
   assert_valid_core(plan, progress)
-  report = inspect_references(plan)
+  report = inspect_reference_contents(plan)
   print(json.dumps(report, indent=2))
   return 1 if any(item["status"] != "ok" for item in report.values()) else 0
+
+
+def command_check_references(_: argparse.Namespace) -> int:
+  plan, progress = load_documents()
+  assert_valid_core(plan, progress)
+  report = inspect_reference_contents(plan)
+  issues = reference_issues(report)
+  if issues:
+    for issue in dict.fromkeys(issues):
+      print(f"ERROR: {issue}", file=sys.stderr)
+    return 1
+  print("reference locks, checkouts, paths, and symbols are valid")
+  return 0
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -803,6 +945,13 @@ def build_parser() -> argparse.ArgumentParser:
   requeue.add_argument("--reason", required=True)
   requeue.set_defaults(function=command_requeue)
 
+  review = subparsers.add_parser(
+    "review", help="mark completed or active work as needing semantic review",
+  )
+  review.add_argument("activity_id")
+  review.add_argument("--reason", required=True)
+  review.set_defaults(function=command_review)
+
   record = subparsers.add_parser("record-test", help="record red or green test evidence")
   record.add_argument("activity_id")
   record.add_argument("--phase", required=True, choices=("red", "green"))
@@ -824,11 +973,19 @@ def build_parser() -> argparse.ArgumentParser:
   complete.add_argument("activity_id")
   complete.set_defaults(function=command_complete)
 
-  refresh = subparsers.add_parser("refresh", help="regenerate deterministic state")
-  refresh.set_defaults(function=command_refresh)
+  render = subparsers.add_parser("render-state", help="regenerate deterministic state")
+  render.set_defaults(function=command_render_state)
+
+  refresh = subparsers.add_parser("refresh", help="compatibility alias for render-state")
+  refresh.set_defaults(function=command_render_state)
 
   report = subparsers.add_parser("reference-report", help="inspect pinned reference mappings")
   report.set_defaults(function=command_reference_report)
+
+  deep_check = subparsers.add_parser(
+    "check-references", help="validate reference checkouts, paths, and symbols",
+  )
+  deep_check.set_defaults(function=command_check_references)
   return parser
 
 

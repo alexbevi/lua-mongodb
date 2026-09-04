@@ -15,6 +15,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "planning" / "specifications" / "source"
 PLAN = ROOT / "planning" / "plan.json"
+REFERENCES = ROOT / "planning" / "references.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LAYERS = ROOT / "spec" / "conformance" / "onion_layers.json"
 REQUIREMENTS = ROOT / "spec" / "conformance" / "prose_requirements.json"
@@ -98,10 +99,10 @@ def _load_layers(path: Path = LAYERS) -> dict[str, str]:
   return suites
 
 
-def _specifications_commit(path: Path = PLAN) -> str:
+def _specifications_commit(path: Path = REFERENCES) -> str:
   try:
-    plan = json.loads(path.read_text(encoding="utf-8"))
-    commit = plan["references"]["specifications"]["commit"]
+    document = json.loads(path.read_text(encoding="utf-8"))
+    commit = document["references"]["specifications"]["commit"]
   except (OSError, json.JSONDecodeError, KeyError, TypeError) as exc:
     raise CatalogError(f"could not load pinned specifications commit: {exc}") from exc
 
@@ -160,7 +161,6 @@ def _has_machine_fixtures(source: Path, suite: str) -> bool:
 def _generate_requirements(
   documents: dict[str, dict[str, str]],
   suites: dict[str, dict[str, Any]],
-  specifications_commit: str,
 ) -> dict[str, dict[str, Any]]:
   classifications = _load_requirement_manifest()
   activities = _load_activities()
@@ -270,7 +270,6 @@ def _generate_requirements(
           "not_applicable": "not-applicable",
         }.get(status, activities[activity]["scope"]),
         "source": source,
-        "specifications_commit": specifications_commit,
         "suite": document["suite"],
       }
 
@@ -307,7 +306,7 @@ def generate(
     }
 
   specifications_commit = _specifications_commit()
-  requirements = _generate_requirements(documents, suites, specifications_commit)
+  requirements = _generate_requirements(documents, suites)
   requirement_statuses = {
     status: sum(value["status"] == status for value in requirements.values())
     for status in sorted(VALID_REQUIREMENT_STATUSES)

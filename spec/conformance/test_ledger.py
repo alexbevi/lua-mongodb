@@ -118,6 +118,11 @@ class ConformanceLedgerTests(unittest.TestCase):
     }
     formats = {value["format"] for value in generated["cases"].values()}
 
+    self.assertRegex(generated["specifications_commit"], r"^[0-9a-f]{40}$")
+    self.assertTrue(all(
+      "specifications_commit" not in case
+      for case in generated["cases"].values()
+    ))
     self.assertTrue(required_suites <= set(generated["summary"]["suites"]))
     self.assertEqual({
       "bson-corpus",

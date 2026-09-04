@@ -121,7 +121,6 @@
       "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -135,7 +134,6 @@
       "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -149,7 +147,6 @@
       "runner": "spec/unit/logging_spec.lua",
       "scope": "additional",
       "source": "logging/logging.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "logging"
     },
@@ -163,11 +160,11 @@
       "runner": "spec/unit/unified_logs_spec.lua",
       "scope": "additional",
       "source": "unified-test-format/unified-test-format.md",
-      "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
       "status": "passed",
       "suite": "unified-test-format"
     }
   },
+  "pending_owner_growth": {},
   "planned_by_activity": {
     "BP-001": 6,
     "BP-004": 28,
@@ -235,6 +232,7 @@
       "passed": 11
     }
   },
+  "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "standardized_cases": {
     "client-backpressure/tests/backpressure-connection-checkin.json::test[1]": "BP-007",
     "client-backpressure/tests/backpressure-retry-loop.json::test[10]": "BP-004",

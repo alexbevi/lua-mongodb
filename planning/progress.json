@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "358faf7c5a155c8191483950abf45c66a36c50d698c7a5a76b3b5d6078be7789",
+  "plan_digest": "9395b7e23eedc53c67ff111fd616e1d5c9eb0e924584eae0e2c9f6acf8f91b66",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -10949,16 +10949,6 @@
       "reopened_after_commit": "c791d3a8a95d601e44d8ee07fbf9416f89b5ee07",
       "started_at": "2026-08-31T13:51:58+00:00",
       "completed_at": "2026-08-31T13:54:04+00:00"
-    }
-  },
-  "verified_references": {
-    "pymongo": {
-      "commit": "d03d621ef5fe567f941f4c28395a376a1899f77c",
-      "status": "ok"
-    },
-    "specifications": {
-      "commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
-      "status": "ok"
     }
   }
 }

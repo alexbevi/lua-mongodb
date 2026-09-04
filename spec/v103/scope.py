@@ -7,10 +7,15 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import sys
 from typing import Any
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+
+from spec.conformance.provenance import specifications_commit  # noqa: E402
+
 PLAN = ROOT / "planning" / "plan.json"
 PROGRESS = ROOT / "planning" / "progress.json"
 LEDGER = ROOT / "spec" / "conformance" / "ledger.json"
@@ -198,6 +203,32 @@ def validate_scope_ratchets(report: dict[str, Any]) -> None:
         f"v0.10.3 logging {name} ratchet regressed "
         f"from {minimum} to {current[name]}"
       )
+
+
+def validate_planned_owner_counts(
+  actual_counts: dict[str, int],
+  activities: dict[str, dict[str, str]],
+) -> dict[str, int]:
+  pending_growth = {}
+  for owner, expected in PLANNED_OWNER_COUNTS.items():
+    actual = actual_counts.get(owner, 0)
+    if actual < expected:
+      lost = expected - actual
+      suffix = "case" if lost == 1 else "cases"
+      raise ScopeError(
+        f"standardized observability owner {owner} lost {lost} classified {suffix}"
+      )
+    if actual == expected:
+      continue
+    gained = actual - expected
+    status = activities.get(owner, {}).get("status")
+    if status != "pending":
+      raise ScopeError(
+        f"standardized observability {status or 'unknown'} owner {owner} "
+        f"gained {gained} classified cases"
+      )
+    pending_growth[owner] = gained
+  return pending_growth
 
 
 def command_conformance(
@@ -417,11 +448,7 @@ def classify(
     owner: owners[owner]
     for owner in sorted(PLANNED_OWNER_COUNTS)
   }
-  if actual_counts != PLANNED_OWNER_COUNTS:
-    raise ScopeError(
-      "v0.10.3 standardized observability ownership changed: "
-      f"expected={PLANNED_OWNER_COUNTS}, actual={actual_counts}"
-    )
+  pending_owner_growth = validate_planned_owner_counts(actual_counts, activities)
 
   standardized = {
     identity: case["activity"]
@@ -450,6 +477,7 @@ def classify(
     "foundation_requirements": dict(sorted(foundation.items())),
     "planned_by_activity": actual_counts,
     "planned_by_suite": dict(sorted(planned_by_suite.items())),
+    "pending_owner_growth": pending_owner_growth,
     "ratchets": RATCHETS,
     "schema_version": 1,
     "server_selection_conformance": server_selection_conformance(
@@ -479,12 +507,14 @@ def classify(
 
 
 def generate() -> dict[str, Any]:
-  return classify(
+  report = classify(
     load_cases(),
     load_requirements(),
     load_capabilities(),
     load_activities(),
   )
+  report["specifications_commit"] = specifications_commit(LEDGER)
+  return report
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -93,7 +93,6 @@ def progress_for(plan: dict, statuses: dict[str, str] | None = None) -> dict:
       item["id"]: {"status": statuses.get(item["id"], "pending"), "evidence": [], "notes": []}
       for item in plan["activities"] if item["id"] in statuses
     },
-    "verified_references": {},
   }
 
 
@@ -116,6 +115,25 @@ class JsonTests(unittest.TestCase):
       with self.assertRaisesRegex(update_plan.PlanError, "malformed JSON"):
         update_plan.read_json(malformed)
 
+  def test_reference_pin_does_not_change_roadmap_digest(self) -> None:
+    first = minimal_plan()
+    second = copy.deepcopy(first)
+    second["references"]["source"]["commit"] = "1" * 40
+
+    self.assertEqual(update_plan.digest_plan(first), update_plan.digest_plan(second))
+    self.assertNotEqual(
+      update_plan.digest_references(first["references"]),
+      update_plan.digest_references(second["references"]),
+    )
+
+  def test_render_state_has_a_refresh_compatibility_alias(self) -> None:
+    parser = update_plan.build_parser()
+
+    render = parser.parse_args(["render-state"])
+    refresh = parser.parse_args(["refresh"])
+    self.assertIs(update_plan.command_render_state, render.function)
+    self.assertIs(update_plan.command_render_state, refresh.function)
+
 
 class GraphTests(unittest.TestCase):
   def test_unknown_dependency_and_cycle_are_rejected(self) -> None:
@@ -134,17 +152,15 @@ class GraphTests(unittest.TestCase):
       activity("TST-002", ["TST-001"]),
     ])
     progress = progress_for(plan, {"TST-001": "completed"})
-    report = {
-      "source": {
-        "expected": "0" * 40, "actual": "0" * 40,
-        "status": "ok", "issues": [], "path": "source",
-      }
-    }
-    first = update_plan.compute_state(plan, progress, report)
-    second = update_plan.compute_state(plan, progress, report)
+    first = update_plan.compute_state(plan, progress)
+    second = update_plan.compute_state(plan, progress)
     self.assertEqual(first, second)
     self.assertEqual(first["ready"], ["TST-002"])
     self.assertEqual(first["next_ready"], "TST-002")
+    self.assertEqual(
+      {"source": {"commit": "0" * 40}},
+      first["references"],
+    )
 
   def test_track_declarations_and_membership_are_validated(self) -> None:
     plan = tracked_plan()
@@ -178,14 +194,7 @@ class GraphTests(unittest.TestCase):
   def test_state_groups_ready_activities_by_track(self) -> None:
     plan = tracked_plan()
     progress = progress_for(plan, {"PRE-001": "completed"})
-    report = {
-      "source": {
-        "expected": "0" * 40, "actual": "0" * 40,
-        "status": "ok", "issues": [], "path": "source",
-      }
-    }
-
-    state = update_plan.compute_state(plan, progress, report)
+    state = update_plan.compute_state(plan, progress)
 
     self.assertEqual(state["ready"], ["ADV-001", "PLN-001"])
     self.assertEqual(state["ready_by_track"], {"lua-hardening": ["PLN-001"]})
@@ -194,20 +203,26 @@ class GraphTests(unittest.TestCase):
   def test_next_selects_only_the_requested_track(self) -> None:
     plan = tracked_plan()
     progress = progress_for(plan, {"PRE-001": "completed"})
-    report = {
-      "source": {
-        "expected": "0" * 40, "actual": "0" * 40,
-        "status": "ok", "issues": [], "path": "source",
-      }
-    }
-    state = update_plan.compute_state(plan, progress, report)
+    state = update_plan.compute_state(plan, progress)
     parsed = update_plan.build_parser().parse_args([
       "next", "--track", "lua-hardening",
     ])
     self.assertEqual("lua-hardening", parsed.track)
+    lock_report = {
+      "source": {
+        "expected": "0" * 40,
+        "actual": "0" * 40,
+        "status": "ok",
+        "issues": [],
+        "path": "source",
+      },
+    }
 
     with mock.patch.object(update_plan, "load_documents", return_value=(plan, progress)), \
-        mock.patch.object(update_plan, "compute_state", return_value=state):
+        mock.patch.object(update_plan, "compute_state", return_value=state), \
+        mock.patch.object(
+          update_plan, "inspect_reference_locks", return_value=lock_report,
+        ):
       output = io.StringIO()
       with contextlib.redirect_stdout(output):
         result = update_plan.command_next(argparse.Namespace(
@@ -393,6 +408,52 @@ class EvidenceTests(unittest.TestCase):
     )
     save.assert_called_once_with(plan, progress)
 
+  def test_review_marks_completed_or_active_work_without_losing_evidence(self) -> None:
+    plan = minimal_plan()
+    for previous_status in ("completed", "in_progress"):
+      with self.subTest(previous_status=previous_status):
+        progress = progress_for(plan, {"TST-001": previous_status})
+        record = progress["activities"]["TST-001"]
+        record["evidence"] = [{"phase": "green", "exit_code": 0}]
+
+        with mock.patch.object(
+          update_plan, "load_documents", return_value=(plan, progress),
+        ), mock.patch.object(update_plan, "save_progress_and_state") as save:
+          result = update_plan.command_review(argparse.Namespace(
+            activity_id="TST-001",
+            reason="pinned reference behavior changed",
+          ))
+
+        self.assertEqual(0, result)
+        self.assertEqual("needs_review", record["status"])
+        self.assertEqual([{"phase": "green", "exit_code": 0}], record["evidence"])
+        self.assertEqual(
+          [f"Needs review from {previous_status}: pinned reference behavior changed"],
+          record["notes"],
+        )
+        save.assert_called_once_with(plan, progress)
+
+    pending = progress_for(plan, {"TST-001": "pending"})
+    with mock.patch.object(update_plan, "load_documents", return_value=(plan, pending)):
+      with self.assertRaisesRegex(update_plan.PlanError, "cannot mark for review"):
+        update_plan.command_review(argparse.Namespace(
+          activity_id="TST-001",
+          reason="not completed or active",
+        ))
+
+  def test_review_command_requires_a_reason(self) -> None:
+    parser = update_plan.build_parser()
+
+    arguments = parser.parse_args([
+      "review",
+      "TST-001",
+      "--reason",
+      "reference changed",
+    ])
+
+    self.assertIs(update_plan.command_review, arguments.function)
+    self.assertEqual("reference changed", arguments.reason)
+
 
 class ReferenceTests(unittest.TestCase):
   def make_reference(self, root: Path) -> tuple[dict, str, str]:
@@ -433,6 +494,50 @@ class ReferenceTests(unittest.TestCase):
       plan["references"]["source"]["commit"] = second
       report = update_plan.inspect_references(plan, root)
       self.assertTrue(any("missing mapped symbol" in issue for issue in report["source"]["issues"]))
+
+  def test_lock_inspection_validates_gitlink_path_and_url_without_checkout(self) -> None:
+    with tempfile.TemporaryDirectory() as temporary:
+      base = Path(temporary)
+      upstream = base / "upstream"
+      upstream.mkdir()
+      git(upstream, "init", "-b", "main")
+      git(upstream, "config", "user.name", "Test")
+      git(upstream, "config", "user.email", "test@example.invalid")
+      (upstream / "landmark.py").write_text(
+        "class Landmark:\n  pass\n", encoding="utf-8",
+      )
+      git(upstream, "add", "landmark.py")
+      git(upstream, "commit", "-m", "first")
+      commit = git(upstream, "rev-parse", "HEAD")
+
+      root = base / "repository"
+      root.mkdir()
+      git(root, "init", "-b", "main")
+      git(root, "config", "user.name", "Test")
+      git(root, "config", "user.email", "test@example.invalid")
+      git(
+        root,
+        "-c", "protocol.file.allow=always",
+        "submodule", "add", str(upstream), "source",
+      )
+      git(root, "add", ".gitmodules", "source")
+      git(root, "commit", "-m", "pin source")
+
+      plan = minimal_plan()
+      plan["references"]["source"]["commit"] = commit
+      plan["references"]["source"]["url"] = str(upstream)
+      self.assertEqual(
+        "ok", update_plan.inspect_reference_locks(plan, root)["source"]["status"],
+      )
+
+      git(root, "submodule", "deinit", "-f", "source")
+      self.assertEqual(
+        "ok", update_plan.inspect_reference_locks(plan, root)["source"]["status"],
+      )
+
+      plan["references"]["source"]["url"] = "https://example.invalid/wrong.git"
+      report = update_plan.inspect_reference_locks(plan, root)
+      self.assertTrue(any("URL" in issue for issue in report["source"]["issues"]))
 
 
 class CommitTests(unittest.TestCase):

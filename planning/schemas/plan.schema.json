@@ -3,23 +3,10 @@
   "$id": "plan.schema.json",
   "title": "Lua MongoDB driver plan",
   "type": "object",
-  "required": ["schema_version", "plan_id", "target", "references", "milestones", "tracks", "activities"],
+  "required": ["schema_version", "plan_id", "target", "milestones", "tracks", "activities"],
   "properties": {
     "schema_version": {"const": 1},
     "plan_id": {"type": "string", "minLength": 1},
-    "references": {
-      "type": "object",
-      "additionalProperties": {
-        "type": "object",
-        "required": ["path", "url", "commit", "mappings"],
-        "properties": {
-          "path": {"type": "string"},
-          "url": {"type": "string"},
-          "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
-          "mappings": {"type": "array"}
-        }
-      }
-    },
     "tracks": {
       "type": "array",
       "items": {
