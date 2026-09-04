@@ -52,7 +52,7 @@ DEFAULT_OWNERS = {
   "initial-dns-seedlist-discovery": "ADV-014",
   "load-balancers": "ADV-006",
   "mongodb-handshake": "REL-006",
-  "open-telemetry": "OTEL-003",
+  "open-telemetry": "OTEL-001",
   "read-write-concern": "REL-003",
   "retryable-reads": "RETRY-001",
   "retryable-writes": "RETRY-002",
@@ -425,25 +425,12 @@ def classify_case(
     return _deferred(case, owner, activities)
 
   if suite == "open-telemetry":
-    read_fixtures = {
-      "aggregate.json",
-      "count.json",
-      "distinct.json",
-      "find.json",
-      "find_without_query_text.json",
-      "list_collections.json",
-      "list_databases.json",
-      "list_indexes.json",
-    }
-
-    if "/tests/transaction/" in path:
-      owner = "OTEL-004"
-    elif Path(path).name in read_fixtures:
-      owner = "OTEL-002"
-    else:
-      owner = "OTEL-003"
-
-    return _deferred(case, owner, activities)
+    return _unsupported(
+      case,
+      "OTEL-001",
+      activities,
+      "OpenTelemetry tracing and SDK integration are not supported",
+    )
 
   if suite == "initial-dns-seedlist-discovery":
     if "/tests/replica-set/" in path:

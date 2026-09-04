@@ -112,7 +112,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **84.9%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **85.3%** **†** |", table)
     self.assertIn("> [!IMPORTANT]", table)
     self.assertIn("**† Fixtures excluded from scoring.**", table)
     self.assertIn(
@@ -161,7 +161,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "uri-options/uri-options.html) | 🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **84.9%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **85.3%** **†** |", table)
 
   def test_terminal_unsupported_table_rows_use_badge_only(self) -> None:
     table = readme_compatibility.render_table()
@@ -229,11 +229,16 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **84.9%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **85.3%** **†** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"
       "connection-monitoring-and-pooling.html) | ⚪ | N/A |",
+      table,
+    )
+    self.assertIn(
+      "| Observability | [OpenTelemetry](https://alexbevi.com/"
+      "specifications/open-telemetry/open-telemetry.html) | ⚪ | N/A |",
       table,
     )
     self.assertNotIn("Atlas SFP testing", table)

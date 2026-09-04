@@ -102,7 +102,7 @@ ADDITIONAL_REASONS = {
       "LOG-010", "LOG-011", "LOG-012", "LOG-013", "LOG-014", "LOG-015",
       "LOG-016", "LOG-017", "LOG-018", "LOG-019", "LOG-020", "LOG-021",
       "LOG-022", "LOG-023", "LOG-024", "LOG-025", "LOG-026",
-      "OTEL-002", "OTEL-003", "OTEL-004",
+      "OTEL-001",
       "SDAM-009", "SDAM-010", "SEL-002", "SEL-003",
     }
   },

@@ -275,11 +275,11 @@
       "CON-009"
     ],
     "conformance": {
-      "additional_exclusions": 900,
+      "additional_exclusions": 876,
       "applicable_gaps": 0,
       "classified_cases": 5524,
       "passed_cases": 4484,
-      "unsupported_cases": 140
+      "unsupported_cases": 164
     },
     "maintenance": {
       "activities": [

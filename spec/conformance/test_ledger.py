@@ -41,9 +41,7 @@ class ConformanceLedgerTests(unittest.TestCase):
       "LOG-024": 1,
       "LOG-025": 1,
       "LOG-026": 1,
-      "OTEL-002": 9,
-      "OTEL-003": 12,
-      "OTEL-004": 3,
+      "OTEL-001": 24,
       "SDAM-009": 4,
       "SDAM-010": 6,
       "SEL-002": 7,
@@ -78,6 +76,28 @@ class ConformanceLedgerTests(unittest.TestCase):
       and case["last_execution"] is None
       and case["reason"]
       for case in backpressure.values()
+    ))
+
+  def test_open_telemetry_is_terminally_unsupported(self) -> None:
+    cases = ledger.generate()["cases"]
+    telemetry = {
+      identity: case
+      for identity, case in cases.items()
+      if case["activity"] == "OTEL-001"
+    }
+
+    self.assertEqual(24, len(telemetry))
+    self.assertEqual(
+      {"open-telemetry"},
+      {case["suite"] for case in telemetry.values()},
+    )
+    self.assertTrue(all(
+      case["status"] == "unsupported"
+      and case["runner"] == "none:unsupported"
+      and case["required_environment"] == "none"
+      and case["last_execution"] is None
+      and case["reason"]
+      for case in telemetry.values()
     ))
 
   def test_validation_rejects_added_and_changed_cases(self) -> None:
@@ -158,10 +178,10 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 801,
+      "deferred_unsupported": 777,
       "excluded_scope": 99,
       "passed": 4484,
-      "unsupported": 140,
+      "unsupported": 164,
     }, generated["summary"]["statuses"])
 
     compression_options = [

@@ -44,7 +44,7 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(5524, conformance["classified_cases"])
     self.assertGreaterEqual(conformance["passed_cases"], 4484)
     self.assertLessEqual(conformance["additional_exclusions"], 1023)
-    self.assertEqual(140, conformance["unsupported_cases"])
+    self.assertEqual(164, conformance["unsupported_cases"])
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"]

@@ -154,9 +154,7 @@
     "LOG-024": "logging, telemetry, and backpressure are outside production-core v1",
     "LOG-025": "logging, telemetry, and backpressure are outside production-core v1",
     "LOG-026": "logging, telemetry, and backpressure are outside production-core v1",
-    "OTEL-002": "logging, telemetry, and backpressure are outside production-core v1",
-    "OTEL-003": "logging, telemetry, and backpressure are outside production-core v1",
-    "OTEL-004": "logging, telemetry, and backpressure are outside production-core v1",
+    "OTEL-001": "logging, telemetry, and backpressure are outside production-core v1",
     "REL-051": "complete v0.5 change stream conformance is outside production-core v1",
     "REL-053": "legacy API target-version exclusions are outside production-core v1",
     "REL-055": "v0.7 client bulk conformance closure is outside production-core v1",
@@ -181,21 +179,18 @@
     "TXN-007": "transient mongos unpinning is outside production-core v1"
   },
   "deferred_by_activity": {
-    "ADV-010": 777,
-    "OTEL-002": 9,
-    "OTEL-003": 12,
-    "OTEL-004": 3
+    "ADV-010": 777
   },
   "deferred_by_scope": {
-    "additional-exclusion": 801
+    "additional-exclusion": 777
   },
   "schema_version": 1,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "statuses": {
-    "deferred_unsupported": 801,
+    "deferred_unsupported": 777,
     "excluded_scope": 99,
     "passed": 4484,
-    "unsupported": 140
+    "unsupported": 164
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

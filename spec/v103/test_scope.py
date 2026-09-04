@@ -148,17 +148,18 @@ class V103ScopeTests(unittest.TestCase):
     )
     self.assertEqual({}, generated["pending_owner_growth"])
 
-  def test_pending_owners_accept_new_cases_without_hiding_other_drift(self) -> None:
+  def test_owner_inventory_rejects_growth_and_removal(self) -> None:
     activities = scope.load_activities()
-    pending_growth = dict(scope.PLANNED_OWNER_COUNTS)
-    pending_growth["OTEL-003"] += 2
-
-    scope.validate_planned_owner_counts(pending_growth, activities)
 
     removal = dict(scope.PLANNED_OWNER_COUNTS)
-    removal["OTEL-003"] -= 1
+    removal["OTEL-001"] -= 1
     with self.assertRaisesRegex(scope.ScopeError, "lost 1 classified case"):
       scope.validate_planned_owner_counts(removal, activities)
+
+    telemetry_growth = dict(scope.PLANNED_OWNER_COUNTS)
+    telemetry_growth["OTEL-001"] += 1
+    with self.assertRaisesRegex(scope.ScopeError, "owner OTEL-001 gained 1"):
+      scope.validate_planned_owner_counts(telemetry_growth, activities)
 
     completed_growth = dict(scope.PLANNED_OWNER_COUNTS)
     completed_growth["LOG-002"] += 1

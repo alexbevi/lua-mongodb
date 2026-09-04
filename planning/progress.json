@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "0b710d455df2abc7e8832d50b107af2d47df419694425763baf75ecdda6d877b",
+  "plan_digest": "1664ba9d0ee7569c8f9180f1689aa6a1985e3bbf2464b797d71b7a8c2fb7f1cf",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -10978,6 +10978,28 @@
       "notes": [],
       "started_at": "2026-09-04T20:38:35+00:00",
       "completed_at": "2026-09-04T20:53:07+00:00"
+    },
+    "OTEL-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger.ConformanceLedgerTests.test_open_telemetry_is_terminally_unsupported'",
+          "exit_code": 2,
+          "summary": "One focused conformance contract failed: none of the 24 OpenTelemetry cases used terminal OTEL-001 ownership; all remained deferred across OTEL-002 through OTEL-004.",
+          "recorded_at": "2026-09-04T20:59:03+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger.ConformanceLedgerTests.test_open_telemetry_is_terminally_unsupported'",
+          "exit_code": 0,
+          "summary": "The focused conformance contract passed: all 24 OpenTelemetry cases use terminal OTEL-001 ownership with unsupported status, no runner or environment, no execution claim, and a concrete reason.",
+          "recorded_at": "2026-09-04T21:04:55+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-09-04T20:58:04+00:00",
+      "completed_at": "2026-09-04T21:04:56+00:00"
     }
   }
 }
