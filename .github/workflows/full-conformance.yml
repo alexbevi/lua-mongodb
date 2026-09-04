@@ -672,6 +672,9 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      - name: Initialize pinned specifications
+        uses: ./.github/actions/init-specifications
+
       - name: Install Lua 5.4.9
         uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
         with:

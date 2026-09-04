@@ -37,20 +37,21 @@ class CiPortabilityTests(unittest.TestCase):
     self.assertIn("  reference-integrity:", fast)
     self.assertIn("planning/update_plan.py check-references", fast)
     self.assertIn("uses: ./.github/actions/init-specifications", fast)
-    for start, end in (
-      ("  compatibility-smoke:", "  gssapi-live:"),
-      ("  gssapi-live:", "  examples:"),
-    ):
-      job = fast[fast.index(start):fast.index(end)]
-      self.assertNotIn("submodules:", job)
-      self.assertNotIn("init-specifications", job)
+    compatibility_smoke = fast[
+      fast.index("  compatibility-smoke:"):fast.index("  gssapi-live:")
+    ]
+    self.assertNotIn("submodules:", compatibility_smoke)
+    self.assertIn("init-specifications", compatibility_smoke)
+    gssapi = fast[fast.index("  gssapi-live:"):fast.index("  examples:")]
+    self.assertNotIn("submodules:", gssapi)
+    self.assertNotIn("init-specifications", gssapi)
     examples = fast[fast.index("  examples:"):]
     self.assertNotIn("submodules:", examples)
     self.assertNotIn("init-specifications", examples)
 
     self.assertNotIn("submodules: recursive", full)
     compatibility = full[full.index("  compatibility:"):]
-    self.assertNotIn("init-specifications", compatibility)
+    self.assertIn("init-specifications", compatibility)
     self.assertNotIn("submodules:", release)
     self.assertIn(
       "git submodule update --init --depth 1 -- planning/specifications",
