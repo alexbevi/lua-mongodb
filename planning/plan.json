@@ -44,7 +44,7 @@
     {"id": "v0-10-4-command-logging", "goal": "Release v0.10.4 with complete command lifecycle logging and monitoring, required identifiers, redaction, and write and bulk command coverage.", "entry_activity": "LOG-002", "terminal_activity": "REL-063", "after_activity": "REL-062"},
     {"id": "v0-10-5-server-selection-logging", "goal": "Release v0.10.5 with correlated server-selection logging across standalone, replica-set, sharded, and load-balanced topologies.", "entry_activity": "SEL-002", "terminal_activity": "REL-064", "after_activity": "REL-063"},
     {"id": "v0-10-6-topology-pool-logging", "goal": "Release v0.10.6 with SDAM heartbeat and topology logging plus CMAP pool and connection logging, completing the standardized logging surface.", "entry_activity": "SDAM-009", "terminal_activity": "CI-013", "after_activity": "REL-064"},
-    {"id": "optional-capability-freeze", "goal": "Record terminal unsupported outcomes for client backpressure, OpenTelemetry, client-side encryption, and Atlas Serverless and Fault Proxy testing.", "entry_activity": "BP-001", "terminal_activity": "SFP-001", "after_activity": "CI-013"}
+    {"id": "optional-capability-freeze", "goal": "Record terminal unsupported outcomes for client backpressure, OpenTelemetry, client-side encryption, and Atlas Secure Frontend Processor testing.", "entry_activity": "BP-001", "terminal_activity": "SFP-001", "after_activity": "CI-013"}
   ],
   "activities": [
     {
@@ -1602,7 +1602,7 @@
     },
     {
       "id": "CON-006", "title": "Expose missing onion specification rows", "milestone": "additional", "track": "spec-suite-completeness", "depends_on": ["ENUM-001"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Require independent compatibility rows for OCSP, wire compression, SOCKS5 proxy support, standardized logging, periodic SRV polling, and Atlas Serverless/Fault Proxy testing.", "implementation": "Project the catalog and prose requirement outcomes into first-class onion rows instead of hiding those specifications under broader fixture suites.",
+      "test_first": "Require independent compatibility rows for OCSP, wire compression, SOCKS5 proxy support, standardized logging, periodic SRV polling, and Atlas Secure Frontend Processor testing.", "implementation": "Project the catalog and prose requirement outcomes into first-class onion rows instead of hiding those specifications under broader fixture suites.",
       "verification": ["make test-focus FOCUS_PYTHON='planning.tests.test_readme_compatibility spec.conformance.test_catalog spec.conformance.test_ledger'", "Run README, catalog, ledger, and generated-artifact --check validators"], "acceptance": ["Each of the six named specifications has its own generated row", "Rows use explicit passed, deferred, not-applicable, or no-machine-case evidence", "Every generated onion row resolves to the pinned specification catalog"], "docs": ["README.md", "docs/ARCHITECTURE.md"], "commit": "docs(conformance): expose missing specification rows"
     },
     {
@@ -1617,8 +1617,8 @@
     },
     {
       "id": "SFP-001", "title": "Classify Atlas SFP testing as unsupported", "milestone": "additional", "track": "optional-capability-freeze", "depends_on": ["ADV-010"], "references": ["specifications:source"], "test_policy": "red_green",
-      "test_first": "Require the Atlas Serverless and Fault Proxy prose requirement to use an explicit terminal unsupported outcome rather than a pending external test profile.", "implementation": "Apply the terminal unsupported conformance classification to Atlas SFP testing without adding external credentials, deployments, or workflow jobs.",
-      "verification": ["Focused catalog, README compatibility, release-checklist, and documentation tests", "Run catalog, README, release-scope, release-checklist, and generated-artifact --check validators"], "acceptance": ["Atlas Serverless and Fault Proxy testing is reported explicitly as will not implement and remains unscored", "No Atlas SFP profile activity remains pending"], "docs": ["README.md", "docs/ARCHITECTURE.md", "planning/README.md"], "commit": "docs(conformance): mark Atlas SFP unsupported"
+      "test_first": "Require the Atlas Secure Frontend Processor prose requirement to use an explicit terminal unsupported outcome rather than a pending external test profile.", "implementation": "Apply the terminal unsupported conformance classification to Atlas SFP testing without adding external credentials, deployments, or workflow jobs.",
+      "verification": ["Focused catalog, README compatibility, release-checklist, and documentation tests", "Run catalog, README, release-scope, release-checklist, and generated-artifact --check validators"], "acceptance": ["Atlas Secure Frontend Processor testing is reported explicitly as will not implement and remains unscored", "No Atlas SFP profile activity remains pending"], "docs": ["README.md", "docs/ARCHITECTURE.md", "planning/README.md"], "commit": "docs(conformance): mark Atlas SFP unsupported"
     },
     {
       "id": "BSON-010", "title": "Regenerate ObjectId entropy after fork", "milestone": "additional", "track": "v0-10-1-maintenance", "depends_on": ["BSON-009", "CSOT-001"], "references": ["pymongo:objectid", "specifications:source"], "test_policy": "red_green",

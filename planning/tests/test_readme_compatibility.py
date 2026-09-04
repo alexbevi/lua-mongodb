@@ -176,6 +176,12 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "specifications/socks5-support/socks5.html) | ⚪ | N/A |",
       table,
     )
+    self.assertIn(
+      "| Testability | [Atlas SFP testing](https://alexbevi.com/"
+      "specifications/atlas-sfp-testing/atlas-sfp-testing.html) | "
+      "⚪ | N/A |",
+      table,
+    )
 
     readme = readme_compatibility.DEFAULT_README.read_text(encoding="utf-8")
     self.assertIn(
@@ -247,7 +253,12 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "specifications/open-telemetry/open-telemetry.html) | ⚪ | N/A |",
       table,
     )
-    self.assertNotIn("Atlas SFP testing", table)
+    self.assertIn(
+      "| Testability | [Atlas SFP testing](https://alexbevi.com/"
+      "specifications/atlas-sfp-testing/atlas-sfp-testing.html) | "
+      "⚪ | N/A |",
+      table,
+    )
 
   def test_prose_only_rows_use_catalog_requirement_outcomes(self) -> None:
     counts = readme_compatibility.suite_counts()
@@ -265,6 +276,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
 
     self.assertEqual({"unsupported": 1}, dict(counts["ocsp-support"]))
     self.assertEqual({"unsupported": 1}, dict(counts["socks5-support"]))
+    self.assertEqual({"unsupported": 1}, dict(counts["atlas-sfp-testing"]))
 
     self.assertEqual(
       {"passed": 4},
@@ -291,7 +303,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
     self.assertIn("[Standardized logging]", table)
     self.assertIn("[Periodic SRV polling]", table)
-    self.assertNotIn("Atlas SFP testing", table)
+    self.assertIn("[Atlas SFP testing]", table)
 
 
 if __name__ == "__main__":

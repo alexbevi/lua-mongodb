@@ -198,6 +198,7 @@ class ConformanceCatalogTests(unittest.TestCase):
     requirements = catalog.generate()["requirements"]
 
     for identity, activity in (
+      ("atlas-sfp-testing/atlas-sfp-testing.md::document", "SFP-001"),
       ("ocsp-support/ocsp-support.md::document", "TLS-002"),
       ("bson-binary-encrypted/binary-encrypted.md::document", "ADV-010"),
       ("socks5-support/socks5.md::document", "ADV-012"),

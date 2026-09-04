@@ -292,12 +292,12 @@
       "fingerprint": "e5507521136a080ed28e8f27751b28e29390cce97204e66e41d47fe04fbdad71",
       "format": "prose",
       "last_execution": null,
-      "reason": "Atlas Serverless and Fault Proxy guidance has no portable machine fixture corpus and needs an explicit prose-only outcome.",
-      "required_environment": "atlas-sfp",
-      "runner": "pending:SFP-001",
+      "reason": "Atlas Secure Frontend Processor connectivity and authentication testing is not supported; no external SFP test profile or credentials are provided.",
+      "required_environment": "none",
+      "runner": "none:unsupported",
       "scope": "additional",
       "source": "atlas-sfp-testing/atlas-sfp-testing.md",
-      "status": "deferred_unsupported",
+      "status": "unsupported",
       "suite": "atlas-sfp-testing"
     },
     "auth/auth.md::gssapi-concurrent-contexts": {
@@ -1434,11 +1434,10 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 1,
       "no_machine_cases": 1,
       "not_applicable": 2,
       "passed": 53,
-      "unsupported": 3
+      "unsupported": 4
     },
     "requirements": 60,
     "suites": 50

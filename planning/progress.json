@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "1664ba9d0ee7569c8f9180f1689aa6a1985e3bbf2464b797d71b7a8c2fb7f1cf",
+  "plan_digest": "a7c607710291e26213f1a71f9c7d303e5095df1e7a9f3cc39827992cddda0ebd",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -11022,6 +11022,28 @@
       "notes": [],
       "started_at": "2026-09-04T21:10:05+00:00",
       "completed_at": "2026-09-04T21:15:54+00:00"
+    },
+    "SFP-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog.ConformanceCatalogTests.test_terminal_unsupported_requirements_have_no_pending_runner planning.tests.test_readme_compatibility.ReadmeCompatibilityTests.test_terminal_unsupported_table_rows_use_badge_only'",
+          "exit_code": 2,
+          "summary": "Two focused contracts failed: Atlas SFP remained a deferred prose requirement with a pending external profile and had no terminal unsupported README row.",
+          "recorded_at": "2026-09-04T21:22:04+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_catalog.ConformanceCatalogTests.test_terminal_unsupported_requirements_have_no_pending_runner planning.tests.test_readme_compatibility.ReadmeCompatibilityTests.test_terminal_unsupported_table_rows_use_badge_only'",
+          "exit_code": 0,
+          "summary": "The focused contracts passed: Atlas SFP is a terminal unsupported prose requirement with no runner, environment, or execution claim and appears as an unscored README row.",
+          "recorded_at": "2026-09-04T21:24:46+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-09-04T21:20:51+00:00",
+      "completed_at": "2026-09-04T21:24:50+00:00"
     }
   }
 }

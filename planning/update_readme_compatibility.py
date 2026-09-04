@@ -78,12 +78,14 @@ DRIVER_LAYERS = (
     ("open-telemetry", "OpenTelemetry"),
   )),
   ("Testability", (
+    ("atlas-sfp-testing", "Atlas SFP testing"),
     ("unified-test-format", "Unified test format"),
   )),
 )
 
 SPECIFICATION_DOCUMENTS = {
   "auth": "auth/auth.md",
+  "atlas-sfp-testing": "atlas-sfp-testing/atlas-sfp-testing.md",
   "bson-binary-vector": "bson-binary-vector/bson-binary-vector.md",
   "bson-corpus": "bson-corpus/bson-corpus.md",
   "causal-consistency": "causal-consistency/causal-consistency.md",
@@ -140,6 +142,7 @@ SPECIFICATION_DOCUMENTS = {
 }
 
 CATALOG_PROSE_SUITES = frozenset({
+  "atlas-sfp-testing",
   "compression",
   "logging",
   "ocsp-support",

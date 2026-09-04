@@ -314,8 +314,8 @@ does not gain convenience imports for files, sockets, TLS, native crypto, or
 scheduling. Network cleanup is never delegated to Lua garbage collection
 because it can yield and fail.
 
-SOCKS5, OCSP, client backpressure, OpenTelemetry, and client-side encryption
-are terminal unsupported capabilities. Unix-domain socket paths are parsed but
-rejected by the current runtime.
+SOCKS5, OCSP, client backpressure, OpenTelemetry, client-side encryption, and
+Atlas Secure Frontend Processor testing are terminal unsupported capabilities.
+Unix-domain socket paths are parsed but rejected by the current runtime.
 The generated compatibility table in the README and the conformance ledger are
 the current source for supported and deferred behavior.

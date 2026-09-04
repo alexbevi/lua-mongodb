@@ -4,10 +4,10 @@
     "atlas-sfp-testing/atlas-sfp-testing.md": {
       "activity": "SFP-001",
       "last_execution": null,
-      "reason": "Atlas Serverless and Fault Proxy guidance has no portable machine fixture corpus and needs an explicit prose-only outcome.",
-      "required_environment": "atlas-sfp",
-      "runner": "pending:SFP-001",
-      "status": "deferred_unsupported"
+      "reason": "Atlas Secure Frontend Processor connectivity and authentication testing is not supported; no external SFP test profile or credentials are provided.",
+      "required_environment": "none",
+      "runner": "none:unsupported",
+      "status": "unsupported"
     },
     "auth/auth.md": [
       {
