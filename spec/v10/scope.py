@@ -28,7 +28,6 @@ TRACK = "v0-10-load-balancing"
 CLOSURE_OWNER = "CON-010"
 RELEASE_OWNER = "REL-059"
 OPTIONAL_OWNERS = {
-  "ADV-010",
   "CMAP-005",
   "CMAP-006",
   "CON-017",
@@ -86,10 +85,10 @@ RATCHETS = {
   "dedicated_cases": 40,
   "exact_unified_cases": 741,
   "excluded": 18,
-  "out_of_track": 235,
+  "out_of_track": 0,
   "passed": 780,
   "run_on_branches": 1002,
-  "unsupported": 11,
+  "unsupported": 246,
 }
 
 

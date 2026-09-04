@@ -11000,6 +11000,28 @@
       "notes": [],
       "started_at": "2026-09-04T20:58:04+00:00",
       "completed_at": "2026-09-04T21:04:56+00:00"
+    },
+    "ADV-010": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger.ConformanceLedgerTests.test_client_side_encryption_is_terminally_unsupported spec.conformance.test_catalog.ConformanceCatalogTests.test_terminal_unsupported_requirements_have_no_pending_runner'",
+          "exit_code": 2,
+          "summary": "Two focused conformance contracts failed: all 777 client-side encryption fixtures and the encrypted BSON prose requirement still used deferred ADV-010 outcomes instead of terminal unsupported evidence.",
+          "recorded_at": "2026-09-04T21:12:29+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger.ConformanceLedgerTests.test_client_side_encryption_is_terminally_unsupported spec.conformance.test_catalog.ConformanceCatalogTests.test_terminal_unsupported_requirements_have_no_pending_runner'",
+          "exit_code": 0,
+          "summary": "The focused conformance contracts passed: all 777 client-side encryption fixtures and the encrypted BSON prose requirement now use terminal unsupported evidence with no runner, environment, or execution claim.",
+          "recorded_at": "2026-09-04T21:15:54+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-09-04T21:10:05+00:00",
+      "completed_at": "2026-09-04T21:15:54+00:00"
     }
   }
 }

@@ -687,8 +687,8 @@ def generate() -> dict[str, Any]:
     raise ChecklistError("v0.9 conformance still has planned requirements")
 
   v10_summary = v10_report["summary"]
-  if v10_summary["planned"] != 235:
-    raise ChecklistError("v0.10 optional-suite inventory changed")
+  if v10_summary["planned"] != 0:
+    raise ChecklistError("v0.10 conformance still has planned requirements")
 
   v102_summary = v102_report["summary"]
   if v102_summary["planned"] != 0:

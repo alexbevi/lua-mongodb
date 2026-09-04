@@ -448,12 +448,12 @@
       "fingerprint": "fbd740e921d8240afb14155a1e28d98e39a02443676e4bf0f2274f6e106fb55f",
       "format": "prose",
       "last_execution": null,
-      "reason": "Encrypted BSON subtype behavior depends on the pending client-side encryption design and cryptographic runtime boundary.",
-      "required_environment": "live-mongodb",
-      "runner": "pending:ADV-010",
+      "reason": "Encrypted BSON subtype processing is part of the unsupported client-side encryption capability and no cryptographic runtime is provided.",
+      "required_environment": "none",
+      "runner": "none:unsupported",
       "scope": "additional",
       "source": "bson-binary-encrypted/binary-encrypted.md",
-      "status": "deferred_unsupported",
+      "status": "unsupported",
       "suite": "bson-binary-encrypted"
     },
     "bson-binary-uuid/uuid.md::document": {
@@ -1434,11 +1434,11 @@
     "machine_fixture_suites": 31,
     "prose_only_suites": 19,
     "requirement_statuses": {
-      "deferred_unsupported": 2,
+      "deferred_unsupported": 1,
       "no_machine_cases": 1,
       "not_applicable": 2,
       "passed": 53,
-      "unsupported": 2
+      "unsupported": 3
     },
     "requirements": 60,
     "suites": 50

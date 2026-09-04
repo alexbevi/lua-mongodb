@@ -29,7 +29,7 @@ class ReleaseScopeTests(unittest.TestCase):
 
     self.assertEqual(5524, report["total_cases"])
     self.assertEqual(
-      report["statuses"]["deferred_unsupported"],
+      report["statuses"].get("deferred_unsupported", 0),
       sum(report["deferred_by_scope"].values()),
     )
     self.assertNotIn("REL-001", report["deferred_by_activity"])

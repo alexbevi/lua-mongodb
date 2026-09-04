@@ -364,6 +364,15 @@ def classify_case(
       "adaptive overload retries and retargeting are not supported",
     )
 
+  if suite == "client-side-encryption":
+    return _unsupported(
+      case,
+      "ADV-010",
+      activities,
+      "client-side field-level and queryable encryption, KMS integration, "
+        "and encrypted BSON processing are not supported",
+    )
+
   if suite == "command-logging-and-monitoring":
     fixture = Path(path).name
 

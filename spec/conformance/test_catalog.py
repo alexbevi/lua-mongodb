@@ -199,6 +199,7 @@ class ConformanceCatalogTests(unittest.TestCase):
 
     for identity, activity in (
       ("ocsp-support/ocsp-support.md::document", "TLS-002"),
+      ("bson-binary-encrypted/binary-encrypted.md::document", "ADV-010"),
       ("socks5-support/socks5.md::document", "ADV-012"),
     ):
       requirement = requirements[identity]

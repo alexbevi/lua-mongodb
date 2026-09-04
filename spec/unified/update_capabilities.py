@@ -89,7 +89,7 @@ OWNER_REASONS = {
   "BP-007": "adaptive overload retries and retargeting are not supported",
   "BP-008": "adaptive overload retries and retargeting are not supported",
   "BP-009": "adaptive overload retries and retargeting are not supported",
-  "ADV-010": "client-side field-level and queryable encryption require a separate design",
+  "ADV-010": "client-side field-level and queryable encryption, KMS integration, and encrypted BSON processing are not supported",
   "ADV-011": "legacy commands, database aggregation, tailable cursors, snapshot sessions, and below-floor server behavior are additional capabilities",
   "LEG-001": "deprecated count retry behavior awaits the dedicated legacy read slice",
   "LEG-002": "deprecated count timeout behavior awaits the dedicated legacy CSOT slice",
@@ -1182,6 +1182,9 @@ def generate() -> dict[str, object]:
     if activity in BACKPRESSURE_OWNERS:
       activity = "BP-001"
       reason = BACKPRESSURE_UNSUPPORTED_REASON
+      status = "unsupported"
+    elif activity == "ADV-010":
+      reason = OWNER_REASONS[activity]
       status = "unsupported"
     elif test["id"] in TERMINAL_UNSUPPORTED_TESTS:
       status = "unsupported"

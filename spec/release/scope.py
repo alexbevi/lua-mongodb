@@ -106,7 +106,6 @@ ADDITIONAL_REASONS = {
       "SDAM-009", "SDAM-010", "SEL-002", "SEL-003",
     }
   },
-  "ADV-010": "client-side encryption requires a separate additional design",
   "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
   "LEG-001": "deprecated count retry behavior is outside production-core v1",
   "LEG-002": "deprecated count timeout behavior is outside production-core v1",

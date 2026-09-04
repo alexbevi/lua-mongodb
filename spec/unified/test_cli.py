@@ -69,6 +69,25 @@ def classification(
 
 
 class UnifiedCliTests(unittest.TestCase):
+  def test_client_side_encryption_cases_are_terminally_unsupported(self) -> None:
+    manifest = update_capabilities.generate()
+    encryption = {
+      identity: case
+      for identity, case in manifest["tests"].items()
+      if identity.startswith("client-side-encryption/tests/")
+    }
+
+    self.assertEqual(433, len(encryption))
+    self.assertEqual(
+      {"ADV-010"},
+      {case["activity"] for case in encryption.values()},
+    )
+    self.assertEqual(
+      {"unsupported"},
+      {case["status"] for case in encryption.values()},
+    )
+    self.assertTrue(all(case.get("reason") for case in encryption.values()))
+
   def test_first_standalone_insert_one_case_is_runnable(self) -> None:
     manifest = update_capabilities.generate()
     identity = "crud/tests/unified/insertOne.json::test[1]"

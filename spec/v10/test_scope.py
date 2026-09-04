@@ -43,9 +43,9 @@ class V10ScopeTests(unittest.TestCase):
         "classified": 1044,
         "excluded": 18,
         "passed": 780,
-        "planned": 235,
+        "planned": 0,
         "supported": 780,
-        "unsupported": 11,
+        "unsupported": 246,
       },
       generated["summary"],
     )
@@ -54,7 +54,7 @@ class V10ScopeTests(unittest.TestCase):
         "dedicated_cases": 40,
         "exact_unified_cases": 741,
         "run_on_branches": 1002,
-        "terminal_unsupported": 11,
+        "terminal_unsupported": 246,
       },
       generated["evidence"],
     )
@@ -169,17 +169,23 @@ class V10ScopeTests(unittest.TestCase):
       )
       self.assertIn(command, workflow)
 
-  def test_optional_branch_requires_an_incomplete_out_of_track_owner(self) -> None:
-    activities = copy.deepcopy(scope.load_activities())
-    activities["ADV-010"]["status"] = "completed"
+  def test_encryption_branch_cannot_return_to_optional(self) -> None:
+    capabilities = copy.deepcopy(scope.load_capabilities())
+    identity = next(
+      case_id
+      for case_id, capability in capabilities.items()
+      if capability["activity"] == "ADV-010"
+      and scope._is_load_balanced_branch(capability)
+    )
+    capabilities[identity]["status"] = "deferred_unsupported"
 
     with self.assertRaisesRegex(scope.ScopeError, "optional-suite owner"):
       scope.classify(
         scope.load_cases(),
         scope.load_requirements(),
-        scope.load_capabilities(),
+        capabilities,
         scope.load_executors(),
-        activities,
+        scope.load_activities(),
       )
 
   def test_closure_cases_use_the_load_balanced_executor(self) -> None:
@@ -200,12 +206,12 @@ class V10ScopeTests(unittest.TestCase):
     self.assertIn("skipReason", skipped["reason"])
     expected = dict(scope.TERMINAL_UNSUPPORTED)
     expected.update({
-      identity: "BP-001"
+      identity: capability["activity"]
       for identity, capability in scope.load_capabilities().items()
       if capability["status"] == "unsupported"
       and scope._is_load_balanced_branch(capability)
     })
-    self.assertEqual(11, len(expected))
+    self.assertEqual(246, len(expected))
     self.assertEqual(
       expected,
       {

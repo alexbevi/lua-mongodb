@@ -7,7 +7,6 @@
     "ADV-005": "sharded deployment behavior is outside production-core v1",
     "ADV-006": "load-balanced deployment behavior is outside production-core v1",
     "ADV-007": "client bulk write is outside production-core v1",
-    "ADV-010": "client-side encryption requires a separate additional design",
     "ADV-011": "expanded command, cursor, and session APIs are outside production-core v1",
     "ADV-012": "proxy transports are outside production-core v1",
     "ADV-013": "runtime DNS resolution is outside production-core v1",
@@ -178,19 +177,14 @@
     "TXN-006": "non-transient mongos pin retention is outside production-core v1",
     "TXN-007": "transient mongos unpinning is outside production-core v1"
   },
-  "deferred_by_activity": {
-    "ADV-010": 777
-  },
-  "deferred_by_scope": {
-    "additional-exclusion": 777
-  },
+  "deferred_by_activity": {},
+  "deferred_by_scope": {},
   "schema_version": 1,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "statuses": {
-    "deferred_unsupported": 777,
     "excluded_scope": 99,
     "passed": 4484,
-    "unsupported": 164
+    "unsupported": 941
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

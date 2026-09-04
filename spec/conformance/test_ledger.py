@@ -100,6 +100,28 @@ class ConformanceLedgerTests(unittest.TestCase):
       for case in telemetry.values()
     ))
 
+  def test_client_side_encryption_is_terminally_unsupported(self) -> None:
+    cases = ledger.generate()["cases"]
+    encryption = {
+      identity: case
+      for identity, case in cases.items()
+      if case["activity"] == "ADV-010"
+    }
+
+    self.assertEqual(777, len(encryption))
+    self.assertEqual(
+      {"client-side-encryption"},
+      {case["suite"] for case in encryption.values()},
+    )
+    self.assertTrue(all(
+      case["status"] == "unsupported"
+      and case["runner"] == "none:unsupported"
+      and case["required_environment"] == "none"
+      and case["last_execution"] is None
+      and case["reason"]
+      for case in encryption.values()
+    ))
+
   def test_validation_rejects_added_and_changed_cases(self) -> None:
     discovered = {
       "suite/tests/example.json::test[1]": {
@@ -178,10 +200,9 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 777,
       "excluded_scope": 99,
       "passed": 4484,
-      "unsupported": 164,
+      "unsupported": 941,
     }, generated["summary"]["statuses"])
 
     compression_options = [
