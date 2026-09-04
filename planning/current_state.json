@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "9395b7e23eedc53c67ff111fd616e1d5c9eb0e924584eae0e2c9f6acf8f91b66",
+  "plan_digest": "6124131b0575b59efd49248dd601664262d0dedb4b015a1e657860c60f5b1086",
   "reference_digest": "b5625223b58c527296c8b174f583fb10ece23cd204f327314726514c6ce0879f",
   "references": {
     "pymongo": {
@@ -21,9 +21,7 @@
   },
   "active": [],
   "ready": [
-    "BP-001",
-    "ADV-010",
-    "SFP-001"
+    "BP-001"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -44,9 +42,10 @@
     "v0-10-4-command-logging": [],
     "v0-10-5-server-selection-logging": [],
     "v0-10-6-topology-pool-logging": [],
-    "v0-10-7-client-backpressure": [
+    "optional-capability-freeze": [
       "BP-001"
     ],
+    "v0-10-7-client-backpressure": [],
     "v0-10-8-open-telemetry": []
   },
   "blocked": [],
