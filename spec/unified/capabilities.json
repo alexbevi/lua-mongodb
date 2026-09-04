@@ -73093,9 +73093,9 @@
       "status": "runnable"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-replicaset.json::test[1]": {
-      "activity": "BP-009",
+      "activity": "BP-001",
       "fingerprint": "0d1fe85c7ce3f5f556e91869f5838ccc2f3aa9fbcb606d5e41738d9f93a3727c",
-      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73127,12 +73127,12 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-error-fail-single.json::test[1]": {
-      "activity": "BP-009",
+      "activity": "BP-001",
       "fingerprint": "d63a222da32b854ab7cb6cfc44c9b105a94f907888bc56317e3d29fb8d8fd0f1",
-      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73164,12 +73164,12 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-replicaset.json::test[1]": {
-      "activity": "BP-009",
+      "activity": "BP-001",
       "fingerprint": "d3b8df1a48f1f5283ed4e5cebc8876efa64ed95ed6b0b26051e811c94b7e447a",
-      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73201,12 +73201,12 @@
           "replicaset"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-network-timeout-fail-single.json::test[1]": {
-      "activity": "BP-009",
+      "activity": "BP-001",
       "fingerprint": "56054d7a0d1d4bd02ce3c71d4cb59598552da3bad2b9921ba85afe5f4c861d3e",
-      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73238,12 +73238,12 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/backpressure-server-description-unchanged-on-min-pool-size-population-error.json::test[1]": {
-      "activity": "BP-009",
+      "activity": "BP-001",
       "fingerprint": "def9aa6056fa430e003c3c49bdd06216d7b88758eb8a2beb04c0db96df0c5b34",
-      "reason": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "createEntities.entities",
@@ -73272,7 +73272,7 @@
           "single"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "server-discovery-and-monitoring/tests/unified/cancel-server-check.json::test[1]": {
       "activity": "SDAM-007",
@@ -77728,9 +77728,9 @@
       "status": "runnable"
     },
     "transactions/tests/unified/backpressure-retryable-abort.json::test[1]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "7adb8b5748c4b9b8ae4845fd930910d05211c5d16fe2daa4a4a90b8a07117a4c",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -77768,12 +77768,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-abort.json::test[2]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "c07a5fb8c0e1ddc38d2be5db6019f80e4e7747806a4ccdb2a5d599bf7c377ff3",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -77811,12 +77811,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-commit.json::test[1]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "2b1502f6da9e592e39082477e0fcbad93a15257ce6f961628e2b5bceb83562b6",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -77854,12 +77854,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-commit.json::test[2]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "998673bb419dedf2e4a89e46a3fa29607d5cc2630df433b38ca21d1f2baa508f",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -77897,12 +77897,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-reads.json::test[1]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "89d87a6ef480116656417f86508a0062edcfc32712e98fd52fe1d06e93c97604",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -77943,12 +77943,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-reads.json::test[2]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "ba08fabace9da6e45847cdb8aa8fa6d3b339833896dc25dd7f71a761eafaa95e",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -77987,12 +77987,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json::test[1]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "a3ec942ccca674213ede329ab2970431558248c9ad1727951b1189d80fa7e491",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -78030,12 +78030,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json::test[2]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "6c112c980925323835a96163c23ff29ac5dfd9d91681154940af41311108b7f0",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -78071,12 +78071,12 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/backpressure-retryable-writes.json::test[3]": {
-      "activity": "BP-008",
+      "activity": "BP-001",
       "fingerprint": "73a5f2fade1d41d0b9fc0c160607c8c880833b0f2a8e6f850a4e51de78d62928",
-      "reason": "transaction backpressure awaits its v0.10.7 slice",
+      "reason": "adaptive overload retries and retargeting are not supported",
       "requirements": {
         "arguments": [
           "failPoint.client",
@@ -78112,7 +78112,7 @@
           "sharded"
         ]
       },
-      "status": "deferred_unsupported"
+      "status": "unsupported"
     },
     "transactions/tests/unified/bulk.json::test[1]": {
       "activity": "TXN-001",

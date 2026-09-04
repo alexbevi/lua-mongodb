@@ -182,27 +182,20 @@
   },
   "deferred_by_activity": {
     "ADV-010": 777,
-    "BP-001": 6,
-    "BP-004": 28,
-    "BP-005": 27,
-    "BP-006": 45,
-    "BP-007": 3,
-    "BP-008": 9,
-    "BP-009": 5,
     "OTEL-002": 9,
     "OTEL-003": 12,
     "OTEL-004": 3
   },
   "deferred_by_scope": {
-    "additional-exclusion": 924
+    "additional-exclusion": 801
   },
   "schema_version": 1,
   "specifications_commit": "615e0f9ca5f554614636c098225fbbf1be55565d",
   "statuses": {
-    "deferred_unsupported": 924,
+    "deferred_unsupported": 801,
     "excluded_scope": 99,
     "passed": 4484,
-    "unsupported": 17
+    "unsupported": 140
   },
   "total_cases": 5524,
   "type": "production-core-release-scope"

@@ -82,13 +82,13 @@ OWNER_REASONS = {
   "SDAM-010": "heartbeat logging awaits its v0.10.6 slice",
   "CMAP-005": "pool and connection logging await their v0.10.6 slice",
   "CMAP-006": "pool configuration logging awaits its v0.10.6 slice",
-  "BP-001": "client-backpressure configuration awaits its v0.10.7 slice",
-  "BP-004": "client and database adaptive retries await their v0.10.7 slice",
-  "BP-005": "collection read adaptive retries await their v0.10.7 slice",
-  "BP-006": "collection write adaptive retries await their v0.10.7 slice",
-  "BP-007": "cursor retry and connection checkin behavior await their v0.10.7 slice",
-  "BP-008": "transaction backpressure awaits its v0.10.7 slice",
-  "BP-009": "SDAM and CMAP backpressure behavior awaits its v0.10.7 slice",
+  "BP-001": "adaptive overload retries and retargeting are not supported",
+  "BP-004": "adaptive overload retries and retargeting are not supported",
+  "BP-005": "adaptive overload retries and retargeting are not supported",
+  "BP-006": "adaptive overload retries and retargeting are not supported",
+  "BP-007": "adaptive overload retries and retargeting are not supported",
+  "BP-008": "adaptive overload retries and retargeting are not supported",
+  "BP-009": "adaptive overload retries and retargeting are not supported",
   "OTEL-002": "read operation tracing awaits its v0.10.8 slice",
   "OTEL-003": "write and administration tracing await their v0.10.8 slice",
   "OTEL-004": "transaction tracing awaits its v0.10.8 slice",
@@ -199,6 +199,19 @@ OWNER_REASONS = {
   "UTF-013": "unified command-event collection and matching are not implemented",
   "UTF-014": "unified failpoint configuration and cleanup are not implemented",
 }
+
+BACKPRESSURE_OWNERS = {
+  "BP-001",
+  "BP-004",
+  "BP-005",
+  "BP-006",
+  "BP-007",
+  "BP-008",
+  "BP-009",
+}
+BACKPRESSURE_UNSUPPORTED_REASON = (
+  "adaptive overload retries and retargeting are not supported"
+)
 
 SPECIFICATION_OWNERS = {
   "auth": "AUTH-018",
@@ -1169,7 +1182,11 @@ def generate() -> dict[str, object]:
 
   for test in discovered:
     activity, reason = classify_test(test)
-    if test["id"] in TERMINAL_UNSUPPORTED_TESTS:
+    if activity in BACKPRESSURE_OWNERS:
+      activity = "BP-001"
+      reason = BACKPRESSURE_UNSUPPORTED_REASON
+      status = "unsupported"
+    elif test["id"] in TERMINAL_UNSUPPORTED_TESTS:
       status = "unsupported"
     else:
       status = "runnable" if reason is None else "deferred_unsupported"

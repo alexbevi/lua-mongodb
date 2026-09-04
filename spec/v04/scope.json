@@ -4,8 +4,7 @@
     "static_passing_cases": 507
   },
   "excluded_by_activity": {
-    "BP-008": 9,
-    "BP-009": 5,
+    "BP-001": 14,
     "LEG-003": 1
   },
   "exclusion_reasons": {
@@ -13,12 +12,6 @@
     "ADV-007": "client bulk write remains a separate post-v0.4 capability",
     "ADV-011": "legacy count, mapReduce, and tailable cursors are outside the v0.4 public API",
     "BP-001": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
-    "BP-004": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
-    "BP-005": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
-    "BP-006": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
-    "BP-007": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
-    "BP-008": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
-    "BP-009": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",
     "CBW-009": "client bulk sessions remain a separate post-v0.4 capability",
     "CBW-010": "client bulk transactions remain a separate post-v0.4 capability",
     "CMAP-005": "logging, telemetry, and backpressure remain separate post-v0.4 capabilities",

@@ -84,7 +84,7 @@ EXCLUSION_REASONS = {
   **{
     owner: "logging, telemetry, and backpressure remain separate post-v0.4 capabilities"
     for owner in {
-      "BP-001", "BP-004", "BP-005", "BP-006", "BP-007", "BP-008", "BP-009",
+      "BP-001",
       "CMAP-005", "CMAP-006", "CON-017",
       "LOG-002", "LOG-003", "LOG-004", "LOG-005", "LOG-006", "LOG-007",
       "LOG-010", "LOG-011", "LOG-012", "LOG-013", "LOG-014", "LOG-015",
@@ -288,7 +288,7 @@ def classify(
       raise ScopeError(f"unknown owner for {identity}: {owner}")
 
     if identity in TARGET_VERSION_EXCLUSIONS:
-      if status not in {"passed", "deferred_unsupported", "excluded_scope"}:
+      if status not in {"passed", "deferred_unsupported", "excluded_scope", "unsupported"}:
         raise ScopeError(f"stale v0.4 target-version exclusion: {identity}")
       if status != "passed" and owner != "LEG-003":
         raise ScopeError(f"target-version exclusion has wrong owner: {identity}")
@@ -314,7 +314,7 @@ def classify(
         exact_unified += 1
 
       classification = "passed"
-    elif status not in {"deferred_unsupported", "excluded_scope"}:
+    elif status not in {"deferred_unsupported", "excluded_scope", "unsupported"}:
       raise ScopeError(f"unknown conformance status for {identity}: {status}")
     elif owner in TARGET_OWNERS:
       activity = activities[owner]

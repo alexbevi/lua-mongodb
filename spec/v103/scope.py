@@ -51,13 +51,7 @@ FOUNDATION_REQUIREMENTS = {
 STANDARDIZED_REQUIREMENT = "logging/logging.md::standardized-components"
 STANDARDIZED_REQUIREMENT_OWNER = "CON-017"
 PLANNED_OWNER_COUNTS = {
-  "BP-001": 6,
-  "BP-004": 28,
-  "BP-005": 27,
-  "BP-006": 45,
-  "BP-007": 3,
-  "BP-008": 9,
-  "BP-009": 5,
+  "BP-001": 123,
   "CMAP-005": 2,
   "CMAP-006": 5,
   "LOG-002": 5,

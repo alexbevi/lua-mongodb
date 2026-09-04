@@ -2,7 +2,7 @@
   "$schema": "./schemas/current_state.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "6124131b0575b59efd49248dd601664262d0dedb4b015a1e657860c60f5b1086",
+  "plan_digest": "0b710d455df2abc7e8832d50b107af2d47df419694425763baf75ecdda6d877b",
   "reference_digest": "b5625223b58c527296c8b174f583fb10ece23cd204f327314726514c6ce0879f",
   "references": {
     "pymongo": {
@@ -14,14 +14,14 @@
   },
   "counts": {
     "blocked": 0,
-    "completed": 387,
+    "completed": 388,
     "in_progress": 0,
     "needs_review": 0,
-    "pending": 19
+    "pending": 8
   },
   "active": [],
   "ready": [
-    "BP-001"
+    "OTEL-001"
   ],
   "ready_by_track": {
     "lua-hardening": [],
@@ -43,13 +43,12 @@
     "v0-10-5-server-selection-logging": [],
     "v0-10-6-topology-pool-logging": [],
     "optional-capability-freeze": [
-      "BP-001"
+      "OTEL-001"
     ],
-    "v0-10-7-client-backpressure": [],
     "v0-10-8-open-telemetry": []
   },
   "blocked": [],
   "needs_review": [],
   "stale": [],
-  "next_ready": "BP-001"
+  "next_ready": "OTEL-001"
 }

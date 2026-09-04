@@ -43,9 +43,9 @@ class V10ScopeTests(unittest.TestCase):
         "classified": 1044,
         "excluded": 18,
         "passed": 780,
-        "planned": 244,
+        "planned": 235,
         "supported": 780,
-        "unsupported": 2,
+        "unsupported": 11,
       },
       generated["summary"],
     )
@@ -54,7 +54,7 @@ class V10ScopeTests(unittest.TestCase):
         "dedicated_cases": 40,
         "exact_unified_cases": 741,
         "run_on_branches": 1002,
-        "terminal_unsupported": 2,
+        "terminal_unsupported": 11,
       },
       generated["evidence"],
     )
@@ -198,8 +198,16 @@ class V10ScopeTests(unittest.TestCase):
 
     self.assertEqual("excluded_scope", skipped["status"])
     self.assertIn("skipReason", skipped["reason"])
+    expected = dict(scope.TERMINAL_UNSUPPORTED)
+    expected.update({
+      identity: "BP-001"
+      for identity, capability in scope.load_capabilities().items()
+      if capability["status"] == "unsupported"
+      and scope._is_load_balanced_branch(capability)
+    })
+    self.assertEqual(11, len(expected))
     self.assertEqual(
-      scope.TERMINAL_UNSUPPORTED,
+      expected,
       {
         identity: evidence["activity"]
         for identity, evidence in generated["terminal_unsupported"].items()

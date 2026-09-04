@@ -29,13 +29,6 @@ CLOSURE_OWNER = "CON-010"
 RELEASE_OWNER = "REL-059"
 OPTIONAL_OWNERS = {
   "ADV-010",
-  "BP-001",
-  "BP-004",
-  "BP-005",
-  "BP-006",
-  "BP-007",
-  "BP-008",
-  "BP-009",
   "CMAP-005",
   "CMAP-006",
   "CON-017",
@@ -96,10 +89,10 @@ RATCHETS = {
   "dedicated_cases": 40,
   "exact_unified_cases": 741,
   "excluded": 18,
-  "out_of_track": 244,
+  "out_of_track": 235,
   "passed": 780,
   "run_on_branches": 1002,
-  "unsupported": 2,
+  "unsupported": 11,
 }
 
 
@@ -157,6 +150,7 @@ def _require_activity(
   activities: dict[str, dict[str, str]],
   *,
   closure_allowed: bool = False,
+  in_progress_allowed: bool = False,
 ) -> None:
   activity = activities.get(owner)
 
@@ -164,6 +158,8 @@ def _require_activity(
     raise ScopeError(f"v0.10 evidence has an unknown owner: {identity}: {owner}")
 
   allowed = {"completed"}
+  if in_progress_allowed:
+    allowed.add("in_progress")
 
   if closure_allowed and owner == CLOSURE_OWNER:
     allowed.add("in_progress")
@@ -263,6 +259,7 @@ def classify(
     passed_by_activity[owner] += 1
 
   exact_unified = set()
+  terminal = {}
 
   for identity, capability in sorted(branches.items()):
     status = capability.get("status")
@@ -304,6 +301,24 @@ def classify(
         raise ScopeError(f"v0.10 branch has no optional-suite owner: {identity}")
 
       statuses["planned"] += 1
+    elif status == "unsupported":
+      evidence = cases.get(identity)
+
+      if (
+        evidence is None
+        or evidence.get("activity") != owner
+        or evidence.get("status") != "unsupported"
+        or evidence.get("runner") != "none:unsupported"
+        or evidence.get("required_environment") != "none"
+        or evidence.get("last_execution") is not None
+        or not capability.get("reason")
+        or not evidence.get("reason")
+      ):
+        raise ScopeError(f"v0.10 terminal unsupported evidence is stale: {identity}")
+
+      _require_activity(identity, owner, activities, in_progress_allowed=True)
+      terminal[identity] = evidence
+      statuses["unsupported"] += 1
     elif status == "excluded_scope":
       if owner != LEGACY_EXCLUSION_OWNER or not capability.get("reason"):
         raise ScopeError(f"v0.10 branch has a stale exclusion: {identity}")
@@ -323,8 +338,6 @@ def classify(
     if executors[identity].get("environment") != "live-load-balanced":
       raise ScopeError(f"v0.10 closure executor environment is stale: {identity}")
 
-  terminal = {}
-
   for identity, owner in TERMINAL_UNSUPPORTED.items():
     evidence = requirements.get(identity)
 
@@ -343,7 +356,7 @@ def classify(
     terminal[identity] = evidence
     statuses["unsupported"] += 1
 
-  classified = len(dedicated) + len(branches) + len(terminal)
+  classified = len(dedicated) + len(branches) + len(TERMINAL_UNSUPPORTED)
   report = {
     "dedicated_cases": dict(sorted(dedicated.items())),
     "evidence": {

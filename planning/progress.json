@@ -2,7 +2,7 @@
   "$schema": "./schemas/progress.schema.json",
   "schema_version": 1,
   "plan_id": "lua-mongodb-driver-v1",
-  "plan_digest": "6124131b0575b59efd49248dd601664262d0dedb4b015a1e657860c60f5b1086",
+  "plan_digest": "0b710d455df2abc7e8832d50b107af2d47df419694425763baf75ecdda6d877b",
   "activities": {
     "PLN-000": {
       "status": "completed",
@@ -10949,6 +10949,35 @@
       "reopened_after_commit": "c791d3a8a95d601e44d8ee07fbf9416f89b5ee07",
       "started_at": "2026-08-31T13:51:58+00:00",
       "completed_at": "2026-08-31T13:54:04+00:00"
+    },
+    "BP-001": {
+      "status": "completed",
+      "evidence": [
+        {
+          "phase": "red",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger.ConformanceLedgerTests.test_client_backpressure_is_terminally_unsupported'",
+          "exit_code": 2,
+          "summary": "One focused conformance contract failed: only the six URI-option cases used BP-001, and all 123 backpressure cases remained deferred instead of terminally unsupported.",
+          "recorded_at": "2026-09-04T20:41:47+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='spec.conformance.test_ledger.ConformanceLedgerTests.test_client_backpressure_is_terminally_unsupported'",
+          "exit_code": 0,
+          "summary": "One focused conformance contract passed: all 123 backpressure cases are terminally unsupported under BP-001 with no runner, environment, or execution claim.",
+          "recorded_at": "2026-09-04T20:53:01+00:00"
+        },
+        {
+          "phase": "green",
+          "command": "make test-focus FOCUS_PYTHON='<ledger, v0.4, v0.10, v0.10.3, release, README, documentation, and generated-artifact contracts>'; run all touched generated --check validators",
+          "exit_code": 0,
+          "summary": "Sixty coupled Python tests passed; all capability, catalog, ledger, release-scope, v0.4, v0.10, v0.10.3, release-checklist, README, roadmap, and diff validators passed. The ledger reports 140 terminal unsupported cases, including all 123 backpressure cases, and zero applicable release gaps.",
+          "recorded_at": "2026-09-04T20:53:01+00:00"
+        }
+      ],
+      "notes": [],
+      "started_at": "2026-09-04T20:38:35+00:00",
+      "completed_at": "2026-09-04T20:53:07+00:00"
     }
   }
 }

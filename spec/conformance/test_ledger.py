@@ -15,13 +15,7 @@ class ConformanceLedgerTests(unittest.TestCase):
 
     self.assertEqual(0, owners["ADV-009"])
     expected = {
-      "BP-001": 6,
-      "BP-004": 28,
-      "BP-005": 27,
-      "BP-006": 45,
-      "BP-007": 3,
-      "BP-008": 9,
-      "BP-009": 5,
+      "BP-001": 123,
       "CMAP-005": 2,
       "CMAP-006": 5,
       "LOG-002": 5,
@@ -56,6 +50,35 @@ class ConformanceLedgerTests(unittest.TestCase):
       "SEL-003": 4,
     }
     self.assertEqual(expected, {owner: owners[owner] for owner in expected})
+
+  def test_client_backpressure_is_terminally_unsupported(self) -> None:
+    cases = ledger.generate()["cases"]
+    backpressure = {
+      identity: case
+      for identity, case in cases.items()
+      if case["activity"] == "BP-001"
+    }
+
+    self.assertEqual(123, len(backpressure))
+    self.assertEqual(
+      {
+        "client-backpressure": 103,
+        "server-discovery-and-monitoring": 5,
+        "transactions": 9,
+        "uri-options": 6,
+      },
+      dict(sorted(Counter(
+        case["suite"] for case in backpressure.values()
+      ).items())),
+    )
+    self.assertTrue(all(
+      case["status"] == "unsupported"
+      and case["runner"] == "none:unsupported"
+      and case["required_environment"] == "none"
+      and case["last_execution"] is None
+      and case["reason"]
+      for case in backpressure.values()
+    ))
 
   def test_validation_rejects_added_and_changed_cases(self) -> None:
     discovered = {
@@ -135,10 +158,10 @@ class ConformanceLedgerTests(unittest.TestCase):
     self.assertEqual(5524, generated["summary"]["cases"])
     self.assertEqual(2966, generated["summary"]["files"])
     self.assertEqual({
-      "deferred_unsupported": 924,
+      "deferred_unsupported": 801,
       "excluded_scope": 99,
       "passed": 4484,
-      "unsupported": 17,
+      "unsupported": 140,
     }, generated["summary"]["statuses"])
 
     compression_options = [

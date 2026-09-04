@@ -112,7 +112,7 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       "🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **84.9%** **†** |", table)
     self.assertIn("> [!IMPORTANT]", table)
     self.assertIn("**† Fixtures excluded from scoring.**", table)
     self.assertIn(
@@ -128,8 +128,9 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       table,
     )
     self.assertIn(
-      "The ledger excludes 17 terminal unsupported fixtures from scoring in "
-      "URI options (15), Connection monitoring and pooling (2).",
+      "The ledger excludes 37 terminal unsupported fixtures from scoring in "
+      "URI options (21), Transactions (9), Server discovery and monitoring "
+      "(5), Connection monitoring and pooling (2).",
       table,
     )
 
@@ -157,10 +158,10 @@ class ReadmeCompatibilityTests(unittest.TestCase):
     )
     self.assertIn(
       "| Communication | [URI options](https://alexbevi.com/specifications/"
-      "uri-options/uri-options.html) | 🟡 | 95.8% **†** |",
+      "uri-options/uri-options.html) | 🟢 | 100.0% **†** |",
       table,
     )
-    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **84.9%** **†** |", table)
 
   def test_terminal_unsupported_table_rows_use_badge_only(self) -> None:
     table = readme_compatibility.render_table()
@@ -228,11 +229,11 @@ class ReadmeCompatibilityTests(unittest.TestCase):
       r"\(https://alexbevi\.com/specifications/client-side-operations-timeout/"
       r"client-side-operations-timeout\.html\) \| 🟡 \| \d+\.\d% \|",
     )
-    self.assertIn("|  | **Total** |  | **83.0%** **†** |", table)
+    self.assertIn("|  | **Total** |  | **84.9%** **†** |", table)
     self.assertIn(
       "| Observability | [Client backpressure](https://alexbevi.com/"
       "specifications/connection-monitoring-and-pooling/"
-      "connection-monitoring-and-pooling.html) | 🔴 | 0.0% |",
+      "connection-monitoring-and-pooling.html) | ⚪ | N/A |",
       table,
     )
     self.assertNotIn("Atlas SFP testing", table)

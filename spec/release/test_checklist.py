@@ -44,7 +44,7 @@ class ReleaseChecklistTests(unittest.TestCase):
     self.assertEqual(5524, conformance["classified_cases"])
     self.assertGreaterEqual(conformance["passed_cases"], 4484)
     self.assertLessEqual(conformance["additional_exclusions"], 1023)
-    self.assertEqual(17, conformance["unsupported_cases"])
+    self.assertEqual(140, conformance["unsupported_cases"])
     self.assertEqual(
       conformance["classified_cases"],
       conformance["passed_cases"]
@@ -124,10 +124,10 @@ class ReleaseChecklistTests(unittest.TestCase):
         "dedicated_cases": 40,
         "exact_unified_cases": 741,
         "excluded_requirements": 18,
-        "optional_requirements": 244,
+        "optional_requirements": 235,
         "passed_requirements": 780,
         "run_on_branches": 1002,
-        "unsupported_requirements": 2,
+        "unsupported_requirements": 11,
       },
       report["gates"]["v0_10_conformance"],
     )

@@ -40,7 +40,7 @@ DEFAULT_OWNERS = {
   "bson-binary-vector": "REL-002",
   "causal-consistency": "SES-001",
   "change-streams": "REL-051",
-  "client-backpressure": "BP-004",
+  "client-backpressure": "BP-001",
   "client-side-encryption": "ADV-010",
   "client-side-operations-timeout": "TIME-001",
   "collection-management": "REL-021",
@@ -357,31 +357,12 @@ def classify_case(
     )
 
   if suite == "client-backpressure":
-    fixture = Path(path).name
-    index = int(identity.rsplit("[", 1)[1][:-1])
-
-    if fixture == "backpressure-connection-checkin.json":
-      owner = "BP-007"
-    elif fixture == "getMore-retried.json":
-      owner = "BP-007"
-    elif fixture == "backpressure-retry-loop.json":
-      if index <= 19:
-        owner = "BP-004"
-      elif index <= 37:
-        owner = "BP-005"
-      else:
-        owner = "BP-006"
-    elif fixture == "backpressure-retry-max-attempts.json":
-      if index <= 9:
-        owner = "BP-004"
-      elif index <= 18:
-        owner = "BP-005"
-      else:
-        owner = "BP-006"
-    else:
-      raise LedgerError(f"unknown client-backpressure fixture: {identity}")
-
-    return _deferred(case, owner, activities)
+    return _unsupported(
+      case,
+      "BP-001",
+      activities,
+      "adaptive overload retries and retargeting are not supported",
+    )
 
   if suite == "command-logging-and-monitoring":
     fixture = Path(path).name
@@ -586,7 +567,12 @@ def classify_case(
       )
 
     if owner != "REL-003":
-      return _deferred(case, owner, activities)
+      return _unsupported(
+        case,
+        owner,
+        activities,
+        "adaptive overload retries and retargeting are not supported",
+      )
 
     if path.endswith("/connection-options.json") and any(
       identity.endswith(f"::test[{index}]") for index in range(18, 25)
