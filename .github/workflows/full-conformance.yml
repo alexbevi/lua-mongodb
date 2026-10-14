@@ -264,14 +264,14 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Download unified shard evidence
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: unified-shard-*-${{ github.sha }}
           path: build/conformance/shards
           merge-multiple: true
 
       - name: Download pre-8.2 exact evidence
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: unified-pre-8.2-${{ github.sha }}
           path: build/conformance/version-branches
@@ -579,14 +579,14 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Download macOS unified shard evidence
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           pattern: macos-unified-shard-*-${{ github.sha }}
           path: build/conformance/macos-shards
           merge-multiple: true
 
       - name: Download macOS pre-8.2 exact evidence
-        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
         with:
           name: macos-unified-pre-8.2-${{ github.sha }}
           path: build/conformance/macos-version-branches
