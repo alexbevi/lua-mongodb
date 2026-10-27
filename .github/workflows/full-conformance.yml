@@ -41,7 +41,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua ${{ matrix.lua-version }}
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "${{ matrix.lua-version }}"
 
@@ -87,7 +87,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
@@ -137,7 +137,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
@@ -191,7 +191,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
@@ -359,7 +359,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
@@ -445,7 +445,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
@@ -510,7 +510,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
@@ -676,7 +676,7 @@ jobs:
         uses: ./.github/actions/init-specifications
 
       - name: Install Lua 5.4.9
-        uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13
+        uses: leafo/gh-actions-lua@32909a2dea0a48c433aec79e7fcd31b4cd55800f # v13
         with:
           luaVersion: "5.4.9"
 
